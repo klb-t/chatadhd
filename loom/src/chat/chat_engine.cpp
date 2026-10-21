@@ -1301,10 +1301,26 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
   const bool history_on = opts.include_history && choice.source_on("history");
   if (!conv_id.empty() && opts.include_history && !history_on) rc.drop("history", "source_off", {}, 1);
   if (!conv_id.empty() && history_on) {
-    auto msgs = db_.get_msgs(conv_id, true);  // all rows: the excluded ones are counted for the receipt, only the active ones are sent
+    // The history is read with the one statement it always was read with (the active rows): the capture of a task and its ABA check depend on it.
+    // The excluded rows, which the receipt counts, are listed by a statement of their own, and only when a receipt is wanted.
+    auto msgs = db_.get_msgs(conv_id);
     if (!msgs) return msgs.error();
+    if (want_receipt) {
+      auto lock = db_.lock();
+      auto st = db_.conn().prepare("SELECT id FROM messages WHERE conv_id = ? AND status = ? ORDER BY created, rowid");
+      if (st) {
+        st->bind(1, conv_id);
+        st->bind(2, msg_status::kExcluded);
+        while (true) {
+          auto more = st->step();
+          if (!more || !*more) break;
+          hist_dropped["excluded"].push_back(st->get_text(0));
+        }
+      } else {
+        log::debug("loom.chat_engine", "receipt: the excluded messages could not be listed: {}", st.error().message);
+      }
+    }
     for (const auto& m : *msgs) {
-      if (m.status == msg_status::kExcluded) hist_dropped["excluded"].push_back(m.id);
       if (m.status != msg_status::kActive) continue;
       if (capture_native_history) captured_native_history.push_back(native_history_row(m));
       if (!exclude_message_id.empty() && m.id == exclude_message_id) continue;
