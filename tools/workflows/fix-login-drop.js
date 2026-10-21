@@ -21,6 +21,6 @@ const review = await agent(`Adversarially review the fix for the intermittent lo
 const serious = (review?.findings || []).filter(f => f.severity !== 'nit')
 let fx2 = null
 if (serious.length) {
-  fx2 = await agent(`Apply these review findings to the login-drop fix in ${WT}. ${RULES}\n\nFindings:\n${JSON.stringify(review.findings, null, 1)}\n\nFix or refute each with evidence; rerun first-steps-ui 10 times and the touched ctest; commit. Return per finding fixed/rejected and the counts.`, { label: 'fix-review', phase: 'Review' })
+  fx2 = await agent(`Apply these review findings to the login-drop fix in ${WT}. ${RULES}\n\nFindings:\n${JSON.stringify(review.findings, null, 1)}\n\nFix or refute each with evidence; rerun first-steps-ui 10 times and the touched ctest; commit. Return per finding fixed/rejected and the counts.\n\nRESUMED RUN: an earlier run of this very step was cut off by a container restart. Its partial, untested edits are committed as a WIP commit at HEAD (git show --stat HEAD): read it, keep what is right, finish and test the batch, do not start over from scratch and do not throw the partial work away blindly.`, { label: 'fix-review', phase: 'Review' })
 }
 return { fix: String(fix).slice(0, 2500), review: review?.findings || [], fix2: fx2 && String(fx2).slice(0, 1500) }

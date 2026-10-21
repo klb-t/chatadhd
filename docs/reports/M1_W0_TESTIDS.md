@@ -38,35 +38,413 @@ ekranu o tej nazwie, więc blok nie sprawdza jego braku. Krok 5 zostaje na stosi
 systemowym Wstecz na czacie, gdzie powłoka Androida ma zapytać o wyjście (M1-A0).
 
 ```json
-{"preconditions": {"config": {"ui_language": "pl"}, "android_shell": true},
+{
+ "preconditions": {
+  "config": {
+   "ui_language": "pl"
+  },
+  "android_shell": true
+ },
  "gate0": [
-  {"name": "Menu ⋮ → Graf → ROM: 13 pozycji po polsku, chip pochodzenia na każdej",
-   "do": [{"click": "shell-menu-toggle"}, {"click": "shell-menu-graph"}, {"wait": "nav-rows"}, {"click": "nav-row-area:rom"}, {"wait": "nav-focus-why"}],
-   "expect": [{"tid": "nav-crumb-1", "text": "ROM"}, {"tid": "nav-chip", "count": 13}, {"tid": "nav-status", "min": 1}, {"tid": "nav-bar-view", "count": 1}]},
-  {"name": "Menu ⋮: osiem pozycji z layouts.json, bez Pamięci i Wiedzy",
-   "do": [{"click": "shell-menu-toggle"}, {"wait": "shell-menu"}],
-   "expect": [{"tid": "shell-menu-graph", "count": 1}, {"tid": "shell-menu-settings", "count": 1}, {"tid": "shell-menu-me", "count": 1},
-              {"tid": "shell-menu-this_conversation", "count": 1}, {"tid": "shell-menu-views", "count": 1}, {"tid": "shell-menu-semantic", "count": 1},
-              {"tid": "shell-menu-connection", "count": 1, "android_only": true}, {"tid": "shell-menu-workshop", "count": 1},
-              {"tid": "shell-menu-memory", "absent": true}, {"tid": "shell-menu-knowledge", "absent": true}]},
-  {"name": "Ustawienia: 8 grup z „N pól · M Twoje” i suma",
-   "do": [{"click": "shell-menu-toggle"}, {"click": "shell-menu-settings"}, {"wait": "shum-groups"}],
-   "expect": [{"tid": "shum-total", "text": "^(Razem: \\d+ p(ole|ól|ola)|In all: \\d+ fields?) · \\d+ (Twoje|yours)"},
-              {"tid": "shum-group-ty", "count": 1}, {"tid": "shum-group-rozmowa", "count": 1}, {"tid": "shum-group-modele", "count": 1}, {"tid": "shum-group-kontekst", "count": 1},
-              {"tid": "shum-group-interfejs", "count": 1}, {"tid": "shum-group-prywatnosc", "count": 1}, {"tid": "shum-group-koszty", "count": 1}, {"tid": "shum-group-silnik", "count": 1},
-              {"tid": "shum-group-count-rozmowa", "text": "^\\d+ (p(ole|ól|ola)|fields?) · \\d+ (Twoje|yours)"}, {"tid": "shum-filter", "count": 1}]},
-  {"name": "Modele › Role: karta Analiza w tle z łańcuchem polityki i przepływami czytającymi klucz",
-   "do": [{"click": "shell-menu-toggle"}, {"click": "shell-menu-settings"}, {"wait": "shum-groups"}, {"click": "shum-group-open-modele"}, {"wait": "roles-table"},
-          {"click": "role-open-analysis.fast"}, {"wait": "role-card"}],
-   "expect": [{"tid": "role-card-title", "text": "^(Analiza w tle|Background analysis)$"}, {"tid": "role-chain", "count": 1}, {"tid": "role-chain-step-1", "count": 1},
-              {"tid": "role-chain-meaning-1", "text": "semantic_model"}, {"tid": "role-tier-reason", "count": 1},
-              {"tid": "role-readers", "count": 1}, {"tid": "role-reader-actions.preview", "count": 1}, {"tid": "role-readers-total", "text": "\\d+"}]},
-  {"name": "Wstecz: karta roli → grupa → panel → czat → pytanie o wyjście", "reset": false,
-   "do": [{"click": "shell-menu-toggle"}, {"click": "shell-menu-settings"}, {"wait": "shum-groups"}, {"click": "shum-group-open-modele"}, {"wait": "roles-table"},
-          {"click": "role-open-analysis.fast"}, {"wait": "role-card"},
-          {"back": 1}, {"wait": "roles-table"}, {"back": 1}, {"wait": "shum-groups"}, {"back": 1}, {"wait": "chat-shell"}, {"back": 1}],
-   "expect": [{"tid": "role-card", "absent": true}, {"tid": "panel-settings", "absent": true}, {"exitQuestion": true}]}
-]}
+  {
+   "name": "Menu ⋮ → Graf → ROM: 13 pozycji po polsku, chip pochodzenia na każdej",
+   "do": [
+    {
+     "click": "shell-menu-toggle"
+    },
+    {
+     "click": "shell-menu-graph"
+    },
+    {
+     "wait": "nav-rows"
+    },
+    {
+     "click": "nav-row-area:rom"
+    },
+    {
+     "wait": "nav-focus-why"
+    }
+   ],
+   "expect": [
+    {
+     "tid": "nav-crumb-1",
+     "text": "ROM"
+    },
+    {
+     "tid": "nav-chip",
+     "count": 13
+    },
+    {
+     "tid": "nav-status",
+     "min": 1
+    },
+    {
+     "tid": "nav-bar-view",
+     "count": 1
+    }
+   ]
+  },
+  {
+   "name": "Menu ⋮: osiem pozycji z layouts.json, bez Pamięci i Wiedzy",
+   "do": [
+    {
+     "click": "shell-menu-toggle"
+    },
+    {
+     "wait": "shell-menu"
+    }
+   ],
+   "expect": [
+    {
+     "tid": "shell-menu-graph",
+     "count": 1
+    },
+    {
+     "tid": "shell-menu-settings",
+     "count": 1
+    },
+    {
+     "tid": "shell-menu-me",
+     "count": 1
+    },
+    {
+     "tid": "shell-menu-this_conversation",
+     "count": 1
+    },
+    {
+     "tid": "shell-menu-views",
+     "count": 1
+    },
+    {
+     "tid": "shell-menu-semantic",
+     "count": 1
+    },
+    {
+     "tid": "shell-menu-connection",
+     "count": 1,
+     "android_only": true
+    },
+    {
+     "tid": "shell-menu-workshop",
+     "count": 1
+    },
+    {
+     "tid": "shell-menu-memory",
+     "absent": true
+    },
+    {
+     "tid": "shell-menu-knowledge",
+     "absent": true
+    }
+   ]
+  },
+  {
+   "name": "Ustawienia: 8 grup z „N pól · M Twoje” i suma",
+   "do": [
+    {
+     "click": "shell-menu-toggle"
+    },
+    {
+     "click": "shell-menu-settings"
+    },
+    {
+     "wait": "shum-groups"
+    }
+   ],
+   "expect": [
+    {
+     "tid": "shum-total",
+     "text": "^(Razem: \\d+ p(ole|ól|ola)|In all: \\d+ fields?) · \\d+ (Twoje|yours)"
+    },
+    {
+     "tid": "shum-group-ty",
+     "count": 1
+    },
+    {
+     "tid": "shum-group-rozmowa",
+     "count": 1
+    },
+    {
+     "tid": "shum-group-modele",
+     "count": 1
+    },
+    {
+     "tid": "shum-group-kontekst",
+     "count": 1
+    },
+    {
+     "tid": "shum-group-interfejs",
+     "count": 1
+    },
+    {
+     "tid": "shum-group-prywatnosc",
+     "count": 1
+    },
+    {
+     "tid": "shum-group-koszty",
+     "count": 1
+    },
+    {
+     "tid": "shum-group-silnik",
+     "count": 1
+    },
+    {
+     "tid": "shum-group-count-rozmowa",
+     "text": "^\\d+ (p(ole|ól|ola)|fields?) · \\d+ (Twoje|yours)"
+    },
+    {
+     "tid": "shum-filter",
+     "count": 1
+    }
+   ]
+  },
+  {
+   "name": "Modele › Role: karta Analiza w tle z łańcuchem polityki i przepływami czytającymi klucz",
+   "do": [
+    {
+     "click": "shell-menu-toggle"
+    },
+    {
+     "click": "shell-menu-settings"
+    },
+    {
+     "wait": "shum-groups"
+    },
+    {
+     "click": "shum-group-open-modele"
+    },
+    {
+     "wait": "roles-table"
+    },
+    {
+     "click": "role-open-analysis.fast"
+    },
+    {
+     "wait": "role-card"
+    }
+   ],
+   "expect": [
+    {
+     "tid": "role-card-title",
+     "text": "^(Analiza w tle|Background analysis)$"
+    },
+    {
+     "tid": "role-chain",
+     "count": 1
+    },
+    {
+     "tid": "role-chain-step-1",
+     "count": 1
+    },
+    {
+     "tid": "role-chain-meaning-1",
+     "text": "semantic_model"
+    },
+    {
+     "tid": "role-tier-reason",
+     "count": 1
+    },
+    {
+     "tid": "role-readers",
+     "count": 1
+    },
+    {
+     "tid": "role-reader-actions.preview",
+     "count": 1
+    },
+    {
+     "tid": "role-readers-total",
+     "text": "\\d+"
+    }
+   ]
+  },
+  {
+   "name": "Wstecz: karta roli → grupa → panel → czat → pytanie o wyjście",
+   "reset": false,
+   "do": [
+    {
+     "click": "shell-menu-toggle"
+    },
+    {
+     "click": "shell-menu-settings"
+    },
+    {
+     "wait": "shum-groups"
+    },
+    {
+     "click": "shum-group-open-modele"
+    },
+    {
+     "wait": "roles-table"
+    },
+    {
+     "click": "role-open-analysis.fast"
+    },
+    {
+     "wait": "role-card"
+    },
+    {
+     "back": 1
+    },
+    {
+     "wait": "roles-table"
+    },
+    {
+     "back": 1
+    },
+    {
+     "wait": "shum-groups"
+    },
+    {
+     "back": 1
+    },
+    {
+     "wait": "chat-shell"
+    },
+    {
+     "back": 1
+    }
+   ],
+   "expect": [
+    {
+     "tid": "role-card",
+     "absent": true
+    },
+    {
+     "tid": "panel-settings",
+     "absent": true
+    },
+    {
+     "exitQuestion": true
+    }
+   ]
+  },
+  {
+   "name": "Dolny pasek nawigatora: siedem przycisków, Działania mówią co jest planowane",
+   "do": [
+    {
+     "click": "shell-menu-toggle"
+    },
+    {
+     "click": "shell-menu-graph"
+    },
+    {
+     "wait": "nav-rows"
+    },
+    {
+     "click": "nav-bar-actions"
+    },
+    {
+     "wait": "nav-actions-note"
+    }
+   ],
+   "expect": [
+    {
+     "tid": "nav-bar",
+     "count": 1
+    },
+    {
+     "tid": "nav-bar-perspective",
+     "count": 1
+    },
+    {
+     "tid": "nav-bar-wider",
+     "count": 1
+    },
+    {
+     "tid": "nav-bar-narrower",
+     "count": 1
+    },
+    {
+     "tid": "nav-bar-deeper",
+     "count": 1
+    },
+    {
+     "tid": "nav-bar-shallower",
+     "count": 1
+    },
+    {
+     "tid": "nav-bar-actions",
+     "count": 1
+    },
+    {
+     "tid": "nav-bar-view",
+     "count": 1
+    },
+    {
+     "tid": "nav-actions-note",
+     "count": 1
+    }
+   ]
+  },
+  {
+   "name": "Perspektywa ▾: lista perspektyw z jądra do zaznaczania",
+   "do": [
+    {
+     "click": "shell-menu-toggle"
+    },
+    {
+     "click": "shell-menu-graph"
+    },
+    {
+     "wait": "nav-rows"
+    },
+    {
+     "click": "nav-bar-perspective"
+    },
+    {
+     "wait": "nav-perspective-menu"
+    }
+   ],
+   "expect": [
+    {
+     "tid": "nav-perspective-menu",
+     "count": 1
+    }
+   ]
+  },
+  {
+   "name": "Karta pozycji ROM (Rozruch): bez nagłówka „Skąd jest wartość”, jedno zdanie zamiast niego",
+   "do": [
+    {
+     "click": "shell-menu-toggle"
+    },
+    {
+     "click": "shell-menu-graph"
+    },
+    {
+     "wait": "nav-rows"
+    },
+    {
+     "click": "nav-row-area:rom"
+    },
+    {
+     "wait": "nav-focus-why"
+    },
+    {
+     "click": "nav-row-card-rom:boot"
+    },
+    {
+     "wait": "card-label"
+    }
+   ],
+   "expect": [
+    {
+     "tid": "node-card",
+     "count": 1
+    },
+    {
+     "tid": "card-chain",
+     "absent": true
+    },
+    {
+     "tid": "card-no-chain",
+     "count": 1
+    }
+   ]
+  }
+ ]
+}
 ```
 
 ## Powłoka czatu — menu ⋮ i panel (paczka P1, `loom/web/src/shell/ChatShell.tsx`, `shell/history.ts`; e2e `chat-first.mjs`, `m1-settings-native.mjs`)
@@ -91,7 +469,7 @@ Warsztat, więc po tych krokach `nav-chat`.
 | wejście | `shell-menu-toggle` → `shell-menu-workshop` → `toggle-nav`, `app-nav` | układ `workshop`; `toggle-nav` (`aria-expanded`, `aria-controls=app-nav`) widoczny tylko na wąskim ekranie |
 | graf (dawny, siłowy) | `nav-graph` → `panel-graph`, `graph-view`, `graph-counts`, `graph-canvas` | ⋮ › Graf = nawigator; ten panel to dawny rysunek encji i tematów rozmowy (napis przycisku: `menu_this_conversation` = „Ta rozmowa w grafie”, od r1:b5) |
 | pamięć | `nav-memory` → `panel-memory`, `memory-new-content`, `memory-add`, `memory-node` | dawny panel notatek pamięci (`/api/memory`); napis `menu_memory` = „Pamięć” |
-| wiedza | `nav-knowledge` (`aria-pressed`) → `panel-knowledge-sheet` (`role=dialog`), `knowledge-workbench` | arkusz; zamknięcie: `.icon-btn` w arkuszu albo `window.__loomBack()` |
+| wiedza | `nav-knowledge` (`aria-pressed`) → w układzie **Warsztat** otwiera się obok czatu (`knowledge-workbench`); `panel-knowledge-sheet` (`role=dialog`) istnieje tylko w układzie **czat** | zamknięcie: `.icon-btn` albo `window.__loomBack()` (poprawka 2026-10-21 wg S2 z emulatora) |
 | wejście do grafu | `nav-graph-entry` → `panel-graph-entry` | dawny ekran wejścia do grafu (e2e `graph-entry-native.mjs`) |
 | zamknięcie | `close-panel` (×) | zamyka panel Warsztatu; nagłówek przestaje być `inert` |
 | powrót do czatu | `nav-chat` → `shell-menu-toggle` | `workshop_back`; układ `chat` zapisany, kolejne kroki zaczynają od powłoki czatu |

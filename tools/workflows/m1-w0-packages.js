@@ -91,7 +91,7 @@ for (let round = 1; round <= 2; round++) {
   const todo = [...survivors, ...nits]
   for (let i = 0; i < todo.length; i += 5) {
     const batch = todo.slice(i, i + 5)
-    const fx = await agent(`You fix review findings in the M1-W0 worktree ${WT} (branch ${BRANCH}). ${RULES}\n\n${DISCIPLINE}\n\nBrief (for context only):\n${BRIEF.slice(0, 2500)}\n\nFindings (verified; nits last), batch ${i / 5 + 1}:\n${JSON.stringify(batch, null, 1)}\n\nFor each: fix, or show with evidence that it is wrong. Rebuild web, rerun the affected tests, regenerate the screenshots/report only if the screens changed, commit. Return per finding fixed/rejected and the test summaries.`, { label: `fix:r${round}:b${i / 5 + 1}`, phase: 'Fix', model: 'fable' })
+    const fx = await agent(`You fix review findings in the M1-W0 worktree ${WT} (branch ${BRANCH}). ${RULES}\n\n${DISCIPLINE}\n\nBrief (for context only):\n${BRIEF.slice(0, 2500)}\n\nFindings (verified; nits last), batch ${i / 5 + 1}:\n${JSON.stringify(batch, null, 1)}\n\nFor each: fix, or show with evidence that it is wrong. Rebuild web, rerun the affected tests, regenerate the screenshots/report only if the screens changed, commit. Return per finding fixed/rejected and the test summaries.\n\nRESUMED RUN: an earlier run of this very step was cut off by a container restart. Its partial, untested edits are committed as a WIP commit at HEAD (git show --stat HEAD): read it, keep what is right, finish and test the batch, do not start over from scratch and do not throw the partial work away blindly.`, { label: `fix:r${round}:b${i / 5 + 1}`, phase: 'Fix', model: 'fable' })
     log(`fix r${round} b${i / 5 + 1}: ${String(fx).slice(0, 300)}`)
   }
   if (!survivors.some(f => f.severity === 'blocking')) { open = []; break }
