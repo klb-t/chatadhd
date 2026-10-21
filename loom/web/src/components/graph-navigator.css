@@ -20,9 +20,11 @@
 .gnav-row-line { display: flex; align-items: stretch; }
 .gnav-row-main { flex: 1; min-width: 0; min-height: 44px; display: flex; flex-direction: column; gap: 3px; padding: 8px 4px 8px 0; text-align: left;
   background: none; border: 0; color: inherit; font: inherit; cursor: pointer; touch-action: manipulation; -webkit-user-select: none; user-select: none; }
-.gnav-row-top { display: flex; align-items: baseline; flex-wrap: wrap; gap: 2px 8px; }   /* a long count (unknown with its reason) wraps under the label */
+.gnav-row-top { display: flex; align-items: baseline; flex-wrap: wrap; gap: 2px 8px; }
 .gnav-label { flex: 1 0 55%; min-width: 0; font-weight: 600; overflow-wrap: anywhere; }
 .gnav-count { font-variant-numeric: tabular-nums; opacity: 0.8; font-size: 13px; margin-left: auto; text-align: right; overflow-wrap: anywhere; }
+/* "nieznane (powód)" is a sentence, not a number: its own full-width line under the label (after the chevron), read from the left */
+.gnav-count-unknown { flex: 1 0 100%; order: 3; margin-left: 0; text-align: left; }
 .gnav-chevron { opacity: 0.6; }
 .gnav-chips { display: flex; flex-wrap: wrap; gap: 4px; }
 .gnav-chip { font-size: 12px; line-height: 18px; padding: 0 7px; border-radius: 9px; border: 1px solid var(--border); opacity: 0.9; white-space: nowrap; }

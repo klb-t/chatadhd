@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useDialogFocus } from "./use-dialog-focus";
 import { api } from "../api";
 import type { Conversation } from "../api/types";
 import type { UserProfileHost } from "../api/onboarding-host";
@@ -52,6 +53,8 @@ export default function ChatShell({ profileHost, convId, onSelect, onCreated, re
   useLayer("shell-menu", menu, () => setMenu(false));
   useLayer("shell-drawer", drawer, () => setDrawer(false));
   useLayer("shell-sheet", sheet !== null, () => setSheet(null));
+  const sheetRef = useRef<HTMLDivElement>(null);
+  useDialogFocus(sheet !== null, sheetRef, "shell-menu-toggle");   // a sheet is a dialog: focus enters it, Back returns it to ⋮
 
   const run = useCallback((action: string) => {
     setMenu(false);
@@ -107,9 +110,10 @@ export default function ChatShell({ profileHost, convId, onSelect, onCreated, re
         </main>
         {sheet && <>
           <div className="drawer-backdrop" onClick={() => setSheet(null)} />
-          <div className="drawer" data-testid={`sheet-${sheet}`}>
+          <div className="drawer" data-testid={`sheet-${sheet}`} ref={sheetRef} role="dialog" aria-modal="true" tabIndex={-1}
+            aria-label={t(sheet === "views" ? "views_title" : "menu_semantic")}>
             <div className="drawer-header"><h2>{t(sheet === "views" ? "views_title" : "menu_semantic")}</h2>
-              <button className="icon-btn" aria-label="×" onClick={() => setSheet(null)}>×</button></div>
+              <button className="icon-btn" aria-label={t("panel_close", { screen: t(sheet === "views" ? "views_title" : "menu_semantic") })} onClick={() => setSheet(null)}>×</button></div>
             <div className="drawer-body">{sheetBody}</div>
           </div>
         </>}

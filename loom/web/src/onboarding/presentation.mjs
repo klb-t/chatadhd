@@ -170,11 +170,13 @@ export function resolvePresentationFeature(presentation, feature, effective) {
   return { feature, locale: presentation.locale, catalog: value.locales[presentation.locale], locales: value.locales };
 }
 /** The same feature in another language (the language of the proposal or the conversation, not of the interface), when its catalog has
- * that language complete; otherwise unchanged. One language per answer: the title, the buttons and the lines of a Polish proposal are Polish. */
-export function featureInLanguage(feature, language) {
+ * that language complete; otherwise unchanged. One language per answer: the title, the buttons and the lines of a Polish proposal are Polish.
+ * With `{ partial: true }` (the shell's screens) the language's catalog is taken as it is, whole or not: a word it lacks is then absent, so the
+ * reader shows that word's id — never the base language's word in a Polish screen. A language the catalog does not have at all stays unchanged. */
+export function featureInLanguage(feature, language, { partial = false } = {}) {
   if (!feature || typeof language !== "string" || language === "" || language === feature.locale || !record(feature.locales)) return feature;
   const catalog = feature.locales[language];
-  if (!record(catalog) || Object.keys(feature.catalog).some(key => typeof catalog[key] !== "string")) return feature;
+  if (!record(catalog) || (!partial && Object.keys(feature.catalog).some(key => typeof catalog[key] !== "string"))) return feature;
   return { ...feature, locale: language, catalog };
 }
 export function featureMessage(feature, id, parameters = {}) {

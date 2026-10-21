@@ -66,7 +66,9 @@ test('the old Memory and Knowledge panels stay reachable in the Workshop', () =>
 
 test('the drawer of a panel opened from the menu carries the menu\'s word, not an English label', () => {
   const ids = /const PANEL_TEXT_IDS[^=]*= (\{[^}]*\})/.exec(appSource)[1];
-  assert.match(ids, /"graph-entry": "menu_graph"/); assert.match(ids, /"user-knowledge": "menu_me"/); assert.match(ids, /graph: "menu_this_conversation"/);
+  // r1:b5: the old graph entry lives in the Workshop as "Wejście do grafu (stare)"; the navigator carries the menu's "Graf".
+  assert.match(ids, /navigator: "menu_graph"/); assert.match(ids, /"graph-entry": "workshop_graph_entry"/);
+  assert.match(ids, /"user-knowledge": "menu_me"/); assert.match(ids, /graph: "menu_this_conversation"/);
 });
 
 test('Graf, Ty and Ta rozmowa open the same navigator at three foci (spec 3.1); conv:current becomes the open conversation, else the root', () => {

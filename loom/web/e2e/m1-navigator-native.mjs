@@ -92,6 +92,22 @@ try {
     await shot("m1-navigator-root-list");   // the root as the owner first sees it: the rows from the top (the map is below the fold)
     await page.getByTestId("nav-rows").waitFor();
     await page.getByTestId("nav-loading").waitFor({ state: "detached" });
+    // r1:b6: the panel is a dialog for a reader of the screen — named by its title, focus inside it as soon as it opens.
+    const drawer = page.getByTestId("panel-navigator");
+    assert.equal(await drawer.getAttribute("role"), "dialog");
+    assert.equal(await drawer.getAttribute("aria-modal"), "true");
+    assert.equal(await drawer.getAttribute("aria-label"), await drawer.locator("h2").first().innerText(), "the dialog is named by its title");
+    assert.ok(await drawer.evaluate(el => el.contains(document.activeElement)), "focus moved into the panel");
+    // r1:b6: "nieznane (powód)" is a line of its own under the label, read from the left; a number stays on the label's line.
+    const unknown = page.locator('[data-testid="nav-count"][data-known="false"]').first();
+    assert.ok(await unknown.count() > 0, "the root has a row whose count is unknown (with its reason)");
+    const geo = await unknown.evaluate(el => { const l = el.parentElement.querySelector(".gnav-label").getBoundingClientRect(), c = el.getBoundingClientRect();
+      return { labelLeft: l.left, labelBottom: l.bottom, countLeft: c.left, countTop: c.top }; });
+    assert.ok(geo.countTop >= geo.labelBottom - 1 && Math.abs(geo.countLeft - geo.labelLeft) < 2, `the unknown count sits under the label: ${JSON.stringify(geo)}`);
+    const known = page.locator('[data-testid="nav-count"][data-known="true"]').first();
+    const geoKnown = await known.evaluate(el => { const l = el.parentElement.querySelector(".gnav-label").getBoundingClientRect(), c = el.getBoundingClientRect();
+      return { labelTop: l.top, countTop: c.top }; });
+    assert.ok(Math.abs(geoKnown.countTop - geoKnown.labelTop) < 6, `a number stays on the label's line: ${JSON.stringify(geoKnown)}`);
     assert.equal(await nav().getAttribute("data-focus"), "");
     assert.equal(await page.getByTestId("nav-crumb-0").innerText(), words.root);
     const rows = await rowsOf();
@@ -140,6 +156,8 @@ try {
     const first = rom.children[0].label.slice(0, 3);
     const expected = await navigate({ focus: "area:rom", query: first });
     await page.getByTestId("nav-search-toggle").tap();
+    const searchName = await page.getByTestId("nav-search-input").getAttribute("aria-label");   // r1:b6: the field is named in words, not only by its placeholder
+    assert.ok(searchName && searchName !== "search", `the search field has a name: ${searchName}`);
     await page.getByTestId("nav-search-input").fill(first);
     await page.waitForFunction((n) => document.querySelectorAll('[data-testid="nav-rows"] li').length === n, expected.children.length);
     assert.deepEqual((await rowsOf()).map(r => r.address), expected.children.map(c => c.address));
@@ -467,6 +485,8 @@ try {
     assert.equal(await page.getByTestId("nav-crumb-1").count(), 0);
     assert.equal(await back(), true);
     await nav().waitFor({ state: "detached" });
+    // r1:b6: focus goes back to the ⋮ button the panel was opened from (the menu item is gone with its menu).
+    assert.equal(await page.evaluate(() => document.activeElement?.getAttribute("data-testid")), "shell-menu-toggle", "focus returned to ⋮");
     assert.equal(await back(), false);
     assert.deepEqual(errors, [], "no page errors");
   });

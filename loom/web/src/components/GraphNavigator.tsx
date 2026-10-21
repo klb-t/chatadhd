@@ -146,7 +146,7 @@ export default function GraphNavigator({ profileHost, convId, language, initialF
         <button className="gnav-search-toggle" data-testid="nav-search-toggle" aria-expanded={searchOpen} aria-label={searchOpen ? t("search.close") : t("search")}
           onClick={() => { setSearchOpen(v => !v); if (searchOpen) setDraft(""); }}>⌕</button>
       </div>
-      {searchOpen && <input className="gnav-search" data-testid="nav-search-input" type="search" autoFocus value={draft}
+      {searchOpen && <input className="gnav-search" data-testid="nav-search-input" type="search" autoFocus value={draft} aria-label={t("search")}
         placeholder={t("query.placeholder")} onChange={e => setDraft(e.target.value)} />}
       {result && focus && result.focus.why && <p className="gnav-why gnav-focus-why" data-testid="nav-focus-why">{result.focus.why}</p>}
 
@@ -164,7 +164,8 @@ export default function GraphNavigator({ profileHost, convId, language, initialF
                   onClick={() => row.has_children ? drill(row) : openCard(row)}>
                   <span className="gnav-row-top">
                     <span className="gnav-label">{row.label}</span>
-                    {count && <span className="gnav-count" data-testid="nav-count">{count}</span>}
+                    {count && <span className={`gnav-count${typeof row.count === "number" ? "" : " gnav-count-unknown"}`} data-testid="nav-count"
+                      data-known={typeof row.count === "number"}>{count}</span>}
                     {row.has_children && <span className="gnav-chevron" aria-hidden>›</span>}
                   </span>
                   <span className="gnav-chips">

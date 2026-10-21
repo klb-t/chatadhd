@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useDialogFocus } from "./shell/use-dialog-focus";
 import ApplicationProfiles, { profileStyle } from "./components/ApplicationProfiles";
 import { profileAvailability, registerProfile, type ApplicationProfile } from "./profiles/runtime";
 import ConversationList from "./components/ConversationList";
@@ -199,13 +200,17 @@ export default function App() {
   // knowledge view is docked beside the chat, not an overlay, so only the sheet of the chat layout is a layer.
   useLayer("panel", activePanel !== null, () => setActivePanel(null));
   useLayer("knowledge-sheet", knowledgeOpen && layout === "chat", () => setKnowledgeOpen(false));
+  // Each overlay is a dialog for a reader of the screen: focus enters it when it opens and returns to the ⋮ button when it closes.
+  const panelRef = useRef<HTMLDivElement>(null), knowledgeRef = useRef<HTMLDivElement>(null);
+  useDialogFocus(activePanel !== null, panelRef, "shell-menu-toggle");
+  useDialogFocus(knowledgeOpen && layout === "chat", knowledgeRef, "shell-menu-toggle");
 
   const panelTitle = activePanel ? (PANEL_TEXT_IDS[activePanel] ? t(PANEL_TEXT_IDS[activePanel]!) : PANEL_LABELS[activePanel]) : "";
   const panels = activePanel && (
 
           <>
             <div className="drawer-backdrop" onClick={closePanel} data-testid="drawer-backdrop" />
-            <div className="drawer" data-testid={`panel-${activePanel}`}>
+            <div className="drawer" data-testid={`panel-${activePanel}`} ref={panelRef} role="dialog" aria-modal="true" aria-label={panelTitle} tabIndex={-1}>
               <div className="drawer-header">
                 <h2>{panelTitle}</h2>
                 <button className="icon-btn" aria-label={t("panel_close", { screen: panelTitle })} onClick={closePanel} data-testid="close-panel">
@@ -322,8 +327,8 @@ export default function App() {
       {panels}
       {knowledgeOpen && <>
         <div className="drawer-backdrop" onClick={() => setKnowledgeOpen(false)} />
-        <div className="drawer" style={{ width: "min(960px, 100vw)" }} data-testid="panel-knowledge-sheet">
-          <div className="drawer-header"><h2>{t("menu_knowledge")}</h2><button className="icon-btn" aria-label="×" onClick={() => setKnowledgeOpen(false)}>×</button></div>
+        <div className="drawer" style={{ width: "min(960px, 100vw)" }} data-testid="panel-knowledge-sheet" ref={knowledgeRef} role="dialog" aria-modal="true" aria-label={t("menu_knowledge")} tabIndex={-1}>
+          <div className="drawer-header"><h2>{t("menu_knowledge")}</h2><button className="icon-btn" aria-label={t("panel_close", { screen: t("menu_knowledge") })} onClick={() => setKnowledgeOpen(false)}>×</button></div>
           <div className="drawer-body"><KnowledgeWorkbench profileHost={userProfileHost} onClose={() => setKnowledgeOpen(false)} onDataChanged={() => setConvRefreshKey((key) => key + 1)} /></div>
         </div>
       </>}
