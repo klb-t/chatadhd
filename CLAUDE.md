@@ -455,6 +455,11 @@ firewall), returns caller-freed heap JSON strings, and is covered by
 `test_abi_compat.py` so `libloom.so` never exports more or less than
 `loom.h` declares.
 
+**Shared machine, several agents:** never stop test servers by name (`pkill loom-server`, `kill $(pgrep -x loom-server)`,
+`pkill loom_tests`) — that kills the servers of every other agent and gate on the machine (measured 21.10: it made a
+neighbour's `first-steps-ui` run fail at random). Record the pid you started, or match your own port
+(`pkill -f "loom-server --port N"`), and kill only that.
+
 **C++ pitfall that only AddressSanitizer catches** (CI found it after the asan preset had been broken for
 days): never range-for over `.at()` / `.value()` / `operator[]` of a by-value temporary, e.g.
 `for (auto& a : unwrap(f()).at("k"))` — only the last reference is lifetime-extended, the temporary dies
