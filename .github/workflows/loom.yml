@@ -236,6 +236,8 @@ jobs:
           npm run test:context-plan
           npm run test:application-profiles
           npm run test:imported-message-content-state
+          npm run test:shell-history
+          npm run test:shell-menu
           npm run test:composer-menu
           npx playwright install --with-deps chromium
           npm run e2e

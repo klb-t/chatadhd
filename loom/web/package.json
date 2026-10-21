@@ -41,6 +41,8 @@
     "test:semantic-queue": "node tests/conversation-view/semantic-queue.test.mjs",
     "test:semantic-question": "node tests/conversation-view/semantic-question.test.mjs",
     "test:shell": "node tests/shell/shell.test.mjs",
+    "test:shell-history": "node tests/shell/history.test.mjs",
+    "test:shell-menu": "node tests/shell/menu.test.mjs",
     "test:graph-labels": "node tests/graph-labels/graph-labels.test.mjs",
     "test:chat-first": "node e2e/chat-first.mjs",
     "test:composer-menu": "node tests/shell/composer-menu.test.mjs",

@@ -7,7 +7,8 @@ import SemanticStatus from "../components/SemanticStatus";
 import SemanticDot from "./SemanticDot";
 import Disclosure from "./Disclosure";
 import { useShellText } from "./text";
-import layouts from "./data/layouts.json";
+import { CHAT_MENU, menuEntries, parseMenuAction } from "./menu";
+import { useLayer } from "./use-layer";
 import "./shell.css";
 
 export interface ShellActions {
@@ -34,7 +35,6 @@ function bridge(): { openConnection?: () => void } | undefined {
 /** The default view (R56): the full-screen standard chat app. Menu entries come from data (shell/data/layouts.json, profile Czat). */
 export default function ChatShell({ profileHost, convId, onSelect, onCreated, refreshKey, onMessagesChanged, actions, planned }: Props) {
   const t = useShellText();
-  const layout = layouts.layouts.czat;
   const [drawer, setDrawer] = useState(false);
   const [menu, setMenu] = useState(false);
   const [sheet, setSheet] = useState<Sheet>(null);
@@ -46,15 +46,22 @@ export default function ChatShell({ profileHost, convId, onSelect, onCreated, re
   useEffect(() => { setTitle(list.find(c => c.id === convId)?.title ?? ""); }, [list, convId]);
   const shown = useMemo(() => list.filter(c => (c.title || "").toLowerCase().includes(query.toLowerCase())), [list, query]);
 
+  // One history entry per open layer: Android Back / the browser's Back / Escape close the ⋮ menu, the conversation drawer and the sheet.
+  useLayer("shell-menu", menu, () => setMenu(false));
+  useLayer("shell-drawer", drawer, () => setDrawer(false));
+  useLayer("shell-sheet", sheet !== null, () => setSheet(null));
+
   const run = useCallback((action: string) => {
     setMenu(false);
-    if (action.startsWith("panel:")) actions.panel(action.slice(6));
-    else if (action === "knowledge") actions.knowledge();
-    else if (action.startsWith("sheet:")) setSheet(action.slice(6) as Sheet);
-    else if (action === "layout:workshop") actions.workshop();
-    else if (action === "connection") bridge()?.openConnection?.();
+    const target = parseMenuAction(action);
+    if (target.kind === "panel") actions.panel(target.panel);
+    else if (target.kind === "knowledge") actions.knowledge();
+    else if (target.kind === "sheet") setSheet(target.sheet);
+    else if (target.kind === "workshop") actions.workshop();
+    else if (target.kind === "connection") bridge()?.openConnection?.();
+    else console.debug("shell menu: no handler for the action", target.action);
   }, [actions]);
-  const entries = layout.menu.filter(e => !("when" in e) || (e.when === "android_shell" && typeof bridge()?.openConnection === "function"));
+  const entries = menuEntries(CHAT_MENU, { androidShell: typeof bridge()?.openConnection === "function" });
 
   let sheetBody: ReactNode = null;
   if (sheet === "views") sheetBody = <>

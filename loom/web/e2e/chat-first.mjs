@@ -123,7 +123,10 @@ try {
 
     await step(`${name}: the overflow menu opens Warsztat and the old workbench appears`, async () => {
       await page.getByTestId("shell-menu-toggle").click();
-      for (const id of ["settings", "graph", "memory", "knowledge", "views", "workshop"]) await page.getByTestId(`shell-menu-${id}`).waitFor();
+      for (const id of ["graph", "settings", "me", "this_conversation", "views", "semantic", "workshop"]) await page.getByTestId(`shell-menu-${id}`).waitFor();
+      for (const id of ["memory", "knowledge"]) assert.equal(await page.getByTestId(`shell-menu-${id}`).count(), 0, `no ${id} in the menu (M1-W0)`);
+      const rows = await page.getByRole("menuitem").evaluateAll(els => els.map(el => el.dataset.testid.replace("shell-menu-", "")));
+      assert.deepEqual(rows.slice(0, 4), ["graph", "settings", "me", "this_conversation"]);
       await png("05-menu");
       await page.getByTestId("shell-menu-workshop").click();
       await page.getByTestId("add-profile-view").waitFor();
@@ -133,11 +136,54 @@ try {
       await page.getByTestId("chat-shell").waitFor();
     });
 
+    await step(`${name}: Back and Escape close the layers in order; at the root Back falls through (window.__loomBack, popstate)`, async () => {
+      const back = () => page.evaluate(() => window.__loomBack());
+      const layers = () => page.evaluate(() => window.__loomLayers.ids);
+      assert.equal(await back(), false, "nothing open: Back is not ours");
+      // two layers: the ⋮ menu, then the conversation drawer opened over it (the header stays tappable); Back closes the drawer first
+      await page.getByTestId("shell-menu-toggle").click();
+      await page.getByTestId("shell-menu").waitFor();
+      await page.getByTestId("shell-drawer-toggle").click();
+      await page.getByTestId("shell-drawer").waitFor();
+      assert.deepEqual(await layers(), ["shell-menu", "shell-drawer"]);
+      assert.equal(await back(), true);
+      await page.getByTestId("shell-drawer").waitFor({ state: "detached" });
+      await page.getByTestId("shell-menu").waitFor();
+      assert.equal(await back(), true);
+      await page.getByTestId("shell-menu").waitFor({ state: "detached" });
+      assert.equal(await back(), false, "the root again");
+      // a panel opened from the menu is one layer (the menu's own entry is reused); the browser's Back closes it
+      await page.getByTestId("shell-menu-toggle").click();
+      await page.getByTestId("shell-menu-settings").click();
+      await page.getByTestId("panel-settings").waitFor();
+      assert.deepEqual(await layers(), ["panel"]);
+      await page.waitForTimeout(150);
+      assert.equal(await page.getByTestId("panel-settings").isVisible(), true, "the panel is not undone by the menu's history entry");
+      await page.goBack();
+      await page.getByTestId("panel-settings").waitFor({ state: "detached" });
+      assert.deepEqual(await layers(), []);
+      // Escape does the same as Back
+      await page.getByTestId("shell-menu-toggle").click();
+      await page.getByTestId("shell-menu-views").click();
+      await page.getByTestId("sheet-views").waitFor();
+      await page.keyboard.press("Escape");
+      await page.getByTestId("sheet-views").waitFor({ state: "detached" });
+      // closing by the × button gives the entry back: Back then does not land on a closed layer
+      await page.getByTestId("shell-menu-toggle").click();
+      await page.getByTestId("shell-menu-this_conversation").click();
+      await page.getByTestId("panel-graph").waitFor();
+      await page.getByTestId("close-panel").click();
+      await page.getByTestId("panel-graph").waitFor({ state: "detached" });
+      await page.waitForFunction(() => window.__loomLayers.size === 0 && (history.state?.loomDepth ?? 0) === 0);
+      assert.equal(await back(), false);
+    });
+
     await step(`${name}: Polish labels follow the setting`, async () => {
       await api("PUT", "/api/config/ui_language", { value: "pl" });
       await page.reload({ waitUntil: "domcontentloaded" });
       await page.getByTestId("shell-menu-toggle").click();
       assert.match(await page.getByTestId("shell-menu-workshop").innerText(), /Warsztat/);
+      assert.deepEqual(await page.getByRole("menuitem").allInnerTexts(), ["Graf", "Ustawienia", "Ty", "Ta rozmowa", "Widoki i okna", "Analiza w tle", "Warsztat (narzędzia zaawansowane)"]);
       await api("PUT", "/api/config/ui_language", { value: "auto" });
     });
     await context.close();

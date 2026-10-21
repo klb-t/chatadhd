@@ -31,6 +31,7 @@ import { shellLanguage } from "./shell/language";
 import { cssVariables, mergeData } from "./shell/animation";
 import { glyphVariables } from "./shell/disclosure-glyphs";
 import type { PanelId } from "./shell/panels";
+import { useLayer } from "./shell/use-layer";
 
 type Theme = "dark" | "amoled";
 // The panels are one list (shell/panels.ts): the + menu checks the panel an entry names against it.
@@ -69,7 +70,8 @@ const PANEL_LABELS: Record<PanelId, string> = {
 };
 
 // Panels whose name comes from the shell words (data, PL/EN by ui_language); the others keep their English label.
-const PANEL_TEXT_IDS: Partial<Record<PanelId, string>> = { graph: "menu_graph", perspectives: "perspectives_title", "view-engine": "view_engine_title" };
+// The titles match the labels of the ⋮ menu (menu_graph opens the entry to the graph, menu_this_conversation the graph of this conversation, menu_me what the app knows about you).
+const PANEL_TEXT_IDS: Partial<Record<PanelId, string>> = { "graph-entry": "menu_graph", graph: "menu_this_conversation", "user-knowledge": "menu_me", perspectives: "perspectives_title", "view-engine": "view_engine_title" };
 
 export default function App() {
   const account = useAccountSession();
@@ -177,6 +179,11 @@ export default function App() {
   const t = useMemo(() => shellTranslator(uiShell.feature, uiLanguage), [uiShell.feature, uiLanguage]);
   const installedAdapters = useMemo(() => createLoomProfileRegistry(api, profileUi), [profileUi]);
   const installedProfile = useMemo(() => primaryProfile ? registerProfile(installedAdapters, primaryProfile) : null, [installedAdapters, primaryProfile]);
+
+  // Back (Android, browser) and Escape close the panel drawer and the knowledge sheet before anything else; in the workshop the
+  // knowledge view is docked beside the chat, not an overlay, so only the sheet of the chat layout is a layer.
+  useLayer("panel", activePanel !== null, () => setActivePanel(null));
+  useLayer("knowledge-sheet", knowledgeOpen && layout === "chat", () => setKnowledgeOpen(false));
 
   const panels = activePanel && (
 
