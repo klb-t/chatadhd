@@ -16,7 +16,7 @@
 import type { InteractionBindings, ViewEngineList, ViewModel, ViewModelRequest } from "./view-model";
 import type { PerspectiveRequest, PerspectivesList, PerspectivesSideBySide, ScopeResolution, ScopeResolveRequest } from "./graph-views";
 import type { SettingsFieldsDoc } from "../settings/field-meta";
-import type { ActionsApi, ClientBlob, LoomApi, ContextSelectRequest, SearchOptions, SearchResult, StreamHandlers, Unsubscribe } from "./loom-api";
+import type { ActionsApi, AgentApi, ClientBlob, LoomApi, ContextSelectRequest, SearchOptions, SearchResult, StreamHandlers, Unsubscribe } from "./loom-api";
 import type {
   ChatChunk,
   ChatRequest,
@@ -94,6 +94,11 @@ export class LoomJniApi implements LoomApi {
     catalogPreview: (unit_id) => this.callAsync("catalog_preview", { unit_id }),
     catalogOverride: (override) => this.callAsync("catalog_override", { override }),
     catalogImport: (options) => this.background("catalog_import", { options }),
+  };
+  // R38: the agent (port agent, action run) in the Android shell. It calls a model, so it runs off the page's thread
+  // (startStream -> the bridge executor) and the page stays responsive; a stopped run is resumed the same way.
+  readonly agent: AgentApi = {
+    run: (request) => this.background("invoke", { port: "agent", action: "run", request }),
   };
   // R54: running actions through the one entry point (loom_invoke, ports actions and chat).
   readonly actions: ActionsApi = {
