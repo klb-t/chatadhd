@@ -1,4 +1,4 @@
-# Kolejka S1 — stan 2026-10-21 04:45 UTC
+# Kolejka S1 — stan 2026-10-21 05:15 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
@@ -39,12 +39,10 @@ wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu
   **Znane luki:** zaznaczenie częściowe (część wiadomości rozmowy) eksportuje całą rozmowę, jeśli była w pakiecie;
   Ponów i zwykła edycja seryjna nie mają jeszcze zdania po polsku; lista kluczy w zdaniu ograniczona presetem 6.
 
-## X-Port Android: scalenie i dalsze poprawki
-- **S2: emulator pixel_5/pixel_6 18/18, wszystkie poprawki z paczki D widoczne** (przebieg 39543420567). Zielone.
-  Przed scaleniem `claude/xport-android` do `main` sprawdzam, czy moduł `:xport` w `loom/android/settings.gradle.kts`
-  i wtyczka Chaquopy w `build.gradle.kts` nie psują głównego APK czatu: `package.yml` przebieg 39545189617
-  (tylko Android) — jeśli zielony, scalić (kroki w zaplanowanym zadaniu), jeśli czerwony, wyprowadzić moduł
-  `xport` z głównego builda Gradle.
+## X-Port Android: scalony na `main` (05:15 UTC)
+- `claude/xport-android` wszedł na `main` po: emulator S2 18/18 (przebieg 39543420567), budowanie samego APK X-Port
+  (39543074478), `package.yml` Android z modułem `:xport` (39545189617, success), 290 testów silnika. CI `loom.yml` na
+  `main` po tym pushu: sprawdzić (zaplanowane jest sprawdzenie przebiegu 248 ok. 05:44, ten nowy przebieg dojdzie).
 - **Paczka E (drobiazgi UX od S2, do zrobienia po scaleniu):** podwójna interpunkcja „…, raw_pointer, ….” w zdaniach;
   wewnętrzne nazwy pól (raw_pointer, created_utc…) zastąpić polskimi etykietami z danych; dopisać „N wiadomości
   bez zmian"; nazwy `text/0001-<hash>.md` → z tytułem (placeholder `{conversation.name}`, DECYZJA WŁAŚCICIELA:
