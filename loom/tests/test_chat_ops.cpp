@@ -523,6 +523,7 @@ TEST_SUITE("chat_ops") {
     std::vector<std::string> ids = actions::chat_op_ids();
     ids.push_back("import.file");
     ids.push_back("actions.status");
+    const Json direct_actions = unwrap(RuntimeProfile::builtin("intent_routing")).values().at("execution").at("direct");
     int proposals = 0;
     for (const char* lang : {"pl", "en"}) {
       Fixture f;  // one conversation per language: a sentence that is a command opens a proposal, the next one does not answer it
@@ -534,8 +535,12 @@ TEST_SUITE("chat_ops") {
         const Json p = f.meta(out).at("action_proposal");
         const std::string reached = p.at("action");
         CHECK_MESSAGE((reached == id || (id == "import.run" && reached == "import.file")), id << " (" << lang << "): \"" << text << "\" reached " << reached);
-        if (id == "help.can_do" || id == "help.how_to") {
-          CHECK_MESSAGE(p.at("status") == "executed", id << ": an answer to a question runs at once");
+        // the actions that run at once whatever the setting says are data (intent_routing, execution.direct): the answers about the application and,
+        // since M1-K1b, the change of the next message's context and the record of what was sent
+        bool direct = false;
+        for (const auto& d : direct_actions) direct = direct || d == id;
+        if (direct) {
+          CHECK_MESSAGE(p.at("status") == "executed", id << ": it runs at once (execution.direct)");
           continue;
         }
         if (id == "import.file" && text.find('/') == std::string::npos) {

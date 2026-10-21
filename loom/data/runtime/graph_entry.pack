@@ -3425,6 +3425,8 @@
           "POST /api/client/blob/upload",
           "POST /api/client/capabilities",
           "POST /api/client/declare",
+          "POST /api/context/modify",
+          "POST /api/context/receipt",
           "POST /api/context/select",
           "POST /api/conversations",
           "POST /api/conversations/:id/view",
