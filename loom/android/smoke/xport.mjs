@@ -219,6 +219,86 @@ try {
       return report;
     });
   }
+  // ---- S1's acceptance asks (2026-10-21): the second recipe, and the per-conversation folder export ----
+  const openTab = async (tab) => {
+    let nodes = dump(); let t = find(nodes, n => n.text === tab && /Button/.test(n.class || ""));
+    if (!t) throw new Error(`no tab "${tab}"`);
+    tap(t); await sleep(1200);
+    for (let k = 0; k < 12; k++) adb("shell", "input", "swipe", "500", "700", "500", "1700", "120");   // back to the top
+    await sleep(500);
+  };
+  const scrollFind = async (pred, what, max = 10) => {
+    for (let k = 0; k <= max; k++) {
+      const nodes = dump(); const n = find(nodes, pred);
+      if (n) return n;
+      adb("shell", "input", "swipe", "500", "1500", "500", "900", "250"); await sleep(600);
+    }
+    throw new Error(`not found after scrolling: ${what}; screen: ${seen(dump(), 40)}`);
+  };
+  const settle = () => until("the panel to settle", () => { const n = dump(); return !n.some(x => /^(Liczę|Ładuję|Pracuję|Stosuję|Eksportuję)/.test(x.text || "")) && n; }, 90, 1000);
+  const tapText = async (re, what) => { const n = await scrollFind(x => re.test(x.text || ""), what); tap(n); await sleep(800); return n.text; };
+
+  await check("Edycje: the recipe list (a drop-down) and the recipe 'Zostaw w metadanych tylko znaczniki czasu': Podgląd, Zastosuj, Cofnij", async () => {
+    await openTab("Edycje");
+    const spinner = await scrollFind(n => /Spinner/.test(n.class || "") && n.package === PKG, "the recipe drop-down");
+    tap(spinner); await sleep(1000);
+    const items = dump().filter(n => /CheckedTextView|TextView/.test(n.class || "") && (n.text || "").trim() && n.cx !== undefined && n.t >= 0);
+    const listed = [...new Set(items.map(n => n.text.trim()))];
+    const pickIt = find(dump(), n => /Zostaw w metadanych/.test(n.text || ""));
+    if (!pickIt) throw new Error("the drop-down does not list 'Zostaw w metadanych…'; it shows: " + listed.join(" | "));
+    tap(pickIt); await sleep(1000);
+    shot("recipe-chosen");
+    const chosen = seen(dump(), 60);
+    const out = [`drop-down: ${listed.join(" | ")}`, `after choosing: ${chosen}`];
+    for (const [btn, label] of [[/^Podgląd przepisu$/, "Podgląd"], [/^Zastosuj przepis$/, "Zastosuj"], [/^Cofnij przepis$/, "Cofnij"]]) {
+      await tapText(btn, label);
+      const after = await settle();
+      shot("recipe-" + label);
+      const err = texts(after).find(x => /^Błąd/.test(x));
+      out.push(`${label}: ${seen(after, 60)}`);
+      if (err) throw new Error(out.join(" || "));
+    }
+    return out.join(" || ");
+  });
+
+  await check("Export: Wybór 'Wszystko' -> Eksport -> profile 'Wyciągnij spod zagnieżdżenia' -> 'Eksportuj zaznaczone (zip)' -> system save -> result", async () => {
+    await openTab("Wybór");
+    await tapText(/^Wszystko$/, "the 'Wszystko' button");
+    const sel = await settle(); shot("select-all");
+    const selection = seen(sel, 30);
+    await openTab("Eksport");
+    const profile = await tapText(/^Wyciągnij spod zagnieżdżenia/, "the profile 'Wyciągnij spod zagnieżdżenia'");
+    shot("export-profile");
+    await tapText(/^Eksportuj zaznaczone/, "the 'Eksportuj zaznaczone (zip)' button");
+    // the system save dialog (ACTION_CREATE_DOCUMENT): Save into Downloads
+    let saved = false, dialogText = "";
+    for (let i = 0; i < 40 && !saved; i++) {
+      await sleep(1000);
+      const nodes = dump(); if (dismissSystemDialogs(nodes)) continue;
+      if (!nodes.some(n => /documentsui/i.test(n.package || ""))) { if (i > 3) break; continue; }
+      dialogText = texts(nodes).slice(0, 30).join(" | ");
+      const save = find(nodes, n => /Button/.test(n.class || "") && /^(save|zapisz)$/i.test(n.text || ""));
+      if (save) { shot("save-dialog"); tap(save); saved = true; break; }
+      const dl = find(nodes, n => /^downloads?$/i.test(n.text || "") && !/toolbar/i.test(n["resource-id"] || ""));
+      if (dl && i % 3 === 0) tap(dl);
+      const roots = find(nodes, n => /show roots/i.test(n["content-desc"] || ""));
+      if (!dl && roots && i % 3 === 1) tap(roots);
+    }
+    if (!saved) throw new Error(`no Save in the system dialog; it showed: ${dialogText || "(no dialog)"}; app: ${seen(dump(), 30)}`);
+    const after = await until("the export result", () => { const n = dump(); return n.some(x => x.package === PKG) && !n.some(x => /^Eksportuję/.test(x.text || "")) && n; }, 120, 1500);
+    shot("export-done");
+    const err = texts(after).find(x => /^Błąd/.test(x));
+    const files = (() => { try { return adb("shell", "ls", "-la", "/sdcard/Download").split("\n").filter(l => /\.zip/.test(l)).join(" ; "); } catch { return ""; } })();
+    let listing = "";
+    try {
+      const zip = adb("shell", "ls", "-t", "/sdcard/Download").split("\n").map(x => x.trim()).find(x => x.endsWith(".zip"));
+      if (zip) { execFileSync("adb", ["pull", `/sdcard/Download/${zip}`, path.join(OUT, "export.zip")], { timeout: 60000 });
+        listing = execFileSync("unzip", ["-l", path.join(OUT, "export.zip")], { encoding: "utf8" }).split("\n").slice(3, -3).map(l => l.trim().split(/\s+/).slice(3).join(" ")).filter(Boolean).slice(0, 60).join(" ; "); }
+    } catch (e) { listing = "could not list the zip: " + e.message; }
+    const report = `selection: ${selection} || profile: ${profile} || app after save: ${seen(after, 40)} || Download: ${files} || inside the zip: ${listing}`;
+    if (err) throw new Error(report);
+    return report;
+  });
   await check("the process never crashed", async () => {
     const c = crashes();
     if (c.length) throw new Error(c.slice(0, 5).join(" / "));
