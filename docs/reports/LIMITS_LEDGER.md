@@ -34,6 +34,7 @@ bez commita przepada, kontekst trzeba cache'ować od nowa), albo zostawić je ni
 | 02:00 | 48 % | 13 % | 3 (W0 P1–P4 gotowe, P5 w toku; poprawka logowania; P39 synteza) + S1 | linia: 43,7 %; 01:28→02:00: +12 pkt w 33 min ≈ 0,37 pkt/min (lekko nad linią); tydzień 13 % przy linii 10,7 % |
 | 02:18 | 50 % | 13 % | 2 (W0 P5 w toku; poprawka logowania) + paczki X-Port (2 po kolei, zakończone) + S1 | linia: 49,3 %; 02:00→02:18: +2 pkt w 18 min ≈ 0,11 pkt/min — poniżej potrzebnych 0,33; wolne miejsce w oknie, brak gotowej paczki bez kompilacji jądra (dysk 7 GB, drugi build jądra się nie mieści) |
 | 03:07 | 54 % | 14–15 % | 1–2 (W0 P7 w toku; poprawka logowania w przeglądzie) + S1 | linia 5 h: 65,7 % (jesteśmy 12 pkt pod); 02:18→03:07: +4 pkt w 49 min ≈ 0,08 pkt/min; tydzień: linia 11,4 %, jesteśmy 3–4 pkt nad |
+| 06:08 | 12 % (nowe okno 04:50–09:50; linia 26 %) | **22 %** | 1 (W0 krok naprawczy r1:b3) + S1; wcześniej 2–3 | tydzień: linia 13,2 % (22 h z 168 h), jesteśmy 9 pkt NAD; 03:07→06:08: +7 pkt w 3 h ≈ 2,3 pkt/h ≈ 56 %/dobę (linia: 14,3 %/dobę); średnio od resetu tygodnia: 24 %/dobę |
 
 **Odczyt z 00:14:** od 00:10 do 00:14 przybyły 3 punkty w około 4 minuty (≈ 0,8 pkt/min),
 od 00:05 średnio ≈ 0,6 pkt/min. Do reszty okna (276 min) zostaje 89 punktów, czyli stać nas
@@ -58,3 +59,13 @@ jest 3–4 punkty NAD swoją linią (15 % po 19 h z 168 h = 11,4 %). Skoro jedno
 ≈ 25 % tygodnia, dosypywanie agentów tylko po to, by „wypełnić” okno 5 h, zjadałoby tydzień, który
 ma starczyć do 27.10 08:00 UTC. Reguła na teraz: nie startuję pracy spekulatywnej (np. projekt P37),
 tylko to, co jest w kolejce i widoczne dla właściciela. Linia tygodniowa to ≈ 14,3 % na dobę.
+
+**Stan z 06:08 — tydzień jest daleko nad linią.** Przy tempie z ostatnich 3 godzin tydzień (100 %) skończyłby się
+ok. czw. 22.10 15:30 UTC, przy średnim tempie od resetu ok. 28 godzin później; reset dopiero wt. 27.10 08:00 UTC.
+**Skąd zużycie (S1 od 00:00 UTC, zmierzone z zapisów):** sesja główna 217 ruchów, 82 mln odczytów z cache, średnio
+377 tys. kontekstu na ruch (teraz 587 tys.); 51 agentów workflow 1613 ruchów, 227 mln odczytów i 14,8 mln zapisów
+do cache. W „równoważnikach odczytu” (zapis ≈ 20 × odczyt, wagi z cen API — założenie) sesja główna ≈ 15 %,
+agenci ≈ 85 % zużycia S1. Konto jest wspólne z S2 (od 12.10: S1 ≈ 1934 USD wg cen API, S2 ≈ 429 USD, sesja
+„Prompt review i optymalizacja” ≈ 397 USD), więc nie rozdzielę udziału w oknie, tylko w tokenach.
+**Decyzja należy do właściciela** (pytanie w czacie): zostawić X % tygodnia na jego czaty i resztę spalić (preset 5 %),
+czy trzymać linię tygodniową.
