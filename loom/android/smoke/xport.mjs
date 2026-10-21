@@ -149,9 +149,19 @@ try {
   await check("adds a third source: a Gemini takeout.zip", async () => { const r = await addSource("xport-gemini-takeout.zip"); shot("gemini"); return r; });
   for (const tab of ["Przeglądarka", "Wybór", "Edycje", "Operacje", "Eksport", "Przegląd"]) {
     await check(`tab ${tab} opens without an error`, async () => {
-      const nodes = dump(); dismissSystemDialogs(nodes);
-      const t = find(nodes, n => n.text === tab && /Button/.test(n.class || ""));
-      if (!t) throw new Error(`no tab button "${tab}" on screen`);
+      // the tabs sit in a horizontal scroll: a tab off the screen edge is brought in by swiping the row
+      let nodes = dump(); dismissSystemDialogs(nodes);
+      let t = find(nodes, n => n.text === tab && /Button/.test(n.class || ""));
+      for (let k = 0; !t && k < 4; k++) {
+        const row = find(nodes, n => /Button/.test(n.class || "") && ["Przegląd", "Przeglądarka", "Wybór", "Edycje", "Operacje", "Eksport"].includes(n.text));
+        if (!row) break;
+        const w = Number(adb("shell", "wm", "size").match(/(\d+)x\d+/)?.[1] || 1080);
+        const [from, to] = tab === "Przegląd" ? [w * 0.2, w * 0.9] : [w * 0.9, w * 0.2];
+        adb("shell", "input", "swipe", String(Math.round(from)), String(row.cy), String(Math.round(to)), String(row.cy), "300");
+        await sleep(700); nodes = dump();
+        t = find(nodes, n => n.text === tab && /Button/.test(n.class || ""));
+      }
+      if (!t) throw new Error(`no tab button "${tab}" on screen (also after swiping the tab row)`);
       tap(t);
       const after = await until(`the ${tab} panel`, () => { const n = dump(); return inApp(n) && !n.some(x => /^(Ładuję|Liczę|Pracuję)/.test(x.text || "")) && n; }, 60, 1000);
       shot("tab-" + tab);
