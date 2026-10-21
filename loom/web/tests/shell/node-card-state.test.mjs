@@ -41,6 +41,36 @@ test('the chain keeps every level, highlights the supplier and says "bez projekt
   assert.equal(rows.find(r => r.level === 'turn').active, false);
 });
 
+test('r2:b1: no chain → no rows (the card then says card.no_value, no open "Skąd jest wartość" header); a profile slot names the interview', () => {
+  assert.deepEqual(card.chainRows(undefined, t), []);
+  assert.deepEqual(card.chainRows([], t, { chip: { id: 'rom', label: 'Preset (ROM)' } }), []);
+  for (const id of ['card.no_value', 'card.profile.answer_in_interview', 'card.profile.answered_in_interview']) assert.ok(typeof pl[id] === 'string' && pl[id].length > 0, id);
+  assert.ok(pl['card.profile.answer_in_interview'].includes('Warsztat'), 'the sentence names the path the owner taps');
+});
+
+test('r2:b1: the kernel\'s real card of temperature (captured by e2e/m1-navigator-native.mjs): the chip, the chain and Ustawienia give ONE answer to "moje czy preset?"', async () => {
+  const real = JSON.parse(await readFile(new URL('./fixtures/graph-card-temperature.json', import.meta.url), 'utf8'));
+  assert.equal(real.provenance.chip.same_as_preset, true, 'the fixture is the untouched install: the person value is the preset copied into config.json');
+  assert.equal(real.provenance.chip.label, pl['chip.same_as_preset'], 'the chip says "preset zapisany w Twoich ustawieniach"');
+  const rows = card.chainRows(real.inheritance, t, real.provenance);
+  const winner = rows.find(r => r.winning);
+  assert.equal(winner.level, 'person');
+  assert.equal(winner.roleText, real.provenance.chip.label, 'the winning row says the same words as the chip, not "daje wartość"');
+  assert.equal(winner.roleText, pl['inheritance.role.same_as_preset']);
+  const installation = rows.find(r => r.level === 'installation');
+  assert.equal(installation.valueText, winner.valueText, 'the preset holds the same number');
+  assert.equal(installation.roleText, pl['inheritance.role.same_value'], 'an equal lower value is "ta sama wartość", not "przesłonięte"');
+  assert.equal(installation.role, 'overridden', 'the kernel\'s role is kept as data (data-role) — only the words change');
+  // Ustawienia counts "Twoje" without same_as_preset fields (settings-human-state isYours): the same fact, the third screen agrees.
+  // Without the chip (a value you typed) the words are the roles again:
+  const yours = card.chainRows(real.inheritance, t, { chip: { id: 'person', label: 'Ty' } });
+  assert.equal(yours.find(r => r.winning).roleText, pl['inheritance.role.supplied']);
+  assert.equal(yours.find(r => r.level === 'installation').roleText, pl['inheritance.role.same_value'], 'an equal value below is still the same value');
+  // a different lower value stays "przesłonięte"
+  const changed = card.chainRows(chain, t, { chip: { id: 'conversation', label: 'Ta rozmowa' } });
+  assert.equal(changed.find(r => r.level === 'person').roleText, pl['inheritance.role.overridden']);
+});
+
 test('the editor follows the declared type, else the value; parsing says what is wrong in a word of the catalogue', () => {
   assert.equal(card.editorKind(field), 'number');
   assert.equal(card.editorKind({ value: true }), 'toggle');

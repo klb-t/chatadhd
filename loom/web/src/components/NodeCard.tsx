@@ -75,7 +75,7 @@ export default function NodeCard({ address, language, convId, t, onClose, onNavi
   const reload = useCallback(() => { setGeneration(g => g + 1); setStep("card"); setGate(null); changed.current?.(); }, []);
   const key = typeof card?.attrs?.key === "string" ? (card.attrs.key as string) : address.replace(/^setting:/, "");
   const kind = card ? editorKind(card) : "text";
-  const chain = useMemo(() => card ? chainRows(card.inheritance, t) : [], [card, t]);
+  const chain = useMemo(() => card ? chainRows(card.inheritance, t, card.provenance) : [], [card, t]);
   const levels = useMemo(() => card ? levelChoices(card, convId, t) : [], [card, convId, t]);
   const unsets = useMemo(() => card ? unsetChoices(card, key, rules, t) : [], [card, key, rules, t]);
   const relations = useMemo(() => card ? relationGroups(card) : [], [card]);
@@ -150,6 +150,10 @@ export default function NodeCard({ address, language, convId, t, onClose, onNavi
         {card.why && <p className="ncard-line" data-testid="card-why"><span className="ncard-key">{t("card.why")}</span> {card.why}</p>}
         {card.effect && <p className="ncard-line" data-testid="card-effect"><span className="ncard-key">{t("card.effect")}</span> {card.effect}</p>}
         {card.edit_rule && <p className="ncard-line" data-testid="card-edit-rule"><span className="ncard-key">{t("card.edit_rule")}</span> {t(`card.edit_rule.${card.edit_rule}`)}</p>}
+        {/* r2:b1: a profile slot (Ty › Kim jesteś …) is answered in the onboarding interview, not here; the card says where, before any
+            generic action. The kernel sends no `why` and no interview action for a slot yet (report: "Czego jeszcze NIE ma"). */}
+        {card.kind === "profile_slot" && <p className="ncard-line ncard-profile" data-testid="card-profile-interview">
+          {t(card.status === "known" ? "card.profile.answered_in_interview" : "card.profile.answer_in_interview")}</p>}
         {card.children_count > 0 && <p className="ncard-line gnav-note">{t("card.children", { count: String(card.children_count) })}</p>}
 
         {notice && <p className={`gnav-note ncard-notice${notice.kind === "error" ? " gnav-error" : ""}`} data-testid="card-notice" role="status">{notice.text}</p>}
@@ -196,7 +200,10 @@ export default function NodeCard({ address, language, convId, t, onClose, onNavi
           </div>
         </div>}
 
-        <Disclosure testId="card-chain" labels={{ show: t("inheritance"), hide: t("inheritance") }} defaultOpen>
+        {/* r2:b1: "Skąd jest wartość" only when the kernel drew a chain; a node that is not a setting (a ROM item, a profile slot) says so
+            in one line instead of an open header with nothing under it. */}
+        {chain.length === 0 && <p className="ncard-line gnav-note" data-testid="card-no-chain">{t("card.no_value")}</p>}
+        {chain.length > 0 && <Disclosure testId="card-chain" labels={{ show: t("inheritance"), hide: t("inheritance") }} defaultOpen>
           <ul className="ncard-list ncard-chain" data-testid="card-chain-rows">
             {chain.map(row => <li key={row.level} className={`ncard-chain-row${row.winning ? " ncard-winning" : ""}${row.active ? "" : " ncard-inactive"}`}
               data-testid={`card-chain-${row.level}`} data-role={row.role} data-winning={row.winning}>
@@ -205,7 +212,7 @@ export default function NodeCard({ address, language, convId, t, onClose, onNavi
               {row.valueText && <span className="ncard-chain-value">{row.valueText}</span>}
             </li>)}
           </ul>
-        </Disclosure>
+        </Disclosure>}
 
         {(card.flows_reading?.length ?? 0) > 0 && <p className="ncard-line" data-testid="card-flows">
           <span className="ncard-key">{t("card.flows_reading")}</span> {card.flows_reading!.map(f => f.title).join(", ")}</p>}

@@ -4,6 +4,7 @@
 // translator returns the id of a missing word, so a missing word is visible, never silently English.
 import type { GraphNavigateRequest, GraphNavigateResult, GraphNodeRow } from "../api/graph-projection";
 import type { ShellT } from "../shell/text";
+import { countPhrase } from "../shell/plural";
 
 export interface PathStep { address: string; label: string }
 export interface NavigatorState {
@@ -103,12 +104,18 @@ export function countText(row: GraphNodeRow, t: ShellT): string | null {
   if (row.has_children) return t("count.unknown");
   return null;
 }
-/** The provenance chip: the kernel's own words when it sends a chip, else the layer's word (chip.<layer>; a missing word shows its id). */
-export function chipText(row: Pick<GraphNodeRow, "provenance">, t: ShellT): string {
-  return row.provenance.chip?.label ?? t(`chip.${row.provenance.layer}`);
+/** The provenance chip: the kernel's own words when it sends a chip; a profile slot (a row under Ty) says what its evidence says —
+ *  "pytanie z wywiadu — bez odpowiedzi" / "Twoja odpowiedź w wywiadzie" (the kernel's evidence.human, else the method's word) — never
+ *  "Preset (ROM)" on your own profile (r2:b1); else the layer's word (chip.<layer>; a missing word shows its id). */
+export function chipText(row: Pick<GraphNodeRow, "provenance"> & Partial<Pick<GraphNodeRow, "kind" | "evidence">>, t: ShellT): string {
+  if (row.provenance.chip?.label) return row.provenance.chip.label;
+  if (row.kind === "profile_slot" && row.evidence) return row.evidence.human ?? t(`evidence.method.${row.evidence.provenance.method}`);
+  return t(`chip.${row.provenance.layer}`);
 }
-/** The evidence chip, only when it is not the plain "declared" of a preset. */
-export function evidenceText(row: Pick<GraphNodeRow, "evidence">, t: ShellT): string | null {
+/** The evidence chip, only when it is not the plain "declared" of a preset, and not for a profile slot (its provenance chip already
+ *  says the evidence: one chip, not the same words twice). */
+export function evidenceText(row: Pick<GraphNodeRow, "evidence"> & Partial<Pick<GraphNodeRow, "kind">>, t: ShellT): string | null {
+  if (row.kind === "profile_slot") return null;
   if (row.evidence.class === "declared") return null;
   if (row.evidence.human) return row.evidence.human;
   const confidence = row.evidence.confidence;
@@ -133,13 +140,22 @@ export const BAR_BUTTONS = [
 export type BarButtonId = typeof BAR_BUTTONS[number]["id"];
 
 /** The lines under the list that keep the list honest: collapsed by the budget, hidden by you, sources that could not answer. */
-export function honestyLines(result: Pick<GraphNavigateResult, "counts" | "hidden_by_you" | "unknown">, t: ShellT): { id: string; text: string }[] {
+export function honestyLines(result: Pick<GraphNavigateResult, "counts" | "hidden_by_you" | "unknown">, t: ShellT, language: string): { id: string; text: string }[] {
   const lines: { id: string; text: string }[] = [];
-  if (result.counts.collapsed > 0) lines.push({ id: "collapsed", text: t("collapsed", { count: String(result.counts.collapsed) }) });
-  if (result.hidden_by_you.count > 0) lines.push({ id: "hidden", text: t("hidden_by_you", { count: String(result.hidden_by_you.count) }) });
+  // r2:b1: "zwinięto 1 węzeł / 2 węzły / 5 węzłów" — the form from the language, the word from count.nodes.<form>.
+  if (result.counts.collapsed > 0) lines.push({ id: "collapsed", text: t("collapsed", { nodes: countPhrase(t, "nodes", result.counts.collapsed, language) }) });
+  if (result.hidden_by_you.count > 0) lines.push({ id: "hidden", text: t("hidden_by_you", { nodes: countPhrase(t, "nodes", result.hidden_by_you.count, language) }) });
   for (const u of result.unknown)
     lines.push({ id: `unknown-${u.source}`, text: t("unknown_source", { source: u.source_label || u.source, reason: u.reason_human || t(`reason.${u.reason}`) }) });
   return lines;
+}
+
+/** The budget line under the bar: "budżet na poziom: 2 węzły · głębia 1 · 22 wiersze, pokazano 2" (limit 0 = no budget). The plural
+ *  forms come from the language (count.nodes / count.rows of the catalogue), so 1 is never "1 węzłów". */
+export function budgetLine(limit: number, hops: number, counts: { shown: number; total: number }, t: ShellT, language: string): string {
+  const budget = limit === 0 ? t("bar.budget.unlimited", { hops: String(hops) })
+    : t("bar.budget", { nodes: countPhrase(t, "nodes", limit, language), hops: String(hops) });
+  return `${budget} · ${t("children", { shown: String(counts.shown), rows: countPhrase(t, "rows", counts.total, language) })}`;
 }
 
 /** A step opened from outside (menu ⋮ › Ty, › Ta rozmowa w grafie: initialState(focus) with no label) takes the kernel's label of

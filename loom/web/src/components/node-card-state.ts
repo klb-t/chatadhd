@@ -10,7 +10,7 @@
 //   installation, app_preset, engine → not from the card: a baseline that is data (a file), not a value of yours
 // Taking a value off a layer: rules.disable on the set_value rule of that layer (confirm:rules.disable asks first); the person layer
 // has no kernel action that removes a key from config.json (settings.set null would store null), so it says "planned" with that reason.
-import type { GraphCardResult, InheritanceLevel } from "../api/graph-projection";
+import type { GraphCardResult, GraphProvenance, InheritanceLevel } from "../api/graph-projection";
 import type { RuleRequest } from "../api/loom-api";
 import type { ActionRun } from "../api/types";
 import type { ShellT } from "../shell/text";
@@ -71,9 +71,19 @@ export function layersLine(card: Pick<GraphCardResult, "provenance" | "inheritan
   return t("card.layers", { layers: layers.map(l => t(`chip.${l.split(":")[0]}`)).join(" → ") });
 }
 
-export function chainRows(inheritance: InheritanceLevel[] | undefined, t: ShellT): ChainRow[] {
-  return (inheritance ?? []).map(l => ({
-    level: l.level, label: l.label, role: l.role, roleText: t(`inheritance.role.${l.role}`),
+/** r2:b1: one answer to "czy to moje, czy preset?" — when the chip says the winning value is the preset kept in your settings
+ *  (provenance.chip.same_as_preset), the winning row says the same words instead of "daje wartość", and a lower level that holds the
+ *  same value says "ta sama wartość" instead of "przesłonięte" (nothing is overridden by an equal value). The kernel's role stays in
+ *  `role` (data-role) untouched; only the words change. */
+export function chainRows(inheritance: InheritanceLevel[] | undefined, t: ShellT, provenance?: Pick<GraphProvenance, "chip">): ChainRow[] {
+  const chain = inheritance ?? [];
+  const winner = chain.find(l => l.role === "supplied");
+  const presetKept = provenance?.chip?.same_as_preset === true || provenance?.chip?.id === "same_as_preset";
+  const sameAsWinner = (l: InheritanceLevel) => winner !== undefined && l !== winner && l.value !== undefined && JSON.stringify(l.value) === JSON.stringify(winner.value);
+  return chain.map(l => ({
+    level: l.level, label: l.label, role: l.role,
+    roleText: l.role === "supplied" && presetKept ? t("inheritance.role.same_as_preset")
+      : l.role === "overridden" && sameAsWinner(l) ? t("inheritance.role.same_value") : t(`inheritance.role.${l.role}`),
     valueText: l.value === undefined ? "" : valueText(l.value, t),
     winning: l.role === "supplied",
     noUnitText: l.no_unit ? t(`inheritance.no_unit.${l.level}`) : null,

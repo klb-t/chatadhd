@@ -21,7 +21,7 @@ const translator = (words) => (id, params = {}) => {
 const t = translator(pl);
 
 test('every word the screen asks for exists in both languages, and the feature says it is present (the screen exists)', () => {
-  const ids = ['root', 'back', 'card', 'children', 'count.value', 'count.unknown', 'count.unknown_reason', 'collapsed', 'hidden_by_you',
+  const ids = ['root', 'back', 'card', 'children', 'count.value', 'count.nodes.one', 'count.nodes.other', 'count.rows.one', 'count.rows.other', 'count.unknown', 'count.unknown_reason', 'collapsed', 'hidden_by_you',
     'no_translation', 'no_children', 'unknown_source', 'query.placeholder', 'search', 'search.close', 'path', 'loading', 'error',
     // the node card (P3, src/components/NodeCard.tsx) asks for these on top of inheritance.*, relations, actions
     'card.close', 'card.layers', 'card.value', 'card.why', 'card.effect', 'card.edit_rule', 'card.change', 'card.for_whom', 'card.more_levels', 'card.cancel',
@@ -98,14 +98,47 @@ test('the words of a row: count or unknown with the reason (never 0), the chip f
 });
 
 test('the honesty lines: collapsed by the budget, hidden by you, sources that could not answer', () => {
-  const none = nav.honestyLines({ counts: { total: 3, shown: 3, collapsed: 0, by_source: {} }, hidden_by_you: { count: 0, items: [] }, unknown: [] }, t);
+  const none = nav.honestyLines({ counts: { total: 3, shown: 3, collapsed: 0, by_source: {} }, hidden_by_you: { count: 0, items: [] }, unknown: [] }, t, 'pl');
   assert.deepEqual(none, []);
   const lines = nav.honestyLines({ counts: { total: 9, shown: 4, collapsed: 5, by_source: {} }, hidden_by_you: { count: 1, items: [] },
-    unknown: [{ source: 'kb', source_label: 'Wiedza', reason: 'database_unavailable', reason_human: 'bazy nie da się odczytać' }, { source: 'x', source_label: '', reason: 'planned', reason_human: '' }] }, t);
+    unknown: [{ source: 'kb', source_label: 'Wiedza', reason: 'database_unavailable', reason_human: 'bazy nie da się odczytać' }, { source: 'x', source_label: '', reason: 'planned', reason_human: '' }] }, t, 'pl');
   assert.deepEqual(lines.map(l => l.id), ['collapsed', 'hidden', 'unknown-kb', 'unknown-x']);
-  assert.equal(lines[0].text, pl.collapsed.replace('{{count}}', '5'));
+  assert.equal(lines[0].text, pl.collapsed.replace('{{nodes}}', pl['count.nodes.many'].replace('{{n}}', '5')));
+  assert.equal(lines[1].text, pl.hidden_by_you.replace('{{nodes}}', pl['count.nodes.one'].replace('{{n}}', '1')));
   assert.equal(lines[2].text, pl.unknown_source.replace('{{source}}', 'Wiedza').replace('{{reason}}', 'bazy nie da się odczytać'));
   assert.equal(lines[3].text, pl.unknown_source.replace('{{source}}', 'x').replace('{{reason}}', pl['reason.planned']));
+});
+
+test('r2:b1: counts take the plural form of the language (pl one/few/many, en one/other): 1 węzeł, 2 węzły, 5 węzłów, 22 węzły; never "1 węzłów"', () => {
+  const counts = { total: 0, shown: 0, collapsed: 0, by_source: {} };
+  const collapsed = (n, lang, tt) => nav.honestyLines({ counts: { ...counts, collapsed: n }, hidden_by_you: { count: 0, items: [] }, unknown: [] }, tt, lang)[0].text;
+  for (const [n, form] of [[1, 'one'], [2, 'few'], [5, 'many'], [22, 'few']]) {
+    assert.equal(collapsed(n, 'pl', t), pl.collapsed.replace('{{nodes}}', pl[`count.nodes.${form}`].replace('{{n}}', String(n))), `pl ${n}`);
+    assert.equal(nav.budgetLine(n, 2, { shown: n, total: n }, t, 'pl'),
+      `${pl['bar.budget'].replace('{{nodes}}', pl[`count.nodes.${form}`].replace('{{n}}', String(n))).replace('{{hops}}', '2')} · ${pl.children.replace('{{rows}}', pl[`count.rows.${form}`].replace('{{n}}', String(n))).replace('{{shown}}', String(n))}`, `pl budget ${n}`);
+  }
+  assert.equal(collapsed(1, 'pl', t), 'zwinięto 1 węzeł — zmień budżet');
+  assert.equal(nav.budgetLine(1, 1, { shown: 1, total: 1 }, t, 'pl'), 'budżet na poziom: 1 węzeł · głębia 1 · 1 wiersz, pokazano 1');
+  assert.equal(nav.budgetLine(0, 3, { shown: 4, total: 22 }, t, 'pl'), `${pl['bar.budget.unlimited'].replace('{{hops}}', '3')} · 22 wiersze, pokazano 4`);
+  const te = translator(en);
+  assert.equal(collapsed(1, 'en', te), en.collapsed.replace('{{nodes}}', en['count.nodes.one'].replace('{{n}}', '1')));
+  assert.equal(collapsed(2, 'en', te), en.collapsed.replace('{{nodes}}', en['count.nodes.other'].replace('{{n}}', '2')));
+  assert.equal(nav.budgetLine(5, 1, { shown: 2, total: 5 }, te, 'en'), 'budget per level: 5 nodes · depth 1 · 2 of 5 rows shown');
+  // a language tag Intl rejects (RangeError) falls to "other": the word for "other", never a crash
+  assert.equal(collapsed(1, '', t), pl.collapsed.replace('{{nodes}}', pl['count.nodes.other'].replace('{{n}}', '1')));
+});
+
+test('r2:b1: a profile slot (Ty) says what its evidence says on the chip — never "Preset (ROM)" on your own profile — and shows no second evidence chip', () => {
+  const slot = (status, evidence) => ({ kind: 'profile_slot', status, provenance: { layer: 'rom', layers: ['rom'] }, evidence });
+  const unanswered = slot('unknown', { class: 'declared', confidence: null, provenance: { layer: 'rom', source_ref: 'x', method: 'scenario', time: null }, human: pl['evidence.method.scenario'] });
+  assert.equal(nav.chipText(unanswered, t), pl['evidence.method.scenario']);
+  assert.notEqual(nav.chipText(unanswered, t), pl['chip.rom']);
+  assert.equal(nav.evidenceText(unanswered, t), null, 'one chip, not the same words twice');
+  const answered = slot('known', { class: 'said', confidence: 1, provenance: { layer: 'onboarding', source_ref: 'x', method: 'interview', time: null } });
+  assert.equal(nav.chipText(answered, t), pl['evidence.method.interview'], 'without the kernel\'s human text, the method\'s word');
+  // a kernel chip wins over everything; a row that is not a slot keeps the layer's word
+  assert.equal(nav.chipText({ ...unanswered, provenance: { layer: 'rom', layers: ['rom'], chip: { id: 'k', label: 'Kernel' } } }, t), 'Kernel');
+  assert.equal(nav.chipText({ kind: 'rom_item', provenance: { layer: 'rom', layers: ['rom'] }, evidence: unanswered.evidence }, t), pl['chip.rom']);
 });
 
 test('the bottom bar is the order of the spec and every button does what its word says (no button is marked "planned")', () => {

@@ -1,0 +1,406 @@
+{
+  "address": "setting:temperature",
+  "label": "Temperatura (swoboda odpowiedzi)",
+  "kind": "settings_field",
+  "source": "setting",
+  "parent": "group:rozmowa",
+  "evidence": {
+    "class": "declared",
+    "confidence": 1,
+    "provenance": {
+      "layer": "config.json",
+      "source_ref": "temperature",
+      "method": "preset_in_config",
+      "time": null
+    },
+    "human": "preset zapisany w Twoich ustawieniach"
+  },
+  "provenance": {
+    "layer": "config.json",
+    "layers": [
+      "installation",
+      "person"
+    ],
+    "scope": "person",
+    "chip": {
+      "id": "person",
+      "label": "preset zapisany w Twoich ustawieniach",
+      "same_as_preset": true
+    }
+  },
+  "has_children": false,
+  "attrs": {
+    "key": "temperature",
+    "profile_value": false,
+    "type": "number",
+    "edit": "optional",
+    "human": {
+      "label": "Temperatura (swoboda odpowiedzi)",
+      "why": "Ile losowości ma odpowiedź: niżej = powtarzalniej i ostrożniej, wyżej = swobodniej i bardziej twórczo.",
+      "effect": "Działa od następnej odpowiedzi czatu i pracy agenta; analiza w tle i archiwum mają własne wartości.",
+      "levels": [
+        "person",
+        "turn"
+      ],
+      "group": "rozmowa",
+      "flows": [
+        "chat.send",
+        "agent.run"
+      ]
+    },
+    "resolved": {
+      "value": 0.7,
+      "value_human": "0,7",
+      "provenance": {
+        "scope": "person",
+        "layer": "config.json",
+        "source": "setting:temperature",
+        "chip": {
+          "id": "person",
+          "label": "preset zapisany w Twoich ustawieniach",
+          "same_as_preset": true
+        },
+        "same_as_preset": true
+      },
+      "inheritance": [
+        {
+          "level": "engine",
+          "label": "Silnik (niezmienniki)",
+          "role": "none",
+          "active": true
+        },
+        {
+          "level": "app_preset",
+          "label": "Preset aplikacji",
+          "role": "none",
+          "active": true
+        },
+        {
+          "level": "installation",
+          "label": "Instalacja",
+          "role": "overridden",
+          "active": true,
+          "value": 0.7
+        },
+        {
+          "level": "organization",
+          "label": "Organizacja",
+          "role": "none",
+          "active": true,
+          "unit_level": true,
+          "no_unit": true
+        },
+        {
+          "level": "group_of_groups",
+          "label": "Grupa grup",
+          "role": "none",
+          "active": true
+        },
+        {
+          "level": "team",
+          "label": "Zespół",
+          "role": "none",
+          "active": true,
+          "unit_level": true,
+          "no_unit": true
+        },
+        {
+          "level": "person",
+          "label": "Osoba",
+          "role": "supplied",
+          "active": true,
+          "value": 0.7
+        },
+        {
+          "level": "role_in_context",
+          "label": "Rola w kontekście",
+          "role": "none",
+          "active": true,
+          "unit_level": true,
+          "no_unit": true
+        },
+        {
+          "level": "project",
+          "label": "Projekt (gałąź)",
+          "role": "none",
+          "active": true,
+          "unit_level": true,
+          "no_unit": true
+        },
+        {
+          "level": "conversation",
+          "label": "Rozmowa",
+          "role": "none",
+          "active": true,
+          "scope_id": "c_2b6da102712b"
+        },
+        {
+          "level": "turn",
+          "label": "Tura / wywołanie",
+          "role": "inactive",
+          "active": false
+        }
+      ],
+      "evidence": {
+        "class": "declared",
+        "confidence": 1,
+        "provenance": {
+          "layer": "config.json",
+          "source_ref": "temperature",
+          "method": "preset_in_config",
+          "time": null
+        }
+      }
+    }
+  },
+  "why": "Ile losowości ma odpowiedź: niżej = powtarzalniej i ostrożniej, wyżej = swobodniej i bardziej twórczo.",
+  "value": 0.7,
+  "value_human": "0,7",
+  "schema": "loom.graph_card/1",
+  "evidence_per_property": {
+    "*": {
+      "class": "declared",
+      "confidence": 1,
+      "provenance": {
+        "layer": "config.json",
+        "source_ref": "temperature",
+        "method": "preset_in_config",
+        "time": null
+      },
+      "human": "preset zapisany w Twoich ustawieniach"
+    },
+    "value": {
+      "class": "declared",
+      "confidence": 1,
+      "provenance": {
+        "layer": "config.json",
+        "source_ref": "temperature",
+        "method": "preset_in_config",
+        "time": null
+      }
+    }
+  },
+  "effect": "Działa od następnej odpowiedzi czatu i pracy agenta; analiza w tle i archiwum mają własne wartości.",
+  "levels": [
+    "person",
+    "turn"
+  ],
+  "edit_rule": "optional",
+  "inheritance": [
+    {
+      "level": "engine",
+      "label": "Silnik (niezmienniki)",
+      "role": "none",
+      "active": true
+    },
+    {
+      "level": "app_preset",
+      "label": "Preset aplikacji",
+      "role": "none",
+      "active": true
+    },
+    {
+      "level": "installation",
+      "label": "Instalacja",
+      "role": "overridden",
+      "active": true,
+      "value": 0.7
+    },
+    {
+      "level": "organization",
+      "label": "Organizacja",
+      "role": "none",
+      "active": true,
+      "unit_level": true,
+      "no_unit": true
+    },
+    {
+      "level": "group_of_groups",
+      "label": "Grupa grup",
+      "role": "none",
+      "active": true
+    },
+    {
+      "level": "team",
+      "label": "Zespół",
+      "role": "none",
+      "active": true,
+      "unit_level": true,
+      "no_unit": true
+    },
+    {
+      "level": "person",
+      "label": "Osoba",
+      "role": "supplied",
+      "active": true,
+      "value": 0.7
+    },
+    {
+      "level": "role_in_context",
+      "label": "Rola w kontekście",
+      "role": "none",
+      "active": true,
+      "unit_level": true,
+      "no_unit": true
+    },
+    {
+      "level": "project",
+      "label": "Projekt (gałąź)",
+      "role": "none",
+      "active": true,
+      "unit_level": true,
+      "no_unit": true
+    },
+    {
+      "level": "conversation",
+      "label": "Rozmowa",
+      "role": "none",
+      "active": true,
+      "scope_id": "c_2b6da102712b"
+    },
+    {
+      "level": "turn",
+      "label": "Tura / wywołanie",
+      "role": "inactive",
+      "active": false
+    }
+  ],
+  "flows_reading": [
+    {
+      "id": "chat.send",
+      "title": "Wyślij wiadomość"
+    },
+    {
+      "id": "agent.run",
+      "title": "Uruchom agenta"
+    }
+  ],
+  "relations": {
+    "has_default": {
+      "label": "ma preset",
+      "meaning": "Źródło (ustawienie) ma preset w celu (ustawieniach fabrycznych ROM).",
+      "inverse": null,
+      "inverse_label": null,
+      "out": [
+        {
+          "address": "rom:factory_presets",
+          "label": "Ustawienia fabryczne"
+        }
+      ],
+      "in": []
+    },
+    "grouped_in": {
+      "label": "w grupie",
+      "meaning": "Źródło (ustawienie) jest pokazane w celu (grupie ustawień).",
+      "inverse": null,
+      "inverse_label": null,
+      "out": [
+        {
+          "address": "group:rozmowa",
+          "label": "Rozmowa"
+        }
+      ],
+      "in": []
+    },
+    "reads_setting": {
+      "label": "czyta ustawienie",
+      "meaning": "Źródło (przepływ) czyta cel (ustawienie).",
+      "inverse": null,
+      "inverse_label": null,
+      "out": [],
+      "in": [
+        {
+          "address": "flow:chat.send",
+          "label": "Wyślij wiadomość"
+        },
+        {
+          "address": "flow:agent.run",
+          "label": "Uruchom agenta"
+        }
+      ]
+    }
+  },
+  "children_count": 0,
+  "actions": [
+    {
+      "id": "use_model",
+      "decision": "applicable",
+      "label": "Użyj modelu",
+      "implementation": "implemented"
+    },
+    {
+      "id": "save",
+      "decision": "applicable",
+      "label": "Zapisz",
+      "implementation": "planned"
+    },
+    {
+      "id": "share",
+      "decision": "applicable",
+      "label": "Udostępnij",
+      "implementation": "planned"
+    },
+    {
+      "id": "script.call",
+      "decision": "applicable",
+      "label": "Wywołanie modelu ze skryptu",
+      "implementation": "planned"
+    },
+    {
+      "id": "agent.call",
+      "decision": "applicable",
+      "label": "Wywołanie modelu przez agenta",
+      "implementation": "planned"
+    },
+    {
+      "id": "settings.set",
+      "decision": "applicable",
+      "label": "Zmień ustawienie",
+      "implementation": "implemented"
+    },
+    {
+      "id": "settings.get",
+      "decision": "applicable",
+      "label": "Pokaż ustawienie",
+      "implementation": "implemented"
+    },
+    {
+      "id": "help.can_do",
+      "decision": "applicable",
+      "label": "Co można tu zrobić",
+      "implementation": "implemented"
+    },
+    {
+      "id": "help.how_to",
+      "decision": "applicable",
+      "label": "Jak coś zrobić (wyjaśnienie, bez wykonania)",
+      "implementation": "implemented"
+    },
+    {
+      "id": "usage.set_limit",
+      "decision": "applicable",
+      "label": "Ustaw limit zużycia lub wydatków",
+      "implementation": "implemented"
+    },
+    {
+      "id": "provenance.show",
+      "decision": "applicable",
+      "label": "Skąd coś pochodzi",
+      "implementation": "implemented"
+    }
+  ],
+  "breadcrumbs": [
+    {
+      "address": "",
+      "label": "Graf"
+    },
+    {
+      "address": "area:profiles_settings",
+      "label": "Profile i ustawienia"
+    },
+    {
+      "address": "group:rozmowa",
+      "label": "Rozmowa"
+    }
+  ]
+}

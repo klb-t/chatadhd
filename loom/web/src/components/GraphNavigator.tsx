@@ -19,7 +19,7 @@ import { useLayer } from "../shell/use-layer";
 import { usePresentationFeature } from "./ConversationSourceView";
 import { LAYOUTS, layoutOf, openByLayout, type Layout } from "./navigator-map";
 import { runOutcome } from "./node-card-state";
-import { BAR_BUTTONS, SEARCH_DEBOUNCE_PRESET_MS, chipText, countText, deeper, drillInto, evidenceText, focusOf, goBack, honestyLines,
+import { BAR_BUTTONS, SEARCH_DEBOUNCE_PRESET_MS, budgetLine, chipText, countText, deeper, drillInto, evidenceText, focusOf, goBack, honestyLines,
   initialState, narrower, noTranslationText, requestFor, setQuery, shallower, statusText, wider, type BarButtonId, type NavigatorState, withFocusLabel,
   actionsTarget, clearPerspectives, perspectiveOptions, togglePerspective, type PerspectiveOption } from "./navigator-state";
 import "./graph-navigator.css";
@@ -127,7 +127,7 @@ export default function GraphNavigator({ profileHost, convId, language, initialF
   };
   const focus = focusOf(state);
   const crumbs = [{ address: "", label: t("root") }, ...state.path];
-  const lines = result ? honestyLines(result, t) : [];
+  const lines = result ? honestyLines(result, t, language) : [];
   const perspectiveNames = state.perspectives.map(id => (perspList && "options" in perspList ? perspList.options.find(o => o.id === id)?.label : undefined) ?? id);
 
   return (
@@ -218,10 +218,7 @@ export default function GraphNavigator({ profileHost, convId, language, initialF
         {state.perspectives.length > 0 && <p className="gnav-note gnav-planned" data-testid="nav-perspectives">{t("perspective.active", { list: perspectiveNames.join(" · ") })}</p>}
         {actionsNote && <p className="gnav-note gnav-planned" data-testid="nav-actions-note" role="status">{actionsNote}</p>}
         {viewNote && <p className="gnav-note gnav-planned" data-testid="nav-view-note">{viewNote}</p>}
-        {result && <p className="gnav-budget" data-testid="nav-budget">
-          {effectiveLimit === 0 ? t("bar.budget.unlimited", { hops: String(effectiveHops) }) : t("bar.budget", { limit: String(effectiveLimit), hops: String(effectiveHops) })}
-          {" · "}{t("children", { shown: String(result.counts.shown), total: String(result.counts.total) })}
-        </p>}
+        {result && <p className="gnav-budget" data-testid="nav-budget">{budgetLine(effectiveLimit, effectiveHops, result.counts, t, language)}</p>}
       </nav>
     </div>
   );

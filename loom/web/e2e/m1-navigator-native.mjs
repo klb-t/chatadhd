@@ -12,7 +12,7 @@
 // Widok ▾ saves navigator_layout; Back closes the layers in order (card → steps → panel) through window.__loomBack.
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
-import { existsSync, mkdirSync, mkdtempSync, readFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import net from "node:net";
 import path from "node:path";
@@ -32,6 +32,8 @@ const word = (id, params = {}) => words[id].replace(/\{\{(\w+)\}\}/g, (_, k) => 
 // A number as the card writes it (node-card-state.ts numberText): the point replaced by the screen's word decimal_separator (pl ","),
 // the same way the kernel's value_human writes "Wartość:" — one format on one card (r1:b4).
 const num = v => { const s = String(v); const sep = words.decimal_separator; return sep && sep.length === 1 && sep !== "." ? s.replace(".", sep) : s; };
+// r2:b1: "1 węzeł / 2 węzły / 5 węzłów" — the form from the language, the word from count.<kind>.<form> (shell/plural.ts does the same).
+const plural = (kind, n) => word(`count.${kind}.${new Intl.PluralRules("pl").select(n)}`, { n: String(n) });
 
 const freePort = () => new Promise((res, rej) => { const s = net.createServer(); s.listen(0, "127.0.0.1", () => { const { port } = s.address(); s.close(() => res(port)); }); s.on("error", rej); });
 async function waitUp(url) { for (const end = Date.now() + 20000; Date.now() < end;) { try { if ((await fetch(url)).ok) return; } catch {} await new Promise(r => setTimeout(r, 150)); } throw new Error("never up " + url); }
@@ -121,7 +123,7 @@ try {
       assert.equal(r.why, c.why ?? "");
     }
     assert.ok(rows.some(r => r.count?.startsWith(words["count.unknown"])), "an area without a source says unknown with the reason, never 0");
-    assert.equal(await page.getByTestId("nav-budget").innerText(), `${word(root.limit.value === 0 ? "bar.budget.unlimited" : "bar.budget", { limit: String(root.limit.value), hops: String(root.hops) })} · ${word("children", { shown: String(root.counts.shown), total: String(root.counts.total) })}`);
+    assert.equal(await page.getByTestId("nav-budget").innerText(), `${root.limit.value === 0 ? word("bar.budget.unlimited", { hops: String(root.hops) }) : word("bar.budget", { nodes: plural("nodes", root.limit.value), hops: String(root.hops) })} · ${word("children", { shown: String(root.counts.shown), rows: plural("rows", root.counts.total) })}`);
     // Działania at the root: no node is in focus, so the bar says where actions live (no card opens, nothing says "planned").
     await page.getByTestId("nav-bar-actions").tap();
     assert.equal(await page.getByTestId("nav-actions-note").innerText(), words["actions.no_focus"]);
@@ -172,20 +174,20 @@ try {
     for (let i = 0; i < 3; i++) {
       limit = Math.max(1, Math.floor((limit > 0 ? limit : shown) / 2));
       await page.getByTestId("nav-bar-narrower").tap();
-      await page.waitForFunction((l) => document.querySelector('[data-testid="nav-budget"]')?.textContent.includes(`budżet ${l} `), limit);
+      await page.waitForFunction((text) => document.querySelector('[data-testid="nav-budget"]')?.textContent.includes(text), `: ${plural("nodes", limit)} `);
       shown = Number(await page.getByTestId("nav-rows").getAttribute("data-shown"));
     }
     const narrowed = await navigate({ focus: "area:rom", limit });
     assert.equal(shown, narrowed.counts.shown);
     assert.ok(shown < rom.children.length, `the budget ${limit} collapses rows`);
-    assert.equal(await page.getByTestId("nav-collapsed").innerText(), word("collapsed", { count: String(narrowed.counts.collapsed) }));
+    assert.equal(await page.getByTestId("nav-collapsed").innerText(), word("collapsed", { nodes: plural("nodes", narrowed.counts.collapsed) }));
     await page.getByTestId("nav-bar-wider").tap();
-    await page.waitForFunction((l) => document.querySelector('[data-testid="nav-budget"]')?.textContent.includes(`budżet ${l} `), limit * 2);
+    await page.waitForFunction((text) => document.querySelector('[data-testid="nav-budget"]')?.textContent.includes(text), `: ${plural("nodes", limit * 2)} `);
     await page.getByTestId("nav-bar-deeper").tap();
     await page.waitForFunction((h) => document.querySelector('[data-testid="nav-budget"]')?.textContent.includes(`głębia ${h}`), rom.hops + 1);
     await page.getByTestId("nav-bar-shallower").tap();
     await page.waitForFunction((h) => document.querySelector('[data-testid="nav-budget"]')?.textContent.includes(`głębia ${h}`), rom.hops);
-    assert.ok((await budget()).includes(word("bar.budget", { limit: String(limit * 2), hops: String(rom.hops) })));
+    assert.ok((await budget()).includes(word("bar.budget", { nodes: plural("nodes", limit * 2), hops: String(rom.hops) })));
   });
 
   await step("Perspektywa ▾ lists the kernel's perspectives; ticks re-ask graph.navigate with `perspectives`; Działania opens the focus's card at the actions; ⋯ opens the node card of a ROM item from graph.card", async () => {
@@ -251,6 +253,11 @@ try {
     if (expected.value === expected.status) assert.equal(await page.getByTestId("card-value").count(), 0, "no value line that would repeat the status in English");
     assert.equal(await page.getByTestId("card-layers").count(), 0, "one layer (rom) = the chip; no Warstwy line repeating it");
     assert.equal(await page.getByTestId("card-chain-rows").locator("li").count(), expected.inheritance?.length ?? 0, "the chain is the kernel's, row for row");
+    // r2:b1: a ROM item has no chain of levels: no open "Skąd jest wartość" header with nothing under it, one line that says so.
+    if (!expected.inheritance?.length) {
+      assert.equal(await page.getByTestId("card-chain").count(), 0, "no chain header on a node without a chain");
+      assert.equal(await page.getByTestId("card-no-chain").innerText(), words["card.no_value"]);
+    }
     for (const a of expected.actions) {
       const row = page.getByTestId(`card-action-${a.id}`);
       assert.ok((await row.innerText()).includes(a.label), `action ${a.id} in the kernel's words`);
@@ -275,8 +282,24 @@ try {
   });
 
   // The settings card needs an open conversation for the level "Ta rozmowa": the page is reopened on one (saved view).
-  const conv = (await api("POST", "/api/conversations", { title: "M1 card" })).id;
+  // r2:b1: the conversation has messages (multipart POST /api/import, the universal importer), so "Ta rozmowa w grafie" below shows
+  // what the owner will see under a real conversation: its messages as rows, not "Nic pod tym węzłem."
+  const MESSAGES = [{ role: "user", content: "Jak zaplanować tydzień?" }, { role: "assistant", content: "Zacznij od trzech priorytetów." }, { role: "user", content: "Dzięki, a co z budżetem?" }];
+  const form = new FormData();
+  form.append("file", new Blob([JSON.stringify(MESSAGES)]), "m1-card.json");
+  form.append("title", "M1 card");
+  const imported = await fetch(base + "/api/import", { method: "POST", body: form });
+  assert.ok(imported.ok, `import: ${imported.status}`);
+  const importEvents = (await imported.text()).split(/\r?\n/).filter(l => l.startsWith("data: ")).map(l => JSON.parse(l.slice(6)));
+  assert.ok(importEvents.some(e => e.type === "done") && !importEvents.some(e => e.type === "error"), JSON.stringify(importEvents));
+  const convList = await api("GET", "/api/conversations");
+  const convRows = Array.isArray(convList) ? convList : convList.conversations ?? convList.items;
+  // the importer names the conversation "[Import] <title>" (loom/src/import): the crumb will say so too — it was imported.
+  const conv = convRows.find(c => c.title === "M1 card" || c.title === "[Import] M1 card")?.id;
+  assert.ok(conv, `the imported conversation is listed (${JSON.stringify(convList).slice(0, 200)})`);
   const cardOf = () => api("POST", "/api/graph/card", { lang: "pl", address: "setting:temperature", conv_id: conv });
+  // The kernel's real card as a fixture of the unit test (tests/shell/node-card-state.test.mjs): the chip, the chain and Ustawienia agree.
+  writeFileSync(path.join(here, "../tests/shell/fixtures/graph-card-temperature.json"), JSON.stringify(await cardOf(), null, 2) + "\n");
   const chainOnScreen = () => page.getByTestId("card-chain-rows").locator("li").evaluateAll(els => els.map(li => ({
     level: li.dataset.testid.replace("card-chain-", ""), winning: li.dataset.winning === "true", role: li.dataset.role,
     value: li.querySelector(".ncard-chain-value")?.textContent ?? "" })));
@@ -509,11 +532,45 @@ try {
     };
     // The page is open on the conversation `conv` (saved view); its graph address is conv:<hex> for the database id c_<hex>
     // (loom/data/runtime/element_resolution.pack, projection_conv: prefix "conv:", same_as_prefix "c_").
-    await openAt("this_conversation", "conv:" + conv.replace(/^c_/, ""));
+    const thisConv = await openAt("this_conversation", "conv:" + conv.replace(/^c_/, ""));
+    // r2:b1: under the conversation are its messages, each as a row ("Ty: …" / "Model: …"), in the kernel's order.
+    assert.equal(thisConv.counts.total, MESSAGES.length, "every message of the conversation is a row");
+    assert.deepEqual((await rowsOf()).map(r => r.label), thisConv.children.map(c => c.label), "the rows are the messages, labelled as the kernel labels them");
+    for (const [i, c] of thisConv.children.entries()) assert.ok(c.label.includes(MESSAGES[i].content.slice(0, 12)), `row ${i} is the message text (${c.label})`);
+    assert.equal(await page.getByTestId("nav-empty").count(), 0, "no 'Nic pod tym węzłem.' on a conversation with messages");
     assert.equal(await back(), true);
     await nav().waitFor({ state: "detached" });
     const me = await openAt("me", "party:self");
     assert.ok(me.children.length > 0, "Ty has rows (the profile, preferences, interests, memory)");
+    // r2:b1: a profile slot's chip says what its evidence says ("pytanie z wywiadu — bez odpowiedzi"), never "Preset (ROM)" on your own
+    // profile; its card says where the answer is given (the interview) and has no empty "Skąd jest wartość" header.
+    const slots = me.children.filter(c => c.kind === "profile_slot");
+    assert.ok(slots.length > 0, "Ty has profile slots");
+    const shownRows = await rowsOf();
+    for (const s of slots) {
+      const row = shownRows.find(r => r.address === s.address);
+      assert.ok(s.evidence?.human, `${s.address}: the kernel says the evidence in words`);
+      assert.equal(row.chip, s.evidence.human, `${s.address}: the chip is the evidence`);
+      assert.notEqual(row.chip, word("chip.rom"), `${s.address}: not "Preset (ROM)" on the owner's profile`);
+    }
+    const slot = slots[0];
+    const slotCard = await api("POST", "/api/graph/card", { lang: "pl", address: slot.address });
+    await page.getByTestId(`nav-row-card-${slot.address}`).tap();
+    await page.getByTestId("node-card").waitFor();
+    await page.getByTestId("card-loading").waitFor({ state: "detached" });
+    assert.equal(await page.getByTestId("card-label").innerText(), slotCard.label);
+    assert.equal(await page.getByTestId("card-chip").innerText(), slotCard.evidence.human);
+    assert.equal(await page.getByTestId("card-profile-interview").innerText(), words[slotCard.status === "known" ? "card.profile.answered_in_interview" : "card.profile.answer_in_interview"]);
+    assert.equal(await page.getByTestId("card-chain").count(), 0, "no empty chain header");
+    assert.equal(await page.getByTestId("card-no-chain").innerText(), words["card.no_value"]);
+    const cardText = await page.getByTestId("node-card").innerText();
+    assert.ok(cardText.indexOf(words["card.profile.answer_in_interview"]) < cardText.indexOf(word("actions")), "the interview line comes before the generic actions");
+    await page.getByTestId("card-label").scrollIntoViewIfNeeded();
+    await noMissingWord();
+    await layoutFits();
+    await shot("m1-navigator-card-profile");
+    await page.getByTestId(`nav-row-${slot.address}`).tap();
+    await page.getByTestId("node-card").waitFor({ state: "detached" });
     assert.equal(await back(), true);
     await nav().waitFor({ state: "detached" });
     assert.deepEqual(errors, [], "no page errors");

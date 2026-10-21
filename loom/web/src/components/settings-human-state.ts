@@ -4,6 +4,7 @@
 // word of its own; the words come from presentation.settings_human (a missing word shows its id), and the card of a field is the
 // node card of the navigator (NodeCard.tsx), so there is one place that writes a value.
 import type { ResolvedField, SettingsResolved } from "../api/graph-projection";
+import { countPhrase } from "../shell/plural";
 import { dataLabel, type ShellT } from "../shell/text";
 import { evidenceText } from "./navigator-state";
 import { BASELINE_LEVELS } from "./node-card-state";
@@ -39,9 +40,7 @@ export function totals(doc: Pick<SettingsResolved, "groups">): { fields: number;
 /** "5 pól", "8 grup": the plural form comes from the language (Intl.PluralRules), the word of the form from the catalogue. */
 export function countWord(kind: "fields" | "yours" | "groups", n: number, language: string, t: ShellT): string {
   if (kind === "yours") return t("count.yours", { n: String(n) });
-  let category = "other";
-  try { category = new Intl.PluralRules(language).select(n); } catch { /* an unknown language: the word for "other" */ }
-  return t(`count.${kind}.${category}`, { n: String(n) });
+  return countPhrase(t, kind, n, language);   // r2:b1: the one plural helper (shell/plural.ts), shared with the navigator
 }
 
 /** "N pól · M Twoje". */
