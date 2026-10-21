@@ -13,8 +13,7 @@ import sys
 LOG = sys.argv[2] if len(sys.argv) > 2 else None
 AGENT_TOOL = ("usage_compact", {"dry_run": True})
 AGENT_DONE = "Agent testowy: gotowe."
-RULES = ((("agent",), "agent.run"),
-         (("boil", "streść", "streszcz", "summar"), "summarise"),
+RULES = ((("boil", "streść", "streszcz", "summar"), "summarise"),
          (("wytłumacz", "wytlumacz", "explain"), "explain_simply"),
          (("tłumacz", "tlumacz", "translat"), "translate"))
 

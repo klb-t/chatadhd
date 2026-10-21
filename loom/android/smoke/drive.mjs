@@ -698,7 +698,7 @@ const serverChecks = [
   // irreversible tool (usage_compact): the policy local_reversible proposes it, the run stops, the chat shows the block;
   // Accept resumes the run with the transcript, and the provider then answers with text.
   ["agent proposals: the run stops on a proposal, Accept resumes it to the end", async () => {
-    await send("agent: skompaktuj dziennik zużycia");
+    await send("poproś agenta żeby uporządkował moje notatki");   // the example phrase of agent.run: a rule routes it locally
     const proposed = await until("the action proposal or the agent block",
       async () => (await has("chat-agent-proposal")) ? "agent" : (await has("chat-action-proposal")) ? "action" : false, 90, 300);
     if (proposed === "action") await send("tak");
