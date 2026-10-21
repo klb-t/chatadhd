@@ -6,6 +6,7 @@
   "cache": "auto",
   "sniff": {"head_bytes": 65536, "json_whole_limit_bytes": 67108864, "nested_zip_limit_bytes": 0},
   "read": {"keep_raw": false, "streaming_array_min_bytes": 5000000},
+  "layout": {"dir_title_chars": 80, "note": "the title part of a conversation directory name (profile katalog_rozmowy), characters; 0 = no cut"},
   "tokens": {"chars_per_token": {"en": 4.0, "pl": 3.2, "default": 3.6}, "note": "local estimate; the inventory shows the constants"},
   "thinking": {"full_min_chars": 200, "reasoning_share": 0.5},
   "language_detection": {"min_chars": 20, "profiles": "langdetect/profiles.json"},

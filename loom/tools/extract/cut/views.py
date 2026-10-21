@@ -28,6 +28,7 @@ class RenderCtx:
         self.att_paths = att_paths
         self.aggregate = aggregate
         self.summaries = summaries or {}
+        self.dirs: dict[str, str] = {}   # entry.key → "<stamp>-<title>" (op_cut computes it once, attachments use the same names)
         self.notes: list[str] = []
 
 
@@ -206,7 +207,7 @@ def conversation_fields(e: Entry, ctx: RenderCtx, cut: dict[str, Any], messages:
         first, last = stamps[0], stamps[-1]
     st = u.stats or {}
     return {
-        "key": e.key, "uid": u.uid, "uid_hex": uid_hex(u.uid), "ext_id": u.ext_id,
+        "key": e.key, **({"dir": ctx.dirs[e.key]} if e.key in ctx.dirs else {}), "uid": u.uid, "uid_hex": uid_hex(u.uid), "ext_id": u.ext_id,
         "title": red.text(title, where, "title"), "folder": e.folder,
         "created": t.render(u.created, u.created_utc), "updated": t.render(u.updated, u.updated_utc),
         "created_src": u.created, "updated_src": u.updated, "created_utc": u.created_utc,

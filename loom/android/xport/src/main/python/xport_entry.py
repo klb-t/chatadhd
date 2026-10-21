@@ -289,8 +289,13 @@ def catalog():
                    for k, v in sorted(_sess.call({"call": "ops"})["ops"].items())
                    if k not in skip and not k.startswith("edit.") and v.get("implemented", True) and "api" in (v.get("faces") or ["api"])]
             red = [{"id": k, "label": _lbl(v.get("label"), k)} for k, v in sorted(ds.entries("redaction").items())]
-            prof = [{"id": k, "label": _lbl(v.get("label"), k), "kind": v.get("kind") or ""} for k, v in sorted(ds.entries("profiles").items())]
-            return json.dumps({"ok": True, "edits": edits, "ops": ops, "redaction": red, "profiles": prof}, ensure_ascii=False)
+            prof = [{"id": k, "label": _lbl(v.get("label"), k), "description": _lbl(v.get("description"), ""), "kind": v.get("kind") or ""}
+                    for k, v in sorted(ds.entries("profiles").items())]
+            # ready recipes (data/macros): a Polish name and a one-line description each; applied with the "macro" call
+            macros = [{"id": k, "label": _lbl(v.get("label"), k), "description": _lbl(v.get("description"), ""), "steps": len(v.get("steps") or [])}
+                      for k, v in sorted(ds.entries("macros").items())]
+            return json.dumps({"ok": True, "edits": edits, "ops": ops, "redaction": red, "profiles": prof, "macros": macros},
+                              ensure_ascii=False)
         except Exception as exc:
             return _fail(exc)
 

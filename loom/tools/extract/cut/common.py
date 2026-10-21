@@ -20,6 +20,41 @@ def safe_name(text: str, *, fallback: str = "item") -> str:
     return s[:120]
 
 
+_DIR_BAD = re.compile(r'[\x00-\x1f\x7f/\\:*?"<>|]+')
+FS_COMPONENT_BYTES = 255  # the file-system limit of one path component (ext4, f2fs, NTFS), not a Loom limit
+
+
+def dir_title(text: Optional[str], *, fallback: str = "bez_tytułu", max_chars: int = 80) -> str:
+    """A conversation title as one file-name component: letters of any language stay, whitespace becomes ``_``,
+    characters no file system accepts (``/ \\ : * ? " < > |``, control characters) are dropped.  ``max_chars`` 0 = no cut
+    (the file-system limit of one component still applies)."""
+    s = re.sub(r"\s+", "_", _DIR_BAD.sub(" ", text or "").strip()).strip("._")
+    if max_chars and len(s) > max_chars:
+        s = s[:max_chars]
+    while len(s.encode("utf-8")) > FS_COMPONENT_BYTES - 40:  # room for the stamp and a uid suffix
+        s = s[:-1]
+    return s.strip("._") or fallback
+
+
+def conversation_dirs(entries: list["Entry"], stamp: Any, title: Any, *, max_chars: int = 80) -> dict[str, str]:
+    """``entry.key`` → ``<stamp>-<title>``, one directory per conversation directly under the package root.  Two
+    conversations with the same stamp and title (case-insensitively) get the uid in front of the second one's end."""
+    out: dict[str, str] = {}
+    used: set[str] = set()
+    for e in entries:
+        name = f"{stamp(e)}-{dir_title(title(e), max_chars=max_chars)}"
+        if name.casefold() in used:
+            name = f"{name}-{uid_hex(e.unit.uid)[:8]}"
+        n = 1
+        base = name
+        while name.casefold() in used:
+            n += 1
+            name = f"{base}-{n}"
+        used.add(name.casefold())
+        out[e.key] = name
+    return out
+
+
 def archive_slug(label: str) -> str:
     return safe_name(label.replace("!", "__"), fallback="archive")
 
