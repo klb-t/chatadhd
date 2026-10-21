@@ -87,6 +87,7 @@ export default function App() {
   const [activeConvId, setActiveConvId] = useState<string | null>(null);
   const [activePanel, setActivePanel] = useState<PanelId | null>(null);
   const [settingsView, setSettingsView] = useState<"" | "all_fields">("");   // M1-W0 (3): a request to enter a secret opens Settings at Silnik › Wszystkie pola
+  const [navigatorPerspectives, setNavigatorPerspectives] = useState<string[]>([]);   // M1-W1a: perspectives the navigator opens with (from "Pokaż w grafie")
   const [navigatorFocus, setNavigatorFocus] = useState("");   // M1-W0: where menu ⋮ › Graf opens the navigator ("" = root)
   const [convRefreshKey, setConvRefreshKey] = useState(0);
   const [knowledgeOpen, setKnowledgeOpen] = useState(false);
@@ -175,7 +176,7 @@ export default function App() {
 
   const onMessagesChanged = useCallback(() => setConvRefreshKey(key => key + 1), []);
   // M1-W0 r2:b4: one screen for "the graph" — the navigator (the same ⋮ › Graf opens); the old panels stay reachable in the Workshop.
-  const openNavigator = useCallback((focus: string) => { setNavigatorFocus(focus); setActivePanel("navigator"); }, []);
+  const openNavigator = useCallback((focus: string, perspectives: string[] = []) => { setNavigatorPerspectives(perspectives); setNavigatorFocus(focus); setActivePanel("navigator"); }, []);
   const profileUi = useMemo(() => ({
     selectConversation: onSelectConversation, conversationCreated: onConversationCreated,
     openKnowledge: () => setKnowledgeOpen(true),
@@ -229,7 +230,7 @@ export default function App() {
               <div className="drawer-body">
                 {activePanel === "graph" && <GraphView convId={activeConvId} />}
                 {activePanel === "graph-entry" && <GraphEntryPanel profileHost={userProfileHost} openers={entryOpeners} />}
-                {activePanel === "navigator" && <GraphNavigator profileHost={userProfileHost} convId={activeConvId} language={uiLanguage} initialFocus={navigatorFocus} layout={config.navigator_layout} />}
+                {activePanel === "navigator" && <GraphNavigator profileHost={userProfileHost} convId={activeConvId} language={uiLanguage} initialFocus={navigatorFocus} initialPerspectives={navigatorPerspectives} layout={config.navigator_layout} />}
                 {activePanel === "perspectives" && <PerspectivesPanel convId={activeConvId} />}
                 {activePanel === "view-engine" && <ViewEnginePanel />}
                 {activePanel === "memory" && <MemoryPanel />}
@@ -331,7 +332,7 @@ export default function App() {
   );
   if (layout === "chat") return (
     <ShellText.Provider value={t}><ShellLanguage.Provider value={uiLanguage}>
-      <ChatShell profileHost={userProfileHost} convId={activeConvId} onSelect={setActiveConvId} onCreated={onConversationCreated}
+      <ChatShell profileHost={userProfileHost} convId={activeConvId} onSelect={setActiveConvId} onCreated={onConversationCreated} onShowInGraph={openNavigator}
         refreshKey={convRefreshKey} onMessagesChanged={onMessagesChanged} planned={{ windows: true }} behindOverlay={activePanel !== null || knowledgeOpen}
         actions={{ panel: (id) => { if (id === "settings") setSettingsView(""); setActivePanel(id as PanelId); }, navigator: (focus) => { setNavigatorFocus(focus); setActivePanel("navigator"); }, knowledge: () => setKnowledgeOpen(true), workshop: () => setLayout("workshop") }} />
       {panels}

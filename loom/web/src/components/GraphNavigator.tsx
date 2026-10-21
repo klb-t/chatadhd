@@ -31,6 +31,8 @@ interface Props {
   language: string;
   /** Where the navigator opens ("" = the root of the graph). */
   initialFocus?: string;
+  /** The perspectives ticked when it opens (e.g. "Wysłane do modelu" from the sheet "Co wysłaliśmy"); [] = the node's own relations. */
+  initialPerspectives?: string[];
   /** The setting navigator_layout as loaded (both | list | map); anything else is the preset both. */
   layout?: unknown;
 }
@@ -41,10 +43,10 @@ function StepLayer({ index, onClose }: { index: number; onClose: (index: number)
   return null;
 }
 
-export default function GraphNavigator({ profileHost, convId, language, initialFocus = "", layout: layoutSetting }: Props) {
+export default function GraphNavigator({ profileHost, convId, language, initialFocus = "", initialPerspectives, layout: layoutSetting }: Props) {
   const words = usePresentationFeature(profileHost, "graph_screen");
   const t = useMemo(() => shellTranslator(words.feature, language), [words.feature, language]);
-  const [state, setState] = useState<NavigatorState>(() => initialState(initialFocus));
+  const [state, setState] = useState<NavigatorState>(() => ({ ...initialState(initialFocus), ...(initialPerspectives?.length ? { perspectives: initialPerspectives } : {}) }));
   const [result, setResult] = useState<GraphNavigateResult | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

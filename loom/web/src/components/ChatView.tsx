@@ -43,6 +43,9 @@ import { sourceHistoryUnavailable } from "../shell/source-notice";
 import { requestOpenPanel as requestPanel } from "../context/open-settings";
 import { createPortal } from "react-dom";
 import ComposerMenu from "../shell/ComposerMenu";
+import ContextReceipt from "./ContextReceipt";
+import { useReceiptWords } from "./use-receipt-words";
+import { lineText, recordedReceipt, requestOf } from "./context-receipt-state";
 import { useLayer } from "../shell/use-layer";
 import { attachmentName, attachmentRef, conversationModel, effectiveMenu, MODEL_SETTING, labelText, onSwitches, refusedAttachment, requestFields, switchToggle, withConversationModel, type MenuFlag, type MenuFlags, type MenuIssue } from "../shell/composer-menu";
 import featurePack from "../onboarding/generated/conversation-view.json";
@@ -89,6 +92,8 @@ interface Props {
   onMessagesChanged?: () => void;
   /** "chat": the full-screen chat app (R56); "workshop" (default): every control as before. */
   variant?: "chat" | "workshop";
+  /** M1-W1a: "Pokaż w grafie" of the sheet "Co wysłaliśmy" - the app opens the navigator on the request with the perspective. */
+  onShowInGraph?: (focus: string, perspectives: string[]) => void;
 }
 
 interface StreamState {
@@ -124,10 +129,19 @@ function safeNotice(feature: Parameters<typeof featureMessage>[0], id: string): 
 interface ComposerAttachment { key: string; name: string; state: "uploading" | "ready" | "failed"; ref?: string; preview?: string; reason?: string }
 let attachmentCounter = 0;
 
-export default function ChatView({ profileHost, settingsKey = "default", convId, onConversationCreated, profile, runProfileOperation, availableOperations, refreshKey, onMessagesChanged, variant = "workshop" }: Props) {
+export default function ChatView({ profileHost, settingsKey = "default", convId, onConversationCreated, profile, runProfileOperation, availableOperations, refreshKey, onMessagesChanged, variant = "workshop" , onShowInGraph }: Props) {
   const chat = variant === "chat";
   const t = useShellText();
   const shellLanguage = useShellLanguage();
+  // M1-W1a: the sheet "Co wysłaliśmy" (message id it is open for), the words of it, and the setting receipt_link (visible = a line under every answer).
+  const receiptT = useReceiptWords(profileHost, shellLanguage);
+  const [receiptFor, setReceiptFor] = useState<string | null>(null);
+  const [receiptLink, setReceiptLink] = useState<string>("visible");
+  useEffect(() => {
+    let live = true;
+    api.getConfig().then(cfg => { if (live && typeof cfg.receipt_link === "string") setReceiptLink(cfg.receipt_link); }, () => undefined);
+    return () => { live = false; };
+  }, [refreshKey]);
   const [convRecord, setConvRecord] = useState<Conversation | null>(null);
   const [hasKey, setHasKey] = useState<boolean | null>(null);
   const [actionsFor, setActionsFor] = useState<string | null>(null);
@@ -1229,8 +1243,15 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
                     <button aria-label={t("next_version")} disabled={at < 0 || at >= versions.length - 1} onClick={() => switchVersion(versions[at + 1].id)}>▶</button>
                   </span>;
                 })()}
+                <button onClick={() => setReceiptFor(m.id)} data-testid="msg-receipt">{receiptT("menu.entry")}</button>
                 <button onClick={() => toggleExclude(m)} data-testid="msg-exclude" disabled={!supports("message.exclude") || !messageCan(m, "set_status") || m.status === "version" || m.status === "deleted"}>{m.status === "excluded" ? t("restore") : t("exclude")}</button>
               </div>}
+              {chat && m.role === "assistant" && editingId !== m.id && receiptLink === "visible" && (
+                <p className="crs-line" data-testid="context-line" data-msg={m.id}>
+                  <button type="button" data-testid="context-line-open" onClick={() => setReceiptFor(m.id)}>
+                    {lineText(recordedReceipt(requestOf(visibleMessages, m.id)), receiptT, shellLanguage)}</button>
+                </p>
+              )}
               {!chat && <div className="actions">
                 {m.role === "user" && editingId !== m.id && (
                   <button onClick={() => startEdit(m)} data-testid="edit-message" disabled={!supports("message.edit") || !messageCan(m, "edit")}>
@@ -1257,10 +1278,12 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
             </div>
           );
         })}
-        {lastTrace && lastTrace.convId === convId && !visibleMessages.some((m) =>
+        {!chat && lastTrace && lastTrace.convId === convId && !visibleMessages.some((m) =>
           m.id === lastTrace.userId && recordedContext(m.metadata?.context_trace)) && (
           <ContextTrace trace={lastTrace.trace} />
         )}
+        {chat && receiptFor && <ContextReceipt profileHost={profileHost} language={shellLanguage} convId={convId ?? null} msgId={receiptFor}
+          onClose={() => setReceiptFor(null)} onShowInGraph={onShowInGraph} />}
         {displayedPending && !visibleMessages.some(message => message.id === currentUserIdRef.current) && (
           <div className="msg user">
             <div className="meta">user</div>

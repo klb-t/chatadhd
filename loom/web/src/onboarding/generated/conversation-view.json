@@ -2302,7 +2302,10 @@
             "modify.busy": "Changing…",
             "menu.entry": "What we sent",
             "line.summary": "{{profile}} · items: {{items}} · ~{{tokens}} tok.",
-            "line.profile_none": "settings"
+            "line.profile_none": "settings",
+            "action.steps": "wider,deeper,narrower,shallower",
+            "tokens.short": "{{n}} tok.",
+            "sheet.dialog": "What we sent to the model"
           },
           "pl": {
             "title": "Co wysłaliśmy",
@@ -2418,7 +2421,10 @@
             "modify.busy": "Zmieniam…",
             "menu.entry": "Co wysłaliśmy",
             "line.summary": "{{profile}} · pozycji: {{items}} · ~{{tokens}} tok.",
-            "line.profile_none": "ustawienia"
+            "line.profile_none": "ustawienia",
+            "action.steps": "wider,deeper,narrower,shallower",
+            "tokens.short": "{{n}} tok.",
+            "sheet.dialog": "Co wysłaliśmy do modelu"
           }
         }
       }

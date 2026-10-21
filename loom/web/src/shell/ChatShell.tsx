@@ -24,6 +24,8 @@ interface Props {
   convId: string | null;
   onSelect: (id: string | null) => void;
   onCreated: (id: string) => void;
+  /** "Pokaż w grafie" of the sheet "Co wysłaliśmy": the app opens the navigator at the focus with these perspectives. */
+  onShowInGraph?: (focus: string, perspectives: string[]) => void;
   refreshKey: number;
   onMessagesChanged: () => void;
   actions: ShellActions;
@@ -38,7 +40,7 @@ function bridge(): { openConnection?: () => void } | undefined {
 }
 
 /** The default view (R56): the full-screen standard chat app. Menu entries come from data (shell/data/layouts.json, profile Czat). */
-export default function ChatShell({ profileHost, convId, onSelect, onCreated, refreshKey, onMessagesChanged, actions, planned, behindOverlay = false }: Props) {
+export default function ChatShell({ profileHost, convId, onSelect, onCreated, refreshKey, onMessagesChanged, actions, planned, behindOverlay = false, onShowInGraph }: Props) {
   const t = useShellText();
   const [drawer, setDrawer] = useState(false);
   const [menu, setMenu] = useState(false);
@@ -109,7 +111,7 @@ export default function ChatShell({ profileHost, convId, onSelect, onCreated, re
         </>}
         <main className="shell-main" {...inertAttr(sheet !== null)}>
           <ChatView profileHost={profileHost} settingsKey="shell" convId={convId} onConversationCreated={onCreated}
-            refreshKey={refreshKey} onMessagesChanged={onMessagesChanged} variant="chat" />
+            refreshKey={refreshKey} onMessagesChanged={onMessagesChanged} variant="chat" onShowInGraph={onShowInGraph} />
         </main>
         {sheet && <>
           <div className="drawer-backdrop" onClick={() => setSheet(null)} />
