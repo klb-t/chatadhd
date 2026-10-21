@@ -32,6 +32,7 @@ bez commita przepada, kontekst trzeba cache'ować od nowa), albo zostawić je ni
 | 00:30 | 16 % | 5 % | 3 (W0 w pakietach od 00:18, poprawka logowania, P39 projekt) + S1 + naprawa X-Port | linia: 13 %; po zatrzymaniu długiego agenta W0 tempo 00:14→00:30: +5 pkt w 15,5 min ≈ 0,32 pkt/min, czyli dokładnie tyle, ile trzeba do końca okna |
 | 01:28 | 36 % | 10 % | 3 (W0 pakiety P1–P2 gotowe, P3 w toku; poprawka logowania; P39 w sędziowaniu) + S1 | linia: 33 %; 00:30→01:28: +20 pkt w 58 min ≈ 0,34 pkt/min; tydzień +5 pkt (stosunek 5 h : 7 dni ≈ 4 : 1) |
 | 02:00 | 48 % | 13 % | 3 (W0 P1–P4 gotowe, P5 w toku; poprawka logowania; P39 synteza) + S1 | linia: 43,7 %; 01:28→02:00: +12 pkt w 33 min ≈ 0,37 pkt/min (lekko nad linią); tydzień 13 % przy linii 10,7 % |
+| 02:18 | 50 % | 13 % | 2 (W0 P5 w toku; poprawka logowania) + paczki X-Port (2 po kolei, zakończone) + S1 | linia: 49,3 %; 02:00→02:18: +2 pkt w 18 min ≈ 0,11 pkt/min — poniżej potrzebnych 0,33; wolne miejsce w oknie, brak gotowej paczki bez kompilacji jądra (dysk 7 GB, drugi build jądra się nie mieści) |
 
 **Odczyt z 00:14:** od 00:10 do 00:14 przybyły 3 punkty w około 4 minuty (≈ 0,8 pkt/min),
 od 00:05 średnio ≈ 0,6 pkt/min. Do reszty okna (276 min) zostaje 89 punktów, czyli stać nas

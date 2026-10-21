@@ -1,4 +1,4 @@
-# Kolejka S1 — stan 2026-10-21 02:05 UTC
+# Kolejka S1 — stan 2026-10-21 02:25 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
@@ -14,23 +14,22 @@ wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu
 - **Poprawka przerywanego zrywania logowania** — gałąź `claude/fix-login-drop`, worktree
   `/home/user/wt/extract`, 2 commity; po zakończeniu bramka i FF `main` **przed** bramką W0
   (inaczej bramki bywają losowo czerwone).
-- **X-Port Android — pakiety poprawek** (workflow `tools/workflows/xport-android-polish.js`, worktree
-  `/home/user/wt/xport`, lokalna gałąź `xport-polish` → `origin/claude/xport-android`; build `xport-apk.yml`
-  na push): A = pięć usterek UX od S2 (liczba mnoga, bajty zamiast „0 KB”, nazwy kopii i etykiety po
-  polsku w Przeglądarce, polskie nazwy pól w Operacjach, widoczna zakładka Eksport); B = gotowe przepisy
-  „zostaw tylko znaczniki czasu” i „katalog /[timestamp]-[tytuł]”, sprawdzenie, że wybór po danych
-  kodowanych jest w zakładce Wybór (silnik już ma wykrywanie: commit `98bd66a8`, baza64/data:/hex/ucieczki),
-  merge `main` do gałęzi. **Po zakończeniu:** numer przebiegu do S2 (ponowny test na emulatorze), link dla
-  właściciela, potem scalenie `claude/xport-android` do `main` przez bramkę (testy `tools.extract`).
-
 ## Zrobione od ostatniej wersji
+- **X-Port Android, pakiety A i B** (gałąź `claude/xport-android`, head `db469050`, build `xport-apk.yml`
+  przebieg 39532408090 = success, artefakt `xport-apk` 12315942830): pięć poprawek UX, polskie etykiety,
+  przepisy „zostaw tylko znaczniki czasu” (makro) i „katalog rozmowy” (profil eksportu), wybór po danych
+  kodowanych w zakładce Wybór, `main` scalone do gałęzi. Niesprawdzone na emulatorze — S2 dostał numer
+  przebiegu i ma opisać układ. **Do zrobienia:** wynik S2; scalenie `claude/xport-android` do `main`
+  przez bramkę (testy `tools.extract`) — dopiero po wyniku S2.
 - **P39 projekt gotowy i na `main`** (`bbdaca7f`): `docs/architecture/P39_INTERAKCJA_MULTIMODALNA_2026-10-21.md`
   (specyfikacja po weryfikacji handoffu, trzy tory T/D/E, bramki T0–E2, 14 ryzyk, hipotezy H1–H9) i
   `docs/reports/P39_WORK_ITEMS.json` (26 pozycji z zależnościami). Pierwsza dotykalna rzecz: **T0** (cztery
   pozycje: T-A1 → T-K1 → T-K2 → T-K3, „Dokończyć przerwaną odpowiedź?”), ale dopiero po M1-W0. Następne
   pozycje P39 startują po scaleniu W0, nie wcześniej.
 
-## Czeka na miejsce w oknie (start, gdy skończy się któryś z trzech)
+## Czeka na wolny worktree z buildem jądra (dysk 7 GB: drugi build jądra się nie mieści)
+Kolejność po zakończeniu poprawki logowania i jej bramce: worktree `/home/user/wt/extract` (build 2,1 GB)
+przestawić na nowy `main` i użyć go kolejno do: R38, potem M1-D2 → M1-K1.
 1. **R38 — dwie uwagi S2** (pliki S1): (1) wiadomość wyniku `agent.run` niesie cały JSON pętli
    w treści obok bloku Akceptuj/Odrzuć — `body_of` ma pokazać tekst/propozycje; (2) po „Akceptuj”
    końcowa odpowiedź agenta (tekst wznowionego przebiegu) nigdzie nie trafia do rozmowy. Poprawka
