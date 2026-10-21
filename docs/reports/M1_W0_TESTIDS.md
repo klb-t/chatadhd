@@ -75,7 +75,7 @@ systemowym Wstecz na czacie, gdzie powłoka Androida ma zapytać o wyjście (M1-
 |---|---|---|
 | czat | `chat-shell` | korzeń układu czatu (zawsze obecny) |
 | menu ⋮ | `shell-menu-toggle` (`aria-expanded`), `shell-menu` (`role=menu`), `shell-menu-<id>` (`role=menuitem`) | `<id>` = id pozycji z `layouts.json`: `graph`, `settings`, `me`, `this_conversation`, `views`, `semantic`, `connection` (tylko `when: android_shell`), `workshop`; **nie ma** `shell-menu-memory` ani `shell-menu-knowledge` |
-| panel | `panel-<id>` (szuflada; `panel-settings`, `panel-navigator`, `panel-user-knowledge`, `panel-graph`), `close-panel` (×) | jeden wpis historii na otwarty panel; `×` = to samo co Wstecz |
+| panel | `panel-<id>` (szuflada; `panel-settings`, `panel-navigator`, `panel-user-knowledge`, `panel-graph`; `role="dialog"`, `aria-modal="true"`, `aria-label` = tytuł), `close-panel` (×) | jeden wpis historii na otwarty panel; `×` = to samo co Wstecz; po otwarciu fokus jest w szufladzie (`document.activeElement` w środku), po zamknięciu wraca na `shell-menu-toggle` |
 | wstecz | `window.__loomBack()` → `true` gdy zamknął warstwę (menu, szufladę, arkusz, kartę, krok ścieżki, panel), `false` na dnie stosu | synchroniczne; Escape na komputerze robi to samo |
 
 ## Nawigator — lista (paczka P2, `loom/web/src/components/GraphNavigator.tsx`; e2e `loom/web/e2e/m1-navigator-native.mjs`)
@@ -89,7 +89,7 @@ Otwarcie: `shell-menu-toggle` → `shell-menu-graph` → panel `panel-navigator`
 | szukanie | `nav-search-toggle`, `nav-search-input` | lupa otwiera/zamyka pole; pole = `graph.navigate query` na tym poziomie |
 | ognisko | `nav-focus-why` | jedno zdanie „po co” ogniska (poza korzeniem) |
 | lista | `nav-rows` (`data-shown`, `data-total`), `nav-loading`, `nav-empty`, `nav-error` | lista `li` wierszy; stany |
-| wiersz | `nav-row-<adres>` (`data-has-children`), `nav-count`, `nav-chip`, `nav-evidence`, `nav-status`, `nav-row-card-<adres>` | wiersz (dotknięcie: wejście albo karta liścia), licznik, chip pochodzenia, chip dowodu, chip stanu, `⋯` (otwiera/zamyka kartę węzła, `aria-expanded`) |
+| wiersz | `nav-row-<adres>` (`data-has-children`), `nav-count` (`data-known`: `true` = liczba w linii etykiety, `false` = „nieznane (powód)” we własnej linii pod etykietą), `nav-chip`, `nav-evidence`, `nav-status`, `nav-row-card-<adres>` | wiersz (dotknięcie: wejście albo karta liścia), licznik, chip pochodzenia, chip dowodu, chip stanu, `⋯` (otwiera/zamyka kartę węzła, `aria-expanded`) |
 | uczciwość | `nav-collapsed`, `nav-hidden`, `nav-unknown-<źródło>` | zwinięte przez budżet, ukryte przez Ciebie, źródło bez odpowiedzi (powód) |
 | pasek | `nav-bar`, `nav-bar-perspective`, `nav-bar-wider`, `nav-bar-narrower`, `nav-bar-deeper`, `nav-bar-shallower`, `nav-bar-actions`, `nav-bar-view`, `nav-bar-planned`, `nav-budget` | pasek dolny; `planned` = linia po dotknięciu przycisku bez obsługi; `budget` = „budżet N węzłów na poziom · głębia H · pokazane z wszystkich” |
 
@@ -133,7 +133,7 @@ Wstecz: otwarte menu Widok ▾ jest warstwą `navigator-view` (zamyka się pierw
 | ekran | testid | znaczenie |
 |---|---|---|
 | korzeń | `settings-human`, `shum-loading`, `shum-error` + `shum-retry` | korzeń ekranu; stany wczytywania i błędu jądra |
-| lista grup | `shum-intro`, `shum-total` (`data-fields`, `data-yours`), `shum-yours-help`, `shum-filter` (`role=switch`, `aria-checked`), `shum-groups` | opis, suma „N pól · M Twoje”, filtr „Pokaż tylko zmienione”, lista ośmiu grup |
+| lista grup | `shum-intro`, `shum-total` (`data-fields`, `data-yours`), `shum-yours-help`, `shum-filter` (`role=switch`, `aria-checked`), `shum-groups`, `shum-hidden`, `shum-proposals` | opis, suma „N pól · M Twoje”, filtr „Pokaż tylko zmienione”, lista ośmiu grup; `shum-hidden` = linia „N kluczy ukrytych” (tylko gdy `hidden_keys` z `settings.resolved` nie jest puste), `shum-proposals` = linia „Propozycje: <dziś> <powód>” z `proposals_status` |
 | grupa (wiersz) | `shum-group-<id>` (`data-fields`, `data-yours`), `shum-group-open-<id>` (przycisk), `shum-group-count-<id>` (tekst „N pól · M Twoje”) | `<id>` = id grupy z jądra: `ty`, `rozmowa`, `modele`, `kontekst`, `interfejs`, `prywatnosc`, `koszty`, `silnik`; suma `data-fields` = `counts.fields` z `settings.resolved` |
 | widok grupy | `shum-group-view-<id>` (`data-fields`, `data-shown`), `shum-back`, `shum-group-why`, `shum-group-view-count`, `shum-empty`, `shum-sub-<podgrupa>`, `shum-fields-<id>` | po otwarciu grupy; `shum-back` = „Wróć do grup ustawień” |
 | pole | `shum-field-<klucz>` (`data-address`, `data-planned`), `shum-field-main-<klucz>` (rozwija szczegóły, `aria-expanded`), `shum-label-<klucz>`, `shum-value-<klucz>`, `shum-why-<klucz>`, `shum-chip-provenance-<klucz>`, `shum-chip-evidence-<klucz>`, `shum-chip-status-<klucz>`, `shum-chip-profile-<klucz>`, `shum-planned-<klucz>`, `shum-card-btn-<klucz>` (⋯ = karta) | wiersz pola; np. `shum-field-temperature` (Rozmowa), `shum-chip-provenance-temperature` |

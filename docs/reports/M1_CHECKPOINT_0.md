@@ -235,6 +235,37 @@ oddaje decyzję powłoce (`window.__loomBack()` zwraca `false` — tam Android p
   kierunek, nazwy węzłów i brak zdania znaczenia), `test:m1-settings` 9/9; 12 zrzutów zapisanych ponownie przez te testy. Nie
   uruchomione: pełny `ctest`, pełne `npm run e2e`, `android-smoke`, sonda Warsztatu w przeglądarce (słowo sprawdzone w bundlu).
 
+## Co doszło w poprawkach r1:b6 (2026-10-21, fakty z przebiegu)
+
+- **Brakujące słowo pokazuje swój identyfikator, nie angielski ekran:** tłumacz ekranów (`shell/text.ts`) bierze katalog języka
+  w całości albo nie (`featureInLanguage(…, { partial: true })`): gdyby polskiemu katalogowi zabrakło słowa, na ekranie stoi jego
+  id (np. `new_chat`), reszta po polsku — wcześniej cały ekran przełączał się po cichu na angielski. Propozycje w czacie zachowują
+  dawną zasadę „jeden język na odpowiedź” (bez opcji). Dziś katalogi są kompletne (testy parzystości kluczy); to zabezpieczenie,
+  nie naprawa czegoś widocznego. Test: `shell.test.mjs` „a word a language lacks shows its id”.
+- **Każda nakładka jest oknem dialogowym dla czytnika ekranu:** szuflada panelu (Graf, Ustawienia, Ty, Ta rozmowa, Warsztat…),
+  arkusz Wiedzy i arkusze Widoki/Analiza mają `role="dialog"`, `aria-modal="true"` i `aria-label` = tytuł; fokus wchodzi do
+  szuflady przy otwarciu (chyba że pole w środku samo go wzięło) i wraca na przycisk ⋮ przy zamknięciu (`shell/use-dialog-focus.ts`;
+  pozycja menu znika razem z menu, więc powrót idzie na ⋮). Krzyżyk arkuszy mówi „Zamknij: <ekran>” jak w panelach. Pole
+  wyszukiwania nawigatora ma nazwę (`aria-label`), nie tylko podpowiedź. E2E sprawdza rolę, nazwę, fokus w środku po otwarciu
+  i na ⋮ po Wstecz.
+- **„nieznane (powód)” we własnej linii pod etykietą:** licznik nieznany (`data-known="false"`, klasa `gnav-count-unknown`)
+  zajmuje całą szerokość pod nazwą i jest czytany od lewej; liczba zostaje w linii nazwy po prawej. Zrzut
+  `m1-navigator-root-list.png`; e2e mierzy geometrię obu przypadków.
+- **Etykiety na mapie — bez zmian:** od r1:b1 `placeLabels` rysuje tylko etykiety, które nie nachodzą na inne (fokus i dotknięty
+  znacznik pierwsze; test „labels on the plane are drawn only where they can be read”); na bieżącym `m1-navigator-map.png` nie ma
+  nakładających się napisów — „Nowe działa…”, „Gdzie traf…” są wśród znaczników bez etykiety, jedno dotknięcie od pełnej nazwy
+  w linii pod mapą. Uwaga z przeglądu dotyczyła wcześniejszego zrzutu.
+- **Start z `#czat/<id>` wczytuje konfigurację — bez zmian:** od r1:b2 gałąź linku w `App.tsx` woła `api.getConfig()`
+  (język, motyw, układ nawigatora); uwaga z przeglądu cytowała stary kod.
+- **Lista testid-ów:** doszły `shum-hidden`, `shum-proposals`, `data-known` na `nav-count` i atrybuty dialogu szuflady.
+- **`menu.test.mjs`** był czerwony od r1:b5 (etykieta „graph-entry” zmieniona na `workshop_graph_entry`, wzorzec testu nie):
+  wzorzec poprawiony, 8/8.
+- Przebieg: `npm run build` czysty; testy jednostkowe shell 10/10, menu 8/8, navigator-state 9/9, navigator-map 9/9,
+  node-card-state 8/8, settings-human 7/7, role-card 5/5, composer-menu 13/13, history 13/13; `test:m1-navigator` 12/12 (nowe
+  asercje: rola i nazwa dialogu, fokus, nazwa pola szukania, geometria licznika), `test:m1-settings` 9/9; 2 zrzuty zapisane
+  ponownie (`m1-navigator-root.png`, `m1-navigator-root-list.png`). Jądro bez zmian (`ctest` nie uruchamiany). Nie uruchomione:
+  pełne `npm run e2e`, `android-smoke`.
+
 ## Czego jeszcze NIE ma (i dlaczego)
 
 - **Przełącznik „Ustawiam dla: mnie / tej rozmowy / projektu…”** nad listą pól — dziś poziom wybierasz w karcie przy
