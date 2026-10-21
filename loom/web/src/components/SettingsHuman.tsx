@@ -139,14 +139,17 @@ export default function SettingsHuman({ profileHost, convId, language, onNavigat
     const blocks = subgroupBlocks(shown, subgroupLabels(fieldsDoc, g.id, language), t);
     const summary = groups.find(s => s.id === g.id)!;
     const roles = g.id === ROLES_GROUP_PRESET ? <RolesTable profileHost={profileHost} convId={convId} language={language} onNavigate={address => onNavigate?.(address)} onOpenChange={setRoleOpen} /> : null;
-    if (roles && roleOpen) return <section data-testid={`shum-group-view-${g.id}`} data-role-open="1">{roles}</section>;
+    const hide = roles !== null && roleOpen;   // a role card is open: only the card shows (the table stays mounted at the same place, so its state survives)
     return (
-      <section data-testid={`shum-group-view-${g.id}`} data-shown={shown.length} data-fields={g.fields.length}>
+      <section data-testid={`shum-group-view-${g.id}`} data-shown={shown.length} data-fields={g.fields.length} data-role-open={hide ? "1" : undefined}>
+        {!hide && (<>
         <button type="button" className="shum-back" data-testid="shum-back" onClick={() => { setOpenGroup(null); setCardKey(null); setDetail(null); }}>{t("group.back")}</button>
         <h3 className="shum-group-title">{g.label}</h3>
         <p className="gnav-why" data-testid="shum-group-why">{g.why}</p>
         <p className="gnav-count shum-group-count" data-testid="shum-group-view-count">{countLine(summary, language, t)}</p>
+        </>)}
         {roles}
+        {!hide && (<>
         {filterButton}
         {g.fields.length === 0 && <p className="gnav-note" data-testid="shum-empty">{t("group.empty")}</p>}
         {g.fields.length > 0 && shown.length === 0 && <p className="gnav-note" data-testid="shum-empty">{t("filter.empty")}</p>}
@@ -158,6 +161,7 @@ export default function SettingsHuman({ profileHost, convId, language, onNavigat
           </div>
         ))}
         {legacyHere && legacy}
+        </>)}
       </section>
     );
   };

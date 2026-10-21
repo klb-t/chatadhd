@@ -89,3 +89,21 @@ Wstecz: otwarte menu Widok ▾ jest warstwą `navigator-view` (zamyka się pierw
 
 Wstecz (`window.__loomBack()`): zamyka najpierw kartę pola (`navigator-card*`), potem widok grupy (`settings-group`, wraca do listy grup), potem panel; w korzeniu czatu zwraca `false`. Krok Ustawień dla `gate0` (propozycja dla S2): `shell-menu-toggle` → `shell-menu-settings` → `shum-groups` ma 8 wierszy, suma `data-fields` = `counts.fields` → `shum-group-open-modele` → `shum-field-main-default_model` pokazuje etykietę i chip → `shum-back` → lista grup.
 
+
+## Role modeli „Kto wykonuje którą pracę” (paczka P6, `loom/web/src/components/RoleCard.tsx`; menu ⋮ › Ustawienia › Modele)
+
+Tabela ról stoi na górze widoku grupy `modele` (stała `ROLES_GROUP_PRESET` w `role-card-state.ts`; gdy żadna grupa nie ma tego id, tabela jest pod listą grup).
+
+| ekran | testid | znaczenie |
+|---|---|---|
+| tabela | `roles` (sekcja), `roles-title`, `roles-intro`, `roles-table` (lista), `roles-loading`, `roles-error` + `roles-retry`, `roles-issues` | korzeń tabeli; stany wczytywania i błędu jądra; `roles-issues` = to, czego jądro nie umiało przeczytać |
+| wiersz roli | `role-row-<id roli>` (`data-tier`, `data-state`), `role-open-<id>` (przycisk, otwiera kartę), `role-label-<id>`, `role-model-<id>`, `role-tier-<id>`, `role-state-<id>` | `<id>` = id roli z jądra (`chat.default`, `analysis.fast`, `guardian`, …); wierszy tyle, ile ról w `ports.pack` |
+| karta | `role-card` (`data-role`, `data-tier`), `role-back` (do tabeli), `role-card-title`, `role-card-tier`, `role-card-state`, `role-why`, `role-today`, `role-status-reason` | „Po co”, „Dziś”, „Dlaczego tak jest” słowo w słowo z danych roli |
+| model i klasa | `role-model`, `role-tier-line`, `role-tier-chip`, `role-tier-reason`, `role-class-planned` (przypisz klasę ręcznie / zmień progi — „planowane”), `role-class-planned-reason` | klasa z powodem to zdanie jądra |
+| łańcuch | `role-chain` (`data-read` = 1 gdy czytnik czyta łańcuch, 0 gdy tylko opisuje), `role-chain-step-<n>` (`data-type`, `data-decides`), `role-chain-title-<n>`, `role-chain-value-<n>`, `role-chain-meaning-<n>`, `role-chain-decides-<n>`, `role-chain-note-<n>`, `role-chain-not-read`, `role-today-chain`, `role-today-step-<n>` | `meaning` = zdanie jądra słowo w słowo; krok, który wybiera, ma `role-chain-decides-<n>` |
+| przepływ per klasa | `role-flow-by-class`, `role-class-<klasa>` (`data-current`), `role-class-label-<klasa>`, `role-flow-current`, `role-flow-<klasa>` + `-title` / `-status` (`data-status="calibration"` → chip „kalibracja”) / `-calls` / `-does` / `-planned`, `role-flow` (gdy rola ma jeden przepływ), `role-flow-none` | `<klasa>` = `cheap`/`mid`/`frontier`/`unknown`; zaznaczona klasa Twojego modelu |
+| czytają rolę | `role-readers` (`data-count`), `role-reader-<id przepływu>` (`data-also="1"` dla przepływów, które czytają ustawienie bez deklarowania roli), `role-readers-total`, `role-readers-none` | wszystkie przepływy, które czytają klucz roli (lista z katalogu działań) |
+| tryb i koszt | `role-mode`, `role-mode-threshold`, `role-mode-no-key`, `role-cost-price`, `role-cost-week` | tylko rola Analiza w tle ma tryb; koszt albo powód „nieznana” z jądra |
+| nazwa techniczna | `role-settings`, `role-setting-<klucz>`, `role-setting-key-<klucz>`, `role-change-<klucz>` (rozwija kartę pola `node-card` w tym samym miejscu) | zmiana modelu roli = ta sama karta pola co w nawigatorze |
+
+Wstecz (`window.__loomBack()`): zamyka najpierw kartę pola otwartą z roli, potem kartę roli (`role-card`, wraca do tabeli), potem widok grupy, potem panel. Krok dla Androida (propozycja): `shell-menu-toggle` → `shell-menu-settings` → `shum-group-open-modele` → `role-open-analysis.fast` → `role-flow-by-class`, `role-readers`.
