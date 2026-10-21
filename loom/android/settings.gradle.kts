@@ -16,3 +16,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "loom-android"
 include(":app")
+include(":xport")

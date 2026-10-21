@@ -894,8 +894,10 @@ class Session:
             macro = self.ds.entry("macros", name)
         except Exception as exc:  # noqa: BLE001 - an unknown macro is the caller's error
             raise ApiError(t("api.macro_none", name=name), "not_found", 404) from exc
-        results = [self._op(st["op"], dict(st.get("params") or {}), note=f"macro:{name}") for st in macro.get("steps") or []]
-        return {"macro": name, "steps": len(results), "results": [_brief(r) for r in results]}
+        preview = bool(req.get("preview"))  # edit steps only report what they would do (each one on the untouched package)
+        results = [self._op(st["op"], dict(st.get("params") or {}, **({"preview": True} if preview and str(st["op"]).startswith("edit.") else {})),
+                            note=f"macro:{name}") for st in macro.get("steps") or []]
+        return {"macro": name, "steps": len(results), "preview": preview, "results": [_brief(r) for r in results]}
 
     def c_manifest(self, req: dict[str, Any]) -> dict[str, Any]:
         pkg = req.get("package") or (self.eng.last_write or {}).get("package") or self.package

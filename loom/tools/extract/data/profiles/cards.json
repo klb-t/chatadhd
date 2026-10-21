@@ -1,5 +1,5 @@
 {"schema": "loom.extract.profile/1", "id": "cards", "kind": "cards",
- "label": {"pl": "Karty rozmów: tytuł, okres, uczestnicy, narzędzia, streszczenie i otwarte pytania (streszczenie tylko z --model)", "en": "Conversation cards: title, period, participants, tools, summary and open questions (summary only with --model)"},
+ "label": {"pl": "Karty rozmów: tytuł, okres, uczestnicy, narzędzia, streszczenie i otwarte pytania (streszczenie tylko po włączeniu modelu)", "en": "Conversation cards: title, period, participants, tools, summary and open questions (summary only when a model is enabled)"},
  "branches": {"keep": "current"},
  "blocks": {"text": "keep", "*": "omit"},
  "timestamps": {"zone": "source", "format": "iso8601"},

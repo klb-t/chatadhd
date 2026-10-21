@@ -1,0 +1,80 @@
+name: X-Port APK
+
+# Builds the X-Port Android app (loom/android, module :xport; the archive tool runs on the phone via Chaquopy).
+# Separate from package.yml. The APK is signed with the CI debug key: only for trying the app.
+on:
+  push:
+    branches: [claude/xport-android]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  apk:
+    name: X-Port debug APK
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Python 3.11 (host Python Chaquopy uses for pip and byte-compiling)
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      # Same approach as package.yml: the runner's preinstalled SDK, only its sdkmanager is put on PATH.
+      - name: Use the preinstalled Android SDK
+        run: |
+          set -euo pipefail
+          : "${ANDROID_HOME:?the runner image has no ANDROID_HOME}"
+          for d in "$ANDROID_HOME"/cmdline-tools/latest/bin "$ANDROID_HOME"/cmdline-tools/*/bin; do
+            if [ -x "$d/sdkmanager" ]; then echo "$d" >> "$GITHUB_PATH"; echo "sdkmanager: $d"; exit 0; fi
+          done
+          echo "::error::no sdkmanager under $ANDROID_HOME/cmdline-tools"; exit 1
+
+      - name: Install SDK platform and build-tools
+        run: |
+          set -euo pipefail
+          sdkmanager --licenses >/dev/null < <(yes)
+          sdkmanager --install "platforms;android-34" "build-tools;34.0.0" >/dev/null
+
+      - name: Engine smoke test in the packaged layout (synthetic fixture only)
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/pk"
+          mkdir -p "$d/loom/tools" "$d/loom/data"
+          cp -r loom/tools/extract "$d/loom/tools/"; rm -rf "$d/loom/tools/extract/tests"
+          cp -r loom/data/lexicons "$d/loom/data/"; cp -r engine core "$d/"
+          touch "$d/loom/__init__.py" "$d/loom/tools/__init__.py"
+          cp loom/android/xport/src/main/python/xport_entry.py "$d/"
+          cd "$d"
+          python -I -c "import sys,json; sys.path.insert(0,'.'); import xport_entry as x; r=json.loads(x.open_sources(json.dumps(['$GITHUB_WORKSPACE/loom/tests/fixtures/extract/ours/conversation.json']))); assert r['ok'], r; print(r['totals'])"
+
+      - name: Gradle cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: xport-gradle-${{ hashFiles('loom/android/**/*.gradle.kts', 'loom/android/gradle/wrapper/gradle-wrapper.properties') }}
+
+      - name: Build the APK
+        working-directory: loom/android
+        run: ./gradlew :xport:assembleDebug --stacktrace --no-daemon
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: xport-apk
+          path: loom/android/xport/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
