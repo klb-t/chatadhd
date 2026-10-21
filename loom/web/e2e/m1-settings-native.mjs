@@ -194,6 +194,13 @@ try {
       assert.ok(row.model.includes(r.model_human), `${r.id}: the model in words ('${row.model}' has '${r.model_human}')`);
     }
     assert.equal(await page.getByTestId("roles-title").textContent(), rl.title);
+    // The chips have a one-line meaning above the table, and a state chip names its subject ("wybór przez rolę: planowane"), never a bare
+    // "planowane" next to a chat that works.
+    assert.equal(await page.getByTestId("roles-chips-help").textContent(), rl["chips.help"]);
+    for (const r of roles.roles.filter(r => r.status?.state && r.status.state !== "implemented")) {
+      assert.equal(await page.getByTestId(`role-state-${r.id}`).textContent(), rl[`state.${r.status.state}`], `${r.id}: the state chip`);
+      assert.ok(rl[`state.${r.status.state}`].includes(": "), `${r.id}: the chip names what is ${r.status.state}`);
+    }
     await noMissingWord();
     await layoutFits();
     await shot("m1-settings-roles");
@@ -208,6 +215,17 @@ try {
     const card = page.getByTestId("role-card");
     assert.equal(await page.getByTestId("role-card-title").textContent(), analysis.label);
     assert.ok((await page.getByTestId("role-why").textContent()).includes(analysis.why));
+    // "Dziś" answers in words; the kernel's engineering note (files, keys) waits folded under "Szczegóły techniczne", closed until tapped.
+    if (analysis.status?.reason) {
+      const details = page.getByTestId("role-status-details"), head = details.locator("button").first();
+      assert.equal(await head.getAttribute("aria-expanded"), "false");
+      assert.equal(await head.textContent(), rl["state.details"]);
+      await head.tap();
+      await page.locator('[data-testid="role-status-details"] button[aria-expanded="true"]').waitFor();
+      assert.ok((await page.getByTestId("role-status-reason").textContent()).includes(analysis.status.reason_human ?? analysis.status.reason));
+      await head.tap();
+      await page.locator('[data-testid="role-status-details"] button[aria-expanded="false"]').waitFor();
+    }
     const steps = await card.locator("[data-testid^='role-chain-step-']").evaluateAll(els => els.map(el => ({ n: el.dataset.testid.replace("role-chain-step-", ""), type: el.dataset.type, decides: el.dataset.decides })));
     assert.equal(steps.length, analysis.chain.length, "one row per step of the kernel's chain");
     for (const s of analysis.chain) {
@@ -225,7 +243,17 @@ try {
     const readers = page.getByTestId("role-readers");
     const expected = (analysis.flows_reading ?? []).length + (analysis.flows_reading_setting ?? []).length;
     assert.equal(Number(await readers.getAttribute("data-count")), expected, "every flow that reads the role or its key is listed");
-    for (const f of analysis.flows_reading_setting ?? []) assert.ok(await page.getByTestId(`role-reader-${f.id}`).count() >= 1, `reader ${f.id} (${f.title})`);
+    const fieldsDoc = await api("GET", "/api/settings/fields");
+    for (const f of analysis.flows_reading_setting ?? []) {
+      const li = page.getByTestId(`role-reader-${f.id}`).first();
+      assert.ok(await li.count() >= 1, `reader ${f.id} (${f.title})`);
+      // the key a flow reads is named by the field's Polish label (the raw key only in the title attribute)
+      const label = analysis.settings?.find(s => s.key === f.key)?.label ?? fieldsDoc.fields.find(x => x.key === f.key)?.human?.label?.pl ?? f.key;
+      const text = await li.textContent();
+      assert.ok(text.includes(rl["readers.also"].replace("{{key}}", label)), `${f.id}: names the key in words ('${text}')`);
+      if (label !== f.key) assert.ok(!text.includes(f.key), `${f.id}: the raw key ${f.key} is not on the screen`);
+      assert.equal(await li.locator("span[title]").getAttribute("title"), f.key);
+    }
     for (const f of analysis.flows_reading ?? []) assert.ok(await page.getByTestId(`role-reader-${f.id}`).count() >= 1, `reader ${f.id}`);
     assert.ok((await page.getByTestId("role-readers-total").textContent()).includes(String(expected)));
     await noMissingWord();

@@ -26,12 +26,14 @@ interface Props {
   onNavigate: (address: string, label: string) => void;
   /** A write finished (a value set or taken off): a screen that shows counts of the same values reloads them. */
   onChanged?: () => void;
+  /** Opened from Działania on the bar: once loaded, the card brings "Co możesz zrobić" into view. */
+  section?: "actions" | null;
 }
 
 /** A gate waits for the user's yes, then `after` runs (the card reloads). */
 interface GateState extends PendingGate { after: () => void }
 
-export default function NodeCard({ address, language, convId, t, onClose, onNavigate, onChanged }: Props) {
+export default function NodeCard({ address, language, convId, t, onClose, onNavigate, onChanged, section = null }: Props) {
   const [card, setCard] = useState<GraphCardResult | null>(null);
   const [rules, setRules] = useState<ScopedRule[]>([]);
   const [loading, setLoading] = useState(true);
@@ -64,6 +66,12 @@ export default function NodeCard({ address, language, convId, t, onClose, onNavi
 
   const changed = useRef(onChanged);
   changed.current = onChanged;
+  const root = useRef<HTMLElement>(null);
+  // Działania: the card is long and the question was about actions, so that section comes into view once the card is here.
+  useEffect(() => {
+    if (loading || section !== "actions") return;
+    root.current?.querySelector<HTMLElement>('[data-testid="card-actions"]')?.scrollIntoView({ block: "start" });
+  }, [loading, section]);
   const reload = useCallback(() => { setGeneration(g => g + 1); setStep("card"); setGate(null); changed.current?.(); }, []);
   const key = typeof card?.attrs?.key === "string" ? (card.attrs.key as string) : address.replace(/^setting:/, "");
   const kind = card ? editorKind(card) : "text";
@@ -123,7 +131,7 @@ export default function NodeCard({ address, language, convId, t, onClose, onNavi
   const shownLevels = moreLevels ? levels : levels.filter(l => l.declared);
 
   return (
-    <section className="ncard" data-testid="node-card" data-address={address} data-step={step} aria-busy={busy || loading}>
+    <section ref={root} className="ncard" data-testid="node-card" data-address={address} data-step={step} data-section={section ?? undefined} aria-busy={busy || loading}>
       <header className="ncard-head">
         <h2 className="ncard-title" data-testid="card-label">{card?.label ?? address}</h2>
         <button className="ncard-close" data-testid="card-close" aria-label={t("card.close")} onClick={onClose}>×</button>

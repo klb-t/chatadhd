@@ -103,8 +103,13 @@ export default function App() {
 
   useEffect(() => {
     const link = parseShellHash(window.location.hash);
-    if (link) { if (link.conversationId) setActiveConvId(link.conversationId); return; }
     let live = true;
+    if (link) {
+      // The link states the view; the config still decides the words (ui_language), the theme and the navigator's layout.
+      if (link.conversationId) setActiveConvId(link.conversationId);
+      api.getConfig().then(cfg => { if (live) setConfig(cfg as Record<string, unknown>); }, () => { /* presets */ });
+      return () => { live = false; };
+    }
     (async () => {
       let cfg: Record<string, unknown> = {};
       try { cfg = await api.getConfig() as Record<string, unknown>; } catch { /* presets */ }

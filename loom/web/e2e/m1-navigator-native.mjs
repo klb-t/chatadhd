@@ -63,7 +63,7 @@ try {
     status: li.querySelector('[data-testid="nav-status"]')?.textContent ?? null, why: li.querySelector(".gnav-why")?.textContent ?? "" })));
   const noMissingWord = async () => {
     const texts = await nav().locator("button, span, p, input").evaluateAll(els => els.map(el => el.textContent.trim()));
-    const leaked = texts.filter(t => /^(chip|count|bar|status|reason|evidence|card|search|no_|query|map|view|list)\.[a-z_]+/.test(t));
+    const leaked = texts.filter(t => /^(chip|count|bar|status|reason|evidence|card|search|no_|query|map|view|list|perspective|actions)\.[a-z_]+/.test(t));
     assert.deepEqual(leaked, [], "no catalogue id on screen (a missing word would show its id)");
     // A bare status id as the value ("Wartość: partial") is English on an owner's screen: the status ids are the pack's status.* keys.
     const statusIds = Object.keys(words).filter(k => k.startsWith("status.")).map(k => k.slice("status.".length));
@@ -102,6 +102,12 @@ try {
     }
     assert.ok(rows.some(r => r.count?.startsWith(words["count.unknown"])), "an area without a source says unknown with the reason, never 0");
     assert.equal(await page.getByTestId("nav-budget").innerText(), `${word(root.limit.value === 0 ? "bar.budget.unlimited" : "bar.budget", { limit: String(root.limit.value), hops: String(root.hops) })} · ${word("children", { shown: String(root.counts.shown), total: String(root.counts.total) })}`);
+    // Działania at the root: no node is in focus, so the bar says where actions live (no card opens, nothing says "planned").
+    await page.getByTestId("nav-bar-actions").tap();
+    assert.equal(await page.getByTestId("nav-actions-note").innerText(), words["actions.no_focus"]);
+    assert.equal(await page.getByTestId("node-card").count(), 0);
+    await page.getByTestId("nav-bar-actions").tap();
+    await page.getByTestId("nav-actions-note").waitFor({ state: "detached" });
     await noMissingWord();
     await layoutFits();
     await shot("m1-navigator-root");
@@ -160,13 +166,56 @@ try {
     assert.ok((await budget()).includes(word("bar.budget", { limit: String(limit * 2), hops: String(rom.hops) })));
   });
 
-  await step("Perspektywa / Działania say they are planned; ⋯ opens the node card of a ROM item from graph.card", async () => {
-    for (const id of ["perspective", "actions"]) {   // Widok ▾ works since P4 (the map step below)
-      await page.getByTestId(`nav-bar-${id}`).tap();
-      assert.equal(await page.getByTestId("nav-bar-planned").innerText(), word("bar.planned", { what: word(`bar.${id}`) }));
-      await page.getByTestId(`nav-bar-${id}`).tap();
-      await page.getByTestId("nav-bar-planned").waitFor({ state: "detached" });
-    }
+  await step("Perspektywa ▾ lists the kernel's perspectives; ticks re-ask graph.navigate with `perspectives`; Działania opens the focus's card at the actions; ⋯ opens the node card of a ROM item from graph.card", async () => {
+    const list = await api("GET", "/api/perspectives");
+    const nameOf = id => { const l = list.perspectives.find(p => p.id === id)?.entry?.label; return (typeof l === "string" ? l : l?.pl ?? l?.en) || id; };
+    const rowAddresses = () => page.evaluate(() => [...document.querySelectorAll('[data-testid="nav-rows"] .gnav-row-main')].map(el => el.dataset.testid.replace("nav-row-", "")));
+    const waitRows = async addresses => {
+      try { await page.waitForFunction(want => !document.querySelector('[data-testid="nav-loading"]') &&
+        JSON.stringify([...document.querySelectorAll('[data-testid="nav-rows"] .gnav-row-main')].map(el => el.dataset.testid.replace("nav-row-", ""))) === want, JSON.stringify(addresses), { timeout: 10000 }); }
+      catch (e) { throw new Error(`rows never became ${JSON.stringify(addresses)}; now ${JSON.stringify(await rowAddresses())}, perspectives '${await nav().getAttribute("data-perspectives")}', budget '${await page.getByTestId("nav-budget").innerText()}'`); }
+    };
+    await page.getByTestId("nav-bar-perspective").tap();
+    await page.getByTestId("nav-perspective-none").waitFor();
+    const options = await page.getByTestId("nav-perspective-menu").locator('[data-testid^="nav-perspective-"]:not([data-testid="nav-perspective-none"])')
+      .evaluateAll(els => els.map(el => ({ id: el.dataset.testid.replace("nav-perspective-", ""), label: el.textContent.trim(), checked: el.getAttribute("aria-checked") })));
+    assert.deepEqual(options.map(o => o.id), list.perspectives.map(p => p.id), "the options are the kernel's perspectives, in its order");
+    for (const o of options) assert.equal(o.label, nameOf(o.id), `${o.id} named in Polish`);
+    assert.ok(options.every(o => o.checked === "false") && await page.getByTestId("nav-perspective-none").getAttribute("aria-checked") === "true", "none ticked at first");
+    const chosen = ["structure", "dependencies"].filter(id => list.perspectives.some(p => p.id === id));
+    assert.ok(chosen.length > 0, "the kernel has the structure perspective");
+    const limitNow = Number(/(\d+)/.exec(await page.getByTestId("nav-budget").innerText())?.[1] ?? 0);
+    const reached = await navigate({ focus: "area:rom", perspectives: chosen, hops: rom.hops, ...(limitNow > 0 ? { limit: limitNow } : {}) });
+    for (const id of chosen) await page.getByTestId(`nav-perspective-${id}`).tap();
+    await page.locator(`[data-testid="graph-navigator"][data-perspectives="${chosen.join(" ")}"]`).waitFor();
+    await waitRows(reached.children.map(c => c.address));   // the rows are what the kernel reaches through those relations
+    assert.equal(await page.getByTestId("nav-bar-perspective").getAttribute("aria-pressed"), "true");
+    assert.equal(await page.getByTestId("nav-perspectives").innerText(), word("perspective.active", { list: chosen.map(nameOf).join(" · ") }));
+    if (reached.children.length === 0) assert.equal(await page.getByTestId("nav-empty").innerText(), words["perspective.empty"]);
+    await noMissingWord();
+    await layoutFits();
+    await shot("m1-navigator-perspective");
+    await page.getByTestId("nav-perspective-none").tap();   // back to the node's own children; the menu closes
+    await page.getByTestId("nav-perspective-menu").waitFor({ state: "detached" });
+    await page.locator('[data-testid="graph-navigator"][data-perspectives=""]').waitFor();
+    const own = await navigate({ focus: "area:rom", hops: rom.hops, ...(limitNow > 0 ? { limit: limitNow } : {}) });   // the node's own children under the budget of the moment
+    await waitRows(own.children.map(c => c.address));
+    assert.equal(await page.getByTestId("nav-perspectives").count(), 0);
+
+    // Działania: the focus is ROM, so its card (graph.card area:rom) opens with "Co możesz zrobić" in view, the kernel's actions in words
+    const romCard = await api("POST", "/api/graph/card", { lang: "pl", address: "area:rom" });
+    await page.getByTestId("nav-bar-actions").tap();
+    await page.locator('[data-testid="node-card"][data-section="actions"]').waitFor();
+    await page.getByTestId("card-loading").waitFor({ state: "detached" });
+    assert.equal(await page.getByTestId("card-label").innerText(), romCard.label);
+    assert.equal(await page.getByTestId("card-actions").locator("button").first().getAttribute("aria-expanded"), "true");
+    await page.waitForFunction(() => { const r = document.querySelector('[data-testid="card-actions"]').getBoundingClientRect(); return r.top >= -1 && r.top < window.innerHeight; });
+    for (const a of romCard.actions) assert.ok((await page.getByTestId(`card-action-${a.id}`).innerText()).includes(a.label), `action ${a.id} in the kernel's words`);
+    await noMissingWord();
+    await shot("m1-navigator-actions");
+    await page.getByTestId("card-close").tap();
+    await page.getByTestId("node-card").waitFor({ state: "detached" });
+
     const leaf = rom.children[0].address;
     const expected = await api("POST", "/api/graph/card", { lang: "pl", address: leaf });
     await page.getByTestId(`nav-row-card-${leaf}`).tap();
@@ -228,11 +277,10 @@ try {
   };
 
   await step("Ustawienia › Rozmowa › Temperatura: the card shows the value, why, effect, the chip with layers and the whole chain", async () => {
-    // The shell opens the saved view (start_view preset: last_saved → last_conversation → new_conversation): it names the conversation, then the page reloads.
-    // (Not a #czat/<id> link: App.tsx skips loading the config on a link start, so the words would be the browser's English — noted for the shell.)
-    await page.evaluate(id => localStorage.setItem("loom.shell.last.v1", JSON.stringify({ schema: "loom.shell.last/1", layout: "chat", conversation_id: id })), conv);
+    // A #czat/<id> link names the conversation. Since r1:b2 a link start loads the config too, so the words below stay Polish (ui_language),
+    // not the browser's English — the assertions against the Polish catalogue are the check.
     await page.goto("about:blank");
-    await page.goto(base + "/");
+    await page.goto(`${base}/#czat/${conv}`);
     await page.getByTestId("chat-shell").waitFor();
     await page.getByTestId("shell-menu-toggle").tap();
     await page.getByTestId("shell-menu-graph").tap();

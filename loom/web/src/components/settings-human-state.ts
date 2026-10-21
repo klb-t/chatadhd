@@ -85,6 +85,14 @@ export function subgroupLabels(raw: unknown, groupId: string, language: string):
   return out;
 }
 
+/** The label of every settings field by key, in the language asked (settings.fields › human.label): the roles screen names the keys flows read. */
+export function fieldLabels(raw: unknown, language: string): Record<string, string> {
+  const out: Record<string, string> = {};
+  const fields = (raw as { fields?: { key?: unknown; human?: { label?: unknown } }[] } | null)?.fields ?? [];
+  for (const f of fields) if (typeof f?.key === "string") out[f.key] = dataLabel(f.human?.label, language, f.key);
+  return out;
+}
+
 export interface FieldChip { id: string; text: string; kind: "provenance" | "evidence" | "status" | "profile" }
 
 /** The chips of a field row: where the value comes from (the kernel's own words), the evidence only when it is not a plain preset,

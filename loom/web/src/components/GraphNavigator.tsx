@@ -5,7 +5,8 @@
 // The MAP (P4, NavigatorMap.tsx): the same level drawn through the view engine; list and map sit one under the other, each in a
 // Disclosure, which ones start open comes from the setting navigator_layout (preset both; Widok ▾ changes it and saves it for you).
 // A row's ⋯, a tap on a leaf or a tap on a mark opens the node card (NodeCard.tsx, P3) under them; the card is a history layer.
-// Still planned (their buttons say so with the reason, from the catalogue): Perspektywa, Działania.
+// Perspektywa ▾ (r1:b2) ticks the kernel's perspectives (loom_perspectives), sent as `perspectives` to graph.navigate: the rows are then what
+// those relations reach from the focus. Działania opens the focus's card at "Co możesz zrobić" (the actions live on the card).
 import { useEffect, useMemo, useState } from "react";
 import NodeCard from "./NodeCard";
 import NavigatorMap from "./NavigatorMap";
@@ -19,7 +20,8 @@ import { usePresentationFeature } from "./ConversationSourceView";
 import { LAYOUTS, layoutOf, openByLayout, type Layout } from "./navigator-map";
 import { runOutcome } from "./node-card-state";
 import { BAR_BUTTONS, SEARCH_DEBOUNCE_PRESET_MS, chipText, countText, deeper, drillInto, evidenceText, focusOf, goBack, honestyLines,
-  initialState, narrower, noTranslationText, requestFor, setQuery, shallower, statusText, wider, type BarButtonId, type NavigatorState, withFocusLabel } from "./navigator-state";
+  initialState, narrower, noTranslationText, requestFor, setQuery, shallower, statusText, wider, type BarButtonId, type NavigatorState, withFocusLabel,
+  actionsTarget, clearPerspectives, perspectiveOptions, togglePerspective, type PerspectiveOption } from "./navigator-state";
 import "./graph-navigator.css";
 
 interface Props {
@@ -49,7 +51,10 @@ export default function GraphNavigator({ profileHost, convId, language, initialF
   const [searchOpen, setSearchOpen] = useState(false);
   const [draft, setDraft] = useState("");
   const [card, setCard] = useState<{ address: string; label: string } | null>(null);
-  const [planned, setPlanned] = useState<BarButtonId | null>(null);
+  const [perspMenu, setPerspMenu] = useState(false);
+  const [perspList, setPerspList] = useState<{ options: PerspectiveOption[] } | { error: string } | null>(null);
+  const [actionsNote, setActionsNote] = useState<string | null>(null);
+  const [cardSection, setCardSection] = useState<"actions" | null>(null);
   const [layout, setLayout] = useState<Layout>(() => layoutOf(layoutSetting));
   const [open, setOpen] = useState(() => openByLayout(layoutOf(layoutSetting)));
   const [viewMenu, setViewMenu] = useState(false);
@@ -78,19 +83,36 @@ export default function GraphNavigator({ profileHost, convId, language, initialF
   }, [draft]);
   useLayer("navigator-search", searchOpen, () => { setSearchOpen(false); setDraft(""); });
   useLayer("navigator-view", viewMenu, () => setViewMenu(false));
+  useLayer("navigator-perspective", perspMenu, () => setPerspMenu(false));
+  // Perspektywa ▾ lists the kernel's perspectives (GET perspectives / loom_perspectives), read when the menu first opens, again per language.
+  useEffect(() => { setPerspList(null); }, [language]);
+  useEffect(() => {
+    if (!perspMenu || perspList) return;
+    let alive = true;
+    api.listPerspectives().then(
+      list => { if (alive) setPerspList({ options: perspectiveOptions(list, language) }); },
+      failure => { if (alive) setPerspList({ error: failure instanceof Error ? failure.message : String(failure) }); });
+    return () => { alive = false; };
+  }, [perspMenu, perspList, language]);
 
   const closeStep = (index: number) => { setState(s => goBack(s, index)); setCard(null); };
   const drill = (row: Pick<GraphNodeRow, "address" | "label">) => { setState(s => drillInto(s, row)); setCard(null); setDraft(""); setSearchOpen(false); };
-  const openCard = (row: Pick<GraphNodeRow, "address" | "label">) => setCard(c => c?.address === row.address ? null : { address: row.address, label: row.label });
-  const showCard = (row: Pick<GraphNodeRow, "address" | "label">) => setCard({ address: row.address, label: row.label });
+  const openCard = (row: Pick<GraphNodeRow, "address" | "label">) => { setCardSection(null); setCard(c => c?.address === row.address ? null : { address: row.address, label: row.label }); };
+  const showCard = (row: Pick<GraphNodeRow, "address" | "label">) => { setCardSection(null); setCard({ address: row.address, label: row.label }); };
   const effectiveLimit = result?.limit.value ?? 0, effectiveHops = result?.hops ?? 1, shown = result?.counts.shown ?? 0;
   const onBar = (id: BarButtonId) => {
     if (id === "wider") setState(s => wider(s, effectiveLimit));
     else if (id === "narrower") setState(s => narrower(s, effectiveLimit, shown));
     else if (id === "deeper") setState(s => deeper(s, effectiveHops));
     else if (id === "shallower") setState(s => shallower(s, effectiveHops));
-    else if (id === "view") { setViewMenu(v => !v); setPlanned(null); }
-    else setPlanned(p => p === id ? null : id);
+    else if (id === "view") { setViewMenu(v => !v); setPerspMenu(false); }
+    else if (id === "perspective") { setPerspMenu(v => !v); setViewMenu(false); }
+    else if (id === "actions") {
+      // Działania: the actions are on the node card ("Co możesz zrobić"), so the focus's card opens there; the root is no node, and the bar says where actions live.
+      const target = actionsTarget(state, result?.focus.label ?? "");
+      if (!target) { setActionsNote(n => n ? null : t("actions.no_focus")); return; }
+      setActionsNote(null); setCardSection("actions"); setCard({ address: target.address, label: target.label });
+    }
   };
   // Widok ▾: the choice applies at once and is saved as yours (settings.set navigator_layout); the line under the options says what happened.
   const chooseLayout = async (next: Layout) => {
@@ -106,10 +128,10 @@ export default function GraphNavigator({ profileHost, convId, language, initialF
   const focus = focusOf(state);
   const crumbs = [{ address: "", label: t("root") }, ...state.path];
   const lines = result ? honestyLines(result, t) : [];
-  const plannedButton = BAR_BUTTONS.find(b => b.id === planned);
+  const perspectiveNames = state.perspectives.map(id => (perspList && "options" in perspList ? perspList.options.find(o => o.id === id)?.label : undefined) ?? id);
 
   return (
-    <div className="gnav" data-testid="graph-navigator" data-focus={focus} data-layout={layout}>
+    <div className="gnav" data-testid="graph-navigator" data-focus={focus} data-layout={layout} data-perspectives={state.perspectives.join(" ")}>
       {state.path.map((_, i) => <StepLayer key={i} index={i} onClose={closeStep} />)}
       <div className="gnav-path" data-testid="nav-path" aria-label={t("path")}>
         {state.path.length > 0 && <button className="gnav-back" data-testid="nav-back" aria-label={t("back")}
@@ -159,13 +181,13 @@ export default function GraphNavigator({ profileHost, convId, language, initialF
             </li>;
           })}
           </ul>
-          {!loading && result.children.length === 0 && <p className="gnav-note" data-testid="nav-empty">{t("no_children")}</p>}
+          {!loading && result.children.length === 0 && <p className="gnav-note" data-testid="nav-empty">{t(state.perspectives.length ? "perspective.empty" : "no_children")}</p>}
         </Disclosure>}
         {result && <Disclosure testId="nav-map-disclosure" className="gnav-disclosure" labels={{ show: t("map.show"), hide: t("map.hide") }}
           open={open.map} onToggle={v => setOpen(o => ({ ...o, map: v }))}>
           <NavigatorMap result={result} open={open.map} t={t} onCard={showCard} onDrill={drill} />
         </Disclosure>}
-        {card && <NodeCard key={card.address} address={card.address} language={language} convId={convId} t={t}
+        {card && <NodeCard key={card.address} address={card.address} language={language} convId={convId} t={t} section={cardSection}
           onClose={() => setCard(null)} onNavigate={(address, label) => drill({ address, label })} />}
         {lines.map(line => <p key={line.id} className="gnav-note gnav-honesty" data-testid={`nav-${line.id}`}>{line.text}</p>)}
       </div>
@@ -176,10 +198,24 @@ export default function GraphNavigator({ profileHost, convId, language, initialF
           {LAYOUTS.map(id => <button key={id} type="button" role="radio" className="gnav-view-option" data-testid={`nav-view-${id}`}
             aria-checked={layout === id} onClick={() => chooseLayout(id)}>{t(`view.${id}`)}</button>)}
         </div>}
-        {BAR_BUTTONS.map(b => <button key={b.id} className={`gnav-bar-btn${b.works ? "" : " gnav-bar-planned"}`} data-testid={`nav-bar-${b.id}`}
-          aria-pressed={b.works ? (b.id === "view" ? viewMenu : undefined) : planned === b.id} aria-expanded={b.id === "view" ? viewMenu : undefined}
+        {perspMenu && <div className="gnav-view-menu" data-testid="nav-perspective-menu" role="group" aria-label={t("perspective.title")}>
+          <p className="gnav-note gnav-view-title">{t("perspective.title")}</p>
+          <p className="gnav-why">{t("perspective.help")}</p>
+          {!perspList && <p className="gnav-note" data-testid="nav-perspective-loading">{t("perspective.loading")}</p>}
+          {perspList && "error" in perspList && <p className="gnav-note gnav-error" data-testid="nav-perspective-error">{t("perspective.error", { reason: perspList.error })}</p>}
+          {perspList && "options" in perspList && <>
+            <button type="button" role="checkbox" className="gnav-view-option" data-testid="nav-perspective-none" aria-checked={state.perspectives.length === 0}
+              onClick={() => { setState(s => clearPerspectives(s)); setPerspMenu(false); }}>{t("perspective.none")}</button>
+            {perspList.options.map(o => <button key={o.id} type="button" role="checkbox" className="gnav-view-option" data-testid={`nav-perspective-${o.id}`}
+              aria-checked={state.perspectives.includes(o.id)} onClick={() => setState(s => togglePerspective(s, o.id))}>{o.label}</button>)}
+          </>}
+        </div>}
+        {BAR_BUTTONS.map(b => <button key={b.id} className="gnav-bar-btn" data-testid={`nav-bar-${b.id}`}
+          aria-pressed={b.id === "perspective" ? state.perspectives.length > 0 : b.id === "view" ? viewMenu : undefined}
+          aria-expanded={b.id === "view" ? viewMenu : b.id === "perspective" ? perspMenu : undefined}
           onClick={() => onBar(b.id)}>{t(b.word)}</button>)}
-        {plannedButton && <p className="gnav-note gnav-planned" data-testid="nav-bar-planned">{t("bar.planned", { what: t(plannedButton.word) })}</p>}
+        {state.perspectives.length > 0 && <p className="gnav-note gnav-planned" data-testid="nav-perspectives">{t("perspective.active", { list: perspectiveNames.join(" · ") })}</p>}
+        {actionsNote && <p className="gnav-note gnav-planned" data-testid="nav-actions-note" role="status">{actionsNote}</p>}
         {viewNote && <p className="gnav-note gnav-planned" data-testid="nav-view-note">{viewNote}</p>}
         {result && <p className="gnav-budget" data-testid="nav-budget">
           {effectiveLimit === 0 ? t("bar.budget.unlimited", { hops: String(effectiveHops) }) : t("bar.budget", { limit: String(effectiveLimit), hops: String(effectiveHops) })}

@@ -130,7 +130,8 @@ test('every word the map and the view menu ask for exists in both languages (a m
   const ids = ['list.show', 'list.hide', 'map.show', 'map.hide', 'map.aria', 'map.zoom_in', 'map.zoom_out', 'map.home', 'map.hint', 'map.enter', 'map.unplaced',
     'view.title', 'view.saved', 'view.save_error', ...map.LAYOUTS.map(l => `view.${l}`)];
   for (const id of ids) { assert.equal(typeof pl[id], 'string', `pl ${id}`); assert.equal(typeof en[id], 'string', `en ${id}`); }
-  assert.ok(!pl['bar.planned'].includes('map'), 'bar.planned no longer promises the map (it is here)');
+  assert.equal(pl['bar.planned'], undefined, 'no bar button says planned any more (r1:b2: Perspektywa ▾ and Działania work)');
+  for (const l of [pl, en]) assert.ok(!/navigator_layout|\(/.test(l['view.saved']), 'the saved note carries no setting key (ids belong in INDEX, not on the screen)');
   assert.equal(map.shortLabel('x'.repeat(40)).length, map.LABEL_CHARS_PRESET);
   assert.equal(map.shortLabel('krótka'), 'krótka');
 });

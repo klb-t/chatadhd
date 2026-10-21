@@ -15,6 +15,9 @@ export interface NavigatorState {
   limit: number | null;
   /** Levels below the focus; null = the kernel's preset. */
   hops: number | null;
+  /** Perspektywa ▾: the perspectives (ids of the kernel's list, loom_perspectives) whose relations the rows follow; [] = the node's
+   *  own children. They stay on while you drill and go back: a perspective is a way of looking, not a property of one level. */
+  perspectives: string[];
 }
 
 /** Presets (not rules): the smallest budget and depth the buttons go down to; the kernel takes any value a request carries. */
@@ -24,9 +27,32 @@ export const HOPS_MIN_PRESET = 1;
 export const SEARCH_DEBOUNCE_PRESET_MS = 250;
 
 export function initialState(focus = "", label = ""): NavigatorState {
-  return { path: focus ? [{ address: focus, label }] : [], query: "", limit: null, hops: null };
+  return { path: focus ? [{ address: focus, label }] : [], query: "", limit: null, hops: null, perspectives: [] };
 }
 export const focusOf = (s: NavigatorState): string => s.path.length ? s.path[s.path.length - 1].address : "";
+
+/** Perspektywa ▾: one tap ticks or unticks a perspective (several may be on at once); the kernel then follows their relations. */
+export function togglePerspective(s: NavigatorState, id: string): NavigatorState {
+  const on = s.perspectives.includes(id);
+  return { ...s, perspectives: on ? s.perspectives.filter(p => p !== id) : [...s.perspectives, id] };
+}
+export const clearPerspectives = (s: NavigatorState): NavigatorState => s.perspectives.length ? { ...s, perspectives: [] } : s;
+
+export interface PerspectiveOption { id: string; label: string }
+/** The options of Perspektywa ▾: exactly the kernel's list (GET perspectives / loom_perspectives), in its order, each named in the
+ *  language asked (its English name, then its id, when the data has no word in that language — never a name of this file). */
+export function perspectiveOptions(list: { perspectives: { id: string; entry?: { label?: { en?: string; pl?: string } | string } }[] }, lang: string): PerspectiveOption[] {
+  return list.perspectives.map(p => {
+    const label = p.entry?.label;
+    const text = typeof label === "string" ? label : label?.[lang as "en" | "pl"] ?? label?.en ?? "";
+    return { id: p.id, label: text || p.id };
+  });
+}
+/** Działania: the node whose card holds the actions — the focus; at the root there is none, and the bar says where actions live. */
+export function actionsTarget(s: NavigatorState, focusLabel: string): { address: string; label: string } | null {
+  const focus = focusOf(s);
+  return focus ? { address: focus, label: s.path[s.path.length - 1].label || focusLabel } : null;
+}
 
 /** A tap on a row with children: one step deeper; the search of the old level does not carry over. */
 export function drillInto(s: NavigatorState, row: Pick<GraphNodeRow, "address" | "label">): NavigatorState {
@@ -64,6 +90,7 @@ export function requestFor(s: NavigatorState, lang: string, convId?: string | nu
   if (s.query) request.query = s.query;
   if (s.limit !== null) request.limit = s.limit;
   if (s.hops !== null) request.hops = s.hops;
+  if (s.perspectives.length) request.perspectives = s.perspectives;
   if (convId) request.conv_id = convId;
   return request;
 }
@@ -92,15 +119,16 @@ export const statusText = (row: Pick<GraphNodeRow, "status">, t: ShellT): string
 export const noTranslationText = (row: Pick<GraphNodeRow, "no_translation">, t: ShellT): string | null =>
   row.no_translation ? t("no_translation", { lang: row.no_translation.lang, shown_lang: row.no_translation.shown_lang }) : null;
 
-/** The bottom bar in the order of the spec (§3.2). `works` = this package wires it; the others say "planned" with the reason. */
+/** The bottom bar in the order of the spec (§3.2); every button does what its word says (Perspektywa ▾ = the kernel's perspectives
+ *  as a tick list sent to graph.navigate, Działania = the actions on the focus's card, Widok ▾ = the layout). */
 export const BAR_BUTTONS = [
-  { id: "perspective", word: "bar.perspective", works: false },
-  { id: "wider", word: "bar.wider", works: true },
-  { id: "narrower", word: "bar.narrower", works: true },
-  { id: "deeper", word: "bar.deeper", works: true },
-  { id: "shallower", word: "bar.shallower", works: true },
-  { id: "actions", word: "bar.actions", works: false },
-  { id: "view", word: "bar.view", works: true },
+  { id: "perspective", word: "bar.perspective" },
+  { id: "wider", word: "bar.wider" },
+  { id: "narrower", word: "bar.narrower" },
+  { id: "deeper", word: "bar.deeper" },
+  { id: "shallower", word: "bar.shallower" },
+  { id: "actions", word: "bar.actions" },
+  { id: "view", word: "bar.view" },
 ] as const;
 export type BarButtonId = typeof BAR_BUTTONS[number]["id"];
 

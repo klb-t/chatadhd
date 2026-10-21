@@ -17,7 +17,7 @@ import NodeCard from "./NodeCard";
 import { RolesTable } from "./RoleCard";
 import { ROLES_GROUP_PRESET } from "./role-card-state";
 import SettingsPanel from "./SettingsPanel";
-import { ALL_FIELDS_GROUP_PRESET, countLine, countWord, editText, fieldChips, fieldsToShow, flowTitles, isPlanned, subgroupBlocks, subgroupLabels, summaries, totals } from "./settings-human-state";
+import { ALL_FIELDS_GROUP_PRESET, countLine, countWord, editText, fieldChips, fieldLabels, fieldsToShow, flowTitles, isPlanned, subgroupBlocks, subgroupLabels, summaries, totals } from "./settings-human-state";
 import "./graph-navigator.css";
 import "./settings-human.css";
 
@@ -61,6 +61,7 @@ export default function SettingsHuman({ profileHost, convId, language, onNavigat
   }, [language, convId, generation]);
 
   const reload = useCallback(() => setGeneration(g => g + 1), []);
+  const keyLabels = useMemo(() => fieldLabels(fieldsDoc, language), [fieldsDoc, language]);
   // Asked to open at "Wszystkie pola": the group that holds it (or the list, when no group has it) with the former screen unfolded.
   useEffect(() => {
     if (view !== "all_fields" || !doc) return;
@@ -138,7 +139,7 @@ export default function SettingsHuman({ profileHost, convId, language, onNavigat
     const shown = fieldsToShow(g.fields, onlyChanged);
     const blocks = subgroupBlocks(shown, subgroupLabels(fieldsDoc, g.id, language), t);
     const summary = groups.find(s => s.id === g.id)!;
-    const roles = g.id === ROLES_GROUP_PRESET ? <RolesTable profileHost={profileHost} convId={convId} language={language} onNavigate={address => onNavigate?.(address)} onOpenChange={setRoleOpen} /> : null;
+    const roles = g.id === ROLES_GROUP_PRESET ? <RolesTable profileHost={profileHost} convId={convId} language={language} fieldLabels={keyLabels} onNavigate={address => onNavigate?.(address)} onOpenChange={setRoleOpen} /> : null;
     const hide = roles !== null && roleOpen;   // a role card is open: only the card shows (the table stays mounted at the same place, so its state survives)
     return (
       <section data-testid={`shum-group-view-${g.id}`} data-shown={shown.length} data-fields={g.fields.length} data-role-open={hide ? "1" : undefined}>
@@ -199,7 +200,7 @@ export default function SettingsHuman({ profileHost, convId, language, onNavigat
           {doc.hidden_keys.length > 0 && <p className="gnav-note" data-testid="shum-hidden">{t("hidden.line", { count: String(doc.hidden_keys.length) })}</p>}
           {doc.proposals_status?.today && (
             <p className="gnav-why" data-testid="shum-proposals"><b>{t("proposals.title")}: </b>{doc.proposals_status.today}{doc.proposals_status.reason ? ` ${doc.proposals_status.reason}` : ""}</p>)}
-          {rolesBelow && <RolesTable profileHost={profileHost} convId={convId} language={language} onNavigate={address => onNavigate?.(address)} />}
+          {rolesBelow && <RolesTable profileHost={profileHost} convId={convId} language={language} fieldLabels={keyLabels} onNavigate={address => onNavigate?.(address)} />}
           {legacyBelow && legacy}
         </section>
       )}

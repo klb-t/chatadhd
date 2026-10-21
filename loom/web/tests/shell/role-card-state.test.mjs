@@ -63,7 +63,7 @@ const roles = lang => post('/api/roles/resolved', { lang });
 const byId = (doc, id) => doc.roles.find(r => r.id === id);
 
 test('every word the card asks for exists in both languages, with the same ids, and the feature says it is present', () => {
-  const ids = ['title', 'intro', 'loading', 'error', 'retry', 'table.aria', 'row.open', 'card.back', 'role.model', 'why', 'today', 'state.reason', 'state.planned',
+  const ids = ['title', 'intro', 'loading', 'error', 'retry', 'table.aria', 'row.open', 'card.back', 'role.model', 'why', 'today', 'state.reason', 'state.details', 'chips.help', 'planned', 'state.planned',
     'state.partial', 'state.implemented', 'class', 'class.help', 'class.assign', 'class.edit', 'class.planned', 'chain', 'chain.help', 'chain.step', 'chain.today',
     'chain.described_not_read', 'step.explicit', 'step.explicit.plain', 'step.setting', 'step.role', 'step.relative_to', 'step.none', 'step.decides', 'step.value',
     'step.value.empty', 'relative_to.note', 'flow.by_class', 'flow.by_class.help', 'flow.current', 'flow.calibration', 'flow.does', 'flow.planned', 'flow.none',
@@ -93,6 +93,8 @@ test('the table has the roles of the pack, in the order the kernel sends them, w
   // a planned/partial role gets the chip in words, a role the data calls anything else gets none
   const planned = rows.find(r => doc.roles.find(x => x.id === r.id).status.state === 'planned');
   assert.equal(planned.state.text, pl['state.planned']);
+  // the chip names its subject ("wybór przez rolę: planowane"), never the bare word that reads as "chat is planned" next to a working chat
+  for (const id of ['state.planned', 'state.partial']) for (const l of [pl, en]) assert.ok(l[id].includes(': ') && l[id].length > l.planned.length + 2, `${id} says what is ${id.slice(6)}`);
   assert.equal(st.stateChip({ status: { state: 'implemented' } }, t), null);
 });
 

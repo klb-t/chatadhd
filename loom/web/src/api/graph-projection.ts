@@ -199,7 +199,8 @@ export interface RoleResolved {
   id: string;
   label: string;
   why: string;
-  status: { state: string; today?: string; reason?: string };
+  /** reason = the kernel's engineering note (files, keys); reason_human, when sent, is the same in words and is preferred. */
+  status: { state: string; today?: string; reason?: string; reason_human?: string };
   policy: string | null;
   model: string | null;
   model_human: string;

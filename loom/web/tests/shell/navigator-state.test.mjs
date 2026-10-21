@@ -27,7 +27,9 @@ test('every word the screen asks for exists in both languages, and the feature s
     'card.close', 'card.layers', 'card.value', 'card.why', 'card.effect', 'card.edit_rule', 'card.change', 'card.for_whom', 'card.more_levels', 'card.cancel',
     'card.saved', 'card.write_error', 'card.unset', 'card.unset.returns', 'card.unset.person_planned', 'card.level.turn_planned', 'card.level.baseline',
     'card.gate', 'card.gate.yes', 'card.gate.no', 'card.flows_reading', 'card.relations.none', 'card.action.planned', 'inheritance', 'relations', 'actions',
-    'bar.planned', 'bar.budget', 'bar.budget.unlimited', 'chip.rom', ...nav.BAR_BUTTONS.map(b => b.word),
+    'bar.budget', 'bar.budget.unlimited', 'chip.rom', ...nav.BAR_BUTTONS.map(b => b.word),
+    // Perspektywa ▾ and Działania (r1:b2): the tick list, its states, and where actions live when no node is in focus
+    'perspective.title', 'perspective.help', 'perspective.none', 'perspective.loading', 'perspective.error', 'perspective.empty', 'perspective.active', 'actions.no_focus',
     ...['present', 'partial', 'missing', 'calibration', 'planned'].map(s => `status.${s}`)];
   for (const id of ids) { assert.equal(typeof en[id], 'string', `en ${id}`); assert.equal(typeof pl[id], 'string', `pl ${id}`); }
   assert.equal(feature.status.state, 'present');
@@ -106,9 +108,31 @@ test('the honesty lines: collapsed by the budget, hidden by you, sources that co
   assert.equal(lines[3].text, pl.unknown_source.replace('{{source}}', 'x').replace('{{reason}}', pl['reason.planned']));
 });
 
-test('the bottom bar is the order of the spec; what does not work yet is marked so, never silently', () => {
+test('the bottom bar is the order of the spec and every button does what its word says (no button is marked "planned")', () => {
   assert.deepEqual(nav.BAR_BUTTONS.map(b => b.id), ['perspective', 'wider', 'narrower', 'deeper', 'shallower', 'actions', 'view']);
-  assert.deepEqual(nav.BAR_BUTTONS.filter(b => !b.works).map(b => b.id), ['perspective', 'actions']);   // P4 wired Widok
+  assert.ok(nav.BAR_BUTTONS.every(b => !('works' in b)), 'no button carries a works flag any more');
+  assert.equal(pl['bar.planned'], undefined, 'the word for a planned button is gone with the buttons that said it');
+});
+
+test('Perspektywa ▾: the options are the kernel\'s list in its order and language; ticks go to graph.navigate as `perspectives` and survive a step; Działania targets the focus', () => {
+  const list = { perspectives: [{ id: 'structure', entry: { label: { en: 'Structure', pl: 'Struktura' } } }, { id: 'calls', entry: { label: 'Calls' } }, { id: 'x' }] };
+  assert.deepEqual(nav.perspectiveOptions(list, 'pl'), [{ id: 'structure', label: 'Struktura' }, { id: 'calls', label: 'Calls' }, { id: 'x', label: 'x' }]);
+  assert.deepEqual(nav.perspectiveOptions(list, 'de').map(o => o.label), ['Structure', 'Calls', 'x'], 'no word in the language: the English name, then the id');
+  const none = nav.initialState();
+  assert.deepEqual(none.perspectives, []);
+  assert.equal(nav.clearPerspectives(none), none, 'nothing to clear changes nothing');
+  let s = nav.togglePerspective(none, 'structure');
+  s = nav.togglePerspective(s, 'calls');
+  assert.deepEqual(nav.requestFor(s, 'pl'), { lang: 'pl', perspectives: ['structure', 'calls'] }, 'several at once');
+  s = nav.drillInto(s, { address: 'area:rom', label: 'ROM' });
+  assert.deepEqual(nav.requestFor(s, 'pl'), { lang: 'pl', focus: 'area:rom', perspectives: ['structure', 'calls'] }, 'a step keeps the perspectives');
+  assert.deepEqual(nav.goBack(s, 0).perspectives, ['structure', 'calls'], 'so does going back');
+  s = nav.togglePerspective(s, 'structure');
+  assert.deepEqual(s.perspectives, ['calls'], 'a second tap unticks');
+  assert.equal(nav.requestFor(nav.clearPerspectives(s), 'pl').perspectives, undefined, 'none: the request carries no perspectives');
+  assert.equal(nav.actionsTarget(none, 'Graf'), null, 'the root is no node: no card to open, the bar says where actions live');
+  assert.deepEqual(nav.actionsTarget(s, ''), { address: 'area:rom', label: 'ROM' });
+  assert.deepEqual(nav.actionsTarget(nav.initialState('conv:1'), 'M1 card'), { address: 'conv:1', label: 'M1 card' }, 'a step without a label takes the kernel\'s');
 });
 
 test('a focus opened from the menu (no label yet) takes the kernel\'s label when the answer arrives; a labelled step keeps its own', () => {

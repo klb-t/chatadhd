@@ -12,6 +12,7 @@ import type { RoleResolved, RolesResolved } from "../api/graph-projection";
 import type { UserProfileHost } from "../api/onboarding-host";
 import { shellTranslator, type ShellT } from "../shell/text";
 import { useLayer } from "../shell/use-layer";
+import Disclosure from "../shell/Disclosure";
 import { usePresentationFeature } from "./ConversationSourceView";
 import NodeCard from "./NodeCard";
 import { chainIsRead, chainSteps, flowsByClass, flowView, modeView, priceText, readers, roleRows, settingAddress, stateChip, todaySteps, weekText, type FlowView } from "./role-card-state";
@@ -27,9 +28,11 @@ interface TableProps {
   onNavigate?: (address: string) => void;
   /** A role card opened or closed: the screen around hides what is not the card while one is open (one thing on a phone at a time). */
   onOpenChange?: (open: boolean) => void;
+  /** The Polish label of every settings field by key (from settings.fields): the readers list names the key a flow reads in words. */
+  fieldLabels?: Record<string, string>;
 }
 
-export function RolesTable({ profileHost, convId, language, onNavigate, onOpenChange }: TableProps) {
+export function RolesTable({ profileHost, convId, language, onNavigate, onOpenChange, fieldLabels }: TableProps) {
   const words = usePresentationFeature(profileHost, "roles");
   const graphWords = usePresentationFeature(profileHost, "graph_screen");
   const t = useMemo(() => shellTranslator(words.feature, language), [words.feature, language]);
@@ -64,12 +67,13 @@ export function RolesTable({ profileHost, convId, language, onNavigate, onOpenCh
           <button type="button" className="gnav-bar-btn" onClick={reload} data-testid="roles-retry">{t("retry")}</button>
         </div>
       )}
-      {doc && role && <RoleCard role={role} roles={doc.roles} t={t} graphT={graphT} language={language} convId={convId}
+      {doc && role && <RoleCard role={role} roles={doc.roles} t={t} graphT={graphT} language={language} convId={convId} fieldLabels={fieldLabels}
         onBack={() => setOpenRole(null)} onNavigate={onNavigate} onChanged={reload} />}
       {doc && !role && (
         <>
           <h3 className="rolc-title" data-testid="roles-title">{t("title")}</h3>
           <p className="gnav-why" data-testid="roles-intro">{t("intro")}</p>
+          <p className="gnav-why" data-testid="roles-chips-help">{t("chips.help")}</p>
           <ul className="gnav-rows" data-testid="roles-table" aria-label={t("table.aria")}>
             {rows.map(row => (
               <li key={row.id} className="gnav-row" data-testid={`role-row-${row.id}`} data-tier={row.tierId} data-state={row.state?.id}>
@@ -106,6 +110,7 @@ interface CardProps {
   onBack: () => void;
   onNavigate?: (address: string) => void;
   onChanged?: () => void;
+  fieldLabels?: Record<string, string>;
 }
 
 function FlowBlock({ flow, t, testId }: { flow: FlowView; t: ShellT; testId: string }) {
@@ -124,7 +129,7 @@ function FlowBlock({ flow, t, testId }: { flow: FlowView; t: ShellT; testId: str
   );
 }
 
-export default function RoleCard({ role, roles, t, graphT, language, convId, onBack, onNavigate, onChanged }: CardProps) {
+export default function RoleCard({ role, roles, t, graphT, language, convId, onBack, onNavigate, onChanged, fieldLabels }: CardProps) {
   const [changeKey, setChangeKey] = useState<string | null>(null);
   const state = stateChip(role, t);
   const steps = useMemo(() => chainSteps(role, roles, t), [role, roles, t]);
@@ -135,6 +140,8 @@ export default function RoleCard({ role, roles, t, graphT, language, convId, onB
   const read = chainIsRead(role);
   const single = role.flow ? flowView(role.flow, t) : null;
   const status = role.status;
+  // The label of a key a flow reads: the role's own settings first, then every settings field (the key itself only when no label exists).
+  const keyLabel = (key: string) => role.settings?.find(s => s.key === key)?.label ?? fieldLabels?.[key] ?? key;
 
   return (
     <article className="rolc-card" data-testid="role-card" data-role={role.id} data-tier={role.tier.id}>
@@ -146,7 +153,11 @@ export default function RoleCard({ role, roles, t, graphT, language, convId, onB
       </div>
       <p className="gnav-why rolc-why" data-testid="role-why"><b>{t("why")}: </b>{role.why}</p>
       {status?.today && <p className="rolc-lines" data-testid="role-today"><b>{t("today")}: </b>{status.today}</p>}
-      {status?.reason && <p className="rolc-lines gnav-why" data-testid="role-status-reason"><b>{t("state.reason")}: </b>{status.reason}</p>}
+      {(status?.reason_human || status?.reason) && (
+        // "Dziś" is the answer in words; the kernel's engineering note (file names, keys) waits folded under it, for whoever wants it.
+        <Disclosure testId="role-status-details" labels={{ show: t("state.details"), hide: t("state.details") }}>
+          <p className="rolc-lines gnav-why" data-testid="role-status-reason"><b>{t("state.reason")}: </b>{status.reason_human || status.reason}</p>
+        </Disclosure>)}
 
       <h4 className="rolc-h">{t("role.model")}</h4>
       <p data-testid="role-model"><span className="rolc-model-name">{role.model_human}</span>
@@ -156,8 +167,8 @@ export default function RoleCard({ role, roles, t, graphT, language, convId, onB
       <p data-testid="role-tier-line"><span className="gnav-chip" data-testid="role-tier-chip">{role.tier.label}</span> <span data-testid="role-tier-reason">{role.tier.reason}</span></p>
       <p className="gnav-why">{t("class.help")}</p>
       <ul className="rolc-planned-list" data-testid="role-class-planned">
-        <li><span className="gnav-chip gnav-chip-status">{t("state.planned")}</span> {t("class.assign")}</li>
-        <li><span className="gnav-chip gnav-chip-status">{t("state.planned")}</span> {t("class.edit")}</li>
+        <li><span className="gnav-chip gnav-chip-status">{t("planned")}</span> {t("class.assign")}</li>
+        <li><span className="gnav-chip gnav-chip-status">{t("planned")}</span> {t("class.edit")}</li>
       </ul>
       <p className="gnav-why" data-testid="role-class-planned-reason">{t("class.planned")}</p>
 
@@ -220,7 +231,7 @@ export default function RoleCard({ role, roles, t, graphT, language, convId, onB
           <ul className="rolc-readers" data-testid="role-readers" data-count={reading.total}>
             {reading.own.map(flow => <li key={flow.id} data-testid={`role-reader-${flow.id}`} data-flow={flow.id}>{flow.title}</li>)}
             {reading.also.map(flow => (
-              <li key={flow.id} data-testid={`role-reader-${flow.id}`} data-flow={flow.id} data-also="1">{flow.title} <span className="gnav-why">({t("readers.also", { key: flow.key })})</span></li>))}
+              <li key={flow.id} data-testid={`role-reader-${flow.id}`} data-flow={flow.id} data-also="1" data-key={flow.key}>{flow.title} <span className="gnav-why" title={flow.key}>({t("readers.also", { key: keyLabel(flow.key) })})</span></li>))}
           </ul>
           <p className="gnav-why" data-testid="role-readers-total">{t("readers.total", { n: String(reading.total) })}</p>
         </>
