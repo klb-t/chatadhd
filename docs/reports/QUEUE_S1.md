@@ -1,7 +1,16 @@
-# Kolejka S1 — stan 2026-10-21 18:20 UTC
+# Kolejka S1 — stan 2026-10-21 19:25 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
+
+## CI 257 (R38) padł na `server.security` w asan; naprawione; `main` = `ac50b60e` (D2 + poprawka), CI 258 w toku (19:17 UTC)
+`assert 429 in codes` — osiem razy 403 w kroku 12 testu (limit prób rejestracji). Przyczyna (odtworzona lokalnie): opóźnienie po darmowych próbach w presecie to 1 s,
+potem ×2 — próby rozdzielone o > 2 s (żądanie Argon2id pod sanitizerem na obciążonym runnerze) nigdy nie dostają 429; produkt jest w porządku
+(wolny serwer sam hamuje), test zależał od szybkości. Poprawka: krok 12 ustawia 120 s bazowego opóźnienia (`throttle` w profilu), przechodzi także z odstępem 2,2 s.
+To trzecia klasa „test zależny od czasu” dziś (szczypanie, m1-settings, server.security) — przy następnej awarii CI najpierw pytać „czy test zależy od szybkości”.
+Bieg **258**: https://github.com/klb-t/chatadhd/actions/runs/39660316270 (≈ 80–100 min, do ok. 20:50 UTC). Bramka lokalna `d2` była zielona (23 min).
+**K1a** (kontekst: klasy profile/rules w `build_messages`, prefiks deterministyczny, paragon `loom.context_receipt/1`, selektor czyta profile) w toku w `/home/user/wt/m1d0`
+(`wf_0202dff5-7ed`, Sonnet, push na `claude/m1-w0`, nie na `main`). K1b (Binding.turn, `context.modify`, `context.receipt`, ×10) po K1a. Tydzień 31 %.
 
 ## M1-D2 GOTOWE (18:10 UTC, `76c8f441` na `claude/m1-w0`) — bramka lokalna `d2` w toku
 Dane kontekstu i grafu według specyfikacji (3 commity): `chat_context.pack` (klasy profile/rules, porządek `stability` jako preset, 8 `selector_profiles`),
