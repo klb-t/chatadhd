@@ -75,6 +75,65 @@ Json chat_usage_estimate(const Config& cfg, std::string_view endpoint, std::stri
   return estimate;
 }
 
+// M1-K1b: the values of the turn carrier join the values the request itself names; the request's own value wins for a key both have.
+ChatOptions with_carried_turn(const ChatOptions& in, const Json& carried) {
+  ChatOptions out = in;
+  if (!carried.is_object() || carried.empty()) return out;
+  if (!out.turn_values.is_object()) out.turn_values = Json::object();
+  for (auto it = carried.begin(); it != carried.end(); ++it)
+    if (!out.turn_values.contains(it.key())) out.turn_values[it.key()] = it.value();
+  return out;
+}
+
+// M1-K1b: how big a request is against what requests of its kind were so far, from the shared usage guard (the ledger the real send is admitted
+// by), read only: nothing is reserved or recorded and a ledger that does not exist yet is not created (no request was measured, so there is no
+// baseline). resource input_bytes, the cohort from usage_baseline_key_templates. `asked` is what the guard would do with it right now.
+Json request_guard(const Config& cfg, std::string_view endpoint, std::string_view model, std::size_t body_bytes) {
+  Json g{{"resource", "input_bytes"}, {"bytes", body_bytes}, {"baseline", nullptr}, {"ratio", nullptr}, {"growth_factor", nullptr}, {"asked", false},
+         {"baseline_key", usage_baseline_key(cfg, "chat.send", endpoint, model)}, {"basis", "compiled_request_body_bytes"}};
+  const auto ledger = cfg.path().parent_path() / "usage-policy.sqlite";
+  std::error_code ec;
+  if (!std::filesystem::exists(ledger, ec)) {
+    g["unknown_reason"] = "no_usage_ledger_yet";
+    return g;
+  }
+  auto settings = effective_usage_policy_options(cfg);
+  if (!settings) {
+    g["unknown_reason"] = "usage_policy_unreadable";
+    log::debug("loom.chat_engine", "guard: usage policy not readable: {}", settings.error().message);
+    return g;
+  }
+  auto policy = UsagePolicy::open(ledger, *settings);
+  if (!policy) {
+    g["unknown_reason"] = "usage_ledger_unreadable";
+    log::debug("loom.chat_engine", "guard: usage ledger not readable: {}", policy.error().message);
+    return g;
+  }
+  Json estimate = chat_usage_estimate(cfg, endpoint, model, "context_guard_preview");
+  estimate["resources"]["requests"] = 1;
+  estimate["resources"]["input_bytes"] = body_bytes;
+  auto decision = (*policy)->preview(estimate);
+  if (!decision) {
+    g["unknown_reason"] = "usage_guard_preview_failed";
+    log::debug("loom.chat_engine", "guard: preview failed: {}", decision.error().message);
+    return g;
+  }
+  const Json r = decision->value("resources", Json::object()).value("input_bytes", Json::object());
+  g["baseline"] = r.value("baseline", Json(nullptr));
+  g["baseline_samples"] = r.value("baseline_samples", Json(nullptr));
+  g["baseline_source"] = r.value("baseline_source", Json(nullptr));
+  g["ratio"] = r.value("ratio", Json(nullptr));
+  g["growth_factor"] = decision->value("options", Json::object()).value("growth_factor", Json(nullptr));
+  g["status"] = decision->value("status", "unavailable");
+  g["asked"] = g["status"] != "allowed";
+  Json because = Json::array();
+  if (json::get_bool(r, "requires_confirmation", false)) because.push_back("growth");
+  if (decision->contains("limits") && !(*decision)["limits"].empty()) because.push_back("spend_limit");
+  g["asked_because"] = because;
+  if (g["baseline"].is_null()) g["unknown_reason"] = "no_baseline_yet";
+  return g;
+}
+
 Json compose_chat_payload(const Config& cfg, const ChatOptions& opts, const std::string& model, const Json& messages,
                           bool stream, const chat::ReasoningRecipe& reasoning_recipe) {
   const double temperature = opts.temperature.value_or(cfg_number(cfg, "temperature", 0.7));
@@ -771,19 +830,20 @@ Result<SelectorChoice> choose_selector_profile(Database& db, const Config& cfg, 
   if (opts.selector_profile && !opts.selector_profile->empty()) {
     wanted = *opts.selector_profile;
     c.source = "request";
-  } else if (opts.turn_values.is_object() && opts.turn_values.contains("context.profile") && opts.turn_values.at("context.profile").is_string() &&
-             !opts.turn_values.at("context.profile").get<std::string>().empty()) {
-    wanted = opts.turn_values.at("context.profile").get<std::string>();
-    c.source = "turn";
   } else {
+    // The value of this turn (the turn carrier, M1-K1b) is the most specific level of the chain: the Binding carries it, the resolver decides.
     scopes::Binding bind;
     bind.key = "context.profile";
     bind.person_setting = "selector_profile";
     bind.conv_id = conv_id;
-    const Json v = scopes::value_or(cfg.path().parent_path(), cfg, &db, bind, Json(nullptr));
+    if (opts.turn_values.is_object() && opts.turn_values.contains("context.profile") && opts.turn_values.at("context.profile").is_string() &&
+        !opts.turn_values.at("context.profile").get<std::string>().empty())
+      bind.turn = opts.turn_values.at("context.profile");
+    std::string level;
+    const Json v = scopes::value_or(cfg.path().parent_path(), cfg, &db, bind, Json(nullptr), &level);
     if (v.is_string() && !v.get<std::string>().empty()) {
       wanted = v.get<std::string>();
-      c.source = "scope_chain";
+      c.source = level == "turn" ? "turn" : "scope_chain";
     }
   }
   if (wanted.empty()) return c;
@@ -810,17 +870,15 @@ struct Delta {
 
 Delta read_delta(Database& db, const Config& cfg, const ChatOptions& opts, const std::string& conv_id, const char* key, const char* person_setting) {
   Delta d;
-  Json v = opts.turn_values.is_object() && opts.turn_values.contains(key) ? opts.turn_values.at(key) : Json(nullptr);
-  if (!v.is_null()) {
-    d.scope = "turn";
-  } else {
-    scopes::Binding bind;
-    bind.key = key;
-    bind.person_setting = person_setting;
-    bind.conv_id = conv_id;
-    v = scopes::value_or(cfg.path().parent_path(), cfg, &db, bind, Json(nullptr));
-    if (!v.is_null()) d.scope = "scope_chain";
-  }
+  scopes::Binding bind;
+  bind.key = key;
+  bind.person_setting = person_setting;
+  bind.conv_id = conv_id;
+  // This turn's value (the turn carrier, M1-K1b) rides in the Binding as its most specific level.
+  if (opts.turn_values.is_object() && opts.turn_values.contains(key)) bind.turn = opts.turn_values.at(key);
+  std::string level;
+  const Json v = scopes::value_or(cfg.path().parent_path(), cfg, &db, bind, Json(nullptr), &level);
+  if (!v.is_null()) d.scope = level == "turn" ? "turn" : "scope_chain";
   if (v.is_string() && !v.get<std::string>().empty()) d.steps.push_back(v);
   else if (v.is_array())
     for (const auto& e : v)
@@ -930,7 +988,8 @@ Result<Json> ChatEngine::preview_usage(std::string_view text, const ChatOptions&
     if (opts_in.conv_id) conv_id = *opts_in.conv_id;
     else if (conv_ && !opts_in.new_conversation) conv_id = conv_->id;  // a new conversation (R35) has no history yet: nothing of the remembered one
   }
-  const ChatOptions opts = select_representation(opts_in, conv_id);
+  // The preview shows the request the next send would make: the values waiting in the turn carrier count, and stay (nothing is consumed).
+  const ChatOptions opts = select_representation(with_carried_turn(opts_in, turn_carrier_.peek(conv_id)), conv_id);
   LOOM_TRY_ASSIGN(auto messages, build_messages(conv_id, text, opts.attachments, opts));
   const std::string model = opts.model ? *opts.model : scoped_default_model(db_, cfg_, conv_id);
   const bool stream = opts.stream.value_or(cfg_bool(cfg_, "stream", true));
@@ -946,6 +1005,39 @@ Result<Json> ChatEngine::preview_usage(std::string_view text, const ChatOptions&
   LOOM_TRY_ASSIGN(auto settings, effective_usage_policy_options(cfg_));
   LOOM_TRY_ASSIGN(auto policy, UsagePolicy::open(cfg_.path().parent_path() / "usage-policy.sqlite", settings));
   return policy->preview(estimate);
+}
+
+Result<Json> ChatEngine::context_guard(std::string_view conv_id_in, std::string_view text, const ChatOptions& opts_in, const Json& extra_turn) {
+  LOOM_TRY(check_attachments(opts_in.attachments));
+  LOOM_TRY_ASSIGN(auto reasoning_recipe, chat::reasoning_recipe(cfg_.get("chat_reasoning", Json::object())));
+  const std::string conv_id(conv_id_in);
+  ChatOptions with = with_carried_turn(opts_in, turn_carrier_.peek(conv_id));
+  // What is about to be added, as the carrier would hold it: step ids join the list of their key, anything else replaces.
+  if (extra_turn.is_object()) {
+    if (!with.turn_values.is_object()) with.turn_values = Json::object();
+    for (auto it = extra_turn.begin(); it != extra_turn.end(); ++it) {
+      Json& mine = with.turn_values[it.key()];
+      const bool list_key = it.key() == "context.breadth_delta" || it.key() == "context.depth_delta";
+      if (!list_key) { mine = it.value(); continue; }
+      Json list = Json::array();
+      if (mine.is_array()) list = mine;
+      else if (mine.is_string()) list.push_back(mine);
+      if (it.value().is_array()) for (const auto& v : it.value()) list.push_back(v);
+      else list.push_back(it.value());
+      mine = std::move(list);
+    }
+  }
+  const ChatOptions opts = select_representation(with, conv_id);
+  LOOM_TRY_ASSIGN(auto messages, build_messages(conv_id, text, opts.attachments, opts));
+  const std::string model = opts.model ? *opts.model : scoped_default_model(db_, cfg_, conv_id);
+  const bool stream = opts.stream.value_or(cfg_bool(cfg_, "stream", true));
+  llm::RouteSelector preview_route;
+  preview_route.require_credential = false;  // a look at the size spends nothing and needs no key
+  LOOM_TRY_ASSIGN(auto route, llm::resolve_route(llm::Services(cfg_, secrets_, http_), preview_route));
+  const std::string body = json::dump(compose_chat_payload(cfg_, opts, model, messages, stream, reasoning_recipe));
+  Json guard = request_guard(cfg_, route.base_url, model, body.size());
+  guard["model"] = model;
+  return guard;
 }
 
 ChatEngine::ChatEngine(const Config& cfg, const Secrets& secrets, Database& db, EventBus& bus,
@@ -1482,7 +1574,7 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
                                  {"breadth_delta", breadth_delta.applied.empty() ? Json(nullptr) : breadth_delta.applied},
                                  {"depth_delta", depth_delta.applied.empty() ? Json(nullptr) : depth_delta.applied},
                                  {"scope", !breadth_delta.applied.empty() ? Json(breadth_delta.scope) : !depth_delta.applied.empty() ? Json(depth_delta.scope) : Json(nullptr)}};
-      header["guard"] = Json{{"baseline", nullptr}, {"ratio", nullptr}, {"asked", false}, {"unknown_reason", "not_computed_before_m1_k1b"}};
+      header["guard"] = Json{{"baseline", nullptr}, {"ratio", nullptr}, {"asked", false}, {"unknown_reason", "computed_when_the_request_is_composed"}};
       header["flow"] = flow ? Json{{"flow", flow->flow}, {"renderer", flow->renderer}, {"output", flow->output}, {"mode", flow->mode}, {"model_class", flow->model_class}, {"why", flow->reason}}
                             : Json{{"flow", "plain"}, {"renderer", "chat_turns"}, {"output", "text"}};
       header["renderer"] = flow ? flow->renderer : std::string("chat_turns");
@@ -1516,7 +1608,16 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
     std::lock_guard lk(mu_);
     selector_conv = opts_in.conv_id ? *opts_in.conv_id : (conv_ && !opts_in.new_conversation ? conv_->id : std::string());
   }
-  const ChatOptions opts = select_representation(opts_in, selector_conv);
+  // M1-K1b: what the person said for this request only (context.modify) waits in the turn carrier; this send takes it and the carrier is empty
+  // afterwards. A request that does not go out (an error before the user's message is stored) gives it back.
+  struct TurnClaim {
+    TurnCarrier& carrier;
+    std::string conv;
+    Json taken;
+    bool consumed = false;
+    ~TurnClaim() { if (!consumed) carrier.give_back(conv, taken); }
+  } turn_claim{turn_carrier_, selector_conv, turn_carrier_.take(selector_conv)};
+  const ChatOptions opts = select_representation(with_carried_turn(opts_in, turn_claim.taken), selector_conv);
   const Json execution = cfg_.get("context_execution", Json::object());
   LOOM_TRY(context::validate_context_execution_options(execution));
   const Json reasoning_options = cfg_.get("chat_reasoning", Json::object());
@@ -1685,6 +1786,7 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
   auto umid = db_.create_msg(nm);
   if (!umid) return umid.error();
   std::string user_mid = *umid;
+  turn_claim.consumed = true;  // the request is accepted: the values of this turn are spent (a guard hold below gives them back)
   if (opts.active_task_spec) {
     LOOM_TRY(chat::append_active_task_acceptance(db_, conv.id, user_mid, accepted_active_task, acceptance_history));
     LOOM_TRY(acceptance_tx->commit());
@@ -1835,6 +1937,14 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
     }
   }
 
+  // M1-K1b: the receipt says how this request stands against the baseline of its kind, as the guard that admits it sees it (read only).
+  if (record_context && context_trace.contains("receipt") && context_trace["receipt"].is_object()) {
+    Json guard = request_guard(cfg_, base, model, json::dump(payload).size());
+    if (opts.usage_confirmation && opts.usage_confirmation->is_object() && json::get_bool(*opts.usage_confirmation, "approved", false)) guard["confirmed"] = true;
+    context_trace["receipt"]["guard"] = std::move(guard);
+    LOOM_TRY(retain_request_metadata());
+  }
+
   llm::ModelRequest mreq;
   mreq.kind = "chat.send";
   mreq.action = "chat.send";
@@ -1904,6 +2014,8 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
     // the identical confirmed re-send reproduces the identical request.
     bool retained = true;
     if (!opts.active_task_spec && db_.set_msg_status(user_mid, "deleted")) retained = false;
+    // The identical confirmed re-send must reproduce the identical request: what was said for this turn waits for it again.
+    turn_carrier_.give_back(selector_conv, turn_claim.taken);
     const Json& admitted = sent.hold["decision"];
     Json resources = Json::object();
     if (const auto* r = json::find(admitted, "resources")) resources = *r;

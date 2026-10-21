@@ -62,6 +62,7 @@
 #include "loom/db.h"
 #include "loom/context_engine.h"
 #include "loom/result.h"
+#include "loom/turn_carrier.h"
 #include "loom/util/cancel.h"
 #include "loom/util/json.h"
 
@@ -232,6 +233,17 @@ class ChatEngine {
 
   Result<Json> preview_usage(std::string_view text, const ChatOptions& opts = {});
 
+  // The values that hold for the next request of a conversation only (M1-K1b; turn_carrier.h). The action context.modify fills it, the next
+  // send() of that conversation takes everything it holds, preview_usage() only looks.
+  TurnCarrier& turn_carrier() { return turn_carrier_; }
+  const TurnCarrier& turn_carrier() const { return turn_carrier_; }
+
+  // What the next request of a conversation would cost against what this kind of request cost so far (M1-K1b): the request is compiled as send()
+  // would compile it (turn values of the carrier plus `extra_turn`, which is what is about to be added), its size is put to the shared usage guard
+  // read only. {resource, bytes, baseline, ratio, growth_factor, asked, status, baseline_key, baseline_samples, decision} - `asked` is true when the
+  // guard would ask the person (a jump of ten times or more over the baseline, or a spending limit); unknown numbers are null with a reason.
+  Result<Json> context_guard(std::string_view conv_id, std::string_view text, const ChatOptions& opts = {}, const Json& extra_turn = Json::object());
+
  private:
   const Config& cfg_;
   const Secrets& secrets_;
@@ -243,6 +255,7 @@ class ChatEngine {
   GraphMemorySelector* graph_memory_;
   KnowledgeContextBuilder knowledge_context_builder_;
   AttachmentResolver attachment_resolver_;
+  TurnCarrier turn_carrier_;
   // The stored file of an attachment and the name that decides its kind; nullopt when there is none.
   std::optional<std::pair<std::filesystem::path, std::filesystem::path>> locate_attachment(const std::string& ref) const;
   // The context selector's choice for a conversation among the representations the guardian keeps beside the raw messages

@@ -141,6 +141,8 @@ Result<Resolution> Resolver::resolve(const Binding& b) const {
   }
   out.units = context;
   if (!b.conv_id.empty()) context["conversation"] = b.conv_id;
+  // The value of this turn (M1-K1b) is the most specific level: it brings the scope down to `turn`, where it wins against everything above it.
+  if (!b.turn.is_null()) context["turn"] = "this_turn";
 
   std::vector<actions::Baseline> baselines;
   if (!b.installation.is_null())
@@ -163,6 +165,7 @@ Result<Resolution> Resolver::resolve(const Binding& b) const {
     if (settings.is_object() && settings.contains(b.key)) conv_value = settings[b.key];
   }
   if (!conv_value.is_null() && !b.conv_id.empty()) baselines.emplace_back("conversation", conv_value, "conversation:" + b.key, 0, b.conv_id);
+  if (!b.turn.is_null()) baselines.emplace_back("turn", b.turn, "turn:" + b.key, 0, "this_turn");
 
   LOOM_TRY_ASSIGN(auto scope, engine_->parse_scope(context.empty() ? Json("conversation") : context));
   LOOM_TRY_ASSIGN(auto sv, engine_->resolve_value(b.key, scope, baselines));
@@ -228,15 +231,27 @@ Result<Json> Resolver::inheritance(const Binding& b) const {
               {"nodes", nodes}, {"edges", edges}, {"resolution", r.to_json()}};
 }
 
-Json value_or(const std::filesystem::path& data_root, const Config& cfg, Database* db, const Binding& binding, const Json& fallback) {
+Json value_or(const std::filesystem::path& data_root, const Config& cfg, Database* db, const Binding& binding, const Json& fallback,
+              std::string* supplied_by) {
+  if (supplied_by) supplied_by->clear();
   auto resolver = Resolver::open(data_root, &cfg, db);
   if (resolver) {
-    if (auto r = resolver->resolve(binding)) return r->defined ? r->value : fallback;
-    else log::write(log::Level::Debug, kLog, "'" + binding.key + "' not resolved through the scope chain, the setting decides: " + r.error().message);
+    if (auto r = resolver->resolve(binding)) {
+      if (r->defined && supplied_by) *supplied_by = r->scope;
+      return r->defined ? r->value : fallback;
+    } else {
+      log::write(log::Level::Debug, kLog, "'" + binding.key + "' not resolved through the scope chain, the setting decides: " + r.error().message);
+    }
   } else {
     log::write(log::Level::Debug, kLog, "scope chain not readable, the setting decides: " + resolver.error().message);
   }
+  // The value of this turn is the person's own word for this request: it holds also when the chain cannot be read.
+  if (!binding.turn.is_null()) {
+    if (supplied_by) *supplied_by = "turn";
+    return binding.turn;
+  }
   const Json mine = cfg.get(binding.person_setting.empty() ? binding.key : binding.person_setting);
+  if (!unset(mine) && supplied_by) *supplied_by = "person";
   return unset(mine) ? fallback : mine;
 }
 

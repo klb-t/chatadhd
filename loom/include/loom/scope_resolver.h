@@ -41,6 +41,9 @@ struct Binding {
   Json units = nullptr;              // {unit kind|level: id}; null = read conversations.metadata.units of conv_id
   Json unit_values = nullptr;        // {level: value} baselines of unit levels (tools, tests); rules are the persistent way
   Json conversation_value = nullptr; // null = conversations.metadata.settings[key]
+  // The value for THIS request only (M1-K1b): the most specific level of the chain, `turn`, above the conversation. null = none. It is what the
+  // turn carrier holds for the key (context.modify), read by the chat engine for the one request that consumes it; never persisted here.
+  Json turn = nullptr;
 };
 
 struct Resolution {
@@ -80,6 +83,8 @@ class Resolver {
 
 // Convenience for consumers that want only the value: the resolved value, or `fallback` when nothing in the chain defines it.
 // A resolver that cannot be opened is logged at debug level and the user's setting (config) decides - never a silent default.
-Json value_or(const std::filesystem::path& data_root, const Config& cfg, Database* db, const Binding& binding, const Json& fallback);
+// `supplied_by` (optional) receives the level that supplied the value ("turn", "conversation", "person", ... ; "" when the fallback was used).
+Json value_or(const std::filesystem::path& data_root, const Config& cfg, Database* db, const Binding& binding, const Json& fallback,
+              std::string* supplied_by = nullptr);
 
 }  // namespace loom::scopes
