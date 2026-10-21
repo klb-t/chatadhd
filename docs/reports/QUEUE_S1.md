@@ -1,7 +1,15 @@
-# Kolejka S1 — stan 2026-10-21 05:30 UTC
+# Kolejka S1 — stan 2026-10-21 06:55 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
+
+## BIEŻĄCE (06:55 UTC): bramka W0 w toku
+M1-W0 skończone (60 agentów, dwie rundy recenzji, 53 commity, 31 znalezisk w rundzie 1, naprawy partiami) i scalone
+z `claude/fix-login-drop` oraz `main` w `/home/user/wt/m1d0` (head po scaleniu wypchnięty na `claude/m1-w0`).
+`gate.sh /home/user/wt/m1d0 m1w0` uruchomiony ok. 06:55 (log `scratchpad/wp/gate-m1w0.out`); wynik sprawdza zaplanowane
+zadanie. Po zielonej: FF `main`, S2 → kroki Bramki 0 z `M1_W0_TESTIDS.md`, `package.yml` na `main`, link do APK dla właściciela.
+Otwarte po rundzie 2 (nieblokujące): pusty nagłówek „Skąd jest wartość" na kartach, które nie są ustawieniem;
+zrzut „Ta rozmowa w grafie" na pustej rozmowie. CI `main` zielone (przebieg 249).
 
 ## Restart kontenera (≈ 05:20 UTC) — co się stało
 Dysk przetrwał, procesy nie. Zatrzymane workflowy: W0 (był w naprawach po recenzjach, partia r1:b1) i poprawka
