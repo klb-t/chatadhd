@@ -376,7 +376,12 @@ bool App::init() {
   // httplib enforces this only for bodies that announce a Content-Length; the middleware below rejects every
   // other framing and applies the per-route limits before a body is read.
   svr_.set_payload_max_length(opts_.max_upload_bytes == 0 ? (std::numeric_limits<size_t>::max)() : opts_.max_upload_bytes);
-  svr_.set_keep_alive_max_count(100);
+  if (opts_.keep_alive_timeout_seconds == 0) {
+    svr_.set_keep_alive_max_count(1);  // the only answer of a connection carries "Connection: close"
+  } else {
+    svr_.set_keep_alive_max_count(100);
+    svr_.set_keep_alive_timeout(static_cast<time_t>(opts_.keep_alive_timeout_seconds));
+  }
   SseQueue::keepalive_ms().store(static_cast<long>(opts_.sse_keepalive_ms));
   if (opts_.worker_threads != 0) {
     const std::size_t threads = opts_.worker_threads;

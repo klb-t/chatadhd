@@ -389,6 +389,11 @@ if(LOOM_BUILD_TESTS)
     set_tests_properties(server.sse PROPERTIES
       ENVIRONMENT "LOOM_SERVER_BIN=$<TARGET_FILE:loom-server>;PYTHONDONTWRITEBYTECODE=1"
       TIMEOUT 120)
+    add_test(NAME server.keepalive
+      COMMAND ${Python3_EXECUTABLE} ${LOOM_ROOT}/server/tests/test_server_keepalive.py)
+    set_tests_properties(server.keepalive PROPERTIES
+      ENVIRONMENT "LOOM_SERVER_BIN=$<TARGET_FILE:loom-server>;PYTHONDONTWRITEBYTECODE=1"
+      TIMEOUT 120)
     add_test(NAME server.chat_active_task
       COMMAND ${Python3_EXECUTABLE} ${LOOM_ROOT}/server/tests/test_chat_active_task_server.py)
     set_tests_properties(server.chat_active_task PROPERTIES
