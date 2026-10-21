@@ -2333,6 +2333,129 @@ R"loom_onboard(                "bar.shallower": "Płycej",
               }
             }
           }
+        },
+        {
+          "id": "presentation.context_receipt/v1",
+          "key": "presentation.context_receipt",
+          "area": "presentation/context_receipt",
+          "revision": 1,
+          "label": "Words of the “What we sent” sheet and the line under a reply: section names, source chips, reasons for leaving out, the disclaimer, the missing-receipt word, the stable-prefix and ×10-guard lines; texts only, the kernel contract loom.context_receipt/1 comes with M1-K1",
+          "value": {
+            "schema": "loom.presentation_feature/1",
+            "feature": "context_receipt",
+            "status": {
+              "state": "planned",
+              "by": "M1-K1, M1-W1",
+              "today": {
+                "pl": "Dziś te słowa są tylko w danych: jądro nie zapisuje jeszcze śladu „Co wysłaliśmy” per wiadomość, a arkusza nie ma na ekranie.",
+                "en": "Today these words are only in the data: the kernel does not store a “What we sent” receipt per message yet, and the sheet is not on the screen."
+              },
+              "reason": {
+                "pl": "Ślad i akcja context.receipt przychodzą z pozycją M1-K1, arkusz z pozycją M1-W1.",
+                "en": "The receipt and the action context.receipt come with work item M1-K1, the sheet with M1-W1."
+              }
+            },
+            "locales": {
+              "en": {
+                "title": "What we sent",
+                "line": "Context: {{summary}} — see",
+                "none": "Only your message went to the model.",
+                "section.system": "Instruction",
+                "section.profile": "Profile",
+                "section.rules": "Rules about you",
+                "section.memory": "Memory",
+                "section.project": "Project",
+                "section.history": "Conversation",
+                "section.graph": "Graph",
+                "section.task": "Task",
+                "chip.profile_slot": "from the profile",
+                "chip.rule": "rule about you",
+                "chip.memory_node": "from memory",
+                "chip.graph_node": "from the graph",
+                "chip.kb_claim": "claim from the analysis",
+                "chip.message.L0": "message as it is",
+                "chip.message.L1": "message without fillers",
+                "chip.message.L2": "message without digressions",
+                "chip.message.L3": "compiled instruction",
+                "dropped.title": "Left out",
+                "dropped.thread_filter": "thread filter: messages of another thread left out ({{count}})",
+                "dropped.representation_level": "level {{level}}: fillers and digressions left out ({{count}})",
+                "dropped.budget": "budget: items left out ({{count}})",
+                "dropped.excluded": "excluded by you: left out ({{count}})",
+                "dropped.history_window": "history window: older messages left out ({{count}})",
+                "header.profile": "Profile: {{profile}}",
+                "header.modifiers": "Changes of this turn: {{modifiers}}",
+                "header.order": "Order: {{order}}",
+                "header.flow": "Flow: {{flow}}",
+                "tokens": "{{n}} tokens (estimate)",
+                "cost.unknown": "cost unknown — no price",
+                "prefix.stable.yes": "stable prefix: yes",
+                "prefix.stable.no": "stable prefix: no",
+                "guard.ok": "×10 guard: {{ratio}}× the base — no question",
+                "guard.asked": "×10 guard: {{ratio}}× the base — asked",
+                "guard.unknown": "×10 guard: base unknown",
+                "disclaimer": "A compiled request, not proof that the provider received it.",
+                "missing": "No receipt (saved before M1)",
+                "truncated": "Cut (receipt size limit)",
+                "action.show_in_graph": "Show in the graph",
+                "action.next_time": "Next time",
+                "action.wider": "wider",
+                "action.narrower": "narrower",
+                "action.deeper": "deeper",
+                "action.shallower": "shallower",
+                "action.change_profile": "Change profile"
+              },
+              "pl": {
+                "title": "Co wysłaliśmy",
+                "line": "Kontekst: {{summary}} — zobacz",
+                "none": "Do modelu poszła tylko Twoja wiadomość.",
+                "section.system": "Instrukcja",
+                "section.profile": "Profil",
+                "section.rules": "Reguły o Tobie",
+                "section.memory": "Pamięć",
+                "section.project": "Projekt",
+                "section.history": "Rozmowa",
+                "section.graph": "Graf",
+                "section.task": "Zadanie",
+                "chip.profile_slot": "z profilu",
+                "chip.rule": "reguła o Tobie",
+                "chip.memory_node": "z pamięci",
+                "chip.graph_node": "z grafu",
+                "chip.kb_claim": "twierdzenie z analizy",
+                "chip.message.L0": "wiadomość bez zmian",
+                "chip.message.L1": "wiadomość bez wypełniaczy",
+                "chip.message.L2": "wiadomość bez dygresji",
+                "chip.message.L3": "skompilowane polecenie",
+                "dropped.title": "Pominięte",
+                "dropped.thread_filter": "filtr wątków: pominięto wiadomości innego wątku ({{count}})",
+                "dropped.representation_level": "poziom {{level}}: pominięto wypełniacze i dygresje ({{count}})",
+                "dropped.budget": "budżet: pominięto pozycje ({{count}})",
+                "dropped.excluded": "wykluczone przez Ciebie: pominięto ({{count}})",
+                "dropped.history_window": "okno historii: pominięto starsze wiadomości ({{count}})",
+                "header.profile": "Profil: {{profile}}",
+                "header.modifiers": "Zmiany tej tury: {{modifiers}}",
+                "header.order": "Kolejność: {{order}}",
+                "header.flow": "Przepływ: {{flow}}",
+                "tokens": "{{n}} tokenów (szacunek)",
+                "cost.unknown": "koszt nieznany — brak ceny",
+                "prefix.stable.yes": "prefiks stały: tak",
+                "prefix.stable.no": "prefiks stały: nie",
+                "guard.ok": "strażnik ×10: {{ratio}}× bazy — bez pytania",
+                "guard.asked": "strażnik ×10: {{ratio}}× bazy — zapytano",
+                "guard.unknown": "strażnik ×10: baza nieznana",
+                "disclaimer": "Skompilowane żądanie, nie dowód odbioru przez dostawcę.",
+                "missing": "Brak śladu (zapisane przed M1)",
+                "truncated": "Ucięto (limit rozmiaru śladu)",
+                "action.show_in_graph": "Pokaż w grafie",
+                "action.next_time": "Następnym razem",
+                "action.wider": "szerzej",
+                "action.narrower": "węziej",
+                "action.deeper": "głębiej",
+                "action.shallower": "płycej",
+                "action.change_profile": "Zmień profil"
+              }
+            }
+          }
         }
       ]
     }
@@ -2773,7 +2896,8 @@ R"loom_onboard(                "bar.shallower": "Płycej",
             "type.object": "obiekt",
             "type.array": "tablicę",
             "type.string": "tekst",
-            "review_state.pending": "oczekujące",
+)loom_onboard",
+R"loom_onboard(            "review_state.pending": "oczekujące",
             "review_state.confirmed": "potwierdzone",
             "review_state.rejected": "odrzucone",
             "error.template_syntax": "Nieprawidłowa składnia szablonu prezentacji.",
@@ -2934,6 +3058,110 @@ R"loom_onboard(                "bar.shallower": "Płycej",
       }
     },
     {
+      "id": "profile.subgraphs/v1",
+      "key": "profile.subgraphs",
+      "area": "profiles/subgraphs",
+      "revision": 1,
+      "value": {
+        "schema": "loom.profile_subgraphs/1",
+        "description": "The parts of the node You (party:self) and the order in which the stable ones are rendered into the profile prefix of a request: order_for_prefix (null = not part of the prefix) and stability_rank (1 = changes least). The kernel reads this table from work item M1-K2; today only the data exists.",
+        "subgraphs": [
+          {
+            "id": "identity",
+            "label": {
+              "pl": "Tożsamość",
+              "en": "Identity"
+            },
+            "why": {
+              "pl": "Kim jesteś: imię, rola, strefa czasu. Zmienia się najrzadziej, więc idzie na początek.",
+              "en": "Who you are: name, role, time zone. It changes least, so it goes first."
+            },
+            "order_for_prefix": 1,
+            "stability_rank": 1
+          },
+          {
+            "id": "preferences",
+            "label": {
+              "pl": "Preferencje",
+              "en": "Preferences"
+            },
+            "why": {
+              "pl": "Styl, długość odpowiedzi, język. Mogą być inne dla każdego przepływu.",
+              "en": "Style, answer length, language. They can differ for every flow."
+            },
+            "order_for_prefix": 2,
+            "stability_rank": 2,
+            "per_flow": true
+          },
+          {
+            "id": "policies",
+            "label": {
+              "pl": "Zasady",
+              "en": "Policies"
+            },
+            "why": {
+              "pl": "Co wolno robić z Twoimi danymi i o co pytać: prywatność i to, co strażnik ma zapamiętane.",
+              "en": "What may be done with your data and what to ask about: privacy and what the guardian remembers."
+            },
+            "order_for_prefix": 3,
+            "stability_rank": 3
+          },
+          {
+            "id": "units",
+            "label": {
+              "pl": "Jednostki",
+              "en": "Units"
+            },
+            "why": {
+              "pl": "Projekty, zespoły i organizacje, do których należysz.",
+              "en": "The projects, teams and organisations you belong to."
+            },
+            "order_for_prefix": 4,
+            "stability_rank": 4
+          },
+          {
+            "id": "interests",
+            "label": {
+              "pl": "Zainteresowania",
+              "en": "Interests"
+            },
+            "why": {
+              "pl": "Tematy, o których piszesz; to wnioski z analizy, nie Twoje słowa.",
+              "en": "Topics you write about; these are conclusions of the analysis, not your words."
+            },
+            "order_for_prefix": 5,
+            "stability_rank": 5
+          },
+          {
+            "id": "network",
+            "label": {
+              "pl": "Sieć",
+              "en": "Network"
+            },
+            "why": {
+              "pl": "Osoby i organizacje, które znasz.",
+              "en": "The people and organisations you know."
+            },
+            "order_for_prefix": 6,
+            "stability_rank": 6
+          },
+          {
+            "id": "memory",
+            "label": {
+              "pl": "Co pamiętam",
+              "en": "What I remember"
+            },
+            "why": {
+              "pl": "Wpisy drzewa pamięci. Idą do żądania jako część „Pamięć”, nie jako profil.",
+              "en": "The entries of the memory tree. They go into the request as the part “Memory”, not as the profile."
+            },
+            "order_for_prefix": null,
+            "stability_rank": 7
+          }
+        ]
+      }
+    },
+    {
       "id": "graph.perspective.enabled/v1",
       "key": "graph.perspective.enabled",
       "area": "graph/perspectives",
@@ -3020,8 +3248,7 @@ R"loom_onboard(                "bar.shallower": "Płycej",
     {
       "id": "presentation.conversation_view/v1",
       "key": "presentation.conversation_view",
-)loom_onboard",
-R"loom_onboard(      "area": "presentation/conversation_view",
+      "area": "presentation/conversation_view",
       "revision": 1,
       "label": "Local source view labels; local reading does not authorize model disclosure",
       "value": {
@@ -3823,7 +4050,8 @@ R"loom_onboard(      "area": "presentation/conversation_view",
         "feature": "ui_shell",
         "locales": {
           "en": {
-            "menu_open": "Menu",
+)loom_onboard",
+R"loom_onboard(            "menu_open": "Menu",
             "new_chat": "New conversation",
             "conversations": "Conversations",
             "search": "Search conversations",
@@ -4010,8 +4238,7 @@ R"loom_onboard(      "area": "presentation/conversation_view",
             "cm_reason_unknown_action": "This entry has no action in this version.",
             "cm_issue": "The + menu has a problem: {{issue}}",
             "cm_models_empty": "The list of models is empty. Set the provider key in Settings.",
-)loom_onboard",
-R"loom_onboard(            "cm_model_not_saved": "The model is set for the next message, but this conversation did not keep it: {{reason}}",
+            "cm_model_not_saved": "The model is set for the next message, but this conversation did not keep it: {{reason}}",
             "cm_model_not_read": "Could not read which model this conversation uses: {{reason}}",
             "att_remove": "Remove {{name}}",
             "att_list": "Attachments",
@@ -4802,7 +5029,8 @@ R"loom_onboard(            "cm_model_not_saved": "The model is set for the next 
             "status.disabled": "wyłączone",
             "status.active": "aktywne",
             "status.excluded": "pominięte w kontekście",
-            "status.pending": "czeka",
+)loom_onboard",
+R"loom_onboard(            "status.pending": "czeka",
             "status.complete": "gotowe",
             "status.proposal": "propozycja",
             "status.awaiting_confirmation": "czeka na Twoje potwierdzenie",
@@ -4958,8 +5186,7 @@ R"loom_onboard(            "cm_model_not_saved": "The model is set for the next 
             "evidence.method.import": "import ({{source}}, {{date}})",
             "evidence.method.conversation": "Twoja rozmowa",
             "evidence.method.interview": "Twoja odpowiedź w wywiadzie",
-)loom_onboard",
-R"loom_onboard(            "evidence.method.scenario": "pytanie z wywiadu — bez odpowiedzi",
+            "evidence.method.scenario": "pytanie z wywiadu — bez odpowiedzi",
             "evidence.method.analysis": "wniosek z analizy wiadomości",
             "evidence.method.model_inferred": "wniosek modelu",
             "evidence.method.role_resolution": "model, który daje rola",
@@ -5176,6 +5403,129 @@ R"loom_onboard(            "evidence.method.scenario": "pytanie z wywiadu — be
             "all_fields.show": "Pokaż Wszystkie pola",
             "all_fields.hide": "Ukryj Wszystkie pola",
             "all_fields.why": "To dawny ekran ustawień w całości: połączenie, modele, klucze, tabela wszystkich kluczy z regułami edycji i edytor JSON (konfiguracja ekspercka). Nic z niego nie zniknęło; jest po angielsku, bo jego słów nie ma jeszcze w katalogu."
+          }
+        }
+      }
+    },
+    {
+      "id": "presentation.context_receipt/v1",
+      "key": "presentation.context_receipt",
+      "area": "presentation/context_receipt",
+      "revision": 1,
+      "label": "Words of the “What we sent” sheet and the line under a reply: section names, source chips, reasons for leaving out, the disclaimer, the missing-receipt word, the stable-prefix and ×10-guard lines; texts only, the kernel contract loom.context_receipt/1 comes with M1-K1",
+      "value": {
+        "schema": "loom.presentation_feature/1",
+        "feature": "context_receipt",
+        "status": {
+          "state": "planned",
+          "by": "M1-K1, M1-W1",
+          "today": {
+            "pl": "Dziś te słowa są tylko w danych: jądro nie zapisuje jeszcze śladu „Co wysłaliśmy” per wiadomość, a arkusza nie ma na ekranie.",
+            "en": "Today these words are only in the data: the kernel does not store a “What we sent” receipt per message yet, and the sheet is not on the screen."
+          },
+          "reason": {
+            "pl": "Ślad i akcja context.receipt przychodzą z pozycją M1-K1, arkusz z pozycją M1-W1.",
+            "en": "The receipt and the action context.receipt come with work item M1-K1, the sheet with M1-W1."
+          }
+        },
+        "locales": {
+          "en": {
+            "title": "What we sent",
+            "line": "Context: {{summary}} — see",
+            "none": "Only your message went to the model.",
+            "section.system": "Instruction",
+            "section.profile": "Profile",
+            "section.rules": "Rules about you",
+            "section.memory": "Memory",
+            "section.project": "Project",
+            "section.history": "Conversation",
+            "section.graph": "Graph",
+            "section.task": "Task",
+            "chip.profile_slot": "from the profile",
+            "chip.rule": "rule about you",
+            "chip.memory_node": "from memory",
+            "chip.graph_node": "from the graph",
+            "chip.kb_claim": "claim from the analysis",
+            "chip.message.L0": "message as it is",
+            "chip.message.L1": "message without fillers",
+            "chip.message.L2": "message without digressions",
+            "chip.message.L3": "compiled instruction",
+            "dropped.title": "Left out",
+            "dropped.thread_filter": "thread filter: messages of another thread left out ({{count}})",
+            "dropped.representation_level": "level {{level}}: fillers and digressions left out ({{count}})",
+            "dropped.budget": "budget: items left out ({{count}})",
+            "dropped.excluded": "excluded by you: left out ({{count}})",
+            "dropped.history_window": "history window: older messages left out ({{count}})",
+            "header.profile": "Profile: {{profile}}",
+            "header.modifiers": "Changes of this turn: {{modifiers}}",
+            "header.order": "Order: {{order}}",
+            "header.flow": "Flow: {{flow}}",
+            "tokens": "{{n}} tokens (estimate)",
+            "cost.unknown": "cost unknown — no price",
+            "prefix.stable.yes": "stable prefix: yes",
+            "prefix.stable.no": "stable prefix: no",
+            "guard.ok": "×10 guard: {{ratio}}× the base — no question",
+            "guard.asked": "×10 guard: {{ratio}}× the base — asked",
+            "guard.unknown": "×10 guard: base unknown",
+            "disclaimer": "A compiled request, not proof that the provider received it.",
+            "missing": "No receipt (saved before M1)",
+            "truncated": "Cut (receipt size limit)",
+            "action.show_in_graph": "Show in the graph",
+            "action.next_time": "Next time",
+            "action.wider": "wider",
+            "action.narrower": "narrower",
+            "action.deeper": "deeper",
+            "action.shallower": "shallower",
+            "action.change_profile": "Change profile"
+          },
+          "pl": {
+            "title": "Co wysłaliśmy",
+            "line": "Kontekst: {{summary}} — zobacz",
+            "none": "Do modelu poszła tylko Twoja wiadomość.",
+            "section.system": "Instrukcja",
+            "section.profile": "Profil",
+            "section.rules": "Reguły o Tobie",
+            "section.memory": "Pamięć",
+            "section.project": "Projekt",
+            "section.history": "Rozmowa",
+            "section.graph": "Graf",
+            "section.task": "Zadanie",
+            "chip.profile_slot": "z profilu",
+            "chip.rule": "reguła o Tobie",
+            "chip.memory_node": "z pamięci",
+            "chip.graph_node": "z grafu",
+            "chip.kb_claim": "twierdzenie z analizy",
+            "chip.message.L0": "wiadomość bez zmian",
+            "chip.message.L1": "wiadomość bez wypełniaczy",
+            "chip.message.L2": "wiadomość bez dygresji",
+            "chip.message.L3": "skompilowane polecenie",
+            "dropped.title": "Pominięte",
+            "dropped.thread_filter": "filtr wątków: pominięto wiadomości innego wątku ({{count}})",
+            "dropped.representation_level": "poziom {{level}}: pominięto wypełniacze i dygresje ({{count}})",
+            "dropped.budget": "budżet: pominięto pozycje ({{count}})",
+            "dropped.excluded": "wykluczone przez Ciebie: pominięto ({{count}})",
+            "dropped.history_window": "okno historii: pominięto starsze wiadomości ({{count}})",
+            "header.profile": "Profil: {{profile}}",
+            "header.modifiers": "Zmiany tej tury: {{modifiers}}",
+            "header.order": "Kolejność: {{order}}",
+            "header.flow": "Przepływ: {{flow}}",
+            "tokens": "{{n}} tokenów (szacunek)",
+            "cost.unknown": "koszt nieznany — brak ceny",
+            "prefix.stable.yes": "prefiks stały: tak",
+            "prefix.stable.no": "prefiks stały: nie",
+            "guard.ok": "strażnik ×10: {{ratio}}× bazy — bez pytania",
+            "guard.asked": "strażnik ×10: {{ratio}}× bazy — zapytano",
+            "guard.unknown": "strażnik ×10: baza nieznana",
+            "disclaimer": "Skompilowane żądanie, nie dowód odbioru przez dostawcę.",
+            "missing": "Brak śladu (zapisane przed M1)",
+            "truncated": "Ucięto (limit rozmiaru śladu)",
+            "action.show_in_graph": "Pokaż w grafie",
+            "action.next_time": "Następnym razem",
+            "action.wider": "szerzej",
+            "action.narrower": "węziej",
+            "action.deeper": "głębiej",
+            "action.shallower": "płycej",
+            "action.change_profile": "Zmień profil"
           }
         }
       }

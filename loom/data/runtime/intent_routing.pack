@@ -4785,6 +4785,147 @@
         "enabled": true,
         "messages": 12
       },
+        "context_modifiers": {
+          "status": {
+            "state": "planned",
+            "by": "M1-K1",
+            "today": {
+              "pl": "Dziś router nie czyta tej tabeli: zdanie „szerzej” jest zwykłą wiadomością do modelu.",
+              "en": "Today the router does not read this table: the sentence “wider” is an ordinary message to the model."
+            },
+            "reason": {
+              "pl": "Akcje context.modify i context.receipt oraz czytanie tej tabeli przez router przychodzą z pozycją M1-K1; wcześniej te frazy nie mogłyby trafić do żadnej akcji.",
+              "en": "The actions context.modify and context.receipt and the router reading this table come with work item M1-K1; before that these phrases could not reach any action."
+            }
+          },
+          "note": {
+            "pl": "Frazy to całe zdania (krótkie polecenia), nie słowa w środku wiadomości: „opisz to szerzej” zostaje wiadomością. Zmiana dotyczy następnej tury, chyba że powiesz „na stałe w tej rozmowie”. Kroki (×2, ÷2, +1, −1) są w action_rules.pack, scoped_values.",
+            "en": "The phrases are whole sentences (short commands), not words inside a message: “describe it wider” stays a message. The change applies to the next turn unless you say “permanently in this conversation”. The steps (×2, ÷2, +1, −1) are in action_rules.pack, scoped_values."
+          },
+          "modifiers": [
+            {
+              "id": "wider",
+              "key": "context.breadth_delta",
+              "step": "wider",
+              "phrases": {
+                "pl": [
+                  "szerzej",
+                  "weź szerszy kontekst",
+                  "szerszy kontekst",
+                  "więcej kontekstu",
+                  "poszerz kontekst",
+                  "weź więcej kontekstu"
+                ],
+                "en": [
+                  "wider",
+                  "take a wider context",
+                  "wider context",
+                  "more context",
+                  "widen the context",
+                  "take more context"
+                ]
+              }
+            },
+            {
+              "id": "narrower",
+              "key": "context.breadth_delta",
+              "step": "narrower",
+              "phrases": {
+                "pl": [
+                  "węziej",
+                  "weź węższy kontekst",
+                  "węższy kontekst",
+                  "mniej kontekstu",
+                  "zawęź kontekst",
+                  "weź mniej kontekstu"
+                ],
+                "en": [
+                  "narrower",
+                  "take a narrower context",
+                  "narrower context",
+                  "less context",
+                  "narrow the context",
+                  "take less context"
+                ]
+              }
+            },
+            {
+              "id": "deeper",
+              "key": "context.depth_delta",
+              "step": "deeper",
+              "phrases": {
+                "pl": [
+                  "głębiej",
+                  "głębiej o jeden",
+                  "weź głębszy kontekst",
+                  "sięgnij głębiej",
+                  "głębszy kontekst"
+                ],
+                "en": [
+                  "deeper",
+                  "one level deeper",
+                  "take a deeper context",
+                  "go deeper",
+                  "deeper context"
+                ]
+              }
+            },
+            {
+              "id": "shallower",
+              "key": "context.depth_delta",
+              "step": "shallower",
+              "phrases": {
+                "pl": [
+                  "płycej",
+                  "płycej o jeden",
+                  "weź płytszy kontekst",
+                  "płytszy kontekst"
+                ],
+                "en": [
+                  "shallower",
+                  "one level shallower",
+                  "take a shallower context",
+                  "shallower context"
+                ]
+              }
+            }
+          ],
+          "profile": {
+            "key": "context.profile",
+            "placeholder": "{profile}",
+            "phrases": {
+              "pl": [
+                "profil selektora {profile}",
+                "użyj profilu selektora {profile}",
+                "przełącz na profil selektora {profile}"
+              ],
+              "en": [
+                "selector profile {profile}",
+                "use the selector profile {profile}",
+                "switch to the selector profile {profile}"
+              ]
+            }
+          },
+          "receipt": {
+            "action": "context.receipt",
+            "phrases": {
+              "pl": [
+                "co wysłaliśmy",
+                "co wysłaliśmy do modelu",
+                "co poszło do modelu",
+                "co dostał model",
+                "pokaż wysłany kontekst"
+              ],
+              "en": [
+                "what we sent",
+                "what did we send to the model",
+                "what went to the model",
+                "what did the model get",
+                "show the context you sent"
+              ]
+            }
+          }
+        },
       "statement_guard": {
         "nouns": {
           "pl": [
@@ -6138,6 +6279,18 @@
                 "type": "integer",
                 "minimum": 1
               }
+            },
+            "additionalProperties": false
+          },
+          "context_modifiers": {
+            "type": "object",
+            "description": "Short sentences that widen, narrow, deepen or flatten the context of the next turn, name a selector profile, or ask what was sent to the model (M1-D2 data; the router reads it from work item M1-K1). status says so.",
+            "properties": {
+              "status": {"type": "object"},
+              "note": {"type": "object"},
+              "modifiers": {"type": "array", "items": {"type": "object", "required": ["id", "key", "step", "phrases"], "properties": {"id": {"type": "string", "minLength": 1}, "key": {"type": "string", "minLength": 1}, "step": {"type": "string", "minLength": 1}, "phrases": {"type": "object"}}}},
+              "profile": {"type": "object"},
+              "receipt": {"type": "object"}
             },
             "additionalProperties": false
           },
