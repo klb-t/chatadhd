@@ -74,3 +74,18 @@ Lista i mapa są jedna pod drugą w `gnav-body`, każda w `Disclosure` (`data-st
 
 Wstecz: otwarte menu Widok ▾ jest warstwą `navigator-view` (zamyka się pierwsze), potem karta, potem kroki ścieżki. Krok mapy dla `gate0` (propozycja): `shell-menu-toggle` → `shell-menu-graph` → `nav-row-area:rom` → `nav-map-node-rom:boot` → `expect node-card`, `nav-map-selected text /./`, `nav-map min 1`.
 
+## Ustawienia po ludzku (paczka P5, `loom/web/src/components/SettingsHuman.tsx`; menu ⋮ › Ustawienia w układzie czatu)
+
+| ekran | testid | znaczenie |
+|---|---|---|
+| korzeń | `settings-human`, `shum-loading`, `shum-error` + `shum-retry` | korzeń ekranu; stany wczytywania i błędu jądra |
+| lista grup | `shum-intro`, `shum-total` (`data-fields`, `data-yours`), `shum-yours-help`, `shum-filter` (`role=switch`, `aria-checked`), `shum-groups` | opis, suma „N pól · M Twoje”, filtr „Pokaż tylko zmienione”, lista ośmiu grup |
+| grupa (wiersz) | `shum-group-<id>` (`data-fields`, `data-yours`), `shum-group-open-<id>` (przycisk), `shum-group-count-<id>` (tekst „N pól · M Twoje”) | `<id>` = id grupy z jądra: `ty`, `rozmowa`, `modele`, `kontekst`, `interfejs`, `prywatnosc`, `koszty`, `silnik`; suma `data-fields` = `counts.fields` z `settings.resolved` |
+| widok grupy | `shum-group-view-<id>` (`data-fields`, `data-shown`), `shum-back`, `shum-group-why`, `shum-group-view-count`, `shum-empty`, `shum-sub-<podgrupa>`, `shum-fields-<id>` | po otwarciu grupy; `shum-back` = „Wróć do grup ustawień” |
+| pole | `shum-field-<klucz>` (`data-address`, `data-planned`), `shum-field-main-<klucz>` (rozwija szczegóły, `aria-expanded`), `shum-label-<klucz>`, `shum-value-<klucz>`, `shum-why-<klucz>`, `shum-chip-provenance-<klucz>`, `shum-chip-evidence-<klucz>`, `shum-chip-status-<klucz>`, `shum-chip-profile-<klucz>`, `shum-planned-<klucz>`, `shum-card-btn-<klucz>` (⋯ = karta) | wiersz pola; np. `shum-field-temperature` (Rozmowa), `shum-chip-provenance-temperature` |
+| szczegóły | `shum-detail-<klucz>`, `shum-effect-<klucz>`, `shum-flows-<klucz>`, `shum-edit-<klucz>` | po rozwinięciu: Co zmienia, Czytają to przepływy, Zmiana |
+| karta pola | `node-card` i `card-*` z bloku karty (ta sama karta co w nawigatorze) | „⋯” przy polu; po zapisie liczniki grup się przeładowują |
+| Wszystkie pola | `shum-all-fields` (Disclosure, `.disclosure-head`), `shum-all-fields-why`, `shum-legacy`, w środku `settings-panel` i dawne `cfg-*`, `secret-*` | w grupie `silnik`; prośba o wpisanie sekretu otwiera Ustawienia od razu tu |
+
+Wstecz (`window.__loomBack()`): zamyka najpierw kartę pola (`navigator-card*`), potem widok grupy (`settings-group`, wraca do listy grup), potem panel; w korzeniu czatu zwraca `false`. Krok Ustawień dla `gate0` (propozycja dla S2): `shell-menu-toggle` → `shell-menu-settings` → `shum-groups` ma 8 wierszy, suma `data-fields` = `counts.fields` → `shum-group-open-modele` → `shum-field-main-default_model` pokazuje etykietę i chip → `shum-back` → lista grup.
+

@@ -486,15 +486,16 @@ TEST_SUITE("settings_fields") {
     for (const auto& f : doc["fields"])
       if (f.contains("status")) {
         INFO(f["key"].get<std::string>());
-        CHECK(f["status"]["state"] == "planned");
+        // planned (no reader yet) or implemented (a reader exists: M1-W0 P4 gave navigator_layout its reader); both carry the reason and today's behaviour
+        CHECK((f["status"]["state"] == "planned" || f["status"]["state"] == "implemented"));
         CHECK_FALSE(f["status"]["reason"]["pl"].get<std::string>().empty());
         CHECK_FALSE(f["status"]["by"].get<std::string>().empty());
         CHECK_FALSE(f["status"]["today"]["pl"].get<std::string>().empty());  // what the app does now, next to the planned chip
         CHECK_FALSE(f["status"]["today"]["en"].get<std::string>().empty());
-        ++planned;
+        if (f["status"]["state"] == "planned") ++planned;
       }
     // M1-K0 gave navigator_children_limit its reader (graph.navigate takes its children budget from it): it is no longer planned.
-    CHECK(planned >= 12);
+    CHECK(planned >= 11);   // 12 before navigator_layout got its reader (M1-W0 P4)
     for (const auto& f : doc["fields"])
       if (f["key"] == "navigator_children_limit") CHECK_FALSE(f.contains("status"));
     Json nostatus = doc;
