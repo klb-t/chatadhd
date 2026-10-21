@@ -314,7 +314,7 @@ try {
     const options = dump().filter(n => n.package === PKG && /RadioButton|CheckedTextView/.test(n.class || "") && (n.text || "").trim()).map(n => n.text.trim());
     await tapText(/Zostaw w metadanych/, "the recipe 'Zostaw w metadanych tylko znaczniki czasu'");
     const r = find(dump(), n => /Zostaw w metadanych/.test(n.text || ""));
-    return `${spinner ? "drop-down" : "list"}: ${options.join(" | ") || "(no radio/check items)"}; chosen: ${r ? `${(r.class || "").split(".").pop()} checked=${r.checked}` : "?"}`;
+    return `${spinner ? "drop-down" : "list"} (${options.length} options): ${options.join(" | ") || "(no radio/check items)"}; chosen: ${r ? `${(r.class || "").split(".").pop()} checked=${r.checked}` : "?"}`;
   };
   const recipeButton = async (re, label) => {
     const before = texts(dump());
@@ -340,8 +340,8 @@ try {
     if (bad) throw new Error(out.join(" || "));
     return out.join(" || ");
   });
-  await exportRun("B (only 'Wyciągnij spod zagnieżdżenia')", true);
   await exportRun("A (no profile)", false);
+  await exportRun("B (only 'Wyciągnij spod zagnieżdżenia')", true);
 
   await check("the process never crashed", async () => {
     const c = crashes();
