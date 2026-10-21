@@ -2266,7 +2266,22 @@
             "hypotheses"
           ],
           "prompt": "annotations.analyzer.prompt (extension of semantic.analysis)",
-          "status": "calibration"
+          "status": "calibration",
+          "human": {
+            "title": {
+              "pl": "Jedno wywołanie: cała rozmowa naraz",
+              "en": "One call: the whole conversation at once"
+            },
+            "does": [
+              {"pl": "encje", "en": "entities"},
+              {"pl": "relacje", "en": "relations"},
+              {"pl": "segmenty", "en": "segments"},
+              {"pl": "wątki", "en": "threads"}
+            ],
+            "planned": [
+              {"pl": "hipotezy", "en": "hypotheses"}
+            ]
+          }
         },
         "narrow_questions": {
           "calls": "several",
@@ -2278,6 +2293,19 @@
             "relations between given items (data/prompts/relation.prompt)"
           ],
           "status": "calibration",
+          "human": {
+            "title": {
+              "pl": "Klasyczne wywołanie i wąskie pytanie",
+              "en": "The classic call and a narrow question"
+            },
+            "does": [
+              {"pl": "klasyczne wywołanie analizy (encje, tematy, relacje)", "en": "the classic analysis call (entities, topics, relations)"},
+              {"pl": "jedno wąskie pytanie: kategoria każdego fragmentu i wątek", "en": "one narrow question: the category of each segment and the thread"}
+            ],
+            "planned": [
+              {"pl": "relacje między podanymi elementami (data/prompts/relation.prompt)", "en": "relations between given items (data/prompts/relation.prompt)"}
+            ]
+          },
           "segment_prompt": "Read the following chat message. Return ONLY valid JSON (no markdown): {\"segments\": [...], \"thread\": \"...\"}.\n{{contract}}\nMessage:\n"
         }
       },

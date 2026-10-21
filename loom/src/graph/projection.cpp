@@ -1956,9 +1956,31 @@ const Json& role_rows(Impl& c) {
     if (!today_chain.is_null()) row["today_chain"] = today_chain;
     // The flow a class of model gets, for the policies whose readers act on it (policies with readers).
     if (!flow.empty() && read_by_a_reader) {
-      const Json def = models.value("flow_defs", Json::object()).value(flow, Json::object());
-      row["flow"] = Json{{"id", flow}, {"status", def.value("status", "")}, {"does", def.value("does", Json::array())}, {"planned", def.value("planned", Json::array())},
-                         {"calls", def.value("calls", "")}};
+      // The flow of the class the model has now, and (flow_by_class) the flow every class gets: the class of the model decides which
+      // flow runs, so the whole map answers "why can I choose this model and what changes with it" without trying models one by one.
+      const Json defs = models.value("flow_defs", Json::object());
+      const auto flow_row = [&](const std::string& flow_id) {
+        const Json def = defs.value(flow_id, Json::object());
+        Json fr{{"id", flow_id}, {"status", def.value("status", "")}, {"does", def.value("does", Json::array())}, {"planned", def.value("planned", Json::array())},
+                {"calls", def.value("calls", "")}};
+        if (const Json* human = json::find(def, "human"); human && human->is_object()) {  // the words of the flow in the language asked
+          if (human->contains("title")) fr["title"] = c.say((*human)["title"]);
+          for (const char* list : {"does", "planned"}) {
+            Json words = Json::array();
+            for (const auto& item : human->value(list, Json::array())) words.push_back(c.say(item));
+            fr[std::string(list) + "_human"] = words;
+          }
+        }
+        return fr;
+      };
+      row["flow"] = flow_row(flow);
+      Json by_class = Json::array();
+      const Json class_flows = models.value("flows", Json::object());  // a named value: items() of a temporary would dangle
+      for (const auto& entry : class_flows.items()) {
+        if (!entry.value().is_string()) continue;
+        by_class.push_back(Json{{"tier", Json{{"id", entry.key()}, {"label", c.word("tier." + entry.key())}}}, {"flow", flow_row(entry.value().get<std::string>())}});
+      }
+      row["flow_by_class"] = by_class;
     } else {
       row["flow"] = nullptr;
     }

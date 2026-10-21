@@ -371,6 +371,26 @@ TEST_SUITE("graph_projection") {
     CHECK(analysis->at("tier").at("id") == choice.tier);
     CHECK_FALSE(analysis->at("tier").at("reason").get<std::string>().empty());
     CHECK(analysis->at("flow").at("id") == choice.flow);
+    // the flow of every class (not only the current one) with its words in the language asked: the owner's "why can I choose a model for
+    // the analysis and how do the flows differ" is answered by the data, in Polish and in English
+    const Json by_class = analysis->at("flow_by_class");
+    REQUIRE(by_class.is_array());
+    CHECK(by_class.size() == 4);
+    bool current_among = false;
+    for (const auto& entry : by_class) {
+      CHECK_FALSE(entry.at("tier").at("label").get<std::string>().empty());
+      CHECK_FALSE(entry.at("flow").at("does_human").empty());
+      CHECK_FALSE(entry.at("flow").at("title").get<std::string>().empty());
+      current_among = current_among || entry.at("tier").at("id") == choice.tier;
+    }
+    CHECK(current_among);
+    CHECK(analysis->at("flow").at("does_human").size() == analysis->at("flow").at("does").size());
+    const Json pl = unwrap(f.rt->actions().invoke("roles.resolved", Json{{"lang", "pl"}}));
+    const Json en = unwrap(f.rt->actions().invoke("roles.resolved", Json{{"lang", "en"}}));
+    std::string pl_title, en_title;
+    for (const auto& role : pl.at("roles")) if (role.at("id") == "analysis.fast") pl_title = role.at("flow").at("title").get<std::string>();
+    for (const auto& role : en.at("roles")) if (role.at("id") == "analysis.fast") en_title = role.at("flow").at("title").get<std::string>();
+    CHECK(pl_title != en_title);
     CHECK(analysis->at("chain").at(0).at("setting") == "semantic_model");
     CHECK(analysis->at("chain").at(0).at("decides") == true);
     CHECK(analysis->contains("mode"));
