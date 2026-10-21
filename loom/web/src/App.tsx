@@ -3,7 +3,7 @@ import ApplicationProfiles, { profileStyle } from "./components/ApplicationProfi
 import { profileAvailability, registerProfile, type ApplicationProfile } from "./profiles/runtime";
 import ConversationList from "./components/ConversationList";
 import GraphView from "./components/GraphView";
-import SettingsPanel from "./components/SettingsPanel";
+import SettingsHuman from "./components/SettingsHuman";
 import { OPEN_PANEL_EVENT, panelOfRequest } from "./context/open-settings";
 import ContextSlider from "./components/ContextSlider";
 import SemanticStatus from "./components/SemanticStatus";
@@ -208,7 +208,8 @@ export default function App() {
                 {activePanel === "memory" && <MemoryPanel />}
                 {activePanel === "import" && <ImportPanel onImported={() => setConvRefreshKey((k) => k + 1)} />}
                 {activePanel === "context" && <ContextSlider convId={activeConvId} />}
-                {activePanel === "settings" && <SettingsPanel />}
+                {activePanel === "settings" && <SettingsHuman profileHost={userProfileHost} convId={activeConvId} language={uiLanguage}
+                  onNavigate={address => { setNavigatorFocus(address); setActivePanel("navigator"); }} />}
                 {activePanel === "logs" && <LogPanel />}
                 {activePanel === "methods" && <MethodsPanel transport={api} />}
                 {activePanel === "analysis" && <AnalysisPanel />}

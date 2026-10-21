@@ -5,7 +5,7 @@
 // the whole chain) → settings.set (person) or rules.set (a scoped value); a value can be taken off one layer ("Zdejmij wartość:
 // <warstwa> — wróci: <warstwa> (<wartość>)") through rules.disable. A confirmation the rules ask for is shown with its reason and
 // answered with actions.confirm. The card and each editor step are history layers (shell/history.ts): Back closes the last one.
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { api } from "../api";
 import type { GraphCardResult } from "../api/graph-projection";
 import type { ActionRun } from "../api/types";
@@ -24,12 +24,14 @@ interface Props {
   onClose: () => void;
   /** A tap on a related node: the navigator goes there (a path step) and the card closes. */
   onNavigate: (address: string, label: string) => void;
+  /** A write finished (a value set or taken off): a screen that shows counts of the same values reloads them. */
+  onChanged?: () => void;
 }
 
 /** A gate waits for the user's yes, then `after` runs (the card reloads). */
 interface GateState extends PendingGate { after: () => void }
 
-export default function NodeCard({ address, language, convId, t, onClose, onNavigate }: Props) {
+export default function NodeCard({ address, language, convId, t, onClose, onNavigate, onChanged }: Props) {
   const [card, setCard] = useState<GraphCardResult | null>(null);
   const [rules, setRules] = useState<ScopedRule[]>([]);
   const [loading, setLoading] = useState(true);
@@ -60,7 +62,9 @@ export default function NodeCard({ address, language, convId, t, onClose, onNavi
     return () => { alive = false; };
   }, [address, language, convId, generation]);
 
-  const reload = useCallback(() => { setGeneration(g => g + 1); setStep("card"); setGate(null); }, []);
+  const changed = useRef(onChanged);
+  changed.current = onChanged;
+  const reload = useCallback(() => { setGeneration(g => g + 1); setStep("card"); setGate(null); changed.current?.(); }, []);
   const key = typeof card?.attrs?.key === "string" ? (card.attrs.key as string) : address.replace(/^setting:/, "");
   const kind = card ? editorKind(card) : "text";
   const chain = useMemo(() => card ? chainRows(card.inheritance, t) : [], [card, t]);
