@@ -13,6 +13,8 @@ routing w `route.cpp`, `ops.cpp`, `estimate.cpp`, `actions.pack`. Uwaga: „Co w
 **S2 potwierdził R38 na emulatorze** (android-smoke 39657173259, 3 profile, 39/0/0): odpowiedź agenta raz, słowami, bez JSON-a; serwer na 24.04 bez PPA działa.
 FF `main` dopiero po końcu CI 258 (ok. 20:50) i zielonej bramce `k1a`.
 
+**CI 258 = SUCCESS (20:39 UTC, 82 min)** — `main` = `ac50b60e` zielony (W0 + R38 + D2 + poprawka `server.security`). S2 uprzedzony: main wolny.
+
 ## CI 257 (R38) padł na `server.security` w asan; naprawione; `main` = `ac50b60e` (D2 + poprawka), CI 258 w toku (19:17 UTC)
 `assert 429 in codes` — osiem razy 403 w kroku 12 testu (limit prób rejestracji). Przyczyna (odtworzona lokalnie): opóźnienie po darmowych próbach w presecie to 1 s,
 potem ×2 — próby rozdzielone o > 2 s (żądanie Argon2id pod sanitizerem na obciążonym runnerze) nigdy nie dostają 429; produkt jest w porządku
