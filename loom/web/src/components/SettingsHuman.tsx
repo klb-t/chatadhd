@@ -26,9 +26,11 @@ interface Props {
   language: string;
   /** A related node tapped on a card: the navigator opens there. */
   onNavigate?: (address: string) => void;
+  /** "all_fields": opened to enter a secret (keys and tokens are entered on the former screen under Silnik › Wszystkie pola). */
+  view?: "" | "all_fields";
 }
 
-export default function SettingsHuman({ profileHost, convId, language, onNavigate }: Props) {
+export default function SettingsHuman({ profileHost, convId, language, onNavigate, view = "" }: Props) {
   const words = usePresentationFeature(profileHost, "settings_human");
   const graphWords = usePresentationFeature(profileHost, "graph_screen");
   const t = useMemo(() => shellTranslator(words.feature, language), [words.feature, language]);
@@ -41,7 +43,7 @@ export default function SettingsHuman({ profileHost, convId, language, onNavigat
   const [onlyChanged, setOnlyChanged] = useState(false);
   const [detail, setDetail] = useState<string | null>(null);
   const [cardKey, setCardKey] = useState<string | null>(null);
-  const [allFields, setAllFields] = useState(false);
+  const [allFields, setAllFields] = useState(view === "all_fields");
 
   useEffect(() => {
     let alive = true;
@@ -56,6 +58,12 @@ export default function SettingsHuman({ profileHost, convId, language, onNavigat
   }, [language, convId, generation]);
 
   const reload = useCallback(() => setGeneration(g => g + 1), []);
+  // Asked to open at "Wszystkie pola": the group that holds it (or the list, when no group has it) with the former screen unfolded.
+  useEffect(() => {
+    if (view !== "all_fields" || !doc) return;
+    setAllFields(true);
+    if (doc.groups.some(g => g.id === ALL_FIELDS_GROUP_PRESET)) setOpenGroup(ALL_FIELDS_GROUP_PRESET);
+  }, [view, doc === null]);   // eslint-disable-line react-hooks/exhaustive-deps
   useLayer("settings-group", openGroup !== null, () => { setOpenGroup(null); setCardKey(null); setDetail(null); });
 
   const groups = useMemo(() => doc ? summaries(doc) : [], [doc]);

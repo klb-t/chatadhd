@@ -4,6 +4,7 @@ import { profileAvailability, registerProfile, type ApplicationProfile } from ".
 import ConversationList from "./components/ConversationList";
 import GraphView from "./components/GraphView";
 import SettingsHuman from "./components/SettingsHuman";
+import SettingsPanel from "./components/SettingsPanel";
 import { OPEN_PANEL_EVENT, panelOfRequest } from "./context/open-settings";
 import ContextSlider from "./components/ContextSlider";
 import SemanticStatus from "./components/SemanticStatus";
@@ -73,7 +74,7 @@ const PANEL_LABELS: Record<PanelId, string> = {
 
 // Panels whose name comes from the shell words (data, PL/EN by ui_language); the others keep their English label.
 // The titles match the labels of the ⋮ menu (menu_graph opens the entry to the graph, menu_this_conversation the graph of this conversation, menu_me what the app knows about you).
-const PANEL_TEXT_IDS: Partial<Record<PanelId, string>> = { navigator: "menu_graph", "graph-entry": "menu_graph", graph: "menu_this_conversation", "user-knowledge": "menu_me", perspectives: "perspectives_title", "view-engine": "view_engine_title" };
+const PANEL_TEXT_IDS: Partial<Record<PanelId, string>> = { settings: "menu_settings", navigator: "menu_graph", "graph-entry": "menu_graph", graph: "menu_this_conversation", "user-knowledge": "menu_me", perspectives: "perspectives_title", "view-engine": "view_engine_title" };
 
 export default function App() {
   const account = useAccountSession();
@@ -83,6 +84,7 @@ export default function App() {
   );
   const [activeConvId, setActiveConvId] = useState<string | null>(null);
   const [activePanel, setActivePanel] = useState<PanelId | null>(null);
+  const [settingsView, setSettingsView] = useState<"" | "all_fields">("");   // M1-W0 (3): a request to enter a secret opens Settings at Silnik › Wszystkie pola
   const [navigatorFocus, setNavigatorFocus] = useState("");   // M1-W0: where menu ⋮ › Graf opens the navigator ("" = root)
   const [convRefreshKey, setConvRefreshKey] = useState(0);
   const [knowledgeOpen, setKnowledgeOpen] = useState(false);
@@ -131,7 +133,11 @@ export default function App() {
   useEffect(() => {
     const onRequest = (event: Event) => {
       const panel = panelOfRequest(event);
-      if (panel !== null && Object.prototype.hasOwnProperty.call(PANEL_LABELS, panel)) setActivePanel(panel as PanelId);
+      if (panel !== null && Object.prototype.hasOwnProperty.call(PANEL_LABELS, panel)) {
+        // The secrets (keys, tokens) are entered on the former settings screen, which sits under Silnik › Wszystkie pola.
+        if (panel === "settings") setSettingsView("all_fields");
+        setActivePanel(panel as PanelId);
+      }
     };
     window.addEventListener(OPEN_PANEL_EVENT, onRequest);
     return () => window.removeEventListener(OPEN_PANEL_EVENT, onRequest);
@@ -147,7 +153,7 @@ export default function App() {
   }, []);
 
   const openPanel = useCallback((p: PanelId) => { setActivePanel((cur) => (cur === p ? null : p)); setNavOpen(false); }, []);
-  const closePanel = useCallback(() => setActivePanel(null), []);
+  const closePanel = useCallback(() => { setActivePanel(null); setSettingsView(""); }, []);
 
   const onConversationCreated = useCallback((id: string) => {
     setActiveConvId(id);
@@ -208,7 +214,8 @@ export default function App() {
                 {activePanel === "memory" && <MemoryPanel />}
                 {activePanel === "import" && <ImportPanel onImported={() => setConvRefreshKey((k) => k + 1)} />}
                 {activePanel === "context" && <ContextSlider convId={activeConvId} />}
-                {activePanel === "settings" && <SettingsHuman profileHost={userProfileHost} convId={activeConvId} language={uiLanguage}
+                {activePanel === "settings" && layout === "workshop" && <SettingsPanel />}
+                {activePanel === "settings" && layout !== "workshop" && <SettingsHuman profileHost={userProfileHost} convId={activeConvId} language={uiLanguage} view={settingsView}
                   onNavigate={address => { setNavigatorFocus(address); setActivePanel("navigator"); }} />}
                 {activePanel === "logs" && <LogPanel />}
                 {activePanel === "methods" && <MethodsPanel transport={api} />}
@@ -304,7 +311,7 @@ export default function App() {
     <ShellText.Provider value={t}><ShellLanguage.Provider value={uiLanguage}>
       <ChatShell profileHost={userProfileHost} convId={activeConvId} onSelect={setActiveConvId} onCreated={onConversationCreated}
         refreshKey={convRefreshKey} onMessagesChanged={onMessagesChanged} planned={{ windows: true }}
-        actions={{ panel: (id) => setActivePanel(id as PanelId), navigator: (focus) => { setNavigatorFocus(focus); setActivePanel("navigator"); }, knowledge: () => setKnowledgeOpen(true), workshop: () => setLayout("workshop") }} />
+        actions={{ panel: (id) => { if (id === "settings") setSettingsView(""); setActivePanel(id as PanelId); }, navigator: (focus) => { setNavigatorFocus(focus); setActivePanel("navigator"); }, knowledge: () => setKnowledgeOpen(true), workshop: () => setLayout("workshop") }} />
       {panels}
       {knowledgeOpen && <>
         <div className="drawer-backdrop" onClick={() => setKnowledgeOpen(false)} />
