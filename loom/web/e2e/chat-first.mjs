@@ -183,7 +183,7 @@ try {
       await page.reload({ waitUntil: "domcontentloaded" });
       await page.getByTestId("shell-menu-toggle").click();
       assert.match(await page.getByTestId("shell-menu-workshop").innerText(), /Warsztat/);
-      assert.deepEqual(await page.getByRole("menuitem").allInnerTexts(), ["Graf", "Ustawienia", "Ty", "Ta rozmowa", "Widoki i okna", "Analiza w tle", "Warsztat (narzędzia zaawansowane)"]);
+      assert.deepEqual(await page.getByRole("menuitem").allInnerTexts(), ["Graf", "Ustawienia", "Ty", "Ta rozmowa w grafie", "Widoki i okna", "Analiza w tle", "Warsztat (narzędzia zaawansowane)"]);
       await api("PUT", "/api/config/ui_language", { value: "auto" });
     });
     await context.close();

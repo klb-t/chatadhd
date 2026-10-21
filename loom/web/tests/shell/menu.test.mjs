@@ -28,7 +28,7 @@ test('no Pamięć and no Wiedza in the menu: neither an entry, nor an action, no
 });
 
 test('every row has a Polish and an English word in presentation.ui_shell, and the Polish ones are the owner\'s', () => {
-  const owner = { graph: 'Graf', settings: 'Ustawienia', me: 'Ty', this_conversation: 'Ta rozmowa', semantic: 'Analiza w tle', connection: 'Połączenie' };
+  const owner = { graph: 'Graf', settings: 'Ustawienia', me: 'Ty', this_conversation: 'Ta rozmowa w grafie', semantic: 'Analiza w tle', connection: 'Połączenie' };
   for (const e of menu.CHAT_MENU) {
     assert.equal(typeof pl[e.label], 'string', `pl ${e.label}`); assert.equal(typeof en[e.label], 'string', `en ${e.label}`);
     if (owner[e.id]) assert.equal(pl[e.label], owner[e.id]);
