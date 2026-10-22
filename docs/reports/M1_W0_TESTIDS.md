@@ -604,3 +604,19 @@ Krok dla Androida (K1c-3b): `context-line-open` → `context-receipt` (`data-sta
 | podgląd planu | `context-preview-scope`, `context-preview-profile`, `context-preview-pending` | w panelu Kontekst nad wynikiem: profil i zmiany czekające na następne zapytanie |
 
 Krok dla Androida (propozycja): `shell-attach` → `composer-menu-context` → `composer-menu-wider` → `composer-menu-modify-result` → (Wstecz) → `context-strip-next`; `model-provenance-open` → `model-provenance` (`data-state` = `ready`) → `model-provenance-close`. Stary krok `model-picker` (liczy `option`) działa bez zmian.
+
+## Poznajmy się — karta w pustym czacie i wywiad w rozmowie (paczka M1-W2a, `loom/web/src/components/InterviewCards.tsx`, `ChatView.tsx`; e2e `loom/web/e2e/m1-profile-native.mjs`)
+
+Wywiad toczy się w rozmowie z `metadata.flow = profile.interview` (formularz, bez modelu). Karta pokazuje się w pustym czacie, gdy ustawienie `onboarding_card` ma wartość `show`, a wywiad się jeszcze nie zaczął; atrybut `data-interview` pustego czatu to `checking` (ustawienie albo stan wywiadu nie są jeszcze znane) / `shown` / `hidden` — test czeka na ten atrybut, nigdy na czas. Słowa z `presentation.interview` (`conversation_view.pack`).
+
+| ekran | testid | uwagi |
+|---|---|---|
+| pusty czat | `shell-empty` (`data-interview`) | ten sam kontener co `first-run-card` |
+| karta | `interview-card`, `interview-card-title`, `interview-card-body`, `interview-card-privacy`, `interview-card-note`, `interview-card-start`, `interview-card-later`, `interview-card-never`, `interview-card-failure` | „Zacznij” otwiera rozmowę wywiadu; „Później” zapisuje `later` (wraca przy następnym uruchomieniu); „Nigdy nie pytaj” zapisuje `never` |
+| decyzja | `interview-card-decision` (`data-decision` = `later` / `never`) | jedno zdanie w miejscu karty po wyborze: co to robi i jak karta wraca |
+| linia nad rozmową | `interview-info` (`data-variant`, `data-progress`), `interview-info-line`, `interview-info-why`, `interview-info-progress` | „Rozmowa bez modelu — tylko formularz”, „Pytań do zadania: N” z akcji `profile.interview` `status` |
+| pytanie o poziom | `interview-level-question`, `interview-levels`, `interview-level` (`data-level`), `interview-level-label`, `interview-level-asks`, `interview-level-stores`, `interview-level-model-sees`, `interview-level-hint` | trzy karty z podglądem z danych wiadomości; dotknięcie wysyła nazwę poziomu jako odpowiedź |
+| szybkie odpowiedzi | `interview-chips`, `interview-chip` (`data-chip` = `skip` / `decline` / `never` / `review` / `status`) | pod pytaniem, które czeka; każdy wysyła słowo sterujące jako zwykłą wiadomość |
+| „Tak zrozumiałem” | `chat-action-proposal`, `chat-action-proposal-confirm`, `chat-action-proposal-reject` | istniejący `ActionProposalBlock` (propozycja `profile.confirm`) |
+
+Krok dla Androida (propozycja): `interview-card-start` → `interview-level` (`data-level` = `minimal`) → `interview-chip` (`data-chip` = `skip`) → `interview-info`.

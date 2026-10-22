@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { api } from "../api";
 import { readInterviewStart, readInterviewStatus, type InterviewLevel, type InterviewStatus } from "../api/profile-interview";
-import { cardSettingOf, cardVisible, chipSpecs, progressWord, settingAtLaunch, type CardSetting } from "../context/interview";
+import { cardSettingOf, cardVisible, chipSpecs, isInterviewConversation, progressWord, settingAtLaunch, type CardSetting } from "../context/interview";
 import { shellTranslator, type ShellT } from "../shell/text";
 import { usePresentationFeature } from "./ConversationSourceView";
 import type { UserProfileHost } from "../api/onboarding-host";
@@ -11,6 +11,19 @@ import "./interview-cards.css";
 export function useInterviewWords(profileHost: UserProfileHost | undefined, language: string): ShellT {
   const words = usePresentationFeature(profileHost, "interview");
   return useMemo(() => shellTranslator(words.feature, language), [words.feature, language]);
+}
+
+/** Whether the conversation is the interview: the kernel marked it with metadata.flow when it opened it. Read from the conversation itself
+ *  (the conversation view of a native host does not carry the record). */
+export function useIsInterviewConversation(convId: string | null | undefined): boolean {
+  const [flow, setFlow] = useState<{ convId: string; interview: boolean } | null>(null);
+  useEffect(() => {
+    let current = true;
+    if (!convId) return;
+    api.getConversation(convId).then(c => { if (current) setFlow({ convId, interview: isInterviewConversation(c.metadata) }); }, () => { if (current) setFlow(null); });
+    return () => { current = false; };
+  }, [convId]);
+  return !!convId && flow?.convId === convId && flow.interview;
 }
 
 // "Później" lasts until the next launch: the first look of a launch (this page load) turns a stored `later` back into `show`.
@@ -64,7 +77,10 @@ export function useInterviewCard(language: string, onOpen: (convId: string) => v
     try { await api.setConfigKey("onboarding_card", value); if (live.current) { setSetting(value); setHiddenNow(true); setNote(value); } }
     catch (e) { if (live.current) setFailure(e instanceof Error ? e.message : String(e)); }
   }, []);
-  return { visible: cardVisible({ setting, status, hiddenNow }), busy, failure, note, start, later: () => choose("later"), never: () => choose("never") };
+  // checking = the setting or the status is not known yet; shown | hidden = decided (the e2e waits for this, never for time)
+  const visible = cardVisible({ setting, status, hiddenNow });
+  const state: "checking" | "shown" | "hidden" = !enabled ? "hidden" : visible ? "shown" : ((setting === null || status === null) && !hiddenNow && !failure ? "checking" : "hidden");
+  return { visible, state, busy, failure, note, start, later: () => choose("later"), never: () => choose("never") };
 }
 
 /** The card "Poznajmy się" of the empty chat. */

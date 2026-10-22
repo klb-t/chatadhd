@@ -47,8 +47,8 @@ import ContextReceipt from "./ContextReceipt";
 import { useReceiptWords } from "./use-receipt-words";
 import { loadSelectorProfiles, useContextModify } from "./use-context-modify";
 import { modifySentence, profileChoices, type ProfileChoice } from "./context-receipt-state";
-import { InterviewCardDecision, InterviewChips, InterviewInfoLine, InterviewLevelCards, InterviewStartCard, useInterviewCard, useInterviewWords } from "./InterviewCards";
-import { isInterviewConversation, levelCards, waitingQuestion } from "../context/interview";
+import { InterviewCardDecision, InterviewChips, InterviewInfoLine, InterviewLevelCards, InterviewStartCard, useInterviewCard, useInterviewWords, useIsInterviewConversation } from "./InterviewCards";
+import { levelCards, waitingQuestion } from "../context/interview";
 import ContextStrip from "../shell/ContextStrip";
 import ModelProvenance from "../shell/ModelProvenance";
 import { lastReceiptProfile, pendingParts } from "../shell/context-strip";
@@ -155,7 +155,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
   const [hasKey, setHasKey] = useState<boolean | null>(null);
   // M1-W2a: the interview about the person (form mode, no model): its words, the card of the empty chat, and whether this conversation is one.
   const interviewT = useInterviewWords(profileHost, shellLanguage);
-  const interviewConv = isInterviewConversation(convRecord?.metadata);
+  const interviewConv = useIsInterviewConversation(convId);
   const interviewCard = useInterviewCard(shellLanguage, onConversationCreated, chat);
   const [actionsFor, setActionsFor] = useState<string | null>(null);
   const [copied, setCopied] = useState<string | null>(null);
@@ -1149,7 +1149,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
           <button onClick={() => void loadOlder()} disabled={loadingOlder} data-testid="chat-load-older">{loadingOlder ? "..." : t("load_older_messages")}</button>
         </div>}
         {visibleMessages.length === 0 && !displayedPending && !displayedStream && !gate.viewLoading && gate.viewFailure === null && !conversationView?.resources.length && (
-          chat ? <div className="shell-empty" data-testid="shell-empty">
+          chat ? <div className="shell-empty" data-testid="shell-empty" data-interview={interviewCard.state}>
             {needsProviderKey(hasKey) && <div className="shell-card" data-testid="first-run-card" role="status">
               <strong>{t("first_run_title")}</strong><span>{t("first_run_body")}</span>
               <button className="primary" data-testid="first-run-open-settings" onClick={() => requestPanel("settings")}>{t("first_run_button")}</button>
@@ -1309,10 +1309,10 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
                     <button aria-label={t("next_version")} disabled={at < 0 || at >= versions.length - 1} onClick={() => switchVersion(versions[at + 1].id)}>▶</button>
                   </span>;
                 })()}
-                <button onClick={() => setReceiptFor(m.id)} data-testid="msg-receipt">{receiptT("menu.entry")}</button>
+                {!interviewConv && <button onClick={() => setReceiptFor(m.id)} data-testid="msg-receipt">{receiptT("menu.entry")}</button>}
                 <button onClick={() => toggleExclude(m)} data-testid="msg-exclude" disabled={!supports("message.exclude") || !messageCan(m, "set_status") || m.status === "version" || m.status === "deleted"}>{m.status === "excluded" ? t("restore") : t("exclude")}</button>
               </div>}
-              {chat && m.role === "assistant" && editingId !== m.id && receiptLink === "visible" && (
+              {chat && !interviewConv && m.role === "assistant" && editingId !== m.id && receiptLink === "visible" && (
                 <p className="crs-line" data-testid="context-line" data-msg={m.id}>
                   <button type="button" data-testid="context-line-open" onClick={() => setReceiptFor(m.id)}>
                     {lineText(recordedReceipt(requestOf(visibleMessages, m.id)), receiptT, shellLanguage)}</button>

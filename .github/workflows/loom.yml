@@ -247,6 +247,7 @@ jobs:
           npm run test:role-card
           npm run test:context-receipt
           npm run test:context-strip
+          npm run test:interview
           npm run test:testids-doc
           npx playwright install --with-deps chromium
           npm run e2e
@@ -255,6 +256,7 @@ jobs:
           npm run test:m1-context-sent
           npm run test:m1-context-menu
           npm run test:m1-history
+          npm run test:m1-profile
           npm run test:chat-first
           npm run test:composer-menu-browser
           npm run test:workspace

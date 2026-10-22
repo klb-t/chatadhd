@@ -17,9 +17,13 @@ class Handler(http.server.BaseHTTPRequestHandler):
 
     def do_GET(self):
         # GET /models: the list a provider gives; GET /__last: the body of the last chat request (for tests that check what was sent).
+        # GET /__count: how many requests the model server received (everything except the /__ probes): a test that must not reach the model asserts 0.
         if self.path.rstrip("/").endswith("/__last"):
             body = json.dumps(Handler.last_body).encode()
+        elif self.path.rstrip("/").endswith("/__count"):
+            body = json.dumps({"requests": Handler.received, "chat": Handler.chats}).encode()
         else:
+            Handler.received += 1
             body = json.dumps({"data": [{"id": "mock/e2e-model", "name": "Mock E2E"}, {"id": "mock/second-model", "name": "Mock Second"},
                                         {"id": "mock/third-model", "name": "Mock Third"}]}).encode()
         self.send_response(200)
@@ -29,8 +33,12 @@ class Handler(http.server.BaseHTTPRequestHandler):
         self.wfile.write(body)
 
     last_body = None
+    received = 0
+    chats = 0
 
     def do_POST(self):
+        Handler.received += 1
+        Handler.chats += 1
         length = int(self.headers.get("Content-Length", 0))
         raw = self.rfile.read(length)
         try:
