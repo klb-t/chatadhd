@@ -3806,6 +3806,9 @@
               "path": "loom/src/actions/pipelines.cpp"
             },
             {
+              "path": "loom/src/actions/profile_ops.cpp"
+            },
+            {
               "path": "loom/src/actions/query.cpp"
             },
             {
