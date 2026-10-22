@@ -69,6 +69,7 @@ poprawki po nieudanym podejściu), nie cena tokena — dlatego pomiary w tabeli.
 | M1-K1c3b (web: Pokaż w grafie + e2e + raport) | Sonnet (jawnie) | — | 34→? % (09:46→10:22) | tak (120 wywołań, 304 tys. tokenów, 36 min) | znalazł prawdziwą przyczynę (zły adres `msg:m_`); bez zmian w jądrze |
 | M1-K1c4 (słowa „dlaczego” po polsku z paczki) | Sonnet (jawnie) | — | 35→? % (11:11→11:45) | tak (113 wywołań, 266 tys. tokenów, 35 min) | audyt tekstu w e2e jako stała asercja |
 | M1-FLAKE1 (spóźniony popstate w stosie warstw) | Sonnet (jawnie) | — | 35→? % (12:36→12:55) | tak (39 wywołań, 170 tys. tokenów, 19 min) | najkrótszy i najtańszy pakiet dnia: brief z hipotezą i planem odtworzenia (test czerwony najpierw) |
+| M1-K2a (wywiad „Ty”: pytania PL, poziomy, uwagi) | Sonnet (jawnie) | — | 36→? % (13:49→14:15) | tak (125 wywołań, 292 tys. tokenów, 26 min) | większy pakiet jądra; brief z istniejącym stanem (profile.cpp, scenario.pack) i listą testów dał 1 podejście |
 
 ## Na co poszły tokeny S1 dziś (2026-10-21 od 00:00 UTC do 17:50; `tools/usage_report.py`, liczby z pól `usage`, bez treści)
 Tydzień: 3 % (00:14) → 30 % (17:40) = +27 pkt w ≈ 17,5 h na koncie (S1 + S2 + czaty właściciela). Zmierzone dla S1: **566 mln równoważników**

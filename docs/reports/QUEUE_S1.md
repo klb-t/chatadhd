@@ -1,7 +1,14 @@
-# Kolejka S1 — stan 2026-10-22 13:52 UTC
+# Kolejka S1 — stan 2026-10-22 14:20 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
+
+## K2a GOTOWE (14:15 UTC, `67c235d3` na `claude/m1-w0`, na wierzchu FLAKE-1 `1ee7a6c8`): jądro wywiadu „Ty” — pytania PL, poziomy, uwagi — bramka lokalna `k2a` w toku (start 14:16)
+Agent Sonnet (`wf_a8c61ce6-7fe`, 125 wywołań, 292 tys. tokenów, 26 min). (1) pytania i tytuły sekcji `{en,pl}` (brak pl = błąd testu; zostaje jawny `fallback:true` przy brakującym języku), (2) pierwsze pytanie „ile pytań możesz usłyszeć” + `detail_levels` minimalnie/zwykle/szczegółowo (przykłady z listy właściciela; progi 1/1, 2/2, bez limitu), podglądy
+z liczbami liczonymi z prawdziwego profilu (test sprawdza zgodność), `plan()` z powodami pominięcia (declined/never/known/detail_above_level/…), (3) `remark_rules` + `apply_remark` — wyłącznie PROPOZYCJE („Tak zrozumiałem”), zapis tylko z `apply:true`; „nie pytaj o zdrowie” zamyka też pole uwagi/ADHD (decyzja agenta: ADHD to zdrowie; „nie pytaj o ADHD” zamyka tylko to pole),
+(4) generator waliduje strukturę, `recipe_hash` teraz wyliczany (stary był nieaktualnym aliasem). Testy: 16 przypadków wywiadu (1033 asercji). Nic w web, nic w chat_engine/ops (to K2b).
+Do oceny właściciela później (W2): polskie zdanie pierwszego pytania („Mało (minimalnie), zwykle albo tyle, na ile pozwalają Twoje zasady prywatności (szczegółowo)”) jest nieco ciężkie — do szlifu przy ekranie wywiadu.
+**Plan FF:** jedna paczka `67c235d3` (FLAKE-1 + K2a) na `main` po zielonej bramce `k2a` I po końcu CI 269 (job `asan` jeszcze trwa po 95 min; dev/libcxx/vendored zielone) → CI 270 → smoke S2 na tym buildzie → APK v2.
 
 ## Bramka `flake1` ZIELONA (13:48, `1ee7a6c8`, drzewo czyste); K2a wystartowało 13:49 (`wf_a8c61ce6-7fe`, Sonnet): jądro wywiadu „Ty” — pytania PL, poziomy szczegółowości (minimalny/normalny/szczegółowy jako przykłady), uwagi „nie pytaj o …”
 CI 269 (`b1b34f17`) jeszcze w toku (start 12:35, kontrola 13:57). FF `main` ← `1ee7a6c8` (FLAKE-1) po końcu CI 269; potem CI 270, smoke S2 na tym buildzie i APK v2. K2a nie rusza gałęzi chat_engine/ops (to K2b).
