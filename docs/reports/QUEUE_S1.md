@@ -1,7 +1,10 @@
-# Kolejka S1 — stan 2026-10-22 19:15 UTC
+# Kolejka S1 — stan 2026-10-22 19:25 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
+
+## Bramka `k2b2` ZIELONA (19:21, `ae6d152f`); `main` = `ae6d152f` (K2b-1 + K2b-2) od 19:21, CI 273 (id 39839307922), kontrola 21:01; W2a wystartowało 19:21 (`wf_18afae68-0f2`, Sonnet)
+W2a: karta „Poznajmy się” w pustym czacie, karty poziomów z podglądem, chipy Pomiń/Nigdy/Podsumowanie/Ile zostało, „Tak zrozumiałem” przez `ActionProposalBlock`, linia „rozmowa bez modelu”, typowania `/api/profile/*` + łańcuch rejestru, e2e `m1-profile-native.mjs` (0 żądań do atrapy modelu), raport `M1_CHECKPOINT_2.md`.
 
 ## CI 272 (`5b0e04ff`, K2a) = SUCCESS (18:36, 120 min — asan wolny runner); `main` = `5b0e04ff`; bramka `k2b2` w web e2e (start 18:32); brief W2a gotowy (`w2a_brief.json`)
 W2a (web): karta „Poznajmy się” w pustym czacie (`onboarding_card`: show/later/never), karty poziomów z podglądem (o co zapytam / co zapiszę / co zobaczy model), chipy Pomiń/Nigdy/Podsumowanie/Ile zostało, „Tak zrozumiałem” przez istniejący `ActionProposalBlock`, linia „rozmowa bez modelu”, typowania API `/api/profile/*` + łańcuch rejestru, e2e `m1-profile-native.mjs` (0 żądań do atrapy modelu), raport `M1_CHECKPOINT_2.md`.
