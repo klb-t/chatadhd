@@ -150,6 +150,107 @@ TEST_SUITE("profile interview in the conversation") {
     CHECK(f.transport->requests().empty());
   }
 
+  // K2b-3: a remark never depends on a question that waits. The emulator (S2, android-smoke) found the path minimal -> skip -> "nie pytaj o zdrowie":
+  // the old code answered with the error of a missing field ("Którego pola dotyczy?") before the remark was read.
+  int remaining(Fx& f) { return f.run("profile.interview", Json{{"op", "status"}}).at("result").at("data").at("remaining").get<int>(); }
+
+  TEST_CASE("a remark is understood with no question waiting: the section skipped at the minimal level (a), proposal first, nothing written before the yes") {
+    Fx f;
+    const std::string conv = f.start();
+    f.say(conv, "minimalnie");
+    for (int i = 0; i < 20 && remaining(f) > 0; ++i) f.say(conv, "pomiń");
+    REQUIRE(remaining(f) == 0);  // no question is waiting
+    const Json before = f.slots();
+    f.say(conv, "nie pytaj o zdrowie");
+    INFO(f.transcript(conv));
+    const Message last = f.last(conv);
+    CHECK(last.role == "assistant");
+    CHECK(last.text.find("Którego pola") == std::string::npos);
+    REQUIRE(last.metadata.contains("action_proposal"));
+    CHECK(last.metadata.at("action_proposal").at("action") == "profile.confirm");
+    CHECK(last.metadata.at("action_proposal").at("status") == "pending");
+    CHECK(f.slots() == before);  // nothing is written before the yes
+    f.say(conv, "tak");
+    int never = 0;
+    for (const auto& s : f.slots()) never += s.at("state") == "never" ? 1 : 0;
+    CHECK(never >= 1);
+    CHECK(f.transport->requests().empty());
+  }
+
+  TEST_CASE("a remark is understood when every question at the level is answered (b); after the yes the category is never and no longer asked") {
+    Fx f;
+    const std::string conv = f.start();
+    f.say(conv, "szczegółowo");
+    for (int i = 0; i < 200 && remaining(f) > 0; ++i) f.run("profile.interview", Json{{"op", "answer"}, {"text", "odpowiedź testowa"}});
+    REQUIRE(remaining(f) == 0);
+    const Json before = f.slots();
+    for (const auto& s : before) { if (s.at("slot") == "health.needs") CHECK(s.at("asked_at_level") == true); }
+    f.say(conv, "nie pytaj o zdrowie");
+    INFO(f.transcript(conv));
+    const Message last = f.last(conv);
+    REQUIRE(last.metadata.contains("action_proposal"));
+    CHECK(last.metadata.at("action_proposal").at("action") == "profile.confirm");
+    CHECK(last.metadata.at("action_proposal").at("status") == "pending");
+    CHECK(f.slots() == before);
+    f.say(conv, "tak");
+    bool seen = false;
+    for (const auto& s : f.slots())
+      if (s.at("slot") == "health.needs") {
+        seen = true;
+        CHECK(s.at("state") == "never");
+        CHECK(s.at("asked_at_level") == false);
+        CHECK(s.at("reason") == "never");
+      }
+    CHECK(seen);
+    CHECK(f.transport->requests().empty());
+  }
+
+  TEST_CASE("words that are not a remark and not a control word, with no question waiting, get plain words - no error text, nothing written (c)") {
+    for (const char* lang : {"pl", "en"}) {
+      Fx f;
+      const std::string conv = f.start(Json{{"locale", lang}});
+      f.say(conv, std::string(lang) == "pl" ? "minimalnie" : "minimal");
+      for (int i = 0; i < 20 && remaining(f) > 0; ++i) f.say(conv, std::string(lang) == "pl" ? "pomiń" : "skip");
+      REQUIRE(remaining(f) == 0);
+      const Json before = f.slots();
+      const auto said = f.say(conv, std::string(lang) == "pl" ? "opowiem Ci coś o sobie" : "let me tell you something about me");
+      CHECK(said.handled);
+      const Message last = f.last(conv);
+      MESSAGE(lang, ": ", last.text);
+      CHECK(last.role == "assistant");
+      CHECK_FALSE(last.metadata.contains("action_proposal"));
+      CHECK(last.metadata.at("interview").at("kind") == "reply");
+      CHECK(last.metadata.at("interview").at("question").is_null());
+      CHECK(last.text.find(std::string(lang) == "pl" ? "Którego pola" : "Which field") == std::string::npos);
+      CHECK(last.text.find(std::string(lang) == "pl" ? "nie czekam na Twoją odpowiedź" : "not waiting for an answer") != std::string::npos);
+      CHECK(f.slots() == before);
+      std::string what;
+      CHECK_MESSAGE(!has_internal_name(last.text, &what), "internal name \"" << what << "\" in: " << last.text);
+      CHECK(f.transport->requests().empty());
+    }
+  }
+
+  TEST_CASE("with a question waiting, an answer and a remark behave as before (d); the words promised when nothing waits really work") {
+    Fx f;
+    const std::string conv = f.start();
+    f.say(conv, "minimalnie");
+    REQUIRE(remaining(f) > 0);
+    const Json before = f.slots();
+    f.say(conv, "nie pytaj o zdrowie");  // remark with a question waiting: the same proposal
+    REQUIRE(f.last(conv).metadata.contains("action_proposal"));
+    f.say(conv, "nie");
+    CHECK(f.slots() == before);
+    f.say(conv, "pytaj więcej");  // promised by the words when nothing waits: one level up, proposed first
+    const Message more = f.last(conv);
+    REQUIRE(more.metadata.contains("action_proposal"));
+    CHECK(more.metadata.at("action_proposal").at("action") == "profile.confirm");
+    f.say(conv, "nie");
+    f.say(conv, "podsumowanie");  // the other promised word: a control word, answered in words
+    CHECK(f.last(conv).role == "assistant");
+    CHECK(f.last(conv).text.find("Którego pola") == std::string::npos);
+    CHECK(f.transport->requests().empty());
+  }
+
   TEST_CASE("a refusal (no) writes nothing and the question comes again; 'nie teraz' declines the question asked") {
     Fx f;
     const std::string conv = f.start();
