@@ -1,7 +1,14 @@
-# Kolejka S1 — stan 2026-10-22 15:10 UTC
+# Kolejka S1 — stan 2026-10-22 16:20 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
+
+## FLAKE-1 POTWIERDZONE NA EMULATORZE (S2, 16:00): android-smoke 39801974892 na `f07fc52a` = 42/0/0 na pixel_5 1.0, pixel_6 1.0, pixel_6 1.3; 0× „second attempt after”, 0× „settings did not open” (poprzednie 2 biegi na starym kodzie: losowa porażka na 2 z 3 profili)
+`main` = `f07fc52a` (FLAKE-1 + K1c-4 + sterownik S2; FF zrobił S2 o 15:08 i anulował CI 270); CI 271 (id 39801969743) w toku od 15:08, kontrola 16:35. S2: „f07fc52a gotowe na APK v2, gdy loom.yml zielony”.
+**K2a + K2a-fix: bramka `k2a2` ZIELONA (16:17, `5b0e04ff` = gałąź scalona z `main`)**; K2a-fix (`wf_0a950ca9-11e`, 40 wywołań, 123 tys. tokenów, 21 min): przyczyna czerwonej bramki `k2a` to 4 NOWE pola scenariusza z K2a bez etykiet w `slot_labels` (poprawiam własne wyjaśnienie: nie „starsze pola” — scenariusz miał wcześniej 9 pól);
+rzut party:self zawsze wymieniał wszystkie pola (spec: sloty ze stanami, także „nieznane”), więc zachowanie bez zmian, dodane 4 etykiety pl/en + 2 testy-strażniki. Uwaga do K2b: slot powyżej wybranego poziomu pokazuje się jako „nieznane”, choć nigdy nie będzie zadany.
+**K2b-1 wystartowało 16:17** (`wf_c9a232c9-64a`, Sonnet): akcje `profile.interview` / `profile.show` / `profile.set` nad istniejącym `OnboardingStore`, tylko tryb formularza (bez modelu), uwagi jako propozycje do potwierdzenia, `asked_at_level` w `profile.show`.
+FF `main` ← `5b0e04ff` (K2a + fix) po końcu CI 271 (i po `git fetch` — S2 pcha na main). Potem APK v2: z commitu z zielonym CI; zdecyduję, czy z `f07fc52a` (FLAKE-1 potwierdzone na emulatorze) czy z kolejnego.
 
 ## `main` = `1ee7a6c8` (FLAKE-1) od 15:06; CI 269 (`b1b34f17`) SUCCESS (14:39, 124 min — asan wolny runner); CI 270 (id 39801749697) w toku, kontrola 16:35. Bramka `k2a` CZERWONA na jednym kroku (to samo audytem tekstu z K1c-4 — dobrze, że istnieje) → K2a-fix
 Bramka `k2a` (`67c235d3`): jedyna porażka `e2e/m1-navigator-native.mjs` „no screen shown so far has developer text”: na ekranie „Ty” (party:self) cztery wiersze pokazują surowe id pól: `interview.detail`, `health.needs`, `relations.people`, `routine.rhythm`
