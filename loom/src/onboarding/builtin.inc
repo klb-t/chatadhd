@@ -1254,7 +1254,8 @@ std::string_view(R"loom_onboard(                "empty_title": "How can I help?"
                 "mp_reason_other_model": "this class is that of the model {{model}} of the role “Answer to a message”, not the one picked here",
                 "mp_reason_no_role": "the engine gave no role for answering a message",
                 "mp_chain_rest": "The other levels have no value or do not apply to this conversation: {{levels}}.",
-                "mp_class_kernel": "Class: {{reason}}"
+                "mp_class_plain": "Class: unknown",
+                "mp_details": "Technical details"
               },
               "pl": {
                 "menu_open": "Menu",
@@ -1533,7 +1534,8 @@ std::string_view(R"loom_onboard(                "empty_title": "How can I help?"
                 "mp_reason_other_model": "ta klasa dotyczy modelu {{model}} roli „Odpowiedź na wiadomość”, nie wybranego tutaj",
                 "mp_reason_no_role": "silnik nie podał roli odpowiedzi na wiadomość",
                 "mp_chain_rest": "Pozostałe poziomy nie mają wartości albo nie dotyczą tej rozmowy: {{levels}}.",
-                "mp_class_kernel": "Klasa: {{reason}}"
+                "mp_class_plain": "Klasa: nieznana",
+                "mp_details": "Szczegóły techniczne"
               }
             }
           }
@@ -1915,10 +1917,10 @@ std::string_view(R"loom_onboard(                "empty_title": "How can I help?"
                 "reason.settings_fields_unavailable": "the description of the settings cannot be read",
                 "reason.pointer_absent": "the profile has no such entry",
                 "reason.layers_not_wired": "this host does not count these layers yet",
-                "reason.action_catalogue_unavailable": "the catalogue of actions cannot be read",
+)loom_onboard", 59903),
+std::string_view(R"loom_onboard(                "reason.action_catalogue_unavailable": "the catalogue of actions cannot be read",
                 "reason.area_not_configured": "the area is not configured",
-)loom_onboard", 59977),
-std::string_view(R"loom_onboard(                "reason.binding_missing": "the counter is not defined",
+                "reason.binding_missing": "the counter is not defined",
                 "reason.economy_mode_off": "the resource economy report is off",
                 "reason.economy_report_unavailable": "the resource economy report cannot be made",
                 "reason.entity_kind_not_configured": "the kind of entity is not configured",
@@ -2750,9 +2752,9 @@ std::string_view(R"loom_onboard(                "reason.binding_missing": "the c
                 "sheet.loading": "Wczytuję ślad…",
                 "sheet.error": "Nie udało się wczytać śladu: {{reason}}",
                 "sheet.retry": "Spróbuj ponownie",
-                "sheet.no_actions": "aplikacja nie ma połączenia z działaniami silnika (nie dał go ani serwer, ani powłoka Android)",
-)loom_onboard", 59951),
-std::string_view(R"loom_onboard(                "missing.also": "Tak też jest, gdy zapis śladu wyłączono (ustawienie context_receipt_store = never albo trace_context = false).",
+)loom_onboard", 59986),
+std::string_view(R"loom_onboard(                "sheet.no_actions": "aplikacja nie ma połączenia z działaniami silnika (nie dał go ani serwer, ani powłoka Android)",
+                "missing.also": "Tak też jest, gdy zapis śladu wyłączono (ustawienie context_receipt_store = never albo trace_context = false).",
                 "action.show_in_graph.disabled": "Jądro jeszcze nie rysuje wysłanych węzłów w grafie: perspektywa „Wysłane do modelu” nie ma jeszcze źródła w jądrze, więc przycisk jest wyłączony.",
                 "action.show_in_graph.failed": "Graf odmówił: {{reason}}",
                 "action.next_time.help": "Działa tylko na następną wiadomość; po jej wysłaniu wszystko wraca do ustawień.",
@@ -3903,10 +3905,10 @@ std::string_view(R"loom_onboard(                "missing.also": "Tak też jest, 
             "cost_money_unknown": "Pieniądze: nieznane ({{reason}}); nie czytaj tego jako za darmo",
             "produced": "Zapisano w grafie ({{target}}): {{nodes}}",
             "title_definition": "Propozycja rozszerzenia tego, co aplikacja potrafi",
-            "args": "Argumenty odczytane z Twoich słów: {{args}}",
+)loom_onboard", 59948),
+std::string_view(R"loom_onboard(            "args": "Argumenty odczytane z Twoich słów: {{args}}",
             "args_open": "Niepodane (obowiązują wartości domyślne): {{params}}",
-)loom_onboard", 59963),
-std::string_view(R"loom_onboard(            "definition_define_action": "Nowa akcja „{{id}}”: zapisze się tylko w Twojej własnej nakładce ({{overlay}}); możesz ją później usunąć",
+            "definition_define_action": "Nowa akcja „{{id}}”: zapisze się tylko w Twojej własnej nakładce ({{overlay}}); możesz ją później usunąć",
             "definition_define_sequence": "Łańcuch, który powtarzasz, zapisany jako akcja „{{id}}” (Twoja własna nakładka: {{overlay}})",
             "definition_define_group": "Grupa „{{id}}” dla tego, co mają wspólnego Twoje klasy (Twoja własna nakładka: {{overlay}})",
             "rule_replaces": "Zastępuje regułę, którą ustawiłeś wcześniej w tej samej sprawie",
@@ -4657,7 +4659,8 @@ std::string_view(R"loom_onboard(            "definition_define_action": "Nowa ak
             "mp_reason_other_model": "this class is that of the model {{model}} of the role “Answer to a message”, not the one picked here",
             "mp_reason_no_role": "the engine gave no role for answering a message",
             "mp_chain_rest": "The other levels have no value or do not apply to this conversation: {{levels}}.",
-            "mp_class_kernel": "Class: {{reason}}"
+            "mp_class_plain": "Class: unknown",
+            "mp_details": "Technical details"
           },
           "pl": {
             "menu_open": "Menu",
@@ -4889,11 +4892,11 @@ std::string_view(R"loom_onboard(            "definition_define_action": "Nowa ak
             "cm_selector_profile": "Profil selektora",
             "cm_flow_text_graph": "Przepływ: tekst ↔ graf",
             "cm_preview_request": "Podgląd wysyłki",
-            "cm_steps_help": "Szerzej, głębiej, węziej i płycej działają tylko na następne zapytanie; po jego wysłaniu wszystko wraca do ustawień.",
+)loom_onboard", 59846),
+std::string_view(R"loom_onboard(            "cm_steps_help": "Szerzej, głębiej, węziej i płycej działają tylko na następne zapytanie; po jego wysłaniu wszystko wraca do ustawień.",
             "cm_profiles_help": "Wybrany profil dotyczy tylko następnego zapytania; po jego wysłaniu wraca profil z ustawień.",
             "cm_profiles_loading": "Wczytuję profile…",
-)loom_onboard", 59997),
-std::string_view(R"loom_onboard(            "cm_profiles_empty": "Silnik nie podał żadnych profili selektora.",
+            "cm_profiles_empty": "Silnik nie podał żadnych profili selektora.",
             "cm_profiles_failed": "Nie udało się wczytać profili: {{reason}}",
             "cm_status_preset": "preset",
             "cm_status_calibration": "kalibracja",
@@ -4937,7 +4940,8 @@ std::string_view(R"loom_onboard(            "cm_profiles_empty": "Silnik nie pod
             "mp_reason_other_model": "ta klasa dotyczy modelu {{model}} roli „Odpowiedź na wiadomość”, nie wybranego tutaj",
             "mp_reason_no_role": "silnik nie podał roli odpowiedzi na wiadomość",
             "mp_chain_rest": "Pozostałe poziomy nie mają wartości albo nie dotyczą tej rozmowy: {{levels}}.",
-            "mp_class_kernel": "Klasa: {{reason}}"
+            "mp_class_plain": "Klasa: nieznana",
+            "mp_details": "Szczegóły techniczne"
           }
         }
       }
@@ -5841,7 +5845,8 @@ std::string_view(R"loom_onboard(            "cm_profiles_empty": "Silnik nie pod
             "error": "Nie udało się wczytać ustawień ({{reason}}).",
             "error.no_actions": "aplikacja nie ma połączenia z działaniami silnika (nie dał go ani serwer, ani powłoka Android)",
             "retry": "Spróbuj jeszcze raz",
-            "groups.aria": "Grupy ustawień",
+)loom_onboard", 59988),
+std::string_view(R"loom_onboard(            "groups.aria": "Grupy ustawień",
             "group.open": "Otwórz grupę {{label}}",
             "group.back": "Wróć do grup ustawień",
             "group.empty": "Ta grupa nie ma pól.",
@@ -5849,8 +5854,7 @@ std::string_view(R"loom_onboard(            "cm_profiles_empty": "Silnik nie pod
             "count.fields.one": "{{n}} pole",
             "count.fields.few": "{{n}} pola",
             "count.fields.many": "{{n}} pól",
-)loom_onboard", 59996),
-std::string_view(R"loom_onboard(            "count.fields.other": "{{n}} pola",
+            "count.fields.other": "{{n}} pola",
             "count.groups.one": "{{n}} grupa",
             "count.groups.few": "{{n}} grupy",
             "count.groups.many": "{{n}} grup",
@@ -6354,7 +6358,7 @@ std::string_view(R"loom_onboard(            "count.fields.other": "{{n}} pola",
   },
   "presentation_key": "presentation.onboarding"
 }
-)loom_onboard", 28631)};
+)loom_onboard", 29036)};
 static constexpr std::string_view kOnboardingScenario[] = {
 std::string_view(R"loom_onboard({
   "schema": "loom.onboarding.scenario/1",

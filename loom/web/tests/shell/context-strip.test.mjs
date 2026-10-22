@@ -150,8 +150,24 @@ test('class and price: from the role when it is the same model, from the model l
   assert.equal(lines(none).price, shell.pl.mp_price_unknown);
   assert.equal(shell.pl.mp_price_unknown, 'Cena: nieznany — brak ceny');
   assert.equal(lines(chip.provenanceView({ ...same, role: null, info: { id: 'x', pricing: { prompt: '0', completion: '0' } } }, ts, 'pl')).price, shell.pl.mp_price_unknown, 'a zero is not a price');
-  assert.equal(lines(chip.provenanceView({ ...same, role: { ...answerRole, tier: { id: 'none', label: '', reason: 'brak modelu' } } }, ts, 'pl')).class, 'Klasa: nieznana — brak modelu');
-  assert.equal(lines(chip.provenanceView({ ...same, role: { ...answerRole, tier: { id: 'unknown', label: 'klasa nieznana', reason: 'nieznana — model spoza tabeli klas' } } }, ts, 'pl')).class, 'Klasa: nieznana — model spoza tabeli klas', 'an unknown class is said once, in the kernel\'s sentence');
+  // the kernel's sentence about the class (an engineer's English sentence) is not the line: the line is the pack's short words, the sentence is kept word for word in `technical`
+  const kernelSentence = 'no name pattern of any class matches (no reader passes a price today; with a price, also when it fits no class threshold)';
+  const unknownClass = chip.provenanceView({ ...same, role: { ...answerRole, tier: { id: 'unknown', label: 'klasa nieznana', reason: kernelSentence } } }, ts, 'pl');
+  assert.equal(lines(unknownClass).class, 'Klasa: nieznana');
+  assert.equal(lines(unknownClass).class, shell.pl.mp_class_plain);
+  assert.equal(unknownClass.technical, kernelSentence, 'the kernel\'s sentence is kept verbatim for the folded block');
+  const unknownEn = chip.provenanceView({ ...same, role: { ...answerRole, tier: { id: 'unknown', label: 'unknown class', reason: kernelSentence } } }, tsEn, 'en');
+  assert.equal(lines(unknownEn).class, 'Class: unknown');
+  assert.equal(unknownEn.technical, kernelSentence);
+  const noClass = chip.provenanceView({ ...same, role: { ...answerRole, tier: { id: 'none', label: '', reason: 'brak modelu' } } }, ts, 'pl');
+  assert.equal(lines(noClass).class, 'Klasa: nieznana');
+  assert.equal(noClass.technical, 'brak modelu');
+  assert.equal(chip.provenanceView({ ...same, role: answerRole }, ts, 'pl').technical, null, 'a known class has nothing folded');
+  const noRole = chip.provenanceView({ ...same, role: null }, ts, 'pl');
+  assert.equal(lines(noRole).class, 'Klasa: nieznana — silnik nie podał roli odpowiedzi na wiadomość', 'no role: a pack word gives the reason, nothing is folded');
+  assert.equal(noRole.technical, null);
+  assert.equal(shell.pl.mp_details, 'Szczegóły techniczne');
+  assert.equal(shell.en.mp_details, 'Technical details');
   // the role belongs to another model: its class and cost are not attributed to the one shown
   const other = chip.provenanceView({ ...same, model: 'a/other' }, ts, 'pl');
   assert.match(lines(other).class, /^Klasa: nieznana — ta klasa dotyczy modelu mock\/e2e-model/);

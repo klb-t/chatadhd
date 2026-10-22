@@ -8,6 +8,7 @@ import type { RoleResolved } from "../api/graph-projection";
 import type { ModelInfo } from "../api/types";
 import { useDialogFocus } from "./use-dialog-focus";
 import { useLayer } from "./use-layer";
+import Disclosure from "./Disclosure";
 import { useShellLanguage, useShellText } from "./text";
 import { ANSWER_ROLE, provenanceView, type ModelSource } from "./model-chip";
 import "../components/context-receipt.css";
@@ -54,6 +55,11 @@ export default function ModelProvenance({ convId, model, source, models, onClose
           <ul className="mp-lines" data-testid="model-provenance-lines">
             {view.lines.map(line => <li key={line.id} data-testid={`model-provenance-${line.id}`}>{line.text}</li>)}
           </ul>
+          {view.technical && (
+            // The kernel's sentence about the class is an engineer's English sentence: the plain words above say it, this folded block keeps it word for word.
+            <Disclosure testId="model-provenance-details" labels={{ show: t("mp_details"), hide: t("mp_details") }}>
+              <p className="crs-note" data-testid="model-provenance-technical">{view.technical}</p>
+            </Disclosure>)}
           {view.chain.length > 0 && <>
             <p className="crs-note" data-testid="model-provenance-chain-title">{t("mp_chain")}</p>
             <ul className="mp-chain" data-testid="model-provenance-chain">{view.chain.map(l => <li key={l.level} data-level={l.level}>{l.text}</li>)}</ul>
