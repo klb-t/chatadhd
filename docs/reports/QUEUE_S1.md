@@ -1,7 +1,11 @@
-# Kolejka S1 — stan 2026-10-22 00:55 UTC
+# Kolejka S1 — stan 2026-10-22 01:25 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
+
+## CI 261 = SUCCESS (01:15 UTC, 119 min): `main` `59de144c` (K1a + K1b + poprawki asan) ZIELONY; `main` = `d103d5d8` (W1a + rejestr interfejsów) od 01:21, nowy bieg w toku
+Pierwszy w pełni zielony `main` po K1 (asan przeszedł: `test_context_receipt`, `chat_active_task_*`). Push `d103d5d8` (bramka lokalna `w1a2` zielona) wyzwolił nowy bieg (≈ 120 min, do ok. 03:20; kontrola 03:18).
+**W1b** (`wf_63253a37-69f`, start 00:53) w toku w `m1d0` — jego commity idą na `claude/m1-w0`; FF `main` po jego zakończeniu i bramce, nie wcześniej niż po końcu biegu `d103d5d8`.
 
 ## W1a: bramka `w1a2` ZIELONA (`d103d5d8`, 00:40); **W1b wystartowało 00:53 UTC** (`wf_63253a37-69f`, Sonnet, push na `claude/m1-w0`)
 Po pierwszej bramce `w1a` (RED: `unit.test_graph_entry` 109 vs 111 tras web) zregenerowałem rejestr interfejsów (`gen_graph_interfaces.py` → `gen_runtime_profiles.py` → pin `graph/interfaces.pack` w `data_domains.pack`) —
