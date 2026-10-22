@@ -150,8 +150,24 @@ test('class and price: from the role when it is the same model, from the model l
   assert.equal(lines(none).price, shell.pl.mp_price_unknown);
   assert.equal(shell.pl.mp_price_unknown, 'Cena: nieznany — brak ceny');
   assert.equal(lines(chip.provenanceView({ ...same, role: null, info: { id: 'x', pricing: { prompt: '0', completion: '0' } } }, ts, 'pl')).price, shell.pl.mp_price_unknown, 'a zero is not a price');
-  assert.equal(lines(chip.provenanceView({ ...same, role: { ...answerRole, tier: { id: 'none', label: '', reason: 'brak modelu' } } }, ts, 'pl')).class, 'Klasa: nieznana — brak modelu');
-  assert.equal(lines(chip.provenanceView({ ...same, role: { ...answerRole, tier: { id: 'unknown', label: 'klasa nieznana', reason: 'nieznana — model spoza tabeli klas' } } }, ts, 'pl')).class, 'Klasa: nieznana — model spoza tabeli klas', 'an unknown class is said once, in the kernel\'s sentence');
+  // the kernel's sentence about the class (an engineer's English sentence) is not the line: the line is the pack's short words, the sentence is kept word for word in `technical`
+  const kernelSentence = 'no name pattern of any class matches (no reader passes a price today; with a price, also when it fits no class threshold)';
+  const unknownClass = chip.provenanceView({ ...same, role: { ...answerRole, tier: { id: 'unknown', label: 'klasa nieznana', reason: kernelSentence } } }, ts, 'pl');
+  assert.equal(lines(unknownClass).class, 'Klasa: nieznana');
+  assert.equal(lines(unknownClass).class, shell.pl.mp_class_plain);
+  assert.equal(unknownClass.technical, kernelSentence, 'the kernel\'s sentence is kept verbatim for the folded block');
+  const unknownEn = chip.provenanceView({ ...same, role: { ...answerRole, tier: { id: 'unknown', label: 'unknown class', reason: kernelSentence } } }, tsEn, 'en');
+  assert.equal(lines(unknownEn).class, 'Class: unknown');
+  assert.equal(unknownEn.technical, kernelSentence);
+  const noClass = chip.provenanceView({ ...same, role: { ...answerRole, tier: { id: 'none', label: '', reason: 'brak modelu' } } }, ts, 'pl');
+  assert.equal(lines(noClass).class, 'Klasa: nieznana');
+  assert.equal(noClass.technical, 'brak modelu');
+  assert.equal(chip.provenanceView({ ...same, role: answerRole }, ts, 'pl').technical, null, 'a known class has nothing folded');
+  const noRole = chip.provenanceView({ ...same, role: null }, ts, 'pl');
+  assert.equal(lines(noRole).class, 'Klasa: nieznana — silnik nie podał roli odpowiedzi na wiadomość', 'no role: a pack word gives the reason, nothing is folded');
+  assert.equal(noRole.technical, null);
+  assert.equal(shell.pl.mp_details, 'Szczegóły techniczne');
+  assert.equal(shell.en.mp_details, 'Technical details');
   // the role belongs to another model: its class and cost are not attributed to the one shown
   const other = chip.provenanceView({ ...same, model: 'a/other' }, ts, 'pl');
   assert.match(lines(other).class, /^Klasa: nieznana — ta klasa dotyczy modelu mock\/e2e-model/);
@@ -166,14 +182,24 @@ test('every word the strip, the menu help and the sheet use exists in both langu
   assert.deepEqual(Object.keys(receipt.en).sort(), Object.keys(receipt.pl).sort());
 });
 
-test('the sentence after a change is the pack\'s, in the screen\'s language, not the kernel\'s; the measured size is added only when the kernel measured it', () => {
+test('the sentence after a change is the pack\'s, in the screen\'s language, not the kernel\'s; the size is said in words (unknown when there is no base), never as "0×"', () => {
   const applied = { waiting: { 'context.breadth_delta': ['wider'] }, ratio: 1.12 };
-  assert.equal(st.modifySentence(applied, 'szerzej', tr), 'Gotowe: tylko dla następnego zapytania — szerzej. Po jego wysłaniu wszystko wraca do ustawień. Szacunek: następne zapytanie będzie ok. 1.1× zwykłego.');
-  assert.equal(st.modifySentence({ waiting: {}, ratio: null }, 'szerzej', tr), 'Gotowe: tylko dla następnego zapytania — szerzej. Po jego wysłaniu wszystko wraca do ustawień.');
+  assert.equal(st.modifySentence(applied, 'szerzej', tr), 'Gotowe: tylko dla następnego zapytania — szerzej. Po jego wysłaniu wszystko wraca do ustawień. Szacunek wielkości następnego zapytania: ok. 1.1× zwykłego.');
+  // no base (ratio null) or a tiny ratio: said in words, never "0×" and never left out silently
+  assert.equal(st.modifySentence({ waiting: {}, ratio: null }, 'szerzej', tr), 'Gotowe: tylko dla następnego zapytania — szerzej. Po jego wysłaniu wszystko wraca do ustawień. Szacunek wielkości następnego zapytania: nieznane — brak bazy.');
+  assert.equal(st.modifySentence({ waiting: {}, ratio: 0.04 }, 'szerzej', tr), 'Gotowe: tylko dla następnego zapytania — szerzej. Po jego wysłaniu wszystko wraca do ustawień. Szacunek wielkości następnego zapytania: dużo mniej niż zwykle.');
+  assert.equal(st.modifySentence({ waiting: {}, ratio: 0.04 }, 'wider', trEn), 'Done: for the next request only — wider. Once it is sent everything is back to the settings. Estimate of the size of the next request: much less than usual.');
+  assert.equal(st.modifySentence({ waiting: {}, ratio: null }, 'wider', trEn), 'Done: for the next request only — wider. Once it is sent everything is back to the settings. Estimate of the size of the next request: unknown — no base.');
   assert.equal(st.modifySentence({ waiting: {}, ratio: null }, '', tr), 'Cofnięte: następne zapytanie pójdzie bez zmian.', 'an empty carrier is a change taken back');
-  assert.equal(st.modifySentence(applied, 'wider', trEn), 'Done: for the next request only — wider. Once it is sent everything is back to the settings. Estimate: the next request will be about 1.1× the usual one.');
+  assert.equal(st.modifySentence(applied, 'wider', trEn), 'Done: for the next request only — wider. Once it is sent everything is back to the settings. Estimate of the size of the next request: about 1.1× the usual one.');
   // the run document of the real kernel (K1b): completed, data.waiting and data.guard.ratio
   const run = { id: 'r1', status: 'completed', result: { parts: [{ text: 'Done: ...' }], data: { waiting: { 'context.breadth_delta': ['wider'] }, guard: { ratio: 1.12, asked: false } } } };
   assert.deepEqual(modifyApi.readModifyRun(run), { kind: 'applied', text: 'Done: ...', waiting: { 'context.breadth_delta': ['wider'] }, ratio: 1.12 });
   assert.equal(modifyApi.readModifyRun({ ...run, result: { parts: [], data: { waiting: {} } } }).ratio, null, 'no measurement: no ratio, never a guess');
+  const guarded = guard => modifyApi.readModifyRun({ ...run, result: { parts: [], data: { waiting: {}, guard } } }).ratio;
+  assert.equal(guarded({ ratio: 0, baseline: null, asked: false }), null, 'a ratio against no base (the kernel writes baseline: null) is no ratio, not "0×"');
+  assert.equal(guarded({ ratio: 0.04, baseline: 0, asked: false }), null, 'a base of zero is no base');
+  assert.equal(guarded({ ratio: 0.04, baseline: 100, asked: false }), 0.04, 'a tiny ratio against a real base stays a number (the sentence says "much less than usual")');
+  assert.equal(modifyApi.usableRatio(1.8, 585.5), 1.8);
+  assert.equal(modifyApi.usableRatio(1.8), 1.8, 'a guard that does not name its base is trusted');
 });

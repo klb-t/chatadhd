@@ -82,6 +82,14 @@ export type ModifyAnswer =
   | { kind: "declined"; text: string }
   | { kind: "failed"; message: string };
 
+/** A guard ratio worth showing: a finite number and, when the guard says what its base was, a base that exists (a positive number). A ratio
+ *  against no base - the kernel writes `baseline: null` for a conversation it has no requests of yet - is no ratio: null, never "0". */
+export function usableRatio(ratio: unknown, baseline?: unknown): number | null {
+  if (typeof ratio !== "number" || !Number.isFinite(ratio)) return null;
+  if (baseline !== undefined && !(typeof baseline === "number" && Number.isFinite(baseline) && baseline > 0)) return null;
+  return ratio;
+}
+
 export function readModifyRun(run: ActionRun | null | undefined): ModifyAnswer {
   if (!run || typeof run !== "object") return { kind: "failed", message: "no_answer" };
   const text = typeof run.result?.parts?.[0]?.text === "string" ? (run.result.parts[0].text as string) : "";
@@ -94,7 +102,7 @@ export function readModifyRun(run: ActionRun | null | undefined): ModifyAnswer {
     const data = (run.result?.data ?? {}) as Record<string, unknown>;
     const guard = (data.guard && typeof data.guard === "object" ? data.guard : {}) as Record<string, unknown>;
     return { kind: "applied", text, waiting: (data.waiting && typeof data.waiting === "object" ? data.waiting : {}) as Record<string, unknown>,
-      ratio: typeof guard.ratio === "number" && Number.isFinite(guard.ratio) ? guard.ratio : null };
+      ratio: usableRatio(guard.ratio, guard.baseline) };
   }
   if (run.status === "rejected") return { kind: "declined", text: run.error?.message ?? text };
   return { kind: "failed", message: run.error?.message ?? text ?? run.status };

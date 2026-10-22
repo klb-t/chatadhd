@@ -11,6 +11,7 @@ import { tmpdir } from "node:os";
 import net from "node:net";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { modifiedSentence } from "./m1-words.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const LOOM = path.resolve(here, "../..");
@@ -122,6 +123,7 @@ try {
     }
     assert.deepEqual(await smallInMenu(), [], "every button of the menu is at least 44 x 44 px");
     assert.equal(await page.getByTestId("composer-menu-steps-help").innerText(), ui.cm_steps_help);
+    assert.equal(await page.getByTestId("composer-menu-steps-add-up").innerText(), ui.cm_steps_add_up, "the submenu says that clicks add up");
     assert.equal(await page.getByTestId("composer-menu-memory").innerText().then(x => x.split("\n")[0].trim()), "Profil i pamięć (z węzła Ty)");
     assert.equal(await page.getByTestId("composer-menu-knowledge").innerText().then(x => x.split("\n")[0].trim()), "Twierdzenia z analizy");
     console.log("[m1-context-menu] rendered Kontekst submenu: " + JSON.stringify((await page.getByTestId("composer-menu").innerText()).replace(/\n+/g, " | ")));
@@ -148,7 +150,8 @@ try {
     assert.equal(await page.getByTestId("composer-menu-modify-result").getAttribute("data-kind"), "applied");
     const said = await page.getByTestId("composer-menu-modify-result").innerText();
     console.log("[m1-context-menu] rendered kernel answer: " + JSON.stringify(said));
-    assert.equal(said.split(" Szacunek")[0], w["modify.applied"].replace("{{what}}", w["action.wider"]), "the sentence is the pack's, in the screen's language");
+    assert.match(said, modifiedSentence(w, w["action.wider"]), "the sentence is the pack's, in the screen's language, with the estimate in words (a number with the sign, 'much less than usual' or 'unknown - no base', never '0×')");
+    assert.ok(!/(^|\D)0×/.test(said), "no '0×' in the estimate");
     await shot("m1-menu-wider-applied");
     assert.ok(await page.getByTestId("composer-menu-reset").count() === 1, "taking the change back is offered");
     await closeMenu();
@@ -251,6 +254,7 @@ try {
     await written;
     assert.equal(await picker.evaluate(el => el.selectedOptions[0].textContent), "second-model", "the chip shows the short name");
     assert.ok(await page.getByTestId("model-chip").evaluate(el => el.getBoundingClientRect().right <= 390), "the chip fits the phone");
+    const rolesAnswer = page.waitForResponse(r => /\/api\/roles\/resolved/.test(r.url()) && r.request().method() === "POST");
     await page.getByTestId("model-provenance-open").tap();
     const sheet = page.getByTestId("model-provenance");
     await sheet.and(page.locator('[data-state="ready"]')).waitFor();
@@ -259,6 +263,23 @@ try {
     assert.equal(await page.getByTestId("model-provenance-set-by").innerText(), "Ustawiony na poziomie: Rozmowa", "the pick is the conversation's own: the level of the chain that set it is named");
     assert.ok((await page.getByTestId("model-provenance-chain").locator('[data-level="conversation"]').innerText()).endsWith("podał wartość"), "the chain says which level supplied the value");
     assert.match(await page.getByTestId("model-provenance-class").innerText(), /^Klasa: /);
+    // The class line is the pack's short words; the kernel's own sentence (an engineer's English sentence) is word for word in a folded block, closed by default.
+    const classLine = await page.getByTestId("model-provenance-class").innerText();
+    const kernelRole = (await (await rolesAnswer).json()).roles.find(r => r.id === "chat.default");   // the very answer the sheet read
+    console.log("[m1-context-menu] kernel role of the answer: " + JSON.stringify({ model: kernelRole?.model, tier: kernelRole?.tier }));
+    if (kernelRole?.model === "mock/second-model" && kernelRole.tier?.reason && ["unknown", "none"].includes(kernelRole.tier.id)) {
+      assert.equal(classLine, ui.mp_class_plain, "an unknown class is said in the pack's short words");
+      const details = page.getByTestId("model-provenance-details");
+      assert.equal(await details.locator("button.disclosure-head").getAttribute("aria-expanded"), "false", "the technical details are folded by default");
+      assert.equal(await details.locator(".disclosure-label").innerText(), ui.mp_details);
+      assert.equal(await page.getByTestId("model-provenance-technical").isVisible(), false, "folded: the kernel's sentence is not shown");
+      await details.locator("button.disclosure-head").tap();
+      await page.getByTestId("model-provenance-technical").waitFor({ state: "visible" });
+      assert.equal(await page.getByTestId("model-provenance-technical").innerText(), kernelRole.tier.reason, "the kernel's sentence is kept word for word");
+      await shot("m1-model-provenance-details");
+      await details.locator("button.disclosure-head").tap();
+      await page.getByTestId("model-provenance-technical").waitFor({ state: "hidden" });
+    } else assert.equal(await page.getByTestId("model-provenance-details").count(), 0, "a known class has nothing to fold");
     assert.equal(await page.getByTestId("model-provenance-price").innerText(), ui.mp_price_unknown, "the model list has no price: unknown, not zero");
     assert.ok((await page.getByTestId("model-provenance-chain").locator("li").count()) > 0, "the levels that said something are listed");
     assert.match(await page.getByTestId("model-provenance-chain-rest").innerText(), /^Pozostałe poziomy nie mają wartości/, "the other levels are named in one line");

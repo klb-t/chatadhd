@@ -1041,6 +1041,7 @@
             "cm_flow_text_graph": "Flow: text ↔ graph",
             "cm_preview_request": "Preview of the request",
             "cm_steps_help": "Wider, deeper, narrower and shallower work for the next request only; once it is sent everything is back to the settings.",
+            "cm_steps_add_up": "Further taps add up: Wider twice = wider ×2.",
             "cm_profiles_help": "The chosen profile is for the next request only; once it is sent the profile from the settings is back.",
             "cm_profiles_loading": "Loading the profiles…",
             "cm_profiles_empty": "The engine gave no selector profiles.",
@@ -1087,7 +1088,8 @@
             "mp_reason_other_model": "this class is that of the model {{model}} of the role “Answer to a message”, not the one picked here",
             "mp_reason_no_role": "the engine gave no role for answering a message",
             "mp_chain_rest": "The other levels have no value or do not apply to this conversation: {{levels}}.",
-            "mp_class_kernel": "Class: {{reason}}"
+            "mp_class_plain": "Class: unknown",
+            "mp_details": "Technical details"
           },
           "pl": {
             "menu_open": "Menu",
@@ -1320,6 +1322,7 @@
             "cm_flow_text_graph": "Przepływ: tekst ↔ graf",
             "cm_preview_request": "Podgląd wysyłki",
             "cm_steps_help": "Szerzej, głębiej, węziej i płycej działają tylko na następne zapytanie; po jego wysłaniu wszystko wraca do ustawień.",
+            "cm_steps_add_up": "Kolejne kliknięcia dodają się: dwa razy Szerzej = szerzej ×2.",
             "cm_profiles_help": "Wybrany profil dotyczy tylko następnego zapytania; po jego wysłaniu wraca profil z ustawień.",
             "cm_profiles_loading": "Wczytuję profile…",
             "cm_profiles_empty": "Silnik nie podał żadnych profili selektora.",
@@ -1366,7 +1369,8 @@
             "mp_reason_other_model": "ta klasa dotyczy modelu {{model}} roli „Odpowiedź na wiadomość”, nie wybranego tutaj",
             "mp_reason_no_role": "silnik nie podał roli odpowiedzi na wiadomość",
             "mp_chain_rest": "Pozostałe poziomy nie mają wartości albo nie dotyczą tej rozmowy: {{levels}}.",
-            "mp_class_kernel": "Klasa: {{reason}}"
+            "mp_class_plain": "Klasa: nieznana",
+            "mp_details": "Szczegóły techniczne"
           }
         }
       }
@@ -2371,13 +2375,24 @@
             "header.modifiers": "Changes of this turn: {{modifiers}}",
             "header.order": "Order: {{order}}",
             "header.flow": "Flow: {{flow}}",
+            "order.legacy": "the old one (graph before the conversation)",
+            "order.stable_first": "steady parts first (graph last)",
+            "order.stability": "stable (profile and rules first, graph last)",
+            "flow.plain": "plain text",
+            "flow.graph_out": "chat turns in, a graph out",
+            "flow.graph_in": "a graph in, a text answer",
+            "flow.graph_io": "a graph in and a graph out",
             "tokens": "{{n}} tokens (estimate)",
             "cost.unknown": "cost unknown — no price",
             "prefix.stable.yes": "stable prefix: yes",
             "prefix.stable.no": "stable prefix: no",
-            "guard.ok": "×10 guard: {{ratio}}× the base — no question",
-            "guard.asked": "×10 guard: {{ratio}}× the base — asked",
-            "guard.unknown": "×10 guard: base unknown",
+            "guard.ok": "×10 guard: {{ratio}} — no question",
+            "guard.asked": "×10 guard: {{ratio}} — asked",
+            "guard.unknown": "×10 guard: {{ratio}}",
+            "ratio.times_base": "{{n}}× the base",
+            "ratio.times_usual": "about {{n}}× the usual one",
+            "ratio.low": "much less than usual",
+            "ratio.unknown": "unknown — no base",
             "disclaimer": "A compiled request, not proof that the provider received it.",
             "missing": "No receipt (saved before M1)",
             "truncated": "Cut (receipt size limit)",
@@ -2472,7 +2487,7 @@
             "preview.pending_none": "Changes for the next request: none (that this screen knows of)",
             "modify.applied": "Done: for the next request only — {{what}}. Once it is sent everything is back to the settings.",
             "modify.cleared": "Taken back: the next request goes without changes.",
-            "modify.ratio": "Estimate: the next request will be about {{ratio}}× the usual one."
+            "modify.ratio": "Estimate of the size of the next request: {{ratio}}."
           },
           "pl": {
             "title": "Co wysłaliśmy",
@@ -2505,13 +2520,24 @@
             "header.modifiers": "Zmiany tej tury: {{modifiers}}",
             "header.order": "Kolejność: {{order}}",
             "header.flow": "Przepływ: {{flow}}",
+            "order.legacy": "dawna (graf przed rozmową)",
+            "order.stable_first": "stałe najpierw (graf na końcu)",
+            "order.stability": "stabilna (profil i reguły na początku, graf na końcu)",
+            "flow.plain": "zwykły tekst",
+            "flow.graph_out": "rozmowa na wejściu, graf na wyjściu",
+            "flow.graph_in": "graf na wejściu, odpowiedź tekstem",
+            "flow.graph_io": "graf na wejściu i na wyjściu",
             "tokens": "{{n}} tokenów (szacunek)",
             "cost.unknown": "koszt nieznany — brak ceny",
             "prefix.stable.yes": "prefiks stały: tak",
             "prefix.stable.no": "prefiks stały: nie",
-            "guard.ok": "strażnik ×10: {{ratio}}× bazy — bez pytania",
-            "guard.asked": "strażnik ×10: {{ratio}}× bazy — zapytano",
-            "guard.unknown": "strażnik ×10: baza nieznana",
+            "guard.ok": "strażnik ×10: {{ratio}} — bez pytania",
+            "guard.asked": "strażnik ×10: {{ratio}} — zapytano",
+            "guard.unknown": "strażnik ×10: {{ratio}}",
+            "ratio.times_base": "{{n}}× bazy",
+            "ratio.times_usual": "ok. {{n}}× zwykłego",
+            "ratio.low": "dużo mniej niż zwykle",
+            "ratio.unknown": "nieznane — brak bazy",
             "disclaimer": "Skompilowane żądanie, nie dowód odbioru przez dostawcę.",
             "missing": "Brak śladu (zapisane przed M1)",
             "truncated": "Ucięto (limit rozmiaru śladu)",
@@ -2606,7 +2632,7 @@
             "preview.pending_none": "Zmiany na następne zapytanie: brak (o których ten ekran wie)",
             "modify.applied": "Gotowe: tylko dla następnego zapytania — {{what}}. Po jego wysłaniu wszystko wraca do ustawień.",
             "modify.cleared": "Cofnięte: następne zapytanie pójdzie bez zmian.",
-            "modify.ratio": "Szacunek: następne zapytanie będzie ok. {{ratio}}× zwykłego."
+            "modify.ratio": "Szacunek wielkości następnego zapytania: {{ratio}}."
           }
         }
       }

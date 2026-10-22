@@ -37,6 +37,8 @@ export interface ProvenanceView {
   chain: { level: string; text: string }[];
   /** One line naming the other levels (no value / not active), or null when there are none. */
   chainRest: string | null;
+  /** The kernel's own sentence about the class, word for word (it is a developer's English sentence): shown folded under "Szczegóły techniczne", never instead of the plain words. */
+  technical: string | null;
 }
 
 const money = (n: number): string => `$${n >= 1 ? n.toFixed(2).replace(/\.?0+$/, "") : n.toFixed(4).replace(/0+$/, "").replace(/\.$/, "")}`;
@@ -65,15 +67,22 @@ export function provenanceView(input: ProvenanceInput, t: ShellT, language: stri
     lines.push({ id: "set-by", text: t("mp_set_by", { level: labelOf(level?.label, language, input.resolution.scope ?? "") }) });
   } else lines.push({ id: "set-by", text: t("mp_set_by_none") });
   const role = input.role;
-  if (role && role.tier && role.tier.id !== "none" && role.tier.id !== "unknown" && (role.model === effective || effective === ""))
+  const sameModel = Boolean(role) && (role?.model === effective || effective === "");
+  let technical: string | null = null;   // the kernel's sentence (tier.reason), kept verbatim for the folded block
+  if (role && role.tier && role.tier.id !== "none" && role.tier.id !== "unknown" && sameModel)
     lines.push({ id: "class", text: t("mp_class", { class: role.tier.label || role.tier.id }) });
-  else if (role && role.tier?.id === "unknown" && role.tier.reason && (role.model === effective || effective === "")) lines.push({ id: "class", text: t("mp_class_kernel", { reason: role.tier.reason }) });   // the kernel's own sentence already says "unknown" and why
-  else if (role && effective && role.model !== effective) lines.push({ id: "class", text: t("mp_class_unknown", { reason: t("mp_reason_other_model", { model: role.model ?? "" }) }) });
-  else lines.push({ id: "class", text: t("mp_class_unknown", { reason: role?.tier?.reason || t("mp_reason_no_role") }) });
+  else if (role && role.tier?.id === "unknown" && role.tier.reason && sameModel) {
+    lines.push({ id: "class", text: t("mp_class_plain") });   // plain words here; the kernel's sentence says why, folded below
+    technical = role.tier.reason;
+  } else if (role && effective && role.model !== effective) lines.push({ id: "class", text: t("mp_class_unknown", { reason: t("mp_reason_other_model", { model: role.model ?? "" }) }) });
+  else if (role?.tier?.reason) {
+    lines.push({ id: "class", text: t("mp_class_plain") });
+    technical = role.tier.reason;
+  } else lines.push({ id: "class", text: t("mp_class_unknown", { reason: t("mp_reason_no_role") }) });
   lines.push({ id: "price", text: priceLine(input, effective, t) });
   const levels = input.resolution?.chain ?? [];
   const said = (l: { role: string }) => l.role === "supplied" || l.role === "overridden";
   const chain = levels.filter(said).map(l => ({ level: l.level, text: `${labelOf(l.label, language, l.level)} — ${t(`mp_role_${l.role}`)}` }));
   const rest = levels.filter(l => !said(l)).map(l => labelOf(l.label, language, l.level));
-  return { effective, lines, chain, chainRest: rest.length ? t("mp_chain_rest", { levels: rest.join(", ") }) : null };
+  return { effective, lines, chain, chainRest: rest.length ? t("mp_chain_rest", { levels: rest.join(", ") }) : null, technical };
 }

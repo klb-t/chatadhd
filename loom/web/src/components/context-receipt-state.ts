@@ -2,7 +2,7 @@
 // computed from the receipt the kernel recorded (loom.context_receipt/1) and the words of presentation.context_receipt; nothing here lists a
 // section, a source, a reason or a profile (a word that is missing shows its id, never a guess), and nothing is invented: a price the receipt
 // does not carry is "unknown", a guard value the kernel could not compute is "unknown".
-import type { ContextReceipt, ReceiptSection } from "../api/context-receipt";
+import { usableRatio, type ContextReceipt, type ReceiptSection } from "../api/context-receipt";
 import type { ShellT } from "../shell/text";
 
 export interface SheetItem { key: string; text: string; chip: string; why: string; tokens: number | null }
@@ -14,6 +14,9 @@ export interface SheetModel {
   /** null when the receipt names no order / no flow. */
   orderLine: string | null;
   flowLine: string | null;
+  /** The internal names behind the two lines (stability, plain ...), for a data attribute: the line shows words. */
+  orderName: string | null;
+  flowName: string | null;
   prefixLine: string;
   prefixDetail: string | null;
   /** The guard's sentence and its state, for a data attribute: ok (asked: false), asked, unknown (the kernel could not compute a ratio). */
@@ -37,6 +40,19 @@ const numberText = (n: number, digits = 1): string => {
   const fixed = n.toFixed(digits);
   return fixed.replace(/\.0+$/, "");
 };
+
+/** Below this ratio the request is "much less than usual" in words instead of a number that rounds to 0 (a display preset, not a limit on anything). */
+export const RATIO_LOW_BELOW = 0.1;
+export type RatioKind = "unknown" | "low" | "times";
+
+/** The one place a guard / estimate ratio becomes words: no ratio or no base -> "nieznane - brak bazy"; under RATIO_LOW_BELOW -> "dużo mniej niż
+ *  zwykle"; else one decimal with the multiplication sign ("1.8× bazy", or "ok. 1.8× zwykłego" for `unit` "usual"). All three are words of the pack. */
+export function ratioText(ratio: number | null | undefined, t: ShellT, unit: "base" | "usual" = "base"): { kind: RatioKind; text: string } {
+  const usable = usableRatio(ratio);
+  if (usable === null) return { kind: "unknown", text: t("ratio.unknown") };
+  if (usable < RATIO_LOW_BELOW) return { kind: "low", text: t("ratio.low") };
+  return { kind: "times", text: t(`ratio.times_${unit}`, { n: numberText(usable) }) };
+}
 
 /** A label that is an {en, pl} table, or a string: in the language, else English, else the fallback (the id). */
 export function labelOf(label: unknown, language: string, fallback: string): string {
@@ -108,9 +124,9 @@ export function modifierParts(receipt: ContextReceipt, t: ShellT, language: stri
 
 export function guardView(receipt: ContextReceipt, t: ShellT): { line: string; state: "ok" | "asked" | "unknown" } {
   const g = receipt.guard;
-  if (!g || typeof g.ratio !== "number") return { line: t("guard.unknown"), state: "unknown" };
-  const ratio = numberText(g.ratio);
-  return g.asked ? { line: t("guard.asked", { ratio }), state: "asked" } : { line: t("guard.ok", { ratio }), state: "ok" };
+  const said = ratioText(usableRatio(g?.ratio, g?.baseline), t, "base");   // a ratio against no base (baseline null) is unknown, not "0×"
+  if (!g || said.kind === "unknown") return { line: t("guard.unknown", { ratio: said.text }), state: "unknown" };
+  return g.asked ? { line: t("guard.asked", { ratio: said.text }), state: "asked" } : { line: t("guard.ok", { ratio: said.text }), state: "ok" };
 }
 
 /** The prefix is stable when the order puts the profile (and the rules) before everything that changes from turn to turn and the profile block
@@ -169,8 +185,10 @@ export function sheetModel(receipt: ContextReceipt, t: ShellT, language: string)
   });
   return {
     profileLine, modifiersLine,
-    orderLine: receipt.order?.name ? t("header.order", { order: receipt.order.name }) : null,
-    flowLine: receipt.flow?.flow ? t("header.flow", { flow: receipt.flow.flow }) : null,
+    // the names of the order and of the flow are internal ids: the pack says them in short words, and the raw name is shown only where the pack has none
+    orderName: receipt.order?.name || null, flowName: receipt.flow?.flow || null,
+    orderLine: receipt.order?.name ? t("header.order", { order: wordOr(t, `order.${receipt.order.name}`, receipt.order.name) }) : null,
+    flowLine: receipt.flow?.flow ? t("header.flow", { flow: wordOr(t, `flow.${receipt.flow.flow}`, receipt.flow.flow) }) : null,
     prefixLine: t(prefixStable(receipt) ? "prefix.stable.yes" : "prefix.stable.no"), prefixDetail,
     guardLine: guard.line, guardState: guard.state,
     tokensLine: typeof receipt.tokens_est === "number" ? t("tokens", { n: String(receipt.tokens_est) }) : "",
@@ -236,6 +254,6 @@ export function profileChoices(data: unknown, language: string): ProfileChoice[]
  *  what waits for the next request (`what`, already in words) and, when the kernel measured it, how much larger the request will be. */
 export function modifySentence(answer: { waiting: Record<string, unknown>; ratio: number | null }, what: string, t: ShellT): string {
   const lines = [what ? t("modify.applied", { what }) : t("modify.cleared")];
-  if (what && answer.ratio !== null) lines.push(t("modify.ratio", { ratio: numberText(answer.ratio) }));
+  if (what) lines.push(t("modify.ratio", { ratio: ratioText(answer.ratio, t, "usual").text }));
   return lines.join(" ");
 }

@@ -120,8 +120,8 @@ export default function ContextReceipt({ profileHost, language, convId, msgId, o
             <ul className="crs-lines" data-testid="context-receipt-header">
               <li data-testid="context-receipt-profile">{model.profileLine}</li>
               <li data-testid="context-receipt-modifiers">{model.modifiersLine}</li>
-              {model.orderLine && <li data-testid="context-receipt-order">{model.orderLine}</li>}
-              {model.flowLine && <li data-testid="context-receipt-flow">{model.flowLine}</li>}
+              {model.orderLine && <li data-testid="context-receipt-order" data-name={model.orderName ?? undefined}>{model.orderLine}</li>}
+              {model.flowLine && <li data-testid="context-receipt-flow" data-name={model.flowName ?? undefined}>{model.flowLine}</li>}
               <li data-testid="context-receipt-prefix">{model.prefixLine}{model.prefixDetail ? ` — ${model.prefixDetail}` : ""}</li>
               <li data-testid="context-receipt-guard" data-state={model.guardState}>{model.guardLine}</li>
               <li data-testid="context-receipt-tokens">{model.tokensLine}</li>

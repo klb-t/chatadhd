@@ -13,6 +13,7 @@ import { tmpdir } from "node:os";
 import net from "node:net";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { guardLine } from "./m1-words.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const LOOM = path.resolve(here, "../..");
@@ -113,7 +114,24 @@ try {
     assert.equal(await page.getByTestId("context-receipt-cost").innerText(), w["cost.unknown"]);
     assert.equal(await page.getByTestId("context-receipt-disclaimer").innerText(), w.disclaimer);
     assert.ok(await page.getByTestId("context-receipt-prefix").innerText().then(x => x.startsWith("prefiks stały")));
-    assert.equal(await page.getByTestId("context-receipt-guard").getAttribute("data-state") !== null, true);
+    const guardState = await page.getByTestId("context-receipt-guard").getAttribute("data-state");
+    assert.ok(["ok", "asked", "unknown"].includes(guardState), `the guard has a state: ${guardState}`);
+    const guardText = await page.getByTestId("context-receipt-guard").innerText();
+    console.log("[m1-context-sent] rendered guard line: " + JSON.stringify(guardText));
+    assert.match(guardText, guardLine(w, guardState), "the guard line is the pack's sentence with the pack's words for the ratio (a number with the sign, 'much less than usual' or 'unknown - no base')");
+    assert.ok(!/(^|\D)0×/.test(guardText), "no '0×' for a tiny ratio or a missing base");
+    // The order and the flow are said in the pack's short words (the internal name stays only as a data attribute and as the fallback of a name the pack has no word for).
+    for (const [kind, header] of [["order", "header.order"], ["flow", "header.flow"]]) {
+      const line = page.getByTestId(`context-receipt-${kind}`);
+      if (await line.count() === 0) continue;
+      const name = await line.getAttribute("data-name");
+      assert.ok(name, `the ${kind} line carries its internal name`);
+      assert.ok(w[`${kind}.${name}`], `the pack has a word for the ${kind} ${name}`);
+      const said = await line.innerText();
+      console.log(`[m1-context-sent] rendered ${kind} line: ` + JSON.stringify(said));
+      assert.equal(said, w[header].replace(`{{${kind}}}`, w[`${kind}.${name}`]), `the ${kind} is said in words`);
+      assert.ok(!said.includes(name), `the internal name ${name} is not shown`);
+    }
     assert.equal(await page.getByTestId("context-receipt-dropped-title").innerText(), w["dropped.title"]);
     const itemText = await page.getByTestId("receipt-section-system").locator('[data-testid="receipt-item"]').first().evaluate(el => ({ ws: getComputedStyle(el).whiteSpace, text: el.innerText }));
     assert.equal(itemText.ws, "pre-wrap");
@@ -135,17 +153,20 @@ try {
     await page.getByTestId("receipt-step-wider").tap();
     await page.getByTestId("receipt-modify-result").waitFor();
     assert.equal(await page.getByTestId("receipt-modify-result").getAttribute("data-kind"), "applied");
+    await page.getByTestId("receipt-modify-result").evaluate(el => el.scrollIntoView({ block: "end" }));   // the shot shows the sentence the kernel's answer became
     await shot("m1-context-sheet-wider-applied");
     await closeSheet();
     await send("and the database API server code again?");
     await openLast();
     const wider = await graphTokens();
+    await shot("m1-sheet-wider-request");
     assert.ok(wider > baseGraph, `Graf grows for the widened request (${baseGraph} -> ${wider} tokens)`);
     assert.match(await page.getByTestId("context-receipt-modifiers").innerText(), new RegExp(w["action.wider"]));
     await closeSheet();
     await send("and the database API server code once more?");
     await openLast();
     assert.equal(await graphTokens(), baseGraph, "the next request is back to the base");
+    await shot("m1-sheet-back-to-base");
     assert.equal(await page.getByTestId("context-receipt-modifiers").innerText(), w["header.modifiers_none"]);
     await closeSheet();
   });

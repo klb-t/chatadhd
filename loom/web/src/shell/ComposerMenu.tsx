@@ -135,6 +135,7 @@ export default function ComposerMenu({ items, issues, ctx, flags, switches, mode
                   data-testid={`composer-menu-${step.id}`} data-step={step.step} onClick={() => run(step)}>{word(step.label, step.id)}</button>)}
               </div>
               <p className="composer-menu-reason" data-testid="composer-menu-steps-help">{t("cm_steps_help")}</p>
+              <p className="composer-menu-reason" data-testid="composer-menu-steps-add-up">{t("cm_steps_add_up")}</p>
             </div>);
           const item = entry;
           const st = itemState(item, ctx);
