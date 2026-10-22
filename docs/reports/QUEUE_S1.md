@@ -1,7 +1,13 @@
-# Kolejka S1 — stan 2026-10-22 21:30 UTC
+# Kolejka S1 — stan 2026-10-22 21:45 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
+
+## CI 273 (`ae6d152f`) = FAILURE (21:08, tylko `asan`): `unit.test_profile_ops` — ASan `heap-use-after-free` w `op_answer` (`profile_ops.cpp:440`) → naprawione `01dd2319`; bramka `w2a3` (cała gałąź: W2a + W2a-fix + poprawka) w toku od 21:40
+Przyczyna (log czytany przez agenta haiku `wf_f0812d19-4e1`, 16 wywołań, 99 tys. tokenów): `const Json* f = field_of(l, slot)` wskazywał w `l.state`; `write()` robi `l.state = *r` (linia 88) i zwalnia stare dane; `json::get_string(*f, "section")` po zapisie czytał zwolnioną pamięć. Błąd w kodzie produkcyjnym K2b-1, niewidoczny dla bramki bez ASan.
+Poprawka: `field_of` zwraca `std::optional<Json>` (kopię), 9 miejsc wywołania; funkcje tylko-do-odczytu nie zapisują przy trzymanej referencji. `test_profile_ops` 122 s, `test_profile_chat`, `test_onboarding_interview` zielone lokalnie (bez ASan; dowód klasy tylko z CI `asan`). Reguła dopisana do `CLAUDE.md` („druga pułapka tylko dla ASan: wskaźnik do wartości, którą późniejszy zapis podmienia”).
+Zatrzymałem bramkę `w2a2` w połowie (ctest), żeby nie sprawdzać stanu, o którym wiem, że jest zły; jedna bramka `w2a3` obejmuje wszystko. Zabite po numerach dwa osierocone serwery e2e sprzed 15 h (z wcześniejszych pakietów).
+`main` = `ae6d152f` jest CZERWONY w CI (asan) do czasu FF poprawki — nic na niego nie dokładam, dopóki `w2a3` nie będzie zielona. APK v2 (z `f07fc52a`) nie zawiera tego błędu.
 
 ## W2a-fix GOTOWE (21:28 UTC, `9383d783`): bramka `w2a2` w toku (start 21:29)
 Agent Sonnet (`wf_38b54457-b3c`, 76 wywołań, 151 tys. tokenów, 27 min). (1) golden `settings_fields.json` zregenerowany przełącznikiem repo (`LOOM_UPDATE_GOLDEN=1`): zmienia się wyłącznie `onboarding_card` (planned → implemented, powód i „dziś” po polsku i angielsku). (2) Zbędne `GET /api/conversations/<id>` USUNIĘTE (nie dopisane do atrap): rozmowa wywiadu rozpoznawana z `metadata.interview` na już wczytanych wiadomościach (`isInterviewMessages`); otwarcie zwykłej rozmowy: 8 → 7 żądań /api;
