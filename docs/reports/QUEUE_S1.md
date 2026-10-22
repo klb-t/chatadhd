@@ -1,7 +1,10 @@
-# Kolejka S1 — stan 2026-10-22 21:45 UTC
+# Kolejka S1 — stan 2026-10-22 22:30 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
+
+## Bramka `w2a3` ZIELONA (22:25, `01dd2319`); `main` = `01dd2319` od 22:26 (W2a + W2a-fix + poprawka użycia po zwolnieniu); CI 274 (id 39864923873) w toku od 22:26, kontrola 00:09 (limit asan 150 min → najpóźniej 00:56); K2c-1 wystartowało 22:27 (`wf_255ba3e4-de1`, Sonnet: jednostki + pochodzenie notatek pamięci)
+CI 273 zakończone wcześniej (FAILURE), więc FF nic nie anulował. S2 poinformowany (main = 01dd2319, smoke wywiadu mile widziany, testidy w `M1_W0_TESTIDS.md`). Następnie: gdy K2c-1 skończy → `git fetch origin main`, ewentualne scalenie, bramka, FF `main` dopiero po zielonej bramce I po końcu CI 274. Potem K2c-2 (podgraf `party:self`) i W2b (ekran „Ty”). APK v3 po zielonym CI 274 + smoke S2.
 
 ## CI 273 (`ae6d152f`) = FAILURE (21:08, tylko `asan`): `unit.test_profile_ops` — ASan `heap-use-after-free` w `op_answer` (`profile_ops.cpp:440`) → naprawione `01dd2319`; bramka `w2a3` (cała gałąź: W2a + W2a-fix + poprawka) w toku od 21:40
 Przyczyna (log czytany przez agenta haiku `wf_f0812d19-4e1`, 16 wywołań, 99 tys. tokenów): `const Json* f = field_of(l, slot)` wskazywał w `l.state`; `write()` robi `l.state = *r` (linia 88) i zwalnia stare dane; `json::get_string(*f, "section")` po zapisie czytał zwolnioną pamięć. Błąd w kodzie produkcyjnym K2b-1, niewidoczny dla bramki bez ASan.
