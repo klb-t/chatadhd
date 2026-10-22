@@ -141,6 +141,15 @@ Result<std::string> level_of(const Env& e) {
   return v.get<std::string>();
 }
 
+// The level in the person's words (its label), the id when the scenario names none.
+std::string level_word(const Env& e, const Loaded& l, const std::string& level) {
+  auto levels = view(e, l, Json{{"what", "levels"}});
+  if (!levels) return level;
+  for (const auto& row : *levels)
+    if (json::get_string(row, "id") == level && !json::get_string(row, "label").empty()) return json::get_string(row, "label");
+  return level;
+}
+
 Result<Json> plan_of(const Env& e, const Loaded& l) {
   LOOM_TRY_ASSIGN(auto level, level_of(e));
   return view(e, l, Json{{"what", "plan"}, {"level", level}});
@@ -179,7 +188,7 @@ Result<Reply> next_reply(const Env& e, const Loaded& l, const std::string& head,
   if (n.ask.is_null()) {
     data["question"] = nullptr;
     data["done"] = true;
-    add(e.say("profile_done", Json{{"level", level}}));
+    add(e.say("profile_done", Json{{"level", level_word(e, l, level)}}));
     return Reply{text, data};
   }
   const std::string field = json::get_string(n.ask, "field");
@@ -209,7 +218,7 @@ Result<Reply> next_reply(const Env& e, const Loaded& l, const std::string& head,
     q["levels"] = rows;
     add(e.say("profile_level_hint", Json::object()));
   } else {
-    add(e.say("profile_question_hint", Json{{"remaining", n.remaining}, {"level", level}}));
+    add(e.say("profile_question_hint", Json{{"remaining", n.remaining}, {"level", level_word(e, l, level)}}));
   }
   data["question"] = q;
   return Reply{text, data};
@@ -539,7 +548,7 @@ Result<Reply> op_status(const Env& e, const Json& args) {
   data["mode"] = "form";
   std::string text;
   if (plan.value("level_choice_pending", false)) text = e.say("profile_status_level_pending", Json::object());
-  else text = e.say("profile_status_head", Json{{"level", level}, {"answered", known}, {"declined", declined}, {"never", never}, {"pending", pending}, {"remaining", n.remaining}});
+  else text = e.say("profile_status_head", Json{{"level", level_word(e, l, level)}, {"answered", known}, {"declined", declined}, {"never", never}, {"pending", pending}, {"remaining", n.remaining}});
   if (!skipped.empty()) text += "\n" + e.say("profile_status_skipped", Json{{"sections", skipped_titles}});
   if (session_status == "paused") text += "\n" + e.say("profile_status_paused", Json::object());
   return Reply{text, data};
@@ -579,7 +588,7 @@ Result<Reply> show(const Env& e, const Json& args) {
   }
   const auto pending = pending_fields(l);
   Json slots = Json::array();
-  std::string text = e.say("profile_show_head", Json{{"level", level}});
+  std::string text = e.say("profile_show_head", Json{{"level", level_word(e, l, level)}});
   const Json& fields = l.state.at("profile").at("fields");
   for (const auto& [id, f] : fields.items()) {
     const std::string status = json::get_string(f, "status", "unknown");
@@ -619,7 +628,7 @@ Result<Reply> show(const Env& e, const Json& args) {
   for (const auto& [reason, count] : reasons) reasons_json[reason] = count;
   Json plan_summary{{"level", level}, {"level_choice_pending", plan.value("level_choice_pending", false)}, {"remaining", n.remaining},
                     {"counts", plan.value("counts", Json::object())}, {"skipped_reasons", reasons_json}};
-  text += "\n" + e.say("profile_show_plan", Json{{"remaining", n.remaining}, {"level", level}});
+  text += "\n" + e.say("profile_show_plan", Json{{"remaining", n.remaining}, {"level", level_word(e, l, level)}});
   Json data = base_data(l);
   data["slots"] = slots;
   data["level"] = level;

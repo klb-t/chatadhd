@@ -14358,7 +14358,8 @@
         "result_text": {
           "en": "The interview:",
           "pl": "Wywiad:"
-        }
+        },
+        "default_element": "application"
       },
       "profile.show": {
         "id": "profile.show",
@@ -14446,7 +14447,8 @@
         "result_text": {
           "en": "What I know about you:",
           "pl": "Co o Tobie wiem:"
-        }
+        },
+        "default_element": "application"
       },
       "profile.set": {
         "id": "profile.set",
@@ -14566,7 +14568,8 @@
         "result_text": {
           "en": "Your profile:",
           "pl": "Twój profil:"
-        }
+        },
+        "default_element": "application"
       },
       "profile.confirm": {
         "id": "profile.confirm",
@@ -14706,7 +14709,8 @@
         "result_text": {
           "en": "Confirmed:",
           "pl": "Potwierdzone:"
-        }
+        },
+        "default_element": "application"
       },
       "context.receipt": {
         "id": "context.receipt",
