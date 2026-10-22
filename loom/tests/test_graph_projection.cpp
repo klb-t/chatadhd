@@ -334,6 +334,25 @@ TEST_SUITE("graph_projection") {
     CHECK(child(you, "party:self/communication.style")->at("label") == "Jak do Ciebie mówić");
   }
 
+  TEST_CASE("party:self: no slot row shows the raw field id as its name, in either language (interviewed or not)") {
+    Fixture f;
+    for (const char* lang : {"pl", "en"}) {
+      projection::Env env = f.env(lang);  // no interview yet: every slot of the scenario is listed as unknown
+      const Json you = unwrap(projection::navigate(env, Json{{"focus", "party:self"}, {"limit", 0}}));
+      std::size_t slots = 0;
+      for (const auto& c : you.at("children")) {
+        const std::string address = c.at("address");
+        if (address.rfind("party:self/", 0) != 0) continue;
+        ++slots;
+        const std::string id = address.substr(std::string("party:self/").size());
+        INFO(lang << " " << c.dump());
+        CHECK_FALSE(c.at("label").get<std::string>().empty());
+        CHECK(c.at("label").get<std::string>() != id);
+      }
+      CHECK(slots >= 13);  // the 9 of the first interview and the 4 of K2a
+    }
+  }
+
   TEST_CASE("graph.card: value, why, the whole chain, relations by edge kind, the actions that fit and the evidence of each property") {
     Fixture f;
     const Json card = unwrap(f.rt->actions().invoke("graph.card", Json{{"address", "setting:temperature"}, {"lang", "pl"}}));

@@ -108,6 +108,34 @@ TEST_SUITE("onboarding") {
     CHECK(scenario["method_ref"]["recipe_hash"] == Sha256::hex(json::canonical(scenario["graph_method"])));
   }
 
+  // M1-K2a-fix: the rows of "Ty" took their names from graph_sources.pack, which had labels for 9 of the 13 fields, so four rows
+  // showed the raw field id (interview.detail, health.needs, ...). Data driven: any field the scenario adds needs its name there.
+  TEST_CASE("interview: every field of the scenario has a name in both languages in the slot_labels of graph_sources.pack, and no name is the raw id") {
+    const auto scenario = scenario_pack();
+    auto path = std::filesystem::weakly_canonical(std::filesystem::path(LOOM_TEST_FIXTURES) / ".." / "..") / "data/runtime/graph_sources.pack";
+    std::ifstream input(path);
+    std::stringstream text; text << input.rdbuf();
+    const Json pack = unwrap(json::parse(text.str()));
+    const Json* labels = nullptr;
+    for (const auto& source : pack.at("defaults").at("sources"))
+      if (source.value("id", "") == "party") labels = &source.at("slot_labels");
+    REQUIRE(labels != nullptr);
+    std::vector<std::string> missing;
+    for (const auto& f : scenario.at("fields")) {
+      const std::string id = f.at("id").get<std::string>();
+      for (const char* lang : {"en", "pl"}) {
+        const Json* one = labels->contains(id) ? &labels->at(id) : nullptr;
+        const bool ok = one && one->is_object() && one->contains(lang) && (*one)[lang].is_string() &&
+                        !(*one)[lang].get<std::string>().empty() && (*one)[lang].get<std::string>() != id;
+        if (!ok) missing.push_back(id + " [" + lang + "]");
+      }
+    }
+    std::string list;
+    for (const auto& m : missing) list += (list.empty() ? "" : ", ") + m;
+    INFO("slot_labels of graph_sources.pack (source party) lack a name, or name the raw id, for: " << list);
+    CHECK(missing.empty());
+  }
+
   TEST_CASE("interview: questions(locale) returns the requested language, English as the fallback that says so") {
     const auto scenario = scenario_pack();
     auto s = fresh();

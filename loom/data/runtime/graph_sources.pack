@@ -300,6 +300,10 @@
           }
         },
         "slot_labels": {
+          "interview.detail": {
+            "en": "How many questions I may ask",
+            "pl": "Ile pytań możesz usłyszeć"
+          },
           "identity.description": {
             "en": "Who you are",
             "pl": "Kim jesteś"
@@ -335,6 +339,18 @@
           "privacy.preferences": {
             "en": "Privacy preferences",
             "pl": "Preferencje prywatności"
+          },
+          "health.needs": {
+            "en": "Health and needs",
+            "pl": "Zdrowie i potrzeby"
+          },
+          "relations.people": {
+            "en": "People close to you",
+            "pl": "Bliscy"
+          },
+          "routine.rhythm": {
+            "en": "Daily rhythm",
+            "pl": "Rytm dnia"
           }
         }
       },
