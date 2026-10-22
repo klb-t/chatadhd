@@ -611,7 +611,7 @@ const resumed = () => new RegExp(`(mResumedActivity|topResumedActivity)[^\\n]*${
 
 const serverChecks = [
   // M1-W2a: an empty chat offers "Poznajmy się"; the interview is a form in a conversation, so the model sees no request
-  ["interview: Poznajmy się -> level -> chip -> 'nie pytaj o zdrowie' -> Tak, no model request", async () => {
+  ["interview: Poznajmy się -> level (detailed) -> chip -> 'nie pytaj o zdrowie' -> Tak, no model request", async () => {
     const before = providerCalls().length;
     await click("shell-drawer-toggle"); await waitTid("shell-new-chat", 10); await click("shell-new-chat");
     await waitTid("shell-empty", 15);
@@ -621,13 +621,18 @@ const serverChecks = [
     await clickSettled("interview-card-start");
     await waitTid("interview-levels", 30);
     const levels = await page.ev(`[...document.querySelectorAll('[data-testid="interview-level"]')].map(e=>e.getAttribute('data-level')).join(',')`);
-    await page.ev(`(document.querySelector('[data-testid="interview-level"][data-level="minimal"]')||document.querySelector('[data-testid="interview-level"]')).click()`);
+    await page.ev(`(document.querySelector('[data-testid="interview-level"][data-level="detailed"]')||document.querySelector('[data-testid="interview-level"]')).click()`);
     await waitTid("interview-chips", 30);
     const chips = await page.ev(`[...document.querySelectorAll('[data-testid="interview-chip"]')].map(e=>e.getAttribute('data-chip')).join(',')`);
     await page.ev(`document.querySelector('[data-testid="interview-chip"][data-chip="skip"]')?.click()`);
     const info = (await until("the line over the interview", () => textTid("interview-info").then(t => t.trim() && t), 20, 300)).replace(/\s+/g, " ").slice(0, 160);
+    // the level with the most questions (as the web e2e): after "skip" a question still waits, so the sentence is read as a remark
+    await until("a question waiting (quick replies under it)", () => page.ev(`!!document.querySelector('[data-testid="interview-chip"][data-chip="skip"]')`), 30, 300);
     await send("nie pytaj o zdrowie");
-    await waitTid("chat-action-proposal", 60);
+    await until("the proposal 'Tak zrozumiałem'", () => has("chat-action-proposal"), 60, 400).catch(async e => {
+      const last = await page.ev(`(()=>{const b=[...document.querySelectorAll('.msg.assistant .body')].pop();return (b&&b.innerText||'').replace(/\\s+/g,' ').slice(0,240)})()`);
+      throw new Error(`${e.message}; the last answer: "${last}"`);
+    });
     const proposal = (await textTid("chat-action-proposal")).replace(/\s+/g, " ").slice(0, 200);
     await click("chat-action-proposal-confirm");
     await waitGone("chat-action-proposal", 60);
