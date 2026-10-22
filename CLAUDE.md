@@ -472,6 +472,8 @@ days): never range-for over `.at()` / `.value()` / `operator[]` of a by-value te
 before the loop. Bind the object to a name first (`const Json x = unwrap(f()); for (... : x.at("k"))`). Seen again 2026-10-21 in a new test
 (CI 260, `f.send(legacy)["messages"]`); `tools/lint_asan_range_for.py [base]` lists suspicious added lines and `tools/gate.sh` runs it first.
 
+**Second ASan-only pitfall: a pointer or reference into a value that is later replaced** (CI 273, 2026-10-22: `const Json* f = field_of(l, slot)` pointed into `l.state`, then `write(e, l, …)` did `l.state = *r`, and the next `*f` read freed memory — the dev gate, built without ASan, passed). Never keep a pointer/reference into a container or state object across a call that can reassign or grow it; take a copy first (`std::optional<Json>` instead of `const Json*`) or re-look-up after the call. A local ASan build does not fit on the machine (disk), so only the `asan` job of CI proves this class — read such code with the question "what does this call assign to?".
+
 **gcc accepts what clang rejects** (CI 262, 2026-10-22: the generated onboarding pack passed ~420 KB and clang's constexpr step limit stopped the vendored/Android build while every gcc job stayed green): generated `*.inc` data must be emitted with explicit lengths (`std::string_view(R"...", N)`), never as bare literals measured by a constexpr strlen. `tools/clang_inc_check.py` runs `clang++ -fsyntax-only` on every source that includes a generated `.inc`; `tools/gate.sh` runs it.
 
 > **Update 2026-09-29 (owner):** Python compatibility is no longer required — it was
