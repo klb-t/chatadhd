@@ -80,6 +80,32 @@ struct Fixture {
   std::string action_of(const Json& routed) { return routed.value("command", Json::object()).value("action", ""); }
 };
 
+// M1-K1c1: twelve earlier conversations tagged "tech" (the graph answers a question about the database and API), a short history, a narrow graph width.
+void seed_graph(Fixture& f) {
+  auto topic = unwrap(f.rt->db().get_or_create_node("tech", "topic"));
+  for (int k = 0; k < 12; ++k) {
+    auto old_conv = unwrap(f.rt->db().create_conv("Old conversation " + std::to_string(k)));
+    NewMessage nm; nm.conv_id = old_conv.id; nm.text = "we discussed the database and the API design, variant " + std::to_string(k) + " of the server code"; nm.role = "assistant";
+    unwrap(f.rt->db().create_link(unwrap(f.rt->db().create_msg(nm)), topic, "tagged_with", 0.5));
+  }
+  for (int i = 0; i < 6; ++i) f.add(i % 2 ? "assistant" : "user", "message number " + std::to_string(i) + " about the database and API of the plan");
+  f.rt->config().set("graph_memory_max_nodes", 2);
+}
+bool said_any(const std::string& text, std::initializer_list<const char*> parts) {
+  for (const char* p : parts) if (text.find(p) != std::string::npos) return true;
+  return false;
+}
+// A real send; the guard values the receipt of that request carries.
+Json send_and_guard(Fixture& f, const ChatOptions& opts, const std::string& text) {
+  f.transport->expect("POST", "https://api.test/chat/completions", net::ScriptedTransport::Reply::json(200, openai_reply("ok")));
+  unwrap(f.rt->chat().send(text, opts));
+  Json trace = nullptr;
+  for (const auto& m : unwrap(f.rt->db().get_msgs(f.conv_id)))
+    if (m.role == "user" && m.text == text && m.metadata.is_object() && m.metadata.contains("context_trace")) trace = m.metadata["context_trace"];
+  REQUIRE(trace.is_object());
+  return trace["receipt"].value("guard", Json(nullptr));
+}
+
 }  // namespace
 
 TEST_SUITE("context_modify") {
@@ -258,26 +284,11 @@ TEST_SUITE("context_modify") {
   // The base is the same at both moments; it moves only by the send itself (one more sample), and until 5 requests were measured it is a starting floor.
   TEST_CASE("M1-K1c1 (a): the estimate compiled with the text of the send says what the receipt says; without a text it is another request; the base is named and moves only by a send") {
     Fixture f;
-    auto topic = unwrap(f.rt->db().get_or_create_node("tech", "topic"));
-    for (int k = 0; k < 12; ++k) {
-      auto old_conv = unwrap(f.rt->db().create_conv("Old conversation " + std::to_string(k)));
-      NewMessage nm; nm.conv_id = old_conv.id; nm.text = "we discussed the database and the API design, variant " + std::to_string(k) + " of the server code"; nm.role = "assistant";
-      unwrap(f.rt->db().create_link(unwrap(f.rt->db().create_msg(nm)), topic, "tagged_with", 0.5));
-    }
-    for (int i = 0; i < 6; ++i) f.add(i % 2 ? "assistant" : "user", "message number " + std::to_string(i) + " about the database and API of the plan");
-    f.rt->config().set("graph_memory_max_nodes", 2);
+    seed_graph(f);
     ChatOptions opts;
     opts.conv_id = f.conv_id;
     opts.stream = false;
-    const auto send = [&](const std::string& text) {
-      f.transport->expect("POST", "https://api.test/chat/completions", net::ScriptedTransport::Reply::json(200, openai_reply("ok")));
-      unwrap(f.rt->chat().send(text, opts));
-      Json trace = nullptr;
-      for (const auto& m : unwrap(f.rt->db().get_msgs(f.conv_id)))
-        if (m.role == "user" && m.text == text && m.metadata.is_object() && m.metadata.contains("context_trace")) trace = m.metadata["context_trace"];
-      REQUIRE(trace.is_object());
-      return trace["receipt"].value("guard", Json(nullptr));
-    };
+    const auto send = [&](const std::string& text) { return send_and_guard(f, opts, text); };
     // the first request has no base, the next ones are measured against a starting floor, from the fifth sample on against what the requests of the kind measured: named in the guard
     for (int i = 0; i < 5; ++i) {
       const Json g = send("an earlier question number " + std::to_string(i) + " about the database");
@@ -321,5 +332,68 @@ TEST_SUITE("context_modify") {
     CHECK(after["baseline_samples"].get<int>() == est["baseline_samples"].get<int>() + 1);
     CHECK(after["baseline"] != est["baseline"]);
     CHECK(after["ratio"].get<double>() == doctest::Approx(after["bytes"].get<double>() / after["baseline"].get<double>()));
+  }
+
+  // M1-K1c1 (b): the action itself - what the person sees after "Szerzej".
+  TEST_CASE("M1-K1c1 (b): context.modify compiles the estimate with the pending text and options and says what it was compiled for; the send then says the same") {
+    Fixture f;
+    seed_graph(f);
+    ChatOptions opts;
+    opts.conv_id = f.conv_id;
+    opts.stream = false;
+    for (int i = 0; i < 5; ++i) send_and_guard(f, opts, "an earlier question number " + std::to_string(i) + " about the database");
+    const std::string text = "and the database API server code again?";
+    const Json ctx{{"conv_id", f.conv_id}};
+    // the sends of this test do not stream (the scripted transport answers whole), so the estimate says so too: the option of the send is counted
+    // (a streaming send has "stream":true, one byte fewer) - the options a composer would pass with the text
+    const auto modify = [&](Json args) {
+      args["context"] = ctx;
+      if (!args.contains("pending_options")) args["pending_options"] = Json{{"stream", false}};
+      else args["pending_options"]["stream"] = false;
+      return unwrap(f.rt->actions().invoke_port("actions", "context.modify", args));
+    };
+    const auto data_of = [](const Json& run) { return run.at("result").at("data"); };
+    const auto text_of = [](const Json& run) { return run.at("result").at("parts").at(0).at("text").get<std::string>(); };
+    // no text: the estimate is for an empty message, said in the data and in the sentence; widening changes nothing there
+    const Json plain_empty = unwrap(f.rt->chat().context_guard(f.conv_id, "", opts));
+    const Json empty = modify(Json{{"step", "wider"}});
+    REQUIRE(empty.value("status", "") == "completed");
+    CHECK(data_of(empty).at("guard").at("estimate_for") == "empty_message");
+    CHECK(data_of(empty).at("guard").at("pending_text_bytes") == 0);
+    CHECK(data_of(empty).at("guard").at("pending_options") == true);
+    CHECK(data_of(empty).at("guard").at("bytes") == plain_empty.at("bytes"));
+    INFO(text_of(empty));
+    CHECK(said_any(text_of(empty), {"pustej wiadomości", "an empty message"}));   // in the language of the call
+    CHECK(said_any(text_of(empty), {"średnia z 5 ostatnich zapytań", "the average of the last 5 requests"}));
+    unwrap(f.rt->actions().invoke_port("actions", "context.modify", Json{{"reset", true}, {"context", ctx}}));
+    CHECK(f.rt->chat().turn_carrier().peek(f.conv_id).empty());
+    // with the typed text: the estimate is the request of the send
+    const Json typed = modify(Json{{"step", "wider"}, {"pending_text", text}});
+    REQUIRE(typed.value("status", "") == "completed");
+    const Json tg = data_of(typed).at("guard");
+    INFO(tg.dump());
+    CHECK(tg.at("estimate_for") == "pending_text");
+    CHECK(tg.at("pending_text_bytes") == text.size());
+    CHECK(tg.at("bytes").get<std::int64_t>() > data_of(empty).at("guard").at("bytes").get<std::int64_t>());
+    INFO(text_of(typed));
+    CHECK(said_any(text_of(typed), {"wpisanym przez Ciebie tekstem", "the text you typed"}));
+    CHECK(said_any(text_of(typed), {"średnia z 5 ostatnich zapytań", "the average of the last 5 requests"}));
+    const Json sent = send_and_guard(f, opts, text);
+    CHECK(sent["bytes"] == tg["bytes"]);
+    CHECK(sent["baseline"] == tg["baseline"]);
+    CHECK(sent["baseline_samples"] == tg["baseline_samples"]);
+    CHECK(sent["baseline_source"] == tg["baseline_source"]);
+    CHECK(sent["ratio"].get<double>() == doctest::Approx(tg["ratio"].get<double>()));
+    // the options of the send are counted: another model is another request of another kind (its own base, which does not exist yet: unknown, never zero)
+    const Json other = modify(Json{{"step", "wider"}, {"pending_text", text}, {"pending_options", Json{{"model", "test/other-model"}}}});
+    REQUIRE(other.value("status", "") == "completed");
+    CHECK(data_of(other).at("guard").at("pending_options") == true);
+    CHECK(data_of(other).at("guard").at("model") == "test/other-model");
+    CHECK(data_of(other).at("guard").at("ratio").is_null());
+    // options that are not options are refused with the reason, nothing waits for the next message
+    unwrap(f.rt->actions().invoke_port("actions", "context.modify", Json{{"reset", true}, {"context", ctx}}));
+    const Json bad = modify(Json{{"step", "wider"}, {"pending_options", Json{{"web_search", "yes"}}}});
+    CHECK(bad.value("status", "") != "completed");
+    CHECK(f.rt->chat().turn_carrier().peek(f.conv_id).empty());
   }
 }

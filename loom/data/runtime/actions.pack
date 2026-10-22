@@ -14075,6 +14075,28 @@
             },
             "has_default": false,
             "edit": "free_text"
+          },
+          {
+            "name": "pending_text",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The text the person has typed for the next message. The estimate in the answer is compiled with it (the graph is chosen by the text of the question); without it the estimate is for an empty message and says so.",
+              "pl": "Tekst, który wpisano na następną wiadomość. Szacunek w odpowiedzi jest liczony razem z nim (graf dobiera się po tekście pytania); bez niego szacunek jest dla pustej wiadomości i tak jest napisany."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "pending_options",
+            "type": "object",
+            "required": false,
+            "description": {
+              "en": "The options of the next message as a chat request carries them (model, stream, web_search, reasoning_effort ...); the estimate is compiled with them. Not given: the options of the conversation.",
+              "pl": "Ustawienia następnej wiadomości tak, jak niesie je żądanie czatu (model, stream, web_search, reasoning_effort ...); szacunek jest liczony razem z nimi. Brak: ustawienia rozmowy."
+            },
+            "has_default": false,
+            "edit": "json"
           }
         ],
         "http": {
