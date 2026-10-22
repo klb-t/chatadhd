@@ -2881,6 +2881,99 @@ std::string_view(R"loom_onboard(                "order.stability": "stabilna (pr
               }
             }
           }
+        },
+        {
+          "id": "presentation.interview/v1",
+          "key": "presentation.interview",
+          "area": "presentation/interview",
+          "revision": 1,
+          "label": "Words of the interview about the person held in the conversation window (web, InterviewCards.tsx + ChatView.tsx): the card “Poznajmy się” of the empty chat, the info line of an interview conversation, the cards of the three levels with their previews, the quick-reply chips (their say-words are control words of chat_ops profile.words); the kernel contract is the actions profile.interview / profile.show / profile.set / profile.confirm (form mode, no model)",
+          "value": {
+            "schema": "loom.presentation_feature/1",
+            "feature": "interview",
+            "status": {
+              "state": "partial",
+              "by": "M1-W2a",
+              "today": {
+                "pl": "Pusty czat pokazuje kartę „Poznajmy się” (ustawienie onboarding_card = show, gdy wywiad się jeszcze nie zaczął): Zacznij otwiera rozmowę wywiadu, Później chowa kartę do następnego uruchomienia, Nigdy nie pytaj chowa ją na stałe. W rozmowie wywiadu pierwsze pytanie to trzy karty poziomów (minimalnie, zwykle, szczegółowo) z podglądem: o co zapytam, co zapiszę, co zobaczy model; dotknięcie karty wysyła nazwę poziomu jako Twoją odpowiedź. Pod pytaniem są szybkie odpowiedzi (Pomiń, Nie teraz, Nigdy, Podsumowanie, Ile zostało) — wysyłają słowo sterujące jako zwykłą wiadomość. Uwaga w rodzaju „nie pytaj o zdrowie” daje propozycję „Tak zrozumiałem” z przyciskami Tak i Nie. Nad rozmową stoi linia „Rozmowa bez modelu — tylko formularz” z liczbą pytań do zadania. Żadnego modelu się nie woła.",
+                "en": "The empty chat shows the card “Let us get to know each other” (setting onboarding_card = show, while the interview has not started): Start opens the interview conversation, Later hides the card until the next launch, Never ask hides it for good. In the interview conversation the first question is three level cards (minimal, usual, detailed) with a preview: what I will ask, what I will write down, what the model will see; tapping a card sends the level's name as your answer. Under a question there are quick replies (Skip, Not now, Never, Summary, How many left) — they send the control word as an ordinary message. A remark like “do not ask about health” gives a proposal “This is what I understood” with Yes and No. Above the conversation a line “A conversation without a model — a form only” shows the number of questions left. No model is called."
+              },
+              "reason": {
+                "pl": "Ekran „Ty” (podgrafy, stany pól, Popraw/Zapomnij), jednostki i przycisk „Poznaj mnie” w menu to osobna paczka (W2b); wywiad z modelem nie istnieje (jądro odrzuca go z powodem).",
+                "en": "The “You” screen (subgraphs, slot states, Correct/Forget), units and the “Get to know me” menu entry are a separate package (W2b); an interview with a model does not exist (the kernel refuses it with a reason)."
+              }
+            },
+            "locales": {
+              "en": {
+                "card.title": "Let us get to know each other",
+                "card.body": "I will build your profile in a conversation. The first question: how closely should I know you.",
+                "card.privacy": "This is a conversation without a model, a form only: nothing leaves this device.",
+                "card.start": "Start",
+                "card.later": "Later",
+                "card.never": "Never ask",
+                "card.later_note": "“Later” hides this card until the app is launched next time.",
+                "card.never_note": "“Never ask” hides this card for good. You can bring it back in the settings, in the field “First-steps card”.",
+                "card.starting": "Opening the conversation…",
+                "card.failed": "Could not start: {{reason}}",
+                "info.line": "A conversation without a model — a form only",
+                "info.why": "Nothing leaves this device.",
+                "info.progress": "Questions left: {{n}}",
+                "info.level_pending": "First choose how closely I should know you",
+                "info.finished": "I have no more questions at this level",
+                "level.asks": "What I will ask",
+                "level.stores": "What I will write down",
+                "level.model_sees": "What the model will see",
+                "level.aria": "Choose the level: {{label}}",
+                "level.hint": "Tap a level or write in your own words, for example “do not ask about health”.",
+                "chips.order": "skip decline never review status",
+                "chips.aria": "Quick replies",
+                "chip.skip.label": "Skip",
+                "chip.skip.say": "skip",
+                "chip.decline.label": "Not now",
+                "chip.decline.say": "not now",
+                "chip.never.label": "Never",
+                "chip.never.say": "never",
+                "chip.review.label": "Summary",
+                "chip.review.say": "summary",
+                "chip.status.label": "How many left",
+                "chip.status.say": "how many left"
+              },
+              "pl": {
+                "card.title": "Poznajmy się",
+                "card.body": "Zbuduję Twój profil w rozmowie. Pierwsze pytanie: jak dokładnie mam Cię znać.",
+                "card.privacy": "To rozmowa bez modelu, tylko formularz: nic nie wychodzi poza to urządzenie.",
+                "card.start": "Zacznij",
+                "card.later": "Później",
+                "card.never": "Nigdy nie pytaj",
+                "card.later_note": "„Później” chowa tę kartę do następnego uruchomienia aplikacji.",
+                "card.never_note": "„Nigdy nie pytaj” chowa tę kartę na stałe. Wrócisz do niej w ustawieniach, w polu „Karta pierwszych kroków”.",
+                "card.starting": "Otwieram rozmowę…",
+                "card.failed": "Nie udało się zacząć: {{reason}}",
+                "info.line": "Rozmowa bez modelu — tylko formularz",
+                "info.why": "Nic nie wychodzi poza to urządzenie.",
+                "info.progress": "Pytań do zadania: {{n}}",
+                "info.level_pending": "Najpierw wybierz, jak dokładnie mam Cię znać",
+                "info.finished": "Na tym poziomie nie mam już pytań",
+                "level.asks": "O co zapytam",
+                "level.stores": "Co zapiszę",
+                "level.model_sees": "Co zobaczy model",
+                "level.aria": "Wybierz poziom: {{label}}",
+                "level.hint": "Dotknij poziomu albo napisz własnymi słowami, na przykład „nie pytaj o zdrowie”.",
+                "chips.order": "skip decline never review status",
+                "chips.aria": "Szybkie odpowiedzi",
+                "chip.skip.label": "Pomiń",
+                "chip.skip.say": "pomiń",
+                "chip.decline.label": "Nie teraz",
+                "chip.decline.say": "nie teraz",
+                "chip.never.label": "Nigdy",
+                "chip.never.say": "nigdy",
+                "chip.review.label": "Podsumowanie",
+                "chip.review.say": "podsumowanie",
+                "chip.status.label": "Ile zostało",
+                "chip.status.say": "ile zostało"
+              }
+            }
+          }
         }
       ]
     }
@@ -3767,7 +3860,8 @@ std::string_view(R"loom_onboard(                "order.stability": "stabilna (pr
             "reason": "Reason: {{explanation}} (code: {{reason}})",
             "reason.source_egress_not_bound": "there is no binding yet that allows source content to be sent to a model",
             "reason.unrecognized": "the conversation view reports that this history cannot be included",
-            "view_unavailable": "The conversation view could not be loaded ({{reason}}). Sending still works: the message is sent with the messages stored in this conversation; linked source history, if any, is not included.",
+)loom_onboard", 59965),
+std::string_view(R"loom_onboard(            "view_unavailable": "The conversation view could not be loaded ({{reason}}). Sending still works: the message is sent with the messages stored in this conversation; linked source history, if any, is not included.",
             "view_loading": "Sending waits until this conversation's view has loaded.",
             "source_read_in_flight": "Sending waits while linked sources are read locally, so that a message is not sent while the view is changing. It resumes when the read finishes.",
             "setting_label": "Block sending when linked source history cannot be included",
@@ -3863,8 +3957,7 @@ std::string_view(R"loom_onboard(                "order.stability": "stabilna (pr
             "other": "Routing had a problem ({{code}}: {{message}}); the local rules read this message instead. Nothing was lost."
           },
           "pl": {
-)loom_onboard", 59891),
-std::string_view(R"loom_onboard(            "model_route_failed": "Model nie zdołał rozpoznać zamiaru tej wiadomości ({{message}}); przeczytały ją lokalne reguły. Nic nie zginęło.",
+            "model_route_failed": "Model nie zdołał rozpoznać zamiaru tej wiadomości ({{message}}); przeczytały ją lokalne reguły. Nic nie zginęło.",
             "other": "Rozpoznawanie zamiaru miało problem ({{code}}: {{message}}); tę wiadomość przeczytały lokalne reguły. Nic nie zginęło."
           }
         }
@@ -4751,7 +4844,8 @@ std::string_view(R"loom_onboard(            "model_route_failed": "Model nie zdo
             "mp_set_by_window": "Picked in this window and sent with every request (it is not saved in the chain of settings).",
             "mp_reason_other_model": "this class is that of the model {{model}} of the role “Answer to a message”, not the one picked here",
             "mp_reason_no_role": "the engine gave no role for answering a message",
-            "mp_chain_rest": "The other levels have no value or do not apply to this conversation: {{levels}}.",
+)loom_onboard", 59900),
+std::string_view(R"loom_onboard(            "mp_chain_rest": "The other levels have no value or do not apply to this conversation: {{levels}}.",
             "mp_class_plain": "Class: unknown",
             "mp_details": "Technical details"
           },
@@ -4883,8 +4977,7 @@ std::string_view(R"loom_onboard(            "model_route_failed": "Model nie zdo
             "interaction_lock_nothing": "bez przypisania",
             "interaction_locks_inferred": "Stan blokad {{locks}} jest liczony z naciśnięć klawiszy: przeglądarka nie udostępnia go wiarygodnie (getModifierState), więc blokada włączona przed wejściem na stronę może być pokazana błędnie.",
             "interaction_locks_no_api": "Ta przeglądarka nie ma getModifierState: stan wszystkich blokad jest liczony z naciśnięć klawiszy.",
-)loom_onboard", 59907),
-std::string_view(R"loom_onboard(            "interaction_conflict": "Konflikt przypisań: {{ids}}. Działa ostatnie; żadne nie jest zablokowane.",
+            "interaction_conflict": "Konflikt przypisań: {{ids}}. Działa ostatnie; żadne nie jest zablokowane.",
             "interaction_last": "Ostatnie działanie: {{label}}",
             "interaction_recorded": "Zapisane tylko jako dane (głos, inne urządzenia): {{count}}",
             "interaction_unsupported": "Nieobsługiwane przypisania: {{count}}",
@@ -5724,7 +5817,8 @@ std::string_view(R"loom_onboard(            "interaction_conflict": "Konflikt pr
             "count.name.messages_waiting": "wiadomości czekające na analizę",
             "count.name.background_tasks": "zadania w tle",
             "count.name.analysis_modes": "tryby analizy",
-            "count.name.calibration_items": "elementy w kalibracji",
+)loom_onboard", 59991),
+std::string_view(R"loom_onboard(            "count.name.calibration_items": "elementy w kalibracji",
             "count.name.kb.runs": "przebiegi analizy",
             "reason.no_model": "brak modelu",
             "reason.composed": "dostawcy po kolei, bez jednego modelu",
@@ -5832,8 +5926,7 @@ std::string_view(R"loom_onboard(            "interaction_conflict": "Konflikt pr
             "card.write_error": "Nie zapisano: {{reason}}",
             "card.invalid_number": "To nie jest liczba.",
             "card.invalid_json": "To nie jest poprawny JSON.",
-)loom_onboard", 59935),
-std::string_view(R"loom_onboard(            "card.level.no_conversation": "brak otwartej rozmowy — otwórz rozmowę, żeby ustawić dla niej",
+            "card.level.no_conversation": "brak otwartej rozmowy — otwórz rozmowę, żeby ustawić dla niej",
             "card.level.turn_planned": "planowane — silnik nie ma dziś akcji na wartość jednej tury",
             "card.level.baseline": "warstwa plików (preset), nie Twoja wartość — karta tu nie zapisuje",
             "card.level.unknown": "poziom {{level}} — karta nie wie, jak go zapisać",
@@ -6378,6 +6471,99 @@ std::string_view(R"loom_onboard(            "card.level.no_conversation": "brak 
           }
         }
       }
+    },
+    {
+      "id": "presentation.interview/v1",
+      "key": "presentation.interview",
+      "area": "presentation/interview",
+      "revision": 1,
+      "label": "Words of the interview about the person held in the conversation window (web, InterviewCards.tsx + ChatView.tsx): the card “Poznajmy się” of the empty chat, the info line of an interview conversation, the cards of the three levels with their previews, the quick-reply chips (their say-words are control words of chat_ops profile.words); the kernel contract is the actions profile.interview / profile.show / profile.set / profile.confirm (form mode, no model)",
+      "value": {
+        "schema": "loom.presentation_feature/1",
+        "feature": "interview",
+        "status": {
+          "state": "partial",
+          "by": "M1-W2a",
+          "today": {
+            "pl": "Pusty czat pokazuje kartę „Poznajmy się” (ustawienie onboarding_card = show, gdy wywiad się jeszcze nie zaczął): Zacznij otwiera rozmowę wywiadu, Później chowa kartę do następnego uruchomienia, Nigdy nie pytaj chowa ją na stałe. W rozmowie wywiadu pierwsze pytanie to trzy karty poziomów (minimalnie, zwykle, szczegółowo) z podglądem: o co zapytam, co zapiszę, co zobaczy model; dotknięcie karty wysyła nazwę poziomu jako Twoją odpowiedź. Pod pytaniem są szybkie odpowiedzi (Pomiń, Nie teraz, Nigdy, Podsumowanie, Ile zostało) — wysyłają słowo sterujące jako zwykłą wiadomość. Uwaga w rodzaju „nie pytaj o zdrowie” daje propozycję „Tak zrozumiałem” z przyciskami Tak i Nie. Nad rozmową stoi linia „Rozmowa bez modelu — tylko formularz” z liczbą pytań do zadania. Żadnego modelu się nie woła.",
+            "en": "The empty chat shows the card “Let us get to know each other” (setting onboarding_card = show, while the interview has not started): Start opens the interview conversation, Later hides the card until the next launch, Never ask hides it for good. In the interview conversation the first question is three level cards (minimal, usual, detailed) with a preview: what I will ask, what I will write down, what the model will see; tapping a card sends the level's name as your answer. Under a question there are quick replies (Skip, Not now, Never, Summary, How many left) — they send the control word as an ordinary message. A remark like “do not ask about health” gives a proposal “This is what I understood” with Yes and No. Above the conversation a line “A conversation without a model — a form only” shows the number of questions left. No model is called."
+          },
+          "reason": {
+            "pl": "Ekran „Ty” (podgrafy, stany pól, Popraw/Zapomnij), jednostki i przycisk „Poznaj mnie” w menu to osobna paczka (W2b); wywiad z modelem nie istnieje (jądro odrzuca go z powodem).",
+            "en": "The “You” screen (subgraphs, slot states, Correct/Forget), units and the “Get to know me” menu entry are a separate package (W2b); an interview with a model does not exist (the kernel refuses it with a reason)."
+          }
+        },
+        "locales": {
+          "en": {
+            "card.title": "Let us get to know each other",
+            "card.body": "I will build your profile in a conversation. The first question: how closely should I know you.",
+            "card.privacy": "This is a conversation without a model, a form only: nothing leaves this device.",
+            "card.start": "Start",
+            "card.later": "Later",
+            "card.never": "Never ask",
+            "card.later_note": "“Later” hides this card until the app is launched next time.",
+            "card.never_note": "“Never ask” hides this card for good. You can bring it back in the settings, in the field “First-steps card”.",
+            "card.starting": "Opening the conversation…",
+            "card.failed": "Could not start: {{reason}}",
+            "info.line": "A conversation without a model — a form only",
+            "info.why": "Nothing leaves this device.",
+            "info.progress": "Questions left: {{n}}",
+            "info.level_pending": "First choose how closely I should know you",
+            "info.finished": "I have no more questions at this level",
+            "level.asks": "What I will ask",
+            "level.stores": "What I will write down",
+            "level.model_sees": "What the model will see",
+            "level.aria": "Choose the level: {{label}}",
+            "level.hint": "Tap a level or write in your own words, for example “do not ask about health”.",
+            "chips.order": "skip decline never review status",
+            "chips.aria": "Quick replies",
+            "chip.skip.label": "Skip",
+            "chip.skip.say": "skip",
+            "chip.decline.label": "Not now",
+            "chip.decline.say": "not now",
+            "chip.never.label": "Never",
+            "chip.never.say": "never",
+            "chip.review.label": "Summary",
+            "chip.review.say": "summary",
+            "chip.status.label": "How many left",
+            "chip.status.say": "how many left"
+          },
+          "pl": {
+            "card.title": "Poznajmy się",
+            "card.body": "Zbuduję Twój profil w rozmowie. Pierwsze pytanie: jak dokładnie mam Cię znać.",
+            "card.privacy": "To rozmowa bez modelu, tylko formularz: nic nie wychodzi poza to urządzenie.",
+            "card.start": "Zacznij",
+            "card.later": "Później",
+            "card.never": "Nigdy nie pytaj",
+            "card.later_note": "„Później” chowa tę kartę do następnego uruchomienia aplikacji.",
+            "card.never_note": "„Nigdy nie pytaj” chowa tę kartę na stałe. Wrócisz do niej w ustawieniach, w polu „Karta pierwszych kroków”.",
+            "card.starting": "Otwieram rozmowę…",
+            "card.failed": "Nie udało się zacząć: {{reason}}",
+            "info.line": "Rozmowa bez modelu — tylko formularz",
+            "info.why": "Nic nie wychodzi poza to urządzenie.",
+            "info.progress": "Pytań do zadania: {{n}}",
+            "info.level_pending": "Najpierw wybierz, jak dokładnie mam Cię znać",
+            "info.finished": "Na tym poziomie nie mam już pytań",
+            "level.asks": "O co zapytam",
+            "level.stores": "Co zapiszę",
+            "level.model_sees": "Co zobaczy model",
+            "level.aria": "Wybierz poziom: {{label}}",
+            "level.hint": "Dotknij poziomu albo napisz własnymi słowami, na przykład „nie pytaj o zdrowie”.",
+            "chips.order": "skip decline never review status",
+            "chips.aria": "Szybkie odpowiedzi",
+            "chip.skip.label": "Pomiń",
+            "chip.skip.say": "pomiń",
+            "chip.decline.label": "Nie teraz",
+            "chip.decline.say": "nie teraz",
+            "chip.never.label": "Nigdy",
+            "chip.never.say": "nigdy",
+            "chip.review.label": "Podsumowanie",
+            "chip.review.say": "podsumowanie",
+            "chip.status.label": "Ile zostało",
+            "chip.status.say": "ile zostało"
+          }
+        }
+      }
     }
   ],
   "vocabulary": {
@@ -6542,7 +6728,7 @@ std::string_view(R"loom_onboard(            "card.level.no_conversation": "brak 
   },
   "presentation_key": "presentation.onboarding"
 }
-)loom_onboard", 43806)};
+)loom_onboard", 58343)};
 static constexpr std::string_view kOnboardingScenario[] = {
 std::string_view(R"loom_onboard({
   "schema": "loom.onboarding.scenario/1",

@@ -4154,16 +4154,16 @@
           }
         ],
         "status": {
-          "state": "planned",
-          "by": "M1-W2",
+          "state": "implemented",
+          "by": "M1-W2a",
           "reader": "web empty-chat onboarding card",
           "reason": {
-            "pl": "Część aplikacji, która czyta to pole — karta „Poznajmy się” w pustym czacie — jeszcze nie powstała; do tego czasu wartość jest zapisywana, ale nic jej nie czyta.",
-            "en": "The part of the app that reads this field — the “Let us meet” card of the empty chat — is not built yet; until then the value is stored but nothing reads it."
+            "pl": "Karta „Poznajmy się” w pustym czacie (web ChatView, M1-W2a) czyta to pole; wartość ma czytelnika i działa.",
+            "en": "The “Let us get to know each other” card of the empty chat (web ChatView, M1-W2a) reads this field; the value has a reader and works."
           },
           "today": {
-            "pl": "Dziś pusty czat nie pokazuje karty „Poznajmy się”, niezależnie od tej wartości.",
-            "en": "Today the empty chat does not show the “Let us meet” card, whatever this value is."
+            "pl": "Pusty czat pokazuje kartę „Poznajmy się”, gdy to pole ma wartość show, a wywiad jeszcze się nie zaczął. Przycisk Później zapisuje later: karta znika do następnego uruchomienia aplikacji, wtedy aplikacja przy starcie wraca do show. Przycisk Nigdy nie pytaj zapisuje never: karta nie wraca, dopóki nie zmienisz tej wartości tutaj. Wywiad można zacząć też poleceniem w rozmowie.",
+            "en": "The empty chat shows the card “Let us get to know each other” when this field is show and the interview has not started. The Later button saves later: the card disappears until the app is launched next time, and at that start the app sets it back to show. The Never ask button saves never: the card does not return until you change this value here. The interview can also be started with a command in a conversation."
           }
         },
         "human": {

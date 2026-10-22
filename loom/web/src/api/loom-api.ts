@@ -3,6 +3,7 @@
 // talking to loom-server) and loom-jni.ts (Android WebView -> window.LoomBridge,
 // used when the app is embedded). src/api/index.ts picks one at runtime.
 import type { ContextModifyRequest, ContextReceiptRequest } from "./context-receipt";
+import type { ProfileConfirmRequest, ProfileInterviewRequest, ProfileSetRequest, ProfileShowRequest } from "./profile-interview";
 import type { SettingsFieldsDoc } from "../settings/field-meta";
 import type {
   ActionAnswer,
@@ -177,6 +178,16 @@ export interface ActionsApi {
   /** M1-K1b: a change of the context for the NEXT message only (szerzej, węziej, głębiej, płycej, a selector profile, or a reset). May wait for the
    *  x10 question of the usage guard (status awaiting_usage; answer with `confirm`). Read it with readModifyRun (./context-receipt). */
   contextModify(request: ContextModifyRequest): Promise<ActionRun>;
+  /** M1-W2a: the interview about the person, held in the conversation window (form mode, no model). `{op: "start"}` without conv_id opens the
+   *  conversation "Poznajmy się" (result.data.conv_id); `{op: "status"}` answers not_found while the interview was never started. Read it with
+   *  readInterviewStart / readInterviewStatus (./profile-interview). */
+  profileInterview(request: ProfileInterviewRequest): Promise<ActionRun>;
+  /** What the app knows about the person, slot by slot, with the state (known, unknown, declined, never); read only. */
+  profileShow(request?: ProfileShowRequest): Promise<ActionRun>;
+  /** Writes one answer as the person's own (the kernel asks first: confirm:profile.set). */
+  profileSet(request: ProfileSetRequest): Promise<ActionRun>;
+  /** Applies what the interview understood (a remark, a section card); the kernel asks first (confirm:profile.confirm). */
+  profileConfirm(request: ProfileConfirmRequest): Promise<ActionRun>;
 }
 
 export interface LoomApi {
