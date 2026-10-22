@@ -233,7 +233,10 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
   // P33: the + menu. Tools are on until turned off (chips above the field say which); files are chips too.
   const [menuOpen, setMenuOpen] = useState(false);
   // M1-W1b: the context steps and the selector profile of the + menu (the same context.modify as the sheet), the model chip's sheet.
-  const modify = useContextModify(convId ?? null, receiptT("sheet.no_actions"));
+  // M1-K1c1: what the next message will be compiled with - the text in the field and the options the send passes (assigned below, once they exist).
+  const pendingRef = useRef<{ text: string; options: Record<string, unknown> }>({ text: "", options: {} });
+  const pendingNext = useCallback(() => pendingRef.current, []);
+  const modify = useContextModify(convId ?? null, receiptT("sheet.no_actions"), pendingNext);
   const waitingTurn = useSyncExternalStore(subscribePendingTurn, () => pendingTurn(convId ?? null));
   const [profiles, setProfiles] = useState<ProfileChoice[] | null>(null);
   const [profilesError, setProfilesError] = useState<string | null>(null);
@@ -565,6 +568,16 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
       : { key: `a${++attachmentCounter}`, name: attachmentName(ref), state: "ready" as const, ref }), [t]);
 
   // `again`: a regeneration — the composer's options with an earlier message's words, files and model; the field and its chips stay as they are.
+  pendingRef.current = {
+    text: input,
+    options: {
+      ...(shownModel ? { model: shownModel } : {}),
+      ...Object.fromEntries(Object.entries(requestFields(composedMenu.items, switches)).filter(([field]) => field !== "action")),
+      ...(!includeMemory && { include_memory: false }),
+      ...(!includeGraphMemory && { include_graph_memory: false }),
+      ...(!includeHistory && { include_history: false }),
+    },
+  };
   const send = useCallback((mode: "send" | "preview" = "send", forced?: ChatRequest, again?: { text: string; attachments: string[]; model: string }) => {
     const text = again ? again.text : input.trim();
     // The request is built from the composer's options (a message written in the field, or a regeneration) ...

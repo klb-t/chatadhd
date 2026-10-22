@@ -2330,11 +2330,25 @@ StepOutcome context_modify(Ctx& x) {
 
   // The estimate after the change (the request is compiled as the next send would compile it) against the baseline of its kind; a jump of ten
   // times or more is the shared usage guard's question (the owner's rule: only a x10 jump is asked). Numbers the guard cannot give stay unknown.
+  // M1-K1c1: the estimate is for the request the send will compile - the text the person has typed (pending_text; the graph is chosen by it, so
+  // widening has nothing to widen without it) and the options of the send (pending_options: the object a chat request carries). Without them it is
+  // the estimate for an empty message and says so in the answer (guard.estimate_for), never as if it were the request itself.
+  const std::string pending_text = x.str("pending_text");
+  ChatOptions probe;
+  bool pending_options = false;
+  if (const Json options = x.arg("pending_options"); !options.is_null()) {
+    if (!options.is_object()) return fail(Errc::InvalidArgument, x.say("context_modify_bad_options", Json{{"why", "pending_options must be an object"}}));
+    if (!options.empty()) {
+      auto parsed = ChatOptions::from_json(options);
+      if (!parsed) return fail(Errc::InvalidArgument, x.say("context_modify_bad_options", Json{{"why", parsed.error().message}}));
+      probe = *parsed;
+      pending_options = true;
+    }
+  }
+  if (!conv.empty()) probe.conv_id = conv;
   Json guard = nullptr;
   {
-    ChatOptions probe;
-    if (!conv.empty()) probe.conv_id = conv;
-    auto g = x.rt.chat().context_guard(conv, "", probe, Json{{key, value}});
+    auto g = x.rt.chat().context_guard(conv, pending_text, probe, Json{{key, value}});
     if (g) {
       guard = *g;
     } else {
@@ -2342,6 +2356,9 @@ StepOutcome context_modify(Ctx& x) {
       log::write(log::Level::Debug, "loom.actions.ops", "context.modify: the request could not be compiled for the guard: " + g.error().message);
     }
   }
+  guard["estimate_for"] = pending_text.empty() ? "empty_message" : "pending_text";
+  guard["pending_text_bytes"] = pending_text.size();
+  guard["pending_options"] = pending_options;
   bool confirmed = false;
   if (json::get_bool(guard, "asked", false)) {
     const Json& conf = x.c.usage_confirmation;
@@ -2404,8 +2421,16 @@ StepOutcome context_modify(Ctx& x) {
   Json data{{"conv_id", conv}, {"key", key}, {"value", value}, {"applies_to", "next_request"}, {"persistent", false}, {"waiting", waiting}, {"guard", guard}};
   if (confirmed) data["confirmed"] = true;
   std::string text = x.say("context_modify_applied", Json{{"what", turn_words(x, keys, waiting)}});
-  if (json::get_bool(guard, "asked", false)) text += "\n" + x.say("context_modify_guard_asked", Json{{"ratio", number_text(std::round(json::get_number(guard, "ratio", 0.0) * 10) / 10)}});
-  else if (guard.value("ratio", Json(nullptr)).is_number()) text += "\n" + x.say("context_modify_guard_ratio", Json{{"ratio", number_text(std::round(json::get_number(guard, "ratio", 0.0) * 10) / 10)}});
+  // The number always names what it is measured against (the base: the average of the last requests of its kind, a starting floor or a declared
+  // value) and what the estimate was compiled for (an empty message or the typed text).
+  if (guard.value("ratio", Json(nullptr)).is_number()) {
+    const std::string src = json::get_string(guard, "baseline_source");
+    const std::string n = std::to_string(json::get_int(guard, "baseline_samples", 0));
+    const Json vars{{"ratio", number_text(std::round(json::get_number(guard, "ratio", 0.0) * 10) / 10)},
+                    {"for", x.say(guard.value("estimate_for", "empty_message") == "pending_text" ? "context_modify_for_text" : "context_modify_for_empty")},
+                    {"base", x.say(src == "measured" ? "context_modify_base_measured" : src == "floor" ? "context_modify_base_floor" : "context_modify_base_declared", Json{{"n", n}})}};
+    text += "\n" + x.say(json::get_bool(guard, "asked", false) ? "context_modify_guard_asked" : "context_modify_guard_ratio", vars);
+  }
   return answer(text, data);
 }
 

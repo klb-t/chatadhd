@@ -183,18 +183,20 @@ test('every word the strip, the menu help and the sheet use exists in both langu
 });
 
 test('the sentence after a change is the pack\'s, in the screen\'s language, not the kernel\'s; the size is said in words (unknown when there is no base), never as "0×"', () => {
-  const applied = { waiting: { 'context.breadth_delta': ['wider'] }, ratio: 1.12 };
-  assert.equal(st.modifySentence(applied, 'szerzej', tr), 'Gotowe: tylko dla następnego zapytania — szerzej. Po jego wysłaniu wszystko wraca do ustawień. Szacunek wielkości następnego zapytania: ok. 1.1× zwykłego.');
+  const applied = { waiting: { 'context.breadth_delta': ['wider'] }, ratio: 1.12, estimateFor: 'pending_text', base: { source: 'measured', samples: 6 } };
+  assert.equal(st.modifySentence(applied, 'szerzej', tr), 'Gotowe: tylko dla następnego zapytania — szerzej. Po jego wysłaniu wszystko wraca do ustawień. Szacunek wielkości następnego zapytania, z wpisanym tekstem, bez załączników: 1.1× zwykłego zapytania do tego modelu (średnia z ostatnich zapytań do tego modelu (liczba zapytań: 6)).');
   // no base (ratio null) or a tiny ratio: said in words, never "0×" and never left out silently
-  assert.equal(st.modifySentence({ waiting: {}, ratio: null }, 'szerzej', tr), 'Gotowe: tylko dla następnego zapytania — szerzej. Po jego wysłaniu wszystko wraca do ustawień. Szacunek wielkości następnego zapytania: nieznane — brak bazy.');
-  assert.equal(st.modifySentence({ waiting: {}, ratio: 0.04 }, 'szerzej', tr), 'Gotowe: tylko dla następnego zapytania — szerzej. Po jego wysłaniu wszystko wraca do ustawień. Szacunek wielkości następnego zapytania: dużo mniej niż zwykle.');
-  assert.equal(st.modifySentence({ waiting: {}, ratio: 0.04 }, 'wider', trEn), 'Done: for the next request only — wider. Once it is sent everything is back to the settings. Estimate of the size of the next request: much less than usual.');
-  assert.equal(st.modifySentence({ waiting: {}, ratio: null }, 'wider', trEn), 'Done: for the next request only — wider. Once it is sent everything is back to the settings. Estimate of the size of the next request: unknown — no base.');
+  assert.equal(st.modifySentence({ waiting: {}, ratio: null }, 'szerzej', tr), 'Gotowe: tylko dla następnego zapytania — szerzej. Po jego wysłaniu wszystko wraca do ustawień. Szacunek wielkości następnego zapytania, dla pustej wiadomości (bez tekstu, załączników i narzędzi tej wiadomości): nieznane — brak bazy.');
+  assert.equal(st.modifySentence({ waiting: {}, ratio: 0.04 }, 'szerzej', tr), 'Gotowe: tylko dla następnego zapytania — szerzej. Po jego wysłaniu wszystko wraca do ustawień. Szacunek wielkości następnego zapytania, dla pustej wiadomości (bez tekstu, załączników i narzędzi tej wiadomości): dużo mniej niż zwykłe zapytanie do tego modelu.');
+  assert.equal(st.modifySentence({ waiting: {}, ratio: 0.04 }, 'wider', trEn), 'Done: for the next request only — wider. Once it is sent everything is back to the settings. Estimate of the size of the next request, for an empty message (no text, attachments or tools of the message are counted): much less than the usual request to this model.');
+  assert.equal(st.modifySentence({ waiting: {}, ratio: null }, 'wider', trEn), 'Done: for the next request only — wider. Once it is sent everything is back to the settings. Estimate of the size of the next request, for an empty message (no text, attachments or tools of the message are counted): unknown — no base.');
   assert.equal(st.modifySentence({ waiting: {}, ratio: null }, '', tr), 'Cofnięte: następne zapytanie pójdzie bez zmian.', 'an empty carrier is a change taken back');
-  assert.equal(st.modifySentence(applied, 'wider', trEn), 'Done: for the next request only — wider. Once it is sent everything is back to the settings. Estimate of the size of the next request: about 1.1× the usual one.');
+  assert.equal(st.modifySentence(applied, 'wider', trEn), 'Done: for the next request only — wider. Once it is sent everything is back to the settings. Estimate of the size of the next request, with the text you typed, without attachments: 1.1× the usual request to this model (the average of the last requests to this model (count: 6)).');
   // the run document of the real kernel (K1b): completed, data.waiting and data.guard.ratio
-  const run = { id: 'r1', status: 'completed', result: { parts: [{ text: 'Done: ...' }], data: { waiting: { 'context.breadth_delta': ['wider'] }, guard: { ratio: 1.12, asked: false } } } };
-  assert.deepEqual(modifyApi.readModifyRun(run), { kind: 'applied', text: 'Done: ...', waiting: { 'context.breadth_delta': ['wider'] }, ratio: 1.12 });
+  const run = { id: 'r1', status: 'completed', result: { parts: [{ text: 'Done: ...' }], data: { waiting: { 'context.breadth_delta': ['wider'] }, guard: { ratio: 1.12, asked: false, baseline_source: 'measured', baseline_samples: 6, estimate_for: 'pending_text' } } } };
+  assert.deepEqual(modifyApi.readModifyRun(run), { kind: 'applied', text: 'Done: ...', waiting: { 'context.breadth_delta': ['wider'] }, ratio: 1.12, estimateFor: 'pending_text', base: { source: 'measured', samples: 6 } });
+  // an answer that does not say what it was compiled for was compiled for an empty message (the kernel before K1c1 always did)
+  assert.equal(modifyApi.readModifyRun({ ...run, result: { parts: [], data: { waiting: {}, guard: { ratio: 1.1, asked: false } } } }).estimateFor, 'empty_message');
   assert.equal(modifyApi.readModifyRun({ ...run, result: { parts: [], data: { waiting: {} } } }).ratio, null, 'no measurement: no ratio, never a guess');
   const guarded = guard => modifyApi.readModifyRun({ ...run, result: { parts: [], data: { waiting: {}, guard } } }).ratio;
   assert.equal(guarded({ ratio: 0, baseline: null, asked: false }), null, 'a ratio against no base (the kernel writes baseline: null) is no ratio, not "0×"');

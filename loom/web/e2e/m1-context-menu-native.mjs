@@ -11,7 +11,7 @@ import { tmpdir } from "node:os";
 import net from "node:net";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { modifiedSentence } from "./m1-words.mjs";
+import { fill, forSource, modifiedSentence, ratioSource } from "./m1-words.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const LOOM = path.resolve(here, "../..");
@@ -168,6 +168,33 @@ try {
     await send("and the database API server code once more?");
     await openLast();
     assert.equal(await graphTokens(), baseGraph, "the next request is back to the base");
+    await closeSheet();
+  });
+
+  await step("one number for one request: the estimate after Szerzej (with the text typed) and the guard of the receipt after sending say the same, with the same base named", async () => {
+    const typed = "and the database API server code, same question as a third time?";
+    await page.getByTestId("chat-input").fill(typed);
+    await openContext();
+    await page.getByTestId("composer-menu-wider").tap();
+    await page.getByTestId("composer-menu-modify-result").waitFor();
+    assert.equal(await page.getByTestId("composer-menu-modify-result").getAttribute("data-kind"), "applied");
+    const said = await page.getByTestId("composer-menu-modify-result").innerText();
+    console.log("[m1-context-menu] rendered estimate with the typed text: " + JSON.stringify(said));
+    const estimate = said.match(new RegExp(fill(w["modify.ratio"], { for: forSource(w), ratio: `(${ratioSource(w)})` })))?.[1];
+    assert.ok(estimate, "the estimate sentence is the pack's");
+    assert.ok(said.includes(w["for.text"]), "the estimate says it was compiled with the typed text");
+    await closeMenu();
+    const answers = await assistants().count();
+    await page.getByTestId("send-chat").tap();
+    // the new answer is complete and its line is drawn (counts are awaited, no sleep): only then is the last receipt the one of this request
+    await page.waitForFunction(n => document.querySelectorAll('[data-testid="message"][data-role="assistant"]').length > n && !document.querySelector('[data-testid="streaming-message"]'), answers, { timeout: 30000 });
+    await page.waitForFunction(() => document.querySelectorAll('[data-testid="message"][data-role="assistant"]').length === document.querySelectorAll('[data-testid="context-line"]').length);
+    await openLast();
+    const guardText = await page.getByTestId("context-receipt-guard").innerText();
+    console.log("[m1-context-menu] rendered guard of the same request: " + JSON.stringify(guardText));
+    const guard = guardText.match(new RegExp("^" + fill(w["guard.ok"], { ratio: `(${ratioSource(w)})` }) + "$"))?.[1];
+    assert.ok(guard, "the guard line is the pack's sentence");
+    assert.equal(guard, estimate, "the estimate before sending and the guard after it are the same number against the same named base");
     await closeSheet();
   });
 
