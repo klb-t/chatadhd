@@ -352,10 +352,11 @@ struct Catalogue::Impl {
   // A node as it leaves the catalogue: its evidence (and each property's) in words.
   void finish(Json& n) {
     if (json::get_bool(n, "value_pending", false)) resolve_setting_node(*this, n);
-    if (Json* ev = n.contains("evidence") ? &n["evidence"] : nullptr; ev && ev->is_object()) (*ev)["human"] = evidence_words(*ev);
+    // A node that already says its evidence in words (a derived node of the record of a request, receipt_node) keeps its own words.
+    if (Json* ev = n.contains("evidence") ? &n["evidence"] : nullptr; ev && ev->is_object() && !ev->contains("human")) (*ev)["human"] = evidence_words(*ev);
     if (n.contains("evidence_overrides") && n["evidence_overrides"].is_object())
       for (auto& item : n["evidence_overrides"].items())
-        if (item.value().is_object()) item.value()["human"] = evidence_words(item.value());
+        if (item.value().is_object() && !item.value().contains("human")) item.value()["human"] = evidence_words(item.value());
   }
 
   // One area of the entry profile as a node (label, why, order, expand; no counters): nullopt for an area the profile does not name (a
@@ -2552,13 +2553,12 @@ Result<Json> navigate(const Env& env, const Json& request) {
   Json perspective_info = Json::array();
   if (!perspectives.empty()) {
     LOOM_TRY_ASSIGN(auto persp, views::Perspectives::open(env.root));
-    const Json listed = persp.list();
     for (const auto& p : perspectives) {
       LOOM_TRY_ASSIGN(auto ks, persp.edge_kinds_of(p));
       kinds.insert(ks.begin(), ks.end());
       perspective_info.push_back(p);
-      for (const auto& row : listed)
-        if (json::get_string(row, "id") == p && json::get_string(row, "source") == "receipt") receipt_kinds.insert(ks.begin(), ks.end());
+      const auto* entry = persp.view().find(p);
+      if (entry && json::get_string(entry->value, "source") == "receipt") receipt_kinds.insert(ks.begin(), ks.end());
     }
   }
   // The record of the request in view: an answer hands over to the request that the record belongs to (said in handed_from).
@@ -2817,7 +2817,8 @@ Result<Json> card(const Env& env, const Json& request) {
   }
   LOOM_TRY_ASSIGN(auto kids, cat.children(address, Json{{"page_limit", 50}}));
   for (const auto& e : kids.edges) all.push_back(e);
-  if (const std::string parent = json::get_string(*node, "parent"); !parent.empty()) {
+  // (not for a derived node of the record of a request: it is not "part of" the message, its relation is the link of the record, with its weight)
+  if (const std::string parent = json::get_string(*node, "parent"); !parent.empty() && source != "receipt") {
     const Json* own = cat.source_of(address);
     all.push_back(Json{{"src", address}, {"dst", parent}, {"kind", own ? json::get_string(*own, "contain_edge", "part_of") : std::string("part_of")}});
   }

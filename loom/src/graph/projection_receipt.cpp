@@ -349,7 +349,7 @@ Result<std::optional<Json>> receipt_node(Catalogue& cat, const std::string& addr
   facts["links"] = links;
   std::string why = json::get_string(facts, "why");
   if (why.empty()) why = json::get_string(facts, "section");
-  const Json record_evidence{{"class", "observed"}, {"confidence", 1.0},
+  const Json record_evidence{{"class", "observed"}, {"confidence", 1.0}, {"human", words.say("sent_evidence_record")},
                              {"provenance", Json{{"layer", "record"}, {"source_ref", cat.canonical(req) + " metadata.context_trace.receipt"},
                                                  {"method", "context_receipt"}, {"time", nullptr}}}};
   Json row{{"address", address},
@@ -368,7 +368,7 @@ Result<std::optional<Json>> receipt_node(Catalogue& cat, const std::string& addr
   if (sent_link) {
     row["value"] = tokens;
     row["value_human"] = words.say("sent_tokens_value", Json{{"tokens", static_cast<std::int64_t>(tokens)}});
-    row["evidence_overrides"] = Json{{"value", Json{{"class", "inferred"}, {"confidence", nullptr},
+    row["evidence_overrides"] = Json{{"value", Json{{"class", "inferred"}, {"confidence", nullptr}, {"human", words.say("sent_evidence_estimate")},
                                                     {"provenance", Json{{"layer", "record"}, {"source_ref", "chars / codepoints_per_token"}, {"method", "token_estimate"}, {"time", nullptr}}}}}};
   } else if (const std::string rh = json::get_string(facts, "reason_human"); !rh.empty()) {
     row["value_human"] = rh;

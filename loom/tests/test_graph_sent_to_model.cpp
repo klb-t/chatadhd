@@ -113,6 +113,18 @@ struct Fixture {
     rc.memory = &mem;
     return unwrap(p.render(rc, "sent_to_model", request));
   }
+  projection::Env penv(const std::string& lang = "en") {
+    projection::Env e;
+    e.root = td.path();
+    e.cfg = &cfg;
+    e.db = db.get();
+    e.memory = &mem;
+    e.lang = lang;
+    return e;
+  }
+  // The navigator of the app (graph.navigate / graph.card) over this chat: the same functions the actions call.
+  Json navigate(const Json& request, const std::string& lang = "en") { return unwrap(projection::navigate(penv(lang), request)); }
+  Result<Json> card_result(const std::string& address, const std::string& lang = "en") { return projection::card(penv(lang), Json{{"address", address}}); }
   std::size_t node_rows() { return unwrap(db->list_nodes(std::nullopt, 1000000)).size(); }
   std::size_t link_rows() { return unwrap(db->get_links()).size(); }
 };
@@ -527,5 +539,245 @@ TEST_CASE("M1-K1c2 B: over context_receipt_max_bytes the elements fall back to t
   CHECK(section_of(trace["receipt"], "memory")["items"].size() == 7);
   CHECK_FALSE(trace["receipt"].contains("elements_collapsed"));
 }
+
+// ── M1-K1c3a: the same record through the navigator (graph.navigate / graph.card) ─────────────────────────────────────────────────────────
+namespace {
+const Json* row_at(const Json& rows, const std::string& address) {
+  for (const auto& n : rows)
+    if (n.value("address", "") == address) return &n;
+  return nullptr;
+}
+const Json* edge_to(const Json& edges, const std::string& kind, const std::string& dst) {
+  for (const auto& e : edges)
+    if (e.value("kind", "") == kind && e.value("dst", "") == dst) return &e;
+  return nullptr;
+}
+std::string address_of_msg(const std::string& id) { return "msg:" + id.substr(2); }
+}  // namespace
+
+TEST_CASE("M1-K1c3a: graph.navigate with the perspective sent_to_model draws the record of the request - sent elements with the tokens as weight, what was left out, derived rows - and writes nothing") {
+  Fixture f;
+  f.add_window2();
+  ChatOptions o;
+  o.selector_profile = "window2";
+  o.history_skip = {f.history_ids[0]};
+  o.history_skip_reason[f.history_ids[0]] = "thread_filter";
+  const std::string req = f.send(o);
+  const Json render = f.render(Json{{"msg_id", req}, {"lang", "en"}});
+  const std::string focus = address_of_msg(req);
+
+  const std::size_t nodes_before = f.node_rows(), links_before = f.link_rows();
+  const Json r = f.navigate(Json{{"focus", focus}, {"perspectives", Json::array({"sent_to_model"})}, {"limit", 0}});
+  CHECK(f.node_rows() == nodes_before);  // a projection: nothing is written
+  CHECK(f.link_rows() == links_before);
+
+  CHECK(r["schema"] == "loom.graph_navigate/1");
+  CHECK(r["focus"]["address"] == focus);
+  CHECK(r["perspectives"][0] == "sent_to_model");
+  CHECK_FALSE(r.contains("handed_from"));
+  // the request node plus every node of the record are in the answer (the render counts the request among its nodes)
+  const Json children = r["children"], edges = r["edges"];
+  CHECK(children.size() + 1 == render["nodes"].size());
+  CHECK(edges.size() == render["edges"].size());
+  CHECK(r["counts"]["total"] == children.size());
+  CHECK(r["receipt"]["present"] == true);
+  CHECK(r["receipt"]["counts"] == render["counts"]);
+  CHECK(r["receipt"]["request_address"] == focus);
+  CHECK(r["receipt"]["dropped"].size() == render["dropped"].size());
+
+  // a sent element, a derived one: the instruction. Its link weighs its tokens, and the row says it is derived.
+  const std::string sys_address = "sent:" + req + ":system_prompt";
+  const Json* sys = row_at(children, sys_address);
+  REQUIRE(sys);
+  CHECK((*sys)["derived"] == true);
+  CHECK((*sys)["kind"] == "instruction");
+  CHECK((*sys)["label"] == "Instruction (system prompt)");
+  CHECK((*sys)["depth"] == 1);
+  CHECK((*sys)["receipt"]["request"] == focus);
+  CHECK((*sys)["receipt"]["class"].is_string());
+  CHECK((*sys)["receipt"]["section"].is_string());
+  const Json* sent = edge_to(edges, "sent_to_model", sys_address);
+  REQUIRE(sent);
+  CHECK((*sent)["src"] == focus);
+  CHECK((*sent)["weight"].get<double>() > 0);
+  CHECK((*sent)["weight"] == (*sys)["value"]);
+  CHECK((*sent)["metadata"]["why"].is_string());
+  CHECK((*sent)["derived"] == true);
+  CHECK((*sent)["label"].is_string());
+
+  // every link of the record is there with the weight the render gives it; a real message of the history is that message (not derived)
+  std::size_t sent_links = 0, left_links = 0;
+  for (const auto& e : edges) {
+    CHECK(e["src"] == focus);
+    CHECK(row_at(children, e["dst"].get<std::string>()) != nullptr);
+    if (e["kind"] == "sent_to_model") ++sent_links;
+    if (e["kind"] == "left_out_of_model") ++left_links;
+  }
+  CHECK(sent_links == render["counts"]["sent"].get<std::size_t>());
+  CHECK(left_links == render["counts"]["left_out"].get<std::size_t>());
+  double weights = 0, rendered = 0;
+  for (const auto& e : edges)
+    if (e["kind"] == "sent_to_model") weights += e["weight"].get<double>();
+  for (const auto& e : render["edges"])
+    if (e["type"] == "sent_to_model") rendered += e["weight"].get<double>();
+  CHECK(weights == doctest::Approx(rendered));
+  const std::string real = address_of_msg(f.history_ids[2]);
+  if (const Json* h = row_at(children, real)) CHECK_FALSE(h->contains("derived"));
+
+  // what was left out is visible too, with the reason in words; the message left out by the thread filter is that message
+  const Json* left = edge_to(edges, "left_out_of_model", address_of_msg(f.history_ids[0]));
+  REQUIRE(left);
+  CHECK((*left)["metadata"]["reason"] == "thread_filter");
+  CHECK((*left)["metadata"]["reason_human"] == "another thread");
+  const Json* gone = row_at(children, address_of_msg(f.history_ids[0]));
+  REQUIRE(gone);
+  CHECK_FALSE(gone->contains("derived"));
+
+  MESSAGE("navigate: children=" << children.size() << " edges=" << edges.size() << " sent=" << sent_links << " left_out=" << left_links
+          << " db nodes " << nodes_before << "->" << f.node_rows() << " links " << links_before << "->" << f.link_rows());
+  MESSAGE("derived row: " << sys->dump());
+  MESSAGE("sent link: " << sent->dump());
+  MESSAGE("left_out link: " << left->dump());
+  MESSAGE("left_out row: " << gone->dump());
+
+  // the budget of the navigator (limit) applies as to any level: the request first, a count of what was collapsed
+  const Json narrow = f.navigate(Json{{"focus", focus}, {"perspectives", Json::array({"sent_to_model"})}, {"limit", 3}});
+  CHECK(narrow["counts"]["total"] == children.size());
+  CHECK(narrow["counts"]["shown"] == 3);
+  CHECK(narrow["counts"]["collapsed"].get<std::size_t>() == children.size() - 3);
+
+  // a group without a list is one derived node (the profile "compat" does not read most sources)
+  ChatOptions compat;
+  compat.selector_profile = "compat";
+  const std::string req2 = f.send(compat, "a second question");
+  const Json r2 = f.navigate(Json{{"focus", address_of_msg(req2)}, {"perspectives", Json::array({"sent_to_model"})}, {"limit", 0}});
+  bool group = false;
+  for (const auto& n : r2["children"])
+    if (n["kind"] == "left_out") {
+      group = true;
+      CHECK(n["derived"] == true);
+      CHECK(n["label"].get<std::string>().find("Left out: ") == 0);
+      const Json* link = edge_to(r2["edges"], "left_out_of_model", n["address"].get<std::string>());
+      REQUIRE(link);
+      CHECK((*link)["metadata"]["reason_human"].is_string());
+    }
+  CHECK(group);
+}
+
+TEST_CASE("M1-K1c3a: graph.card answers for a derived node of the record - from the stored record, in words that it is a view, never NotFound for an address the navigator returned") {
+  Fixture f;
+  f.add_window2();
+  ChatOptions o;
+  o.selector_profile = "window2";
+  const std::string req = f.send(o);
+  const std::string focus = address_of_msg(req);
+  const Json nav = f.navigate(Json{{"focus", focus}, {"perspectives", Json::array({"sent_to_model"})}, {"limit", 0}});
+
+  const std::size_t nodes_before = f.node_rows(), links_before = f.link_rows();
+  std::size_t derived = 0;
+  for (const auto& n : nav["children"]) {
+    if (!n.value("derived", false)) continue;
+    ++derived;
+    const auto c = f.card_result(n["address"].get<std::string>());  // every address of the navigator answers
+    REQUIRE_MESSAGE(c.has_value(), n["address"].get<std::string>());
+  }
+  CHECK(derived >= 3);
+  CHECK(f.node_rows() == nodes_before);
+  CHECK(f.link_rows() == links_before);
+
+  const std::string sys_address = "sent:" + req + ":system_prompt";
+  const Json c = unwrap(f.card_result(sys_address));
+  CHECK(c["schema"] == "loom.graph_card/1");
+  CHECK(c["address"] == sys_address);
+  CHECK(c["label"] == "Instruction (system prompt)");
+  CHECK(c["kind"] == "instruction");
+  CHECK(c["derived"] == true);
+  CHECK(c["source"] == "receipt");
+  CHECK(c["receipt"]["class"].is_string());
+  CHECK(c["receipt"]["section"].is_string());
+  CHECK(c["receipt"]["tokens_est"].get<double>() > 0);
+  CHECK(c["value"].get<double>() == c["receipt"]["tokens_est"].get<double>());
+  CHECK(c["value_human"].get<std::string>().find("tokens (estimate)") != std::string::npos);
+  CHECK(c["why"].is_string());
+  CHECK(c["derived_note"].get<std::string>().find("view of the record") != std::string::npos);
+  CHECK(c["evidence"]["provenance"]["layer"] == "record");
+  // the evidence is worded as what it is: the record written at the send, and a token estimate - never "you said it" or a model's inference
+  CHECK(c["evidence"]["human"] == "the record of the request, written when it was sent");
+  CHECK(c["evidence_per_property"]["value"]["human"].get<std::string>().find("not a measurement") != std::string::npos);
+  CHECK_FALSE(c["relations"].contains("part_of"));  // its relation is the link of the record, not containment
+  CHECK(c["evidence_per_property"].contains("value"));
+  // its relation: the link from the request, with the tokens
+  REQUIRE(c["relations"].contains("sent_to_model"));
+  const Json in = c["relations"]["sent_to_model"]["in"];
+  REQUIRE(in.size() == 1);
+  CHECK(in[0]["address"] == focus);
+  CHECK(in[0]["weight"] == c["value"]);
+  // the way back: the request is its parent in the breadcrumbs
+  REQUIRE_FALSE(c["breadcrumbs"].empty());
+  CHECK(c["breadcrumbs"].back()["address"] == focus);
+
+  const Json pl = unwrap(f.card_result(sys_address, "pl-PL"));
+  CHECK(pl["label"] == "Instrukcja (prompt systemowy)");
+  CHECK(pl["evidence"]["human"] == "zapis żądania, zrobiony w chwili wysłania");
+  CHECK(pl["derived_note"].get<std::string>().find("widok zapisu") != std::string::npos);
+  CHECK(pl["value_human"].get<std::string>().find("tokenów (szacunek)") != std::string::npos);
+
+  MESSAGE("card of a derived node: " << c.dump());
+
+  // an address that is no node of any record is still NotFound (not a crash, not an invented node)
+  const auto nope = f.card_result("sent:m_000000000000:system_prompt");
+  REQUIRE_FALSE(nope.has_value());
+  CHECK(nope.error().code == Errc::NotFound);
+  const auto malformed = f.card_result("sent:");
+  CHECK_FALSE(malformed.has_value());
+  const auto no_ref = f.card_result("sent:" + req + ":nothing_here");
+  REQUIRE_FALSE(no_ref.has_value());
+  CHECK(no_ref.error().code == Errc::NotFound);
+}
+
+TEST_CASE("M1-K1c3a: an answer opens its request's record (handed_from); a message without a record and a focus that is no message answer in words, not with an error") {
+  Fixture f;
+  const std::string req = f.send(ChatOptions{});
+  const std::string answer = f.answer_of(req);
+  REQUIRE_FALSE(answer.empty());
+  const std::string request_address = address_of_msg(req);
+
+  // the answer: the record belongs to the request, so the navigator opens the request and says so
+  const Json r = f.navigate(Json{{"focus", address_of_msg(answer)}, {"perspectives", Json::array({"sent_to_model"})}, {"limit", 0}});
+  CHECK(r["focus"]["address"] == request_address);
+  CHECK(r["handed_from"] == address_of_msg(answer));
+  CHECK(r["receipt"]["present"] == true);
+  CHECK_FALSE(r["children"].empty());
+  CHECK_FALSE(r["edges"].empty());
+
+  // without the perspective the navigator behaves as before: the answer stays the focus
+  const Json plain = f.navigate(Json{{"focus", address_of_msg(answer)}});
+  CHECK(plain["focus"]["address"] == address_of_msg(answer));
+  CHECK_FALSE(plain.contains("receipt"));
+
+  // an earlier message has no record: the same words and reason as perspectives.show, an empty answer, no error
+  const std::size_t nodes_before = f.node_rows(), links_before = f.link_rows();
+  const std::string old_msg = f.history_ids[0];
+  const Json shown = f.render(Json{{"msg_id", old_msg}, {"lang", "en"}});
+  REQUIRE(shown["empty"] == true);
+  const Json none = f.navigate(Json{{"focus", address_of_msg(old_msg)}, {"perspectives", Json::array({"sent_to_model"})}});
+  CHECK(none["children"].empty());
+  CHECK(none["edges"].empty());
+  CHECK(none["receipt"]["present"] == false);
+  CHECK(none["receipt"]["missing_reason"] == shown["missing_reason"]);
+  CHECK(none["receipt"]["text"] == shown["text"]);
+  CHECK(none["receipt"]["empty"] == true);
+  CHECK(f.node_rows() == nodes_before);
+  CHECK(f.link_rows() == links_before);
+
+  // a focus that is no message (the root): the perspective has nothing to draw there, and says why
+  const Json root = f.navigate(Json{{"focus", ""}, {"perspectives", Json::array({"sent_to_model"})}});
+  CHECK(root["receipt"]["present"] == false);
+  CHECK(root["receipt"]["missing_reason"] == "focus_not_a_message");
+  CHECK(root["receipt"]["text"].get<std::string>().find("needs a message in focus") != std::string::npos);
+  const Json root_pl = f.navigate(Json{{"focus", ""}, {"perspectives", Json::array({"sent_to_model"})}}, "pl");
+  CHECK(root_pl["receipt"]["text"].get<std::string>().find("potrzebuje wiadomości") != std::string::npos);
+}
+
 
 }  // TEST_SUITE
