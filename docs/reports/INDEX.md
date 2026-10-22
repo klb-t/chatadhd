@@ -1936,3 +1936,26 @@ Pierwsza trzecia paczki M1-K2 (dane i sesja jądra; bez gałęzi w `ChatEngine::
 - **Nie zrobione (K2b i dalej).** Akcja `profile.interview` / zapis `profile_detail_level` z odpowiedzi; gałąź `metadata.flow` w `ChatEngine::send`; ustawienie `profile_detail_by_category`; karta „Tak zrozumiałem” (W2); wybór poziomu przyciskami w web.
   **Zapisany scenariusz w istniejących katalogach danych** (`scenario_definition` w `OnboardingStore`, kopia z pierwszego otwarcia) nie dostaje nowych sekcji ani reguł sam z siebie: `plan`/`levels`/`apply_remark` zwracają na nim `Unsupported`, `questions()` działa. K2b musi zdecydować o odświeżeniu (np. dołożenie brakujących części builtin przy otwarciu).
   E2E przeglądarkowe (`e2e/onboarding-*.mjs`) nie uruchamiane w tej paczce.
+
+### S1 / M1-K2a-fix — cztery wiersze „Ty” miały surowe id zamiast słów (2026-10-22, `claude/m1-w0`)
+
+Lokalna bramka k2a na `67c235d3` była czerwona na jednym kroku web: `e2e/m1-navigator-native.mjs` „no screen shown so far has developer text” (audyt tekstu `m1-audit.mjs` z K1c-4). Na ekranie „Ty” (nawigator na `party:self`, ekrany
+`m1-navigator-me` i `m1-navigator-card-profile`) cztery wiersze `nav-row-party:self/<id>` pokazywały surowe id pól: `interview.detail`, `health.needs`, `relations.people`, `routine.rhythm` (oraz obcięte `interview.d…` i `relations.p…`
+na etykietach mapy `nav-map-label`).
+
+- **Przyczyna (sprawdzona).** Wiersze `party:self/<pole>` biorą nazwę z `slot_labels` źródła `party` w `loom/data/runtime/graph_sources.pack` (czytnik `read_party`, `src/graph/projection.cpp`); gdy brak nazwy, czytnik pokazuje id pola (`if (label.empty()) label = id`).
+  `slot_labels` miało 9 nazw, a `scenario.pack` po K2a ma 13 pól.
+- **Dlaczego trzy „starsze” pola nie były oznaczone wcześniej.** Nie były starsze: w `1ee7a6c8` (bramka FLAKE-1, zielona) `scenario.pack` miał dokładnie 9 pól (`identity.description` … `privacy.preferences`) i wszystkie 9 miały nazwy. K2a (`7ba2cf05`) dopisał do scenariusza
+  cztery pola naraz: `interview.detail` (pierwsze pytanie „ile pytać”), `health.needs`, `relations.people`, `routine.rhythm` (decyzja 5 w „S1 / M1-K2a”), a `graph_sources.pack` zostało bez zmian. `git diff 1ee7a6c8 67c235d3 -- loom/src/graph loom/data/runtime/graph_sources.pack`
+  jest pusty: **projekcja nie zmieniła się ani o linię** — `profile_slots()` listuje (i od początku listowała) każde pole scenariusza, a pole, o które jeszcze nie pytano, ma stan `unknown` („nieznane”), bez wartości.
+- **Czy nowa lista jest zamierzona.** Tak: specyfikacja mówi, że `party:self` pokazuje sloty profilu ze stanami i pochodzeniem, także nieznane; wiersz bez wartości nie wysyła niczego i niczego nie ujawnia poza nazwą kategorii („Zdrowie i potrzeby”, stan „nieznane”).
+  Nie zmieniałem zachowania. **Otwarta uwaga dla K2b, nie błąd:** slot powyżej wybranego poziomu (np. `health.needs` przy poziomie „normalny”) też jest dziś „nieznane”, choć przy tym poziomie nikt o niego nie zapyta; dokładniejszy stan (np. „poza Twoim poziomem”)
+  wymaga, żeby projekcja znała poziom (`profile_detail_level`) — to osobna decyzja razem z akcją zapisu poziomu, nie etykieta.
+- **Poprawka (tylko dane).** `slot_labels` dostały cztery nazwy, słowami z samego scenariusza (temat/kategoria/tytuł sekcji/tekst pytania), żeby nigdy się nie rozjechały:
+  `interview.detail` — pl „Ile pytań możesz usłyszeć” / en „How many questions I may ask”; `health.needs` — pl „Zdrowie i potrzeby” / en „Health and needs”; `relations.people` — pl „Bliscy” / en „People close to you”;
+  `routine.rhythm` — pl „Rytm dnia” / en „Daily rhythm”. Kopia wbudowana odtworzona (`gen_runtime_profiles.py`, `--check` czysty); `graph_sources.pack` nie ma osobnego przypięcia sha256 w `data_domains.pack`, więc nic do przypinania.
+- **Zabezpieczenie.** `test_onboarding_interview.cpp`: „every field of the scenario has a name in both languages in the slot_labels of graph_sources.pack, and no name is the raw id” — czyta `scenario.pack` `fields[].id` i `slot_labels` źródła `party`
+  (bez zakodowanej listy) i przy braku podaje listę, np. „health.needs [en], health.needs [pl], routine.rhythm [pl]” (sprawdzone: po wyjęciu nazwy i podmianie jednej na samo id test pada z tą listą). `test_graph_projection.cpp`: „party:self: no slot row shows
+  the raw field id as its name, in either language” — przez prawdziwą projekcję, pl i en, co najmniej 13 wierszy.
+- **Mapa.** `nav-map-label` bierze tekst z etykiety znaku widoku (`placeLabels(marks…)`, `NavigatorMap.tsx`), a znak z `label` węzła jądra — to samo źródło co wiersz listy, więc poprawka danych załatwia też obcięte `interview.d…`; kod web bez zmian.
+- **Jak odwrócić.** Usunąć cztery wpisy z `slot_labels` (wiersze wrócą do surowych id, a audyt web znowu zaświeci), albo `git revert` commitu M1-K2a-fix; testy-strażnicy padną z listą brakujących pól — to jest ich zadanie.
