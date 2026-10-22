@@ -431,7 +431,10 @@ TEST_CASE("M1-K1c2 B: the memory and the graph are listed by element - ids that 
   for (const char* secret : {"MEM-S1", "FOLDER-S5", "CHILD-S6", "OFF-S7", "we discussed the database"}) CHECK(stored.find(secret) == std::string::npos);
 
   // the projection: the nodes of the memory and the messages of the graph are THEIR nodes (navigable), the heading is derived, nothing is written
-  const std::string req = f.send(ChatOptions{}, text);
+  ChatOptions skip;
+  skip.history_skip = {f.history_ids[0]};  // one earlier message left out, so that the record has a "dropped" part to draw
+  skip.history_skip_reason[f.history_ids[0]] = "thread_filter";
+  const std::string req = f.send(skip, text);
   const Json stored_receipt = f.receipt_of(req);
   REQUIRE(stored_receipt.is_object());
   std::size_t items = 0;
@@ -466,6 +469,15 @@ TEST_CASE("M1-K1c2 B: the memory and the graph are listed by element - ids that 
       CHECK(edge["metadata"]["class"] == "memory");
     }
   CHECK(child_link);
+  // (shown with -s) the projection of this synthetic record
+  std::size_t derived = 0;
+  for (const auto& n : nodes) derived += n["derived"] == true ? 1 : 0;
+  MESSAGE("projection: nodes=" << nodes.size() << " (derived " << derived << ", real " << nodes.size() - derived << ") edges=" << r["edges"].size()
+          << " sent=" << r["counts"]["sent"] << " left_out=" << r["counts"]["left_out"] << " dropped=" << r["dropped"].dump());
+  for (const auto& edge : r["edges"])
+    if (edge["dst"] == "memory:" + child || edge["dst"] == gd.elements[0].id)
+      MESSAGE("link " << edge["type"] << " " << edge["src"] << " -> " << edge["dst"] << " weight=" << edge["weight"] << " meta=" << edge["metadata"].dump());
+  MESSAGE("heading node: " << heading->dump());
 }
 
 TEST_CASE("M1-K1c2 B: over context_receipt_max_bytes the elements fall back to the aggregate items before anything else is cut, and the tokens stay the same") {
