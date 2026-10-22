@@ -1337,6 +1337,19 @@
         "parent": "relation",
         "perspectives": []
       },
+      "left_out_of_model": {
+        "label": {
+          "en": "left out of the request",
+          "pl": "pominięte w żądaniu"
+        },
+        "meaning": {
+          "en": "Source (a message) left target (an element) out of the request to the model.",
+          "pl": "Źródło (wiadomość) pominęło cel (element) w żądaniu do modelu."
+        },
+        "direction": "directed",
+        "parent": "relation",
+        "perspectives": []
+      },
       "applies_to_flow": {
         "label": {
           "en": "applies to the flow",
@@ -1754,7 +1767,8 @@
           "pl": "Wysłane do modelu"
         },
         "relations": [
-          "sent_to_model"
+          "sent_to_model",
+          "left_out_of_model"
         ],
         "direction": "out",
         "hops": null,
@@ -1775,15 +1789,15 @@
           }
         },
         "status": {
-          "state": "planned",
-          "by": "M1-K1",
+          "state": "implemented",
+          "by": "M1-K1c2",
           "today": {
-            "en": "Today the kernel does not store a “What we sent” receipt per message, so this perspective has nothing to draw from.",
-            "pl": "Dziś jądro nie zapisuje śladu „Co wysłaliśmy” per wiadomość, więc ta perspektywa nie ma z czego rysować."
+            "en": "Works from the stored record of a request: the message, what was put into the request (one node per element where the record names the element, otherwise one per kind of material) and what was left out and why. A record exists only for requests sent after the records were introduced, and only when saving records is on.",
+            "pl": "Działa na zapisanym śladzie żądania: wiadomość, to co weszło do żądania (po jednym węźle na element, gdy ślad go nazywa, w przeciwnym razie na rodzaj materiału) oraz to co pominięto i dlaczego. Ślad istnieje tylko dla żądań wysłanych po wprowadzeniu śladów i tylko gdy zapis śladów jest włączony."
           },
           "reason": {
-            "en": "The receipt (contract loom.context_receipt/1) and the source “receipt” come with work item M1-K1.",
-            "pl": "Ślad (kontrakt loom.context_receipt/1) i źródło „receipt” przychodzą z pozycją M1-K1."
+            "en": "Nothing is stored for this view: it is computed from the record kept with the message (contract loom.context_receipt/1).",
+            "pl": "Ten widok niczego nie zapisuje: liczy się ze śladu zapisanego przy wiadomości (kontrakt loom.context_receipt/1)."
           }
         }
       },

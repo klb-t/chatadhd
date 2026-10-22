@@ -41,6 +41,26 @@ struct GraphSelectOptions {
   std::optional<std::string> current_conv_id;
 };
 
+// One message the graph selection put into the context (M1-K1c2 B): which one, how it reads in the text, and how the search reached it.
+// `row` is the exact piece of the text that came from this message (the separator before it is not part of it).
+struct GraphElement {
+  std::string id;       // message id (m_...)
+  std::string conv_id;
+  std::string role;
+  std::string title;    // the conversation title as it stands in the text (clipped by the profile)
+  std::string row;      // the rendered row of this message
+  std::string via;      // the id of the node the search came from ("" for a seed)
+  int depth = 0;        // hops from the nearest seed
+};
+
+// The text select_context_checked returns (byte for byte) plus what it was made of: header + [separator] row + [separator] row ...
+struct GraphContextDetail {
+  std::string text;
+  std::string header;
+  std::string separator;
+  std::vector<GraphElement> elements;  // in the order of the rows in `text`
+};
+
 class GraphMemorySelector {
  public:
   GraphMemorySelector(Database& db, const Config& cfg, const SemanticAnalyzer& regex);
@@ -51,6 +71,9 @@ class GraphMemorySelector {
                                                               const Json& overrides = Json::object()) const;
   Result<std::string> select_context_checked(std::string_view text, const GraphSelectOptions& opts = {},
                                             const Json& overrides = Json::object());
+  // The same selection, the same text (select_context_checked is this function's `text`), and the messages it was made of, for the receipt.
+  Result<GraphContextDetail> select_context_detailed(std::string_view text, const GraphSelectOptions& opts = {},
+                                                     const Json& overrides = Json::object());
 
   // Loom: BFS subgraph around `seed_ids` (nodes or messages) up to `depth`
   // hops, capped at max_nodes. Output shape matches Database::get_graph_data
@@ -60,6 +83,8 @@ class GraphMemorySelector {
   Result<Json> expand(const std::vector<std::string>& seed_ids, int depth, int max_nodes);
 
  private:
+  Result<std::string> select_impl(std::string_view text, const GraphSelectOptions& opts, const Json& overrides, GraphContextDetail* detail);
+
   Database& db_;
   const Config& cfg_;
   const SemanticAnalyzer& regex_;
@@ -109,6 +134,8 @@ class ContextSelector {
   Result<ContextSet> select(const ContextRequest& req);
   // Uses the builtin graph_memory estimator preset. select() uses its active profile.
   static int estimate_tokens(std::string_view text);
+  // The divisor behind estimate_tokens (builtin graph_memory preset): tokens = ceil(codepoints / this).
+  static std::size_t codepoints_per_token();
 
  private:
   Database& db_;

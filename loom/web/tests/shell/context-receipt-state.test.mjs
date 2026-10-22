@@ -59,7 +59,7 @@ test('the words: both languages have the same keys and every placeholder of one 
 });
 
 test('every source kind, section and reason the kernel writes today has a word', () => {
-  const kinds = ['instruction', 'rule', 'memory_node', 'graph_node', 'kb_claim', 'profile_slot', 'graph_packet', 'task', 'question', 'message:L0', 'message:L1', 'message:L2', 'message:L3'];
+  const kinds = ['instruction', 'rule', 'memory_node', 'graph_node', 'kb_claim', 'profile_slot', 'graph_packet', 'task', 'question', 'message:L0', 'message:L1', 'message:L2', 'message:L3', 'message:graph'];
   for (const k of kinds) assert.notEqual(st.itemChip(k, t), k, `chip for ${k}`);
   for (const c of ['system', 'profile', 'rules', 'memory', 'project', 'history', 'graph', 'task', 'question']) assert.notEqual(st.sectionTitle(c, t), c, `section ${c}`);
   for (const r of ['thread_filter', 'representation_level', 'budget', 'excluded', 'history_window', 'source_off', 'command_traffic', 'replaced_by_task', 'history_skip']) assert.ok(pl[`dropped.${r}`], `reason ${r}`);
@@ -241,3 +241,14 @@ test('the readers of the two runs: a receipt, a missing one with the kernel reas
 });
 
 test.after(() => loader.close());
+
+test('"Pokaż w grafie" asks for the node the graph really has: the message id m_<hex> is msg:<hex> (graph_sources.pack), never msg:m_<hex>', async () => {
+  const sources = await read('../../../data/runtime/graph_sources.pack');
+  const text = JSON.stringify(sources);
+  assert.ok(text.includes('"db_prefix":"m_"') || /"db_prefix":\s*"m_"/.test(text), 'the pack maps the database prefix m_');
+  assert.ok(/"address_prefix":\s*"msg:"/.test(text), 'to the address prefix msg:');
+  assert.equal(st.messageAddress('m_7d992485dd80'), 'msg:7d992485dd80');
+  assert.equal(st.messageAddress('msg:7d992485dd80'), 'msg:7d992485dd80', 'an address in the graph form is kept');
+  assert.equal(st.messageAddress('7d992485dd80'), 'msg:7d992485dd80', 'a bare hex id gets the prefix');
+  assert.ok(!st.messageAddress('m_abc').includes('m_'));
+});

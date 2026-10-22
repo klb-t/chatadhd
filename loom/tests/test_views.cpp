@@ -296,7 +296,7 @@ TEST_SUITE("views") {
       CHECK_FALSE(e->value.at("meaning").at("pl").get<std::string>().empty());
       CHECK_FALSE(e->value.at("meaning").at("en").get<std::string>().empty());
     }
-    // the perspectives: every one is reachable (its edge kinds exist), the receipt one needs a message and says it is planned
+    // the perspectives: every one is reachable (its edge kinds exist), the receipt one needs a message (and now works from the stored record)
     const auto persp = unwrap(views::effective(td.path(), "perspectives"));
     for (const char* id : {"settings_structure", "flow", "sent_to_model", "evidence", "me_and_surroundings"}) {
       INFO(id);
@@ -309,7 +309,7 @@ TEST_SUITE("views") {
     }
     CHECK(persp.find("sent_to_model")->value.at("source") == "receipt");
     CHECK(persp.find("sent_to_model")->value.at("params").at("msg_id").at("required") == true);
-    CHECK(persp.find("sent_to_model")->value.at("status").at("state") == "planned");
+    CHECK(persp.find("sent_to_model")->value.at("status").at("state") == "implemented");  // M1-K1c2: the source "receipt" is real (test_graph_sent_to_model.cpp)
     CHECK(persp.find("evidence")->value.at("render").at("color_by") == "evidence.class");
     // the binding is recorded, and it says it is planned
     const auto bindings = unwrap(views::effective(td.path(), "interaction_bindings"));

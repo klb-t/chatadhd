@@ -5,8 +5,10 @@
 #include <algorithm>
 #include <limits>
 #include <deque>
+#include <map>
 #include <set>
 #include <stdexcept>
+#include <tuple>
 
 #include "loom/config.h"
 #include "loom/runtime_profile.h"
@@ -73,6 +75,19 @@ std::string GraphMemorySelector::select_context(std::string_view text, const Gra
 
 Result<std::string> GraphMemorySelector::select_context_checked(std::string_view text, const GraphSelectOptions& opts,
                                                                const Json& overrides) {
+  return select_impl(text, opts, overrides, nullptr);
+}
+
+Result<GraphContextDetail> GraphMemorySelector::select_context_detailed(std::string_view text, const GraphSelectOptions& opts,
+                                                                       const Json& overrides) {
+  GraphContextDetail detail;
+  LOOM_TRY_ASSIGN(auto out, select_impl(text, opts, overrides, &detail));
+  detail.text = std::move(out);
+  return detail;
+}
+
+Result<std::string> GraphMemorySelector::select_impl(std::string_view text, const GraphSelectOptions& opts, const Json& overrides,
+                                                     GraphContextDetail* detail) {
   LOOM_TRY_ASSIGN(auto profile, RuntimeProfile::load("graph_memory", cfg_.path().parent_path(), overrides));
   const Json& policy = profile.values();
   const bool zero_as_default = policy.at("zero_as_default").get<bool>();
@@ -112,13 +127,15 @@ Result<std::string> GraphMemorySelector::select_context_checked(std::string_view
   }
   if (seed_ids_order.empty()) return "";
 
+  struct Reach { std::string via; int depth = 0; };
   std::set<std::string> visited;
   std::vector<std::string> message_ids;
-  std::deque<std::pair<std::string, int>> queue;
-  for (const auto& s : seed_ids_order) queue.push_back({s, 0});
+  std::map<std::string, Reach> reached;  // only read for the detailed answer; the order and the choice never depend on it
+  std::deque<std::tuple<std::string, int, std::string>> queue;
+  for (const auto& s : seed_ids_order) queue.push_back({s, 0, std::string()});
 
   while (!queue.empty() && (max_n == 0 || static_cast<int>(message_ids.size()) < max_n)) {
-    auto [node_id, d] = queue.front();
+    auto [node_id, d, via] = queue.front();
     queue.pop_front();
     if (visited.count(node_id)) continue;
     visited.insert(node_id);
@@ -127,7 +144,7 @@ Result<std::string> GraphMemorySelector::select_context_checked(std::string_view
       auto m = db_.get_msg(node_id);
       if (m && *m) {
         bool same_conv = opts.current_conv_id.has_value() && (*m)->conv_id == *opts.current_conv_id;
-        if (!same_conv) message_ids.push_back(node_id);
+        if (!same_conv) { message_ids.push_back(node_id); reached[node_id] = Reach{via, d}; }
       }
     }
 
@@ -136,7 +153,7 @@ Result<std::string> GraphMemorySelector::select_context_checked(std::string_view
       if (links) {
         for (const auto& l : *links) {
           std::string neighbor = (l.src == node_id) ? l.dst : l.src;
-          if (!visited.count(neighbor)) queue.push_back({neighbor, d + 1});
+          if (!visited.count(neighbor)) queue.push_back({neighbor, d + 1, node_id});
         }
       }
     }
@@ -145,6 +162,7 @@ Result<std::string> GraphMemorySelector::select_context_checked(std::string_view
   if (message_ids.empty()) return "";
 
   std::vector<std::string> parts;
+  std::vector<GraphElement> elements;
   std::size_t cap = max_n == 0 ? message_ids.size() : std::min(message_ids.size(), static_cast<std::size_t>(max_n));
   for (std::size_t i = 0; i < cap; ++i) {
     auto m = db_.get_msg(message_ids[i]);
@@ -157,6 +175,11 @@ Result<std::string> GraphMemorySelector::select_context_checked(std::string_view
     std::string snippet = snippet_length == 0 ? (*m)->text : std::string(utf8::prefix((*m)->text, snippet_length));
     LOOM_TRY_ASSIGN(auto row, render_profile_template(policy.at("row").get<std::string>(),
                                                     Json{{"title", conv_title}, {"role", (*m)->role}, {"text", snippet}}));
+    if (detail) {
+      const auto at = reached.find(message_ids[i]);
+      elements.push_back(GraphElement{message_ids[i], (*m)->conv_id, (*m)->role, conv_title, row, at == reached.end() ? std::string() : at->second.via,
+                                      at == reached.end() ? 0 : at->second.depth});
+    }
     parts.push_back(std::move(row));
   }
   if (parts.empty()) return "";
@@ -165,6 +188,11 @@ Result<std::string> GraphMemorySelector::select_context_checked(std::string_view
   for (std::size_t i = 0; i < parts.size(); ++i) {
     if (i) out += policy.at("separator").get<std::string>();
     out += parts[i];
+  }
+  if (detail) {
+    detail->header = policy.at("header").get<std::string>();
+    detail->separator = policy.at("separator").get<std::string>();
+    detail->elements = std::move(elements);
   }
   return out;
 }
@@ -264,10 +292,14 @@ Json ContextSet::to_json() const {
 ContextSelector::ContextSelector(Database& db, const Config& cfg, GraphMemorySelector& graph, MemoryEngine* memory)
     : db_(db), cfg_(cfg), graph_(graph), memory_(memory) {}
 
-int ContextSelector::estimate_tokens(std::string_view text) {
+std::size_t ContextSelector::codepoints_per_token() {
   auto profile = RuntimeProfile::builtin("graph_memory");
   if (!profile) throw std::logic_error(profile.error().message);
-  auto divisor = profile->values().at("context").at("codepoints_per_token").get<std::size_t>();
+  return profile->values().at("context").at("codepoints_per_token").get<std::size_t>();
+}
+
+int ContextSelector::estimate_tokens(std::string_view text) {
+  const auto divisor = codepoints_per_token();
   return static_cast<int>((utf8::length(text) + divisor - 1) / divisor);
 }
 

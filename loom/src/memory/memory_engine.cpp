@@ -263,11 +263,17 @@ std::vector<MemoryNode> MemoryEngine::get_all() const {
 // ── Context building ───────────────────────────────────────────────────
 
 Result<std::string> MemoryEngine::get_active_context_checked(std::optional<std::size_t> requested_max_chars) const {
+  LOOM_TRY_ASSIGN(auto detail, get_active_context_detailed(requested_max_chars));
+  return std::move(detail.text);
+}
+
+Result<MemoryContextDetail> MemoryEngine::get_active_context_detailed(std::optional<std::size_t> requested_max_chars) const {
   std::lock_guard<std::mutex> lock(mu_);
   if (profile_error_) return *profile_error_;
   const auto& values = profile_->values();
   const auto max_chars = requested_max_chars.value_or(values.at("context_max_chars").get<std::size_t>());
   std::vector<std::string> lines;
+  std::vector<MemoryLine> described;
   std::size_t char_count = 0;
   std::optional<Error> render_error;
   std::function<void(const MemoryNode&, int)> walk = [&](const MemoryNode& node, int indent) {
@@ -298,6 +304,7 @@ Result<std::string> MemoryEngine::get_active_context_checked(std::optional<std::
     auto rendered = render_profile_template(renderer.get_ref<const std::string&>(), vars);
     if (!rendered) { render_error = rendered.error(); return; }
     char_count += utf8::length(*rendered);
+    described.push_back(MemoryLine{node.id, *rendered, node.node_type, indent});
     lines.push_back(std::move(*rendered));
     for (const auto& child : children_locked(node.id)) walk(child, indent + 1);
   };
@@ -308,7 +315,7 @@ Result<std::string> MemoryEngine::get_active_context_checked(std::optional<std::
     if (i) out += values.at("line_separator").get_ref<const std::string&>();
     out += lines[i];
   }
-  return out;
+  return MemoryContextDetail{std::move(out), values.at("line_separator").get<std::string>(), std::move(described)};
 }
 
 std::string MemoryEngine::get_active_context(std::optional<std::size_t> max_chars) const {

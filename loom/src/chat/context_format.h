@@ -113,11 +113,30 @@ struct Receipt {
 // tokens_est: the estimator of graph_memory.pack (codepoints_per_token), at least 1 for a text that is not empty.
 long long estimate_tokens(std::string_view text);
 Json receipt_item(const std::string& ref, const std::string& label, const std::string& source_kind, const std::string& why, std::string_view text);
+// An item for one ELEMENT of an aggregate text (a graph message, a memory node): the share of tokens is given (see token_shares), `extra` adds fields.
+Json receipt_element(const std::string& ref, const std::string& label, const std::string& source_kind, const std::string& why, long long tokens_est, Json extra = Json::object());
+// The token share of each piece of one text that is the pieces joined in order. The estimator is ceil(codepoints / codepoints_per_token), which does not
+// add up over pieces, so a share is the growth of the running estimate: the shares add up to estimate_tokens(whole) exactly (receipt sections stay equal to
+// what the aggregate item said before the elements were listed).
+std::vector<long long> token_shares(const std::vector<std::string>& pieces);
 // selection_packet -> what the receipt says about a graph packet: {packet_id, nodes, links, substituted, skipped}.
 Json packet_summary(const Json& selection);
 // header: {order, profile, modifiers, guard, flow, renderer, ...}; sha256 is that of the messages as sent.
 Json receipt_finish(const Receipt& r, Json header, const Json& messages);
 // store: "auto" (whole when it fits max_bytes, else a summary with the reason; max_bytes 0 = no cap), "always" (whole, no cap).
 Json receipt_bound(Json receipt, const std::string& store, long long max_bytes);
+
+// M1-K1c2: the record as it is stored, found from any message of the exchange. The record lives with the message the person sent
+// (metadata.context_trace.receipt); asked about the answer, the request that made it is the message before it (its parent when that is a
+// message of the person, else the last message of the person before it in the conversation). ONE reading for the action context.receipt and for
+// the perspective sent_to_model, so both say the same thing about the same message.
+struct StoredReceipt {
+  std::string msg_id;                // the message that was named
+  std::string request_msg_id;        // the message the person sent (the record lives with it); = msg_id when that was it
+  std::optional<Message> request;    // that message, when the database has it
+  Json receipt = nullptr;            // loom.context_receipt/1; null when this request has none (before M1, context_receipt_store=never, trace_context=false)
+};
+// Error: NotFound when the named message does not exist.
+Result<StoredReceipt> stored_receipt(Database& db, const std::string& msg_id);
 
 }  // namespace loom::chat::formats

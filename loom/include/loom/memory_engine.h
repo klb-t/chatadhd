@@ -65,6 +65,21 @@ struct MemoryNode {
   static Result<MemoryNode> from_json(const Json& j);  // unknown keys ignored; id+content required
 };
 
+// One active node as it stands in the memory text (M1-K1c2 B): `line` is the exact rendered line of this node (the separator before it is not part of it).
+struct MemoryLine {
+  std::string id;
+  std::string line;
+  std::string node_type;
+  int depth = 0;
+};
+
+// get_active_context's text (byte for byte) plus the nodes it was made of, in the order of the lines.
+struct MemoryContextDetail {
+  std::string text;
+  std::string separator;
+  std::vector<MemoryLine> lines;
+};
+
 class MemoryEngine {
  public:
   // Recipe: built-in memory profile, then <memory parent>/profiles/memory.pack.
@@ -87,6 +102,7 @@ class MemoryEngine {
   std::vector<MemoryNode> get_all() const;
   std::string get_active_context(std::optional<std::size_t> max_chars = std::nullopt) const;
   Result<std::string> get_active_context_checked(std::optional<std::size_t> max_chars = std::nullopt) const;
+  Result<MemoryContextDetail> get_active_context_detailed(std::optional<std::size_t> max_chars = std::nullopt) const;
   std::vector<MemoryNode> search(std::string_view query, std::optional<int> limit = std::nullopt) const;
   Result<std::vector<MemoryNode>> search_checked(std::string_view query, std::optional<int> limit = std::nullopt) const;
   Json get_graph_data() const;

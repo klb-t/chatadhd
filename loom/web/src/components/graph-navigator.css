@@ -99,3 +99,7 @@
 .gnav-view-title { margin: 0 0 2px; font-weight: 600; }
 .gnav-view-option { min-height: 44px; padding: 0 12px; text-align: left; background: none; border: 1px solid var(--border); border-radius: 8px; color: inherit; font: inherit; cursor: pointer; touch-action: manipulation; }
 .gnav-view-option[aria-checked="true"] { border-color: var(--accent, #7aa2f7); color: var(--accent, #7aa2f7); font-weight: 600; }
+/* K1c-3b: the record of a request - the mark of a derived row, the tokens that were sent, what was left out */
+.gnav-chip-derived { border-style: dotted; font-style: italic; }
+.gnav-chip-left-out { border-style: dashed; font-style: italic; }
+.ncard-derived { overflow-wrap: anywhere; }

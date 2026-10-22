@@ -3,8 +3,11 @@
 // A conversation with a graph behind it is seeded through the API; then in the UI: the line "Kontekst: ... — zobacz" under an answer opens the sheet
 // (sections as lists, tokens, "Pominięte", header, disclaimer); "Szerzej" is tapped in the sheet and the NEXT message is compiled wider (the Graf section
 // of that request holds more) while the one after it is back to the base; the profile "Zgodność" leaves only the sections Instrukcja, Rozmowa and
-// Pytanie; with the receipt switched off the sheet says "Brak śladu (zapisane przed M1)"; "Pokaż w grafie" stays visible and disabled with its reason
-// while the kernel has no source for the perspective; no JSON of the trace in chat mode. Every word is taken from the pack (presentation.context_receipt).
+// Pytanie; with the receipt switched off the sheet says "Brak śladu (zapisane przed M1)" and "Pokaż w grafie" stays disabled with the kernel's reason;
+// "Pokaż w grafie" WORKS (K1c-3b): the button is enabled, a tap opens the navigator on the request with the perspective "Wysłane do modelu", the rows are the
+// sent elements with their tokens (an estimate) and the left-out ones worded as left out, the derived rows say they are a view of the record, a derived card
+// shows the kernel's sentence and the tokens as an estimate, Back returns to the chat; a refusal of the graph is the reason of the disabled button; no JSON
+// of the trace in chat mode. Every word is taken from the pack (presentation.context_receipt, graph_screen) or from the kernel's own answer to the same question.
 // With M1_SHOTS_DIR=<dir> the screenshots go there, otherwise to a fresh temp directory (the repository stays clean).
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
@@ -26,6 +29,8 @@ mkdirSync(SHOTS, { recursive: true });
 const viewPack = JSON.parse(readFileSync(path.join(LOOM, "data/profiles/conversation_view.pack"), "utf8"));
 const wordsOf = key => viewPack.entries.find(r => r.key === key).value.locales.pl;
 const w = wordsOf("presentation.context_receipt");
+const gw = wordsOf("presentation.graph_screen");
+const gsay = (id, params = {}) => gw[id].replace(/\{\{(\w+)\}\}/g, (_, k) => params[k] ?? "");
 const say = (id, params = {}) => w[id].replace(/\{\{(\w+)\}\}/g, (_, k) => params[k] ?? "");
 const profilesPack = JSON.parse(readFileSync(path.join(LOOM, "data/runtime/chat_context.pack"), "utf8")).defaults.selector_profiles;
 const compat = profilesPack.find(p => p.id === "compat");
@@ -75,12 +80,52 @@ try {
   const openLast = async () => {
     await page.getByTestId("context-line-open").last().tap();
     await sheet().and(page.locator('[data-state="receipt"]')).waitFor();
-    // the graph question is answered by an effect: wait for the reason to carry the kernel's answer before anything is read from the button
-    await page.getByTestId("receipt-show-in-graph-reason").waitFor();
+    // the graph question is answered by an effect: wait until the button has its state (yes | no) before anything is read from it
+    await page.locator('[data-testid="receipt-show-in-graph"]:not([data-graph="checking"])').waitFor();
   };
   const closeSheet = async () => { await page.getByTestId("context-receipt-close").tap(); await sheet().waitFor({ state: "detached" }); };
   const sectionsWithItems = () => page.locator('[data-testid^="receipt-section-"][data-items]').evaluateAll(els => els.filter(el => Number(el.dataset.items) > 0).map(el => el.dataset.class));
   const graphTokens = async () => { const s = page.getByTestId("receipt-section-graph"); return (await s.count()) ? Number(await s.getAttribute("data-tokens")) : 0; };
+  // K1c-3b: the graph from the sheet. The kernel's answer to the same question is the expectation (its sentences and numbers are never typed here).
+  const until = async (read, what, ms = 10000) => { let last; for (const end = Date.now() + ms; Date.now() < end;) { last = await read(); if (last) return last; await page.waitForTimeout(50); } throw new Error(`timed out waiting for ${what} (last: ${JSON.stringify(last)})`); };
+  const back = () => page.evaluate(() => window.__loomBack());
+  const navigatorAt = focus => page.locator(`[data-testid="graph-navigator"][data-focus="${focus}"][data-perspectives="sent_to_model"]`);
+  const openGraphFromSheet = async () => {
+    const request = await sheet().getAttribute("data-request-msg");
+    const focus = "msg:" + request.replace(/^m_/, "");
+    const expected = await api("POST", "/api/graph/navigate", { focus, perspectives: ["sent_to_model"], lang: "pl" });
+    await page.locator('[data-testid="receipt-show-in-graph"][data-graph="yes"]').waitFor();
+    assert.equal(await page.getByTestId("receipt-show-in-graph").isDisabled(), false, "the button is enabled");
+    assert.equal(await page.getByTestId("receipt-show-in-graph-reason").count(), 0, "no reason line while the button works");
+    await page.getByTestId("receipt-show-in-graph").tap();
+    await sheet().waitFor({ state: "detached" });
+    await navigatorAt(focus).waitFor();
+    await page.getByTestId("nav-rows").waitFor();
+    await page.getByTestId("nav-loading").waitFor({ state: "detached" });
+    return { focus, expected };
+  };
+  const navRows = () => page.locator('[data-testid="nav-rows"] > li').evaluateAll(els => els.map(el => ({
+    address: el.querySelector(".gnav-row-main").dataset.testid.replace(/^nav-row-/, ""), label: el.querySelector(".gnav-label").textContent,
+    derived: el.dataset.derived === "true", tokens: el.dataset.sentTokens ?? null, leftOut: el.dataset.leftOut === "true",
+    chips: Object.fromEntries([...el.querySelectorAll('[data-testid="nav-sent"],[data-testid="nav-left-out"],[data-testid="nav-derived"],[data-testid="nav-left-out-reason"]')].map(c => [c.dataset.testid, c.textContent])),
+  })));
+  // The rows in the page are the rows of the kernel's answer; returns them once they are all drawn.
+  const rowsOfRecord = async expected => {
+    const rows = await until(async () => { const r = await navRows(); return r.length === expected.children.length ? r : null; }, "the rows of the record");
+    assert.deepEqual(rows.map(r => r.address), expected.children.map(c => c.address), "the rows are the kernel's, in its order");
+    for (const row of rows) assert.equal(row.label, expected.children.find(c => c.address === row.address).label);
+    return rows;
+  };
+  // Back closes the layers: the card (when open), then the navigator (the step of the request goes with it); the chat is under it and nothing is left on the stack.
+  const leaveGraph = async () => {
+    if (await page.getByTestId("node-card").count() > 0) { assert.equal(await back(), true, "Back closes the card"); await page.getByTestId("node-card").waitFor({ state: "detached" }); }
+    assert.equal(await page.getByTestId("graph-navigator").count(), 1, "the card closed, the navigator did not");
+    assert.equal(await back(), true, "Back closes the navigator");
+    await page.getByTestId("graph-navigator").waitFor({ state: "detached" });
+    await page.getByTestId("chat-input").waitFor();
+    assert.equal(await sheet().count(), 0, "back in the chat, the sheet is not left open under it");
+    assert.equal(await back(), false, "no layer is left behind");
+  };
   const noScrollOrSmall = async () => {
     assert.ok(await page.evaluate(() => document.documentElement.scrollWidth) <= 390, "no horizontal page scroll");
     const small = await page.locator(".crs button").evaluateAll(els => els.filter(el => !el.disabled || true).map(el => { const r = el.getBoundingClientRect(); return { id: el.dataset.testid, w: Math.round(r.width), h: Math.round(r.height) }; }).filter(b => b.h < 44 || b.w < 44));
@@ -140,16 +185,63 @@ try {
     await noScrollOrSmall();
   });
 
-  await step("Pokaż w grafie stays visible and disabled with its reason while the kernel has no source for the perspective", async () => {
-    const button = page.getByTestId("receipt-show-in-graph");
-    await button.waitFor();
-    assert.equal(await button.innerText(), w["action.show_in_graph"]);
-    assert.equal(await button.isDisabled(), true);
-    assert.equal(await page.getByTestId("receipt-show-in-graph-reason").innerText(), w["action.show_in_graph.disabled"]);
-    assert.ok((await page.getByTestId("receipt-show-in-graph-reason").getAttribute("data-kernel-answer")).length > 0, "the kernel's own answer is kept on the element");
+  await step("Pokaż w grafie works: the button is enabled, the navigator opens on the request with the sent elements and their tokens (an estimate); derived rows say they are a view of the record", async () => {
+    const { focus, expected } = await openGraphFromSheet();
+    assert.equal(expected.receipt.present, true);
+    assert.deepEqual(expected.perspectives, ["sent_to_model"]);
+    const rows = await rowsOfRecord(expected);
+    await shot("m1-sent-graph");
+    const sentEdges = expected.edges.filter(e => e.kind === "sent_to_model");
+    assert.ok(sentEdges.length >= 2 && rows.some(r => r.derived) && rows.some(r => !r.derived), `sent elements, derived and real: ${sentEdges.length} links`);
+    for (const row of rows.filter(r => !r.leftOut)) {
+      const own = sentEdges.filter(e => e.dst === row.address), child = expected.children.find(c => c.address === row.address);
+      assert.ok(own.length > 0, `${row.address} is reached by a sent link`);
+      const weight = own.reduce((n, e) => n + e.weight, 0);
+      assert.equal(Number(row.tokens), weight, `${row.address}: the weight of the link is the tokens`);
+      const tokens = child.derived && child.value_human && own.length === 1 ? child.value_human : gsay("sent.tokens", { n: String(weight) });
+      assert.equal(row.chips["nav-sent"], `${own[0].label}: ${tokens}`, "the row says the kernel's name of the link and the tokens as an estimate");
+      assert.match(row.chips["nav-sent"], /szacunek/);
+      assert.equal(row.chips["nav-derived"], child.derived ? gsay("sent.derived") : undefined, "only derived rows carry the mark");
+    }
+    const sample = rows.find(r => r.derived), real = rows.find(r => !r.derived && r.chips["nav-sent"]);
+    console.log("[m1-context-sent] rendered sent row (real): " + JSON.stringify(real));
+    console.log("[m1-context-sent] rendered sent row (derived): " + JSON.stringify(sample));
+    const note = id => page.getByTestId(`nav-${id}`).innerText();
+    const counts = expected.receipt.counts;
+    const summary = gsay("sent.summary", { sent: String(counts.sent), left_out: String(counts.left_out) }) + " · " + gsay("sent.total", { tokens: gsay("sent.tokens", { n: String(expected.receipt.receipt.tokens_est) }) });
+    assert.equal(await note("sent-summary"), summary);
+    assert.equal(await note("sent-derived-note"), expected.children.find(c => c.derived).derived_note, "once, in the kernel's sentence");
+    assert.equal(await note("sent-note"), expected.receipt.note, "a record is not proof: the kernel's sentence");
+    assert.equal(await page.getByTestId("nav-sent-handed").count(), 0, "opened on the request itself, nothing was handed over");
+    assert.equal(await page.locator('[data-testid="nav-sent-derived-note"]').count(), 1, "the derived sentence is said once, not per row");
+    for (const id of ["sent-summary", "sent-derived-note", "sent-note"]) console.log(`[m1-context-sent] rendered note nav-${id}: ` + JSON.stringify(await note(id)));
+    const perspective = (await api("GET", "/api/perspectives")).perspectives.find(p => p.id === "sent_to_model").entry.label.pl;
+    await until(async () => (await page.getByTestId("nav-perspectives").innerText()) === gsay("perspective.active", { list: perspective }), "the ticked perspective, named in words under the bar");
+    assert.ok(!(await page.getByTestId("nav-perspectives").innerText()).includes("sent_to_model"), "not by its internal id");
+    assert.equal(await page.locator('[data-testid="nav-rows"] [data-testid="nav-chip"]').evaluateAll(els => els.some(el => /^chip\./.test(el.textContent))), false, "no missing word (a word that is missing shows its id)");
+    assert.equal(await page.getByTestId("nav-empty").count(), 0);
+    assert.ok(await page.evaluate(() => document.documentElement.scrollWidth) <= 390, "no horizontal page scroll");
+
+    // a derived row opens its card: the mark, the kernel's sentence, the tokens as an estimate
+    const derivedRow = expected.children.find(c => c.derived && c.kind !== "left_out");
+    await page.getByTestId(`nav-row-${derivedRow.address}`).tap();
+    await page.locator(`[data-testid="node-card"][data-address="${derivedRow.address}"]`).waitFor();
+    const card = await api("POST", "/api/graph/card", { address: derivedRow.address, lang: "pl" });
+    assert.equal(card.derived, true);
+    await page.getByTestId("card-derived-note").waitFor();
+    await page.getByTestId("card-value").waitFor();
+    assert.equal(await page.getByTestId("card-derived").innerText(), gsay("sent.derived"));
+    assert.ok((await page.getByTestId("card-derived-note").innerText()).endsWith(card.derived_note), "the card says the kernel's sentence: a view of the record, not a stored node");
+    const value = await page.getByTestId("card-value").innerText();
+    assert.ok(value.includes(card.value_human) && /szacunek/.test(card.value_human), `the card gives the tokens as an estimate: ${value}`);
+    console.log("[m1-context-sent] rendered derived card: " + JSON.stringify({ mark: await page.getByTestId("card-derived").innerText(), note: await page.getByTestId("card-derived-note").innerText(), value }));
+    await page.getByTestId("card-derived-note").scrollIntoViewIfNeeded();
+    await shot("m1-sent-card");
+    await leaveGraph();
   });
 
   await step("Następnym razem › szerzej: the NEXT request holds more in Graf, the one after it is back to the base", async () => {
+    await openLast();
     await page.getByTestId("receipt-step-wider").tap();
     await page.getByTestId("receipt-modify-result").waitFor();
     assert.equal(await page.getByTestId("receipt-modify-result").getAttribute("data-kind"), "applied");
@@ -189,7 +281,25 @@ try {
     assert.ok((await page.getByTestId("context-receipt-profile").innerText()).startsWith(`Profil: ${compat.label.pl}`));
     assert.ok((await page.getByTestId("receipt-dropped").allInnerTexts()).some(x => x.includes(w["section.memory"])), "what the profile switched off is in the left-out list");
     await shot("m1-context-sheet-compat");
-    await closeSheet();
+    const { expected } = await openGraphFromSheet();
+    const rows = await rowsOfRecord(expected);
+    const leftEdges = expected.edges.filter(e => e.kind === "left_out_of_model");
+    assert.ok(leftEdges.length >= 1 && expected.receipt.counts.left_out >= 1, "the profile left something out and the graph says so");
+    for (const e of leftEdges) {
+      const row = rows.find(r => r.address === e.dst);
+      assert.equal(row.leftOut, true);
+      assert.equal(row.chips["nav-left-out"], e.label, "worded as left out in the kernel's name of the link");
+      assert.ok(row.label.includes(e.metadata.reason_human) || row.chips["nav-left-out-reason"] === e.metadata.reason_human, `the reason is said in the kernel's words: ${JSON.stringify(row)}`);
+      assert.equal(row.chips["nav-sent"], undefined, "a left-out element is not shown as sent");
+    }
+    const group = rows.find(r => r.leftOut);
+    console.log("[m1-context-sent] rendered left-out row: " + JSON.stringify(group));
+    assert.ok((await page.getByTestId("nav-sent-summary").innerText()).startsWith(gsay("sent.summary", { sent: String(expected.receipt.counts.sent), left_out: String(expected.receipt.counts.left_out) })));
+    await page.getByTestId("nav-sent-summary").scrollIntoViewIfNeeded();
+    await shot("m1-sent-graph-notes");
+    await page.getByTestId(`nav-row-${group.address}`).scrollIntoViewIfNeeded();
+    await shot("m1-sent-graph-left-out");
+    await leaveGraph();
   });
 
   await step("with the receipt switched off the sheet says there is no receipt, in words; the menu entry opens the sheet too", async () => {
@@ -200,11 +310,38 @@ try {
     await sheet().and(page.locator('[data-state="missing"]')).waitFor();
     assert.equal(await page.getByTestId("context-receipt-missing-word").innerText(), w.missing);
     assert.ok((await page.getByTestId("context-line-open").last().innerText()).includes(w.missing), "the line says it too");
+    // the honest negative: the graph has no record either - the button is visible, disabled, and the reason is the kernel's own sentence for it
+    const request = await sheet().getAttribute("data-request-msg");
+    const none = await api("POST", "/api/graph/navigate", { focus: "msg:" + request.replace(/^m_/, ""), perspectives: ["sent_to_model"], lang: "pl" });
+    assert.equal(none.receipt.present, false);
+    assert.ok(none.receipt.text && none.receipt.missing_reason, "the kernel says why there is no record");
+    assert.equal(none.children.length, 0);
+    await page.locator('[data-testid="receipt-show-in-graph"][data-graph="no"]').waitFor();
+    assert.equal(await page.getByTestId("receipt-show-in-graph").isDisabled(), true);
+    assert.equal(await page.getByTestId("receipt-show-in-graph-reason").getAttribute("data-kernel-answer"), none.receipt.text);
+    // the reason is said in the sheet's own plain words (the kernel's sentence names a setting key); the kernel's sentence stays on the element
+    assert.equal(await page.getByTestId("receipt-show-in-graph-reason").innerText(), w["action.show_in_graph.disabled"].replace("{{reason}}", w.missing));
+    console.log("[m1-context-sent] rendered no-record negative: " + JSON.stringify({ sheet: await page.getByTestId("context-receipt-missing-word").innerText(), button: await page.getByTestId("receipt-show-in-graph").innerText(), disabled: true, reason: await page.getByTestId("receipt-show-in-graph-reason").innerText() }));
     await shot("m1-context-sheet-missing");
     await closeSheet();
     await page.getByTestId("shell-msg-actions").last().getByTestId("msg-receipt").evaluate(el => el.click());
     await sheet().and(page.locator('[data-state="missing"]')).waitFor();
     await closeSheet();
+  });
+
+  await step("a refusal of the graph is the reason of the disabled button, in the kernel's words (a faked 404: the real kernel answers every message with a record)", async () => {
+    await page.route("**/api/graph/navigate", route => route.fulfill({ status: 404, contentType: "application/json", body: JSON.stringify({ error: { code: "not_found", message: "no node at 'msg:test' in the graph projection" } }) }));
+    try {
+      await send("a message while the graph refuses");
+      await page.getByTestId("context-line-open").last().tap();
+      await sheet().and(page.locator('[data-state="receipt"]')).waitFor();
+      await page.locator('[data-testid="receipt-show-in-graph"][data-graph="no"]').waitFor();
+      assert.equal(await page.getByTestId("receipt-show-in-graph").isDisabled(), true);
+      const answer = await page.getByTestId("receipt-show-in-graph-reason").getAttribute("data-kernel-answer");
+      assert.ok(answer.length > 0 && answer.includes("no node at"), `the refusal is kept: ${answer}`);
+      assert.equal(await page.getByTestId("receipt-show-in-graph-reason").innerText(), w["action.show_in_graph.disabled"].replace("{{reason}}", answer));
+      await closeSheet();
+    } finally { await page.unroute("**/api/graph/navigate"); }
   });
 
   await step("Back closes the sheet before anything else", async () => {

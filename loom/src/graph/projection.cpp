@@ -128,6 +128,8 @@ struct Catalogue::Impl {
   std::optional<onboarding::DefaultLayers> layers_cache;
   std::string layers_error;
   std::optional<Json> screen_cache;
+  std::map<std::string, Json> receipt_cache;                 // receipt_of(): request or answer id -> the render of its record (M1-K1c3a)
+  std::optional<std::set<std::string>> receipt_kinds_cache;  // the edge kinds of the perspective sent_to_model
 
   using Reader = std::function<Result<Read>(Impl&, const Json& source, const std::string& parent, const Json& paging)>;
   static const std::map<std::string, Reader>& readers();
@@ -350,10 +352,11 @@ struct Catalogue::Impl {
   // A node as it leaves the catalogue: its evidence (and each property's) in words.
   void finish(Json& n) {
     if (json::get_bool(n, "value_pending", false)) resolve_setting_node(*this, n);
-    if (Json* ev = n.contains("evidence") ? &n["evidence"] : nullptr; ev && ev->is_object()) (*ev)["human"] = evidence_words(*ev);
+    // A node that already says its evidence in words (a derived node of the record of a request, receipt_node) keeps its own words.
+    if (Json* ev = n.contains("evidence") ? &n["evidence"] : nullptr; ev && ev->is_object() && !ev->contains("human")) (*ev)["human"] = evidence_words(*ev);
     if (n.contains("evidence_overrides") && n["evidence_overrides"].is_object())
       for (auto& item : n["evidence_overrides"].items())
-        if (item.value().is_object()) item.value()["human"] = evidence_words(item.value());
+        if (item.value().is_object() && !item.value().contains("human")) item.value()["human"] = evidence_words(item.value());
   }
 
   // One area of the entry profile as a node (label, why, order, expand; no counters): nullopt for an area the profile does not name (a
@@ -2095,6 +2098,15 @@ std::string Catalogue::canonical(std::string_view address) {
   return a;
 }
 
+std::string Catalogue::db_id(std::string_view address) const {
+  const std::string a(address);
+  for (const auto& f : impl_->identity.value("db_forms", Json::array())) {
+    const std::string from = json::get_string(f, "address_prefix");
+    if (!from.empty() && starts_with(a, from) && a.size() > from.size()) return json::get_string(f, "db_prefix") + a.substr(from.size());
+  }
+  return a;
+}
+
 Result<std::optional<Json>> Catalogue::node(const std::string& raw) {
   const std::string address = canonical(raw);
   Impl& c = *impl_;
@@ -2104,7 +2116,28 @@ Result<std::optional<Json>> Catalogue::node(const std::string& raw) {
               {"provenance", Json{{"layer", "rom"}, {"layers", Json::array({"rom"})}}}, {"attrs", Json::object()}};
     return std::optional<Json>(std::move(root));
   }
+  // A derived node of the perspective sent_to_model: a view of the record stored with the request, not a node of any source.
+  if (starts_with(address, "sent:")) {
+    LOOM_TRY_ASSIGN(auto row, receipt_node(*this, address));
+    if (row) c.finish(*row);
+    return row;
+  }
   return c.node_at(address);
+}
+
+Result<const Json*> Catalogue::receipt_of(const std::string& msg_id) {
+  Impl& c = *impl_;
+  if (const auto it = c.receipt_cache.find(msg_id); it != c.receipt_cache.end()) return &it->second;
+  if (!c.receipt_kinds_cache) {
+    LOOM_TRY_ASSIGN(auto persp, views::Perspectives::open(c.env.root));
+    LOOM_TRY_ASSIGN(auto ks, persp.edge_kinds_of("sent_to_model"));
+    c.receipt_kinds_cache = std::move(ks);
+  }
+  LOOM_TRY_ASSIGN(auto rendered, render_receipt(*this, *c.receipt_kinds_cache, Json{{"msg_id", msg_id}, {"lang", c.lang()}}));
+  // The record belongs to the request: asked by its answer or by itself, one render serves both.
+  if (const std::string req = json::get_string(rendered, "request_msg_id"); !req.empty() && req != msg_id) c.receipt_cache.emplace(req, rendered);
+  const auto at = c.receipt_cache.emplace(msg_id, std::move(rendered)).first;
+  return &at->second;
 }
 
 Result<Catalogue::Children> Catalogue::children(const std::string& raw_parent, const Json& paging) {
@@ -2267,7 +2300,7 @@ namespace {
 
 const std::set<std::string> kRowKeys = {"address", "label", "kind", "value", "value_human", "count", "count_unknown_reason", "provenance", "evidence",
                                         "evidence_overrides", "has_children", "status", "why", "order", "same_as", "source", "empty_reason", "no_translation",
-                                        "shown_also_in", "count_unknown_human", "value_unknown_reason"};
+                                        "shown_also_in", "count_unknown_human", "value_unknown_reason", "derived", "derived_note", "receipt"};
 
 Json row_of(const Json& n) {
   Json r = Json::object();
@@ -2514,6 +2547,37 @@ Result<Json> navigate(const Env& env, const Json& request) {
   const std::int64_t hops = std::max<std::int64_t>(1, json::get_int(request, "hops", 1));
   const std::string query = folded(json::get_string(request, "query"));
   const std::vector<std::string> perspectives = strings_in(request.value("perspectives", Json::array()));
+  // The perspectives asked for: the edge kinds they select; those whose source is the record of a request ("receipt", sent_to_model) are
+  // drawn from that record (render_receipt), not from the catalogue's edges (M1-K1c3a).
+  std::set<std::string> kinds, receipt_kinds;
+  Json perspective_info = Json::array();
+  if (!perspectives.empty()) {
+    LOOM_TRY_ASSIGN(auto persp, views::Perspectives::open(env.root));
+    for (const auto& p : perspectives) {
+      LOOM_TRY_ASSIGN(auto ks, persp.edge_kinds_of(p));
+      kinds.insert(ks.begin(), ks.end());
+      perspective_info.push_back(p);
+      const auto* entry = persp.view().find(p);
+      if (entry && json::get_string(entry->value, "source") == "receipt") receipt_kinds.insert(ks.begin(), ks.end());
+    }
+  }
+  // The record of the request in view: an answer hands over to the request that the record belongs to (said in handed_from).
+  const Json* receipt_render = nullptr;
+  Json receipt_info = nullptr;
+  if (!receipt_kinds.empty()) {
+    if (!starts_with(focus_address, "msg:")) {
+      receipt_info = Json{{"present", false}, {"missing_reason", "focus_not_a_message"}, {"text", receipt_words(env, "sent_focus_not_message")}};
+    } else {
+      LOOM_TRY_ASSIGN(receipt_render, cat.receipt_of(cat.db_id(focus_address)));
+      const std::string request_address = json::get_string(receipt_render->value("focus", Json::object()), "address");
+      if (json::get_bool(receipt_render->value("receipt", Json::object()), "present", false) && !request_address.empty() && request_address != focus_address) {
+        if (handed_from.empty()) handed_from = focus_address;
+        focus_address = request_address;
+        LOOM_TRY_ASSIGN(focus, cat.node(focus_address));
+        if (!focus) return Error(Errc::NotFound, "the answer " + handed_from + " belongs to the request '" + focus_address + "', which no source knows");
+      }
+    }
+  }
   Json paging = Json::object();
   if (request.contains("offset")) paging["offset"] = request["offset"];
   if (request.contains("before")) paging["before"] = request["before"];
@@ -2528,7 +2592,6 @@ Result<Json> navigate(const Env& env, const Json& request) {
   std::int64_t shown_first = 0;  // the first level shown
   Json by_source = Json::object();  // the first level of the sources the budget collapsed: source -> {label, total, shown}
   std::set<std::string> seen{focus_address};
-  Json perspective_info = Json::array();
   const auto matches = [&](const Json& n) {
     return query.empty() || folded(json::get_string(n, "label")).find(query) != std::string::npos ||
            folded(json::get_string(n, "address")).find(query) != std::string::npos;
@@ -2548,16 +2611,12 @@ Result<Json> navigate(const Env& env, const Json& request) {
   };
   if (!perspectives.empty()) {
     // The perspectives choose the edges: the nodes they reach from the focus, `hops` far, in both directions.
-    LOOM_TRY_ASSIGN(auto persp, views::Perspectives::open(env.root));
-    std::set<std::string> kinds;
-    for (const auto& p : perspectives) {
-      LOOM_TRY_ASSIGN(auto ks, persp.edge_kinds_of(p));
-      kinds.insert(ks.begin(), ks.end());
-      perspective_info.push_back(p);
-    }
     LOOM_TRY_ASSIGN(auto all, cat.edges(&unknown));
     LOOM_TRY_ASSIGN(auto here, cat.children(focus_address, paging));
     for (const auto& e : here.edges) all.push_back(e);
+    // The links of the record of the request (sent_to_model, left_out_of_model): weight = the tokens, metadata = class, why, reason.
+    if (receipt_render)
+      for (auto& e : receipt_edges(*receipt_render, receipt_kinds)) all.push_back(std::move(e));
     std::vector<Json> reached;  // breadth first, each with its depth and the node it was reached from (via)
     std::deque<std::pair<std::string, std::int64_t>> todo{{focus_address, 0}};
     while (!todo.empty()) {
@@ -2660,8 +2719,12 @@ Result<Json> navigate(const Env& env, const Json& request) {
   for (const auto& e : edges) {
     const std::string s = json::get_string(e, "src"), d = json::get_string(e, "dst"), k = json::get_string(e, "kind");
     if (!shown.count(s) || !shown.count(d)) continue;  // both ends drawn; the card lists every relation
-    if (!edge_seen.insert(s + "\x1f" + d + "\x1f" + k).second) continue;
-    edge_rows.push_back(Json{{"src", s}, {"dst", d}, {"kind", k}, {"label", cat.edge_label(k)}, {"meaning", cat.edge_meaning(k)}});
+    // a link of the record is one per item (the same element may be listed twice): told apart by its id
+    if (!edge_seen.insert(s + "\x1f" + d + "\x1f" + k + "\x1f" + json::get_string(e, "id")).second) continue;
+    Json row{{"src", s}, {"dst", d}, {"kind", k}, {"label", cat.edge_label(k)}, {"meaning", cat.edge_meaning(k)}};
+    for (const char* extra : {"weight", "metadata", "derived"})
+      if (e.contains(extra)) row[extra] = e[extra];
+    edge_rows.push_back(std::move(row));
   }
   LOOM_TRY_ASSIGN(auto crumbs, breadcrumbs(cat, *focus));
   // What could not be said, in words: the source by its name, the reason by its word.
@@ -2691,6 +2754,8 @@ Result<Json> navigate(const Env& env, const Json& request) {
            {"resolver_opens", cat.resolver_opens()}};
   if (!handed_from.empty()) out["handed_from"] = handed_from;
   if (!perspective_info.empty()) out["perspectives"] = perspective_info;
+  if (receipt_render) receipt_info = receipt_summary(*receipt_render);
+  if (!receipt_info.is_null()) out["receipt"] = receipt_info;
   if (!cat.hidden_sources().empty()) out["hidden_sources"] = cat.hidden_sources();
   return out;
 }
@@ -2743,9 +2808,17 @@ Result<Json> card(const Env& env, const Json& request) {
   // Relations grouped by edge kind, both directions: from the node's own source, the sources whose edges reach it, and its children.
   Json relations_unknown = Json::array();
   LOOM_TRY_ASSIGN(auto all, cat.edges_touching(address, &relations_unknown));
+  // A derived node of the record of a request (sent:<request id>:<ref>): its relations are the links of that record.
+  if (source == "receipt") {
+    const std::string rest = address.substr(5);
+    if (auto drawn = cat.receipt_of(rest.substr(0, rest.find(':'))); drawn)
+      for (auto& e : receipt_edges(**drawn, {})) all.push_back(std::move(e));
+    else relations_unknown.push_back(Json{{"source", "receipt"}, {"reason", drawn.error().message}});
+  }
   LOOM_TRY_ASSIGN(auto kids, cat.children(address, Json{{"page_limit", 50}}));
   for (const auto& e : kids.edges) all.push_back(e);
-  if (const std::string parent = json::get_string(*node, "parent"); !parent.empty()) {
+  // (not for a derived node of the record of a request: it is not "part of" the message, its relation is the link of the record, with its weight)
+  if (const std::string parent = json::get_string(*node, "parent"); !parent.empty() && source != "receipt") {
     const Json* own = cat.source_of(address);
     all.push_back(Json{{"src", address}, {"dst", parent}, {"kind", own ? json::get_string(*own, "contain_edge", "part_of") : std::string("part_of")}});
   }
@@ -2764,7 +2837,9 @@ Result<Json> card(const Env& env, const Json& request) {
     const std::string other = s == address ? d : s;
     std::string label = other;
     if (auto n = cat.node(other); n && *n) label = json::get_string(**n, "label", other);
-    relations[k][s == address ? "out" : "in"].push_back(Json{{"address", other}, {"label", label}});
+    Json related{{"address", other}, {"label", label}};
+    if (e.contains("weight")) related["weight"] = e["weight"];  // a link of the record: the tokens (sent_to_model) or the count (left_out_of_model)
+    relations[k][s == address ? "out" : "in"].push_back(std::move(related));
   }
   out["relations"] = relations;
   if (!relations_unknown.empty()) out["relations_unknown"] = relations_unknown;

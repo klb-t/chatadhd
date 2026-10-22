@@ -582,6 +582,28 @@ Json receipt_item(const std::string& ref, const std::string& label, const std::s
   return Json{{"ref", ref}, {"label", label}, {"source_kind", source_kind}, {"why", why}, {"tokens_est", estimate_tokens(text)}};
 }
 
+Json receipt_element(const std::string& ref, const std::string& label, const std::string& source_kind, const std::string& why, long long tokens_est, Json extra) {
+  Json out = Json{{"ref", ref}, {"label", label}, {"source_kind", source_kind}, {"why", why}, {"tokens_est", tokens_est}};
+  if (extra.is_object())
+    for (auto it = extra.begin(); it != extra.end(); ++it) out[it.key()] = it.value();
+  return out;
+}
+
+std::vector<long long> token_shares(const std::vector<std::string>& pieces) {
+  std::vector<long long> out;
+  out.reserve(pieces.size());
+  const auto divisor = ContextSelector::codepoints_per_token();
+  std::size_t codepoints = 0;
+  long long before = 0;
+  for (const auto& piece : pieces) {
+    codepoints += utf8::length(piece);
+    const long long now = static_cast<long long>((codepoints + divisor - 1) / divisor);
+    out.push_back(now - before);
+    before = now;
+  }
+  return out;
+}
+
 void Receipt::section(const std::string& cls, Json items) {
   long long tokens = 0;
   for (const auto& i : items) tokens += i.value("tokens_est", 0LL);
@@ -631,6 +653,37 @@ Json receipt_bound(Json receipt, const std::string& store, long long max_bytes) 
   receipt["limit_bytes"] = max_bytes;
   receipt["bytes_whole"] = whole;
   return receipt;
+}
+
+Result<StoredReceipt> stored_receipt(Database& db, const std::string& msg_id) {
+  LOOM_TRY_ASSIGN(auto found, db.get_msg(msg_id));
+  if (!found) return Error(Errc::NotFound, "message not found: " + msg_id);
+  Message m = *found;
+  StoredReceipt out;
+  out.msg_id = msg_id;
+  out.request_msg_id = m.id;
+  if (m.role != "user") {
+    std::optional<Message> source;
+    if (m.parent_id)
+      if (auto parent = db.get_msg(*m.parent_id); parent && *parent && (*parent)->role == "user") source = **parent;
+    if (!source)
+      if (auto all = db.get_msgs(m.conv_id)) {
+        bool seen = false;
+        for (auto it = all->rbegin(); it != all->rend() && !source; ++it) {
+          if (it->id == m.id) { seen = true; continue; }
+          if (seen && it->role == "user") source = *it;
+        }
+      }
+    if (source) {
+      m = *source;
+      out.request_msg_id = m.id;
+    }
+  }
+  const Json trace = m.metadata.is_object() ? m.metadata.value("context_trace", Json(nullptr)) : Json(nullptr);
+  if (trace.is_object())
+    if (Json receipt = trace.value("receipt", Json(nullptr)); receipt.is_object()) out.receipt = std::move(receipt);
+  out.request = std::move(m);
+  return out;
 }
 
 }  // namespace loom::chat::formats

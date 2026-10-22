@@ -59,6 +59,11 @@ export interface GraphNodeRow {
   /** A node shown here although its own place is elsewhere (its parent stays the breadcrumbs). */
   shown_also_in?: string;
   value_unknown_reason?: string;
+  /** K1c-3a: a node of the perspective sent_to_model that is a VIEW of the record of a request, not a stored node; derived_note says so in the language asked. */
+  derived?: boolean;
+  derived_note?: string;
+  /** The record's own facts about a derived node (class, section, tokens_est, request | group, reason, count). */
+  receipt?: Record<string, unknown>;
 }
 
 export interface GraphNavigateRequest {
@@ -82,6 +87,27 @@ export interface GraphEdgeRow {
   label: string;
   /** The edge kind's meaning in the language asked; null when no kind describes it. */
   meaning: string | null;
+  /** K1c-3a: sent_to_model = the tokens (estimate) of the element; left_out_of_model = 1 or the number of elements of the group. */
+  weight?: number;
+  /** sent_to_model: class, section, why, source_kind, ref, tokens_est; left_out_of_model: group, section, reason, reason_human, group_count. */
+  metadata?: { reason?: string; reason_human?: string; group?: string; group_count?: number; tokens_est?: number; section?: string; [key: string]: unknown };
+  derived?: boolean;
+}
+
+/** The summary of the record of a request in a graph.navigate answer (perspective sent_to_model): what was sent and left out, or why there is no record. */
+export interface NavigateReceipt {
+  present: boolean;
+  msg_id?: string;
+  request_msg_id?: string;
+  request_address?: string;
+  receipt?: { present?: boolean; tokens_est?: number; truncated?: boolean; sections?: number };
+  counts?: { nodes?: number; edges?: number; derived_nodes?: number; resolved_nodes?: number; sent?: number; left_out?: number };
+  dropped?: { ref?: string; label?: string; reason?: string; reason_human?: string; count?: number }[];
+  /** The record is a record, not proof (the kernel's sentence). */
+  note?: string;
+  /** No record: why (before_m1 | focus_not_a_message ...) and the kernel's sentence for it. */
+  missing_reason?: string;
+  text?: string;
 }
 
 export interface GraphNavigateResult {
@@ -108,6 +134,8 @@ export interface GraphNavigateResult {
   hops: number;
   handed_from?: string;
   perspectives?: string[];
+  /** Only with the perspective sent_to_model. */
+  receipt?: NavigateReceipt;
   hidden_sources?: unknown[];
 }
 

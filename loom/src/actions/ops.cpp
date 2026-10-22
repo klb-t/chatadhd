@@ -3,6 +3,7 @@
 // the engine that does the work (the calls the C ABI makes); what it says back is written from runtime/chat_ops.pack in the language of the run.
 #include "loom/action_ops.h"
 
+#include "chat/context_format.h"
 #include "graph/projection.h"
 #include "loom/action_spend.h"
 #include "loom/client_blobs.h"
@@ -1875,8 +1876,9 @@ StepOutcome perspectives_show(Ctx& x) {
     return answer(x.say("persp_head", Json{{"count", lines.size()}}) + "\n" + join_lines(lines), Json{{"perspectives", list}});
   }
   Json request = Json::object();
-  for (const char* k : {"seeds", "hops", "direction", "limit", "key", "units"})
+  for (const char* k : {"seeds", "hops", "direction", "limit", "key", "units", "msg_id", "label_chars"})  // msg_id: the perspective sent_to_model (the record of that request)
     if (x.has(k)) request[k] = json_arg(x, k);
+  request["lang"] = x.lang;  // the words of the nodes (derived labels, reasons) are in the language of the run
   std::string conv = x.str("conversation_id");
   if (conv.empty()) conv = x.conv_id();
   if (!conv.empty()) request["conversation_id"] = conv;
@@ -2456,32 +2458,12 @@ StepOutcome context_receipt(Ctx& x) {
     }
   }
   if (id.empty()) return fail(Errc::InvalidArgument, x.say("context_receipt_which"));
-  auto found = x.rt.db().get_msg(id);
-  if (!found) return fail(found.error());
-  if (!*found) return fail(Errc::NotFound, "message not found: " + id);
-  Message m = **found;
-  // The receipt lives with the message the person sent; asked about the answer, the request that made it is the message before (its parent).
-  std::string request_id = m.id;
-  if (m.role != "user") {
-    // The message the answer came from: its parent when it has one, else the last message the person sent before it in the conversation.
-    std::optional<Message> source;
-    if (m.parent_id)
-      if (auto parent = x.rt.db().get_msg(*m.parent_id); parent && *parent && (*parent)->role == "user") source = **parent;
-    if (!source)
-      if (auto all = x.rt.db().get_msgs(m.conv_id)) {
-        bool seen = false;
-        for (auto it = all->rbegin(); it != all->rend() && !source; ++it) {
-          if (it->id == m.id) { seen = true; continue; }
-          if (seen && it->role == "user") source = *it;
-        }
-      }
-    if (source) {
-      m = *source;
-      request_id = m.id;
-    }
-  }
-  const Json trace = m.metadata.is_object() ? m.metadata.value("context_trace", Json(nullptr)) : Json(nullptr);
-  const Json receipt = trace.is_object() ? trace.value("receipt", Json(nullptr)) : Json(nullptr);
+  // One reading for this action and for the perspective sent_to_model (chat::formats::stored_receipt): the record lives with the message the person
+  // sent; asked about the answer, the request that made it is the message before it.
+  auto stored = chat::formats::stored_receipt(x.rt.db(), id);
+  if (!stored) return fail(stored.error());
+  const std::string request_id = stored->request_msg_id;
+  const Json receipt = stored->receipt;
   if (!receipt.is_object())
     return answer(x.say("context_receipt_missing"), Json{{"msg_id", id}, {"request_msg_id", request_id}, {"missing_reason", "before_m1"},
                                                           {"also_when", Json::array({"context_receipt_store=never", "trace_context=false"})}});

@@ -1213,6 +1213,16 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
     if (list.is_null()) list = Json::array();
     list.push_back(std::move(item));
   };
+  // A class whose text is listed by ELEMENT (M1-K1c2 B: the nodes of the memory, the messages of the graph). The aggregate item (what the receipt said
+  // before the elements) is kept aside: when the whole record is over context_receipt_max_bytes the list falls back to it before anything else is cut.
+  std::map<std::string, Json> ritems_aggregate;
+  const auto note_elements = [&](const std::string& cls, Json aggregate, std::vector<Json> elements) {
+    if (!want_receipt) return;
+    if (elements.empty()) { note(cls, std::move(aggregate)); return; }
+    aggregate["elements_omitted"] = elements.size();
+    ritems_aggregate[cls] = Json::array({std::move(aggregate)});
+    for (auto& e : elements) note(cls, std::move(e));
+  };
   // The numbers: a null knob of the profile is what the setting says; a modifier acts on the number the request would have had.
   std::optional<long long> nodes_eff, window_eff, hops_eff;
   if (opts.context_depth) hops_eff = *opts.context_depth;
@@ -1298,10 +1308,30 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
   const bool memory_on = opts.include_memory && choice.source_on("memory");
   if (!unified && memory_ && opts.include_memory && !memory_on) rc.drop("memory", "source_off", {}, 1);
   if (!unified && memory_ && memory_on) {
-    std::string mem_ctx = memory_->get_active_context();
+    std::string mem_ctx;
+    MemoryContextDetail mem_detail;
+    if (want_receipt) {
+      auto d = memory_->get_active_context_detailed();  // the same text as get_active_context(), plus the nodes it was made of
+      if (!d) throw std::runtime_error(d.error().to_string());
+      mem_detail = std::move(*d);
+      mem_ctx = mem_detail.text;
+    } else {
+      mem_ctx = memory_->get_active_context();
+    }
     if (!mem_ctx.empty()) {
       part_memory.push_back(Json{{"role", "system"}, {"content", "User's memory/context:\n" + mem_ctx}});
-      note("memory", chat::formats::receipt_item("memory_tree", "active memory", "memory_node", "the active nodes of the memory tree", mem_ctx));
+      std::vector<Json> elements;
+      if (want_receipt) {
+        std::vector<std::string> pieces;
+        for (std::size_t i = 0; i < mem_detail.lines.size(); ++i) pieces.push_back((i ? mem_detail.separator : std::string()) + mem_detail.lines[i].line);
+        const auto shares = chat::formats::token_shares(pieces);
+        for (std::size_t i = 0; i < mem_detail.lines.size(); ++i) {
+          const auto& l = mem_detail.lines[i];
+          elements.push_back(chat::formats::receipt_element(l.id, l.node_type, "memory_node", "an active node of the memory tree", shares[i],
+                                                            Json{{"node_type", l.node_type}, {"depth", l.depth}}));
+        }
+      }
+      note_elements("memory", chat::formats::receipt_item("memory_tree", "active memory", "memory_node", "the active nodes of the memory tree", mem_ctx), std::move(elements));
     }
   }
 
@@ -1315,10 +1345,32 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
       if (hops_eff && *hops_eff > 0) gopts.depth = static_cast<int>(*hops_eff);
       if (nodes_eff && *nodes_eff > 0) gopts.max_nodes = static_cast<int>(*nodes_eff);
       if (!conv_id.empty()) gopts.current_conv_id = std::string(conv_id);
-      std::string graph_ctx = graph_memory_->select_context(current_text, gopts);
+      std::string graph_ctx;
+      GraphContextDetail graph_detail;
+      if (want_receipt) {
+        auto d = graph_memory_->select_context_detailed(current_text, gopts);  // select_context's text, byte for byte, plus the messages it was made of
+        if (!d) log::error("loom.graph_memory", "context profile rejected: {}", d.error().message);
+        else { graph_detail = std::move(*d); graph_ctx = graph_detail.text; }
+      } else {
+        graph_ctx = graph_memory_->select_context(current_text, gopts);
+      }
       if (!graph_ctx.empty()) {
         part_graph.push_back(Json{{"role", "system"}, {"content", graph_ctx}});
-        note("graph", chat::formats::receipt_item("graph_memory", "graph context", "graph_node", "nodes of the graph related to the question", graph_ctx));
+        std::vector<Json> elements;
+        if (want_receipt && !graph_detail.elements.empty()) {
+          std::vector<std::string> pieces{graph_detail.header};
+          for (std::size_t i = 0; i < graph_detail.elements.size(); ++i) pieces.push_back((i ? graph_detail.separator : std::string()) + graph_detail.elements[i].row);
+          const auto shares = chat::formats::token_shares(pieces);
+          if (!graph_detail.header.empty())
+            elements.push_back(chat::formats::receipt_element("graph_memory", "graph context", "graph_node", "the heading line of the graph context", shares[0]));
+          for (std::size_t i = 0; i < graph_detail.elements.size(); ++i) {
+            const auto& e = graph_detail.elements[i];
+            elements.push_back(chat::formats::receipt_element(e.id, e.role, "message:graph",
+                                                              "a message found by walking the graph from the question", shares[i + 1],
+                                                              Json{{"via", e.via.empty() ? Json(nullptr) : Json(e.via)}, {"depth", e.depth}, {"conv_id", e.conv_id}}));
+          }
+        }
+        note_elements("graph", chat::formats::receipt_item("graph_memory", "graph context", "graph_node", "nodes of the graph related to the question", graph_ctx), std::move(elements));
       }
     } catch (const std::exception& e) {
       log::debug("loom.chat_engine", "Graph memory selection failed: {}", e.what());
@@ -1466,6 +1518,7 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
       rc.drop("graph", "budget", {"graph_memory"}, 1);
       part_graph = Json::array();
       ritems.erase("graph");
+      ritems_aggregate.erase("graph");
       graph = 0;
     }
     while (fixed + graph + hist_tokens > limit && hist.size() > 1) {
@@ -1546,12 +1599,20 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
       (*context_trace)["replaced_history_message_ids"] = replaced_ids;
     }
     if (want_receipt) {
-      for (const auto& cls : known_orders.at(order_name)) {
-        const auto name = cls.get<std::string>();
-        rc.section(name, ritems.count(name) && ritems[name].is_array() ? ritems[name] : Json::array());
-      }
-      for (const char* tail : {"task", "reply_instruction", "question"})
-        if (tail_items.contains(tail)) rc.section(tail, Json::array({tail_items.at(tail)}));
+      // The sections, with the memory and the graph listed by element, or (collapsed) with their aggregate items.
+      const auto fill = [&](bool collapsed) {
+        chat::formats::Receipt out;
+        out.dropped = rc.dropped;
+        for (const auto& cls : known_orders.at(order_name)) {
+          const auto name = cls.get<std::string>();
+          Json items = ritems.count(name) && ritems[name].is_array() ? ritems[name] : Json::array();
+          if (collapsed && ritems_aggregate.count(name) && !items.empty()) items = ritems_aggregate[name];
+          out.section(name, std::move(items));
+        }
+        for (const char* tail : {"task", "reply_instruction", "question"})
+          if (tail_items.contains(tail)) out.section(tail, Json::array({tail_items.at(tail)}));
+        return out;
+      };
       Json unapplied = Json::array();
       if (choice.chosen) {
         if (json::get_bool(choice.row.value("sources", Json::object()), "search", false)) unapplied.push_back("search");
@@ -1579,7 +1640,15 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
                             : Json{{"flow", "plain"}, {"renderer", "chat_turns"}, {"output", "text"}};
       header["renderer"] = flow ? flow->renderer : std::string("chat_turns");
       long long max_bytes = cfg_integer(cfg_, "context_receipt_max_bytes", 65536);
-      (*context_trace)["receipt"] = chat::formats::receipt_bound(chat::formats::receipt_finish(rc, std::move(header), messages), receipt_store, max_bytes);
+      Json whole = chat::formats::receipt_finish(fill(false), header, messages);
+      if (receipt_store != "always" && max_bytes > 0 && !ritems_aggregate.empty() && json::dump(whole).size() > static_cast<std::size_t>(max_bytes)) {
+        // Over the bound: the lists of elements go back to their aggregate items (the memory and the graph keep their size in tokens), and only
+        // if the record is still too big the receipt_bound summary takes the rest.
+        whole = chat::formats::receipt_finish(fill(true), std::move(header), messages);
+        whole["elements_collapsed"] = true;
+        whole["elements_collapsed_reason"] = "context_receipt_max_bytes";
+      }
+      (*context_trace)["receipt"] = chat::formats::receipt_bound(std::move(whole), receipt_store, max_bytes);
     }
     if (capture_native_history) (*context_trace)["_native_history_snapshot"] = std::move(captured_native_history);
   }
