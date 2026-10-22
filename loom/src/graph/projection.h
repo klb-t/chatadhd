@@ -74,8 +74,13 @@ class Catalogue {
   std::string canonical(std::string_view address);
   // The reverse of the db forms: msg:<id> -> m_<id>, conv:<id> -> c_<id>; anything else unchanged.
   std::string db_id(std::string_view address) const;
-  // The node at an address, or nullopt when no source knows it.
+  // The node at an address, or nullopt when no source knows it. A derived node of the perspective sent_to_model (sent:<request id>:<ref>,
+  // M1-K1c3a) is read from the record stored with that request (receipt_of), not from a source: a view of the record, never stored.
   Result<std::optional<Json>> node(const std::string& address);
+  // The projection of the record of one request (render_receipt over this catalogue with the kinds of the perspective sent_to_model),
+  // computed once per request and render. `msg_id`: the request or its answer (database id, m_...). The render has "nodes" (id, address) and
+  // "edges" (src/dst by id); receipt_edges() turns them into catalogue edges.
+  Result<const Json*> receipt_of(const std::string& msg_id);
 
   struct Children {
     std::vector<Json> nodes;               // unique addresses, in source order
@@ -159,6 +164,20 @@ Result<Json> render_catalogue(const Env& env, const std::set<std::string>& kinds
 // element (metadata {group, reason, reason_human, group_count}). A projection: computed on demand from the stored record, nothing is written.
 // No record (before M1, context_receipt_store=never): an empty graph with missing_reason and the words of the action context.receipt.
 Result<Json> render_receipt(const Env& env, const std::set<std::string>& kinds, const Json& request);
+// The same over a catalogue already open (graph.navigate, graph.card): the words, the labels of the edge kinds and the addresses are read once.
+Result<Json> render_receipt(Catalogue& cat, const std::set<std::string>& kinds, const Json& request);
+// The links of a render of the record as catalogue edges: {src, dst, kind, id, weight, metadata, derived} with src and dst as ADDRESSES (the
+// render names nodes by id), only the links whose kind is in `kinds` (empty = every link). graph.navigate walks them like any other edge of the perspective.
+std::vector<Json> receipt_edges(const Json& render, const std::set<std::string>& kinds);
+// The catalogue row of a derived node of that perspective (address sent:<request id>:<ref>), built from the stored record: label, kind,
+// class/section, why, tokens, derived:true and the words that it is a view of the record and not a stored node; nullopt when the request
+// has no record or the record has no such node. The row is not yet "finished" (evidence words): Catalogue::node does that.
+Result<std::optional<Json>> receipt_node(Catalogue& cat, const std::string& address);
+// A word of that perspective (runtime/chat_ops.pack texts, pl + en) in the language of the env; the id itself when the data has none.
+std::string receipt_words(const Env& env, const std::string& id);
+// What graph.navigate says about the record next to the nodes and links: the render without them {request_msg_id, request_address, receipt{present,
+// schema, tokens_est, truncated, ...}, counts, sections, dropped, note} and, with no record, {missing_reason, also_when, text}.
+Json receipt_summary(const Json& render);
 
 // The actions of the catalogue this module carries out ("graph.navigate", "graph.card", "settings.resolved", "roles.resolved", "rom.override").
 bool is_projection_action(std::string_view action);

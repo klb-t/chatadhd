@@ -11958,6 +11958,28 @@
             },
             "has_default": false,
             "edit": "free_text"
+          },
+          {
+            "name": "msg_id",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The message whose record to draw (perspective sent_to_model): the request, or its answer",
+              "pl": "Wiadomość, której zapis ma być narysowany (perspektywa sent_to_model): pytanie albo jego odpowiedź"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "label_chars",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "How many characters of a message go into its label in the graph (0 = the whole text; without it the setting of the record graph)",
+              "pl": "Ile znaków wiadomości trafia do jej etykiety w grafie (0 = cały tekst; bez tego działa ustawienie grafu zapisu)"
+            },
+            "has_default": false,
+            "edit": "free_text"
           }
         ],
         "examples": {

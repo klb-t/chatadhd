@@ -74,6 +74,12 @@ std::string kind_of_source(const std::string& source_kind) {
 Result<Json> render_receipt(const Env& env, const std::set<std::string>& kinds, const Json& request) {
   if (!env.db) return Error(Errc::InvalidArgument, "perspective sent_to_model needs a graph (a database)");
   LOOM_TRY_ASSIGN(auto cat, Catalogue::open(env));
+  return render_receipt(cat, kinds, request);
+}
+
+Result<Json> render_receipt(Catalogue& cat, const std::set<std::string>& kinds, const Json& request) {
+  const Env& env = cat.env();
+  if (!env.db) return Error(Errc::InvalidArgument, "perspective sent_to_model needs a graph (a database)");
   const Words words = Words::load(env.root, json::get_string(request, "lang", env.lang));
 
   std::string named = json::get_string(request, "msg_id");
@@ -273,6 +279,111 @@ Result<Json> render_receipt(const Env& env, const std::set<std::string>& kinds, 
   out["counts"] = Json{{"nodes", nodes.size()}, {"edges", edges.size()}, {"derived_nodes", derived_nodes}, {"resolved_nodes", resolved_nodes}, {"sent", sent}, {"left_out", left_out}};
   out["note"] = words.say("context_receipt_note");
   if (cut) out["truncated"] = true;
+  return out;
+}
+
+std::vector<Json> receipt_edges(const Json& render, const std::set<std::string>& kinds) {
+  std::map<std::string, std::string> address_of;
+  const Json nodes = render.value("nodes", Json::array());
+  for (const auto& n : nodes) address_of[json::get_string(n, "id")] = json::get_string(n, "address", json::get_string(n, "id"));
+  const auto at = [&](const std::string& id) {
+    const auto it = address_of.find(id);
+    return it == address_of.end() ? id : it->second;
+  };
+  std::vector<Json> out;
+  const Json edges = render.value("edges", Json::array());
+  for (const auto& e : edges) {
+    const std::string kind = json::get_string(e, "type", json::get_string(e, "kind"));
+    if (!kinds.empty() && !kinds.count(kind)) continue;
+    out.push_back(Json{{"src", at(json::get_string(e, "src"))}, {"dst", at(json::get_string(e, "dst"))}, {"kind", kind}, {"id", json::get_string(e, "id")},
+                       {"weight", e.value("weight", Json(0))}, {"metadata", e.value("metadata", Json::object())}, {"derived", true}});
+  }
+  return out;
+}
+
+Result<std::optional<Json>> receipt_node(Catalogue& cat, const std::string& address) {
+  if (!has_prefix(address, "sent:")) return std::optional<Json>();
+  const std::string rest = address.substr(5);
+  const auto colon = rest.find(':');
+  if (colon == std::string::npos || colon == 0 || colon + 1 >= rest.size()) return std::optional<Json>();
+  const std::string req = rest.substr(0, colon);
+  auto got = cat.receipt_of(req);
+  if (!got) {
+    // not an error of the person's: an address of a request that is gone (or never was) is simply not a node
+    log::write(log::Level::Debug, kLog, "receipt_node " + address + ": " + got.error().message);
+    return std::optional<Json>();
+  }
+  const Json& render = **got;
+  if (!json::get_bool(render.value("receipt", Json::object()), "present", false)) return std::optional<Json>();
+  const Json nodes = render.value("nodes", Json::array());
+  const Json* found = nullptr;
+  for (const auto& n : nodes)
+    if (json::get_string(n, "id") == address) found = &n;
+  if (!found) return std::optional<Json>();
+  const Words words = Words::load(cat.env().root, cat.env().lang);
+  const std::string req_address = json::get_string(render.value("focus", Json::object()), "address");
+
+  // What the person sees of it: the links that reach it (their weight is the tokens) and the facts the record gives.
+  const Json all_edges = render.value("edges", Json::array());
+  Json links = Json::array();
+  Json facts = Json::object();
+  const Json meta = found->value("metadata", Json::object());
+  for (const auto& k : {"ref", "source_kind", "class", "items_omitted", "group", "reason", "count"})
+    if (meta.contains(k)) facts[k] = meta[k];
+  double tokens = -1;
+  bool sent_link = false;
+  for (const auto& e : all_edges) {
+    if (json::get_string(e, "dst") != address) continue;
+    const std::string kind = json::get_string(e, "type", json::get_string(e, "kind"));
+    const Json m = e.value("metadata", Json::object());
+    links.push_back(Json{{"kind", kind}, {"label", e.value("label", Json(kind))}, {"weight", e.value("weight", Json(0))}});
+    for (const auto& k : {"class", "section", "why", "source_kind", "ref", "tokens_est", "reason", "reason_human", "group", "group_count", "truncated", "items_omitted"})
+      if (m.contains(k) && !facts.contains(k)) facts[k] = m[k];
+    if (kind == "sent_to_model") {
+      sent_link = true;
+      tokens = json::get_number(e, "weight", 0.0);
+    }
+  }
+  facts["request"] = req_address;
+  facts["request_msg_id"] = req;
+  facts["links"] = links;
+  std::string why = json::get_string(facts, "why");
+  if (why.empty()) why = json::get_string(facts, "section");
+  const Json record_evidence{{"class", "observed"}, {"confidence", 1.0},
+                             {"provenance", Json{{"layer", "record"}, {"source_ref", cat.canonical(req) + " metadata.context_trace.receipt"},
+                                                 {"method", "context_receipt"}, {"time", nullptr}}}};
+  Json row{{"address", address},
+           {"label", found->value("label", Json(address))},
+           {"kind", found->value("kind", Json("item"))},
+           {"source", "receipt"},
+           {"parent", req_address},
+           {"evidence", record_evidence},
+           {"provenance", Json{{"layer", "record"}, {"layers", Json::array({"record"})}}},
+           {"has_children", false},
+           {"derived", true},
+           {"derived_note", words.say("sent_derived_note")},
+           {"receipt", facts},
+           {"why", why},
+           {"attrs", Json::object()}};
+  if (sent_link) {
+    row["value"] = tokens;
+    row["value_human"] = words.say("sent_tokens_value", Json{{"tokens", static_cast<std::int64_t>(tokens)}});
+    row["evidence_overrides"] = Json{{"value", Json{{"class", "inferred"}, {"confidence", nullptr},
+                                                    {"provenance", Json{{"layer", "record"}, {"source_ref", "chars / codepoints_per_token"}, {"method", "token_estimate"}, {"time", nullptr}}}}}};
+  } else if (const std::string rh = json::get_string(facts, "reason_human"); !rh.empty()) {
+    row["value_human"] = rh;
+  }
+  return std::optional<Json>(std::move(row));
+}
+
+std::string receipt_words(const Env& env, const std::string& id) { return Words::load(env.root, env.lang).say(id); }
+
+Json receipt_summary(const Json& render) {
+  Json out = Json::object();
+  for (const char* k : {"msg_id", "request_msg_id", "receipt", "counts", "sections", "dropped", "note", "empty", "missing_reason", "also_when", "text", "truncated"})
+    if (render.contains(k)) out[k] = render[k];
+  out["present"] = json::get_bool(render.value("receipt", Json::object()), "present", false);
+  out["request_address"] = json::get_string(render.value("focus", Json::object()), "address");
   return out;
 }
 
