@@ -31,6 +31,8 @@ function fakeBrowser(initialState = null) {
     userBack() { win.history.back(); },
     /** The user presses Forward. */
     userForward() { queue.push(() => { if (index < entries.length - 1) { index += 1; fire('popstate'); } }); },
+    /** Only the first n queued traversals run (the others stay late); the popstate handlers may queue more. */
+    deliver(n = 1) { for (let i = 0; i < n && queue.length; i += 1) queue.shift()(); },
     /** The history catches up: every queued traversal runs, including those that popstate handlers queue. */
     flush() { let guard = 0; while (queue.length) { queue.shift()(); if (++guard > 100) throw new Error('the history never settles'); } },
     key(key, extra = {}) { const event = { key, defaultPrevented: false, isComposing: false, preventDefault() { this.defaultPrevented = true; }, ...extra }; fire('keydown', event); return event; },
@@ -186,4 +188,91 @@ test('a back() that never answers (nothing behind the entry) stops blocking afte
   t = 700; stack.push('c', () => {});         // gave up waiting: reconciles (have 1 < want 2)
   assert.deepEqual(calls, ['back', 'push2']);
   assert.equal(h.BACK_TIMEOUT_PRESET_MS, 1000);
+});
+
+// ---- M1-FLAKE1: a LATE popstate of our own back (slower than backTimeoutMs on a loaded phone) is still ours -------------------------
+// Evidence: android-smoke runs on three phone profiles; after '⋮ > Ustawienia' the panel vanished at random steps. The popstate of an
+// earlier own back arrived after the wait had been given up, was read as the person's Back and closed the layers opened since.
+
+test('FLAKE-1: the popstate of our own back arrives later than backTimeoutMs, after new layers were opened: they stay open', () => {
+  let t = 0;
+  const { b, stack, closed, open } = setup({ now: () => t });
+  open('menu'); open('panel');                                    // depth 2
+  assert.equal(b.win.__loomBack(), true); assert.equal(b.win.__loomBack(), true);   // the m1Reset shape: two Backs in a row
+  assert.equal(b.pending(), 1);                                   // one history.back() in flight, the stack is empty
+  t += h.BACK_TIMEOUT_PRESET_MS + 500;                            // longer than the wait; the popstate has not come
+  closed.length = 0;
+  open('menu2'); open('panel2');                                  // the app opens new layers meanwhile
+  b.flush();                                                      // the late popstates arrive now
+  assert.deepEqual(stack.ids, ['menu2', 'panel2']);
+  assert.deepEqual(closed, []);                                   // the late own popstate closed nothing
+  assert.equal(b.index, 2); assert.equal(b.pending(), 0);         // and the history ends with one entry per layer
+});
+
+test('FLAKE-1: two own backs in flight, only the first answered in time: the late second one closes nothing', () => {
+  let t = 0;
+  const { b, stack, closed, open } = setup({ now: () => t });
+  open('a'); open('b'); open('c');                                // depth 3
+  for (let i = 0; i < 3; i += 1) assert.equal(b.win.__loomBack(), true);
+  b.deliver(1);                                                   // the first back answered in time; the stack asks for the next one
+  assert.equal(b.pending(), 1); assert.equal(stack.size, 0);
+  t += h.BACK_TIMEOUT_PRESET_MS + 500;                            // the second one is late
+  closed.length = 0;
+  open('menu'); open('panel');
+  b.flush();
+  assert.deepEqual(stack.ids, ['menu', 'panel']); assert.deepEqual(closed, []);
+  assert.equal(b.index, 2); assert.equal(b.pending(), 0);
+});
+
+test('FLAKE-1: the wait is given up, more layers than the stale history are opened, then the late popstate arrives: nothing closes', () => {
+  let t = 0;
+  const { b, stack, closed, open } = setup({ now: () => t });
+  open('a');                                                      // depth 1
+  assert.equal(b.win.__loomBack(), true);                         // own back in flight (lands on 0)
+  t += 5000;
+  open('x'); open('y');                                           // 2 layers over a history that is still at depth 1
+  b.flush();
+  assert.deepEqual(stack.ids, ['x', 'y']); assert.deepEqual(closed, []);
+  assert.equal(b.index, 2); assert.equal(b.pending(), 0);
+  b.userBack(); b.flush();                                        // and the person's Back still closes the topmost layer
+  assert.deepEqual(closed, ['y']); assert.deepEqual(stack.ids, ['x']); assert.equal(b.index, 1);
+});
+
+test('FLAKE-1: the person presses Back while an own back is still late: both popstates are told apart by order and depth', () => {
+  let t = 0;
+  const { b, stack, closed, open } = setup({ now: () => t });
+  open('a'); open('b'); open('c');
+  assert.equal(b.win.__loomBack(), true);                         // own back in flight; 'c' already closed
+  t += 5000;
+  b.userBack();                                                   // the person's Back queued behind it
+  b.flush();
+  assert.deepEqual(closed, ['c', 'b']); assert.deepEqual(stack.ids, ['a']); assert.equal(b.index, 1);
+});
+
+test('FLAKE-1: a popstate that matches no own back is the person\'s, however recent our last back was', () => {
+  let t = 0;
+  const { b, stack, closed, open } = setup({ now: () => t });
+  open('a'); open('b'); open('c');
+  stack.popped(0);                                                // a link to the base while nothing of ours is in flight
+  assert.deepEqual(closed, ['c', 'b', 'a']);
+  const second = setup({ now: () => t });
+  second.open('a'); second.open('b');
+  assert.equal(second.b.win.__loomBack(), true);                  // own back (b -> depth 1) in flight
+  second.stack.popped(0);                                         // but the history jumped to the base: not what we asked for
+  assert.deepEqual(second.closed, ['b', 'a']);
+  assert.equal(second.stack.size, 0);
+});
+
+test('FLAKE-1: forgetBackAfterMs (optional, preset: never) drops a back that has been silent that long; its popstate is then the person\'s', () => {
+  let t = 0;
+  const { b, stack, closed, open } = setup({ now: () => t, forgetBackAfterMs: 10000 });
+  open('a');
+  assert.equal(b.win.__loomBack(), true);                         // own back to 0 in flight
+  t += 20000;                                                     // silent longer than forgetBackAfterMs
+  open('x');                                                      // reconcile forgets it and works from the real history (depth 1)
+  b.flush();                                                      // the very late answer: depth 0 over one layer
+  assert.deepEqual(closed, ['x']);                                // now read as the person's Back
+  const kept = setup({ now: () => t });                           // preset: never forget
+  kept.open('a'); kept.b.win.__loomBack(); t += 20000; kept.open('x'); kept.b.flush();
+  assert.deepEqual(kept.closed, []); assert.deepEqual(kept.stack.ids, ['x']);
 });
