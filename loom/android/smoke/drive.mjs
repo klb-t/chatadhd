@@ -632,6 +632,26 @@ const serverChecks = [
     await click("context-receipt-close"); await waitGone("context-receipt", 10);
     return `line "${line.slice(0, 120)}"; header "${header.replace(/\s+/g, " ").slice(0, 200)}"; "${disclaimer.trim()}"; ${step}`;
   }],
+  // M1-W1b: + › Kontekst › Szerzej (next message only), the context strip says so; the model chip's ⓘ opens where the model comes from
+  ["context: + › Kontekst › Szerzej, the strip, the model's provenance", async () => {
+    await waitTid("shell-attach", 20); await click("shell-attach");
+    await waitTid("composer-menu", 10); await click("composer-menu-context");
+    await waitTid("composer-menu-wider", 10); await click("composer-menu-wider");
+    const kind = await until("the kernel's answer to the step", () => page.ev(`${q("composer-menu-modify-result")}?.getAttribute('data-kind')`), 30, 300);
+    const said = (await textTid("composer-menu-modify-result")).replace(/\s+/g, " ").slice(0, 200);
+    shot("composer-context");
+    await m1Reset();
+    const strip = (await textTid("context-strip")).replace(/\s+/g, " ").slice(0, 160);
+    const next = await has("context-strip-next");
+    await waitTid("model-provenance-open", 10); await click("model-provenance-open");
+    await until("the model's provenance", () => page.ev(`${q("model-provenance")}?.getAttribute('data-state')`).then(v => v === "ready"), 30, 300);
+    const prov = (await textTid("model-provenance")).replace(/\s+/g, " ").slice(0, 260);
+    shot("model-provenance");
+    await click("model-provenance-close"); await waitGone("model-provenance", 10);
+    if (kind !== "applied") throw new Error(`Szerzej -> ${kind}: "${said}"`);
+    if (!next) throw new Error(`the strip does not say what the next message gets: "${strip}"`);
+    return `Szerzej -> ${kind}: "${said}"; strip "${strip}"; model sheet "${prov}"`;
+  }],
   ["chat command: przetłumacz -> proposal -> confirm", async () => {
     await send("Przetłumacz tę rozmowę na niemiecki");
     await waitTid("chat-action-proposal", 90);
