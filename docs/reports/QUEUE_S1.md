@@ -1,7 +1,17 @@
-# Kolejka S1 — stan 2026-10-22 02:20 UTC
+# Kolejka S1 — stan 2026-10-22 03:10 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
+
+## DOC1 GOTOWE (03:05 UTC, `2858800d` na `claude/m1-w0`): `docs/reports/M1_CHECKPOINT_1.md` + 13 zrzutów w `docs/reports/M1_CHECKPOINT_1/` (390×844, każdy < 90 KB)
+Raport Bramki 1 (8 sekcji + „Czego jeszcze NIE ma” + „Co sprawdzają testy”); zrzuty z prawdziwej aplikacji i atrapy modelu (2 e2e: 7 + 10 kroków PASS; 4 dodatkowe ujęcia z kopii skryptu w scratchpadzie, bez zmiany asercji).
+Cytaty właściciela dosłownie (dowód grepem): 2026-10-16 (CM27, „Kontekst selektor ma działać inteligentnie według ustawień… modyfikatory względem domyślnych, wiesz, szersze albo głębszy kontekst na żądanie…”) i 2026-10-14
+(tryb kompatybilności: „jedynie standardowy system prompt i konwersację całą niemodyfikowaną”). Uczciwa uwaga agenta: w dokumentach NIE ma dosłownego zdania właściciela „co wysłaliśmy” — nie podszywam go pod cytat.
+**Znalezisko do wyjaśnienia (K1c):** szacunek przed wysłaniem po „Szerzej” = ok. 1,1× zwykłego, a strażnik po wysłaniu pokazuje 1,8× bazy dla tego samego zapytania — dwie liczby o różnych podstawach
+(bajty wejścia vs baza z ledgera?) mówią co innego; właściciel zobaczy obie. Do ujednolicenia albo opisania w słowach. Inne uczciwe braki w raporcie: nagłówki „Kolejność/Przepływ” z angielskimi nazwami (stability/legacy/plain),
+angielskie „dlaczego” jądra, brak zrzutów listy „Zmień profil” w arkuszu i paska w trybie pełnym/ukrytym.
+Dalej: FF `main` z `2858800d` po końcu CI 262 (`d103d5d8`, https://github.com/klb-t/chatadhd/actions/runs/39705119656, start 01:20, kontrola 03:18); potem „W1b na main” do S2 → jeden bieg android-smoke → APK + raport.
+Następny pakiet (reguła odstępu, najwcześniej ok. 04:40): **K1c** — luki jądra z W1a/DOC1: węzły `sent_to_model` (przycisk „Pokaż w grafie”), cena w paragonie, odczyt nośnika tury (pasek zna też inne okno), rozbieżność 1,1× vs 1,8×.
 
 ## W1b GOTOWE (02:15 UTC, `9b376773` na `claude/m1-w0`) — bramka lokalna `w1b` w toku; FF `main` po końcu biegu CI dla `d103d5d8` (≈ 03:20)
 W1b (`wf_63253a37-69f`, 156 wywołań, 371 tys. tokenów): podmenu `+` › Kontekst (chipy Szerzej/Głębiej/Węziej/Płycej, „Profil selektora” z listą i statusami preset/kalibracja/dawny, „Przepływ: tekst ↔ graf”,
