@@ -80,7 +80,7 @@ test('a receipt of the first message: the sheet names the empty sections in one 
   assert.equal(m.profileLine, 'Profil: żaden nie wybrany — działają ustawienia');
   assert.equal(m.modifiersLine, 'Zmiany tej tury: brak');
   assert.equal(m.guardState, 'unknown');
-  assert.equal(m.guardLine, 'strażnik ×10: baza nieznana');
+  assert.equal(m.guardLine, 'strażnik ×10: nieznane — brak bazy');
   assert.equal(m.costLine, 'koszt nieznany — brak ceny');
   assert.equal(m.tokensLine, '28 tokenów (szacunek)');
   assert.equal(m.prefixLine, 'prefiks stały: tak');   // the order puts the profile first and the kernel built the (empty) block: the start is the same every turn
@@ -112,6 +112,41 @@ test('the guard: asked is said as asked, a missing ratio is unknown; the cost is
   assert.equal(st.costLine({ ...base, cost_usd: 0.0123 }, t), 'koszt: $0.01');
   assert.equal(st.costLine({ ...base, cost_usd: 0 }, t), 'koszt nieznany — brak ceny');
   assert.ok(!/0\.0000/.test(st.costLine({ ...base, cost_usd: 0 }, t)));
+});
+
+test('ratio words: no ratio or no base is unknown, a tiny one is "much less than usual", from 0.1 up a number with the sign — one function, both languages', () => {
+  // the three cases of the package: null, 0.04, 1.8 (the sentence of the sheet "bazy" and the sentence of the menu "zwykłego")
+  for (const [words, name] of [[t, 'pl'], [tEn, 'en']]) {
+    const w = name === 'pl' ? pl : en;
+    assert.deepEqual(st.ratioText(null, words), { kind: 'unknown', text: w['ratio.unknown'] }, `${name}: null`);
+    assert.deepEqual(st.ratioText(undefined, words), { kind: 'unknown', text: w['ratio.unknown'] }, `${name}: undefined`);
+    assert.deepEqual(st.ratioText(0.04, words), { kind: 'low', text: w['ratio.low'] }, `${name}: 0.04`);
+    assert.deepEqual(st.ratioText(1.8, words), { kind: 'times', text: w['ratio.times_base'].replace('{{n}}', '1.8') }, `${name}: 1.8`);
+    assert.equal(st.ratioText(1.8, words, 'usual').text, w['ratio.times_usual'].replace('{{n}}', '1.8'), `${name}: 1.8 in the menu's unit`);
+    assert.equal(st.ratioText(0.1, words).kind, 'times', `${name}: 0.1 is the first number`);
+    assert.equal(st.ratioText(0.1, words).text, w['ratio.times_base'].replace('{{n}}', '0.1'));
+    assert.equal(st.ratioText(2, words).text, w['ratio.times_base'].replace('{{n}}', '2'), `${name}: a whole number has no ".0", as before`);
+    assert.equal(st.ratioText(NaN, words).kind, 'unknown');
+    for (const kind of ['unknown', 'low', 'times']) assert.ok(!/ratio\./.test(st.ratioText(kind === 'unknown' ? null : kind === 'low' ? 0.04 : 1.8, words).text), `${name}: ${kind} has its word`);
+  }
+  assert.equal(st.ratioText(null, t).text, 'nieznane — brak bazy');
+  assert.equal(st.ratioText(0.04, t).text, 'dużo mniej niż zwykle');
+  assert.equal(st.ratioText(1.8, t).text, '1.8× bazy');
+  assert.equal(st.ratioText(1.8, t, 'usual').text, 'ok. 1.8× zwykłego');
+  assert.equal(st.ratioText(null, tEn).text, 'unknown — no base');
+  assert.equal(st.ratioText(0.04, tEn).text, 'much less than usual');
+  assert.equal(st.ratioText(1.8, tEn).text, '1.8× the base');
+  // the guard line of the sheet: the same three cases, and a ratio against a missing base is unknown (the kernel writes baseline: null)
+  assert.equal(st.guardView({ ...base, guard: { ratio: 1.8, baseline: 100, asked: false } }, t).line, 'strażnik ×10: 1.8× bazy — bez pytania');
+  assert.equal(st.guardView({ ...base, guard: { ratio: 0.04, baseline: 100, asked: false } }, t).line, 'strażnik ×10: dużo mniej niż zwykle — bez pytania');
+  assert.equal(st.guardView({ ...base, guard: { ratio: 0.04, baseline: 100, asked: false } }, t).state, 'ok');
+  assert.equal(st.guardView({ ...base, guard: { ratio: null, baseline: null, asked: false } }, t).line, 'strażnik ×10: nieznane — brak bazy');
+  assert.equal(st.guardView({ ...base, guard: { ratio: 0, baseline: null, asked: false } }, t).line, 'strażnik ×10: nieznane — brak bazy', 'ratio 0 against no base is not "0× bazy"');
+  assert.equal(st.guardView({ ...base, guard: { ratio: 0, baseline: 0, asked: false } }, t).state, 'unknown', 'a base of zero is no base');
+  assert.equal(st.guardView({ ...base, guard: { ratio: 0.04, baseline: 100, asked: false } }, tEn).line, '×10 guard: much less than usual — no question');
+  assert.equal(st.guardView({ ...base, guard: { ratio: 1.8, baseline: 100, asked: true } }, tEn).line, '×10 guard: 1.8× the base — asked');
+  assert.equal(st.guardView({ ...base, guard: null }, tEn).line, '×10 guard: unknown — no base');
+  for (const guard of [{ ratio: 0, baseline: null }, { ratio: 0.04, baseline: 100 }, { ratio: 1.8, baseline: 100 }, null]) assert.ok(!/(^|\D)0×/.test(st.guardView({ ...base, guard }, t).line), 'no "0×" in any case');
 });
 
 test('the prefix is stable only when the order puts the profile before what changes and the kernel built the block', () => {

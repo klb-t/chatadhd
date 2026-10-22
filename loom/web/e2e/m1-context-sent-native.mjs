@@ -13,6 +13,7 @@ import { tmpdir } from "node:os";
 import net from "node:net";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { guardLine } from "./m1-words.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const LOOM = path.resolve(here, "../..");
@@ -113,7 +114,12 @@ try {
     assert.equal(await page.getByTestId("context-receipt-cost").innerText(), w["cost.unknown"]);
     assert.equal(await page.getByTestId("context-receipt-disclaimer").innerText(), w.disclaimer);
     assert.ok(await page.getByTestId("context-receipt-prefix").innerText().then(x => x.startsWith("prefiks stały")));
-    assert.equal(await page.getByTestId("context-receipt-guard").getAttribute("data-state") !== null, true);
+    const guardState = await page.getByTestId("context-receipt-guard").getAttribute("data-state");
+    assert.ok(["ok", "asked", "unknown"].includes(guardState), `the guard has a state: ${guardState}`);
+    const guardText = await page.getByTestId("context-receipt-guard").innerText();
+    console.log("[m1-context-sent] rendered guard line: " + JSON.stringify(guardText));
+    assert.match(guardText, guardLine(w, guardState), "the guard line is the pack's sentence with the pack's words for the ratio (a number with the sign, 'much less than usual' or 'unknown - no base')");
+    assert.ok(!/(^|\D)0×/.test(guardText), "no '0×' for a tiny ratio or a missing base");
     assert.equal(await page.getByTestId("context-receipt-dropped-title").innerText(), w["dropped.title"]);
     const itemText = await page.getByTestId("receipt-section-system").locator('[data-testid="receipt-item"]').first().evaluate(el => ({ ws: getComputedStyle(el).whiteSpace, text: el.innerText }));
     assert.equal(itemText.ws, "pre-wrap");

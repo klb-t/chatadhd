@@ -11,6 +11,7 @@ import { tmpdir } from "node:os";
 import net from "node:net";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { modifiedSentence } from "./m1-words.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const LOOM = path.resolve(here, "../..");
@@ -122,6 +123,7 @@ try {
     }
     assert.deepEqual(await smallInMenu(), [], "every button of the menu is at least 44 x 44 px");
     assert.equal(await page.getByTestId("composer-menu-steps-help").innerText(), ui.cm_steps_help);
+    assert.equal(await page.getByTestId("composer-menu-steps-add-up").innerText(), ui.cm_steps_add_up, "the submenu says that clicks add up");
     assert.equal(await page.getByTestId("composer-menu-memory").innerText().then(x => x.split("\n")[0].trim()), "Profil i pamięć (z węzła Ty)");
     assert.equal(await page.getByTestId("composer-menu-knowledge").innerText().then(x => x.split("\n")[0].trim()), "Twierdzenia z analizy");
     console.log("[m1-context-menu] rendered Kontekst submenu: " + JSON.stringify((await page.getByTestId("composer-menu").innerText()).replace(/\n+/g, " | ")));
@@ -148,7 +150,8 @@ try {
     assert.equal(await page.getByTestId("composer-menu-modify-result").getAttribute("data-kind"), "applied");
     const said = await page.getByTestId("composer-menu-modify-result").innerText();
     console.log("[m1-context-menu] rendered kernel answer: " + JSON.stringify(said));
-    assert.equal(said.split(" Szacunek")[0], w["modify.applied"].replace("{{what}}", w["action.wider"]), "the sentence is the pack's, in the screen's language");
+    assert.match(said, modifiedSentence(w, w["action.wider"]), "the sentence is the pack's, in the screen's language, with the estimate in words (a number with the sign, 'much less than usual' or 'unknown - no base', never '0×')");
+    assert.ok(!/(^|\D)0×/.test(said), "no '0×' in the estimate");
     await shot("m1-menu-wider-applied");
     assert.ok(await page.getByTestId("composer-menu-reset").count() === 1, "taking the change back is offered");
     await closeMenu();

@@ -2375,9 +2375,13 @@
             "cost.unknown": "cost unknown — no price",
             "prefix.stable.yes": "stable prefix: yes",
             "prefix.stable.no": "stable prefix: no",
-            "guard.ok": "×10 guard: {{ratio}}× the base — no question",
-            "guard.asked": "×10 guard: {{ratio}}× the base — asked",
-            "guard.unknown": "×10 guard: base unknown",
+            "guard.ok": "×10 guard: {{ratio}} — no question",
+            "guard.asked": "×10 guard: {{ratio}} — asked",
+            "guard.unknown": "×10 guard: {{ratio}}",
+            "ratio.times_base": "{{n}}× the base",
+            "ratio.times_usual": "about {{n}}× the usual one",
+            "ratio.low": "much less than usual",
+            "ratio.unknown": "unknown — no base",
             "disclaimer": "A compiled request, not proof that the provider received it.",
             "missing": "No receipt (saved before M1)",
             "truncated": "Cut (receipt size limit)",
@@ -2472,7 +2476,7 @@
             "preview.pending_none": "Changes for the next request: none (that this screen knows of)",
             "modify.applied": "Done: for the next request only — {{what}}. Once it is sent everything is back to the settings.",
             "modify.cleared": "Taken back: the next request goes without changes.",
-            "modify.ratio": "Estimate: the next request will be about {{ratio}}× the usual one."
+            "modify.ratio": "Estimate of the size of the next request: {{ratio}}."
           },
           "pl": {
             "title": "Co wysłaliśmy",
@@ -2509,9 +2513,13 @@
             "cost.unknown": "koszt nieznany — brak ceny",
             "prefix.stable.yes": "prefiks stały: tak",
             "prefix.stable.no": "prefiks stały: nie",
-            "guard.ok": "strażnik ×10: {{ratio}}× bazy — bez pytania",
-            "guard.asked": "strażnik ×10: {{ratio}}× bazy — zapytano",
-            "guard.unknown": "strażnik ×10: baza nieznana",
+            "guard.ok": "strażnik ×10: {{ratio}} — bez pytania",
+            "guard.asked": "strażnik ×10: {{ratio}} — zapytano",
+            "guard.unknown": "strażnik ×10: {{ratio}}",
+            "ratio.times_base": "{{n}}× bazy",
+            "ratio.times_usual": "ok. {{n}}× zwykłego",
+            "ratio.low": "dużo mniej niż zwykle",
+            "ratio.unknown": "nieznane — brak bazy",
             "disclaimer": "Skompilowane żądanie, nie dowód odbioru przez dostawcę.",
             "missing": "Brak śladu (zapisane przed M1)",
             "truncated": "Ucięto (limit rozmiaru śladu)",
@@ -2606,7 +2614,7 @@
             "preview.pending_none": "Zmiany na następne zapytanie: brak (o których ten ekran wie)",
             "modify.applied": "Gotowe: tylko dla następnego zapytania — {{what}}. Po jego wysłaniu wszystko wraca do ustawień.",
             "modify.cleared": "Cofnięte: następne zapytanie pójdzie bez zmian.",
-            "modify.ratio": "Szacunek: następne zapytanie będzie ok. {{ratio}}× zwykłego."
+            "modify.ratio": "Szacunek wielkości następnego zapytania: {{ratio}}."
           }
         }
       }
