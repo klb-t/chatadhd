@@ -55,6 +55,26 @@ philosophy implies, and say what was added. Unless he says a list is closed, it 
   asks whether it is intended, and offers "don't ask next time" (remembered like `declined`, reversible in
   settings; how often to ask, up to never, is a configurable preset).
 - Every agent brief carries this rule (`tools/workflows/single-package.js`).
+- **A brief is a list of examples too (owner, 2026-10-23, second message).** When the coordinator hands an
+  agent choices phrased as requirements, the agent reads them as examples of the functionality of the
+  engine and its abstractions: it builds the general mechanism; the brief's case is one instance and one
+  test, never the scope.
+- **Necessary, insufficient.** Examples are necessary and not sufficient; only the full exhaustion of the
+  list of possibilities is sufficient. Accepting an engine feature therefore means: the examples pass AND
+  the possibility space is covered (generative / property-based tests where feasible), and what stays
+  uncovered is reported as a gap, not as out of scope.
+- **How a list is filled, three stages:** (1) the most popular, obvious examples as the seed; (2) web
+  research before building a release (build-time discovery, results as reviewable data); (3) at runtime an
+  "unsupported formats" agent that, meeting a format that did not exist before, searches the web for
+  everything about it and produces a profile as data for the person to confirm (web and model calls only
+  when the person enables them, with a cost estimate; queries built from structural descriptors, never from
+  the content of his data).
+- **Information from the web:** official documentation first; then reliable forums and professional
+  sources; where nothing reliable exists, analysis of the data supported by analysis of the weaker sources
+  and TESTING what was learned there. Test outcomes feed back into a reliability rating of the source and
+  of the author and, with enough data, depend on time (formats and behaviours drift with versions).
+  Precedent to extend: `loom/data/policy/calibration.json` (Beta reliabilities of extractors and rules,
+  used in `loom/src/resolve/assess.cpp`).
 
 ## Working with subagents (owner, 2026-10-10)
 
