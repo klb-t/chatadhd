@@ -126,6 +126,10 @@ test('provenance: the level of the chain that set the model, in words; the chain
   assert.equal(l['set-by'], 'Ustawiony na poziomie: Rozmowa');
   assert.equal(l.class, 'Klasa: średni');
   assert.deepEqual(v.chain.map(c => c.text), ['Instalacja — podał wartość', 'Osoba — przykryty bardziej szczegółowym', 'Rozmowa — podał wartość']);
+  const wide = chip.provenanceView({ model: '', source: 'chain', resolution: { key: 'default_model', defined: true, value: 'a/b', scope: 'conversation', chain: [...chain, { level: 'turn', label: { pl: 'Tura', en: 'Turn' }, role: 'inactive' }, { level: 'team', label: { pl: 'Zespół', en: 'Team' }, role: 'none' }] }, resolutionError: null, role: null, info: undefined }, ts, 'pl');
+  assert.equal(wide.chain.length, 3, 'only the levels that supplied or were overridden are listed');
+  assert.equal(wide.chainRest, 'Pozostałe poziomy nie mają wartości albo nie dotyczą tej rozmowy: Tura, Zespół.', 'the others are named in one line, not hidden');
+  assert.equal(v.chainRest, null);
   assert.equal(lines(chip.provenanceView({ model: 'mock/e2e-model', source: 'conversation', resolution: { key: 'default_model', defined: true, value: 'mock/e2e-model', scope: 'person', chain }, resolutionError: null, role: answerRole, info: undefined }, tsEn, 'en'))['set-by'], 'Set at the level: Person');
 });
 
@@ -147,6 +151,7 @@ test('class and price: from the role when it is the same model, from the model l
   assert.equal(shell.pl.mp_price_unknown, 'Cena: nieznany — brak ceny');
   assert.equal(lines(chip.provenanceView({ ...same, role: null, info: { id: 'x', pricing: { prompt: '0', completion: '0' } } }, ts, 'pl')).price, shell.pl.mp_price_unknown, 'a zero is not a price');
   assert.equal(lines(chip.provenanceView({ ...same, role: { ...answerRole, tier: { id: 'none', label: '', reason: 'brak modelu' } } }, ts, 'pl')).class, 'Klasa: nieznana — brak modelu');
+  assert.equal(lines(chip.provenanceView({ ...same, role: { ...answerRole, tier: { id: 'unknown', label: 'klasa nieznana', reason: 'model spoza tabeli klas' } } }, ts, 'pl')).class, 'Klasa: nieznana — model spoza tabeli klas', 'an unknown class is said once, with the reason');
   // the role belongs to another model: its class and cost are not attributed to the one shown
   const other = chip.provenanceView({ ...same, model: 'a/other' }, ts, 'pl');
   assert.match(lines(other).class, /^Klasa: nieznana — ta klasa dotyczy modelu mock\/e2e-model/);

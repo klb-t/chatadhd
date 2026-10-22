@@ -1071,7 +1071,7 @@
             "mp_set_by": "Set at the level: {{level}}",
             "mp_set_by_none": "No level set it: the preset applies.",
             "mp_unread": "The provenance could not be read: {{reason}}",
-            "mp_chain": "Chain of levels (from general to specific):",
+            "mp_chain": "Levels that say something about the model (from general to specific):",
             "mp_role_supplied": "supplied the value",
             "mp_role_overridden": "overridden by a more specific one",
             "mp_role_inactive": "not active in this conversation",
@@ -1085,7 +1085,8 @@
             "cm_issue_no_focus": "“{{name}}” should open a graph node but names none",
             "mp_set_by_window": "Picked in this window and sent with every request (it is not saved in the chain of settings).",
             "mp_reason_other_model": "this class is that of the model {{model}} of the role “Answer to a message”, not the one picked here",
-            "mp_reason_no_role": "the engine gave no role for answering a message"
+            "mp_reason_no_role": "the engine gave no role for answering a message",
+            "mp_chain_rest": "The other levels have no value or do not apply to this conversation: {{levels}}."
           },
           "pl": {
             "menu_open": "Menu",
@@ -1348,7 +1349,7 @@
             "mp_set_by": "Ustawiony na poziomie: {{level}}",
             "mp_set_by_none": "Żaden poziom go nie ustawił: działa preset.",
             "mp_unread": "Pochodzenia nie udało się odczytać: {{reason}}",
-            "mp_chain": "Łańcuch poziomów (od ogólnego do szczegółowego):",
+            "mp_chain": "Poziomy, które coś mówią o modelu (od ogólnego do szczegółowego):",
             "mp_role_supplied": "podał wartość",
             "mp_role_overridden": "przykryty bardziej szczegółowym",
             "mp_role_inactive": "nieaktywny w tej rozmowie",
@@ -1362,7 +1363,8 @@
             "cm_issue_no_focus": "„{{name}}” ma otwierać węzeł grafu, ale nie wskazuje którego",
             "mp_set_by_window": "Wybrany w tym oknie i wysyłany z każdym zapytaniem (nie jest zapisany w łańcuchu ustawień).",
             "mp_reason_other_model": "ta klasa dotyczy modelu {{model}} roli „Odpowiedź na wiadomość”, nie wybranego tutaj",
-            "mp_reason_no_role": "silnik nie podał roli odpowiedzi na wiadomość"
+            "mp_reason_no_role": "silnik nie podał roli odpowiedzi na wiadomość",
+            "mp_chain_rest": "Pozostałe poziomy nie mają wartości albo nie dotyczą tej rozmowy: {{levels}}."
           }
         }
       }

@@ -245,7 +245,10 @@ try {
     const picker = page.getByTestId("model-picker");
     const options = await picker.evaluate(el => [...el.options].map(o => ({ value: o.value, text: o.textContent })));
     assert.ok(options.some(o => o.value === "mock/second-model" && o.text === "second-model"), `options show the short name: ${JSON.stringify(options)}`);
+    // With a conversation open, a pick of the picker is written to the conversation level of the scope chain: wait for that write before asking where the model comes from
+    const written = page.waitForResponse(r => /\/api\/conversations\//.test(r.url()) && r.request().method() !== "GET");
     await picker.selectOption("mock/second-model");
+    await written;
     assert.equal(await picker.evaluate(el => el.selectedOptions[0].textContent), "second-model", "the chip shows the short name");
     assert.ok(await page.getByTestId("model-chip").evaluate(el => el.getBoundingClientRect().right <= 390), "the chip fits the phone");
     await page.getByTestId("model-provenance-open").tap();
@@ -253,17 +256,21 @@ try {
     await sheet.and(page.locator('[data-state="ready"]')).waitFor();
     await shot("m1-model-provenance");
     assert.equal(await page.getByTestId("model-provenance-model").innerText(), "Model: mock/second-model");
-    assert.equal(await page.getByTestId("model-provenance-set-by").innerText(), ui.mp_set_by_window, "a pick of this window is said so, it is not a level");
+    assert.equal(await page.getByTestId("model-provenance-set-by").innerText(), "Ustawiony na poziomie: Rozmowa", "the pick is the conversation's own: the level of the chain that set it is named");
+    assert.ok((await page.getByTestId("model-provenance-chain").locator('[data-level="conversation"]').innerText()).endsWith("podał wartość"), "the chain says which level supplied the value");
     assert.match(await page.getByTestId("model-provenance-class").innerText(), /^Klasa: /);
     assert.equal(await page.getByTestId("model-provenance-price").innerText(), ui.mp_price_unknown, "the model list has no price: unknown, not zero");
-    assert.ok((await page.getByTestId("model-provenance-chain").locator("li").count()) > 0, "the chain of levels is listed as the kernel gave it");
+    assert.ok((await page.getByTestId("model-provenance-chain").locator("li").count()) > 0, "the levels that said something are listed");
+    assert.match(await page.getByTestId("model-provenance-chain-rest").innerText(), /^Pozostałe poziomy nie mają wartości/, "the other levels are named in one line");
     console.log("[m1-context-menu] rendered model provenance: " + JSON.stringify((await sheet.innerText()).replace(/\n+/g, " | ")));
     const small = await page.locator(".crs button").evaluateAll(els => els.map(el => { const r = el.getBoundingClientRect(); return { id: el.dataset.testid, w: Math.round(r.width), h: Math.round(r.height) }; }).filter(b => b.h < 44 || b.w < 44));
     assert.deepEqual(small, []);
     assert.ok(await page.evaluate(() => document.documentElement.scrollWidth) <= 390);
     await page.evaluate(() => window.__loomBack());
     await sheet.waitFor({ state: "detached" });
+    const cleared = page.waitForResponse(r => /\/api\/conversations\//.test(r.url()) && r.request().method() !== "GET");
     await picker.selectOption("");
+    await cleared;
     assert.equal(await picker.evaluate(el => el.selectedOptions[0].textContent), ui.cm_model_default);
     await page.getByTestId("model-provenance-open").tap();
     await sheet.and(page.locator('[data-state="ready"]')).waitFor();

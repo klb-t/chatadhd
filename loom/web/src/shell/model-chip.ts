@@ -33,7 +33,10 @@ export interface ProvenanceInput {
 export interface ProvenanceView {
   effective: string;
   lines: { id: string; text: string }[];
+  /** The levels that supplied the value or were overridden by a more specific one, general first. */
   chain: { level: string; text: string }[];
+  /** One line naming the other levels (no value / not active), or null when there are none. */
+  chainRest: string | null;
 }
 
 const money = (n: number): string => `$${n >= 1 ? n.toFixed(2).replace(/\.?0+$/, "") : n.toFixed(4).replace(/0+$/, "").replace(/\.$/, "")}`;
@@ -62,11 +65,14 @@ export function provenanceView(input: ProvenanceInput, t: ShellT, language: stri
     lines.push({ id: "set-by", text: t("mp_set_by", { level: labelOf(level?.label, language, input.resolution.scope ?? "") }) });
   } else lines.push({ id: "set-by", text: t("mp_set_by_none") });
   const role = input.role;
-  if (role && role.tier && role.tier.id !== "none" && (role.model === effective || effective === ""))
+  if (role && role.tier && role.tier.id !== "none" && role.tier.id !== "unknown" && (role.model === effective || effective === ""))
     lines.push({ id: "class", text: t("mp_class", { class: role.tier.label || role.tier.id }) });
   else if (role && effective && role.model !== effective) lines.push({ id: "class", text: t("mp_class_unknown", { reason: t("mp_reason_other_model", { model: role.model ?? "" }) }) });
   else lines.push({ id: "class", text: t("mp_class_unknown", { reason: role?.tier?.reason || t("mp_reason_no_role") }) });
   lines.push({ id: "price", text: priceLine(input, effective, t) });
-  const chain = (input.resolution?.chain ?? []).map(l => ({ level: l.level, text: `${labelOf(l.label, language, l.level)} — ${t(`mp_role_${l.role}`)}` }));
-  return { effective, lines, chain };
+  const levels = input.resolution?.chain ?? [];
+  const said = (l: { role: string }) => l.role === "supplied" || l.role === "overridden";
+  const chain = levels.filter(said).map(l => ({ level: l.level, text: `${labelOf(l.label, language, l.level)} — ${t(`mp_role_${l.role}`)}` }));
+  const rest = levels.filter(l => !said(l)).map(l => labelOf(l.label, language, l.level));
+  return { effective, lines, chain, chainRest: rest.length ? t("mp_chain_rest", { levels: rest.join(", ") }) : null };
 }

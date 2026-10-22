@@ -56,8 +56,9 @@ export default function ModelProvenance({ convId, model, source, models, onClose
           </ul>
           {view.chain.length > 0 && <>
             <p className="crs-note" data-testid="model-provenance-chain-title">{t("mp_chain")}</p>
-            <ol className="mp-chain" data-testid="model-provenance-chain">{view.chain.map(l => <li key={l.level} data-level={l.level}>{l.text}</li>)}</ol>
+            <ul className="mp-chain" data-testid="model-provenance-chain">{view.chain.map(l => <li key={l.level} data-level={l.level}>{l.text}</li>)}</ul>
           </>}
+          {view.chainRest && <p className="crs-note" data-testid="model-provenance-chain-rest">{view.chainRest}</p>}
           <p className="crs-note" data-testid="model-provenance-change">{t("mp_change")}</p>
         </>}
       </section>
