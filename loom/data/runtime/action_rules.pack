@@ -325,8 +325,8 @@
         "effect": "confirm",
         "initiator": "application preset",
         "reason": {
-          "en": "Forgetting a unit removes it from your list and takes every conversation out of it; you confirm each one.",
-          "pl": "Zapomnienie jednostki usuwa ją z Twojej listy i zdejmuje z niej wszystkie rozmowy, które do niej należały; każde potwierdzasz sam."
+          "en": "Removing a unit takes it off your list and takes every conversation out of it; you confirm each one.",
+          "pl": "Usunięcie jednostki zdejmuje ją z Twojej listy i wyjmuje z niej wszystkie rozmowy, które do niej należały; każde potwierdzasz sam."
         }
       },
       "confirm:conversation.set_unit": {

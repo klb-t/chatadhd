@@ -2579,8 +2579,8 @@
       {
         "id": "units_forget",
         "title": {
-          "pl": "Zapomnij jednostkę",
-          "en": "Forget a unit"
+          "pl": "Usuń jednostkę",
+          "en": "Remove a unit"
         },
         "via": "action",
         "action": "units.forget",
@@ -2593,20 +2593,20 @@
           ]
         },
         "examples": {
-          "pl": "zapomnij jednostkę",
-          "en": "forget a unit"
+          "pl": "usuń jednostkę",
+          "en": "remove a unit"
         },
         "chat_outcome": "unavailable",
         "chat_outcome_reason": {
-          "pl": "Samo zdanie nie poda, którą jednostkę zapomnieć; propozycja mówi to wprost, a zapomnienie wymaga rodzaju i nazwy.",
-          "en": "The sentence alone does not say which unit to forget; the proposal says so plainly, and forgetting needs the kind and the name."
+          "pl": "Samo zdanie nie poda, którą jednostkę usunąć; propozycja mówi to wprost, a usunięcie wymaga rodzaju i nazwy.",
+          "en": "The sentence alone does not say which unit to remove; the proposal says so plainly, and removing needs the kind and the name."
         }
       },
       {
         "id": "conversation_set_unit",
         "title": {
-          "pl": "Przypisz rozmowę do jednostki",
-          "en": "Assign this conversation to a unit"
+          "pl": "Dodaj rozmowę do jednostki",
+          "en": "Add this conversation to a unit"
         },
         "via": "action",
         "action": "conversation.set_unit",
@@ -2619,13 +2619,13 @@
           ]
         },
         "examples": {
-          "pl": "przypisz rozmowę do jednostki",
-          "en": "assign this conversation to a unit"
+          "pl": "dodaj rozmowę do jednostki",
+          "en": "add this conversation to a unit"
         },
         "chat_outcome": "unavailable",
         "chat_outcome_reason": {
-          "pl": "Samo zdanie nie poda rodzaju ani nazwy jednostki; propozycja mówi to wprost, a przypisanie wymaga obu.",
-          "en": "The sentence alone does not give the kind or the name of the unit; the proposal says so plainly, and assigning needs both."
+          "pl": "Samo zdanie nie poda rodzaju ani nazwy jednostki; propozycja mówi to wprost, a dodanie rozmowy wymaga obu.",
+          "en": "The sentence alone does not give the kind or the name of the unit; the proposal says so plainly, and adding the conversation needs both."
         }
       },
       {

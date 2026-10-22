@@ -14993,13 +14993,13 @@
         "id": "units.forget",
         "kind": "atomic",
         "status": "implemented",
-        "title": "Forget a unit",
-        "description": "Removes a unit from your list and takes every conversation out of it, after you confirm; the answer says how many conversations were affected. Other data of those conversations stays as it was.",
+        "title": "Remove a unit",
+        "description": "Removes (forgets) a unit from your list and takes every conversation out of it, after you confirm; the answer says how many conversations were affected. Other data of those conversations stays as it was.",
         "why": {
           "pl": "Usuwa jednostkę z Twojej listy i zdejmuje z niej wszystkie rozmowy, po Twoim potwierdzeniu; odpowiedź mówi, ilu rozmów to dotyczyło. Reszta danych tych rozmów zostaje."
         },
         "labels": {
-          "pl": "Zapomnij jednostkę"
+          "pl": "Usuń jednostkę"
         },
         "inputs": [],
         "outputs": [
@@ -15066,20 +15066,20 @@
         },
         "phrases": {
           "en": [
-            "forget a unit",
-            "remove a unit"
+            "remove a unit",
+            "delete a unit"
           ],
           "pl": [
-            "zapomnij jednostkę",
-            "usuń jednostkę"
+            "usuń jednostkę",
+            "skasuj jednostkę"
           ]
         },
         "examples": {
           "en": [
-            "forget a unit"
+            "remove a unit"
           ],
           "pl": [
-            "zapomnij jednostkę"
+            "usuń jednostkę"
           ]
         },
         "result_text": {
@@ -15092,13 +15092,13 @@
         "id": "conversation.set_unit",
         "kind": "atomic",
         "status": "implemented",
-        "title": "Assign this conversation to a unit",
-        "description": "Makes the conversation (default: the open one) belong to a unit of the given kind, after you confirm. The other data of the conversation stays as it is; the settings and rules of that unit then apply in it. A unit that is not on your list yet is accepted and the answer says so.",
+        "title": "Add this conversation to a unit",
+        "description": "Adds the conversation (default: the open one) to a unit of the given kind, after you confirm. The other data of the conversation stays as it is; the settings and rules of that unit then apply in it. A unit that is not on your list yet is accepted and the answer says so.",
         "why": {
-          "pl": "Przypisuje rozmowę (domyślnie otwartą) do jednostki danego rodzaju, po Twoim potwierdzeniu. Reszta danych rozmowy zostaje; ustawienia i zasady tej jednostki zaczynają w niej działać."
+          "pl": "Dodaje rozmowę (domyślnie otwartą) do jednostki danego rodzaju, po Twoim potwierdzeniu. Reszta danych rozmowy zostaje; ustawienia i zasady tej jednostki zaczynają w niej działać."
         },
         "labels": {
-          "pl": "Przypisz rozmowę do jednostki"
+          "pl": "Dodaj rozmowę do jednostki"
         },
         "inputs": [],
         "outputs": [
@@ -15176,20 +15176,20 @@
         },
         "phrases": {
           "en": [
-            "assign this conversation to a unit",
-            "add this conversation to a unit"
+            "add this conversation to a unit",
+            "move this conversation to a unit"
           ],
           "pl": [
-            "przypisz rozmowę do jednostki",
-            "przypisz tę rozmowę do jednostki"
+            "dodaj rozmowę do jednostki",
+            "przenieś rozmowę do jednostki"
           ]
         },
         "examples": {
           "en": [
-            "assign this conversation to a unit"
+            "add this conversation to a unit"
           ],
           "pl": [
-            "przypisz rozmowę do jednostki"
+            "dodaj rozmowę do jednostki"
           ]
         },
         "result_text": {
