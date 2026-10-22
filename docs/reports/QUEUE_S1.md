@@ -1,4 +1,4 @@
-# Kolejka S1 — stan 2026-10-23 00:05 UTC
+# Kolejka S1 — stan 2026-10-22 23:56 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
