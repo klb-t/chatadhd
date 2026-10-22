@@ -58,6 +58,7 @@
     "test:m1-context-sent": "node e2e/m1-context-sent-native.mjs",
     "test:context-strip": "node tests/shell/context-strip.test.mjs",
     "test:m1-context-menu": "node e2e/m1-context-menu-native.mjs",
+    "test:m1-history": "node e2e/m1-history-native.mjs",
     "test:graph-labels": "node tests/graph-labels/graph-labels.test.mjs",
     "test:chat-first": "node e2e/chat-first.mjs",
     "test:composer-menu": "node tests/shell/composer-menu.test.mjs",

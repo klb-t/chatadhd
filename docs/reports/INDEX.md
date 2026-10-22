@@ -1870,3 +1870,33 @@ dla programistów ani surowego klucza. Tylko pakiet słów i strona web; jądro,
   w e2e; cofnięcie: usunąć krok „żaden pokazany ekran…” i wywołania `audit(...)`. (7) Nagłówek karty bez surowego adresu: parametr `label` w `NodeCard`; cofnięcie: `{card?.label ?? address}`.
 - **Nie zrobione.** Nie ruszałem jądra (etykiety `sent_item_*` dla pakietu grafu), `android/smoke/*`, schematu śladu ani złotego pliku; nic z tego nie było na emulatorze Androida; pełna bramka i cały `npm run e2e` nie były
   uruchamiane tutaj; audyt nie wykrywa angielskich napisów krótszych niż trzy słowa.
+
+### S1 / M1-FLAKE1 — spóźniony popstate własnego `history.back()` nie zamyka warstwy otwartej po nim (2026-10-22, `claude/m1-w0`)
+
+Błąd aplikacji, który właściciel może trafić na wolnym telefonie: po ⋮ › Ustawienia panel znikał i zostawał czat (dowód: smoke na emulatorze, trzy profile, dwa razy; losowy krok i profil).
+Przyczyna była w `loom/web/src/shell/history.ts` (`LayerStack`), nie w animacji ani w kliknięciu.
+
+- **Co było.** `back()` zamyka warstwę od razu, a `history.back()` jest asynchroniczne. Stos pamiętał **jedno** oczekiwanie (`pendingSince`) i uznawał następny popstate za „nasz” tylko, dopóki
+  to oczekiwanie nie wygasło (`backTimeoutMs`, preset 1000 ms). Gdy popstate własnego powrotu przyszedł później (obciążony WebView), a aplikacja zdążyła otworzyć nowe warstwy (⋮, potem panel,
+  potem grupa), `reconcile()` już zapomniał o oczekiwaniu; spóźniony popstate trafiał do `popped()` jako **Wstecz osoby** i zamykał wszystkie warstwy powyżej swojej głębokości. Kilka szybkich
+  `back()` (m1Reset = do 8 razy `__loomBack`) też miało jedno wspólne oczekiwanie. Potwierdzone testem jednostkowym i e2e (niżej), nie tylko odczytem kodu.
+- **Poprawka.** Popstate jest klasyfikowany po tym, **czym jest**, nie po tym, ile minęło od naszej prośby. Stos pamięta **każdy** własny `history.back()` (licznik `inflight` i głębokość `top`,
+  na której stoi historia); własne powroty lądują kolejno na `top-1`, `top-2`…, więc popstate o głębokości z tego zakresu jest odpowiedzią na nasz powrót — **jak późno by nie przyszedł** — i tylko
+  zwalnia oczekiwanie (potem `reconcile()` dosuwa brakujące wpisy). Każdy inny popstate (Wstecz przeglądarki/Androida, odnośnik z `#`, Forward) jest Wstecz osoby i zamyka warstwy jak dotąd; ślad własnych,
+  starszych powrotów jest wtedy kasowany (popstate idą po kolei, więc starsze są już załatwione albo zgubione). Wpisy **nie są dopychane**, dopóki własny powrót czeka (to zostało z pierwotnego projektu:
+  push przed popstate byłby cofnięty); `backTimeoutMs` zmienił znaczenie: to tylko czas, po którym stos idzie dalej mimo braku odpowiedzi (kolejny powrót liczony od miejsca, gdzie historia stanie, albo
+  wpisy powyżej `top`) — **siatka bezpieczeństwa dla powrotu, który nigdy nie odpowie**. Powrót zostaje zapamiętany, więc jego spóźniona odpowiedź nadal jest rozpoznana.
+- **Nowe domyślne wartości (presety).** `backTimeoutMs` bez zmian, **1000 ms** (`BACK_TIMEOUT_PRESET_MS`; test go przypina) — teraz nie zależy od niego poprawność, tylko to, kiedy stos przestaje czekać.
+  Nowa opcja `forgetBackAfterMs`: po tylu ms ciszy powrót jest zapomniany, a jego późna odpowiedź jest znów Wstecz osoby; preset: **brak (nigdy)**. Powód: zgubiony powrót (historia bez wpisu za sobą,
+  w aplikacji praktycznie niemożliwa) może wtedy połknąć jedno Wstecz osoby, które ląduje dokładnie na jego głębokości; to mniejsze zło niż zamknięty panel, a właściciel może to ustawić (opcja w `LayerStackOptions`,
+  przekazywana przez `installLayerStack(win, options)`).
+- **Testy.** `tests/shell/history.test.mjs`: 6 nowych przypadków `FLAKE-1` (zegar sztuczny, dostarczanie popstate pod kontrolą testu — `deliver(n)`), żadnego `sleep`. Na starym `history.ts` **padają 5 z 6**
+  (pierwszy: `panel2` zamknięty przez spóźniony własny popstate: `[ 'menu2', 'panel2' ]` oczekiwane, `[ 'menu2' ]` jest); na nowym przechodzi 19/19 (13 dawnych bez zmian). E2E `e2e/m1-history-native.mjs`
+  (`npm run test:m1-history`, krok w `.github/workflows/loom.yml` obok sąsiadów): 390×844, dotyk, prawdziwy `loom-server`; 30 rund kształtu sterownika (m1Reset → ⋮ → Ustawienia → Rozmowa, kliknięcia JS) z
+  nakładką tylko-testową opóźniającą `history.back()` o 2000 ms (`M1_HISTORY_DELAY_MS`), warunek co klatkę „panel i grupa nie znikają, dopóki wszystkie opóźnione powroty nie dostały odpowiedzi + 1,5 s”.
+  Na starym kodzie pada w rundzie 2 („the group closed by itself 99 ms after Rozmowa opened”; `M1_HISTORY_DIST` wskazuje zbudowany stary `history.ts`), na nowym przechodzi.
+- **Inne warstwy.** Wszystkie warstwy (arkusze, karty, menu, panel, grupy ustawień, kroki ścieżki nawigatora, karta roli, menu +) przechodzą przez ten jeden `LayerStack` (`useLayer`), więc poprawka obejmuje je
+  wszystkie; osobnego kodu nie było.
+- **Cofnięcie.** `git revert` commitów M1-FLAKE1 (2) i (3); albo ustawić `backTimeoutMs` bardzo duże — to samo nie przywróci starego błędu (wiek oczekiwania nie decyduje już o klasyfikacji).
+- **Nie zrobione.** Emulator Androida (`android/smoke/*` należy do S2): poprawka nie była tam uruchamiana. Przeglądarka z prawdziwym opóźnionym `history.back()` na innym silniku niż Chromium niesprawdzana;
+  kolejność `pushState` względem oczekującego `history.back()` w prawdziwej przeglądarce jest nieokreślona, dlatego wpisy nie są dopychane przed odpowiedzią (poza siatką bezpieczeństwa po `backTimeoutMs`).
