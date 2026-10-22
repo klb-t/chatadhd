@@ -309,6 +309,13 @@ const convs = async () => listOf((await apiJson("GET", "/api/conversations?limit
 const convTitled = async sub => (await convs()).find(c => String(c.title || "").includes(sub));
 const messagesOf = async id => listOf((await apiJson("GET", `/api/conversations/${encodeURIComponent(id)}/messages?all=1`)).body);
 const providerCalls = () => readFileSync(path.join(OUT, "provider.jsonl"), "utf8").split("\n").filter(Boolean).map(l => JSON.parse(l));
+// an element that is still moving (a menu opening) may drop a click: wait until two reads 120 ms apart give the same box
+async function clickSettled(tid) {
+  const box = () => page.ev(`(()=>{const e=${q(tid)};if(!e)return '';const r=e.getBoundingClientRect();return [r.x,r.y,r.width,r.height].map(Math.round).join(',')})()`);
+  let prev = await box();
+  for (let k = 0; k < 25; k++) { await sleep(120); const now = await box(); if (now && now === prev) break; prev = now; }
+  if (!(await click(tid))) throw new Error(`[data-testid=${tid}] is gone before the tap`);
+}
 const clickText = (tid, re) => page.ev(`(()=>{const e=[...document.querySelectorAll('[data-testid="${tid}"]')].find(x=>${re}.test(x.innerText));if(!e)return false;e.click();return true})()`);
 async function openMenu(entry) {
   if (!(await has("shell-menu"))) { await click("shell-menu-toggle"); await waitTid("shell-menu", 10); }
@@ -470,7 +477,7 @@ function m1GateChecks() {
     const notes = [];
     try {
       for (const a of st.do || []) {
-        if (a.click) { await waitTid(a.click, 20); await click(a.click); }
+        if (a.click) { await waitTid(a.click, 20); await clickSettled(a.click); }
         else if (a.clickText) { await waitTid(a.clickText[0], 20); if (!(await clickText(a.clickText[0], `/${a.clickText[1]}/i`))) throw new Error(`no ${a.clickText[0]} matching /${a.clickText[1]}/`); }
         else if (a.wait) { const t0 = Date.now(); await waitTid(a.wait, a.timeout || 30); notes.push(`${a.wait} after ${((Date.now() - t0) / 1000).toFixed(1)}s`); }
         else if (a.back) for (let k = 0; k < a.back; k++) { adb("shell", "input", "keyevent", "KEYCODE_BACK"); await sleep(1200); }
