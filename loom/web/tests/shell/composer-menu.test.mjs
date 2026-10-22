@@ -250,6 +250,10 @@ test('M1-W1b: the steps are the steps of the action rules (data), and every new 
   }
   assert.equal(tEn('cm_memory'), 'Profile and memory (from the You node)');
   assert.equal(plT('cm_knowledge'), 'Twierdzenia z analizy');
+  // M1-W1c: the submenu says that the steps add up (the receipt counts them: "szerzej ×2"), in the screen's own words
+  assert.equal(plT('cm_steps_add_up'), 'Kolejne kliknięcia dodają się: dwa razy Szerzej = szerzej ×2.');
+  assert.equal(tEn('cm_steps_add_up'), 'Further taps add up: Wider twice = wider ×2.');
+  assert.equal(plT('cm_steps_add_up').includes(plT('cm_wider')), true, 'it names the entry by the label the chip shows');
 });
 
 test('M1-W1b: a step without its step, a node without its address are said, not dropped', () => {

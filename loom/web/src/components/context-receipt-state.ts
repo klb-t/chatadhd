@@ -14,6 +14,9 @@ export interface SheetModel {
   /** null when the receipt names no order / no flow. */
   orderLine: string | null;
   flowLine: string | null;
+  /** The internal names behind the two lines (stability, plain ...), for a data attribute: the line shows words. */
+  orderName: string | null;
+  flowName: string | null;
   prefixLine: string;
   prefixDetail: string | null;
   /** The guard's sentence and its state, for a data attribute: ok (asked: false), asked, unknown (the kernel could not compute a ratio). */
@@ -182,8 +185,10 @@ export function sheetModel(receipt: ContextReceipt, t: ShellT, language: string)
   });
   return {
     profileLine, modifiersLine,
-    orderLine: receipt.order?.name ? t("header.order", { order: receipt.order.name }) : null,
-    flowLine: receipt.flow?.flow ? t("header.flow", { flow: receipt.flow.flow }) : null,
+    // the names of the order and of the flow are internal ids: the pack says them in short words, and the raw name is shown only where the pack has none
+    orderName: receipt.order?.name || null, flowName: receipt.flow?.flow || null,
+    orderLine: receipt.order?.name ? t("header.order", { order: wordOr(t, `order.${receipt.order.name}`, receipt.order.name) }) : null,
+    flowLine: receipt.flow?.flow ? t("header.flow", { flow: wordOr(t, `flow.${receipt.flow.flow}`, receipt.flow.flow) }) : null,
     prefixLine: t(prefixStable(receipt) ? "prefix.stable.yes" : "prefix.stable.no"), prefixDetail,
     guardLine: guard.line, guardState: guard.state,
     tokensLine: typeof receipt.tokens_est === "number" ? t("tokens", { n: String(receipt.tokens_est) }) : "",

@@ -149,6 +149,27 @@ test('ratio words: no ratio or no base is unknown, a tiny one is "much less than
   for (const guard of [{ ratio: 0, baseline: null }, { ratio: 0.04, baseline: 100 }, { ratio: 1.8, baseline: 100 }, null]) assert.ok(!/(^|\D)0×/.test(st.guardView({ ...base, guard }, t).line), 'no "0×" in any case');
 });
 
+test('the header names: every order of chat_context.pack and every flow of the guardian profile has a short word in both languages; a name without a word shows itself', async () => {
+  const guardian = (await read('../../../data/runtime/guardian.pack')).defaults;
+  const orders = Object.keys(ctx.orders), flows = Object.keys(guardian.context_io.flows);
+  assert.deepEqual(orders.sort(), ['legacy', 'stability', 'stable_first'], 'the orders of the data (a new one needs a word here)');
+  assert.deepEqual(flows.sort(), ['graph_in', 'graph_io', 'graph_out', 'plain']);
+  for (const id of orders) for (const [words, name] of [[pl, 'pl'], [en, 'en']]) assert.equal(typeof words[`order.${id}`], 'string', `order.${id} in ${name}`);
+  for (const id of flows) for (const [words, name] of [[pl, 'pl'], [en, 'en']]) assert.equal(typeof words[`flow.${id}`], 'string', `flow.${id} in ${name}`);
+  // the words of the data's own order: the graph comes after the conversation in the two orders that say "graf na końcu"
+  for (const id of ['stable_first', 'stability']) assert.equal(ctx.orders[id].at(-1), 'graph', id);
+  assert.ok(ctx.orders.legacy.indexOf('graph') < ctx.orders.legacy.indexOf('history'), 'legacy: graph before the conversation');
+  assert.deepEqual(ctx.orders.stability.slice(0, 3), ['system', 'profile', 'rules'], 'stability: profile and rules first');
+  const line = (order, flow, words) => { const m = st.sheetModel({ ...base, order: { name: order, classes: ctx.orders[order] ?? [] }, flow: flow ? { flow } : null }, words, words === t ? 'pl' : 'en'); return [m.orderLine, m.flowLine]; };
+  assert.deepEqual(line('stability', 'plain', t), ['Kolejność: stabilna (profil i reguły na początku, graf na końcu)', 'Przepływ: zwykły tekst']);
+  assert.deepEqual(line('legacy', 'graph_io', t), ['Kolejność: dawna (graf przed rozmową)', 'Przepływ: graf na wejściu i na wyjściu']);
+  assert.deepEqual(line('stable_first', 'graph_in', tEn), ['Order: steady parts first (graph last)', 'Flow: a graph in, a text answer']);
+  assert.deepEqual(line('x_mine', 'my_flow', t), ['Kolejność: x_mine', 'Przepływ: my_flow'], 'no word: the raw name, never a guess');
+  assert.deepEqual(line('stability', null, t), ['Kolejność: stabilna (profil i reguły na początku, graf na końcu)', null]);
+  const m = st.sheetModel({ ...base, flow: { flow: 'plain' } }, t, 'pl');
+  assert.deepEqual([m.orderName, m.flowName], ['stability', 'plain'], 'the internal names stay available for a data attribute');
+});
+
 test('the prefix is stable only when the order puts the profile before what changes and the kernel built the block', () => {
   assert.equal(st.prefixStable(base), true);   // an empty profile block is still the same every turn
   assert.equal(st.prefixStable({ ...base, profile_prefix: null }), false);   // the block was not built (no level)

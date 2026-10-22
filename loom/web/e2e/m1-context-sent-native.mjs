@@ -120,6 +120,18 @@ try {
     console.log("[m1-context-sent] rendered guard line: " + JSON.stringify(guardText));
     assert.match(guardText, guardLine(w, guardState), "the guard line is the pack's sentence with the pack's words for the ratio (a number with the sign, 'much less than usual' or 'unknown - no base')");
     assert.ok(!/(^|\D)0×/.test(guardText), "no '0×' for a tiny ratio or a missing base");
+    // The order and the flow are said in the pack's short words (the internal name stays only as a data attribute and as the fallback of a name the pack has no word for).
+    for (const [kind, header] of [["order", "header.order"], ["flow", "header.flow"]]) {
+      const line = page.getByTestId(`context-receipt-${kind}`);
+      if (await line.count() === 0) continue;
+      const name = await line.getAttribute("data-name");
+      assert.ok(name, `the ${kind} line carries its internal name`);
+      assert.ok(w[`${kind}.${name}`], `the pack has a word for the ${kind} ${name}`);
+      const said = await line.innerText();
+      console.log(`[m1-context-sent] rendered ${kind} line: ` + JSON.stringify(said));
+      assert.equal(said, w[header].replace(`{{${kind}}}`, w[`${kind}.${name}`]), `the ${kind} is said in words`);
+      assert.ok(!said.includes(name), `the internal name ${name} is not shown`);
+    }
     assert.equal(await page.getByTestId("context-receipt-dropped-title").innerText(), w["dropped.title"]);
     const itemText = await page.getByTestId("receipt-section-system").locator('[data-testid="receipt-item"]').first().evaluate(el => ({ ws: getComputedStyle(el).whiteSpace, text: el.innerText }));
     assert.equal(itemText.ws, "pre-wrap");
