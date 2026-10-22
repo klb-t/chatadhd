@@ -7074,7 +7074,7 @@ std::string_view(R"loom_onboard({
       },
       "understood": {
         "en": "I will not ask about who you are, and I will not guess it.",
-        "pl": "Nie będę pytać o tożsamości i nie będę się tego domyślać."
+        "pl": "Nie będę pytać o to, kim jesteś i nie będę się tego domyślać."
       }
     },
     {
@@ -7106,7 +7106,7 @@ std::string_view(R"loom_onboard({
       },
       "understood": {
         "en": "I may ask about who you are again.",
-        "pl": "Znowu mogę pytać o tożsamości."
+        "pl": "Znowu mogę pytać o to, kim jesteś."
       }
     },
     {
@@ -7157,7 +7157,7 @@ std::string_view(R"loom_onboard({
       },
       "understood": {
         "en": "I will not ask about work and projects, and I will not guess it.",
-        "pl": "Nie będę pytać o pracy i projektów i nie będę się tego domyślać."
+        "pl": "Nie będę pytać o pracę i projekty i nie będę się tego domyślać."
       }
     },
     {
@@ -7195,7 +7195,7 @@ std::string_view(R"loom_onboard({
       },
       "understood": {
         "en": "I may ask about work and projects again.",
-        "pl": "Znowu mogę pytać o pracy i projektów."
+        "pl": "Znowu mogę pytać o pracę i projekty."
       }
     },
     {
@@ -7240,7 +7240,7 @@ std::string_view(R"loom_onboard({
       },
       "understood": {
         "en": "I will not ask about how we talk, and I will not guess it.",
-        "pl": "Nie będę pytać o sposobu rozmowy i nie będę się tego domyślać."
+        "pl": "Nie będę pytać o sposób rozmowy i nie będę się tego domyślać."
       }
     },
     {
@@ -7275,7 +7275,7 @@ std::string_view(R"loom_onboard({
       },
       "understood": {
         "en": "I may ask about how we talk again.",
-        "pl": "Znowu mogę pytać o sposobu rozmowy."
+        "pl": "Znowu mogę pytać o sposób rozmowy."
       }
     },
     {
@@ -7316,7 +7316,7 @@ std::string_view(R"loom_onboard({
       },
       "understood": {
         "en": "I will not ask about what to remember, and I will not guess it.",
-        "pl": "Nie będę pytać o tego, co zapamiętać i nie będę się tego domyślać."
+        "pl": "Nie będę pytać o to, co zapamiętać i nie będę się tego domyślać."
       }
     },
     {
@@ -7348,7 +7348,7 @@ std::string_view(R"loom_onboard({
       },
       "understood": {
         "en": "I may ask about what to remember again.",
-        "pl": "Znowu mogę pytać o tego, co zapamiętać."
+        "pl": "Znowu mogę pytać o to, co zapamiętać."
       }
     },
     {
@@ -7379,7 +7379,7 @@ std::string_view(R"loom_onboard({
       },
       "understood": {
         "en": "I will not ask about privacy, and I will not guess it.",
-        "pl": "Nie będę pytać o prywatności i nie będę się tego domyślać."
+        "pl": "Nie będę pytać o prywatność i nie będę się tego domyślać."
       }
     },
     {
@@ -7405,7 +7405,7 @@ std::string_view(R"loom_onboard({
       },
       "understood": {
         "en": "I may ask about privacy again.",
-        "pl": "Znowu mogę pytać o prywatności."
+        "pl": "Znowu mogę pytać o prywatność."
       }
     },
     {
@@ -7459,7 +7459,7 @@ std::string_view(R"loom_onboard({
       },
       "understood": {
         "en": "I will not ask about health (including attention-related needs), and I will not guess it.",
-        "pl": "Nie będę pytać o zdrowia (także o potrzeby związane z uwagą) i nie będę się tego domyślać."
+        "pl": "Nie będę pytać o zdrowie (także o potrzeby związane z uwagą) i nie będę się tego domyślać."
       }
     },
     {
@@ -7500,7 +7500,7 @@ std::string_view(R"loom_onboard({
       },
       "understood": {
         "en": "I may ask about health (including attention-related needs) again.",
-        "pl": "Znowu mogę pytać o zdrowia (także o potrzeby związane z uwagą)."
+        "pl": "Znowu mogę pytać o zdrowie (także o potrzeby związane z uwagą)."
       }
     },
     {
@@ -7651,7 +7651,7 @@ std::string_view(R"loom_onboard({
       },
       "understood": {
         "en": "I will not ask about your daily rhythm, and I will not guess it.",
-        "pl": "Nie będę pytać o rytmu dnia i nie będę się tego domyślać."
+        "pl": "Nie będę pytać o rytm dnia i nie będę się tego domyślać."
       }
     },
     {
@@ -7692,7 +7692,7 @@ std::string_view(R"loom_onboard({
       },
       "understood": {
         "en": "I may ask about your daily rhythm again.",
-        "pl": "Znowu mogę pytać o rytmu dnia."
+        "pl": "Znowu mogę pytać o rytm dnia."
       }
     },
     {
@@ -8054,7 +8054,7 @@ std::string_view(R"loom_onboard({
     "prompt_default_key": "prompt.onboarding"
   }
 }
-)loom_onboard", 48239)};
+)loom_onboard", 48237)};
 static constexpr std::string_view kOnboardingPresentation[] = {
 std::string_view(R"loom_onboard({
   "schema": "loom.onboarding.presentation/1",
