@@ -1,7 +1,14 @@
-# Kolejka S1 — stan 2026-10-22 16:40 UTC
+# Kolejka S1 — stan 2026-10-22 17:05 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
+
+## APK v2 DOSTARCZONY właścicielowi (17:02 UTC): `package.yml` run 39815413284 = success (16:50, 14 min), sha `f07fc52a` (CI 271 zielony; smoke S2 39801974892 42/0/0 ×3)
+Artefakty: `chatadhd-android-apk-TEST-KEY` (17,8 MB, sha256 27818dd7…), `chatadhd-server-linux-x64/-arm64`, `first-steps-screenshots`, `chatadhd-0.10.00-ci.24.f07fc52`. Raport `M1_CHECKPOINT_1.md` (identyczny z commitem APK) wysłany jako plik.
+## K2b-1 GOTOWE (16:58 UTC, `aa45db5b` na `claude/m1-w0` na wierzchu `5b0e04ff`): akcje `profile.interview` / `profile.show` / `profile.set` + `profile.confirm`, tryb formularza — bramka lokalna `k2b1` w toku (start 17:00)
+Agent Sonnet (`wf_c9a232c9-64a`, 102 wywołania, 312 tys. tokenów, 41 min). Logika w `loom/src/actions/profile_ops.{h,cpp}`, dodatkowa akcja `profile.confirm`; odpowiedzi po polsku (start → pytanie o poziom z trzema podglądami; odpowiedź z uwagą „nie pytaj o zdrowie” → „Tak zrozumiałem …” bez zapisu aż do potwierdzenia; review jako propozycja; never; status; show z `asked_at_level`; set z bramką potwierdzenia, odmowa dla „nigdy”). Bez modelu i bez sieci (test pilnuje). Łańcuch rejestru zrobiony (interfaces.pack, rom.pack, pin sha).
+Do dopracowania (moja krytyka odpowiedzi agenta, do W2/K2b-2): widoczne zdania zawierają wewnętrzne nazwy („Minimalnie (minimal)”, „ustawieniu profile_detail_level”, „erase=true”) — to żargon na ekranie rozmowy; schować w danych/„Szczegóły techniczne”. K2b-2: gałąź `metadata.flow` w `ChatEngine::send`, ścieżka modelu (privacy_decision + koszt), odświeżanie starych scenariuszy, `by_category`. W2: ekran „Ty”, karta „Tak zrozumiałem”, wywiad w oknie rozmowy.
+FF `main` ← `aa45db5b` po zielonej bramce `k2b1` I po końcu CI 272 (kontrola 18:13).
 
 ## CI 271 (`f07fc52a`) = SUCCESS (16:19, 71 min); APK v2 w budowie: `package.yml` run 39815413284 na `f07fc52a` (start 16:36, kontrola 16:59); `main` = `5b0e04ff` (K2a + fix, bramka `k2a2` zielona) od 16:36, CI 272 (id 39815457361), kontrola ≈ 18:11
 APK v2 = commit z zielonym CI + smoke S2 42/0/0 ×3 profile (FLAKE-1 potwierdzone). Właściciel dostanie: link do biegu + `M1_CHECKPOINT_1.md` + uczciwą listę (nowe: polskie powody, jedna liczba z bazą, „Pokaż w grafie” działa, naprawione losowe „Ustawienia się nie otwierają”; brak: cena, szacunek pustej wiadomości w arkuszu, załączniki, ekrany wywiadu „Ty”, przeciąganie W3).
