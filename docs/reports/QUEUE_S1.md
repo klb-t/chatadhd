@@ -1,7 +1,12 @@
-# Kolejka S1 — stan 2026-10-22 10:25 UTC
+# Kolejka S1 — stan 2026-10-22 11:15 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
+
+## `main` = `d0ea24cb` (K1c-3a + K1c-3b, bramka `k1c3b` ZIELONA 11:10) od 11:11; CI 267 (`568afce9`) = SUCCESS (10:24, 66 min); CI 268 (id 39768676601) w toku, kontrola 12:37; K1c-4 wystartowało 11:11 (`wf_38d8c445-682`)
+Tydzień 35 % (10:24; linia planu 27,3 % o 05:51). K1c-4 (tylko słowa z paczki i web): zdania „dlaczego” po polsku zamiast angielskich zapisanych przy wysyłce; zdanie pod „Brak śladu” bez kluczy ustawień; przegląd innych angielskich resztek na ekranach „Co wysłaliśmy”.
+S2 poinformowany: smoke na `d0ea24cb` kiedy mu pasuje (nowe testidy i krok Androida w `M1_W0_TESTIDS.md`). APK v2 dla właściciela: z commitu z zielonym CI po smoke S2 — najpewniej z gałęzi po K1c-4.
+Dalej po K1c-4: K2a (jądro „Ty”/wywiad: pytania {en,pl}, poziom szczegółowości, `remark_rules` — `docs/architecture/M1_USTAWIENIA_JAKO_GRAF_2026-10-16.md` „M1-K2”, do rozcięcia na K2a/K2b/K2c).
 
 ## K1c-3b GOTOWE (10:22 UTC, `d0ea24cb` na `claude/m1-w0`): „Pokaż w grafie” DZIAŁA w przeglądarce — bramka lokalna `k1c3b` w toku (start 10:23)
 Agent Sonnet (`wf_873d4c52-07d`, 120 wywołań, 304 tys. tokenów, 36 min). **Przyczyna wyłączonego przycisku (zmierzona na prawdziwym serwerze):** web pytał o adres `msg:m_<hex>`, a adres wiadomości w grafie to `msg:<hex>` (graph_sources.pack: prefiks `m_` → `msg:`);
