@@ -1,7 +1,14 @@
-# Kolejka S1 — stan 2026-10-22 04:00 UTC
+# Kolejka S1 — stan 2026-10-22 04:50 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
+
+## S2: android-smoke na W1b (`3b827313` + 2 kroki „Kontekst”) = SUCCESS (run 39717352777): pixel_5 1,0 41/0/0, pixel_6 1,3 41/0/0, pixel_6 1,0 40/1/0
+Jedna usterka: Bramka 0 krok 5 „Wstecz” (po ⋮ › Ustawienia panel nie otworzył się; S2 czyta jako dotknięcie w trakcie animacji menu, nie błąd aplikacji; przeszedł na 2 profilach i we wszystkich wcześniejszych biegach).
+Uwagi S2 o tekstach (przyjęte): (a) „0× bazy” / „ok. 0× zwykłego” wprowadza w błąd (mały stosunek zaokrąglony do 0 albo brak bazy) → W1c: „nieznane — brak bazy” / „dużo mniej niż zwykle” / od 0,1 jedna cyfra;
+(b) kroki z arkusza i z menu DODAJĄ się (szerzej ×2) — zamierzone, dopisane zdanie w pomocy; (c) zdanie klasy modelu za długie i deweloperskie → krótkie „Klasa: nieznana” + pełne zdanie jądra dosłownie w zwiniętym „Szczegóły techniczne”; plus angielskie nazwy „Kolejność: stability / Przepływ: plain” → słowa z paczki.
+**W1c** (`wf_1ad64f13-37d`, Sonnet) wystartowało 04:42; koszt pakietu w `pace_plan.json` skalibrowany z 0,75 do 0,5 pkt (pomiar: +3 pkt na ≈ 7 pakietów, 17:33→04:40; tydzień 33 %).
+Plan: CI `3b827313` (kontrola 05:22) → jeśli zielony: `package.yml` (APK z W1b + raport `M1_CHECKPOINT_1.md`) do właściciela, z uczciwą listą trzech kosmetycznych usterek; potem wersja poprawiona po W1c (gate → main → S2 smoke → APK v2). FF `drive.mjs` S2 po zielonym CI.
 
 ## CI 262 (`d103d5d8`) = failure TYLKO w jobie `vendored (clang++)` (dev/asan/tsan przeszły) → poprawka na `main` = `3b827313` (W1b + raport DOC1 + poprawka), nowy bieg w toku
 Przyczyna (agent haiku `wf_5bb3f9f1-ef1`, potwierdzona lokalnie clang 18): `builtin.inc` (pakiet onboardingu, ok. 420 KB po słowach z W1a) — clang liczy każdy znak surowego literału w constexpr strlen i przy ok. 1 mln kroków
