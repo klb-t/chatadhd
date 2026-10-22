@@ -6937,7 +6937,7 @@ std::string_view(R"loom_onboard({
         },
         "model_sees": {
           "en": "The model sees at most what is stored at this level (stored now: {model_sees}), and only if your privacy rules allow sending it.",
-          "pl": "Model zobaczy co najwyżej to, co zapisane na tym poziomie (zapisanych teraz: {model_sees}) i tylko wtedy, gdy Twoje zasady prywatności pozwalają to wysłać."
+          "pl": "Model zobaczy co najwyżej to, co jest zapisane na tym poziomie (zapisanych teraz: {model_sees}) i tylko wtedy, gdy Twoje zasady prywatności pozwalają to wysłać."
         }
       }
     },
@@ -6960,7 +6960,7 @@ std::string_view(R"loom_onboard({
         },
         "model_sees": {
           "en": "The model sees at most as much as is stored at this level (stored now: {model_sees}); sending depends on your privacy rules.",
-          "pl": "Model zobaczy co najwyżej tyle, ile zapisane na tym poziomie (zapisanych teraz: {model_sees}); wysyłka zależy od Twoich zasad prywatności."
+          "pl": "Model zobaczy co najwyżej tyle, ile jest zapisane na tym poziomie (zapisanych teraz: {model_sees}); wysyłka zależy od Twoich zasad prywatności."
         }
       }
     },
@@ -6983,7 +6983,7 @@ std::string_view(R"loom_onboard({
         },
         "model_sees": {
           "en": "The model sees at most everything stored (stored now: {model_sees}); sending depends on your privacy rules.",
-          "pl": "Model zobaczy co najwyżej wszystko, co zapisane (zapisanych teraz: {model_sees}); wysyłka zależy od Twoich zasad prywatności."
+          "pl": "Model zobaczy co najwyżej wszystko, co jest zapisane (zapisanych teraz: {model_sees}); wysyłka zależy od Twoich zasad prywatności."
         }
       }
     }
@@ -8054,7 +8054,7 @@ std::string_view(R"loom_onboard({
     "prompt_default_key": "prompt.onboarding"
   }
 }
-)loom_onboard", 48224)};
+)loom_onboard", 48239)};
 static constexpr std::string_view kOnboardingPresentation[] = {
 std::string_view(R"loom_onboard({
   "schema": "loom.onboarding.presentation/1",
