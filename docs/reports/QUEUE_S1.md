@@ -1,7 +1,11 @@
-# Kolejka S1 — stan 2026-10-22 09:05 UTC
+# Kolejka S1 — stan 2026-10-22 09:25 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
+
+## CI 266 (`efb31fcf`) = SUCCESS (09:07, 89 min); `main` = `568afce9` (K1c-2, bramka `k1c2` zielona) od 09:18, CI 267 (id 39754419991) w toku, kontrola ≈ 10:57
+S2 dostał „266 zielony, main 568afce9”. Zadanie #26 (K1c-1) zamknięte. Zawartość `main` teraz: W1a/W1b/W1c, K1c-1 (jedna liczba), K1c-2 (jądro „wysłane do modelu” z paragonu i pozycje per element).
+Na `claude/m1-w0` (jeszcze nie na `main`): K1c-3a (`07988cce`, bramka `k1c3a` w toku, spodziewany czerwony krok e2e). Dalej: K1c-3b (web + e2e + raport) ≥ 09:44.
 
 ## K1c-3a GOTOWE (08:59 UTC, `07988cce` na `claude/m1-w0`): jądro rysuje „wysłane do modelu” także w nawigatorze i na karcie — bramka `k1c3a` w toku (start 09:00), PRZEWIDYWANIE: czerwony krok e2e
 Agent Sonnet (`wf_37698f0d-16b`, 75 wywołań, 207 tys. tokenów, 21 min): `graph.navigate` z perspektywą `sent_to_model` i fokusem `msg:` rysuje linki paragonu (waga = tokeny, pominięte jako `left_out_of_model`, węzły pochodne `sent:<id>:<ref>`),
