@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <charconv>
 #include <map>
+#include <optional>
 #include <set>
 #include <vector>
 
@@ -110,10 +111,12 @@ std::string section_title(const Env& e, const Loaded& l, const std::string& sect
   return section;
 }
 
-const Json* field_of(const Loaded& l, const std::string& field) {
+// A COPY of the field, not a pointer into l.state: write() replaces l.state with the store's answer, which would leave a pointer dangling
+// (CI 273: heap-use-after-free in op_answer, found by AddressSanitizer). Fields are small, the copy is cheap.
+std::optional<Json> field_of(const Loaded& l, const std::string& field) {
   const Json& fields = l.state.at("profile").at("fields");
-  if (!fields.is_object() || !fields.contains(field)) return nullptr;
-  return &fields.at(field);
+  if (!fields.is_object() || !fields.contains(field)) return std::nullopt;
+  return fields.at(field);
 }
 
 std::set<std::string> pending_fields(const Loaded& l) {
@@ -204,7 +207,7 @@ Result<Reply> next_reply(const Env& e, const Loaded& l, const std::string& head,
       if (json::get_string(q, "field") == field) { question = json::get_string(q, "text"); fell_back = q.value("fallback", false); }
   }
   Json q{{"field", field}, {"section", n.ask.value("section", "")}, {"topic", topic_of(e, l, field)}, {"text", question}, {"fallback", fell_back}};
-  const Json* f = field_of(l, field);
+  const auto f = field_of(l, field);
   const bool is_level = f && f->contains("setting_key");
   q["is_level_question"] = is_level;
   data["done"] = false;
@@ -269,7 +272,7 @@ std::string section_for_review(const Loaded& l, const Json& args) {
     const std::string time = json::get_string(c, "time");
     if (time >= newest_time) {
       newest_time = time;
-      if (const Json* f = field_of(l, json::get_string(c, "field"))) section = json::get_string(*f, "section");
+      if (const auto f = field_of(l, json::get_string(c, "field"))) section = json::get_string(*f, "section");
     }
   }
   if (!section.empty()) return section;
@@ -281,7 +284,7 @@ Json pending_in(const Loaded& l, const std::string& section) {
   const Json& candidates = l.state.at("profile").at("candidates");
   for (const auto& [id, c] : candidates.items()) {
     if (json::get_string(c, "review") != "pending") continue;
-    const Json* f = field_of(l, json::get_string(c, "field"));
+    const auto f = field_of(l, json::get_string(c, "field"));
     if (f && json::get_string(*f, "section") == section) out.push_back(Json{{"candidate", id}, {"field", json::get_string(c, "field")}, {"value", c.value("value", Json(nullptr))}});
   }
   return out;
@@ -369,7 +372,7 @@ Result<Reply> op_answer(const Env& e, const Json& args) {
     if (n.ask.is_null()) return err(Errc::InvalidArgument, e.say("profile_no_slot", Json::object()));
     slot = json::get_string(n.ask, "field");
   }
-  const Json* f = field_of(l, slot);
+  const auto f = field_of(l, slot);
   if (!f) return err(Errc::NotFound, e.say("profile_unknown_slot", Json{{"slot", slot}}));
   const std::string topic = topic_of(e, l, slot);
 
@@ -478,7 +481,7 @@ Result<Reply> op_skip(const Env& e, const Json& args) {
   std::string section = json::get_string(args, "section");
   if (section.empty()) {
     if (const std::string slot = json::get_string(args, "slot"); !slot.empty()) {
-      if (const Json* f = field_of(l, slot)) section = json::get_string(*f, "section");
+      if (const auto f = field_of(l, slot)) section = json::get_string(*f, "section");
     } else {
       LOOM_TRY_ASSIGN(auto plan, plan_of(e, l));
       const Next n = next_of(l, plan);
@@ -521,7 +524,7 @@ Result<Reply> op_decline(const Env& e, const Json& args) {
   LOOM_TRY_ASSIGN(auto targets, targets_of(e, l, named));
   Json done = Json::array();
   for (const auto& t : targets) {
-    const Json* f = field_of(l, t);
+    const auto f = field_of(l, t);
     if (!f || json::get_string(*f, "status") == "never" || json::get_string(*f, "status") == "known") continue;  // a never stays never; an answer is not erased by "not now"
     LOOM_TRY(write(e, l, Json{{"op", "status"}, {"status", "declined"}, {"field", t}}));
     done.push_back(t);
@@ -546,7 +549,7 @@ Result<Reply> op_never(const Env& e, const Json& args) {
     // The person's own reopening: only a never is reopened (to unknown, so the question may come again).
     Json done = Json::array();
     for (const auto& t : targets) {
-      const Json* f = field_of(l, t);
+      const auto f = field_of(l, t);
       if (!f || json::get_string(*f, "status") != "never") continue;
       LOOM_TRY(write(e, l, Json{{"op", "status"}, {"status", "unknown"}, {"field", t}}));
       done.push_back(t);
@@ -557,7 +560,7 @@ Result<Reply> op_never(const Env& e, const Json& args) {
   }
   Json erases = Json::array(), todo = Json::array();
   for (const auto& t : targets) {
-    const Json* f = field_of(l, t);
+    const auto f = field_of(l, t);
     if (!f || json::get_string(*f, "status") == "never") continue;
     todo.push_back(t);
     if (json::get_string(*f, "status") == "known") erases.push_back(t);
@@ -760,7 +763,7 @@ Result<Reply> set(const Env& e, const Json& args) {
   if (slot.empty()) return err(Errc::InvalidArgument, e.say("profile_no_slot", Json::object()));
   const Json* given = json::find(args, "value");
   if (!given || given->is_null()) return err(Errc::InvalidArgument, e.say("profile_no_value", Json::object()));
-  const Json* f = field_of(l, slot);
+  const auto f = field_of(l, slot);
   if (!f) return err(Errc::NotFound, e.say("profile_unknown_slot", Json{{"slot", slot}}));
   const std::string topic = topic_of(e, l, slot);
   if (json::get_string(*f, "status") == "never") return err(Errc::Auth, e.say("profile_never_blocked", Json{{"topic", topic}}));
