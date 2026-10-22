@@ -5,17 +5,17 @@
 # (copied from the session scratchpad into tools/ on 2026-10-21; the lint step is a heuristic report, it does not fail the gate)
 set -uo pipefail
 export CCACHE_BASEDIR=/home/user CCACHE_NOHASHDIR=true CCACHE_DIR=/home/user/.ccache CCACHE_MAXSIZE=12G
-ROOT="$(cd "$1" && pwd)"; LABEL="${2:-$(basename "$ROOT")}"
+TOOLS="$(cd "$(dirname "$0")" && pwd)"; ROOT="$(cd "$1" && pwd)"; LABEL="${2:-$(basename "$ROOT")}"
 OUT="${GATE_OUT:-${TMPDIR:-/tmp}/gate-$LABEL}"; mkdir -p "$OUT"   # logs outside the working tree (override with GATE_OUT)
 LOG="$OUT/gate.log"; : > "$LOG"
 step() { echo "== $1" | tee -a "$LOG"; shift; ( "$@" ) >>"$LOG" 2>&1; rc=$?; echo "   rc=$rc" | tee -a "$LOG"; [ $rc -eq 0 ] || FAIL="$FAIL $STEP"; }
 FAIL=""
 cd "$ROOT/loom"
-STEP=lint;      step lint bash -c "cd \"$ROOT\" && python3 tools/lint_asan_range_for.py origin/main || { echo '(lint: przejrzyj wypisane linie; to heurystyka, nie błąd kompilacji)'; true; }"
+STEP=lint;      step lint bash -c "cd \"$ROOT\" && python3 \"$TOOLS/lint_asan_range_for.py\" origin/main || { echo '(lint: przejrzyj wypisane linie; to heurystyka, nie błąd kompilacji)'; true; }"
 STEP=configure; step configure cmake --preset dev -DLOOM_BUILD_SERVER=ON -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DPython3_EXECUTABLE="$(which python3)"
 STEP=build;     step build cmake --build --preset dev --parallel 4
 V=build/dev/verification; mkdir -p "$V"
-STEP=clangsyntax; step clangsyntax python3 "$ROOT/tools/clang_inc_check.py" "$ROOT/loom/build/dev"
+STEP=clangsyntax; step clangsyntax python3 "$TOOLS/clang_inc_check.py" "$ROOT/loom/build/dev"
 STEP=ctest;     step ctest bash -c "ctest --preset dev --show-only=json-v1 > $V/ctest-manifest.json && ctest --preset dev --no-tests=error -j3 --test-output-size-passed 10485760 --test-output-size-failed 10485760 --output-junit $PWD/$V/ctest.xml"
 cd "$ROOT"
 STEP=guard;     step guard python3 .github/scripts/verify_ctest.py --policy .github/ctest-evidence-policy.json --manifest loom/$V/ctest-manifest.json --junit loom/$V/ctest.xml --preset dev --output loom/$V/executed-cases.json
