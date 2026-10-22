@@ -198,35 +198,47 @@ TEST_SUITE("units") {
     f.no_network();
   }
 
-  TEST_CASE("the scope chain sees the unit after set_unit and stops seeing it after clear_unit") {
+  TEST_CASE("the scope chain sees the unit after set_unit and stops seeing it after clear_unit (a rule of the project applies in the conversation only while it belongs to it)") {
     Fx f;
     const std::string cid = f.new_conv("Rozmowa");
+    // a rule of the unit "alfa" (kind project) and one of the group of teams "dzial": the persistent way to give a unit its own value
+    Json rules = Json::object();
+    rules["alfa_preset"] = Json{{"id", "alfa_preset"}, {"scope", "project"}, {"scope_id", "alfa"}, {"target", Json{{"kind", "setting"}, {"key", "extrapolation.preset"}}},
+                                {"effect", "set_value"}, {"value", "generous"}};
+    rules["dzial_cost"] = Json{{"id", "dzial_cost"}, {"scope", "group_of_groups"}, {"scope_id", "dzial"}, {"target", Json{{"kind", "setting"}, {"key", "extrapolation.preset"}}},
+                               {"effect", "set_value"}, {"value", "careful"}};
+    std::filesystem::create_directories(f.td.path() / "profiles");
+    REQUIRE(fsutil::write_file(f.td.path() / "profiles" / "action_rules.pack",
+                               Json{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", "action_rules"}, {"overrides", Json{{"rules", rules}}}}.dump()));
     scopes::Binding b;
-    b.key = "unit_probe_setting";
-    b.installation = "preset";
+    b.key = "extrapolation.preset";
+    b.installation = "standard";
     b.conv_id = cid;
-    b.unit_values = Json{{"project", "project-value"}};
     auto resolve = [&] {
       auto r = unwrap(scopes::Resolver::open(f.td.path(), &f.rt->config(), &f.db()));
       return unwrap(r.resolve(b));
     };
-    CHECK(resolve().scope == "installation");  // not in a project yet
+    const auto outside_before = resolve();
+    CHECK(outside_before.scope == "installation");  // not in a project yet: the project's rule does not apply
+    CHECK(outside_before.value == "standard");
     f.confirmed("units.define", Json{{"kind", "project"}, {"id", "alfa"}});
     f.confirmed("conversation.set_unit", Json{{"conv_id", cid}, {"kind", "project"}, {"id", "alfa"}});
     const auto inside = resolve();
-    CHECK(inside.value == "project-value");
+    CHECK(inside.value == "generous");
     CHECK(inside.scope == "project");
     CHECK(inside.scope_id == "alfa");
     f.confirmed("conversation.clear_unit", Json{{"conv_id", cid}, {"kind", "project"}});
     const auto outside = resolve();
     CHECK(outside.scope == "installation");
-    CHECK(outside.value == "preset");
-    // a kind added later to the list of kinds (group of teams) reaches the chain the same way
+    CHECK(outside.value == "standard");
+    // another unit of the same kind is not this one
+    f.confirmed("conversation.set_unit", Json{{"conv_id", cid}, {"kind", "project"}, {"id", "beta"}});
+    CHECK(resolve().scope == "installation");
+    // the group of teams (a kind added next to the seeds) reaches the chain the same way
     f.confirmed("conversation.set_unit", Json{{"conv_id", cid}, {"kind", "grupa zespołów"}, {"id", "dzial"}});
-    b.unit_values = Json{{"group_of_groups", "group-value"}};
     const auto group = resolve();
     CHECK(group.scope == "group_of_groups");
-    CHECK(group.value == "group-value");
+    CHECK(group.value == "careful");
   }
 
   TEST_CASE("units.list counts the conversations of each unit, marks a unit the list does not know, filters by kind; units.forget asks first and says how many conversations it touched") {
@@ -317,7 +329,8 @@ TEST_SUITE("units") {
     CHECK_FALSE(old_note->metadata.contains("provenance"));
     // a new one, from a message of the conversation
     const Json remembered = Fx::data_of(f.run("memory.remember", Json{{"content", "lubię herbatę"}}, Json{{"conv_id", "c_x"}, {"message_id", "m_123456789abc"}}));
-    const auto fresh = mem.get_node(remembered.at("id"));
+    const std::string rid = remembered.at("id").get<std::string>();
+    const auto fresh = mem.get_node(rid);
     REQUIRE(fresh);
     const Json p = fresh->metadata.at("provenance");
     CHECK(p.at("source") == "user");
@@ -326,7 +339,7 @@ TEST_SUITE("units") {
     CHECK(fresh->metadata.at("origin") == "chat");  // what was there stays
     // without a message: no ref (absent, not empty)
     const Json bare = Fx::data_of(f.run("memory.remember", Json{{"content", "druga"}}));
-    CHECK_FALSE(mem.get_node(bare.at("id"))->metadata.at("provenance").contains("ref"));
+    CHECK_FALSE(mem.get_node(bare.at("id").get<std::string>())->metadata.at("provenance").contains("ref"));
     // the read side
     const Json recall = f.run("memory.recall", Json::object());
     const Json data = Fx::data_of(recall);
@@ -335,17 +348,17 @@ TEST_SUITE("units") {
     REQUIRE(items.count("aaaaaaaaaaaa"));
     CHECK(items.at("aaaaaaaaaaaa").at("provenance").at("known") == false);
     CHECK(items.at("aaaaaaaaaaaa").at("provenance").at("words") == "pochodzenie nieznane (zapisane przed M1)");
-    CHECK(items.at(remembered.at("id").get<std::string>()).at("provenance").at("known") == true);
-    CHECK(items.at(remembered.at("id").get<std::string>()).at("provenance").at("source") == "user");
+    CHECK(items.at(rid).at("provenance").at("known") == true);
+    CHECK(items.at(rid).at("provenance").at("source") == "user");
     const std::string text = Fx::text_of(recall);
     CHECK(text.find("stara notatka sprzed M1 (aaaaaaaaaaaa) - pochodzenie nieznane (zapisane przed M1)") != std::string::npos);
     CHECK(text.find("lubię herbatę") != std::string::npos);
     CHECK(text.find("pochodzenie: napisałeś to Ty, ") != std::string::npos);
     CHECK(text.find("(m_123456789abc)") != std::string::npos);
     // an edit that replaces the metadata keeps the origin of a new note and gives none to an old one
-    LOOM_REQUIRE_OK(mem.update_node(remembered.at("id"), Json{{"metadata", Json{{"note", "x"}}}}));
-    CHECK(mem.get_node(remembered.at("id"))->metadata.at("provenance").at("source") == "user");
-    CHECK(mem.get_node(remembered.at("id"))->metadata.at("note") == "x");
+    LOOM_REQUIRE_OK(mem.update_node(rid, Json{{"metadata", Json{{"note", "x"}}}}));
+    CHECK(mem.get_node(rid)->metadata.at("provenance").at("source") == "user");
+    CHECK(mem.get_node(rid)->metadata.at("note") == "x");
     LOOM_REQUIRE_OK(mem.update_node("aaaaaaaaaaaa", Json{{"metadata", Json{{"note", "y"}}}}));
     CHECK_FALSE(mem.get_node("aaaaaaaaaaaa")->metadata.contains("provenance"));
     // the file stays what the Python app reads: provenance is just a key of the free metadata
