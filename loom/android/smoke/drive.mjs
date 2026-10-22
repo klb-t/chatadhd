@@ -309,6 +309,13 @@ const convs = async () => listOf((await apiJson("GET", "/api/conversations?limit
 const convTitled = async sub => (await convs()).find(c => String(c.title || "").includes(sub));
 const messagesOf = async id => listOf((await apiJson("GET", `/api/conversations/${encodeURIComponent(id)}/messages?all=1`)).body);
 const providerCalls = () => readFileSync(path.join(OUT, "provider.jsonl"), "utf8").split("\n").filter(Boolean).map(l => JSON.parse(l));
+// an element that is still moving (a menu opening) may drop a click: wait until two reads 120 ms apart give the same box
+async function clickSettled(tid) {
+  const box = () => page.ev(`(()=>{const e=${q(tid)};if(!e)return '';const r=e.getBoundingClientRect();return [r.x,r.y,r.width,r.height].map(Math.round).join(',')})()`);
+  let prev = await box();
+  for (let k = 0; k < 25; k++) { await sleep(120); const now = await box(); if (now && now === prev) break; prev = now; }
+  if (!(await click(tid))) throw new Error(`[data-testid=${tid}] is gone before the tap`);
+}
 const clickText = (tid, re) => page.ev(`(()=>{const e=[...document.querySelectorAll('[data-testid="${tid}"]')].find(x=>${re}.test(x.innerText));if(!e)return false;e.click();return true})()`);
 async function openMenu(entry) {
   if (!(await has("shell-menu"))) { await click("shell-menu-toggle"); await waitTid("shell-menu", 10); }
@@ -470,7 +477,7 @@ function m1GateChecks() {
     const notes = [];
     try {
       for (const a of st.do || []) {
-        if (a.click) { await waitTid(a.click, 20); await click(a.click); }
+        if (a.click) { await waitTid(a.click, 20); await clickSettled(a.click); }
         else if (a.clickText) { await waitTid(a.clickText[0], 20); if (!(await clickText(a.clickText[0], `/${a.clickText[1]}/i`))) throw new Error(`no ${a.clickText[0]} matching /${a.clickText[1]}/`); }
         else if (a.wait) { const t0 = Date.now(); await waitTid(a.wait, a.timeout || 30); notes.push(`${a.wait} after ${((Date.now() - t0) / 1000).toFixed(1)}s`); }
         else if (a.back) for (let k = 0; k < a.back; k++) { adb("shell", "input", "keyevent", "KEYCODE_BACK"); await sleep(1200); }
@@ -612,6 +619,45 @@ const serverChecks = [
       throw new Error(`${e.message}; before ${before}, now ${now.length}; newest: ${sizes.join(" | ")}`);
     }
     return `${before} -> ${before + 1} conversations`;
+  }],
+  // M1-W1a: under an answer the line "Kontekst: … — zobacz" opens "Co wysłaliśmy"; one step "Szerzej" changes only the next message
+  ["context: the line under an answer opens Co wysłaliśmy; a step for next time", async () => {
+    await until("the context line under the last answer", () => has("context-line-open"), 30, 400);
+    const line = await page.ev(`(()=>{const l=[...document.querySelectorAll('[data-testid="context-line"]')].pop();return (l&&l.innerText||'').replace(/\\s+/g,' ')})()`);
+    await page.ev(`[...document.querySelectorAll('[data-testid="context-line-open"]')].pop().click()`);
+    await until("the sheet with the receipt", () => page.ev(`${q("context-receipt")}?.getAttribute('data-state')`).then(v => (v === "receipt" || v === "missing" || v === "failed") && v), 30, 300)
+      .then(async st => { if (st !== "receipt") throw new Error(`the sheet says ${st}: ${(await textTid("context-receipt")).replace(/\s+/g, " ").slice(0, 200)}`); });
+    const header = await textTid("context-receipt-header").catch(() => "");
+    const disclaimer = await textTid("context-receipt-disclaimer").catch(() => "");
+    shot("context-receipt");
+    let step = "no step button";
+    if (await has("receipt-step-wider")) {
+      await click("receipt-step-wider");
+      const kind = await until("the step's result", () => page.ev(`${q("receipt-modify-result")}?.getAttribute('data-kind')`), 30, 300);
+      step = `Szerzej -> ${kind}: "${(await textTid("receipt-modify-result")).replace(/\s+/g, " ").slice(0, 160)}"`;
+    }
+    await click("context-receipt-close"); await waitGone("context-receipt", 10);
+    return `line "${line.slice(0, 120)}"; header "${header.replace(/\s+/g, " ").slice(0, 200)}"; "${disclaimer.trim()}"; ${step}`;
+  }],
+  // M1-W1b: + › Kontekst › Szerzej (next message only), the context strip says so; the model chip's ⓘ opens where the model comes from
+  ["context: + › Kontekst › Szerzej, the strip, the model's provenance", async () => {
+    await waitTid("shell-attach", 20); await click("shell-attach");
+    await waitTid("composer-menu", 10); await click("composer-menu-context");
+    await waitTid("composer-menu-wider", 10); await click("composer-menu-wider");
+    const kind = await until("the kernel's answer to the step", () => page.ev(`${q("composer-menu-modify-result")}?.getAttribute('data-kind')`), 30, 300);
+    const said = (await textTid("composer-menu-modify-result")).replace(/\s+/g, " ").slice(0, 200);
+    shot("composer-context");
+    await m1Reset();
+    const strip = (await textTid("context-strip")).replace(/\s+/g, " ").slice(0, 160);
+    const next = await has("context-strip-next");
+    await waitTid("model-provenance-open", 10); await click("model-provenance-open");
+    await until("the model's provenance", () => page.ev(`${q("model-provenance")}?.getAttribute('data-state')`).then(v => v === "ready"), 30, 300);
+    const prov = (await textTid("model-provenance")).replace(/\s+/g, " ").slice(0, 260);
+    shot("model-provenance");
+    await click("model-provenance-close"); await waitGone("model-provenance", 10);
+    if (kind !== "applied") throw new Error(`Szerzej -> ${kind}: "${said}"`);
+    if (!next) throw new Error(`the strip does not say what the next message gets: "${strip}"`);
+    return `Szerzej -> ${kind}: "${said}"; strip "${strip}"; model sheet "${prov}"`;
   }],
   ["chat command: przetłumacz -> proposal -> confirm", async () => {
     await send("Przetłumacz tę rozmowę na niemiecki");
