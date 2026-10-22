@@ -642,6 +642,31 @@ const serverChecks = [
     if (calls.length) throw new Error(`the model got ${calls.length} request(s) during the interview: ${JSON.stringify(calls.map(c => c.model))}`);
     return `card "${card}"; levels ${levels}; chips ${chips}; info "${info}"; proposal "${proposal}"; Tak; 0 model requests`;
   }],
+  // M1-W2a (S1, 2026-10-22): "nie pytaj o zdrowie" must be understood at any moment, also with no question waiting
+  // (level minimal + skip, the shape of the first emulator run); red until the kernel reads the remark first
+  ["interview: a remark with no question waiting ('nie pytaj o zdrowie' after minimal + skip) gives Tak zrozumiałem", async () => {
+    const before = providerCalls().length;
+    await click("shell-drawer-toggle"); await waitTid("shell-new-chat", 10); await click("shell-new-chat");
+    await waitTid("shell-empty", 15);
+    const shown = await until("the empty chat knows whether to offer the interview", () => page.ev(`${q("shell-empty")}?.getAttribute('data-interview')`).then(v => v && v !== "checking" && v), 30, 300);
+    if (shown !== "shown") return `the interview is not offered here any more (data-interview=${shown}): nothing to check`;
+    await clickSettled("interview-card-start");
+    await waitTid("interview-levels", 30);
+    await page.ev(`(document.querySelector('[data-testid="interview-level"][data-level="minimal"]')||document.querySelector('[data-testid="interview-level"]')).click()`);
+    await waitTid("interview-chips", 30);
+    await page.ev(`document.querySelector('[data-testid="interview-chip"][data-chip="skip"]')?.click()`);
+    await sleep(1500);
+    const waiting = await page.ev(`!!document.querySelector('[data-testid="interview-chip"][data-chip="skip"]')`);
+    await send("nie pytaj o zdrowie");
+    await until("the proposal 'Tak zrozumiałem'", () => has("chat-action-proposal"), 60, 400).catch(async e => {
+      const last = await page.ev(`(()=>{const b=[...document.querySelectorAll('.msg.assistant .body')].pop();return (b&&b.innerText||'').replace(/\\s+/g,' ').slice(0,240)})()`);
+      throw new Error(`${e.message}; a question was ${waiting ? "" : "not "}waiting; the last answer: "${last}"`);
+    });
+    await click("chat-action-proposal-confirm"); await waitGone("chat-action-proposal", 60);
+    const calls = providerCalls().slice(before);
+    if (calls.length) throw new Error(`the model got ${calls.length} request(s) during the interview`);
+    return `a question was ${waiting ? "" : "not "}waiting; proposal shown, Tak; 0 model requests`;
+  }],
   ["new conversation (drawer -> New chat -> message -> listed)", async () => {
     const before = (await convs()).length;
     await click("shell-drawer-toggle"); await waitTid("shell-new-chat", 10); await click("shell-new-chat");
