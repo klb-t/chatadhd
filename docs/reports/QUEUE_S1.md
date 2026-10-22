@@ -1,7 +1,11 @@
-# Kolejka S1 — stan 2026-10-22 18:35 UTC
+# Kolejka S1 — stan 2026-10-22 19:15 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
+
+## CI 272 (`5b0e04ff`, K2a) = SUCCESS (18:36, 120 min — asan wolny runner); `main` = `5b0e04ff`; bramka `k2b2` w web e2e (start 18:32); brief W2a gotowy (`w2a_brief.json`)
+W2a (web): karta „Poznajmy się” w pustym czacie (`onboarding_card`: show/later/never), karty poziomów z podglądem (o co zapytam / co zapiszę / co zobaczy model), chipy Pomiń/Nigdy/Podsumowanie/Ile zostało, „Tak zrozumiałem” przez istniejący `ActionProposalBlock`, linia „rozmowa bez modelu”, typowania API `/api/profile/*` + łańcuch rejestru, e2e `m1-profile-native.mjs` (0 żądań do atrapy modelu), raport `M1_CHECKPOINT_2.md`.
+Start po wyniku bramki `k2b2` (agent czeka na `GATE GREEN/RED` w logu). Potem: W2b (ekran „Ty”: podgrafy, Co pamiętam, Popraw/Zapomnij, zainteresowania do potwierdzenia) i K2c (jądro: `units.define`, `conversation.set_unit`, `metadata.provenance`, rzut party:self z podgrafami, `asked_at_level` w rzucie).
 
 ## K2b-2 GOTOWE (18:31 UTC, `ae6d152f` na `claude/m1-w0`, na wierzchu K2b-1 `aa45db5b`): wywiad „Ty” w oknie rozmowy, tryb formularza — bramka lokalna `k2b2` w toku (start 18:32)
 Agent Sonnet (`wf_9de01309-e76`, 123 wywołania, 310 tys. tokenów, 42 min). KROK 0 (czerwona bramka `k2b1`) naprawiony DANYMI: `chat_coverage.pack` ma `chat_outcome` (pending|executed|unavailable|continuation) + powód pl/en; test czyta dane, wyjątek `import.file` przeszedł do danych; `profile.confirm` = kontynuacja; `profile.set` ma prawdziwe zdanie „zapisz o mnie work.projects=klub szachowy” (wzorce `heuristic.arguments` mogą nazwać jedną akcję).
