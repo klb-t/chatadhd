@@ -1,7 +1,14 @@
-# Kolejka S1 — stan 2026-10-22 09:50 UTC
+# Kolejka S1 — stan 2026-10-22 10:25 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
+
+## K1c-3b GOTOWE (10:22 UTC, `d0ea24cb` na `claude/m1-w0`): „Pokaż w grafie” DZIAŁA w przeglądarce — bramka lokalna `k1c3b` w toku (start 10:23)
+Agent Sonnet (`wf_873d4c52-07d`, 120 wywołań, 304 tys. tokenów, 36 min). **Przyczyna wyłączonego przycisku (zmierzona na prawdziwym serwerze):** web pytał o adres `msg:m_<hex>`, a adres wiadomości w grafie to `msg:<hex>` (graph_sources.pack: prefiks `m_` → `msg:`);
+serwer odpowiadał 404 „no node at …”. Żadnego kodu jądra/serwera nie zmieniono. Stary krok e2e tego nie odróżniał (sprawdzał tylko, że odpowiedź jest niepusta) — zastąpiony prawdziwym przepływem: przycisk włączony → nawigator na żądaniu (`sent_to_model`) → wiersze wysłane/pominięte/widok zapisu →
+karta węzła pochodnego → wstecz; negatywy: „Brak śladu” (przycisk wyłączony z powodem) i sztuczny 404. Przycisk włącza się tylko gdy graf mówi `receipt.present`. Raport `M1_CHECKPOINT_1.md` odświeżony (zdania z K1c-1, nowa sekcja 9, 10 zrzutów).
+Pozostałe uczciwe braki: angielskie „dlaczego” przy pozycjach (zapisane przy wysyłce) widać na polskim ekranie; zdanie pod „Brak śladu” nazywa klucze ustawień; ścieżki unified/knowledge/graph_packet nadal zbiorcze w paragonie; brak kroku w przeglądarce dla `handed_from`; brak emulatora. → K1c-4 (słowa z paczki).
+FF `main` (K1c-3a + K1c-3b, `d0ea24cb`) po zielonej bramce `k1c3b` I po końcu CI 267 (kontrola 10:57). Potem S2 smoke na nowym `main` i APK v2.
 
 ## Bramka `k1c3a` ZIELONA (09:45, `07988cce`) — ALE zaskoczenie: stary krok e2e „Pokaż w grafie wyłączony” nadal PRZESZEDŁ, więc w prawdziwej przeglądarce przycisk dalej jest wyłączony
 Mój przewidywany czerwony krok nie wystąpił: krok sprawdza tylko, że `data-kernel-answer` nie jest pusty, więc nie odróżnia przyczyn (brak `onShowInGraph` w tej uprzęży = „no_navigator”? odmowa na ścieżce HTTP `POST /api/graph/navigate`? inna odpowiedź dla `limit:1/hops:1`?).
