@@ -32,6 +32,11 @@ export interface ReceiptProfile {
 export interface ReceiptGuard {
   resource?: string; bytes?: number; baseline?: number | null; ratio?: number | null; growth_factor?: number | null;
   asked?: boolean; confirmed?: boolean; status?: string; unknown_reason?: string;
+  /** What the ratio is measured against: "measured" (the average of the last requests of the kind), "floor" (a starting value until enough were
+   *  measured) or "declared"; baseline_samples is how many measured requests the base had. */
+  baseline_source?: string | null; baseline_samples?: number | null;
+  /** Only in the answer of context.modify: what the estimate was compiled for - an "empty_message" or the "pending_text" the person typed. */
+  estimate_for?: string;
 }
 export interface ContextReceipt {
   schema?: string;
@@ -53,7 +58,13 @@ export interface ContextReceipt {
 
 export type ContextStep = "wider" | "narrower" | "deeper" | "shallower";
 export interface ContextReceiptRequest { msg_id?: string; conversation_id?: string }
-export interface ContextModifyRequest { step?: ContextStep | string; profile?: string; reset?: boolean; conversation_id?: string }
+export interface ContextModifyRequest {
+  step?: ContextStep | string; profile?: string; reset?: boolean; conversation_id?: string;
+  /** The text typed for the next message: the estimate in the answer is compiled with it (without it, for an empty message). */
+  pending_text?: string;
+  /** The options of the next message as a chat request carries them (model, web_search ...): the estimate is compiled with them. */
+  pending_options?: Record<string, unknown>;
+}
 
 /** What a receipt run answers: the receipt, "no receipt" with the kernel's reason, or a failure with the kernel's message. */
 export type ReceiptAnswer =
@@ -75,9 +86,16 @@ export function readReceiptRun(run: ActionRun | null | undefined): ReceiptAnswer
   return { kind: "failed", message: "receipt_shape" };
 }
 
+/** What a ratio is measured against, as the guard names it. */
+export interface BaseInfo { source: string | null; samples: number | null }
+export const baseOf = (g: { baseline_source?: unknown; baseline_samples?: unknown } | null | undefined): BaseInfo => ({
+  source: typeof g?.baseline_source === "string" ? g.baseline_source : null,
+  samples: typeof g?.baseline_samples === "number" && Number.isFinite(g.baseline_samples) ? g.baseline_samples : null,
+});
+
 /** What a context.modify run answers: applied (the kernel's sentence and what waits for the next message), the x10 question, declined or failed. */
 export type ModifyAnswer =
-  | { kind: "applied"; text: string; waiting: Record<string, unknown>; ratio: number | null }
+  | { kind: "applied"; text: string; waiting: Record<string, unknown>; ratio: number | null; estimateFor: "empty_message" | "pending_text"; base: BaseInfo }
   | { kind: "question"; runId: string; receiptId: string; operationId: string | null; usage: Record<string, unknown> }
   | { kind: "declined"; text: string }
   | { kind: "failed"; message: string };
@@ -102,7 +120,7 @@ export function readModifyRun(run: ActionRun | null | undefined): ModifyAnswer {
     const data = (run.result?.data ?? {}) as Record<string, unknown>;
     const guard = (data.guard && typeof data.guard === "object" ? data.guard : {}) as Record<string, unknown>;
     return { kind: "applied", text, waiting: (data.waiting && typeof data.waiting === "object" ? data.waiting : {}) as Record<string, unknown>,
-      ratio: usableRatio(guard.ratio, guard.baseline) };
+      ratio: usableRatio(guard.ratio, guard.baseline), estimateFor: guard.estimate_for === "pending_text" ? "pending_text" : "empty_message", base: baseOf(guard) };
   }
   if (run.status === "rejected") return { kind: "declined", text: run.error?.message ?? text };
   return { kind: "failed", message: run.error?.message ?? text ?? run.status };

@@ -1,16 +1,22 @@
-// M1-W1c: the words of the guard / estimate ratio as patterns, for the two M1 e2e scripts. Nothing here is a literal of the screen: every phrase is
-// taken from presentation.context_receipt of conversation_view.pack (ratio.times_base, ratio.times_usual, ratio.low, ratio.unknown, guard.*,
+// M1-W1c / M1-K1c1: the words of the guard / estimate ratio as patterns, for the two M1 e2e scripts. Nothing here is a literal of the screen: every phrase is
+// taken from presentation.context_receipt of conversation_view.pack (ratio.times, ratio.low, ratio.unknown, ratio.with_base, base.*, for.*, guard.*,
 // modify.ratio), so a changed word changes the expectation with it. A number in a phrase ({{n}}) is a number with at most one decimal.
 export const esc = text => text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-const wordPattern = word => word.split("{{n}}").map(esc).join("\\d+(?:\\.\\d)?");
-const around = (template, key, inner) => template.split(`{{${key}}}`).map(esc).join(inner);
+const num = word => word.split("{{n}}").map(esc).join("\\d+(?:\\.\\d)?");
+/** A template with {{key}} holes: the text around them escaped, the holes replaced by the given regexp sources. */
+export const fill = (template, map) => template.split(/(\{\{\w+\}\})/).map(part => { const m = part.match(/^\{\{(\w+)\}\}$/); return m ? map[m[1]] : esc(part); }).join("");
 
-/** Every form a ratio can be said in, as a regexp source: the number with the sign (unit "base" or "usual"), "much less than usual", "unknown - no base". */
-export const ratioSource = (w, unit) => `(?:${[wordPattern(w[`ratio.times_${unit}`]), esc(w["ratio.low"]), esc(w["ratio.unknown"])].join("|")})`;
+/** What the base may be called: the average of the last N requests, a starting value, a declared value. */
+export const baseSource = w => `(?:${["base.measured", "base.floor", "base.declared"].map(k => num(w[k])).join("|")})`;
+/** The number with the sign or "much less than the usual request" (one phrase for the estimate and the guard), then with the base named next to it. */
+export const sayingSource = w => `(?:${num(w["ratio.times"])}|${esc(w["ratio.low"])})`;
+export const withBaseSource = w => fill(w["ratio.with_base"], { ratio: sayingSource(w), base: baseSource(w) });
+/** Every form a ratio can be said in, as a regexp source: a number or "much less" with its base, or "unknown - no base". */
+export const ratioSource = w => `(?:${withBaseSource(w)}|${esc(w["ratio.unknown"])})`;
+export const forSource = w => `(?:${esc(w["for.empty"])}|${esc(w["for.text"])})`;
 
 /** The guard line of the sheet in a state (ok | asked | unknown): the pack's sentence with the phrases that state may carry. */
-export const guardLine = (w, state) => new RegExp("^" + around(w[`guard.${state}`], "ratio",
-  state === "unknown" ? esc(w["ratio.unknown"]) : `(?:${wordPattern(w["ratio.times_base"])}|${esc(w["ratio.low"])})`) + "$");
+export const guardLine = (w, state) => new RegExp("^" + fill(w[`guard.${state}`], { ratio: state === "unknown" ? esc(w["ratio.unknown"]) : withBaseSource(w) }) + "$");
 
 /** The whole sentence after a change: "Gotowe: ... — {what}. ..." and the estimate sentence, whatever ratio the kernel measured. */
-export const modifiedSentence = (w, what) => new RegExp("^" + esc(w["modify.applied"].replace("{{what}}", what)) + " " + around(w["modify.ratio"], "ratio", ratioSource(w, "usual")) + "$");
+export const modifiedSentence = (w, what) => new RegExp("^" + esc(w["modify.applied"].replace("{{what}}", what)) + " " + fill(w["modify.ratio"], { for: forSource(w), ratio: ratioSource(w) }) + "$");

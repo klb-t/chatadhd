@@ -2389,9 +2389,14 @@
             "guard.ok": "×10 guard: {{ratio}} — no question",
             "guard.asked": "×10 guard: {{ratio}} — asked",
             "guard.unknown": "×10 guard: {{ratio}}",
-            "ratio.times_base": "{{n}}× the base",
-            "ratio.times_usual": "about {{n}}× the usual one",
-            "ratio.low": "much less than usual",
+            "ratio.times": "{{n}}× the usual request to this model",
+            "ratio.low": "much less than the usual request to this model",
+            "ratio.with_base": "{{ratio}} ({{base}})",
+            "base.measured": "the average of the last {{n}} requests to this model",
+            "base.floor": "a starting value: only {{n}} requests to this model were measured so far",
+            "base.declared": "a value declared in the settings",
+            "for.empty": "for an empty message (no text, attachments or tools of the message are counted)",
+            "for.text": "with the text you typed, without attachments",
             "ratio.unknown": "unknown — no base",
             "disclaimer": "A compiled request, not proof that the provider received it.",
             "missing": "No receipt (saved before M1)",
@@ -2487,7 +2492,7 @@
             "preview.pending_none": "Changes for the next request: none (that this screen knows of)",
             "modify.applied": "Done: for the next request only — {{what}}. Once it is sent everything is back to the settings.",
             "modify.cleared": "Taken back: the next request goes without changes.",
-            "modify.ratio": "Estimate of the size of the next request: {{ratio}}."
+            "modify.ratio": "Estimate of the size of the next request, {{for}}: {{ratio}}."
           },
           "pl": {
             "title": "Co wysłaliśmy",
@@ -2534,9 +2539,14 @@
             "guard.ok": "strażnik ×10: {{ratio}} — bez pytania",
             "guard.asked": "strażnik ×10: {{ratio}} — zapytano",
             "guard.unknown": "strażnik ×10: {{ratio}}",
-            "ratio.times_base": "{{n}}× bazy",
-            "ratio.times_usual": "ok. {{n}}× zwykłego",
-            "ratio.low": "dużo mniej niż zwykle",
+            "ratio.times": "{{n}}× zwykłego zapytania do tego modelu",
+            "ratio.low": "dużo mniej niż zwykłe zapytanie do tego modelu",
+            "ratio.with_base": "{{ratio}} ({{base}})",
+            "base.measured": "średnia z {{n}} ostatnich zapytań do tego modelu",
+            "base.floor": "wartość startowa: zmierzono dopiero {{n}} zapytań do tego modelu",
+            "base.declared": "wartość zadeklarowana w ustawieniach",
+            "for.empty": "dla pustej wiadomości (bez tekstu, załączników i narzędzi tej wiadomości)",
+            "for.text": "z wpisanym tekstem, bez załączników",
             "ratio.unknown": "nieznane — brak bazy",
             "disclaimer": "Skompilowane żądanie, nie dowód odbioru przez dostawcę.",
             "missing": "Brak śladu (zapisane przed M1)",
@@ -2632,7 +2642,7 @@
             "preview.pending_none": "Zmiany na następne zapytanie: brak (o których ten ekran wie)",
             "modify.applied": "Gotowe: tylko dla następnego zapytania — {{what}}. Po jego wysłaniu wszystko wraca do ustawień.",
             "modify.cleared": "Cofnięte: następne zapytanie pójdzie bez zmian.",
-            "modify.ratio": "Szacunek wielkości następnego zapytania: {{ratio}}."
+            "modify.ratio": "Szacunek wielkości następnego zapytania, {{for}}: {{ratio}}."
           }
         }
       }
