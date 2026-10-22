@@ -27,9 +27,16 @@ const plainQuestion = { id: 'm_3', role: 'assistant', status: 'active', metadata
 const proposal = { id: 'm_5', role: 'assistant', status: 'active', metadata: { routed: 'interview', interview: { kind: 'proposal', question: null, mode: 'form' } } };
 const answer = { id: 'm_2', role: 'user', status: 'active', metadata: { routed: 'interview', interview: { kind: 'answer' } } };
 
-test('a conversation of the interview is the one the kernel marked with metadata.flow', () => {
-  assert.equal(st.isInterviewConversation({ flow: 'profile.interview', user_id: 'local', lang: 'pl', mode: 'form' }), true);
-  for (const meta of [undefined, null, {}, { flow: 'other' }, { flow: 'profile.interview.x' }]) assert.equal(st.isInterviewConversation(meta), false);
+test('a conversation is the interview when a message it has loaded carries metadata.interview (no request for the conversation record)', () => {
+  assert.equal(st.isInterviewMessages('c_1', [levelMessage]), true);
+  assert.equal(st.isInterviewMessages('c_1', [answer]), true, 'any message of the interview says it, also the answer of the person');
+  assert.equal(st.isInterviewMessages('c_1', [{ id: 'm_9', role: 'user', status: 'active', metadata: { foo: 1 } }, proposal]), true);
+  for (const messages of [[], [{ id: 'm_9', role: 'user', status: 'active' }], [{ id: 'm_9', role: 'assistant', status: 'active', metadata: {} }],
+    [{ id: 'm_9', role: 'assistant', status: 'active', metadata: { interview: 'x' } }], [{ id: 'm_9', role: 'assistant', status: 'active', metadata: { routed: 'rule' } }]])
+    assert.equal(st.isInterviewMessages('c_1', messages), false);
+  assert.equal(st.isInterviewMessages(null, [levelMessage]), false, 'no conversation selected');
+  assert.equal(st.isInterviewMessages('c_1', [{ ...levelMessage, conv_id: 'c_other' }]), false, 'a message of another conversation (a switch in flight) does not count');
+  assert.equal(st.isInterviewMessages('c_1', [{ ...levelMessage, conv_id: 'c_1' }]), true);
 });
 
 test('level cards: only the question that asks the level and carries every level with its three previews', () => {

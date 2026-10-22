@@ -5,16 +5,16 @@ import type { InterviewLevel, InterviewMeta, InterviewQuestion, InterviewStatus 
 
 type Meta = Record<string, unknown> | undefined | null;
 
-export const INTERVIEW_FLOW = "profile.interview";
+/** Whether the conversation is the interview: every message the kernel writes in it (the first question, the answers, the replies, the proposal)
+ *  carries metadata.interview, and the first one exists from the moment the conversation opens. So the messages the window has already loaded
+ *  say it; no extra request for the conversation record is made (an ordinary conversation costs nothing for this feature). */
+export function isInterviewMessages(convId: string | null | undefined, messages: readonly { conv_id?: string; metadata?: Meta }[]): boolean {
+  return !!convId && messages.some(m => (m.conv_id === undefined || m.conv_id === convId) && interviewMeta(m.metadata) !== null);
+}
 
 /** The values of the setting onboarding_card. */
 export type CardSetting = "show" | "later" | "never";
 export const cardSettingOf = (value: unknown): CardSetting | null => (value === "show" || value === "later" || value === "never" ? value : null);
-
-/** A conversation the kernel opened for the interview: its metadata says so (metadata.flow). */
-export function isInterviewConversation(metadata: Meta): boolean {
-  return !!metadata && typeof metadata === "object" && (metadata as Record<string, unknown>).flow === INTERVIEW_FLOW;
-}
 
 function levelOf(value: unknown): InterviewLevel | null {
   if (!value || typeof value !== "object") return null;

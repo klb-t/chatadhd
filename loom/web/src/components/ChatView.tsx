@@ -47,8 +47,8 @@ import ContextReceipt from "./ContextReceipt";
 import { useReceiptWords } from "./use-receipt-words";
 import { loadSelectorProfiles, useContextModify } from "./use-context-modify";
 import { modifySentence, profileChoices, type ProfileChoice } from "./context-receipt-state";
-import { InterviewCardDecision, InterviewChips, InterviewInfoLine, InterviewLevelCards, InterviewStartCard, useInterviewCard, useInterviewWords, useIsInterviewConversation } from "./InterviewCards";
-import { levelCards, repliesTarget, waitingQuestion } from "../context/interview";
+import { InterviewCardDecision, InterviewChips, InterviewInfoLine, InterviewLevelCards, InterviewStartCard, useInterviewCard, useInterviewWords } from "./InterviewCards";
+import { isInterviewMessages, levelCards, repliesTarget, waitingQuestion } from "../context/interview";
 import ContextStrip from "../shell/ContextStrip";
 import ModelProvenance from "../shell/ModelProvenance";
 import { lastReceiptProfile, pendingParts } from "../shell/context-strip";
@@ -155,7 +155,6 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
   const [hasKey, setHasKey] = useState<boolean | null>(null);
   // M1-W2a: the interview about the person (form mode, no model): its words, the card of the empty chat, and whether this conversation is one.
   const interviewT = useInterviewWords(profileHost, shellLanguage);
-  const interviewConv = useIsInterviewConversation(convId);
   const interviewCard = useInterviewCard(shellLanguage, onConversationCreated, chat);
   const [actionsFor, setActionsFor] = useState<string | null>(null);
   const [copied, setCopied] = useState<string | null>(null);
@@ -234,6 +233,8 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
   const [requestOverride, setRequestOverride] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const lastProfile = useMemo(() => lastReceiptProfile(messages, shellLanguage), [messages, shellLanguage]);
+  // M1-W2a: is this the interview about the person? Read from the loaded messages (they carry metadata.interview), not from a request for the conversation record.
+  const interviewConv = useMemo(() => isInterviewMessages(convId, messages), [convId, messages]);
   const [showAllMessages, setShowAllMessages] = useState(false);
   const [input, setInput] = useState("");
   // P33: the + menu. Tools are on until turned off (chips above the field say which); files are chips too.
