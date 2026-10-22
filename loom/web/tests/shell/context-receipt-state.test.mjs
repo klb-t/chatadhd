@@ -94,7 +94,7 @@ test('a receipt with a profile, modifiers, a graph section and reasons for leavi
   const m = st.sheetModel(rich, t, 'pl');
   assert.equal(m.profileLine, 'Profil: Zgodność — preset; wybór: na tę wiadomość');
   assert.equal(m.modifiersLine, 'Zmiany tej tury: szerzej ×2, głębiej, profil Zgodność (tylko ta wiadomość)');
-  assert.equal(m.guardLine, 'strażnik ×10: 1.5× zwykłego zapytania do tego modelu (średnia z 5 ostatnich zapytań do tego modelu) — bez pytania');
+  assert.equal(m.guardLine, 'strażnik ×10: 1.5× zwykłego zapytania do tego modelu (średnia z ostatnich zapytań do tego modelu (liczba zapytań: 5)) — bez pytania');
   assert.equal(m.guardState, 'ok');
   assert.deepEqual(m.sections.map(s => [s.id, s.items.length, s.tokens]), [['system', 1, 19], ['history', 2, 12], ['graph', 1, 64], ['question', 1, 9]]);
   assert.deepEqual(m.sections[1].items.map(i => [i.text, i.chip]), [['Ty', 'wiadomość bez zmian'], ['Asystent', 'wiadomość bez dygresji']]);
@@ -107,7 +107,7 @@ test('a receipt with a profile, modifiers, a graph section and reasons for leavi
 });
 
 test('the guard: asked is said as asked, a missing ratio is unknown; the cost is an amount only when the receipt carries a price', () => {
-  assert.equal(st.guardView({ ...base, guard: { ratio: 12.34, asked: true, baseline_source: 'measured', baseline_samples: 8 } }, t).line, 'strażnik ×10: 12.3× zwykłego zapytania do tego modelu (średnia z 8 ostatnich zapytań do tego modelu) — zapytano');
+  assert.equal(st.guardView({ ...base, guard: { ratio: 12.34, asked: true, baseline_source: 'measured', baseline_samples: 8 } }, t).line, 'strażnik ×10: 12.3× zwykłego zapytania do tego modelu (średnia z ostatnich zapytań do tego modelu (liczba zapytań: 8)) — zapytano');
   assert.equal(st.guardView({ ...base, guard: null }, t).state, 'unknown');
   assert.equal(st.costLine({ ...base, cost_usd: 0.0123 }, t), 'koszt: $0.01');
   assert.equal(st.costLine({ ...base, cost_usd: 0 }, t), 'koszt nieznany — brak ceny');
@@ -142,13 +142,13 @@ test('ratio words: no ratio or no base is unknown, a tiny one is "much less than
   assert.equal(st.ratioText(1.8, tEn).text, '1.8× the usual request to this model');
   // the guard line of the sheet: the same three cases, with the base named, and a ratio against a missing base is unknown (the kernel writes baseline: null)
   const measured = { baseline_source: 'measured', baseline_samples: 6 };
-  assert.equal(st.guardView({ ...base, guard: { ratio: 1.8, baseline: 100, asked: false, ...measured } }, t).line, 'strażnik ×10: 1.8× zwykłego zapytania do tego modelu (średnia z 6 ostatnich zapytań do tego modelu) — bez pytania');
-  assert.equal(st.guardView({ ...base, guard: { ratio: 0.04, baseline: 100, asked: false, baseline_source: 'floor', baseline_samples: 2 } }, t).line, 'strażnik ×10: dużo mniej niż zwykłe zapytanie do tego modelu (wartość startowa: zmierzono dopiero 2 zapytań do tego modelu) — bez pytania');
+  assert.equal(st.guardView({ ...base, guard: { ratio: 1.8, baseline: 100, asked: false, ...measured } }, t).line, 'strażnik ×10: 1.8× zwykłego zapytania do tego modelu (średnia z ostatnich zapytań do tego modelu (liczba zapytań: 6)) — bez pytania');
+  assert.equal(st.guardView({ ...base, guard: { ratio: 0.04, baseline: 100, asked: false, baseline_source: 'floor', baseline_samples: 2 } }, t).line, 'strażnik ×10: dużo mniej niż zwykłe zapytanie do tego modelu (wartość startowa; zmierzonych dotąd zapytań do tego modelu: 2) — bez pytania');
   assert.equal(st.guardView({ ...base, guard: { ratio: 0.04, baseline: 100, asked: false, ...measured } }, t).state, 'ok');
   assert.equal(st.guardView({ ...base, guard: { ratio: null, baseline: null, asked: false } }, t).line, 'strażnik ×10: nieznane — brak bazy');
   assert.equal(st.guardView({ ...base, guard: { ratio: 0, baseline: null, asked: false } }, t).line, 'strażnik ×10: nieznane — brak bazy', 'ratio 0 against no base is not "0× bazy"');
 assert.equal(st.guardView({ ...base, guard: { ratio: 0, baseline: 0, asked: false } }, t).state, 'unknown', 'a base of zero is no base');
-  assert.equal(st.guardView({ ...base, guard: { ratio: 0.04, baseline: 100, asked: false, ...measured } }, tEn).line, '×10 guard: much less than the usual request to this model (the average of the last 6 requests to this model) — no question');
+  assert.equal(st.guardView({ ...base, guard: { ratio: 0.04, baseline: 100, asked: false, ...measured } }, tEn).line, '×10 guard: much less than the usual request to this model (the average of the last requests to this model (count: 6)) — no question');
   assert.equal(st.guardView({ ...base, guard: { ratio: 1.8, baseline: 100, asked: true, baseline_source: 'declared', baseline_samples: 0 } }, tEn).line, '×10 guard: 1.8× the usual request to this model (a value declared in the settings) — asked');
   assert.equal(st.guardView({ ...base, guard: null }, tEn).line, '×10 guard: unknown — no base');
   for (const guard of [{ ratio: 0, baseline: null }, { ratio: 0.04, baseline: 100 }, { ratio: 1.8, baseline: 100 }, null]) assert.ok(!/(^|\D)0×/.test(st.guardView({ ...base, guard }, t).line), 'no "0×" in any case');

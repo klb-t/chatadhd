@@ -364,7 +364,7 @@ TEST_SUITE("context_modify") {
     CHECK(data_of(empty).at("guard").at("bytes") == plain_empty.at("bytes"));
     INFO(text_of(empty));
     CHECK(said_any(text_of(empty), {"pustej wiadomości", "an empty message"}));   // in the language of the call
-    CHECK(said_any(text_of(empty), {"średnia z 5 ostatnich zapytań", "the average of the last 5 requests"}));
+    CHECK(said_any(text_of(empty), {"(liczba zapytań: 5)", "(count: 5)"}));
     unwrap(f.rt->actions().invoke_port("actions", "context.modify", Json{{"reset", true}, {"context", ctx}}));
     CHECK(f.rt->chat().turn_carrier().peek(f.conv_id).empty());
     // with the typed text: the estimate is the request of the send
@@ -377,7 +377,7 @@ TEST_SUITE("context_modify") {
     CHECK(tg.at("bytes").get<std::int64_t>() > data_of(empty).at("guard").at("bytes").get<std::int64_t>());
     INFO(text_of(typed));
     CHECK(said_any(text_of(typed), {"wpisanym przez Ciebie tekstem", "the text you typed"}));
-    CHECK(said_any(text_of(typed), {"średnia z 5 ostatnich zapytań", "the average of the last 5 requests"}));
+    CHECK(said_any(text_of(typed), {"(liczba zapytań: 5)", "(count: 5)"}));
     const Json sent = send_and_guard(f, opts, text);
     CHECK(sent["bytes"] == tg["bytes"]);
     CHECK(sent["baseline"] == tg["baseline"]);
