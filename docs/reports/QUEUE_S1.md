@@ -1,7 +1,10 @@
-# Kolejka S1 — stan 2026-10-22 16:20 UTC
+# Kolejka S1 — stan 2026-10-22 16:40 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
+
+## CI 271 (`f07fc52a`) = SUCCESS (16:19, 71 min); APK v2 w budowie: `package.yml` run 39815413284 na `f07fc52a` (start 16:36, kontrola 16:59); `main` = `5b0e04ff` (K2a + fix, bramka `k2a2` zielona) od 16:36, CI 272 (id 39815457361), kontrola ≈ 18:11
+APK v2 = commit z zielonym CI + smoke S2 42/0/0 ×3 profile (FLAKE-1 potwierdzone). Właściciel dostanie: link do biegu + `M1_CHECKPOINT_1.md` + uczciwą listę (nowe: polskie powody, jedna liczba z bazą, „Pokaż w grafie” działa, naprawione losowe „Ustawienia się nie otwierają”; brak: cena, szacunek pustej wiadomości w arkuszu, załączniki, ekrany wywiadu „Ty”, przeciąganie W3).
 
 ## FLAKE-1 POTWIERDZONE NA EMULATORZE (S2, 16:00): android-smoke 39801974892 na `f07fc52a` = 42/0/0 na pixel_5 1.0, pixel_6 1.0, pixel_6 1.3; 0× „second attempt after”, 0× „settings did not open” (poprzednie 2 biegi na starym kodzie: losowa porażka na 2 z 3 profili)
 `main` = `f07fc52a` (FLAKE-1 + K1c-4 + sterownik S2; FF zrobił S2 o 15:08 i anulował CI 270); CI 271 (id 39801969743) w toku od 15:08, kontrola 16:35. S2: „f07fc52a gotowe na APK v2, gdy loom.yml zielony”.
