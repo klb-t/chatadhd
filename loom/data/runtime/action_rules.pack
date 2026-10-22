@@ -299,6 +299,66 @@
           "pl": "Zastosowanie tego, co wywiad zrozumiał (zamknięcie tematu, zmiana poziomu, przyjęcie odpowiedzi), zmienia to, o co pytam i co pamiętam; każde potwierdzasz sam."
         }
       },
+      "confirm:units.define": {
+        "id": "confirm:units.define",
+        "scope": "app_preset",
+        "target": {
+          "kind": "class",
+          "id": "application"
+        },
+        "action": "units.define",
+        "effect": "confirm",
+        "initiator": "application preset",
+        "reason": {
+          "en": "Adding or renaming a unit changes your list of projects, teams and organisations; you confirm each one.",
+          "pl": "Dodanie albo zmiana nazwy jednostki zmienia Twoją listę projektów, zespołów i organizacji; każdą zmianę potwierdzasz sam."
+        }
+      },
+      "confirm:units.forget": {
+        "id": "confirm:units.forget",
+        "scope": "app_preset",
+        "target": {
+          "kind": "class",
+          "id": "application"
+        },
+        "action": "units.forget",
+        "effect": "confirm",
+        "initiator": "application preset",
+        "reason": {
+          "en": "Forgetting a unit removes it from your list and takes every conversation out of it; you confirm each one.",
+          "pl": "Zapomnienie jednostki usuwa ją z Twojej listy i zdejmuje z niej wszystkie rozmowy, które do niej należały; każde potwierdzasz sam."
+        }
+      },
+      "confirm:conversation.set_unit": {
+        "id": "confirm:conversation.set_unit",
+        "scope": "app_preset",
+        "target": {
+          "kind": "class",
+          "id": "application"
+        },
+        "action": "conversation.set_unit",
+        "effect": "confirm",
+        "initiator": "application preset",
+        "reason": {
+          "en": "A unit brings its own settings and rules into the conversation; you confirm each assignment.",
+          "pl": "Jednostka wnosi do rozmowy własne ustawienia i zasady; każde przypisanie potwierdzasz sam."
+        }
+      },
+      "confirm:conversation.clear_unit": {
+        "id": "confirm:conversation.clear_unit",
+        "scope": "app_preset",
+        "target": {
+          "kind": "class",
+          "id": "application"
+        },
+        "action": "conversation.clear_unit",
+        "effect": "confirm",
+        "initiator": "application preset",
+        "reason": {
+          "en": "Taking a conversation out of a unit removes that unit's settings and rules from it; you confirm each one.",
+          "pl": "Zdjęcie rozmowy z jednostki usuwa z niej ustawienia i zasady tej jednostki; każde potwierdzasz sam."
+        }
+      },
       "confirm:rules.disable": {
         "id": "confirm:rules.disable",
         "scope": "app_preset",

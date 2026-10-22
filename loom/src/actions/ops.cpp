@@ -43,6 +43,7 @@
 #include "loom/memory_engine.h"
 #include "loom/path_policy.h"
 #include "profile_ops.h"
+#include "unit_ops.h"
 #include "loom/port_profile.h"
 #include "loom/provenance.h"
 #include "loom/providers.h"
@@ -532,6 +533,24 @@ StepOutcome graph_reindex(Ctx& x) {
   return answer(x.say(all ? "reindexed_all" : "reindexed", Json{{"count", n}, {"id", conv}}), Json{{"reindexed", n}, {"conv_id", all ? Json(nullptr) : Json(conv)}});
 }
 
+// The origin of a note in words (M1-K2c-1): {known, source?, time?, ref?, words}. A note written before M1 recorded no origin and is worded as unknown;
+// it is never given one it did not record.
+Json memory_provenance(const Ctx& x, const MemoryNode& n) {
+  const Json* p = n.metadata.is_object() ? json::find(n.metadata, "provenance") : nullptr;
+  const std::string source = p && p->is_object() ? json::get_string(*p, "source") : std::string();
+  if (source.empty()) return Json{{"known", false}, {"words", x.say("memory_prov_unknown")}};
+  const std::string time = json::get_string(*p, "time");
+  const std::string ref = json::get_string(*p, "ref");
+  const std::string key = "memory_prov_" + source;
+  std::string label = x.say(key);
+  if (label == key) label = x.say("memory_prov_other", Json{{"source", source}});  // a source the person added to the vocabulary: its own name
+  const std::string date = time.size() >= 10 ? time.substr(0, 10) : time;
+  Json out{{"known", true}, {"source", source}, {"time", time}};
+  if (!ref.empty()) out["ref"] = ref;
+  out["words"] = x.say(ref.empty() ? "memory_prov" : "memory_prov_ref", Json{{"source", label}, {"time", date}, {"ref", ref}});
+  return out;
+}
+
 StepOutcome memory_recall(Ctx& x) {
   auto& mem = x.rt.memory();
   const std::string query = trim_quotes(x.str("query"));
@@ -547,8 +566,9 @@ StepOutcome memory_recall(Ctx& x) {
   for (const auto& n : nodes) {
     if (!n.active) continue;
     if (items.size() >= cap) break;
-    lines.push_back("• " + x.say("memory_line", Json{{"content", clip(n.content, 400)}, {"id", n.id}}));
-    items.push_back(Json{{"id", n.id}, {"content", n.content}, {"node_type", n.node_type}, {"tags", n.tags}});
+    const Json provenance = memory_provenance(x, n);
+    lines.push_back("• " + x.say("memory_line_prov", Json{{"content", clip(n.content, 400)}, {"id", n.id}, {"provenance", provenance.value("words", "")}}));
+    items.push_back(Json{{"id", n.id}, {"content", n.content}, {"node_type", n.node_type}, {"tags", n.tags}, {"provenance", provenance}});
   }
   if (lines.empty()) return answer(x.say(query.empty() ? "memory_empty" : "memory_none", Json{{"query", query}}), Json{{"items", items}});
   return answer(x.say("memory_head", Json{{"count", lines.size()}}) + "\n" + join_lines(lines), Json{{"items", items}});
@@ -560,7 +580,9 @@ StepOutcome memory_remember(Ctx& x) {
   Json meta = Json{{"origin", "chat"}};
   if (const std::string conv = x.conv_id(); !conv.empty()) meta["conv_id"] = conv;
   if (const std::string msg = json::get_string(x.c.context, "message_id"); !msg.empty()) meta["message_id"] = msg;
-  auto id = x.rt.memory().add_node(content, std::nullopt, std::nullopt, meta, {});
+  auto& mem = x.rt.memory();
+  // The origin of the note (M1-K2c-1): you said it in the conversation; the message it came from is the ref when it is known.
+  auto id = mem.add_node(content, std::nullopt, std::nullopt, mem.stamped(meta, "user", json::get_string(x.c.context, "message_id")), {});
   if (!id) return fail(id.error());
   return answer(x.say("memory_remembered", Json{{"content", clip(content, 400)}, {"id", *id}}), Json{{"id", *id}, {"content", content}});
 }
@@ -2531,6 +2553,31 @@ StepOutcome profile_confirm_op(Ctx& x) {
   return profile_run(x, profile::confirm, {"kind", "text", "section", "decision", "user_id", "expected_revision", "locale"});
 }
 
+// ── the units a conversation belongs to (M1-K2c-1): the kinds, the words and the conversation are the data's, the store's and the call's ─────────
+
+using UnitFn = Result<units::Reply> (*)(const units::Env&, const Json&);
+
+StepOutcome unit_run(Ctx& x, UnitFn fn, std::initializer_list<const char*> names) {
+  Ctx lx = x;  // the language of the words may be named by the call (locale), the run's own otherwise
+  if (const std::string loc = x.str("locale"); !loc.empty()) lx.lang = loc.substr(0, loc.find_first_of("-_"));
+  Json args = Json::object();
+  for (const char* n : names)
+    if (x.has(n)) args[n] = x.arg(n);
+  const Ctx* cx = &lx;
+  units::Env env{x.rt.db(), x.rt.paths().root, lx.lang, x.conv_id(),
+                 [cx](const std::string& id, const Json& v) { return cx->say(id, v); },
+                 [cx](const std::string& t) { return cx->fold(t); }};
+  auto r = fn(env, args);
+  if (!r) return fail(r.error());
+  return answer(r->text, r->data);
+}
+
+StepOutcome units_define_op(Ctx& x) { return unit_run(x, units::define, {"kind", "id", "label"}); }
+StepOutcome units_list_op(Ctx& x) { return unit_run(x, units::list, {"kind"}); }
+StepOutcome units_forget_op(Ctx& x) { return unit_run(x, units::forget, {"kind", "id"}); }
+StepOutcome conversation_set_unit_op(Ctx& x) { return unit_run(x, units::set_unit, {"conv_id", "kind", "id"}); }
+StepOutcome conversation_clear_unit_op(Ctx& x) { return unit_run(x, units::clear_unit, {"conv_id", "kind"}); }
+
 using Op = StepOutcome (*)(Ctx&);
 
 const std::map<std::string, Op>& table() {
@@ -2553,7 +2600,9 @@ const std::map<std::string, Op>& table() {
       {"view_model.show", view_model_show}, {"interaction.show", interaction_show}, {"interaction.rebind", interaction_rebind}, {"edge_kinds.list", edge_kinds_list}, {"edge_kinds.classify", edge_kinds_classify},
       {"graph.navigate", graph_navigate}, {"graph.card", graph_card}, {"settings.resolved", settings_resolved_op}, {"roles.resolved", roles_resolved_op},
       {"rom.override", rom_override_op}, {"context.modify", context_modify}, {"context.receipt", context_receipt},
-      {"profile.interview", profile_interview_op}, {"profile.show", profile_show_op}, {"profile.set", profile_set_op}, {"profile.confirm", profile_confirm_op}};
+      {"profile.interview", profile_interview_op}, {"profile.show", profile_show_op}, {"profile.set", profile_set_op}, {"profile.confirm", profile_confirm_op},
+      {"units.define", units_define_op}, {"units.list", units_list_op}, {"units.forget", units_forget_op},
+      {"conversation.set_unit", conversation_set_unit_op}, {"conversation.clear_unit", conversation_clear_unit_op}};
   return t;
 }
 

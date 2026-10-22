@@ -1175,7 +1175,8 @@ int cmd_memory(Runtime& rt, const Args& a) {
   } else if (sub == "add") {
     std::optional<std::string> parent;
     if (a.has("parent")) parent = a.get("parent");
-    std::string id = must(m.add_node(need(a, 1, "content"), parent, a.get("type", cli_data().at("creation").at("memory_node_type").get<std::string>())));
+    std::string id = must(m.add_node(need(a, 1, "content"), parent, a.get("type", cli_data().at("creation").at("memory_node_type").get<std::string>()),
+                                     m.stamped(Json::object(), "user")));
     g_json ? print_json(Json{{"id", id}}) : void(std::cout << id << "\n");
   } else if (sub == "delete") {
     must(m.delete_node(need(a, 1, "memory id"), true));

@@ -110,6 +110,13 @@ class MemoryEngine {
   Result<Json> profile_inspection() const;
   Status profile_status() const;
 
+  // M1-K2c-1: where a note came from. Returns `metadata` with metadata.provenance = {source, time, ref?}: `time` is now (the moment the note is written to
+  // memory, same ISO format as `created`), `ref` the message / file / run the note came from when the writer knows it. A writer that passes
+  // its own metadata.provenance with a source of the memory profile's provenance_sources (user | import | folder | guardian, the person can add more)
+  // keeps that source and ref (a client that imports says so); anything else gets `default_source`. A note written before M1 has no provenance and is
+  // never given one afterwards: readers word it as unknown. Every write path of the kernel calls this on the metadata it passes to add_node.
+  Json stamped(Json metadata, std::string_view default_source, std::string_view ref = {}) const;
+
   Status reload();  // re-read memory.json (e.g. after the Python app changed it)
   const std::filesystem::path& path() const noexcept { return path_; }
 

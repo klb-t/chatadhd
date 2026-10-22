@@ -14789,6 +14789,513 @@
           "en": "What was sent:",
           "pl": "Co wysłaliśmy:"
         }
+      },
+      "units.define": {
+        "id": "units.define",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Add a unit",
+        "description": "Adds a unit (a project, a team, an organisation ...) to your list, after you confirm: kind and id, an optional label. The same kind and id again changes only the label, again after you confirm; nothing else is touched. The unit is the node unit:<kind>/<id>. Conversations are assigned to it with conversation.set_unit.",
+        "why": {
+          "pl": "Dodaje do Twojej listy jednostkę (projekt, zespół, organizację ...) po Twoim potwierdzeniu. Ta sama jednostka podana drugi raz zmienia tylko nazwę, też po potwierdzeniu."
+        },
+        "labels": {
+          "pl": "Dodaj jednostkę"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "port": "actions",
+        "action": "units.define",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "kind",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "The kind of unit: project, team, organisation ... (kinds are data, you can add your own in the views).",
+              "pl": "Rodzaj jednostki: projekt, zespół, organizacja ... (rodzaje to dane, własny rodzaj można dodać w widokach)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "id",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "The name that identifies the unit (no “/” character).",
+              "pl": "Nazwa jednostki, po której się ją rozpoznaje (bez znaku „/”)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "label",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The name to show, when it should differ from the id.",
+              "pl": "Nazwa do pokazania, jeśli ma być inna niż identyfikator."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "locale",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Language of the words (en, pl); default: the language of the run.",
+              "pl": "Język słów (en, pl); domyślnie język uruchomienia."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/units/define"
+        },
+        "phrases": {
+          "en": [
+            "add a unit",
+            "define a unit"
+          ],
+          "pl": [
+            "dodaj jednostkę",
+            "zdefiniuj jednostkę"
+          ]
+        },
+        "examples": {
+          "en": [
+            "add a unit"
+          ],
+          "pl": [
+            "dodaj jednostkę"
+          ]
+        },
+        "result_text": {
+          "en": "Unit:",
+          "pl": "Jednostka:"
+        },
+        "default_element": "application"
+      },
+      "units.list": {
+        "id": "units.list",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Show my units",
+        "description": "Lists your units (projects, teams, organisations ...) with the number of conversations that belong to each. A unit that conversations point to but the list does not know is shown and marked. Reads only.",
+        "why": {
+          "pl": "Pokazuje Twoje jednostki (projekty, zespoły, organizacje ...) i ile rozmów do każdej należy. Jednostka, do której należą rozmowy, a której nie ma na liście, też jest pokazana i oznaczona."
+        },
+        "labels": {
+          "pl": "Pokaż jednostki"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "port": "actions",
+        "action": "units.list",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "kind",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The kind of unit: project, team, organisation ... (kinds are data, you can add your own in the views).",
+              "pl": "Rodzaj jednostki: projekt, zespół, organizacja ... (rodzaje to dane, własny rodzaj można dodać w widokach)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "locale",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Language of the words (en, pl); default: the language of the run.",
+              "pl": "Język słów (en, pl); domyślnie język uruchomienia."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/units/list"
+        },
+        "phrases": {
+          "en": [
+            "show my units",
+            "list my units"
+          ],
+          "pl": [
+            "pokaż moje jednostki",
+            "pokaż jednostki",
+            "jakie mam jednostki"
+          ]
+        },
+        "examples": {
+          "en": [
+            "show my units"
+          ],
+          "pl": [
+            "pokaż moje jednostki"
+          ]
+        },
+        "result_text": {
+          "en": "Your units:",
+          "pl": "Twoje jednostki:"
+        },
+        "default_element": "application"
+      },
+      "units.forget": {
+        "id": "units.forget",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Forget a unit",
+        "description": "Removes a unit from your list and takes every conversation out of it, after you confirm; the answer says how many conversations were affected. Other data of those conversations stays as it was.",
+        "why": {
+          "pl": "Usuwa jednostkę z Twojej listy i zdejmuje z niej wszystkie rozmowy, po Twoim potwierdzeniu; odpowiedź mówi, ilu rozmów to dotyczyło. Reszta danych tych rozmów zostaje."
+        },
+        "labels": {
+          "pl": "Zapomnij jednostkę"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": true,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "port": "actions",
+        "action": "units.forget",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "kind",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "The kind of unit: project, team, organisation ... (kinds are data, you can add your own in the views).",
+              "pl": "Rodzaj jednostki: projekt, zespół, organizacja ... (rodzaje to dane, własny rodzaj można dodać w widokach)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "id",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "The unit to forget.",
+              "pl": "Nazwa jednostki do zapomnienia."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "locale",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Language of the words (en, pl); default: the language of the run.",
+              "pl": "Język słów (en, pl); domyślnie język uruchomienia."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/units/forget"
+        },
+        "phrases": {
+          "en": [
+            "forget a unit",
+            "remove a unit"
+          ],
+          "pl": [
+            "zapomnij jednostkę",
+            "usuń jednostkę"
+          ]
+        },
+        "examples": {
+          "en": [
+            "forget a unit"
+          ],
+          "pl": [
+            "zapomnij jednostkę"
+          ]
+        },
+        "result_text": {
+          "en": "Unit:",
+          "pl": "Jednostka:"
+        },
+        "default_element": "application"
+      },
+      "conversation.set_unit": {
+        "id": "conversation.set_unit",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Assign this conversation to a unit",
+        "description": "Makes the conversation (default: the open one) belong to a unit of the given kind, after you confirm. The other data of the conversation stays as it is; the settings and rules of that unit then apply in it. A unit that is not on your list yet is accepted and the answer says so.",
+        "why": {
+          "pl": "Przypisuje rozmowę (domyślnie otwartą) do jednostki danego rodzaju, po Twoim potwierdzeniu. Reszta danych rozmowy zostaje; ustawienia i zasady tej jednostki zaczynają w niej działać."
+        },
+        "labels": {
+          "pl": "Przypisz rozmowę do jednostki"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "port": "actions",
+        "action": "conversation.set_unit",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "conv_id",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The conversation (default: the open one).",
+              "pl": "Rozmowa (domyślnie otwarta)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "kind",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "The kind of unit: project, team, organisation ... (kinds are data, you can add your own in the views).",
+              "pl": "Rodzaj jednostki: projekt, zespół, organizacja ... (rodzaje to dane, własny rodzaj można dodać w widokach)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "id",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "The unit.",
+              "pl": "Nazwa jednostki."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "locale",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Language of the words (en, pl); default: the language of the run.",
+              "pl": "Język słów (en, pl); domyślnie język uruchomienia."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/conversation/set_unit"
+        },
+        "phrases": {
+          "en": [
+            "assign this conversation to a unit",
+            "add this conversation to a unit"
+          ],
+          "pl": [
+            "przypisz rozmowę do jednostki",
+            "przypisz tę rozmowę do jednostki"
+          ]
+        },
+        "examples": {
+          "en": [
+            "assign this conversation to a unit"
+          ],
+          "pl": [
+            "przypisz rozmowę do jednostki"
+          ]
+        },
+        "result_text": {
+          "en": "Conversation:",
+          "pl": "Rozmowa:"
+        },
+        "default_element": "application"
+      },
+      "conversation.clear_unit": {
+        "id": "conversation.clear_unit",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Take this conversation out of a unit",
+        "description": "Takes the conversation (default: the open one) out of its unit of the given kind, after you confirm. The other data of the conversation stays as it is; the settings and rules of that unit stop applying in it.",
+        "why": {
+          "pl": "Zdejmuje rozmowę (domyślnie otwartą) z jej jednostki danego rodzaju, po Twoim potwierdzeniu. Reszta danych rozmowy zostaje; ustawienia i zasady tej jednostki przestają w niej działać."
+        },
+        "labels": {
+          "pl": "Zdejmij rozmowę z jednostki"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "port": "actions",
+        "action": "conversation.clear_unit",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "conv_id",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The conversation (default: the open one).",
+              "pl": "Rozmowa (domyślnie otwarta)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "kind",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "The kind of unit: project, team, organisation ... (kinds are data, you can add your own in the views).",
+              "pl": "Rodzaj jednostki: projekt, zespół, organizacja ... (rodzaje to dane, własny rodzaj można dodać w widokach)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "locale",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Language of the words (en, pl); default: the language of the run.",
+              "pl": "Język słów (en, pl); domyślnie język uruchomienia."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/conversation/clear_unit"
+        },
+        "phrases": {
+          "en": [
+            "take this conversation out of a unit",
+            "unassign this conversation from a unit"
+          ],
+          "pl": [
+            "zdejmij rozmowę z jednostki",
+            "odepnij rozmowę od jednostki"
+          ]
+        },
+        "examples": {
+          "en": [
+            "take this conversation out of a unit"
+          ],
+          "pl": [
+            "zdejmij rozmowę z jednostki"
+          ]
+        },
+        "result_text": {
+          "en": "Conversation:",
+          "pl": "Rozmowa:"
+        },
+        "default_element": "application"
       }
     }
   },

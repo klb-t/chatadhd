@@ -1850,6 +1850,13 @@
           "pl": "Organizacja"
         }
       },
+      "group_of_groups": {
+        "level": "group_of_groups",
+        "label": {
+          "en": "Group of teams",
+          "pl": "Grupa zespołów"
+        }
+      },
       "team": {
         "level": "team",
         "label": {

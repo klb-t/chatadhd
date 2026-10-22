@@ -58,7 +58,8 @@ struct Walk {
         continue;
       }
       if (e.is_directory()) {
-        LOOM_TRY_ASSIGN(auto id, memory.add_node(e.path().filename().string(), parent, "dir", Json{{"source", "folder"}, {"path", rel}}));
+        LOOM_TRY_ASSIGN(auto id, memory.add_node(e.path().filename().string(), parent, "dir",
+                                                 memory.stamped(Json{{"source", "folder"}, {"path", rel}}, "folder", rel)));
         counts["dirs"] = counts["dirs"].get<int>() + 1;
         LOOM_TRY(dir(e.path(), id));
       } else if (e.is_regular_file()) {
@@ -101,7 +102,7 @@ struct Walk {
     }
     // A text file with no text is still a file of the folder; the node shows its name when the content is empty.
     if (content.empty()) content = path.filename().string();
-    LOOM_TRY_ASSIGN(auto id, memory.add_node(content, parent, "file", std::move(meta)));
+    LOOM_TRY_ASSIGN(auto id, memory.add_node(content, parent, "file", memory.stamped(std::move(meta), "folder", rel)));
     (void)id;
     counts["files"] = counts["files"].get<int>() + 1;
     return ok_status();
@@ -133,7 +134,7 @@ Result<Json> attach(MemoryEngine& memory, const fs::path& root, const Options& o
     return Error(Errc::NotFound, "memory node not found: " + *options.parent_id);
   const std::string name = options.title.empty() ? fs::weakly_canonical(root, ec).filename().string() : options.title;
   LOOM_TRY_ASSIGN(auto root_id, memory.add_node(name.empty() ? root.string() : name, options.parent_id, "dir",
-                                               Json{{"source", "folder"}, {"path", "."}, {"folder", root.string()}}));
+                                               memory.stamped(Json{{"source", "folder"}, {"path", "."}, {"folder", root.string()}}, "folder", root.string())));
   Walk walk{memory, options, root};
   LOOM_TRY(walk.dir(root, root_id));
   Json out = walk.counts;

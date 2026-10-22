@@ -178,6 +178,31 @@ Result<std::string> MemoryEngine::add_node(std::string_view content, std::option
   return nid;
 }
 
+Json MemoryEngine::stamped(Json metadata, std::string_view default_source, std::string_view ref) const {
+  if (!metadata.is_object()) metadata = Json::object();
+  std::string source(default_source);
+  std::string from(ref);
+  std::vector<std::string> vocabulary;
+  {
+    std::lock_guard<std::mutex> lock(mu_);
+    if (!profile_error_)
+      if (const Json* v = json::find(profile_->values(), "provenance_sources"); v && v->is_array())
+        for (const auto& x : *v)
+          if (x.is_string()) vocabulary.push_back(x.get<std::string>());
+  }
+  if (const Json* given = json::find(metadata, "provenance"); given && given->is_object()) {
+    const std::string claimed = json::get_string(*given, "source");
+    if (!claimed.empty() && std::find(vocabulary.begin(), vocabulary.end(), claimed) != vocabulary.end()) {
+      source = claimed;
+      if (const std::string r = json::get_string(*given, "ref"); !r.empty()) from = r;
+    }
+  }
+  Json provenance{{"source", source}, {"time", timeutil::utc_now_iso()}};
+  if (!from.empty()) provenance["ref"] = from;
+  metadata["provenance"] = std::move(provenance);
+  return metadata;
+}
+
 Status MemoryEngine::update_node(std::string_view nid, const Json& fields) {
   std::lock_guard<std::mutex> lock(mu_);
   auto it = std::find_if(nodes_.begin(), nodes_.end(), [&](const MemoryNode& n) { return n.id == nid; });
@@ -202,7 +227,13 @@ Status MemoryEngine::update_node(std::string_view nid, const Json& fields) {
       }
       it->tags = std::move(tags);
     } else if (k == "created" && v.is_string()) it->created = v.get<std::string>();
-    else if (k == "metadata" && v.is_object()) it->metadata = v;
+    else if (k == "metadata" && v.is_object()) {
+      // The origin of a note is the kernel's record, not the editor's: a replaced metadata keeps the provenance the note already had.
+      Json fresh = v;
+      if (!fresh.contains("provenance") && it->metadata.is_object())
+        if (const Json* old = json::find(it->metadata, "provenance")) fresh["provenance"] = *old;
+      it->metadata = std::move(fresh);
+    }
     // Unknown field names are ignored (Python hasattr() check).
   }
   return save_locked();

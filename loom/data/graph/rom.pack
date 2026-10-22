@@ -183,6 +183,9 @@
         },
         {
           "path": "loom/src/actions/spend.cpp"
+        },
+        {
+          "path": "loom/src/actions/unit_ops.cpp"
         }
       ],
       "gaps": []

@@ -3428,6 +3428,8 @@
           "POST /api/context/modify",
           "POST /api/context/receipt",
           "POST /api/context/select",
+          "POST /api/conversation/clear_unit",
+          "POST /api/conversation/set_unit",
           "POST /api/conversations",
           "POST /api/conversations/:id/view",
           "POST /api/edge-kinds",
@@ -3491,6 +3493,9 @@
           "POST /api/tool_sources/remove",
           "POST /api/tool_sources/sync",
           "POST /api/tool_sources/trust",
+          "POST /api/units/define",
+          "POST /api/units/forget",
+          "POST /api/units/list",
           "POST /api/usage-policy",
           "POST /api/view-interaction",
           "POST /api/view-model",
@@ -3835,6 +3840,9 @@
             },
             {
               "path": "loom/src/actions/spend.cpp"
+            },
+            {
+              "path": "loom/src/actions/unit_ops.cpp"
             }
           ],
           "gaps": []

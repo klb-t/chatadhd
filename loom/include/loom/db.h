@@ -160,6 +160,9 @@ struct ConvPatch {
   std::optional<std::string> source;
   std::optional<Json> metadata;
   std::optional<std::string> created;
+  // Loom only (not a Python kwarg, no JSON key): leave `updated` as it is. Assigning a conversation to a unit is not activity in it, and the list
+  // is ordered by `updated`, so a write that is not the person's talking must not move the conversation to the top.
+  bool keep_updated = false;
   static Result<ConvPatch> from_json(const Json& j);  // unknown keys -> InvalidArgument
 };
 

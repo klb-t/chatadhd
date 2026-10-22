@@ -198,8 +198,9 @@ LOOM_API const char* loom_create_memory(LoomContext* ctx, const char* json_arg) 
     Json meta = Json::object();
     if (const Json* m = json::find(*j, "metadata"); m && m->is_object()) meta = *m;
     auto& mem = ctx->rt->memory();
+    // M1-K2c-1: the web panel, HTTP and every C ABI client write as the person (a client that imports names its source in metadata.provenance).
     auto id = mem.add_node(content->get<std::string>(), json::get_opt_string(*j, "parent_id"),
-                           json::get_string(*j, "node_type", "text"), std::move(meta), std::move(tags));
+                           json::get_string(*j, "node_type", "text"), mem.stamped(std::move(meta), "user"), std::move(tags));
     if (!id) return out_error(id.error());
     return memory_node_out(mem, *id);
   });

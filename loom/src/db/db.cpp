@@ -590,7 +590,8 @@ Status Database::update_conv_locked(std::string_view cid, const ConvPatch& p) {
   if (p.source) add("source", *p.source);
   if (p.metadata) add("metadata", json::py_dumps(*p.metadata));
   if (p.created) add("created", *p.created);
-  add("updated", now_iso());
+  if (!p.keep_updated) add("updated", now_iso());
+  if (sets.empty()) return {};  // keep_updated with nothing else to write
   LOOM_TRY_ASSIGN(auto st, conn_.prepare("UPDATE conversations SET " + sets + " WHERE id = ?"));
   int i = 1;
   for (const auto& v : vals) st.bind(i++, v);

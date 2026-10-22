@@ -2530,6 +2530,131 @@
         }
       },
       {
+        "id": "units_define",
+        "title": {
+          "pl": "Dodaj jednostkę",
+          "en": "Add a unit"
+        },
+        "via": "action",
+        "action": "units.define",
+        "surfaces": {
+          "http": [
+            "POST /api/units/define"
+          ],
+          "invoke": [
+            "actions.units.define"
+          ]
+        },
+        "examples": {
+          "pl": "dodaj jednostkę",
+          "en": "add a unit"
+        },
+        "chat_outcome": "unavailable",
+        "chat_outcome_reason": {
+          "pl": "Samo zdanie nie poda rodzaju ani nazwy jednostki; propozycja mówi to wprost, a jednostkę dodasz, podając oba.",
+          "en": "The sentence alone does not give the kind or the name of the unit; the proposal says so plainly, and you add the unit by giving both."
+        }
+      },
+      {
+        "id": "units_list",
+        "title": {
+          "pl": "Pokaż jednostki",
+          "en": "Show my units"
+        },
+        "via": "action",
+        "action": "units.list",
+        "surfaces": {
+          "http": [
+            "POST /api/units/list"
+          ],
+          "invoke": [
+            "actions.units.list"
+          ]
+        },
+        "examples": {
+          "pl": "pokaż moje jednostki",
+          "en": "show my units"
+        }
+      },
+      {
+        "id": "units_forget",
+        "title": {
+          "pl": "Zapomnij jednostkę",
+          "en": "Forget a unit"
+        },
+        "via": "action",
+        "action": "units.forget",
+        "surfaces": {
+          "http": [
+            "POST /api/units/forget"
+          ],
+          "invoke": [
+            "actions.units.forget"
+          ]
+        },
+        "examples": {
+          "pl": "zapomnij jednostkę",
+          "en": "forget a unit"
+        },
+        "chat_outcome": "unavailable",
+        "chat_outcome_reason": {
+          "pl": "Samo zdanie nie poda, którą jednostkę zapomnieć; propozycja mówi to wprost, a zapomnienie wymaga rodzaju i nazwy.",
+          "en": "The sentence alone does not say which unit to forget; the proposal says so plainly, and forgetting needs the kind and the name."
+        }
+      },
+      {
+        "id": "conversation_set_unit",
+        "title": {
+          "pl": "Przypisz rozmowę do jednostki",
+          "en": "Assign this conversation to a unit"
+        },
+        "via": "action",
+        "action": "conversation.set_unit",
+        "surfaces": {
+          "http": [
+            "POST /api/conversation/set_unit"
+          ],
+          "invoke": [
+            "actions.conversation.set_unit"
+          ]
+        },
+        "examples": {
+          "pl": "przypisz rozmowę do jednostki",
+          "en": "assign this conversation to a unit"
+        },
+        "chat_outcome": "unavailable",
+        "chat_outcome_reason": {
+          "pl": "Samo zdanie nie poda rodzaju ani nazwy jednostki; propozycja mówi to wprost, a przypisanie wymaga obu.",
+          "en": "The sentence alone does not give the kind or the name of the unit; the proposal says so plainly, and assigning needs both."
+        }
+      },
+      {
+        "id": "conversation_clear_unit",
+        "title": {
+          "pl": "Zdejmij rozmowę z jednostki",
+          "en": "Take this conversation out of a unit"
+        },
+        "via": "action",
+        "action": "conversation.clear_unit",
+        "surfaces": {
+          "http": [
+            "POST /api/conversation/clear_unit"
+          ],
+          "invoke": [
+            "actions.conversation.clear_unit"
+          ]
+        },
+        "examples": {
+          "pl": "zdejmij rozmowę z jednostki",
+          "en": "take this conversation out of a unit"
+        },
+        "chat_outcome": "unavailable",
+        "chat_outcome_reason": {
+          "pl": "Samo zdanie nie poda rodzaju jednostki; propozycja mówi to wprost, a zdjęcie wymaga rodzaju.",
+          "en": "The sentence alone does not give the kind of the unit; the proposal says so plainly, and taking the conversation out needs the kind."
+        }
+      },
+      {
         "id": "context_receipt",
         "title": {
           "pl": "Co wysłaliśmy do modelu",
