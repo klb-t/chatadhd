@@ -59,7 +59,8 @@ struct Fx {
   }
   static std::string text_of(const Json& run) {
     std::string out;
-    for (const auto& p : run.at("result").value("parts", Json::array()))
+    const Json parts = run.at("result").value("parts", Json::array());
+    for (const auto& p : parts)
       if (p.is_object() && p.contains("text") && p.at("text").is_string()) out += p.at("text").get<std::string>() + "\n";
     return out;
   }
