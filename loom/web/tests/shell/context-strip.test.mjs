@@ -151,7 +151,7 @@ test('class and price: from the role when it is the same model, from the model l
   assert.equal(shell.pl.mp_price_unknown, 'Cena: nieznany — brak ceny');
   assert.equal(lines(chip.provenanceView({ ...same, role: null, info: { id: 'x', pricing: { prompt: '0', completion: '0' } } }, ts, 'pl')).price, shell.pl.mp_price_unknown, 'a zero is not a price');
   assert.equal(lines(chip.provenanceView({ ...same, role: { ...answerRole, tier: { id: 'none', label: '', reason: 'brak modelu' } } }, ts, 'pl')).class, 'Klasa: nieznana — brak modelu');
-  assert.equal(lines(chip.provenanceView({ ...same, role: { ...answerRole, tier: { id: 'unknown', label: 'klasa nieznana', reason: 'model spoza tabeli klas' } } }, ts, 'pl')).class, 'Klasa: nieznana — model spoza tabeli klas', 'an unknown class is said once, with the reason');
+  assert.equal(lines(chip.provenanceView({ ...same, role: { ...answerRole, tier: { id: 'unknown', label: 'klasa nieznana', reason: 'nieznana — model spoza tabeli klas' } } }, ts, 'pl')).class, 'Klasa: nieznana — model spoza tabeli klas', 'an unknown class is said once, in the kernel\'s sentence');
   // the role belongs to another model: its class and cost are not attributed to the one shown
   const other = chip.provenanceView({ ...same, model: 'a/other' }, ts, 'pl');
   assert.match(lines(other).class, /^Klasa: nieznana — ta klasa dotyczy modelu mock\/e2e-model/);

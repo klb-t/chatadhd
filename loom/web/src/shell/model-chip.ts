@@ -67,6 +67,7 @@ export function provenanceView(input: ProvenanceInput, t: ShellT, language: stri
   const role = input.role;
   if (role && role.tier && role.tier.id !== "none" && role.tier.id !== "unknown" && (role.model === effective || effective === ""))
     lines.push({ id: "class", text: t("mp_class", { class: role.tier.label || role.tier.id }) });
+  else if (role && role.tier?.id === "unknown" && role.tier.reason && (role.model === effective || effective === "")) lines.push({ id: "class", text: t("mp_class_kernel", { reason: role.tier.reason }) });   // the kernel's own sentence already says "unknown" and why
   else if (role && effective && role.model !== effective) lines.push({ id: "class", text: t("mp_class_unknown", { reason: t("mp_reason_other_model", { model: role.model ?? "" }) }) });
   else lines.push({ id: "class", text: t("mp_class_unknown", { reason: role?.tier?.reason || t("mp_reason_no_role") }) });
   lines.push({ id: "price", text: priceLine(input, effective, t) });

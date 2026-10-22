@@ -1253,7 +1253,8 @@ R"loom_onboard(                "empty_title": "How can I help?",
                 "mp_set_by_window": "Picked in this window and sent with every request (it is not saved in the chain of settings).",
                 "mp_reason_other_model": "this class is that of the model {{model}} of the role “Answer to a message”, not the one picked here",
                 "mp_reason_no_role": "the engine gave no role for answering a message",
-                "mp_chain_rest": "The other levels have no value or do not apply to this conversation: {{levels}}."
+                "mp_chain_rest": "The other levels have no value or do not apply to this conversation: {{levels}}.",
+                "mp_class_kernel": "Class: {{reason}}"
               },
               "pl": {
                 "menu_open": "Menu",
@@ -1531,7 +1532,8 @@ R"loom_onboard(                "empty_title": "How can I help?",
                 "mp_set_by_window": "Wybrany w tym oknie i wysyłany z każdym zapytaniem (nie jest zapisany w łańcuchu ustawień).",
                 "mp_reason_other_model": "ta klasa dotyczy modelu {{model}} roli „Odpowiedź na wiadomość”, nie wybranego tutaj",
                 "mp_reason_no_role": "silnik nie podał roli odpowiedzi na wiadomość",
-                "mp_chain_rest": "Pozostałe poziomy nie mają wartości albo nie dotyczą tej rozmowy: {{levels}}."
+                "mp_chain_rest": "Pozostałe poziomy nie mają wartości albo nie dotyczą tej rozmowy: {{levels}}.",
+                "mp_class_kernel": "Klasa: {{reason}}"
               }
             }
           }
@@ -1915,9 +1917,9 @@ R"loom_onboard(                "empty_title": "How can I help?",
                 "reason.layers_not_wired": "this host does not count these layers yet",
                 "reason.action_catalogue_unavailable": "the catalogue of actions cannot be read",
                 "reason.area_not_configured": "the area is not configured",
-                "reason.binding_missing": "the counter is not defined",
 )loom_onboard",
-R"loom_onboard(                "reason.economy_mode_off": "the resource economy report is off",
+R"loom_onboard(                "reason.binding_missing": "the counter is not defined",
+                "reason.economy_mode_off": "the resource economy report is off",
                 "reason.economy_report_unavailable": "the resource economy report cannot be made",
                 "reason.entity_kind_not_configured": "the kind of entity is not configured",
                 "reason.no_device_registry": "no device list",
@@ -4646,7 +4648,8 @@ R"loom_onboard(            "rule_replaces": "Zastępuje regułę, którą ustawi
             "mp_set_by_window": "Picked in this window and sent with every request (it is not saved in the chain of settings).",
             "mp_reason_other_model": "this class is that of the model {{model}} of the role “Answer to a message”, not the one picked here",
             "mp_reason_no_role": "the engine gave no role for answering a message",
-            "mp_chain_rest": "The other levels have no value or do not apply to this conversation: {{levels}}."
+            "mp_chain_rest": "The other levels have no value or do not apply to this conversation: {{levels}}.",
+            "mp_class_kernel": "Class: {{reason}}"
           },
           "pl": {
             "menu_open": "Menu",
@@ -4888,9 +4891,9 @@ R"loom_onboard(            "rule_replaces": "Zastępuje regułę, którą ustawi
             "cm_status_legacy": "dawny",
             "cm_status_own": "Twój",
             "cm_modify_busy": "Zmieniam…",
-            "cm_modify_failed": "Nie udało się zmienić kontekstu: {{reason}}",
 )loom_onboard",
-R"loom_onboard(            "cm_modify_declined": "Zostawione bez zmian.",
+R"loom_onboard(            "cm_modify_failed": "Nie udało się zmienić kontekstu: {{reason}}",
+            "cm_modify_declined": "Zostawione bez zmian.",
             "cm_modify_reset": "Cofnij zmiany następnego zapytania",
             "cm_flow_help": "Otwiera kartę ustawienia „Przepływ żądania”: tam wybierasz, czy graf idzie do modelu i wraca w odpowiedzi (dla tej rozmowy, dla Ciebie albo dla całej instalacji).",
             "cm_preview_help": "Pokazuje żądanie, które pójdzie z następnym Wyślij. Możesz je poprawić; użyje go jednorazowo.",
@@ -4925,7 +4928,8 @@ R"loom_onboard(            "cm_modify_declined": "Zostawione bez zmian.",
             "mp_set_by_window": "Wybrany w tym oknie i wysyłany z każdym zapytaniem (nie jest zapisany w łańcuchu ustawień).",
             "mp_reason_other_model": "ta klasa dotyczy modelu {{model}} roli „Odpowiedź na wiadomość”, nie wybranego tutaj",
             "mp_reason_no_role": "silnik nie podał roli odpowiedzi na wiadomość",
-            "mp_chain_rest": "Pozostałe poziomy nie mają wartości albo nie dotyczą tej rozmowy: {{levels}}."
+            "mp_chain_rest": "Pozostałe poziomy nie mają wartości albo nie dotyczą tej rozmowy: {{levels}}.",
+            "mp_class_kernel": "Klasa: {{reason}}"
           }
         }
       }
@@ -5844,9 +5848,9 @@ R"loom_onboard(            "cm_modify_declined": "Zostawione bez zmian.",
             "count.groups.other": "{{n}} grupy",
             "count.yours": "{{n}} Twoje",
             "count.line": "{{fields}} · {{yours}}",
-            "yours.help": "„Twoje” to pola, którym nadałeś wartość Ty (dla siebie, rozmowy, projektu…). Preset i preset zapisany w Twoich ustawieniach się nie liczą.",
 )loom_onboard",
-R"loom_onboard(            "filter.changed": "Pokaż tylko zmienione",
+R"loom_onboard(            "yours.help": "„Twoje” to pola, którym nadałeś wartość Ty (dla siebie, rozmowy, projektu…). Preset i preset zapisany w Twoich ustawieniach się nie liczą.",
+            "filter.changed": "Pokaż tylko zmienione",
             "filter.help": "Zmienione to pola, które ustawiłeś Ty.",
             "filter.empty": "Nic tu jeszcze nie ustawiłeś: każde pole ma wartość z presetu.",
             "subgroup.none": "Ogólne",
