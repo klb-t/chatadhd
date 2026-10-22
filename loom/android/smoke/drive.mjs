@@ -475,7 +475,9 @@ function m1GateChecks() {
   if (spec.missing) return [["M1 Gate 0 (screens of W0)", async () => { const e = new Error(spec.missing); e.skip = true; throw e; }]];
   return spec.steps.map(st => [`M1 Gate 0: ${st.name}`, async () => {
     const notes = [];
-    try {
+    // one navigation attempt; a tap the WebView dropped (settings panel never opened after ⋮ › Ustawienia, seen on 2 of 3
+    // profiles at random) gets one more attempt from the chat root, and the report says so
+    const navigate = async () => {
       for (const a of st.do || []) {
         if (a.click) { await waitTid(a.click, 20); await clickSettled(a.click); }
         else if (a.clickText) { await waitTid(a.clickText[0], 20); if (!(await clickText(a.clickText[0], `/${a.clickText[1]}/i`))) throw new Error(`no ${a.clickText[0]} matching /${a.clickText[1]}/`); }
@@ -483,6 +485,10 @@ function m1GateChecks() {
         else if (a.back) for (let k = 0; k < a.back; k++) { adb("shell", "input", "keyevent", "KEYCODE_BACK"); await sleep(1200); }
         await sleep(300);
       }
+    };
+    try {
+      try { await navigate(); }
+      catch (e) { notes.push(`second attempt after: ${String(e.message).split(" || ")[0]}`); await m1Reset(); await navigate(); }
       for (const x of st.expect || []) {
         if (x.exitQuestion) {
           const d = await until("the exit question", () => find(dump(), n => n["resource-id"] === "android:id/button2"), 15, 600);
