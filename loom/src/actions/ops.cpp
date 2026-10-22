@@ -1876,8 +1876,9 @@ StepOutcome perspectives_show(Ctx& x) {
     return answer(x.say("persp_head", Json{{"count", lines.size()}}) + "\n" + join_lines(lines), Json{{"perspectives", list}});
   }
   Json request = Json::object();
-  for (const char* k : {"seeds", "hops", "direction", "limit", "key", "units"})
+  for (const char* k : {"seeds", "hops", "direction", "limit", "key", "units", "msg_id", "label_chars"})  // msg_id: the perspective sent_to_model (the record of that request)
     if (x.has(k)) request[k] = json_arg(x, k);
+  request["lang"] = x.lang;  // the words of the nodes (derived labels, reasons) are in the language of the run
   std::string conv = x.str("conversation_id");
   if (conv.empty()) conv = x.conv_id();
   if (!conv.empty()) request["conversation_id"] = conv;
