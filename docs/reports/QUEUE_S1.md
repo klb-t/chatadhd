@@ -1,7 +1,11 @@
-# Kolejka S1 — stan 2026-10-22 08:25 UTC
+# Kolejka S1 — stan 2026-10-22 08:40 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
+
+## Bramka `k1c2` ZIELONA (08:37, `568afce9`, drzewo czyste); S2: android-smoke 39741874779 na `efb31fcf` = success 41/0/0 na 3 profilach (W1c + K1c-1 na emulatorze); K1c-3a wystartowało 08:38 (`wf_37698f0d-16b`)
+S2 widzi na emulatorze: „Klasa: nieznana” z rozwiniętymi szczegółami, szacunek z nazwaną podstawą („dla pustej wiadomości”), zero „0×”; Agent R38 bez zmian. Następny smoke S2 dopiero po K1c-3b (przycisk „Pokaż w grafie”).
+K1c-3a (jądro): `graph.navigate` i `graph.card` dla perspektywy `sent_to_model` + deklaracja parametrów `perspectives.show`. Potem K1c-3b (web). FF `main` (K1c-2 + K1c-3a razem) po CI 266 (≈ 09:10) i po bramce `k1c3a`.
 
 ## APK Bramki 1 DOSTARCZONY właścicielowi (08:20 UTC): `package.yml` run 39741779475 = success (07:54, 17 min), sha `51684e78` (CI 264 zielony)
 Artefakty: `chatadhd-android-apk-TEST-KEY` (17,7 MB, sha256 0f5cda56…, podpis kluczem testowym — brak sekretów wydania), `chatadhd-server-linux-x64`/`-arm64`, `first-steps-screenshots`, `chatadhd-0.10.00-ci.23.51684e7`.
