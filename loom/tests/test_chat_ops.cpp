@@ -6,6 +6,7 @@
 
 #include <filesystem>
 #include <fstream>
+#include <map>
 
 #include "loom/action_ops.h"
 #include "loom/action_runner.h"
@@ -524,10 +525,29 @@ TEST_SUITE("chat_ops") {
     ids.push_back("import.file");
     ids.push_back("actions.status");
     const Json direct_actions = unwrap(RuntimeProfile::builtin("intent_routing")).values().at("execution").at("direct");
+    // What a sentence alone can do is DATA of the coverage entry of the action (chat_outcome: pending | executed | unavailable | continuation,
+    // with its reason in pl and en); an entry that says nothing means pending. No action id is named in this test.
+    const Json coverage = unwrap(RuntimeProfile::builtin("chat_coverage")).values();
+    std::map<std::string, std::string> outcome_of;
+    for (const auto& c : coverage.at("capabilities")) {
+      if (!c.contains("action")) continue;
+      const std::string declared = c.value("chat_outcome", "pending");
+      if (declared != "pending") {
+        const Json reason = c.value("chat_outcome_reason", Json::object());
+        CHECK_MESSAGE((!reason.value("pl", "").empty() && !reason.value("en", "").empty()), c.at("id").get<std::string>() << ": " << declared << " needs a reason in pl and en");
+      }
+      outcome_of[c.at("action").get<std::string>()] = declared;
+    }
     int proposals = 0;
     for (const char* lang : {"pl", "en"}) {
       Fixture f;  // one conversation per language: a sentence that is a command opens a proposal, the next one does not answer it
       for (const std::string& id : ids) {
+        const std::string expected = outcome_of.count(id) ? outcome_of.at(id) : std::string("pending");
+        // a continuation is reached from the proposal of another action, never from a sentence of its own: it has none to send
+        if (expected == "continuation") {
+          CHECK_MESSAGE(!json::find(catalogue.at(id), "examples"), id << ": a continuation carries no sentences of its own");
+          continue;
+        }
         const Json& entry = catalogue.at(id);
         const std::string text = entry.at("examples").at(lang).at(0).get<std::string>();
         const auto out = f.input(text);
@@ -539,13 +559,13 @@ TEST_SUITE("chat_ops") {
         // since M1-K1b, the change of the next message's context and the record of what was sent
         bool direct = false;
         for (const auto& d : direct_actions) direct = direct || d == id;
-        if (direct) {
-          CHECK_MESSAGE(p.at("status") == "executed", id << ": it runs at once (execution.direct)");
+        if (direct || expected == "executed") {
+          CHECK_MESSAGE(p.at("status") == "executed", id << ": it runs at once (execution.direct, or declared executed in chat_coverage)");
           continue;
         }
-        if (id == "import.file" && text.find('/') == std::string::npos) {
-          // no path and no device that can pick a file: the proposal says it cannot be done here (the picked file is tested with a client)
-          CHECK_MESSAGE(p.at("status") == "unavailable", id << " (" << lang << ")");
+        if (expected == "unavailable") {
+          // declared in the data with its reason (import.file without a path: no device that can pick a file; the picked file is tested with a client)
+          CHECK_MESSAGE(p.at("status") == "unavailable", id << " (" << lang << "): declared unavailable in chat_coverage");
           continue;
         }
         CHECK_MESSAGE(p.at("status") == "pending", id << " (" << lang << ")");

@@ -2,7 +2,7 @@
   "schema": "loom.runtime_profile/1",
   "domain": "chat_coverage",
   "revision": 1,
-  "description": "R54 audit as data: everything the user can do must be possible from the conversation window. Every surface of the kernel (a C ABI function, an HTTP route, a loom_invoke operation, a JNI symbol, a settings group or secret) is listed exactly once, as a capability that an action reaches from the conversation (`capabilities`), as something that is not from the chat with a reason (`not_from_chat`), or as a known gap with its plan (`open`). The test tests/test_chat_coverage.cpp fails when the registry (data/graph/interfaces.pack), the settings fields or the loom_invoke dispatcher show a surface that is on none of the three lists, when a list names a surface that is gone, when an action named here is missing, planned or not runnable, and when an example sentence does not reach its action through the router. via: action (an action of the catalogue), native (the window itself), emergent (offered as a proposal by the growing catalogue). check: route (the examples are routed; the default for actions that have them), phrases (the action carries phrases). Everything here is data: an overlay may add entries; nothing is a limit.",
+  "description": "R54 audit as data: everything the user can do must be possible from the conversation window. Every surface of the kernel (a C ABI function, an HTTP route, a loom_invoke operation, a JNI symbol, a settings group or secret) is listed exactly once, as a capability that an action reaches from the conversation (`capabilities`), as something that is not from the chat with a reason (`not_from_chat`), or as a known gap with its plan (`open`). The test tests/test_chat_coverage.cpp fails when the registry (data/graph/interfaces.pack), the settings fields or the loom_invoke dispatcher show a surface that is on none of the three lists, when a list names a surface that is gone, when an action named here is missing, planned or not runnable, and when an example sentence does not reach its action through the router. via: action (an action of the catalogue), native (the window itself), emergent (offered as a proposal by the growing catalogue). check: route (the examples are routed; the default for actions that have them), phrases (the action carries phrases), continuation (the action is reached from a proposal that another action returns, never from a sentence of its own: it carries no phrases, and the entry says so in chat_outcome_reason). chat_outcome (K2b-2): what the example sentences do when they are sent as chat text - pending (a proposal that waits for the person: the default), unavailable (the proposal says honestly that the sentence alone cannot do it, with the reason in chat_outcome_reason), continuation. An action that runs at once is declared in intent_routing (execution.direct), not here. Everything here is data: an overlay may add entries; nothing is a limit.",
   "defaults": {
     "schema": "loom.chat_coverage/1",
     "sources": {
@@ -1084,6 +1084,11 @@
         "examples": {
           "pl": "zaimportuj ten plik",
           "en": "import this file"
+        },
+        "chat_outcome": "unavailable",
+        "chat_outcome_reason": {
+          "pl": "Bez ścieżki w zdaniu plik musi wskazać urządzenie, a tu nie ma urządzenia, które go wybierze; propozycja mówi to wprost.",
+          "en": "Without a path in the sentence the device has to pick the file, and there is no device here to pick it; the proposal says so plainly."
         },
         "note": {
           "en": "Without a path the device picks the file (device.pick_file), then the import runs on it.",
@@ -2517,9 +2522,11 @@
             "actions.profile.confirm"
           ]
         },
-        "examples": {
-          "pl": "zatwierdź to, co zrozumiałem o mnie",
-          "en": "confirm what you understood about me"
+        "check": "continuation",
+        "chat_outcome": "continuation",
+        "chat_outcome_reason": {
+          "pl": "Zatwierdzenie przychodzi z propozycji, którą zwraca wywiad (uwaga albo karta sekcji) - nie z osobnego zdania. Samo zdanie nie niesie tego, co ma zatwierdzić.",
+          "en": "The confirmation comes from the proposal that the interview returns (a remark or the card of a section), not from a sentence of its own. A sentence alone does not carry what it should confirm."
         }
       },
       {
@@ -2995,8 +3002,23 @@
               "type": "string",
               "enum": [
                 "route",
-                "phrases"
+                "phrases",
+                "continuation"
               ]
+            },
+            "chat_outcome": {
+              "type": "string",
+              "enum": [
+                "pending",
+                "executed",
+                "unavailable",
+                "continuation"
+              ],
+              "description": "What the example sentences do as chat text; pending when absent."
+            },
+            "chat_outcome_reason": {
+              "type": "object",
+              "description": "Why, in pl and en: required for unavailable and continuation."
             },
             "note": {
               "type": "object"

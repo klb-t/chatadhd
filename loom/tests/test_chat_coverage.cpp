@@ -224,6 +224,15 @@ TEST_SUITE("chat_coverage") {
       }
       if (via == "emergent") continue;  // offered by the growing catalogue; the emergent tests route it
       const std::string check = c.value("check", c.contains("examples") ? "route" : "phrases");
+      if (check == "continuation") {
+        // reached from the proposal of another action, never from a sentence of its own: the declaration, its reason and the absence of sentences are checked
+        CHECK_MESSAGE(c.value("chat_outcome", "") == "continuation", id << ": check continuation needs chat_outcome continuation");
+        const Json reason = c.value("chat_outcome_reason", Json::object());
+        CHECK_MESSAGE((!reason.value("pl", "").empty() && !reason.value("en", "").empty()), id << ": a continuation needs its reason in pl and en");
+        CHECK_MESSAGE(!c.contains("examples"), id << ": a continuation has no sentences of its own");
+        for (const auto& a : actions) CHECK_MESSAGE(!json::find(*entry_of(a), "phrases"), id << ": '" << a << "' is a continuation and carries no phrases");
+        continue;
+      }
       if (check == "phrases") {
         for (const auto& a : actions) {
           const Json* phrases = json::find(*entry_of(a), "phrases");

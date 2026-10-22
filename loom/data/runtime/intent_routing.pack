@@ -1909,6 +1909,20 @@
           "kind": "text",
           "template": "{1}x{1}",
           "regex": "\\b(?:size|sized|at)\\s+(\\d{2,5})\\b"
+        },
+        {
+          "id": "profile.slot",
+          "param": "slot",
+          "action": "profile.set",
+          "kind": "text",
+          "regex": "\\b([a-z][a-z0-9_]*(?:\\.[a-z0-9_]+)+)\\s*=\\s*\\S"
+        },
+        {
+          "id": "profile.value",
+          "param": "value",
+          "action": "profile.set",
+          "kind": "text",
+          "regex": "\\b[a-z][a-z0-9_]*(?:\\.[a-z0-9_]+)+\\s*=\\s*(.+?)\\s*[.!?]*\\s*$"
         }
       ],
       "commands": [
@@ -6136,7 +6150,7 @@
           },
           "arguments": {
             "type": "array",
-            "description": "Arguments from loose phrases. Each pattern fills the declared parameter `param` of the chosen action (an action that does not declare it is not touched; an argument already given is never overwritten). `regex` is matched against the folded, lower-cased text (Polish letters without diacritics); group 1 (and 2 ...) is read from the original text, so the user's own words are kept. kind text: the captured words, or `template` ({1}, {2} = groups); kind language: the captured word must be one of `languages`, else nothing is extracted. First match per parameter wins; patterns of the language of the input come first.",
+            "description": "Arguments from loose phrases. Each pattern fills the declared parameter `param` of the chosen action (an action that does not declare it is not touched; an argument already given is never overwritten). `regex` is matched against the folded, lower-cased text (Polish letters without diacritics); group 1 (and 2 ...) is read from the original text, so the user's own words are kept. kind text: the captured words, or `template` ({1}, {2} = groups); kind language: the captured word must be one of `languages`, else nothing is extracted. First match per parameter wins; patterns of the language of the input come first. A pattern with `action` is read for that action only (profile.set: the field and its value from \"work.projects=chess club\").",
             "items": {
               "type": "object",
               "required": [
@@ -6153,6 +6167,10 @@
                 "param": {
                   "type": "string",
                   "minLength": 1
+                },
+                "action": {
+                  "type": "string",
+                  "description": "Only for this action (its id): a parameter name that several actions declare (slot, value) is read from the sentence for this action alone."
                 },
                 "lang": {
                   "type": "string"

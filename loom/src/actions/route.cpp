@@ -316,6 +316,7 @@ std::vector<ArgHit> extract_args(const Data& d, const Json& entry, const std::st
   for (const Json* p : ordered) {
     const std::string param = json::get_string(*p, "param");
     if (!declared.count(param) || done.count(param)) continue;
+    if (const std::string only = json::get_string(*p, "action"); !only.empty() && only != json::get_string(entry, "id")) continue;  // a pattern of one action
     if (const Json* given = json::find(have, param); given && !given->is_null()) continue;  // the caller's word comes first
     auto rx = compiled(json::get_string(*p, "regex"));
     if (!rx) continue;

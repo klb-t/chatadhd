@@ -14690,23 +14690,6 @@
           "verb": "POST",
           "path": "/api/profile/confirm"
         },
-        "phrases": {
-          "en": [
-            "confirm what you understood about me"
-          ],
-          "pl": [
-            "zatwierdź to, co zrozumiałem o mnie",
-            "zatwierdz* zrozumiał* o mnie"
-          ]
-        },
-        "examples": {
-          "en": [
-            "confirm what you understood about me"
-          ],
-          "pl": [
-            "zatwierdź to, co zrozumiałem o mnie"
-          ]
-        },
         "result_text": {
           "en": "Confirmed:",
           "pl": "Potwierdzone:"
