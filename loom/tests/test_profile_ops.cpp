@@ -99,7 +99,9 @@ TEST_SUITE("profile_ops") {
     const Json level_rows = d.at("question").at("levels");
     for (const auto& l : level_rows) ids.insert(l.at("id").get<std::string>());
     CHECK(ids == std::set<std::string>{"minimal", "normal", "detailed"});
-    CHECK(Fx::text_of(run).find("formularz") != std::string::npos);  // it says it is a form, without a model
+    CHECK(Fx::text_of(run).find("Otworzyłem rozmowę") != std::string::npos);  // K2b-2: the question itself waits in the conversation that was opened
+    const Json form = f.call("profile.interview", Json{{"op", "start"}, {"in_conversation", false}});
+    CHECK(Fx::text_of(form).find("formularz") != std::string::npos);  // the form says it is a form, without a model
     // English on request
     const Json en = Fx::data_of(f.call("profile.interview", Json{{"op", "start"}, {"locale", "en"}}));
     CHECK(en.at("question").at("text") != d.at("question").at("text"));
@@ -165,7 +167,7 @@ TEST_SUITE("profile_ops") {
     // answering a never slot is refused with the way to reopen it
     const Json refused = f.go("answer", Json{{"slot", "routine.rhythm"}, {"text", "wstaję o szóstej"}});
     CHECK(refused.at("status") != "completed");
-    CHECK(Fx::failure_of(refused).find("reopen") != std::string::npos);
+    CHECK(Fx::failure_of(refused).find("znowu pytać") != std::string::npos);  // the way to reopen it, in the person's words
     // the person reopens it himself
     const Json reopened = Fx::data_of(f.go("never", Json{{"category", "routine"}, {"reopen", true}}));
     CHECK(reopened.at("written") == true);
@@ -226,7 +228,7 @@ TEST_SUITE("profile_ops") {
     f.go("never", Json{{"slot", "knowledge.remember"}});
     const Json refused = f.yes(f.ask("profile.set", Json{{"slot", "knowledge.remember"}, {"value", "cokolwiek"}}));
     CHECK(refused.at("status") != "completed");
-    CHECK(Fx::failure_of(refused).find("reopen") != std::string::npos);
+    CHECK(Fx::failure_of(refused).find("znowu pytać") != std::string::npos);  // the way to reopen it, in the person's words
     CHECK(Fx::slot(f.shown(), "knowledge.remember").at("state") == "never");
     f.no_network();
   }
