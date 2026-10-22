@@ -1,7 +1,13 @@
-# Kolejka S1 — stan 2026-10-22 11:15 UTC
+# Kolejka S1 — stan 2026-10-22 11:50 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
+
+## K1c-4 GOTOWE (11:45 UTC, `b1b34f17` na `claude/m1-w0`): powody po polsku z paczki, zdanie „Brak śladu” bez kluczy — bramka lokalna `k1c4` w toku (start 11:46)
+Agent Sonnet (`wf_38d8c445-682`, 113 wywołań, 266 tys. tokenów, 35 min). Zapis (angielskie „why” przy wysyłce) bez zmian jako DANE; ekrany pokazują słowa z paczki wybrane po stałym kluczu (`why.<ref>` / `why.<source_kind>`), a gdy paczka nie ma słowa — zdanie jądra. Funkcja `whyWords`/`rowWhy` wspólna dla arkusza, wierszy nawigatora i karty;
+test jednostkowy czyta źródło jądra, więc nowy powód bez słowa wywala test. Zdanie pod „Brak śladu” zwykłe, surowe nazwy ustawień tylko w zwiniętym „Szczegóły techniczne”. Nowy audyt tekstu (`m1-audit.mjs`) w trzech e2e: 0 znalezisk; znalezione ręcznie: surowy typ węzła pamięci „text”, „graph packet”, adres w nagłówku karty podczas ładowania — poprawione.
+Zostaje: etykieta wiersza „graph packet” (jądro), angielskie zdanie w samym zapisie (decyzja), audyt nie łapie etykiet krótszych niż 3 słowa, brak emulatora.
+Plan: po zielonej bramce i po końcu CI 268 (≈ 12:20-12:30, kontrola 12:37) FF `main` ← `b1b34f17`; smoke S2 na nim; potem APK v2 z commitu z zielonym CI. Brief K2a (jądro wywiadu: pytania PL, poziomy szczegółowości, uwagi „nie pytaj o…”) gotowy w scratchpadzie (`k2a_brief.json`), start ≥ 12:17 po bramce.
 
 ## `main` = `d0ea24cb` (K1c-3a + K1c-3b, bramka `k1c3b` ZIELONA 11:10) od 11:11; CI 267 (`568afce9`) = SUCCESS (10:24, 66 min); CI 268 (id 39768676601) w toku, kontrola 12:37; K1c-4 wystartowało 11:11 (`wf_38d8c445-682`)
 Tydzień 35 % (10:24; linia planu 27,3 % o 05:51). K1c-4 (tylko słowa z paczki i web): zdania „dlaczego” po polsku zamiast angielskich zapisanych przy wysyłce; zdanie pod „Brak śladu” bez kluczy ustawień; przegląd innych angielskich resztek na ekranach „Co wysłaliśmy”.
