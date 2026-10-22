@@ -1,7 +1,13 @@
-# Kolejka S1 — stan 2026-10-22 19:25 UTC
+# Kolejka S1 — stan 2026-10-22 20:15 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
+
+## W2a GOTOWE (20:11 UTC, `5c15b2de` na `claude/m1-w0`): wywiad „Poznajmy się” w aplikacji — bramka lokalna `w2a` w toku (start 20:13)
+Agent Sonnet (`wf_18afae68-0f2`, 182 wywołania — ok. 2,6× planu, każdy bieg e2e ≈ 2,5 min; 350 tys. tokenów, 51 min). Karta „Poznajmy się” w pustym czacie (Zacznij / Później / Nigdy nie pytaj, „bez modelu, nic nie wychodzi poza to urządzenie”), 3 karty poziomów z podglądami z jądra (e2e porównuje znak po znaku), chipy Pomiń/Nie teraz/Nigdy/Podsumowanie/Ile zostało,
+„Tak zrozumiałem” z przyciskami Tak/Nie (ActionProposalBlock w trybie `plain`, bo pokazywał surowe pola jądra), linia „Rozmowa bez modelu — tylko formularz” + „Pytań do zadania: N”. Typowania `/api/profile/*` w trzech transportach + łańcuch rejestru. e2e `m1-profile-native.mjs` 2× zielony, audyt tekstu 0 znalezisk, atrapa modelu dostała 0 żądań. Raport `M1_CHECKPOINT_2.md` + 8 zrzutów.
+Uwagi agenta (do K2c/W2b): jądro samo nie cofa `onboarding_card=later` na `show` przy starcie (robi to web przy pierwszym widoku strony); porzucony wywiad zostawia kartę ukrytą (profil już istnieje) — powrót tylko przez „Poznaj mnie” z menu Ty (W2b); po „Tak” tytuł wyniku jest ogólny („Gotowe: Potwierdź, co zrozumiałem.”). Nie sprawdzone: emulator; poziom „Minimalnie” nie jest tapnięty w e2e (używa „Szczegółowo”).
+FF `main` (W2a) po zielonej bramce `w2a` I po końcu CI 273 (kontrola 21:02). Potem smoke S2 i APK v3 (z wywiadem).
 
 ## Bramka `k2b2` ZIELONA (19:21, `ae6d152f`); `main` = `ae6d152f` (K2b-1 + K2b-2) od 19:21, CI 273 (id 39839307922), kontrola 21:01; W2a wystartowało 19:21 (`wf_18afae68-0f2`, Sonnet)
 W2a: karta „Poznajmy się” w pustym czacie, karty poziomów z podglądem, chipy Pomiń/Nigdy/Podsumowanie/Ile zostało, „Tak zrozumiałem” przez `ActionProposalBlock`, linia „rozmowa bez modelu”, typowania `/api/profile/*` + łańcuch rejestru, e2e `m1-profile-native.mjs` (0 żądań do atrapy modelu), raport `M1_CHECKPOINT_2.md`.
