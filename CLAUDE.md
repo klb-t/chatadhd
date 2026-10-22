@@ -472,6 +472,8 @@ days): never range-for over `.at()` / `.value()` / `operator[]` of a by-value te
 before the loop. Bind the object to a name first (`const Json x = unwrap(f()); for (... : x.at("k"))`). Seen again 2026-10-21 in a new test
 (CI 260, `f.send(legacy)["messages"]`); `tools/lint_asan_range_for.py [base]` lists suspicious added lines and `tools/gate.sh` runs it first.
 
+**gcc accepts what clang rejects** (CI 262, 2026-10-22: the generated onboarding pack passed ~420 KB and clang's constexpr step limit stopped the vendored/Android build while every gcc job stayed green): generated `*.inc` data must be emitted with explicit lengths (`std::string_view(R"...", N)`), never as bare literals measured by a constexpr strlen. `tools/clang_inc_check.py` runs `clang++ -fsyntax-only` on every source that includes a generated `.inc`; `tools/gate.sh` runs it.
+
 > **Update 2026-09-29 (owner):** Python compatibility is no longer required — it was
 > only a minimum plan. The invariant below remains enforced by tests as a regression
 > sentinel until a deliberate schema migration; it does not constrain new work.

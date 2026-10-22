@@ -1,7 +1,14 @@
-# Kolejka S1 — stan 2026-10-22 03:10 UTC
+# Kolejka S1 — stan 2026-10-22 04:00 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
+
+## CI 262 (`d103d5d8`) = failure TYLKO w jobie `vendored (clang++)` (dev/asan/tsan przeszły) → poprawka na `main` = `3b827313` (W1b + raport DOC1 + poprawka), nowy bieg w toku
+Przyczyna (agent haiku `wf_5bb3f9f1-ef1`, potwierdzona lokalnie clang 18): `builtin.inc` (pakiet onboardingu, ok. 420 KB po słowach z W1a) — clang liczy każdy znak surowego literału w constexpr strlen i przy ok. 1 mln kroków
+na całą tablicę przerywa („constexpr variable kOnboardingPack must be initialized by a constant expression”). gcc ma wyższy limit, więc bramka lokalna i job gcc tego nie widziały; **build Android (clang) trafiłby w to samo**.
+Poprawka: generator emituje `std::string_view(R"…", N)` z jawną długością (nic nie jest liczone, pakiet może rosnąć); clang 18 `-fsyntax-only` przechodzi dla wszystkich 9 źródeł z `.inc`; ctest onboarding/pack/runtime_profile 15/15.
+Nowe narzędzie: `tools/clang_inc_check.py` (+ krok w `tools/gate.sh`) — kontrola, którą ta klasa błędu wymagała zamiast dwóch godzin CI.
+Bieg CI dla `3b827313` (≈ 120 min, do ok. 05:20; kontrola poniżej). S2 dostał „W1b na main” i prośbę o merge `origin/main` przed jego jednym biegiem android-smoke.
 
 ## DOC1 GOTOWE (03:05 UTC, `2858800d` na `claude/m1-w0`): `docs/reports/M1_CHECKPOINT_1.md` + 13 zrzutów w `docs/reports/M1_CHECKPOINT_1/` (390×844, każdy < 90 KB)
 Raport Bramki 1 (8 sekcji + „Czego jeszcze NIE ma” + „Co sprawdzają testy”); zrzuty z prawdziwej aplikacji i atrapy modelu (2 e2e: 7 + 10 kroków PASS; 4 dodatkowe ujęcia z kopii skryptu w scratchpadzie, bez zmiany asercji).

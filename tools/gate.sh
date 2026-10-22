@@ -15,6 +15,7 @@ STEP=lint;      step lint bash -c "cd \"$ROOT\" && python3 tools/lint_asan_range
 STEP=configure; step configure cmake --preset dev -DLOOM_BUILD_SERVER=ON -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DPython3_EXECUTABLE="$(which python3)"
 STEP=build;     step build cmake --build --preset dev --parallel 4
 V=build/dev/verification; mkdir -p "$V"
+STEP=clangsyntax; step clangsyntax python3 "$ROOT/tools/clang_inc_check.py" "$ROOT/loom/build/dev"
 STEP=ctest;     step ctest bash -c "ctest --preset dev --show-only=json-v1 > $V/ctest-manifest.json && ctest --preset dev --no-tests=error -j3 --test-output-size-passed 10485760 --test-output-size-failed 10485760 --output-junit $PWD/$V/ctest.xml"
 cd "$ROOT"
 STEP=guard;     step guard python3 .github/scripts/verify_ctest.py --policy .github/ctest-evidence-policy.json --manifest loom/$V/ctest-manifest.json --junit loom/$V/ctest.xml --preset dev --output loom/$V/executed-cases.json
