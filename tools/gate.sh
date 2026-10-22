@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 # Full gate for one checkout: GCC Debug dev build (+server), full CTest with the
 # executed-case guard (verify_ctest.py), JNI smoke, web build + web test scripts.
-# Usage: gate.sh <repo-root> [label]   -> writes <dir of this script>/gate-<label>/gate.log, exit 0 iff all green.
+# Usage: gate.sh <repo-root> [label]   -> writes $GATE_OUT (default $TMPDIR/gate-<label>)/gate.log, exit 0 iff all green.
 # (copied from the session scratchpad into tools/ on 2026-10-21; the lint step is a heuristic report, it does not fail the gate)
 set -uo pipefail
 export CCACHE_BASEDIR=/home/user CCACHE_NOHASHDIR=true CCACHE_DIR=/home/user/.ccache CCACHE_MAXSIZE=12G
 ROOT="$(cd "$1" && pwd)"; LABEL="${2:-$(basename "$ROOT")}"
-OUT="$(dirname "$0")/gate-$LABEL"; mkdir -p "$OUT"
+OUT="${GATE_OUT:-${TMPDIR:-/tmp}/gate-$LABEL}"; mkdir -p "$OUT"   # logs outside the working tree (override with GATE_OUT)
 LOG="$OUT/gate.log"; : > "$LOG"
 step() { echo "== $1" | tee -a "$LOG"; shift; ( "$@" ) >>"$LOG" 2>&1; rc=$?; echo "   rc=$rc" | tee -a "$LOG"; [ $rc -eq 0 ] || FAIL="$FAIL $STEP"; }
 FAIL=""
