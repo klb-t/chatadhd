@@ -1735,6 +1735,10 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
     }
     conv_ = conv;
   }
+  // K2b-2: the conversation of the interview is a form (conversations.metadata.flow): no model takes part in it and nothing of it is sent. The chat route
+  // answers it before this point; what still arrives here (an attachment, a client that skips the route) is refused with the reason and nothing is stored.
+  if (json::get_string(conv.metadata, "flow") == "profile.interview")
+    return Error(Errc::Unsupported, "this conversation is the interview with a form: no model takes part in it and nothing leaves this device; open an ordinary conversation to talk to the model");
 
   // Compile a task against a stable native source selection before accepting
   // the current turn. The same snapshot becomes both the request and its

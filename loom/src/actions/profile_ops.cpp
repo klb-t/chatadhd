@@ -44,7 +44,7 @@ Result<Loaded> load(const Env& e, const Json& args, bool create) {
   auto r = store.read(l.user);
   if (!r && r.error().code == Errc::NotFound && create) r = store.open(l.user);
   if (!r) {
-    if (r.error().code == Errc::NotFound) return err(Errc::NotFound, e.say("profile_not_started", Json{{"user", l.user}}));
+    if (r.error().code == Errc::NotFound) return err(Errc::NotFound, e.say("profile_not_started", Json::object()));
     return r.error();
   }
   l.state = *r;
@@ -68,7 +68,7 @@ Result<Json> view(const Env& e, const Loaded& l, Json request) {
   if (!request.contains("locale")) request["locale"] = e.lang;
   auto r = OnboardingStore(e.db).interview_view(l.user, request);
   if (!r) {
-    if (r.error().code == Errc::Unsupported) return err(Errc::Unsupported, e.say("profile_scenario_old", Json{{"detail", r.error().message}}));
+    if (r.error().code == Errc::Unsupported) return err(Errc::Unsupported, e.say("profile_scenario_old", Json::object()));
     return r.error();
   }
   return r->at("view");
@@ -152,7 +152,10 @@ std::string level_word(const Env& e, const Loaded& l, const std::string& level) 
 
 Result<Json> plan_of(const Env& e, const Loaded& l) {
   LOOM_TRY_ASSIGN(auto level, level_of(e));
-  return view(e, l, Json{{"what", "plan"}, {"level", level}});
+  Json request{{"what", "plan"}, {"level", level}};
+  // The level per category the person set (the setting profile_detail_by_category: category -> level); none set means one level for all.
+  if (const Json by = e.get_setting("profile_detail_by_category"); by.is_object() && !by.empty()) request["by_category"] = by;
+  return view(e, l, request);
 }
 
 // The first question that is still to be asked at the level: not pending confirmation, not in a section skipped for this session.
@@ -212,7 +215,7 @@ Result<Reply> next_reply(const Env& e, const Loaded& l, const std::string& head,
     for (const auto& row : levels) {
       const Json preview = row.value("preview", Json::object());
       rows.push_back(Json{{"id", row.value("id", "")}, {"label", row.value("label", "")}, {"preview", preview}, {"counts", row.value("counts", Json::object())}});
-      add("• " + e.say("profile_level_line", Json{{"id", row.value("id", "")}, {"label", row.value("label", "")}, {"asks", preview.value("asks", "")},
+      add("• " + e.say("profile_level_line", Json{{"label", row.value("label", "")}, {"asks", preview.value("asks", "")},
                                                   {"stores", preview.value("stores", "")}, {"model_sees", preview.value("model_sees", "")}}));
     }
     q["levels"] = rows;
@@ -251,7 +254,7 @@ Result<std::string> match_level(const Env& e, const Json& levels, const std::str
   }
   if (hits.size() == 1) return hits[0];
   std::string options;
-  for (const auto& row : levels) options += (options.empty() ? "" : ", ") + row.value("label", "") + " (" + row.value("id", "") + ")";
+  for (const auto& row : levels) options += (options.empty() ? "" : ", ") + row.value("label", row.value("id", ""));
   return err(Errc::InvalidArgument, e.say("profile_level_unknown", Json{{"text", text}, {"options", options}}));
 }
 
@@ -291,6 +294,47 @@ Result<Reply> refuse_mode(const Env& e, const Json& args) {
 
 // ── ops ─────────────────────────────────────────────────────────────
 
+// K2b-2: the interview is held in a conversation. A named conversation must be empty (or already be this interview); none named: a new one is opened.
+// Its first message is the question; the metadata says which flow it is (conversations.metadata.flow) so the chat answers it without the model. Messages
+// of the interview are never analysed by the background workers (their answers are private): they are stored with the analysis marked done at once.
+Result<Json> open_conversation(const Env& e, const Loaded& l, const Json& args, const Reply& first) {
+  auto lock = e.db.lock();
+  std::string conv_id = json::get_string(args, "conv_id");
+  std::string title;
+  bool created = false;
+  if (conv_id.empty()) {
+    title = e.say("profile_conv_title", Json::object());
+    LOOM_TRY_ASSIGN(auto made, e.db.create_conv(title));
+    conv_id = made.id;
+    created = true;
+  } else {
+    LOOM_TRY_ASSIGN(auto found, e.db.get_conv(conv_id));
+    if (!found) return err(Errc::NotFound, e.say("profile_conv_unknown", Json::object()));
+    title = found->title;
+    LOOM_TRY_ASSIGN(auto page, e.db.get_msgs_page(conv_id, 1));
+    const bool already = json::get_string(found->metadata, "flow") == kFlow;
+    if (!page.messages.empty()) {
+      if (!already) return err(Errc::Conflict, e.say("profile_conv_not_empty", Json::object()));
+      return Json{{"conv_id", conv_id}, {"title", title}, {"created", false}, {"first_message_id", ""}};  // this very interview is already running there
+    }
+  }
+  ConvPatch patch;
+  patch.metadata = Json{{"flow", kFlow}, {"user_id", l.user}, {"lang", e.lang}, {"mode", "form"}};
+  LOOM_TRY(e.db.update_conv(conv_id, patch));
+  NewMessage nm;
+  nm.conv_id = conv_id;
+  nm.role = "assistant";
+  nm.text = first.text;
+  nm.model = "loom:actions";
+  nm.metadata = Json{{"routed", "interview"}, {"interview", Json{{"kind", "question"}, {"question", first.data.value("question", Json(nullptr))}, {"mode", "form"}}}};
+  LOOM_TRY_ASSIGN(std::string mid, e.db.create_msg(nm));
+  MsgPatch done;
+  done.semantic_status = "done";
+  LOOM_TRY(e.db.update_msg(mid, done));
+  if (created && e.announce) e.announce("conv_created", Json{{"id", conv_id}, {"title", title}});
+  return Json{{"conv_id", conv_id}, {"title", title}, {"created", created}, {"first_message_id", mid}};
+}
+
 Result<Reply> op_start(const Env& e, const Json& args) {
   LOOM_TRY_ASSIGN(auto l, load(e, args, true));
   // "Skip" holds for one session: a new start brings the skipped sections back.
@@ -303,7 +347,14 @@ Result<Reply> op_start(const Env& e, const Json& args) {
   data["sections_back"] = back;
   LOOM_TRY_ASSIGN(auto first, plan_of(e, l));
   const bool chosen = !first.value("level_choice_pending", false);
-  return next_reply(e, l, e.say(chosen ? "profile_start_resume" : "profile_start", Json::object()), data);
+  LOOM_TRY_ASSIGN(auto reply, next_reply(e, l, e.say(chosen ? "profile_start_resume" : "profile_start", Json::object()), data));
+  if (!json::get_bool(args, "in_conversation", true)) return reply;
+  LOOM_TRY_ASSIGN(auto opened, open_conversation(e, l, args, reply));
+  reply.data["conv_id"] = opened.at("conv_id");
+  reply.data["conversation"] = opened;
+  // The question itself is the first message of the conversation; here the person is told where it waits.
+  reply.text = e.say("profile_conv_opened", Json{{"title", opened.value("title", "")}});
+  return reply;
 }
 
 Result<Reply> op_answer(const Env& e, const Json& args) {
@@ -341,7 +392,7 @@ Result<Reply> op_answer(const Env& e, const Json& args) {
           out += "\n  " + e.say("profile_remark_erases", Json{{"fields", fields_text(e, l, erases)}});
       } else if (!p.value("at_limit", false)) {
         anything_to_do = true;
-        out += "\n  " + e.say("profile_remark_level", Json{{"from", json::get_string(p, "from", "?")}, {"to", json::get_string(p, "to")}});
+        out += "\n  " + e.say("profile_remark_level", Json{{"from", level_word(e, l, json::get_string(p, "from", "?"))}, {"to", level_word(e, l, json::get_string(p, "to"))}});
       }
     }
     Json data = base_data(l);
@@ -360,7 +411,7 @@ Result<Reply> op_answer(const Env& e, const Json& args) {
   }
 
   if (json::get_string(*f, "status") == "never")
-    return err(Errc::Auth, e.say("profile_never_blocked", Json{{"topic", topic}, {"slot", slot}}));
+    return err(Errc::Auth, e.say("profile_never_blocked", Json{{"topic", topic}}));
 
   if (f->contains("setting_key")) {
     // The level question: the answer is the person's own choice, so it is confirmed at once; the level goes to the setting.
@@ -374,10 +425,10 @@ Result<Reply> op_answer(const Env& e, const Json& args) {
     data["written"] = true;
     data["level_chosen"] = chosen;
     if (auto st = e.set_setting(key, Json(chosen)); !st)
-      return err(st.error().code, e.say("profile_level_not_stored", Json{{"level", chosen}, {"setting", key}, {"reason", st.error().message}}));
+      return err(st.error().code, e.say("profile_level_not_stored", Json{{"level", level_word(e, l, chosen)}, {"reason", st.error().message}}));
     std::string label = chosen;
     for (const auto& row : levels) if (row.value("id", "") == chosen) label = row.value("label", chosen);
-    return next_reply(e, l, e.say("profile_level_saved", Json{{"label", label}, {"id", chosen}, {"setting", key}}), data);
+    return next_reply(e, l, e.say("profile_level_saved", Json{{"label", label}}), data);
   }
 
   const std::string cid = gen_id("iv_");
@@ -385,6 +436,14 @@ Result<Reply> op_answer(const Env& e, const Json& args) {
   Json data = base_data(l);
   data["written"] = true;
   data["answered"] = Json{{"field", slot}, {"candidate", cid}, {"review", "pending"}};
+  // The section of this answer is finished when no question of it is left to ask: a conversation then shows the card to confirm.
+  const std::string section = json::get_string(*f, "section");
+  LOOM_TRY_ASSIGN(auto after, plan_of(e, l));
+  const auto waiting = pending_fields(l);
+  bool open = false;
+  for (const auto& a : after.at("asks"))
+    if (json::get_string(a, "section") == section && !waiting.count(json::get_string(a, "field"))) open = true;
+  if (!open && !section.empty()) data["section_done"] = section;
   return next_reply(e, l, e.say("profile_answer_saved", Json{{"topic", topic}}), data);
 }
 
@@ -475,7 +534,13 @@ Result<Reply> op_decline(const Env& e, const Json& args) {
 
 Result<Reply> op_never(const Env& e, const Json& args) {
   LOOM_TRY_ASSIGN(auto l, load(e, args, false));
-  LOOM_TRY_ASSIGN(auto targets, targets_of(e, l, args));
+  Json named = args;
+  if (json::get_string(named, "slot").empty() && json::get_string(named, "category").empty() && !json::get_bool(args, "reopen", false)) {
+    LOOM_TRY_ASSIGN(auto plan, plan_of(e, l));
+    const Next n = next_of(l, plan);
+    if (!n.ask.is_null()) named["slot"] = n.ask.value("field", "");
+  }
+  LOOM_TRY_ASSIGN(auto targets, targets_of(e, l, named));
   Json data = base_data(l);
   if (json::get_bool(args, "reopen", false)) {
     // The person's own reopening: only a never is reopened (to unknown, so the question may come again).
@@ -510,6 +575,32 @@ Result<Reply> op_never(const Env& e, const Json& args) {
   std::string head = e.say(todo.empty() ? "profile_never_already" : "profile_never_done", Json{{"what", fields_text(e, l, todo)}, {"count", todo.size()}});
   if (!erases.empty()) head += "\n" + e.say("profile_erased", Json{{"fields", fields_text(e, l, erases)}});
   return next_reply(e, l, head, data);
+}
+
+// The question that is next, nothing written (a conversation asks it after a confirmation or a refusal).
+Result<Reply> op_next(const Env& e, const Json& args) {
+  LOOM_TRY_ASSIGN(auto l, load(e, args, false));
+  return next_reply(e, l, std::string(), base_data(l));
+}
+
+std::string trim_typed(std::string t) {
+  static const std::string drop = " \t\r\n.,;:!?\"'";
+  while (!t.empty() && drop.find(t.front()) != std::string::npos) t.erase(t.begin());
+  while (!t.empty() && drop.find(t.back()) != std::string::npos) t.pop_back();
+  return t;
+}
+
+// The operation a whole message stands for when it is exactly one of the control words (pack chat_ops, profile.words), else empty.
+std::string control_op(const Env& e, const std::string& text) {
+  const std::string typed = trim_typed(e.fold(text));
+  if (typed.empty() || !e.words.is_object()) return std::string();
+  for (auto it = e.words.begin(); it != e.words.end(); ++it) {
+    const Json* list = json::find(it.value(), e.lang);
+    if (!list || !list->is_array()) continue;
+    for (const auto& w : *list)
+      if (w.is_string() && trim_typed(e.fold(w.get<std::string>())) == typed) return it.key();
+  }
+  return std::string();
 }
 
 Result<Reply> op_status(const Env& e, const Json& args) {
@@ -556,19 +647,46 @@ Result<Reply> op_status(const Env& e, const Json& args) {
 
 }  // namespace
 
+static Result<Reply> dispatch(const Env& e, const Json& args, const std::string& op);
+
 Result<Reply> interview(const Env& e, const Json& args) {
-  if (!args.is_object()) return err(Errc::InvalidArgument, e.say("profile_op_unknown", Json{{"op", ""}}));
+  if (!args.is_object()) return err(Errc::InvalidArgument, e.say("profile_op_unknown", Json::object()));
   LOOM_TRY_ASSIGN(auto mode, refuse_mode(e, args));
   (void)mode;
-  const std::string op = json::get_string(args, "op", "status");
+  std::string op = json::get_string(args, "op", "status");
+  Json call = args;
+  if (op == "say") {
+    // A free message of the person in the interview: a control word is that operation, anything else answers the question asked now.
+    const std::string text = json::get_string(args, "text");
+    if (text.empty()) return err(Errc::InvalidArgument, e.say("profile_no_text", Json::object()));
+    const std::string control = control_op(e, text);
+    op = control.empty() ? "answer" : control;
+    call["op"] = op;
+  }
+  auto done = dispatch(e, call, op);
+  // A scenario stored before the questions "how many" and the remarks existed is a state the person decides about, not a dead end: the refresh is
+  // proposed (profile.confirm kind scenario asks first; the answers stay) and nothing is changed here.
+  if (!done && done.error().code == Errc::Unsupported && op != "start") {
+    LOOM_TRY_ASSIGN(auto l, load(e, args, false));
+    Json data = base_data(l);
+    data["written"] = false;
+    data["scenario_old"] = true;
+    data["proposal"] = proposal_of(e, "scenario", Json{{"user_id", l.user}}, e.say("profile_scenario_refresh_title", Json::object()));
+    return Reply{e.say("profile_scenario_old", Json::object()) + "\n" + e.say("profile_scenario_refresh_ask", Json::object()), data};
+  }
+  return done;
+}
+
+static Result<Reply> dispatch(const Env& e, const Json& args, const std::string& op) {
   if (op == "start") return op_start(e, args);
+  if (op == "next") return op_next(e, args);
   if (op == "answer") return op_answer(e, args);
   if (op == "review") return op_review(e, args);
   if (op == "skip") return op_skip(e, args);
   if (op == "decline") return op_decline(e, args);
   if (op == "never") return op_never(e, args);
   if (op == "status") return op_status(e, args);
-  return err(Errc::InvalidArgument, e.say("profile_op_unknown", Json{{"op", op}}));
+  return err(Errc::InvalidArgument, e.say("profile_op_unknown", Json::object()));
 }
 
 Result<Reply> show(const Env& e, const Json& args) {
@@ -645,8 +763,8 @@ Result<Reply> set(const Env& e, const Json& args) {
   const Json* f = field_of(l, slot);
   if (!f) return err(Errc::NotFound, e.say("profile_unknown_slot", Json{{"slot", slot}}));
   const std::string topic = topic_of(e, l, slot);
-  if (json::get_string(*f, "status") == "never") return err(Errc::Auth, e.say("profile_never_blocked", Json{{"topic", topic}, {"slot", slot}}));
-  if (f->contains("setting_key")) return err(Errc::InvalidArgument, e.say("profile_set_level_slot", Json{{"slot", slot}, {"setting", json::get_string(*f, "setting_key")}}));
+  if (json::get_string(*f, "status") == "never") return err(Errc::Auth, e.say("profile_never_blocked", Json{{"topic", topic}}));
+  if (f->contains("setting_key")) return err(Errc::InvalidArgument, e.say("profile_set_level_slot", Json::object()));
   const std::string cid = gen_id("iv_");
   // The person typed it and confirmed through the gate: answer and confirmation in one, provenance user_stated; the history is the store's own.
   LOOM_TRY(write(e, l, Json{{"op", "answer"}, {"id", cid}, {"field", slot}, {"value", *given}, {"provenance", "user_stated"}}));
@@ -705,9 +823,9 @@ Result<Reply> confirm(const Env& e, const Json& args) {
                                                   Json{{"fields", fields_text(e, l, fields)}, {"count", fields.size()}});
       } else if (!p.value("at_limit", false) && p.contains("to") && p["to"].is_string()) {
         if (auto st = e.set_setting("profile_detail_level", p["to"]); !st)
-          return err(st.error().code, e.say("profile_level_not_stored", Json{{"level", json::get_string(p, "to")}, {"setting", "profile_detail_level"}, {"reason", st.error().message}}));
+          return err(st.error().code, e.say("profile_level_not_stored", Json{{"level", level_word(e, l, json::get_string(p, "to"))}, {"reason", st.error().message}}));
         applied.push_back(Json{{"setting", "profile_detail_level"}, {"from", p.value("from", Json(nullptr))}, {"to", p["to"]}});
-        out += (out.empty() ? "" : "\n") + e.say("profile_confirmed_level", Json{{"from", json::get_string(p, "from")}, {"to", json::get_string(p, "to")}});
+        out += (out.empty() ? "" : "\n") + e.say("profile_confirmed_level", Json{{"from", level_word(e, l, json::get_string(p, "from"))}, {"to", level_word(e, l, json::get_string(p, "to"))}});
       }
     }
     if (!erased.empty()) out += "\n" + e.say("profile_erased", Json{{"fields", fields_text(e, l, erased)}});
@@ -718,7 +836,18 @@ Result<Reply> confirm(const Env& e, const Json& args) {
     if (out.empty()) out = e.say("profile_remark_already", Json::object());
     return Reply{out, data};
   }
-  return err(Errc::InvalidArgument, e.say("profile_confirm_kind", Json{{"kind", kind}}));
+  if (kind == "scenario") {
+    // The explicit refresh of a stored scenario that is older than this program (update_pack, forward only): the answers stay, the person said yes.
+    LOOM_TRY_ASSIGN(auto pack, onboarding::builtin_pack());
+    LOOM_TRY_ASSIGN(auto scenario, onboarding::builtin_scenario());
+    auto r = OnboardingStore(e.db).update_pack(l.user, l.rev, pack, scenario);
+    if (!r) return r.error();
+    data["revision"] = std::to_string(r->at("revision").get<std::int64_t>());
+    data["written"] = true;
+    data["scenario_refreshed"] = true;
+    return Reply{e.say("profile_scenario_refreshed", Json::object()), data};
+  }
+  return err(Errc::InvalidArgument, e.say("profile_confirm_kind", Json::object()));
 }
 
 }  // namespace loom::actions::profile

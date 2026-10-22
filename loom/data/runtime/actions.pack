@@ -14164,7 +14164,7 @@
         "kind": "atomic",
         "status": "implemented",
         "title": "Get to know you (interview)",
-        "description": "The interview of the person as a form, without a model and without anything leaving the device. op: start (opens the profile, asks how many questions you want to hear), answer (slot + text: a remark such as 'do not ask about health' is read first and only PROPOSED, the answer is otherwise stored as waiting for your yes), review (the card of the section, to be confirmed with profile.confirm), skip (a section, for this session only), decline ('not now': not asked again), never (a slot or a category: not asked and not guessed; reopen=true reopens, erase=true allows erasing stored answers), status (progress). Every answer says what is asked next. The model path is not available: mode=model is refused with the reason.",
+        "description": "The interview of the person as a form, without a model and without anything leaving the device. op: start (opens the profile and a conversation for the interview - its first message is the question about how many questions you want to hear - unless in_conversation is false), say (text: a free message of the person; an exact control word is that operation, anything else answers the question asked now), next (the question that is asked next, nothing written), answer (slot + text: a remark such as 'do not ask about health' is read first and only PROPOSED, the answer is otherwise stored as waiting for your yes), review (the card of the section, to be confirmed with profile.confirm), skip (a section, for this session only), decline ('not now': not asked again), never (a slot or a category: not asked and not guessed; reopen=true reopens, erase=true allows erasing stored answers), status (progress). Every answer says what is asked next. The model path is not available: mode=model is refused with the reason.",
         "why": {
           "pl": "Wywiad o Tobie jako formularz: bez modelu i bez wysyłania czegokolwiek poza urządzenie. Pyta, ile pytań chcesz usłyszeć, zapisuje Twoje odpowiedzi, szanuje „nie teraz” i „nigdy”."
         },
@@ -14201,8 +14201,8 @@
             "type": "string",
             "required": false,
             "description": {
-              "en": "start, answer, review, skip, decline, never or status (default: status).",
-              "pl": "start, answer, review, skip, decline, never albo status (domyślnie: status)."
+              "en": "start, say, next, answer, review, skip, decline, never or status (default: status).",
+              "pl": "start, say, next, answer, review, skip, decline, never albo status (domyślnie: status)."
             },
             "has_default": false,
             "edit": "free_text"
@@ -14289,8 +14289,8 @@
             "type": "string",
             "required": false,
             "description": {
-              "en": "The conversation the interview runs in (reserved: the conversation flow is the next package).",
-              "pl": "Rozmowa, w której toczy się wywiad (zarezerwowane: przepływ w rozmowie to następna paczka)."
+              "en": "The conversation the interview runs in: an empty one becomes the interview; none given opens a new one.",
+              "pl": "Rozmowa, w której toczy się wywiad: pusta zostaje wywiadem; bez niej otwieram nową."
             },
             "has_default": false,
             "edit": "free_text"
@@ -14324,6 +14324,17 @@
             "description": {
               "en": "Language of the words and of the questions (en, pl); default: the language of the run.",
               "pl": "Język słów i pytań (en, pl); domyślnie język uruchomienia."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "in_conversation",
+            "type": "boolean",
+            "required": false,
+            "description": {
+              "en": "true (default): start opens the conversation of the interview; false: only the form answers.",
+              "pl": "true (domyślnie): start otwiera rozmowę wywiadu; false: odpowiada sam formularz."
             },
             "has_default": false,
             "edit": "free_text"
@@ -14576,7 +14587,7 @@
         "kind": "atomic",
         "status": "implemented",
         "title": "Confirm what I understood",
-        "description": "Applies what the interview proposed after you confirm: kind=remark (text: the remark, for example 'do not ask about health' - closes the topic, may raise or lower the level) or kind=section (the card of a section: confirmed or rejected). Anything that erases stored answers was named in the proposal.",
+        "description": "Applies what the interview proposed after you confirm: kind=remark (text: the remark, for example 'do not ask about health' - closes the topic, may raise or lower the level) kind=section (the card of a section: confirmed or rejected) or kind=scenario (refreshes a stored interview scenario that is older than the program; the answers stay). Anything that erases stored answers was named in the proposal.",
         "why": {
           "pl": "Zapisuje to, co wywiad zaproponował, po Twoim potwierdzeniu: uwagę (na przykład „nie pytaj o zdrowie”) albo kartę sekcji."
         },

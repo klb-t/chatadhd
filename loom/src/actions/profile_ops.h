@@ -21,14 +21,21 @@ struct Env {
   std::function<std::string(const std::string&)> fold;              // letters folded for comparing the person's words
   std::function<Json(const std::string&)> get_setting;
   std::function<Status(const std::string&, const Json&)> set_setting;
+  // K2b-2: the control words of the interview held in a conversation (pack chat_ops, profile.words: op -> language -> words) and an optional
+  // listener for what a client wants to hear about (conv_created); both may stay empty.
+  Json words = Json::object();
+  std::function<void(const std::string&, const Json&)> announce;
 };
+
+// The id of the flow a conversation carries in its metadata when it is the interview (conversations.metadata.flow).
+inline constexpr const char* kFlow = "profile.interview";
 
 struct Reply {
   std::string text;
   Json data;
 };
 
-Result<Reply> interview(const Env& env, const Json& args);  // op: start|answer|review|skip|decline|never|status
+Result<Reply> interview(const Env& env, const Json& args);  // op: start|answer|say|next|review|skip|decline|never|status
 Result<Reply> show(const Env& env, const Json& args);       // read only
 Result<Reply> set(const Env& env, const Json& args);        // gated: confirm:profile.set
 Result<Reply> confirm(const Env& env, const Json& args);    // gated: confirm:profile.confirm (a remark or a section card)

@@ -1,5 +1,6 @@
 // input.route_intent: message or command (R54). Data: runtime profile intent_routing, `phrases` on actions.
 #include "loom/chat_route.h"
+#include "profile_ops.h"
 
 #include <algorithm>
 #include <cmath>
@@ -1905,6 +1906,8 @@ Result<std::string> add_message(Runtime& rt, const std::string& conv_id, const s
   nm.role = role;
   nm.metadata = std::move(metadata);
   if (!model.empty()) nm.model = model;
+  // One step under the database lock: the background analysis never sees the answer of the system as a pending message of the person.
+  auto lock = rt.db().lock();
   LOOM_TRY_ASSIGN(std::string id, rt.db().create_msg(nm));
   if (role == "user") {
     rt.bus().emit(events::kMsgCreated, Json{{"id", id}, {"text", text}, {"conv_id", conv_id}, {"role", "user"}});
@@ -2642,6 +2645,8 @@ struct Settled {
   std::string conv_id;    // set when the answer is said in a conversation other than the one asked in (the run deleted that one)
 };
 
+Status interview_after_settle(Runtime& rt, const std::string& conv_id, const Json& proposal, const std::string& status, Json& payload);  // below, with the interview
+
 // Settles the proposal that waits in `proposal_msg` with the answer `run` came back with: its status, the reply (the result, the
 // definition written, or the acknowledgement of a no with the offer to send the sentence as a message), the follow-ups. Shared by the
 // typed yes/no (`user_id` = the user's answer message) and the clients' confirm call (`user_id` empty).
@@ -2755,6 +2760,9 @@ Result<Settled> settle_answer(Runtime& rt, Data& d, const std::string& conv_in, 
     const std::string action = run->value("request", Json::object()).value("action", "");
     if (Json follow = offer_growth(rt, d, conv_id, cause, action, lang); !follow.is_null()) payload["follow_up"] = follow;
   }
+  // The interview in a conversation goes on after the answer: the next question follows a confirmation and a refusal alike.
+  if (auto st = interview_after_settle(rt, conv_id, proposal, new_status, payload); !st)
+    log::write(log::Level::Debug, "loom.chat_route", "the next question of the interview could not be posted: " + st.error().message);
   out.assistant_id = assistant_id;
   out.payload = payload;
   return out;
@@ -2908,6 +2916,150 @@ Result<Json> offer(Runtime& rt, const OfferRequest& request) {
   return Json{{"message_id", reply.assistant_id}, {"proposal", reply.payload.value("proposal", Json(nullptr))}};
 }
 
+namespace {
+
+// ── the interview in the conversation (K2b-2) ───────────────────────
+// A conversation whose metadata.flow is profile.interview is answered by the interview and never by the model: the person's text is stored as the
+// user message (its analysis marked done at once: the answers are private and no worker reads them), the action profile.interview (op say) answers,
+// and what it proposes - a remark understood, the card of a finished section, the refresh of an old scenario - is offered as an ordinary proposal of
+// profile.confirm, so the yes or no, the receipt and the block of the web page are the ones every proposal has. FORM MODE only.
+
+bool is_interview(Runtime& rt, const std::string& conv_id, Json* metadata = nullptr) {
+  if (conv_id.empty()) return false;
+  auto cv = rt.db().get_conv(conv_id);
+  if (!cv || !*cv || json::get_string((*cv)->metadata, "flow") != actions::profile::kFlow) return false;
+  if (metadata) *metadata = (*cv)->metadata;
+  return true;
+}
+
+// The proposal of the interview that still waits for a yes or a no: the newest message that carries one, when nothing but held words (the person's
+// text that was not taken, the reminder that the proposal waits) came after it. It stays answerable until it is settled.
+std::optional<Message> waiting_interview_proposal(Runtime& rt, const std::string& conv_id) {
+  auto all = rt.db().get_msgs(conv_id);
+  if (!all) return std::nullopt;
+  for (auto it = all->rbegin(); it != all->rend(); ++it) {
+    const Json held = it->metadata.is_object() ? it->metadata.value("interview", Json::object()) : Json::object();
+    const std::string kind = held.is_object() ? json::get_string(held, "kind") : std::string();
+    if (kind == "held" || kind == "waiting") continue;
+    if (it->role == "assistant" && it->metadata.is_object() && it->metadata.contains("action_proposal") &&
+        json::get_string(it->metadata["action_proposal"], "status") == "pending" && !json::get_string(it->metadata["action_proposal"], "run_id").empty())
+      return *it;
+    break;
+  }
+  return std::nullopt;
+}
+
+Result<std::string> add_private_message(Runtime& rt, const std::string& conv_id, const std::string& role, const std::string& text, Json metadata) {
+  NewMessage nm;
+  nm.conv_id = conv_id;
+  nm.text = text;
+  nm.role = role;
+  if (role == "assistant") nm.model = "loom:actions";
+  nm.metadata = std::move(metadata);
+  auto lock = rt.db().lock();  // created and marked as analysed in one step; no event is emitted for it
+  LOOM_TRY_ASSIGN(std::string id, rt.db().create_msg(nm));
+  MsgPatch patch;
+  patch.semantic_status = "done";
+  LOOM_TRY(rt.db().update_msg(id, patch));
+  return id;
+}
+
+struct InterviewAnswer {
+  bool ok = false;
+  std::string text;
+  Json data = Json::object();
+};
+
+InterviewAnswer interview_call(Runtime& rt, const std::string& lang, const std::string& user, Json args) {
+  args["locale"] = lang;
+  if (!user.empty()) args["user_id"] = user;
+  InterviewAnswer a;
+  auto run = rt.actions().invoke("profile.interview", args);
+  if (!run) {
+    a.text = run.error().message;
+    return a;
+  }
+  if (json::get_string(*run, "status") != "completed") {
+    const Json err = run->value("error", Json::object());
+    a.text = err.value("message", json::get_string(*run, "status"));
+    return a;
+  }
+  a.ok = true;
+  const Json result = run->value("result", Json::object());
+  for (const auto& part : result.value("parts", Json::array()))
+    if (json::get_string(part, "kind") == "text") {
+      auto t = actions::part_text(&rt.blobs(), part);
+      a.text += (a.text.empty() ? "" : "\n\n") + (t ? *t : json::get_string(part, "preview"));
+    }
+  a.data = result.value("data", Json::object());
+  if (!a.data.is_object()) a.data = Json::object();
+  return a;
+}
+
+// One answer of the interview as a message of the conversation: a proposal when it carries one, else plain words.
+Result<Json> post_interview(Runtime& rt, const std::string& conv_id, const std::string& lang, const InterviewAnswer& a) {
+  const Json proposal = a.data.value("proposal", Json(nullptr));
+  Json meta{{"routed", "interview"}, {"interview", Json{{"kind", proposal.is_object() ? "proposal" : "reply"}, {"question", a.data.value("question", Json(nullptr))}, {"mode", "form"}}}};
+  if (proposal.is_object()) {
+    OfferRequest request;
+    request.conv_id = conv_id;
+    request.action = json::get_string(proposal, "action", "profile.confirm");
+    request.lang = lang;
+    request.args = proposal.value("with", Json::object());
+    request.texts = Json{{lang, a.text}};
+    request.meta = meta;
+    auto offered = offer(rt, request);
+    if (offered) return Json{{"message_id", offered->value("message_id", "")}, {"proposal", offered->value("proposal", Json(nullptr))}};
+    log::write(log::Level::Debug, "loom.chat_route", "the interview could not make its proposal: " + offered.error().message);
+  }
+  LOOM_TRY_ASSIGN(std::string id, add_private_message(rt, conv_id, "assistant", a.text, meta));
+  return Json{{"message_id", id}, {"proposal", nullptr}};
+}
+
+Result<Outcome> interview_turn(Runtime& rt, Data& d, const std::string& conv_id, const std::string& text,
+                               const std::function<void(const std::string&, const std::string&)>& emit_start) {
+  Json conv_meta;
+  is_interview(rt, conv_id, &conv_meta);
+  const std::string lang = json::get_string(conv_meta, "lang", "en");
+  const std::string user = json::get_string(conv_meta, "user_id");
+  // A proposal of the interview waits for a yes or a no: any other words are not guessed into an answer.
+  const bool waiting = waiting_interview_proposal(rt, conv_id).has_value();
+  LOOM_TRY_ASSIGN(std::string user_id, add_private_message(rt, conv_id, "user", text, Json{{"routed", "interview"}, {"interview", Json{{"kind", waiting ? "held" : "answer"}}}}));
+  if (emit_start) emit_start(conv_id, user_id);
+  (void)rt.chat().load_conv(conv_id);
+  if (waiting) {
+    const std::string said = say(d.cfg, lang, "interview_waiting");
+    LOOM_TRY_ASSIGN(std::string id, add_private_message(rt, conv_id, "assistant", said, Json{{"routed", "interview"}, {"interview", Json{{"kind", "waiting"}}}}));
+    return finish(conv_id, user_id, id, said, "action_result", Json::object());
+  }
+  InterviewAnswer a = interview_call(rt, lang, user, Json{{"op", "say"}, {"text", text}});
+  // The last question of a section is answered: the card to confirm comes instead of the next section's question (that one follows the yes or no).
+  if (a.ok && !a.data.value("proposal", Json(nullptr)).is_object() && a.data.contains("section_done") && a.data["section_done"].is_string()) {
+    InterviewAnswer card = interview_call(rt, lang, user, Json{{"op", "review"}, {"section", a.data["section_done"]}});
+    if (card.ok && card.data.value("proposal", Json(nullptr)).is_object()) a = std::move(card);
+  }
+  LOOM_TRY_ASSIGN(Json posted, post_interview(rt, conv_id, lang, a));
+  const std::string assistant_id = posted.value("message_id", "");
+  Json payload = Json::object();
+  const bool proposed = posted.value("proposal", Json(nullptr)).is_object();
+  if (proposed) payload["proposal"] = posted["proposal"];
+  return finish(conv_id, user_id, assistant_id, a.text, proposed ? "action_proposal" : "action_result", payload);
+}
+
+Status interview_after_settle(Runtime& rt, const std::string& conv_id, const Json& proposal, const std::string& status, Json& payload) {
+  if (json::get_string(proposal, "action") != "profile.confirm" || (status != "executed" && status != "rejected")) return {};
+  Json conv_meta;
+  if (!is_interview(rt, conv_id, &conv_meta)) return {};
+  const std::string lang = json::get_string(conv_meta, "lang", "en");
+  InterviewAnswer next = interview_call(rt, lang, json::get_string(conv_meta, "user_id"), Json{{"op", "next"}});
+  if (!next.ok) return Error(Errc::Unavailable, next.text);
+  LOOM_TRY_ASSIGN(Json posted, post_interview(rt, conv_id, lang, next));
+  payload["next_message_id"] = posted.value("message_id", "");
+  return {};
+}
+
+}  // namespace
+
 Result<Outcome> handle(Runtime& rt, const std::string& text, const ChatOptions& opts, const Json& request,
                        const std::function<void(const std::string&, const std::string&)>& emit_start) {
   Outcome none;
@@ -2941,7 +3093,9 @@ Result<Outcome> handle(Runtime& rt, const std::string& text, const ChatOptions& 
     return composer_action(rt, d, conv_id, text, forced, opts, request, emit_start);
 
   const std::string method = effective_method(rt, d, request);
-  if (method == "off") return none;
+  // The conversation of the interview (K2b-2) is answered by the interview whatever the routing method says: its words never go to the model.
+  const bool in_interview = is_interview(rt, conv_id);
+  if (method == "off" && !in_interview) return none;
   // An explicit chat feature (attachments, a re-send with the usage confirmation, ...) is a message.
   for (const auto& field : strings_of(json::find(d.cfg, "message_request_fields"))) {
     const Json* v = json::find(request, field);
@@ -2951,6 +3105,13 @@ Result<Outcome> handle(Runtime& rt, const std::string& text, const ChatOptions& 
   }
   if (opts.attachments.size() || opts.active_task_spec || opts.knowledge_context || opts.web_search || opts.deep_research || opts.usage_confirmation) return none;
 
+  // 1a. The interview's proposal that waits (held words may have come after it): the yes or the no settles it.
+  if (in_interview) {
+    if (auto waiting = waiting_interview_proposal(rt, conv_id)) {
+      const std::string answer = classify_answer(d, text);
+      if (!answer.empty()) return answer_proposal(rt, d, conv_id, *waiting, answer, text, emit_start);
+    }
+  }
   // 1. The answer to a proposal that waits as the last thing said in this conversation, or to the offer made in the last reply.
   if (!conv_id.empty()) {
     if (auto tail = rt.db().get_msgs_page(conv_id, 1); tail && !tail->messages.empty()) {  // Perf (P19): the last message only
@@ -2978,6 +3139,9 @@ Result<Outcome> handle(Runtime& rt, const std::string& text, const ChatOptions& 
       }
     }
   }
+
+  // 1b. The interview in a conversation: the words are its answer (or a remark, or a control word); the model does not take part.
+  if (in_interview) return interview_turn(rt, d, conv_id, text, emit_start);
 
   // 2. Message or command.
   Json route_request{{"text", text}, {"conv_id", conv_id}};
