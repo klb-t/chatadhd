@@ -1,7 +1,14 @@
-# Kolejka S1 — stan 2026-10-22 12:45 UTC
+# Kolejka S1 — stan 2026-10-22 13:00 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
+
+## FLAKE-1 GOTOWE (12:55 UTC, `1ee7a6c8` na `claude/m1-w0`): przyczyna losowego „Ustawienia się nie otwierają” POTWIERDZONA i naprawiona — bramka lokalna `flake1` w toku (start 12:56)
+Agent Sonnet (`wf_155e0bcd-15a`, 39 wywołań, 170 tys. tokenów, 19 min). Hipoteza S1 z analizy statycznej potwierdzona: stary `LayerStack` pamiętał JEDNO oczekiwanie na własne `history.back()` i uznawał popstate za „własny” tylko przez 1000 ms; spóźniony popstate (obciążony WebView/emulator) po otwarciu nowej warstwy był czytany jak „Wstecz”
+użytkownika i zamykał świeże menu/panel. **Poprawka (`0837aa2f`):** pamięta KAŻDE własne cofnięcie (`inflight`, `top`), klasyfikuje popstate po głębokości (własny, jeśli `1 ≤ top−depth ≤ inflight`), a nie po wieku; `backTimeoutMs` (1000) tylko mówi, kiedy stos przestaje czekać; nowa opcja `forgetBackAfterMs` (preset: nigdy).
+Dotyczy wszystkich warstw (menu, szuflada, arkusze, panele, karty, ścieżka nawigatora, grupa ustawień). Dowody: test jednostkowy (6 nowych przypadków, 5 czerwonych na starym kodzie); e2e `m1-history-native.mjs` (30 rund w kształcie sterownika S2 z podkładką opóźniającą `history.back` 2000 ms): na starym kodzie czerwony w rundzie 2
+(„grupa zamknęła się sama 99 ms po otwarciu”), na nowym zielony 2× po 30 rund. Nie sprawdzone: emulator (to S2), przeglądarki inne niż Chromium. Jedna niezreprodukowana awaria `m1-navigator-native` („fetch failed: other side closed”) — rerun zielony.
+FF `main` ← `1ee7a6c8` po zielonej bramce `flake1` I po końcu CI 269 (kontrola 13:57). Potem smoke S2 na tym buildzie i APK v2.
 
 ## CI 268 (`d0ea24cb`) = SUCCESS (12:17); S2 smoke 39768779032 na `4a454783` (= d0ea24cb + sterownik): „Pokaż w grafie” DZIAŁA na 3 profilach emulatora; 1 losowa porażka „Ustawienia nie otwierają się” na 2 profilach → FLAKE-1
 `main` = `b1b34f17` (K1c-4, bramka `k1c4` zielona 12:35) od 12:35, CI 269 (id 39779614521) w toku, kontrola ≈ 13:55. S2: wynik 42/0/0 (pixel_6 1.0), 41/1/0 (pixel_5 1.0, pixel_6 1.3); drugi raz losowy krok „panel Ustawienia nie zostaje otwarty”.
