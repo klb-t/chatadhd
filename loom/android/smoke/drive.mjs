@@ -613,6 +613,25 @@ const serverChecks = [
     }
     return `${before} -> ${before + 1} conversations`;
   }],
+  // M1-W1a: under an answer the line "Kontekst: … — zobacz" opens "Co wysłaliśmy"; one step "Szerzej" changes only the next message
+  ["context: the line under an answer opens Co wysłaliśmy; a step for next time", async () => {
+    await until("the context line under the last answer", () => has("context-line-open"), 30, 400);
+    const line = await page.ev(`(()=>{const l=[...document.querySelectorAll('[data-testid="context-line"]')].pop();return (l&&l.innerText||'').replace(/\\s+/g,' ')})()`);
+    await page.ev(`[...document.querySelectorAll('[data-testid="context-line-open"]')].pop().click()`);
+    await until("the sheet with the receipt", () => page.ev(`${q("context-receipt")}?.getAttribute('data-state')`).then(v => (v === "receipt" || v === "missing" || v === "failed") && v), 30, 300)
+      .then(async st => { if (st !== "receipt") throw new Error(`the sheet says ${st}: ${(await textTid("context-receipt")).replace(/\s+/g, " ").slice(0, 200)}`); });
+    const header = await textTid("context-receipt-header").catch(() => "");
+    const disclaimer = await textTid("context-receipt-disclaimer").catch(() => "");
+    shot("context-receipt");
+    let step = "no step button";
+    if (await has("receipt-step-wider")) {
+      await click("receipt-step-wider");
+      const kind = await until("the step's result", () => page.ev(`${q("receipt-modify-result")}?.getAttribute('data-kind')`), 30, 300);
+      step = `Szerzej -> ${kind}: "${(await textTid("receipt-modify-result")).replace(/\s+/g, " ").slice(0, 160)}"`;
+    }
+    await click("context-receipt-close"); await waitGone("context-receipt", 10);
+    return `line "${line.slice(0, 120)}"; header "${header.replace(/\s+/g, " ").slice(0, 200)}"; "${disclaimer.trim()}"; ${step}`;
+  }],
   ["chat command: przetłumacz -> proposal -> confirm", async () => {
     await send("Przetłumacz tę rozmowę na niemiecki");
     await waitTid("chat-action-proposal", 90);
