@@ -254,6 +254,7 @@ jobs:
           npm run test:m1-settings
           npm run test:m1-context-sent
           npm run test:m1-context-menu
+          npm run test:m1-history
           npm run test:chat-first
           npm run test:composer-menu-browser
           npm run test:workspace
