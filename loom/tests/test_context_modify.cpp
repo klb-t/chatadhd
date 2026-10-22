@@ -247,4 +247,79 @@ TEST_SUITE("context_modify") {
     CHECK(guard["confirmed"] == true);
     CHECK_FALSE(guard.contains("unknown_reason"));
   }
+
+  // M1-K1c1: the owner saw two numbers for ONE widened request - the estimate after "Szerzej" (about 1.1x) and the guard of the receipt after the send
+  // (1.8x). Measured here (graph of 12 earlier conversations, widened = the graph width x2, 6 sends so that the base is a measured one):
+  //   estimate with text "" (what context.modify compiled until K1c1): 1394 bytes = 0.87x of the base 1593.5 (measured, 6 samples) - the same as the
+  //                                                           request without "wider": the graph is chosen by the text of the question, an empty
+  //                                                           text selects nothing, so the widening had nothing to widen;
+  //   the same request with the text of the send:              1960 bytes = 1.23x of the same base;
+  //   guard in the receipt of the send (text + 1 byte):        1961 bytes = 1.23x of the same base (baseline, samples and source equal).
+  // The base is the same at both moments; it moves only by the send itself (one more sample), and until 5 requests were measured it is a starting floor.
+  TEST_CASE("M1-K1c1 (a): the estimate compiled with the text of the send says what the receipt says; without a text it is another request; the base is named and moves only by a send") {
+    Fixture f;
+    auto topic = unwrap(f.rt->db().get_or_create_node("tech", "topic"));
+    for (int k = 0; k < 12; ++k) {
+      auto old_conv = unwrap(f.rt->db().create_conv("Old conversation " + std::to_string(k)));
+      NewMessage nm; nm.conv_id = old_conv.id; nm.text = "we discussed the database and the API design, variant " + std::to_string(k) + " of the server code"; nm.role = "assistant";
+      unwrap(f.rt->db().create_link(unwrap(f.rt->db().create_msg(nm)), topic, "tagged_with", 0.5));
+    }
+    for (int i = 0; i < 6; ++i) f.add(i % 2 ? "assistant" : "user", "message number " + std::to_string(i) + " about the database and API of the plan");
+    f.rt->config().set("graph_memory_max_nodes", 2);
+    ChatOptions opts;
+    opts.conv_id = f.conv_id;
+    opts.stream = false;
+    const auto send = [&](const std::string& text) {
+      f.transport->expect("POST", "https://api.test/chat/completions", net::ScriptedTransport::Reply::json(200, openai_reply("ok")));
+      unwrap(f.rt->chat().send(text, opts));
+      Json trace = nullptr;
+      for (const auto& m : unwrap(f.rt->db().get_msgs(f.conv_id)))
+        if (m.role == "user" && m.text == text && m.metadata.is_object() && m.metadata.contains("context_trace")) trace = m.metadata["context_trace"];
+      REQUIRE(trace.is_object());
+      return trace["receipt"].value("guard", Json(nullptr));
+    };
+    // the first request has no base, the next ones are measured against a starting floor, from the fifth sample on against what the requests of the kind measured: named in the guard
+    for (int i = 0; i < 5; ++i) {
+      const Json g = send("an earlier question number " + std::to_string(i) + " about the database");
+      INFO(g.dump());
+      if (i == 0) { CHECK(g["baseline"].is_null()); continue; }   // nothing was measured yet: no base, said as unknown
+      CHECK(g["baseline_source"] == "floor");
+      CHECK(g["baseline_samples"] == i);   // the samples the request was compared with: the ones before it
+    }
+    const std::string text = "and the database API server code again?";
+    const Json wider = Json{{"context.breadth_delta", "wider"}};
+    const Json plain_empty = unwrap(f.rt->chat().context_guard(f.conv_id, "", opts));
+    const Json wider_empty = unwrap(f.rt->chat().context_guard(f.conv_id, "", opts, wider));
+    const Json plain_text = unwrap(f.rt->chat().context_guard(f.conv_id, text, opts));
+    const Json est = unwrap(f.rt->chat().context_guard(f.conv_id, text, opts, wider));
+    INFO(wider_empty.dump());
+    INFO(est.dump());
+    // without a text nothing selects the graph, so widening it changes nothing (this is why the estimate of a change made before the text is typed
+    // cannot be the estimate of the send); with the text it does
+    CHECK(wider_empty["bytes"] == plain_empty["bytes"]);
+    CHECK(est["bytes"].get<std::int64_t>() > plain_text["bytes"].get<std::int64_t>());
+    CHECK(est["bytes"].get<std::int64_t>() > wider_empty["bytes"].get<std::int64_t>());
+    // one base for all of them at this moment
+    for (const Json* g : {&plain_empty, &wider_empty, &plain_text, &est}) {
+      CHECK((*g)["baseline"] == est["baseline"]);
+      CHECK((*g)["baseline_samples"] == est["baseline_samples"]);
+      CHECK((*g)["baseline_source"] == "measured");
+      CHECK((*g)["ratio"].get<double>() == doctest::Approx((*g)["bytes"].get<double>() / (*g)["baseline"].get<double>()));   // the ratio is always bytes over the base it names
+    }
+    // the send: the receipt says what the estimate with the same text said
+    f.rt->chat().turn_carrier().add(f.conv_id, "context.breadth_delta", "wider", true);
+    const Json sent = send(text);
+    INFO(sent.dump());
+    CHECK(sent["bytes"] == est["bytes"]);
+    CHECK(sent["baseline"] == est["baseline"]);
+    CHECK(sent["baseline_samples"] == est["baseline_samples"]);
+    CHECK(sent["baseline_source"] == est["baseline_source"]);
+    CHECK(sent["ratio"].get<double>() == doctest::Approx(est["ratio"].get<double>()));
+    CHECK(sent["asked"] == est["asked"]);
+    // a send in between moves the base by exactly that send - and says so (one sample more), the numbers stay bytes over the base they name
+    const Json after = unwrap(f.rt->chat().context_guard(f.conv_id, text, opts));
+    CHECK(after["baseline_samples"].get<int>() == est["baseline_samples"].get<int>() + 1);
+    CHECK(after["baseline"] != est["baseline"]);
+    CHECK(after["ratio"].get<double>() == doctest::Approx(after["bytes"].get<double>() / after["baseline"].get<double>()));
+  }
 }
