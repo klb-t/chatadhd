@@ -1,7 +1,17 @@
-# Kolejka S1 — stan 2026-10-22 05:30 UTC
+# Kolejka S1 — stan 2026-10-22 06:30 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
+
+## K1c-1 GOTOWE (06:25 UTC, `b15180c8` na `claude/m1-w0`, NIE na `main`): jedna liczba przed i po wysłaniu — bramka lokalna `k1c1` w toku (start 06:25)
+Agent Sonnet (`wf_237e996f-ad3`, 129 wywołań, 276 tys. tokenów, 32 min). **Przyczyna (zmierzona):** szacunek po „Szerzej” był liczony z PUSTYM tekstem (`context.modify` → `context_guard(conv, "", …)`),
+a graf dobiera się po tekście pytania, więc „szerzej” nie miało czego poszerzać: szacunek 1394 B = 0,87× bazy (tyle co bez „szerzej”), a to samo zapytanie z tekstem wysyłki 1960 B = 1,23×, strażnik po wysłaniu 1961 B = 1,23×.
+Baza w obrębie jednego biegu ta sama (ten sam klucz `chat.send|endpoint|model`); porusza ją dopiero wysyłka (+1 próbka), a do 5. próbki to wartość startowa 16000 B (stąd wczesne „0,07×”). Pole to samo (`guard.ratio`), różniły się tylko słowa i brak nazwy bazy.
+**Decyzja:** `context.modify` przyjmuje opcjonalne `pending_text` i `pending_options` (bez nowej trasy API — rejestr bez zmian), odpowiedź ma `estimate_for` (pusta wiadomość / wpisany tekst); jedno zdanie dla szacunku i strażnika z nazwaną bazą
+(„2× zwykłego zapytania do tego modelu (średnia z ostatnich zapytań do tego modelu (liczba zapytań: 7))”); okno pisania przekazuje wpisany tekst i opcje wysyłki. Cofnięcie i przyczyna: `docs/reports/INDEX.md` „S1 / M1-K1c1”. Reguła ×10, złoty plik i schemat paragonu bez zmian.
+**Niedomagania (uczciwie):** załączniki nie liczą się do szacunku („bez załączników” w słowach); arkusz pod odpowiedzią nie zna pola wpisywania, więc jego szacunek jest „dla pustej wiadomości” (powiedziane słowami); zagnieżdżone nawiasy w nazwie bazy (zmiana tylko w paczce słów, jeśli właściciel nie lubi).
+Agent nie uruchomił bramki ani CI. **FF `main` dopiero po zielonej bramce `k1c1` I po końcu biegu CI 264** (push wywołałby nowy bieg i anulował 264 — reguła „nie anulować trwającego CI”).
+Dalej (odstęp ≥ 07:04): K1c-2 — węzły `sent_to_model` z paragonu (odblokowanie „Pokaż w grafie”), potem K1c-3 (cena w paragonie, odczyt nośnika tury).
 
 ## CI 263 (`3b827313`) = failure TYLKO w `asan (g++)`, jeden test `server.keepalive` (05:26) → poprawka `51684e78` na `claude/m1-w0` (na W1c `1cf82c52`); FF `main` po końcu bramki `w1c`
 Job `vendored (clang++)` PRZESZEDŁ (poprawka `.inc` z jawnymi długościami potwierdzona na prawdziwym CI), dev/tsan zielone.

@@ -63,6 +63,7 @@ poprawki po nieudanym podejściu), nie cena tokena — dlatego pomiary w tabeli.
 | K1a (2 agenci: przerwany restartem + kontynuacja) | domyślny (Sonnet) | — | 31→31 % | kontynuacja tak (85 wywołań, 209 tys. tokenów ≈ 12,5 mln rów.) | pierwszy agent stracony przy restarcie kontenera (jego commity i WIP uratowane) |
 | M1-K1b | domyślny (Sonnet) | 2→2 % | 31→32 % | tak (167 wywołań — plan ~50; 397 tys. tokenów ≈ 24 mln rów.) | największy pakiet dnia; przekroczył plan ponad 3× |
 | M1-W1a, W1b, DOC1, W1c (4 agenci jeden po drugim) | domyślny (Sonnet) | — | 32→34 % (00:15→05:26) | W1a, W1b, DOC1, W1c tak (W1b: 156 wywołań, 371 tys. tokenów) | razem z moimi turami, 3 poprawkami CI (klang `.inc`, asan `server.keepalive`, rejestr) i dwiema bramkami lokalnymi; ≈ +2 pkt na 4 pakiety ≈ 0,5 pkt/pakiet |
+| M1-K1c1 (jedna liczba przed i po wysłaniu) | Sonnet (jawnie) | — | 34→? % (05:52→) | tak (1 podejście, bez poprawek po przeglądzie; 129 wywołań, 276 tys. tokenów, 32 min) | pierwszy pakiet z `model: sonnet` ustawionym jawnie; plan ~50 wywołań przekroczony ≈ 2,5× |
 
 ## Na co poszły tokeny S1 dziś (2026-10-21 od 00:00 UTC do 17:50; `tools/usage_report.py`, liczby z pól `usage`, bez treści)
 Tydzień: 3 % (00:14) → 30 % (17:40) = +27 pkt w ≈ 17,5 h na koncie (S1 + S2 + czaty właściciela). Zmierzone dla S1: **566 mln równoważników**
