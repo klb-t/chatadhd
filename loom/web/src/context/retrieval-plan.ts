@@ -56,3 +56,13 @@ export function buildRetrievalPlan(draft: PlanDraft): ChatContextPlan {
   }
   return { id: draft.id, ...(draft.sourceRef.trim() && { source_ref: sourceRef }), theses };
 }
+
+/** M1-W1b: the lines the preview shows over its result - the profile and the changes that wait for the next request - in the words of the strip
+ *  (presentation.context_receipt: preview.*, strip.profile_settings, status.*). The probe text is only the query of the preview; these lines say
+ *  what else the real request carries. `pending` is already in words (shell/context-strip.ts pendingParts). Self-contained: the plan tests load this file alone. */
+export function previewScopeLines(pending: string[], profile: { label: string; status: string } | null, t: (id: string, params?: Record<string, string>) => string): string[] {
+  const word = (id: string, fallback: string) => { const said = t(id); return said === id ? fallback : said; };
+  const shown = profile ? profile.label + (profile.status ? ` (${word(`status.${profile.status}`, profile.status)})` : "") : "";
+  return [profile ? t("preview.profile", { profile: shown }) : t("strip.profile_settings"),
+    pending.length ? t("preview.pending", { what: pending.join(", ") }) : t("preview.pending_none")];
+}

@@ -1247,7 +1247,12 @@ R"loom_onboard(                "empty_title": "How can I help?",
                 "mp_class_unknown": "Class: unknown — {{reason}}",
                 "mp_price": "Price per 1M tokens: {{input}} in, {{output}} out",
                 "mp_price_unknown": "Price: unknown — no price",
-                "mp_change": "Change the model in the + menu, the entry “Choose model”."
+                "mp_change": "Change the model in the + menu, the entry “Choose model”.",
+                "cm_issue_no_step": "“{{name}}” should be a context step but names none",
+                "cm_issue_no_focus": "“{{name}}” should open a graph node but names none",
+                "mp_set_by_window": "Picked in this window and sent with every request (it is not saved in the chain of settings).",
+                "mp_reason_other_model": "this class is that of the model {{model}} of the role “Answer to a message”, not the one picked here",
+                "mp_reason_no_role": "the engine gave no role for answering a message"
               },
               "pl": {
                 "menu_open": "Menu",
@@ -1519,7 +1524,12 @@ R"loom_onboard(                "empty_title": "How can I help?",
                 "mp_class_unknown": "Klasa: nieznana — {{reason}}",
                 "mp_price": "Cena za 1 mln tokenów: {{input}} wejście, {{output}} wyjście",
                 "mp_price_unknown": "Cena: nieznany — brak ceny",
-                "mp_change": "Model zmienisz w menu +, pozycja „Wybierz model”."
+                "mp_change": "Model zmienisz w menu +, pozycja „Wybierz model”.",
+                "cm_issue_no_step": "„{{name}}” ma być krokiem kontekstu, ale nie wskazuje, którym",
+                "cm_issue_no_focus": "„{{name}}” ma otwierać węzeł grafu, ale nie wskazuje którego",
+                "mp_set_by_window": "Wybrany w tym oknie i wysyłany z każdym zapytaniem (nie jest zapisany w łańcuchu ustawień).",
+                "mp_reason_other_model": "ta klasa dotyczy modelu {{model}} roli „Odpowiedź na wiadomość”, nie wybranego tutaj",
+                "mp_reason_no_role": "silnik nie podał roli odpowiedzi na wiadomość"
               }
             }
           }
@@ -1643,12 +1653,14 @@ R"loom_onboard(                "empty_title": "How can I help?",
                     "id": "flow_text_graph",
                     "label": "cm_flow_text_graph",
                     "kind": "node",
-                    "focus": "setting:chat_flow"
+                    "focus": "setting:chat_flow",
+                    "help": "cm_flow_help"
                   },
                   {
                     "id": "preview_request",
                     "label": "cm_preview_request",
-                    "kind": "preview"
+                    "kind": "preview",
+                    "help": "cm_preview_help"
                   },
                   {
                     "id": "memory",
@@ -1906,7 +1918,8 @@ R"loom_onboard(                "empty_title": "How can I help?",
                 "reason.economy_report_unavailable": "the resource economy report cannot be made",
                 "reason.entity_kind_not_configured": "the kind of entity is not configured",
                 "reason.no_device_registry": "no device list",
-                "reason.no_interface_registry": "no interface list",
+)loom_onboard",
+R"loom_onboard(                "reason.no_interface_registry": "no interface list",
                 "reason.pack_file_absent": "the knowledge pack has no such file",
                 "reason.pack_unavailable": "the knowledge pack cannot be read",
                 "reason.profile_unavailable": "the runtime profile cannot be read",
@@ -1920,8 +1933,7 @@ R"loom_onboard(                "empty_title": "How can I help?",
                 "reason.tool_sources_profile_unavailable": "the tool sources profile cannot be read",
                 "reason.worker_profile_unavailable": "the background analysis profile cannot be read",
                 "reason.policy_unavailable": "the model policies cannot be read",
-)loom_onboard",
-R"loom_onboard(                "reason.tasks_table_absent": "no background task has been recorded yet",
+                "reason.tasks_table_absent": "no background task has been recorded yet",
                 "reason.calibration_unavailable": "the items in calibration cannot be listed",
                 "evidence.method.preset": "preset (ROM)",
                 "evidence.method.preset_in_config": "the preset, kept in your settings",
@@ -2736,7 +2748,8 @@ R"loom_onboard(                "reason.tasks_table_absent": "no background task 
                 "modify.declined": "Zostawiono bez zmian.",
                 "modify.busy": "Zmieniam…",
                 "menu.entry": "Co wysłaliśmy",
-                "line.summary": "{{profile}} · pozycji: {{items}} · ~{{tokens}} tok.",
+)loom_onboard",
+R"loom_onboard(                "line.summary": "{{profile}} · pozycji: {{items}} · ~{{tokens}} tok.",
                 "line.profile_none": "ustawienia",
                 "action.steps": "wider,deeper,narrower,shallower",
                 "tokens.short": "{{n}} tok.",
@@ -2751,8 +2764,7 @@ R"loom_onboard(                "reason.tasks_table_absent": "no background task 
                 "strip.full.changes": "Zmiany tylko na nie: {{what}}. Po jego wysłaniu wszystko wraca do ustawień.",
                 "strip.full.no_changes": "Zmian na to zapytanie, o których ten ekran wie, nie ma. Zmiany zrobione w innym oknie widać dopiero w śladzie pod odpowiedzią.",
                 "preview.profile": "Profil następnego zapytania: {{profile}}",
-)loom_onboard",
-R"loom_onboard(                "preview.pending": "Zmiany na następne zapytanie: {{what}}",
+                "preview.pending": "Zmiany na następne zapytanie: {{what}}",
                 "preview.pending_none": "Zmiany na następne zapytanie: brak (o których ten ekran wie)"
               }
             }
@@ -3892,7 +3904,8 @@ R"loom_onboard(                "preview.pending": "Zmiany na następne zapytanie
             "undo_failed": "Nie udało się wycofać ({{reason}}).",
             "status_cancelled": "Anulowane",
             "written_rule": "Reguła zapisana w Twojej własnej nakładce ({{overlay}}) jako „{{id}}”",
-            "undone_rule": "Reguła wyłączona: już nie obowiązuje",
+)loom_onboard",
+R"loom_onboard(            "undone_rule": "Reguła wyłączona: już nie obowiązuje",
             "title_guardian": "Strażnik zauważył coś wartego zapamiętania",
             "guardian_claim": "Co zauważył: {{claim}}",
             "guardian_scope": "Dla: {{scope}}; waga {{weight}} z {{count}} wystąpień, dowód: {{evidence}} Twoich wiadomości",
@@ -3913,8 +3926,7 @@ R"loom_onboard(                "preview.pending": "Zmiany na następne zapytanie
       "key": "presentation.client_step",
       "area": "presentation/client_step",
       "revision": 1,
-)loom_onboard",
-R"loom_onboard(      "label": "Texts of a step the client carries out itself (P13): the controls of a run paused on a device action - record, take a picture, choose a file, read the clipboard, notify, play - and what happened on the device; texts only, they do not change what runs",
+      "label": "Texts of a step the client carries out itself (P13): the controls of a run paused on a device action - record, take a picture, choose a file, read the clipboard, notify, play - and what happened on the device; texts only, they do not change what runs",
       "value": {
         "schema": "loom.presentation_feature/1",
         "feature": "client_step",
@@ -4620,7 +4632,12 @@ R"loom_onboard(      "label": "Texts of a step the client carries out itself (P1
             "mp_class_unknown": "Class: unknown — {{reason}}",
             "mp_price": "Price per 1M tokens: {{input}} in, {{output}} out",
             "mp_price_unknown": "Price: unknown — no price",
-            "mp_change": "Change the model in the + menu, the entry “Choose model”."
+            "mp_change": "Change the model in the + menu, the entry “Choose model”.",
+            "cm_issue_no_step": "“{{name}}” should be a context step but names none",
+            "cm_issue_no_focus": "“{{name}}” should open a graph node but names none",
+            "mp_set_by_window": "Picked in this window and sent with every request (it is not saved in the chain of settings).",
+            "mp_reason_other_model": "this class is that of the model {{model}} of the role “Answer to a message”, not the one picked here",
+            "mp_reason_no_role": "the engine gave no role for answering a message"
           },
           "pl": {
             "menu_open": "Menu",
@@ -4874,7 +4891,8 @@ R"loom_onboard(      "label": "Texts of a step the client carries out itself (P1
             "pv_note": "To żądanie pójdzie z następnym Wyślij, jednorazowo. Zmiany w tekście zmieniają to, co wyślesz; „Odrzuć podgląd” wraca do zwykłego wysyłania.",
             "pv_aria": "Żądanie do wysłania (JSON)",
             "pv_discard": "Odrzuć podgląd",
-            "mp_open": "Skąd ten model? Pokaż pochodzenie",
+)loom_onboard",
+R"loom_onboard(            "mp_open": "Skąd ten model? Pokaż pochodzenie",
             "mp_title": "Model tej rozmowy",
             "mp_close": "Zamknij: model tej rozmowy",
             "mp_loading": "Odczytuję pochodzenie…",
@@ -4892,7 +4910,12 @@ R"loom_onboard(      "label": "Texts of a step the client carries out itself (P1
             "mp_class_unknown": "Klasa: nieznana — {{reason}}",
             "mp_price": "Cena za 1 mln tokenów: {{input}} wejście, {{output}} wyjście",
             "mp_price_unknown": "Cena: nieznany — brak ceny",
-            "mp_change": "Model zmienisz w menu +, pozycja „Wybierz model”."
+            "mp_change": "Model zmienisz w menu +, pozycja „Wybierz model”.",
+            "cm_issue_no_step": "„{{name}}” ma być krokiem kontekstu, ale nie wskazuje, którym",
+            "cm_issue_no_focus": "„{{name}}” ma otwierać węzeł grafu, ale nie wskazuje którego",
+            "mp_set_by_window": "Wybrany w tym oknie i wysyłany z każdym zapytaniem (nie jest zapisany w łańcuchu ustawień).",
+            "mp_reason_other_model": "ta klasa dotyczy modelu {{model}} roli „Odpowiedź na wiadomość”, nie wybranego tutaj",
+            "mp_reason_no_role": "silnik nie podał roli odpowiedzi na wiadomość"
           }
         }
       }
@@ -4905,8 +4928,7 @@ R"loom_onboard(      "label": "Texts of a step the client carries out itself (P1
       "label": "Entries of the + menu next to the message field (attach, model, tools, context, import)",
       "value": {
         "schema": "loom.composer_menu/1",
-)loom_onboard",
-R"loom_onboard(        "note": "Entries of the + menu next to the message field. label/reason name a word of presentation.ui_shell, or are {en, pl}. kind: attach (file picker), camera (photo: the camera on a phone, a picture file elsewhere), model (list of models; the choice is written to the conversation level of the scope chain under default_model, the key the kernel reads), submenu (items), toggle (on until turned off, a chip above the field says so: `field` + `value` = the request field it sets while on, e.g. web_search: true, deep_research: true, reasoning_effort: high, action: agent.run; or `flag` = a switch of this view: memory | knowledge), panel (opens a panel: import | graph | settings), unavailable (visible, with reason). exclusive: turning it on turns off the other field switches (an action takes only the words, no files). needs: settings that must not be empty, else the entry is unavailable with `reason` (and `panel` where they are set). M1-W1b: step (szerzej/głębiej/węziej/płycej: the action context.modify, for the next request only; `step` names the step), profiles (a list of the selector profiles of the effective view; the choice is for the next request only), node (opens the navigator on the address `focus`), preview (the request that goes with the next Send, once; the old Prepare client request button).",
+        "note": "Entries of the + menu next to the message field. label/reason name a word of presentation.ui_shell, or are {en, pl}. kind: attach (file picker), camera (photo: the camera on a phone, a picture file elsewhere), model (list of models; the choice is written to the conversation level of the scope chain under default_model, the key the kernel reads), submenu (items), toggle (on until turned off, a chip above the field says so: `field` + `value` = the request field it sets while on, e.g. web_search: true, deep_research: true, reasoning_effort: high, action: agent.run; or `flag` = a switch of this view: memory | knowledge), panel (opens a panel: import | graph | settings), unavailable (visible, with reason). exclusive: turning it on turns off the other field switches (an action takes only the words, no files). needs: settings that must not be empty, else the entry is unavailable with `reason` (and `panel` where they are set). M1-W1b: step (szerzej/głębiej/węziej/płycej: the action context.modify, for the next request only; `step` names the step), profiles (a list of the selector profiles of the effective view; the choice is for the next request only), node (opens the navigator on the address `focus`), preview (the request that goes with the next Send, once; the old Prepare client request button).",
         "items": [
           {
             "id": "attach_file",
@@ -5017,12 +5039,14 @@ R"loom_onboard(        "note": "Entries of the + menu next to the message field.
                 "id": "flow_text_graph",
                 "label": "cm_flow_text_graph",
                 "kind": "node",
-                "focus": "setting:chat_flow"
+                "focus": "setting:chat_flow",
+                "help": "cm_flow_help"
               },
               {
                 "id": "preview_request",
                 "label": "cm_preview_request",
-                "kind": "preview"
+                "kind": "preview",
+                "help": "cm_preview_help"
               },
               {
                 "id": "memory",
@@ -5834,7 +5858,8 @@ R"loom_onboard(        "note": "Entries of the + menu next to the message field.
             "status.calibration": "kalibracja",
             "chip.profile": "profil: {{profile}}",
             "chip.none": "nigdzie nie ustawiono",
-            "hidden.line": "Ukryte przez Ciebie pola: {{count}}",
+)loom_onboard",
+R"loom_onboard(            "hidden.line": "Ukryte przez Ciebie pola: {{count}}",
             "proposals.title": "Propozycje modelu przy polach",
             "all_fields.show": "Pokaż Wszystkie pola",
             "all_fields.hide": "Ukryj Wszystkie pola",
@@ -5856,8 +5881,7 @@ R"loom_onboard(        "note": "Entries of the + menu next to the message field.
           "state": "partial",
           "by": "M1-K1, M1-W1a",
           "today": {
-)loom_onboard",
-R"loom_onboard(            "pl": "Arkusz „Co wysłaliśmy” jest w aplikacji (loom/web/src/components/ContextReceipt.tsx): pod odpowiedzią linia „Kontekst: … — zobacz” (ustawienie receipt_link) i pozycja „Co wysłaliśmy” w menu wiadomości otwierają arkusz z sekcjami w kolejności wysłania, tokenami (szacunek), listą „Pominięte” z powodami, profilem, zmianami tej tury, prefiksem i strażnikiem ×10; przyciski „Następnym razem” (szerzej, węziej, głębiej, płycej) i „Zmień profil” wołają akcję context.modify tylko na następną wiadomość (pytanie ×10 zadaje jądro). Koszt pokazuje „nieznany — brak ceny”, bo ślad nie niesie ceny. „Pokaż w grafie” jest widoczne, ale wyłączone z powodem, dopóki jądro nie ma źródła „Wysłane do modelu” w grafie. Wiadomości sprzed M1 pokazują „Brak śladu (zapisane przed M1)”. Menu + › Kontekst (Szerzej, Głębiej, Węziej, Płycej, Profil selektora, Przepływ tekst ↔ graf, Podgląd wysyłki, Profil i pamięć, Twierdzenia z analizy) woła tę samą akcję; pasek nad polem pisania (ustawienie composer_context_strip) mówi słowami, co pójdzie z następnym zapytaniem; chip modelu ma „ⓘ” z arkuszem pochodzenia modelu (poziom łańcucha, klasa, cena albo „nieznany — brak ceny”). Silnik nie ma odczytu zmian czekających na następne zapytanie, więc pasek zna tylko te, które zrobiło to okno.",
+            "pl": "Arkusz „Co wysłaliśmy” jest w aplikacji (loom/web/src/components/ContextReceipt.tsx): pod odpowiedzią linia „Kontekst: … — zobacz” (ustawienie receipt_link) i pozycja „Co wysłaliśmy” w menu wiadomości otwierają arkusz z sekcjami w kolejności wysłania, tokenami (szacunek), listą „Pominięte” z powodami, profilem, zmianami tej tury, prefiksem i strażnikiem ×10; przyciski „Następnym razem” (szerzej, węziej, głębiej, płycej) i „Zmień profil” wołają akcję context.modify tylko na następną wiadomość (pytanie ×10 zadaje jądro). Koszt pokazuje „nieznany — brak ceny”, bo ślad nie niesie ceny. „Pokaż w grafie” jest widoczne, ale wyłączone z powodem, dopóki jądro nie ma źródła „Wysłane do modelu” w grafie. Wiadomości sprzed M1 pokazują „Brak śladu (zapisane przed M1)”. Menu + › Kontekst (Szerzej, Głębiej, Węziej, Płycej, Profil selektora, Przepływ tekst ↔ graf, Podgląd wysyłki, Profil i pamięć, Twierdzenia z analizy) woła tę samą akcję; pasek nad polem pisania (ustawienie composer_context_strip) mówi słowami, co pójdzie z następnym zapytaniem; chip modelu ma „ⓘ” z arkuszem pochodzenia modelu (poziom łańcucha, klasa, cena albo „nieznany — brak ceny”). Silnik nie ma odczytu zmian czekających na następne zapytanie, więc pasek zna tylko te, które zrobiło to okno.",
             "en": "The “What we sent” sheet is in the app (loom/web/src/components/ContextReceipt.tsx): the line “Context: … — see” under a reply (setting receipt_link) and the entry “What we sent” in the message menu open the sheet with the sections in the order they were sent, tokens (an estimate), the “Left out” list with reasons, the profile, the changes of this turn, the prefix and the ×10 guard; the buttons “Next time” (wider, narrower, deeper, shallower) and “Change profile” call the action context.modify for the next message only (the kernel asks the ×10 question). Cost says “cost unknown — no price” because the receipt carries no price. “Show in the graph” is visible but disabled with its reason until the kernel has the “Sent to the model” source in the graph. Messages saved before M1 show “No receipt (saved before M1)”. The + › Context menu (Wider, Deeper, Narrower, Shallower, Selector profile, Flow text ↔ graph, Preview of the request, Profile and memory, Claims from the analysis) calls the same action; the strip above the composer (setting composer_context_strip) says in words what goes with the next request; the model chip has an “ⓘ” with a sheet of the model's provenance (level of the chain, class, price or “unknown — no price”). The engine cannot read what waits for the next request, so the strip knows only the changes this window made."
           },
           "reason": {
