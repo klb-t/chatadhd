@@ -2,8 +2,9 @@
 // the sections in the order they were sent as lists (never JSON), what each held, tokens as numbers (an estimate), what was left out and why, the
 // profile, the changes of this turn, the stable prefix and the x10 guard. It says what it is: a compiled request, not proof that the provider got it.
 // The buttons act on the NEXT message only (context.modify): szerzej / głębiej / węziej / płycej and a selector profile from the effective view; the
-// x10 question is the kernel's (awaiting_usage) and is answered with actions.confirm. "Pokaż w grafie" asks the graph whether it can show the sent
-// nodes; while the kernel has no source for the perspective "Wysłane do modelu" the button stays visible and disabled with its reason in words.
+// x10 question is the kernel's (awaiting_usage) and is answered with actions.confirm. "Pokaż w grafie" asks the graph for the record of this request
+// (graph.navigate, perspective "Wysłane do modelu"): when the graph has it, the button opens the navigator on the request (the sheet closes, Back returns
+// to the chat); when it has not (no record, a refusal), the button stays visible and disabled with the kernel's own sentence as the reason.
 // Nothing here lists a section, a reason, a step or a profile: the words are presentation.context_receipt, the rest comes from the receipt and the kernel.
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { api } from "../api";
@@ -63,14 +64,17 @@ export default function ContextReceipt({ profileHost, language, convId, msgId, o
   }, [msgId, convId, generation]);
 
   const requestId = answer && answer.kind !== "failed" ? answer.requestMsgId || answer.msgId : msgId;
-  // Can the graph show what was sent? Ask it (a one-row read of the perspective); any refusal is the answer, shown as the reason of the disabled button.
+  // Can the graph show what was sent? Ask it (a one-row read of the perspective). It answers "yes" only when the answer says the record is there
+  // (receipt.present); a request without a record gets the kernel's own sentence for it, any refusal its own message - either one is the reason of
+  // the disabled button, in the kernel's words. (Measured 2026-10-22: the address must be msg:<hex>, see messageAddress.)
   useEffect(() => {
     let alive = true;
     const actions = api.actions;
-    if (!answer || answer.kind !== "receipt") { setGraph({ state: "checking" }); return; }
+    if (!answer || answer.kind === "failed") { setGraph({ state: "checking" }); return; }
     if (!actions || !onShowInGraph) { setGraph({ state: "no", answer: "no_navigator" }); return; }
+    setGraph({ state: "checking" });
     actions.graphNavigate({ focus: messageAddress(requestId), perspectives: [SENT_PERSPECTIVE], hops: 1, limit: 1, lang: language })
-      .then(() => { if (alive) setGraph({ state: "yes" }); })
+      .then(result => { if (alive) setGraph(result.receipt?.present === true ? { state: "yes" } : { state: "no", answer: result.receipt?.text || result.receipt?.missing_reason || "no_record" }); })
       .catch(failure => { if (alive) setGraph({ state: "no", answer: failure instanceof Error ? failure.message : String(failure) }); });
     return () => { alive = false; };
   }, [answer, requestId, language, Boolean(onShowInGraph)]);
@@ -159,15 +163,13 @@ export default function ContextReceipt({ profileHost, language, convId, msgId, o
         {(answer?.kind === "receipt" || answer?.kind === "missing") && (
           <>
             <div className="crs-actions">
-              {answer.kind === "receipt" && (
-                <button type="button" data-testid="receipt-show-in-graph" disabled={graph.state !== "yes"}
-                  data-graph={graph.state} aria-describedby="receipt-show-in-graph-reason"
-                  onClick={() => { if (graph.state === "yes") onShowInGraph?.(messageAddress(requestId), [SENT_PERSPECTIVE]); }}>{t("action.show_in_graph")}</button>
-              )}
+              <button type="button" data-testid="receipt-show-in-graph" disabled={graph.state !== "yes"}
+                data-graph={graph.state} aria-describedby="receipt-show-in-graph-reason"
+                onClick={() => { if (graph.state === "yes") { onClose(); onShowInGraph?.(messageAddress(requestId), [SENT_PERSPECTIVE]); } }}>{t("action.show_in_graph")}</button>
             </div>
-            {answer.kind === "receipt" && graph.state !== "yes" && (
+            {graph.state !== "yes" && (
               <p className="crs-note" id="receipt-show-in-graph-reason" data-testid="receipt-show-in-graph-reason" data-kernel-answer={graph.state === "no" ? graph.answer : undefined}>
-                {graph.state === "no" ? t("action.show_in_graph.disabled") : t("sheet.loading")}</p>
+                {graph.state === "no" ? t("action.show_in_graph.disabled", { reason: graph.answer === "no_navigator" ? t("action.show_in_graph.no_navigator") : answer?.kind === "missing" ? t("missing") : graph.answer }) : t("sheet.loading")}</p>
             )}
             <p className="crs-note" data-testid="receipt-next-time-title"><strong>{t("action.next_time")}</strong> — {t("action.next_time.help")}</p>
             <div className="crs-actions" data-testid="receipt-steps">

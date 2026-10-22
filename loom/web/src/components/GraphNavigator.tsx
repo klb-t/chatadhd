@@ -18,6 +18,7 @@ import { shellTranslator } from "../shell/text";
 import { useLayer } from "../shell/use-layer";
 import { usePresentationFeature } from "./ConversationSourceView";
 import { LAYOUTS, layoutOf, openByLayout, type Layout } from "./navigator-map";
+import { emptyText, receiptLines, rowMarks } from "./navigator-receipt";
 import { runOutcome } from "./node-card-state";
 import { BAR_BUTTONS, SEARCH_DEBOUNCE_PRESET_MS, budgetLine, chipText, countText, deeper, drillInto, evidenceText, focusOf, goBack, honestyLines,
   initialState, narrower, noTranslationText, requestFor, setQuery, shallower, statusText, wider, type BarButtonId, type NavigatorState, withFocusLabel,
@@ -98,13 +99,13 @@ export default function GraphNavigator({ profileHost, convId, language, initialF
   // Perspektywa ▾ lists the kernel's perspectives (GET perspectives / loom_perspectives), read when the menu first opens, again per language.
   useEffect(() => { setPerspList(null); }, [language]);
   useEffect(() => {
-    if (!perspMenu || perspList) return;
+    if ((!perspMenu && state.perspectives.length === 0) || perspList) return;   // also when it opens with a perspective ticked: the line under the bar names it
     let alive = true;
     api.listPerspectives().then(
       list => { if (alive) setPerspList({ options: perspectiveOptions(list, language) }); },
       failure => { if (alive) setPerspList({ error: failure instanceof Error ? failure.message : String(failure) }); });
     return () => { alive = false; };
-  }, [perspMenu, perspList, language]);
+  }, [perspMenu, perspList, language, state.perspectives.length]);
 
   const closeStep = (index: number) => { setState(s => goBack(s, index)); setCard(null); };
   const drill = (row: Pick<GraphNodeRow, "address" | "label">) => { setState(s => drillInto(s, row)); setCard(null); setDraft(""); setSearchOpen(false); };
@@ -138,7 +139,7 @@ export default function GraphNavigator({ profileHost, convId, language, initialF
   };
   const focus = focusOf(state);
   const crumbs = [{ address: "", label: t("root") }, ...state.path];
-  const lines = result ? honestyLines(result, t, language) : [];
+  const lines = result ? [...honestyLines(result, t, language), ...receiptLines(result, t)] : [];
   const perspectiveNames = state.perspectives.map(id => (perspList && "options" in perspList ? perspList.options.find(o => o.id === id)?.label : undefined) ?? id);
 
   return (
@@ -169,7 +170,9 @@ export default function GraphNavigator({ profileHost, convId, language, initialF
           <ul className="gnav-rows" data-testid="nav-rows" data-shown={result.counts.shown} data-total={result.counts.total}>
           {result.children.map(row => {
             const count = countText(row, t), chip = chipText(row, t), evidence = evidenceText(row, t), status = statusText(row, t), noTr = noTranslationText(row, t);
-            return <li key={row.address} className="gnav-row" data-kind={row.kind}>
+            const marks = rowMarks(result, row, t);   // the record of a request: tokens (estimate), left out and why, "widok zapisu" (K1c-3b)
+            return <li key={row.address} className="gnav-row" data-kind={row.kind} data-derived={row.derived ? "true" : undefined}
+              data-sent-tokens={marks.weight ?? undefined} data-left-out={marks.leftOut ? "true" : undefined}>
               <div className="gnav-row-line">
                 <button className="gnav-row-main" data-testid={`nav-row-${row.address}`} data-has-children={row.has_children}
                   onClick={() => row.has_children ? drill(row) : openCard(row)}>
@@ -184,7 +187,11 @@ export default function GraphNavigator({ profileHost, convId, language, initialF
                     {evidence && <span className="gnav-chip gnav-chip-evidence" data-testid="nav-evidence">{evidence}</span>}
                     {status && <span className="gnav-chip gnav-chip-status" data-testid="nav-status">{status}</span>}
                     {noTr && <span className="gnav-chip gnav-chip-status">{noTr}</span>}
+                    {marks.derived && <span className="gnav-chip gnav-chip-derived" data-testid="nav-derived">{marks.derived}</span>}
+                    {marks.sent && <span className="gnav-chip gnav-chip-sent" data-testid="nav-sent">{marks.sent}</span>}
+                    {marks.leftOut && <span className="gnav-chip gnav-chip-left-out" data-testid="nav-left-out">{marks.leftOut}</span>}
                   </span>
+                  {marks.reason && <span className="gnav-why" data-testid="nav-left-out-reason">{marks.reason}</span>}
                   {row.why && <span className="gnav-why">{row.why}</span>}
                 </button>
                 <button className="gnav-more" data-testid={`nav-row-card-${row.address}`} aria-label={t("card")}
@@ -193,7 +200,7 @@ export default function GraphNavigator({ profileHost, convId, language, initialF
             </li>;
           })}
           </ul>
-          {!loading && result.children.length === 0 && <p className="gnav-note" data-testid="nav-empty">{t(state.perspectives.length ? "perspective.empty" : "no_children")}</p>}
+          {!loading && result.children.length === 0 && <p className="gnav-note" data-testid="nav-empty" data-missing-reason={result.receipt && !result.receipt.present ? result.receipt.missing_reason : undefined}>{emptyText(result, state.perspectives.length > 0, t)}</p>}
         </Disclosure>}
         {result && <Disclosure testId="nav-map-disclosure" className="gnav-disclosure" labels={{ show: t("map.show"), hide: t("map.hide") }}
           open={open.map} onToggle={v => setOpen(o => ({ ...o, map: v }))}>

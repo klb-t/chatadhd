@@ -241,6 +241,7 @@ jobs:
           npm run test:composer-menu
           npm run test:navigator-state
           npm run test:node-card-state
+          npm run test:navigator-receipt
           npm run test:navigator-map
           npm run test:settings-human
           npm run test:role-card

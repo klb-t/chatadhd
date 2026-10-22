@@ -13,6 +13,7 @@ import Disclosure from "../shell/Disclosure";
 import type { ShellT } from "../shell/text";
 import { useLayer } from "../shell/use-layer";
 import { chipText, evidenceText } from "./navigator-state";
+import { derivedCard } from "./navigator-receipt";
 import { actionRows, chainRows, draftOf, editorKind, layersLine, levelChoices, parseDraft, pendingGate, relationGroups, runOutcome, unsetChoices,
   valueLine, writeRequest, type CardStep, type LevelChoice, type PendingGate, type ScopedRule, type UnsetChoice } from "./node-card-state";
 
@@ -79,6 +80,7 @@ export default function NodeCard({ address, language, convId, t, onClose, onNavi
   const levels = useMemo(() => card ? levelChoices(card, convId, t) : [], [card, convId, t]);
   const unsets = useMemo(() => card ? unsetChoices(card, key, rules, t) : [], [card, key, rules, t]);
   const relations = useMemo(() => card ? relationGroups(card) : [], [card]);
+  const derived = card ? derivedCard(card, t) : null;   // K1c-3b: a node of the record of a request says it is a view of it
   const actionList = useMemo(() => card ? actionRows(card, t) : [], [card, t]);
   const editable = !!card && (card.levels?.length ?? 0) > 0 && card.edit_rule !== "read_only";
 
@@ -144,6 +146,7 @@ export default function NodeCard({ address, language, convId, t, onClose, onNavi
           {evidenceText(card, t) && <span className="gnav-chip gnav-chip-evidence" data-testid="card-evidence">{evidenceText(card, t)}</span>}
           {card.status && <span className="gnav-chip gnav-chip-status" data-testid="card-status">{t(`status.${card.status}`)}</span>}
         </div>
+        {derived && <p className="ncard-line ncard-derived" data-testid="card-derived-note"><span className="gnav-chip gnav-chip-derived" data-testid="card-derived">{derived.mark}</span> {derived.note}</p>}
         {layersLine(card, t) !== null && <p className="ncard-line ncard-layers" data-testid="card-layers">{layersLine(card, t)}</p>}
         {valueLine(card, t) !== null && <p className="ncard-line ncard-value" data-testid="card-value">
           <span className="ncard-key">{t("card.value")}</span> <strong>{valueLine(card, t)}</strong></p>}

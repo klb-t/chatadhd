@@ -48,6 +48,7 @@
     "test:shell-menu": "node tests/shell/menu.test.mjs",
     "test:navigator-state": "node tests/shell/navigator-state.test.mjs",
     "test:node-card-state": "node tests/shell/node-card-state.test.mjs",
+    "test:navigator-receipt": "node tests/shell/navigator-receipt.test.mjs",
     "test:navigator-map": "node tests/shell/navigator-map.test.mjs",
     "test:settings-human": "node tests/shell/settings-human-state.test.mjs",
     "test:role-card": "node tests/shell/role-card-state.test.mjs",

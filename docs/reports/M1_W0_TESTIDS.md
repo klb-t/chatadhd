@@ -489,6 +489,7 @@ Otwarcie: `shell-menu-toggle` → `shell-menu-graph` → panel `panel-navigator`
 | wiersz | `nav-row-<adres>` (`data-has-children`), `nav-count` (`data-known`: `true` = liczba w linii etykiety, `false` = „nieznane (powód)” we własnej linii pod etykietą), `nav-chip`, `nav-evidence`, `nav-status`, `nav-row-card-<adres>` | wiersz (dotknięcie: wejście albo karta liścia), licznik, chip pochodzenia, chip dowodu, chip stanu, `⋯` (otwiera/zamyka kartę węzła, `aria-expanded`) |
 | uczciwość | `nav-collapsed`, `nav-hidden`, `nav-unknown-<źródło>` | zwinięte przez budżet, ukryte przez Ciebie, źródło bez odpowiedzi (powód) |
 | pasek | `nav-bar`, `nav-bar-perspective`, `nav-bar-wider`, `nav-bar-narrower`, `nav-bar-deeper`, `nav-bar-shallower`, `nav-bar-actions`, `nav-bar-view`, `nav-actions-note`, `nav-budget` | pasek dolny — siedem przycisków, każdy działa (od r1:b2 nie ma linii „planowane” po dotknięciu przycisku ani jej dawnego id); `nav-actions-note` (`role=status`) = linia po dotknięciu Działań w korzeniu, gdzie nie ma ogniska, więc nie ma karty działań (słowo `actions.no_focus`; drugie dotknięcie chowa); `budget` = „budżet N węzłów na poziom · głębia H · pokazane z wszystkich” |
+| Wysłane do modelu (K1c-3b) | `nav-derived`, `nav-sent`, `nav-left-out`, `nav-left-out-reason`, `nav-sent-handed`, `nav-sent-summary`, `nav-sent-derived-note`, `nav-sent-note` (`nav-empty` ma `data-missing-reason`, gdy zapisu nie ma) | w wierszu: chip „widok zapisu”, „wysłane do modelu: N tokenów (szacunek)”, „pominięte w żądaniu” z powodem; wiersz `li` ma `data-derived`, `data-sent-tokens` (waga = tokeny), `data-left-out`; pod listą: skrót („Z tego żądania: wysłane N, pominięte M · razem T tokenów (szacunek)”), zdanie jądra o widoku zapisu (raz), zdanie jądra „to zapis, nie dowód”, „z odpowiedzi do jej zapytania” gdy ognisko było odpowiedzią |
 | Perspektywa ▾ | `nav-bar-perspective` (`aria-expanded`), `nav-perspective-menu` (`role=group`), `nav-perspective-<id>` (`role=checkbox`, `aria-checked`), `nav-perspective-none`, `nav-perspectives` | menu z perspektywami jądra (`GET /api/perspectives`: kolejność i polskie nazwy jądra); zaznaczenie pyta `graph.navigate` ponownie z `perspectives` (ten sam budżet i głębia); „żadna” czyści; `nav-perspectives` = linia „Perspektywy: A · B” pod paskiem, gdy coś jest zaznaczone |
 
 ## Karta węzła (paczka P3, `loom/web/src/components/NodeCard.tsx`; e2e `loom/web/e2e/m1-navigator-native.mjs`, kroki karty)
@@ -498,6 +499,7 @@ Otwarcie: dotknięcie wiersza-liścia `nav-row-<adres>` albo `nav-row-card-<adre
 | ekran | testid | znaczenie |
 |---|---|---|
 | karta | `node-card` (`data-address`, `data-step` = `card`/`edit`/`level`, `aria-busy`), `card-close`, `card-loading`, `card-error` | korzeń karty; `×`; stany |
+| węzeł pochodny (K1c-3b) | `card-derived`, `card-derived-note` | chip „widok zapisu” i zdanie jądra: to widok zapisu żądania, nie zapisany węzeł; liczba tokenów jest w `card-value` jako szacunek |
 | nagłówek | `card-label`, `card-chip`, `card-evidence`, `card-layers`, `card-value`, `card-why`, `card-effect`, `card-edit-rule`, `card-flows` | etykieta, chip pochodzenia, chip dowodu, „Warstwy: …”, „Wartość: …”, „Po co”, „Co zmienia”, zasada edycji, „Czyta to: …” |
 | łańcuch | `card-chain` (Disclosure), `card-chain-rows`, `card-chain-<poziom>` (`data-role`, `data-winning`) | „Skąd jest wartość”: jeden `li` na poziom łańcucha jądra; `data-winning="true"` = poziom, który daje wartość; **tylko gdy jądro narysowało łańcuch** (r2:b1) |
 | bez łańcucha | `card-no-chain` | r2:b1: węzeł bez łańcucha poziomów (pozycja ROM, pole profilu): jedno zdanie `card.no_value` zamiast nagłówka `card-chain` |
@@ -576,12 +578,14 @@ Arkusz otwiera linia pod odpowiedzią albo `⋯` wiadomości › Co wysłaliśmy
 | pominięte | `context-receipt-dropped-title`, `context-receipt-dropped`, `receipt-dropped`, `context-receipt-dropped-none` | powód słowami z paczki, z nazwą sekcji |
 | napis | `context-receipt-disclaimer` | „Skompilowane żądanie, nie dowód odbioru przez dostawcę.” |
 | brak śladu | `context-receipt-missing`, `context-receipt-missing-word` | „Brak śladu (zapisane przed M1)” |
-| Pokaż w grafie | `receipt-show-in-graph` (`disabled`, `data-graph` = `checking` / `yes` / `no`), `receipt-show-in-graph-reason` (`data-kernel-answer`) | wyłączony z powodem, dopóki jądro nie ma źródła perspektywy „Wysłane do modelu” |
+| Pokaż w grafie | `receipt-show-in-graph` (`disabled`, `data-graph` = `checking` / `yes` / `no`), `receipt-show-in-graph-reason` (`data-kernel-answer`) | włączony, gdy graf ma zapis tego żądania (dotknięcie zamyka arkusz i otwiera nawigator na żądaniu z perspektywą „Wysłane do modelu”); wyłączony z powodem słowami, gdy zapisu nie ma albo graf odmówił (też pod „Brak śladu”) |
 | Następnym razem | `receipt-next-time-title`, `receipt-steps`, `receipt-step-wider`, `receipt-step-deeper`, `receipt-step-narrower`, `receipt-step-shallower`, `receipt-reset`, `receipt-modify-busy`, `receipt-modify-result` (`data-kind` = `applied` / `declined` / `failed`) | kroki z danych (`action.steps`); zmiana dotyczy tylko następnej wiadomości |
 | pytanie ×10 | `receipt-usage-pending` (w środku wiersze z końcówką `-line` oraz przyciski z końcówkami `-confirm` i `-reject`, jak w `chat-usage-pending`) | pytanie zadaje jądro (`awaiting_usage`), odpowiedź to `actions.confirm` |
 | Zmień profil | `receipt-change-profile`, `receipt-profile-list`, `receipt-profile-<id>` (`data-status`, `aria-current`), `receipt-profile-status-<id>` | lista z widoku efektywnego `selector_profiles`, status preset / kalibracja / dawny słowami |
 
 Krok dla Androida (propozycja): `context-line-open` → `context-receipt` (`data-state` = `receipt`) → `receipt-step-wider` → `receipt-modify-result` → `context-receipt-close`.
+
+Krok dla Androida (K1c-3b): `context-line-open` → `context-receipt` (`data-state` = `receipt`) → `receipt-show-in-graph` (`data-graph` = `yes`) → `graph-navigator` (`data-focus` = `msg:<hex>`, `data-perspectives` = `sent_to_model`) → `nav-sent` w wierszach → wiersz z `data-derived` → `card-derived-note` → Wstecz (zamyka kartę, potem nawigator).
 
 ## Menu + › Kontekst, pasek kontekstu i chip modelu (paczka M1-W1b; `ComposerMenu.tsx`, `ContextStrip.tsx`, `ModelProvenance.tsx`, `ChatView.tsx`; e2e `loom/web/e2e/m1-context-menu-native.mjs`)
 

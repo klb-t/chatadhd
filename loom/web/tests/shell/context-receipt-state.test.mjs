@@ -59,7 +59,7 @@ test('the words: both languages have the same keys and every placeholder of one 
 });
 
 test('every source kind, section and reason the kernel writes today has a word', () => {
-  const kinds = ['instruction', 'rule', 'memory_node', 'graph_node', 'kb_claim', 'profile_slot', 'graph_packet', 'task', 'question', 'message:L0', 'message:L1', 'message:L2', 'message:L3'];
+  const kinds = ['instruction', 'rule', 'memory_node', 'graph_node', 'kb_claim', 'profile_slot', 'graph_packet', 'task', 'question', 'message:L0', 'message:L1', 'message:L2', 'message:L3', 'message:graph'];
   for (const k of kinds) assert.notEqual(st.itemChip(k, t), k, `chip for ${k}`);
   for (const c of ['system', 'profile', 'rules', 'memory', 'project', 'history', 'graph', 'task', 'question']) assert.notEqual(st.sectionTitle(c, t), c, `section ${c}`);
   for (const r of ['thread_filter', 'representation_level', 'budget', 'excluded', 'history_window', 'source_off', 'command_traffic', 'replaced_by_task', 'history_skip']) assert.ok(pl[`dropped.${r}`], `reason ${r}`);
