@@ -8,7 +8,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { api } from "../api";
 import type { UserProfileHost } from "../api/onboarding-host";
-import { readModifyRun, readReceiptRun, type ContextModifyRequest, type ModifyAnswer, type ReceiptAnswer } from "../api/context-receipt";
+import { readReceiptRun, type ReceiptAnswer } from "../api/context-receipt";
 import { featureInLanguage } from "../onboarding/presentation.mjs";
 import { USAGE_PENDING_FEATURE, type UsagePendingReceipt } from "../context/usage-pending";
 import { useDialogFocus } from "../shell/use-dialog-focus";
@@ -17,6 +17,7 @@ import { usePresentationFeature } from "./ConversationSourceView";
 import UsagePendingBlock from "./UsagePendingBlock";
 import { profileChoices, sheetModel, stepIds, type ProfileChoice } from "./context-receipt-state";
 import { useReceiptWords } from "./use-receipt-words";
+import { loadSelectorProfiles, useContextModify } from "./use-context-modify";
 import "./context-receipt.css";
 
 /** The perspective the graph shows the sent nodes in (listed by graph_views.pack, relation sent_to_model). */
@@ -40,8 +41,7 @@ export default function ContextReceipt({ profileHost, language, convId, msgId, o
   const usage = usePresentationFeature(profileHost, USAGE_PENDING_FEATURE);
   const [answer, setAnswer] = useState<ReceiptAnswer | null>(null);
   const [generation, setGeneration] = useState(0);
-  const [modify, setModify] = useState<ModifyAnswer | null>(null);
-  const [busy, setBusy] = useState(false);
+  const { answer: modify, busy, run, decide } = useContextModify(convId, t("sheet.no_actions"));
   const [profiles, setProfiles] = useState<ProfileChoice[] | null>(null);
   const [profilesOpen, setProfilesOpen] = useState(false);
   const [graph, setGraph] = useState<GraphSupport>({ state: "checking" });
@@ -79,30 +79,11 @@ export default function ContextReceipt({ profileHost, language, convId, msgId, o
   const ready = answer !== null;
   const state = !ready ? "loading" : answer.kind;
 
-  const run = useCallback(async (request: ContextModifyRequest) => {
-    const actions = api.actions;
-    if (!actions) { setModify({ kind: "failed", message: t("sheet.no_actions") }); return; }
-    setBusy(true);
-    try { setModify(readModifyRun(await actions.contextModify({ ...request, ...(convId ? { conversation_id: convId } : {}) }))); }
-    catch (failure) { setModify({ kind: "failed", message: failure instanceof Error ? failure.message : String(failure) }); }
-    finally { setBusy(false); }
-  }, [convId, t]);
-
-  const decide = useCallback(async (approved: boolean) => {
-    const actions = api.actions;
-    if (!actions || !modify || modify.kind !== "question") return;
-    setBusy(true);
-    try { setModify(readModifyRun(await actions.confirm({ run_id: modify.runId, approved, receipt_id: modify.receiptId, ref: "web" }))); }
-    catch (failure) { setModify({ kind: "failed", message: failure instanceof Error ? failure.message : String(failure) }); }
-    finally { setBusy(false); }
-  }, [modify]);
-
   const openProfiles = useCallback(async () => {
     setProfilesOpen(open => !open);
     if (profiles !== null || !api.actions) return;
     try {
-      const view = await api.actions.run({ action: "views.effective", element: { class: "application" }, args: { kind: "selector_profiles" } });
-      setProfiles(profileChoices(view.result?.data, language));
+      setProfiles(profileChoices(await loadSelectorProfiles(), language));
     } catch { setProfiles([]); }
   }, [profiles, language]);
 
