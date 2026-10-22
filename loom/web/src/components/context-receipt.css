@@ -29,3 +29,8 @@
 .crs-line { margin: 4px 0 0; font-size: 12px; }
 .crs-line button { min-height: 32px; padding: 0 4px; border: 0; background: none; color: var(--dim); text-decoration: underline; text-align: left; font-size: 12px; white-space: normal; }
 @media (hover: none) { .crs-line button { min-height: 44px; } }
+
+/* "Szczegóły techniczne" under "Brak śladu": the raw names of the settings, folded (K1c-4) */
+.crs-technical { margin: 4px 0; }
+.crs-technical > summary { cursor: pointer; color: var(--dim); font-size: 12px; min-height: 44px; display: flex; align-items: center; }
+.crs-technical-names { font-family: ui-monospace, monospace; word-break: break-all; }

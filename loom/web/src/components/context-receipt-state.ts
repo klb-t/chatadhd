@@ -106,9 +106,25 @@ export function itemText(item: { ref: string; label?: string; source_kind?: stri
   return item.label || item.ref;
 }
 
-/** True when the pack names this item (a fixed ref, or a history message by its role): the kernel's English "why" is then not needed. */
+/** True when the pack names this item (a fixed ref, or a history message by its role): the label already says what it is, so its reason is not repeated. */
 function hasWords(item: { ref: string; label?: string; source_kind?: string }, t: ShellT): boolean {
   return t(`ref.${item.ref}`) !== `ref.${item.ref}` || Boolean(item.source_kind?.startsWith("message:"));
+}
+
+/** M1-K1c4: why an item was sent, in the words of the pack. The kernel writes its reason as an English sentence at SEND time and that sentence stays
+ *  in the record (it is data: a record is a fact written once); the screens say the same thing in the language of the screen. The word is chosen by a
+ *  stable key, never by the sentence: why.<ref> for an item with a fixed ref (system_prompt, question, memory_tree ...), else why.<source_kind> with
+ *  ":" read as "." (message:L1 -> why.message.L1, memory_node, profile_slot ...), the same naming as ref.* and chip.*. Only when the pack has no word
+ *  for the key the kernel's own sentence is shown (an item of a kind a later kernel adds), and "" when the kernel gave none: never a guess. */
+export function whyWords(item: { ref?: string; source_kind?: string; why?: string | null }, t: ShellT): string {
+  const keys: string[] = [];
+  if (item.ref) keys.push(`why.${item.ref}`);
+  if (item.source_kind) keys.push(`why.${item.source_kind.replace(":", ".")}`);
+  for (const key of keys) {
+    const word = t(key);
+    if (word !== key) return word;
+  }
+  return item.why ?? "";
 }
 
 export function itemChip(kind: string | undefined, t: ShellT): string {
@@ -187,10 +203,11 @@ export function sheetModel(receipt: ContextReceipt, t: ShellT, language: string)
   const filled: SheetSection[] = [];
   const emptyNames: string[] = [];
   for (const s of receipt.sections) {
-    // The kernel's own "why" is an English sentence: it is shown only for an item the pack has no words for (a profile slot, a memory node ...);
-    // a fixed ref (the instruction, the question, the graph context) and a history message are already named and explained by the words.
+    // The reason of an item is said in the pack's words (whyWords; the kernel's English sentence only for a kind the pack has no word for); it is
+    // shown for an item whose label does not already say it (a profile slot, a memory node ...): a fixed ref (the instruction, the question, the
+    // graph context) and a history message are named by the label and the chip, the navigator rows and the card of the record say the reason for them.
     const items = (s.items ?? []).map((it, i) => ({
-      key: `${it.ref}:${i}`, text: itemText(it, t), chip: itemChip(it.source_kind, t), why: hasWords(it, t) ? "" : it.why ?? "", tokens: typeof it.tokens_est === "number" ? it.tokens_est : null,
+      key: `${it.ref}:${i}`, text: itemText(it, t), chip: itemChip(it.source_kind, t), why: hasWords(it, t) ? "" : whyWords(it, t), tokens: typeof it.tokens_est === "number" ? it.tokens_est : null,
     }));
     const omitted = typeof s.items_omitted === "number" ? s.items_omitted : 0;
     if (items.length || omitted) filled.push({ id: s.class, title: sectionTitle(s.class, t), items, omitted, tokens: s.tokens_est ?? 0 });

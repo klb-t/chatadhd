@@ -18,7 +18,8 @@ import { shellTranslator } from "../shell/text";
 import { useLayer } from "../shell/use-layer";
 import { usePresentationFeature } from "./ConversationSourceView";
 import { LAYOUTS, layoutOf, openByLayout, type Layout } from "./navigator-map";
-import { emptyText, receiptLines, rowMarks } from "./navigator-receipt";
+import { emptyText, receiptLines, rowMarks, rowWhy } from "./navigator-receipt";
+import { useReceiptWords } from "./use-receipt-words";
 import { runOutcome } from "./node-card-state";
 import { BAR_BUTTONS, SEARCH_DEBOUNCE_PRESET_MS, budgetLine, chipText, countText, deeper, drillInto, evidenceText, focusOf, goBack, honestyLines,
   initialState, narrower, noTranslationText, requestFor, setQuery, shallower, statusText, wider, type BarButtonId, type NavigatorState, withFocusLabel,
@@ -47,6 +48,7 @@ function StepLayer({ index, onClose }: { index: number; onClose: (index: number)
 export default function GraphNavigator({ profileHost, convId, language, initialFocus = "", initialPerspectives, layout: layoutSetting }: Props) {
   const words = usePresentationFeature(profileHost, "graph_screen");
   const t = useMemo(() => shellTranslator(words.feature, language), [words.feature, language]);
+  const receiptT = useReceiptWords(profileHost, language);   // the words of "Co wysłaliśmy": the reason of a sent element is said in them (K1c-4)
   const [state, setState] = useState<NavigatorState>(() => ({ ...initialState(initialFocus), ...(initialPerspectives?.length ? { perspectives: initialPerspectives } : {}) }));
   const [result, setResult] = useState<GraphNavigateResult | null>(null);
   const [loading, setLoading] = useState(true);
@@ -171,6 +173,7 @@ export default function GraphNavigator({ profileHost, convId, language, initialF
           {result.children.map(row => {
             const count = countText(row, t), chip = chipText(row, t), evidence = evidenceText(row, t), status = statusText(row, t), noTr = noTranslationText(row, t);
             const marks = rowMarks(result, row, t);   // the record of a request: tokens (estimate), left out and why, "widok zapisu" (K1c-3b)
+            const why = rowWhy(row, receiptT);   // a sent element of the record says why in the pack's words (K1c-4); any other row: the kernel's sentence
             return <li key={row.address} className="gnav-row" data-kind={row.kind} data-derived={row.derived ? "true" : undefined}
               data-sent-tokens={marks.weight ?? undefined} data-left-out={marks.leftOut ? "true" : undefined}>
               <div className="gnav-row-line">
@@ -192,7 +195,7 @@ export default function GraphNavigator({ profileHost, convId, language, initialF
                     {marks.leftOut && <span className="gnav-chip gnav-chip-left-out" data-testid="nav-left-out">{marks.leftOut}</span>}
                   </span>
                   {marks.reason && <span className="gnav-why" data-testid="nav-left-out-reason">{marks.reason}</span>}
-                  {row.why && <span className="gnav-why">{row.why}</span>}
+                  {why && <span className="gnav-why" data-testid="nav-row-why">{why}</span>}
                 </button>
                 <button className="gnav-more" data-testid={`nav-row-card-${row.address}`} aria-label={t("card")}
                   aria-expanded={card?.address === row.address} onClick={() => openCard(row)}>⋯</button>
@@ -206,7 +209,7 @@ export default function GraphNavigator({ profileHost, convId, language, initialF
           open={open.map} onToggle={v => setOpen(o => ({ ...o, map: v }))}>
           <NavigatorMap result={result} open={open.map} t={t} onCard={showCard} onDrill={drill} />
         </Disclosure>}
-        {card && <NodeCard key={card.address} address={card.address} language={language} convId={convId} t={t} section={cardSection}
+        {card && <NodeCard key={card.address} address={card.address} language={language} convId={convId} t={t} receiptT={receiptT} section={cardSection}
           onClose={() => setCard(null)} onNavigate={(address, label) => drill({ address, label })} />}
         {lines.map(line => <p key={line.id} className="gnav-note gnav-honesty" data-testid={`nav-${line.id}`}>{line.text}</p>)}
       </div>

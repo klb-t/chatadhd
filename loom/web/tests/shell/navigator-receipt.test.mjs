@@ -101,3 +101,28 @@ test('every sent.* word exists in both languages with the same placeholders; a m
   assert.equal(tEn('sent.tokens', { n: '19' }), '19 tokens (estimate)');
   assert.equal(st.tokensText(19, id => id), 'sent.tokens');
 });
+
+// M1-K1c4: the reason line of a row/card of the record: the pack's words (presentation.context_receipt why.*), the kernel's English sentence only as the fallback.
+const rw = pack.entries.find(r => r.key === 'presentation.context_receipt').value.locales;
+const rt = translator(rw.pl), rtEn = translator(rw.en);
+const sentRow = (ref, source_kind, why) => ({ derived: true, why, receipt: { ref, source_kind, class: 'x', why, tokens_est: 5 } });
+
+test('a sent element of the record says why in the pack words, in both languages; the kernel sentence stays in the record', () => {
+  const system = sentRow('system_prompt', 'instruction', 'the instruction of the application or of the conversation');
+  assert.equal(st.rowWhy(system, rt), 'Instrukcja dla modelu ustawiona w aplikacji albo w tej rozmowie.');
+  assert.equal(st.rowWhy(system, rtEn), 'The instruction for the model set in the application or in this conversation.');
+  assert.equal(st.rowWhy(sentRow('graph_memory', 'graph_node', 'the heading line of the graph context'), rt), rw.pl['why.graph_memory']);
+  assert.equal(st.rowWhy(sentRow('question', 'question', 'what the person wrote in this turn'), rt), 'Tekst Twojej wiadomości w tej turze.');
+  assert.equal(st.rowWhy(sentRow('n_8f2a', 'memory_node', 'an active node of the memory tree'), rt), 'Jeden z włączonych węzłów pamięci.');
+  assert.equal(system.why, 'the instruction of the application or of the conversation', 'the row itself is not changed');
+});
+
+test('a row the record does not say was sent keeps the kernel sentence: a left-out element, a row without the record facts, a stored node', () => {
+  const left = { derived: true, why: 'Pamięć', receipt: { ref: 'system_prompt', source_kind: 'left_out', group: 'system', reason: 'source_off' } };
+  assert.equal(st.rowWhy(left, rt), 'Pamięć', 'left out: the reason is the kernel\'s, never "why it was sent"');
+  assert.equal(st.rowWhy({ derived: true, why: 'the sentence', receipt: {} }, rt), 'the sentence');
+  assert.equal(st.rowWhy({ derived: false, why: 'Ustawienie języka', receipt: undefined }, rt), 'Ustawienie języka', 'a ROM or settings row is the kernel\'s own Polish');
+  assert.equal(st.rowWhy({ derived: false, why: 'x', receipt: { ref: 'system_prompt', source_kind: 'instruction' } }, rt), 'x', 'only a derived node of the record is reworded');
+  assert.equal(st.rowWhy({ derived: true, receipt: { ref: 'zzz', source_kind: 'new_kind' } }, rt), '', 'no word and no kernel sentence: nothing');
+  assert.equal(st.rowWhy(sentRow('zzz', 'new_kind', 'a sentence of a later kernel'), rt), 'a sentence of a later kernel', 'a key without a word: the kernel sentence');
+});
