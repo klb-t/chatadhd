@@ -164,6 +164,7 @@ TEST_SUITE("profile interview in the conversation") {
     f.say(conv, "nie pytaj o zdrowie");
     INFO(f.transcript(conv));
     const Message last = f.last(conv);
+    MESSAGE("remark with nothing waiting: ", last.text);
     CHECK(last.role == "assistant");
     CHECK(last.text.find("Którego pola") == std::string::npos);
     REQUIRE(last.metadata.contains("action_proposal"));
@@ -246,6 +247,7 @@ TEST_SUITE("profile interview in the conversation") {
     CHECK(more.metadata.at("action_proposal").at("action") == "profile.confirm");
     f.say(conv, "nie");
     f.say(conv, "podsumowanie");  // the other promised word: a control word, answered in words
+    MESSAGE("podsumowanie: ", f.last(conv).text);
     CHECK(f.last(conv).role == "assistant");
     CHECK(f.last(conv).text.find("Którego pola") == std::string::npos);
     CHECK(f.transport->requests().empty());

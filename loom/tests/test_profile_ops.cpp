@@ -153,6 +153,42 @@ TEST_SUITE("profile_ops") {
     f.no_network();
   }
 
+  TEST_CASE("K2b-3: with no question waiting a remark is read first; an answer without a field stays an error over the API; a free message gets plain words") {
+    Fx f;
+    f.level("minimalnie");
+    for (int i = 0; i < 20 && Fx::data_of(f.go("status")).at("remaining").get<int>() > 0; ++i) Fx::data_of(f.go("skip"));
+    REQUIRE(Fx::data_of(f.go("status")).at("remaining") == 0);  // nothing is left to ask in this session
+    const Json before = f.shown();
+    // the direct call names no field and nothing waits: an error that says what is missing (the free message below has no such error)
+    const Json bare = f.go("answer", Json{{"text", "cokolwiek"}});
+    CHECK(bare.at("status") != "completed");
+    CHECK(Fx::failure_of(bare).find("Którego pola dotyczy") != std::string::npos);
+    // a field that is named and does not exist is refused, remark or not
+    const Json unknown = f.go("answer", Json{{"slot", "nie.ma"}, {"text", "nie pytaj o zdrowie"}});
+    CHECK(unknown.at("status") != "completed");
+    CHECK(Fx::failure_of(unknown).find("Nie ma pola") != std::string::npos);
+    // a remark needs no field and no question: read first, proposed, nothing written (direct call and free message alike)
+    for (const char* op : {"answer", "say"}) {
+      const Json remark = Fx::data_of(f.go(op, Json{{"text", "nie pytaj o zdrowie"}}));
+      CHECK(remark.at("written") == false);
+      REQUIRE(remark.at("proposal").is_object());
+      CHECK(remark.at("proposal").at("action") == "profile.confirm");
+      CHECK(f.shown().at("slots") == before.at("slots"));
+    }
+    // a free message that is not a remark and not a control word: plain words, no error, nothing written, no question
+    const Json said = f.go("say", Json{{"text", "opowiem Ci coś o sobie"}});
+    const Json d = Fx::data_of(said);
+    CHECK(d.at("written") == false);
+    CHECK(d.at("question").is_null());
+    CHECK(d.at("proposal").is_null());
+    CHECK(Fx::text_of(said).find("Teraz nie czekam na Twoją odpowiedź") != std::string::npos);
+    CHECK(f.shown().at("slots") == before.at("slots"));
+    // the same in English
+    const Json en = f.call("profile.interview", Json{{"op", "say"}, {"text", "tell me about my day"}, {"locale", "en"}});
+    CHECK(Fx::text_of(en).find("not waiting for an answer") != std::string::npos);
+    f.no_network();
+  }
+
   TEST_CASE("declined and never survive a second interview, and a never is only reopened by the person") {
     Fx f;
     f.level("detailed");

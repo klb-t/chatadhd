@@ -366,18 +366,11 @@ Result<Reply> op_answer(const Env& e, const Json& args) {
   if (text.empty()) return err(Errc::InvalidArgument, e.say("profile_no_text", Json::object()));
   std::string slot = json::get_string(args, "slot");
   LOOM_TRY_ASSIGN(auto level, level_of(e));
-  if (slot.empty()) {
-    LOOM_TRY_ASSIGN(auto plan, plan_of(e, l));
-    const Next n = next_of(l, plan);
-    if (n.ask.is_null()) return err(Errc::InvalidArgument, e.say("profile_no_slot", Json::object()));
-    slot = json::get_string(n.ask, "field");
-  }
-  const auto f = field_of(l, slot);
-  if (!f) return err(Errc::NotFound, e.say("profile_unknown_slot", Json{{"slot", slot}}));
-  const std::string topic = topic_of(e, l, slot);
+  // A slot that is named and does not exist is refused as before (a copy of the field, nothing is held across a write).
+  if (!slot.empty() && !field_of(l, slot)) return err(Errc::NotFound, e.say("profile_unknown_slot", Json{{"slot", slot}}));
 
-  // A remark of the person ("nie pytaj o zdrowie", "wystarczy") is read first: it returns what was understood and writes NOTHING; the yes is the
-  // gate of profile.confirm.
+  // A remark of the person ("nie pytaj o zdrowie", "wystarczy") is read first, before any question is looked for: it needs only the words and the
+  // level, never a pending question (K2b-3). It returns what was understood and writes NOTHING; the yes is the gate of profile.confirm.
   LOOM_TRY_ASSIGN(auto remark, view(e, l, Json{{"what", "remark"}, {"text", text}, {"level", level}}));
   const Json matched = remark.value("matched", Json::array());
   if (!matched.empty()) {
@@ -412,6 +405,31 @@ Result<Reply> op_answer(const Env& e, const Json& args) {
     }
     return Reply{out, data};
   }
+
+  // Not a remark: it is the answer to the question asked now (or to the named slot).
+  if (slot.empty()) {
+    LOOM_TRY_ASSIGN(auto plan, plan_of(e, l));
+    const Next n = next_of(l, plan);
+    if (n.ask.is_null()) {
+      // Over the API an answer without a field is an error naming what is missing. A free message of the person (op say) has no field to name: nothing
+      // waits for it, so it is answered in words and nothing is written.
+      if (!json::get_bool(args, "free_text", false)) return err(Errc::InvalidArgument, e.say("profile_no_slot", Json::object()));
+      Json data = base_data(l);
+      data["written"] = false;
+      data["level"] = level;
+      data["level_choice_pending"] = plan.value("level_choice_pending", false);
+      data["remaining"] = n.remaining;
+      data["mode"] = "form";
+      data["question"] = nullptr;
+      data["done"] = true;
+      data["proposal"] = nullptr;
+      return Reply{e.say("profile_nothing_waiting", Json::object()), data};
+    }
+    slot = json::get_string(n.ask, "field");
+  }
+  const auto f = field_of(l, slot);
+  if (!f) return err(Errc::NotFound, e.say("profile_unknown_slot", Json{{"slot", slot}}));
+  const std::string topic = topic_of(e, l, slot);
 
   if (json::get_string(*f, "status") == "never")
     return err(Errc::Auth, e.say("profile_never_blocked", Json{{"topic", topic}}));
@@ -665,6 +683,8 @@ Result<Reply> interview(const Env& e, const Json& args) {
     const std::string control = control_op(e, text);
     op = control.empty() ? "answer" : control;
     call["op"] = op;
+    // A free message names no field: when no question waits it is answered in words, not refused for a missing field.
+    if (control.empty()) call["free_text"] = true;
   }
   auto done = dispatch(e, call, op);
   // A scenario stored before the questions "how many" and the remarks existed is a state the person decides about, not a dead end: the refresh is
