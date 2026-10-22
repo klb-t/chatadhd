@@ -30,6 +30,32 @@ Every list the owner gives (node kinds, menu items, settings groups, perspective
 flows…) is a seed, not a scope: fill it with what already exists in the app and with what the
 philosophy implies, and say what was added. Unless he says a list is closed, it is open.
 
+## Examples are examples; the engine handles every configuration (owner, 2026-10-23)
+
+> „widzę w tabelce wpisałeś przypisanie jako wymagania, co się kłóci z filozofią. unikaj zapisywania
+> przykładów bez wyraźnego zaznaczenia że to są przykłady które silnik i abstrakcje mają obsłużyć we
+> wszelkich możliwych konfiguracjach, mało użyteczne (typu przypisywanie wielu reprezentacjom tej samej
+> wartości w tym samym kontekście z takimi samymi modyfikatorami, konkretny przykład: starsze wersje
+> robią się przezroczyste, mniejsze, oddalone w perspektywie, bardziej czerwone, mniej zielone, niebieskie
+> bardziej oddalone od 128, przy czym kierunek oddalenia jeszcze od czegoś innego wynika ) również.
+> wyzwalając ewentualnie, zwracając uwagę na niewielką użyteczność i pytając czy to jest celowe i czy
+> następnym razem nie pytać”
+
+- A concrete assignment (which channel carries which measure, which colour means what, what is shown
+  first) written anywhere — plan, spec, brief, report, doc, UI text — is either a **labelled example**
+  ("przykład") or a **default preset in data**; it is never a requirement, and it is never attributed to
+  the owner ("jak mówiłeś") unless it is his quoted statement.
+- The engine and its abstractions must handle **every** configuration, also those of little use: the same
+  value shown by many representations in the same context under the same modifiers; a mapping whose
+  direction depends on another variable (his example: older versions turn transparent, smaller, more
+  distant in perspective, redder, less green, blue pushed away from 128 — and the direction of the push
+  itself follows from something else). Nothing is rejected for being unusual.
+- Little usefulness — or an objectively degenerate result (e.g. nothing visible) — is not an error: it
+  raises a **non-blocking advisory** that says what looks of little use and why (evidence, not a verdict),
+  asks whether it is intended, and offers "don't ask next time" (remembered like `declined`, reversible in
+  settings; how often to ask, up to never, is a configurable preset).
+- Every agent brief carries this rule (`tools/workflows/single-package.js`).
+
 ## Working with subagents (owner, 2026-10-10)
 
 Run subagents **one at a time**, as a queue — no parallel agents and no workflow
