@@ -633,4 +633,35 @@ Json receipt_bound(Json receipt, const std::string& store, long long max_bytes) 
   return receipt;
 }
 
+Result<StoredReceipt> stored_receipt(Database& db, const std::string& msg_id) {
+  LOOM_TRY_ASSIGN(auto found, db.get_msg(msg_id));
+  if (!found) return Error(Errc::NotFound, "message not found: " + msg_id);
+  Message m = *found;
+  StoredReceipt out;
+  out.msg_id = msg_id;
+  out.request_msg_id = m.id;
+  if (m.role != "user") {
+    std::optional<Message> source;
+    if (m.parent_id)
+      if (auto parent = db.get_msg(*m.parent_id); parent && *parent && (*parent)->role == "user") source = **parent;
+    if (!source)
+      if (auto all = db.get_msgs(m.conv_id)) {
+        bool seen = false;
+        for (auto it = all->rbegin(); it != all->rend() && !source; ++it) {
+          if (it->id == m.id) { seen = true; continue; }
+          if (seen && it->role == "user") source = *it;
+        }
+      }
+    if (source) {
+      m = *source;
+      out.request_msg_id = m.id;
+    }
+  }
+  const Json trace = m.metadata.is_object() ? m.metadata.value("context_trace", Json(nullptr)) : Json(nullptr);
+  if (trace.is_object())
+    if (Json receipt = trace.value("receipt", Json(nullptr)); receipt.is_object()) out.receipt = std::move(receipt);
+  out.request = std::move(m);
+  return out;
+}
+
 }  // namespace loom::chat::formats

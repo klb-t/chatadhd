@@ -2095,6 +2095,15 @@ std::string Catalogue::canonical(std::string_view address) {
   return a;
 }
 
+std::string Catalogue::db_id(std::string_view address) const {
+  const std::string a(address);
+  for (const auto& f : impl_->identity.value("db_forms", Json::array())) {
+    const std::string from = json::get_string(f, "address_prefix");
+    if (!from.empty() && starts_with(a, from) && a.size() > from.size()) return json::get_string(f, "db_prefix") + a.substr(from.size());
+  }
+  return a;
+}
+
 Result<std::optional<Json>> Catalogue::node(const std::string& raw) {
   const std::string address = canonical(raw);
   Impl& c = *impl_;

@@ -229,6 +229,22 @@ Result<Json> Perspectives::render(const RenderContext& ctx, const std::string& i
     out["render"] = p->value.value("render", Json::object());
     return out;
   }
+  if (source == "receipt") {
+    // The record of one request drawn as a graph (M1-K1c2): what was put into it and what was left out. A projection of the stored record.
+    LOOM_TRY_ASSIGN(auto kinds, edge_kinds_of(p->id));
+    projection::Env env;
+    env.root = ctx.root;
+    env.cfg = ctx.cfg;
+    env.db = ctx.db;
+    env.memory = ctx.memory;
+    env.lang = json::get_string(request, "lang", "en");
+    env.conv_id = json::get_string(request, "conversation_id");
+    LOOM_TRY_ASSIGN(auto out, projection::render_receipt(env, kinds, request));
+    out["perspective"] = p->id;
+    out["label"] = p->value.value("label", Json(p->id));
+    out["render"] = p->value.value("render", Json::object());
+    return out;
+  }
   if (!source.empty()) return Error(Errc::Unsupported, "perspective " + p->id + ": unknown source mechanism '" + source + "'");
   if (!ctx.db) return Error(Errc::InvalidArgument, "rendering a perspective needs a graph");
   LOOM_TRY_ASSIGN(auto kinds, edge_kinds_of(p->id));

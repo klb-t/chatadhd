@@ -120,4 +120,17 @@ Json receipt_finish(const Receipt& r, Json header, const Json& messages);
 // store: "auto" (whole when it fits max_bytes, else a summary with the reason; max_bytes 0 = no cap), "always" (whole, no cap).
 Json receipt_bound(Json receipt, const std::string& store, long long max_bytes);
 
+// M1-K1c2: the record as it is stored, found from any message of the exchange. The record lives with the message the person sent
+// (metadata.context_trace.receipt); asked about the answer, the request that made it is the message before it (its parent when that is a
+// message of the person, else the last message of the person before it in the conversation). ONE reading for the action context.receipt and for
+// the perspective sent_to_model, so both say the same thing about the same message.
+struct StoredReceipt {
+  std::string msg_id;                // the message that was named
+  std::string request_msg_id;        // the message the person sent (the record lives with it); = msg_id when that was it
+  std::optional<Message> request;    // that message, when the database has it
+  Json receipt = nullptr;            // loom.context_receipt/1; null when this request has none (before M1, context_receipt_store=never, trace_context=false)
+};
+// Error: NotFound when the named message does not exist.
+Result<StoredReceipt> stored_receipt(Database& db, const std::string& msg_id);
+
 }  // namespace loom::chat::formats

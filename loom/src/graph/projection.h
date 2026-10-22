@@ -72,6 +72,8 @@ class Catalogue {
   const Json* source_of(std::string_view address) const;
   // c_<id> -> conv:<id>, m_<id> -> msg:<id>, a nodes row of kind message -> msg:<id>; anything else unchanged.
   std::string canonical(std::string_view address);
+  // The reverse of the db forms: msg:<id> -> m_<id>, conv:<id> -> c_<id>; anything else unchanged.
+  std::string db_id(std::string_view address) const;
   // The node at an address, or nullopt when no source knows it.
   Result<std::optional<Json>> node(const std::string& address);
 
@@ -149,6 +151,14 @@ Result<Json> rom_override(const std::filesystem::path& root, const Json& request
 // A perspective rendered over the projection (Perspectives::render, source "catalogue"): the edges whose kind is in `kinds`, from the
 // request's seeds (addresses) through `hops` in `direction`; without seeds, every such edge.
 Result<Json> render_catalogue(const Env& env, const std::set<std::string>& kinds, const Json& request);
+// The perspective sent_to_model (Perspectives::render, source "receipt", M1-K1c2): the record of ONE request (loom.context_receipt/1, kept with
+// the message the person sent) drawn as a graph. request: {msg_id | seeds[0] | focus (the request or its answer), lang?, label_chars?, limit?}.
+// Nodes: the message, one node per item of the record (a ref that is a message or node of the database is THAT node, address and all; an
+// aggregate - the instruction, the memory tree ... - is a derived node sent:<request id>:<ref>, derived=true), links sent_to_model message -> item
+// (weight = tokens_est; metadata {class, why, source_kind, ref, label, tokens_est}) and, for what was left out, links left_out_of_model message ->
+// element (metadata {group, reason, reason_human, group_count}). A projection: computed on demand from the stored record, nothing is written.
+// No record (before M1, context_receipt_store=never): an empty graph with missing_reason and the words of the action context.receipt.
+Result<Json> render_receipt(const Env& env, const std::set<std::string>& kinds, const Json& request);
 
 // The actions of the catalogue this module carries out ("graph.navigate", "graph.card", "settings.resolved", "roles.resolved", "rom.override").
 bool is_projection_action(std::string_view action);
