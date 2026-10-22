@@ -1,7 +1,15 @@
-# Kolejka S1 — stan 2026-10-22 04:50 UTC
+# Kolejka S1 — stan 2026-10-22 05:30 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
+
+## CI 263 (`3b827313`) = failure TYLKO w `asan (g++)`, jeden test `server.keepalive` (05:26) → poprawka `51684e78` na `claude/m1-w0` (na W1c `1cf82c52`); FF `main` po końcu bramki `w1c`
+Job `vendored (clang++)` PRZESZEDŁ (poprawka `.inc` z jawnymi długościami potwierdzona na prawdziwym CI), dev/tsan zielone.
+Przyczyna (czytnik haiku): `rejected()` w `loom/server/tests/test_server_keepalive.py` dawało procesowi 10 s na start i odmowę złej wartości `--keep-alive-timeout-s`; pod ASAN na obciążonym runnerze to za mało
+(`TimeoutExpired` → „kept running”). Serwer odmawia w `main()` PRZED otwarciem czegokolwiek (`main.cpp:218`), więc to wolny start procesu, nie błąd logiki. Klasa: test zakłada szybkość (kolejny raz).
+Poprawka: limity działające tylko przy porażce: `rejected` 10→120 s, `Server.stop` 15→120 s, połączenie 10→60 s; zamierzone uśpienia keep-alive bez zmian. Lokalnie test przechodzi (`server keep-alive timeout: ok`).
+**W1c GOTOWE** (`1cf82c52`, Sonnet): stosunki „nieznane — brak bazy / dużo mniej niż zwykle / od 0,1 jedna cyfra”, krótkie „Klasa: nieznana” + „Szczegóły techniczne” zwinięte, nagłówki „Kolejność/Przepływ” słowami z paczki, zdanie o sumowaniu kroków; 7 zrzutów odświeżonych. Bramka lokalna `w1c` w toku (start 05:07).
+Po bramce: push `main` (FF; `origin/main` jest przodkiem) → nowy bieg loom.yml (≈ 120 min) → S2 dostaje „main ma poprawkę” (nie scala na czerwony main) → po zielonym CI + smoke S2: APK + raport właścicielowi.
 
 ## S2: android-smoke na W1b (`3b827313` + 2 kroki „Kontekst”) = SUCCESS (run 39717352777): pixel_5 1,0 41/0/0, pixel_6 1,3 41/0/0, pixel_6 1,0 40/1/0
 Jedna usterka: Bramka 0 krok 5 „Wstecz” (po ⋮ › Ustawienia panel nie otworzył się; S2 czyta jako dotknięcie w trakcie animacji menu, nie błąd aplikacji; przeszedł na 2 profilach i we wszystkich wcześniejszych biegach).
