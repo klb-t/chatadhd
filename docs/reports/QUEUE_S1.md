@@ -1,7 +1,12 @@
-# Kolejka S1 — stan 2026-10-22 22:30 UTC
+# Kolejka S1 — stan 2026-10-22 23:35 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
+
+## K2c-1 GOTOWE (23:23 UTC, `222fc2b5` na `claude/m1-w0`, wypchnięte): jednostki (`units.define/list/forget`, `conversation.set_unit/clear_unit`, bramkowane) + pochodzenie notatek pamięci (4 ścieżki zapisu oznaczone; stare notatki: „pochodzenie nieznane (zapisane przed M1)”)
+Agent Sonnet `wf_255ba3e4-de1`: 154 wywołania (≈3× planu), 335 tys. tokenów, 56 min. Znane luki: pytanie przy `units.forget` nie zawiera liczby rozmów (jest po „tak” i w `units.list`); zdanie swobodne nie poda rodzaju i id (router uczciwie „niedostępne”); „guardian/import” są w słowniku, ale nic jeszcze tak nie zapisuje.
+**Do zrobienia przed bramką:** K2b-3 (zadanie #27, brief `k2b3_brief.json`) — S2 znalazł na emulatorze (android-smoke 39865097050, 42/1/0 ×3), że „nie pytaj o zdrowie” nie jest rozumiane, gdy żadne pytanie nie czeka (`op_answer` szuka pytania przed odczytem uwagi). Start czeka na slot (plan tempa: 3 agenci w toku). Potem jedna bramka na K2c-1 + K2b-3, merge `origin/main` jeśli ruszył, FF `main` po zielonej bramce I końcu CI 274.
+**Uwagi właściciela 22.10 ≈ 23:00 (pierwsze od dawna):** „czyli onboarding głównie?” (tak — to moja kolejność), import nie pokazuje załączników w którejś rozmowie, „pokaż katalog główny grafu” / „pokaż import w grafie” nie działają w czacie, widok grafu = ruszająca się pajęczyna (3 węzły po imporcie tysięcy rozmów; koło z kwotami), brak 3D / kanałów alfa / wielowymiarowości, teksty nic nie mówią, pytanie o zebrane wytyczne i o plan (warsztat, perspektywy, kiedy funkcje, kiedy interfejs). Audyt tylko-do-odczytu: `wf_24f6dc8d-88c` (3 czytniki Sonnet: wytyczne / ekrany grafu / import + komendy). Odpowiedź dla właściciela po audycie.
 
 ## Bramka `w2a3` ZIELONA (22:25, `01dd2319`); `main` = `01dd2319` od 22:26 (W2a + W2a-fix + poprawka użycia po zwolnieniu); CI 274 (id 39864923873) w toku od 22:26, kontrola 00:09 (limit asan 150 min → najpóźniej 00:56); K2c-1 wystartowało 22:27 (`wf_255ba3e4-de1`, Sonnet: jednostki + pochodzenie notatek pamięci)
 CI 273 zakończone wcześniej (FAILURE), więc FF nic nie anulował. S2 poinformowany (main = 01dd2319, smoke wywiadu mile widziany, testidy w `M1_W0_TESTIDS.md`). Następnie: gdy K2c-1 skończy → `git fetch origin main`, ewentualne scalenie, bramka, FF `main` dopiero po zielonej bramce I po końcu CI 274. Potem K2c-2 (podgraf `party:self`) i W2b (ekran „Ty”). APK v3 po zielonym CI 274 + smoke S2.
