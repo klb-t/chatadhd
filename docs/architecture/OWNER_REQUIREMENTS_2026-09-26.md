@@ -727,6 +727,11 @@ A concrete assignment (channel to measure, colour to meaning) is a labelled exam
 
 Agents must read the choices the coordinator gives them as examples of the functionality of the engine and its abstractions (R58 applied to briefs). Examples are necessary and insufficient; only the full exhaustion of the possibilities suffices. Lists are filled in three stages: the most popular obvious examples; web research before building a release; at runtime an agent for unsupported formats that searches the web for everything about a format that did not exist before. Web information: documentation first, then reliable forums and so on; without reliable information, data analysis supported by the weaker sources and testing of what they say. Test outcomes feed the reliability rating of the source and the author and, when there is much data, depend on time. Recorded in `CLAUDE.md` and in `tools/workflows/single-package.js`; design inputs for `IMPORT_JAKO_PLIKI_W_GRAFIE_2026-10-23.md` (unsupported-format agent, reliability ledger extending `loom/data/policy/calibration.json`). (paraphrase; the quoted words are verbatim)
 
+## R60 — Absence today is not absence forever; the ecosystem has other consumers; we build a new paradigm (owner, 2026-10-23)
+> "odpowiedź do twojej poprzedniej odpowiedzi brak czegoś lub kogoś teraz nie oznacza że będzie tak zawsze. w ekosystemie mamy innych odbiorców, A my budujemy nowy paradigmat. ASR się wczuło w klimat, musiałem poprawić z paradygraf ;D"
+
+Reply to the coordinator's argument that format-preserving writing deserves only an export on request because (to its knowledge) ChatGPT and Claude do not read their own export back. That argument was an unverified statement about the present, used as a design filter. Rule: facts about the present state of the ecosystem are dated observations (with validity window and source rating, R59), they may feed a non-blocking advisory (R58) and never limit an option. Trigger for the design documents of 2026-10-23: check that `IMPORT_JAKO_PLIKI_W_GRAFIE_2026-10-23.md` does not lean on "no consumer today", and consider our own export as something others may read. (paraphrase; the quoted words are verbatim)
+
 ## Decision — rebuild, don't recover
 > "nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane"
 

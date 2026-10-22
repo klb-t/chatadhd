@@ -59,6 +59,12 @@ philosophy implies, and say what was added. Unless he says a list is closed, it 
   agent choices phrased as requirements, the agent reads them as examples of the functionality of the
   engine and its abstractions: it builds the general mechanism; the brief's case is one instance and one
   test, never the scope.
+- **Absence today is not absence forever (owner, 2026-10-23, third message).** "No known consumer / tool /
+  format / feature today" is never a design argument for dropping or demoting an option: the ecosystem has
+  other consumers than the ones we know, and we are building a new paradigm in which our own output may be
+  what others come to read. A fact about the present state of the world (who imports what, which app has
+  which feature) is a **dated observation** with a validity window and a source rating (R59 ledger), may
+  feed an advisory, and is never a constraint.
 - **Necessary, insufficient.** Examples are necessary and not sufficient; only the full exhaustion of the
   list of possibilities is sufficient. Accepting an engine feature therefore means: the examples pass AND
   the possibility space is covered (generative / property-based tests where feasible), and what stays
