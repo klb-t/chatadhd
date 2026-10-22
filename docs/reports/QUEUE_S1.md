@@ -10,6 +10,7 @@ pochodzenia (`model-provenance`: poziom, klasa, cena albo „nieznany — brak c
 `m1-context-menu-native.mjs` 4× z rzędu, `m1-context-sent-native.mjs` 3× (raz padł podczas regeneracji packów pod trwającym przebiegiem — nie odtworzone). **Nie uruchomione:** pytanie ×10 w przeglądarce
 (brak punktu odniesienia w e2e), nowe linie w `ContextSlider` tylko jednostkowo, `npm run e2e` (`run.mjs`), Android. Pasek zna tylko zmiany z TEGO okna (jądro nie ma odczytu nośnika).
 S2 czeka na moje słowo „W1b na main”, żeby puścić jeden bieg android-smoke z krokiem „Kontekst” (`50c54661` na `claude/s2-parallel`).
+**Bramka lokalna `w1b` ZIELONA** (`9b376773`, 02:29). **DOC1** (raport `M1_CHECKPOINT_1.md` + zrzuty, `wf_4175950c-5e3`, Sonnet, tylko dokumenty) wystartował 02:50 UTC. FF `main` z `9b376773` po końcu biegu CI dla `d103d5d8` (≈ 03:20) → wtedy „W1b na main” do S2 → jeden bieg android-smoke → `package.yml` (APK + raport) dla właściciela.
 
 ## CI 261 = SUCCESS (01:15 UTC, 119 min): `main` `59de144c` (K1a + K1b + poprawki asan) ZIELONY; `main` = `d103d5d8` (W1a + rejestr interfejsów) od 01:21, nowy bieg w toku
 Pierwszy w pełni zielony `main` po K1 (asan przeszedł: `test_context_receipt`, `chat_active_task_*`). Push `d103d5d8` (bramka lokalna `w1a2` zielona) wyzwolił nowy bieg (≈ 120 min, do ok. 03:20; kontrola 03:18).
