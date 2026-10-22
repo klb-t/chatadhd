@@ -2936,7 +2936,12 @@ std::string_view(R"loom_onboard(                "order.stability": "stabilna (pr
                 "chip.review.label": "Summary",
                 "chip.review.say": "summary",
                 "chip.status.label": "How many left",
-                "chip.status.say": "how many left"
+                "chip.status.say": "how many left",
+                "chips.idle": "next review status",
+                "chip.next.label": "Go on",
+                "chip.next.say": "go on",
+                "proposal.yes": "Yes",
+                "proposal.no": "No"
               },
               "pl": {
                 "card.title": "Poznajmy się",
@@ -2970,7 +2975,12 @@ std::string_view(R"loom_onboard(                "order.stability": "stabilna (pr
                 "chip.review.label": "Podsumowanie",
                 "chip.review.say": "podsumowanie",
                 "chip.status.label": "Ile zostało",
-                "chip.status.say": "ile zostało"
+                "chip.status.say": "ile zostało",
+                "chips.idle": "next review status",
+                "chip.next.label": "Dalej",
+                "chip.next.say": "dalej",
+                "proposal.yes": "Tak",
+                "proposal.no": "Nie"
               }
             }
           }
@@ -3856,12 +3866,12 @@ std::string_view(R"loom_onboard(                "order.stability": "stabilna (pr
         "feature": "chat_send",
         "locales": {
           "en": {
-            "source_history_omitted": "Linked source history will not be included in this message. Only the messages stored in this conversation are sent.",
+)loom_onboard", 59942),
+std::string_view(R"loom_onboard(            "source_history_omitted": "Linked source history will not be included in this message. Only the messages stored in this conversation are sent.",
             "reason": "Reason: {{explanation}} (code: {{reason}})",
             "reason.source_egress_not_bound": "there is no binding yet that allows source content to be sent to a model",
             "reason.unrecognized": "the conversation view reports that this history cannot be included",
-)loom_onboard", 59965),
-std::string_view(R"loom_onboard(            "view_unavailable": "The conversation view could not be loaded ({{reason}}). Sending still works: the message is sent with the messages stored in this conversation; linked source history, if any, is not included.",
+            "view_unavailable": "The conversation view could not be loaded ({{reason}}). Sending still works: the message is sent with the messages stored in this conversation; linked source history, if any, is not included.",
             "view_loading": "Sending waits until this conversation's view has loaded.",
             "source_read_in_flight": "Sending waits while linked sources are read locally, so that a message is not sent while the view is changing. It resumes when the read finishes.",
             "setting_label": "Block sending when linked source history cannot be included",
@@ -4841,11 +4851,11 @@ std::string_view(R"loom_onboard(            "view_unavailable": "The conversatio
             "mp_change": "Change the model in the + menu, the entry “Choose model”.",
             "cm_issue_no_step": "“{{name}}” should be a context step but names none",
             "cm_issue_no_focus": "“{{name}}” should open a graph node but names none",
-            "mp_set_by_window": "Picked in this window and sent with every request (it is not saved in the chain of settings).",
+)loom_onboard", 59994),
+std::string_view(R"loom_onboard(            "mp_set_by_window": "Picked in this window and sent with every request (it is not saved in the chain of settings).",
             "mp_reason_other_model": "this class is that of the model {{model}} of the role “Answer to a message”, not the one picked here",
             "mp_reason_no_role": "the engine gave no role for answering a message",
-)loom_onboard", 59900),
-std::string_view(R"loom_onboard(            "mp_chain_rest": "The other levels have no value or do not apply to this conversation: {{levels}}.",
+            "mp_chain_rest": "The other levels have no value or do not apply to this conversation: {{levels}}.",
             "mp_class_plain": "Class: unknown",
             "mp_details": "Technical details"
           },
@@ -5811,14 +5821,14 @@ std::string_view(R"loom_onboard(            "mp_chain_rest": "The other levels h
             "count.name.tool_sources": "źródła narzędzi",
             "count.name.tool_source_kinds": "rodzaje źródeł narzędzi",
             "count.name.roles": "role modeli",
-            "count.name.roles_settings": "ustawienia ról",
+)loom_onboard", 59986),
+std::string_view(R"loom_onboard(            "count.name.roles_settings": "ustawienia ról",
             "count.name.connectors": "konektory",
             "count.name.environments": "środowiska",
             "count.name.messages_waiting": "wiadomości czekające na analizę",
             "count.name.background_tasks": "zadania w tle",
             "count.name.analysis_modes": "tryby analizy",
-)loom_onboard", 59991),
-std::string_view(R"loom_onboard(            "count.name.calibration_items": "elementy w kalibracji",
+            "count.name.calibration_items": "elementy w kalibracji",
             "count.name.kb.runs": "przebiegi analizy",
             "reason.no_model": "brak modelu",
             "reason.composed": "dostawcy po kolei, bez jednego modelu",
@@ -6526,7 +6536,12 @@ std::string_view(R"loom_onboard(            "count.name.calibration_items": "ele
             "chip.review.label": "Summary",
             "chip.review.say": "summary",
             "chip.status.label": "How many left",
-            "chip.status.say": "how many left"
+            "chip.status.say": "how many left",
+            "chips.idle": "next review status",
+            "chip.next.label": "Go on",
+            "chip.next.say": "go on",
+            "proposal.yes": "Yes",
+            "proposal.no": "No"
           },
           "pl": {
             "card.title": "Poznajmy się",
@@ -6560,7 +6575,12 @@ std::string_view(R"loom_onboard(            "count.name.calibration_items": "ele
             "chip.review.label": "Podsumowanie",
             "chip.review.say": "podsumowanie",
             "chip.status.label": "Ile zostało",
-            "chip.status.say": "ile zostało"
+            "chip.status.say": "ile zostało",
+            "chips.idle": "next review status",
+            "chip.next.label": "Dalej",
+            "chip.next.say": "dalej",
+            "proposal.yes": "Tak",
+            "proposal.no": "Nie"
           }
         }
       }
@@ -6728,7 +6748,7 @@ std::string_view(R"loom_onboard(            "count.name.calibration_items": "ele
   },
   "presentation_key": "presentation.onboarding"
 }
-)loom_onboard", 58343)};
+)loom_onboard", 59095)};
 static constexpr std::string_view kOnboardingScenario[] = {
 std::string_view(R"loom_onboard({
   "schema": "loom.onboarding.scenario/1",

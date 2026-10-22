@@ -4,12 +4,25 @@ import { offerTexts, proposalTexts, proposalView, writtenTexts, type OfferView, 
 
 /** A command from the conversation window waiting for the user's answer (R54): what will run, the estimate,
  *  what the rules ask, and the two ways to answer. Never an error state; nothing has been executed. */
-export default function ActionProposalBlock({ feature, answer, busy, failure, onConfirm, onReject, testId }: {
+export default function ActionProposalBlock({ feature, answer, busy, failure, onConfirm, onReject, testId, plain }: {
   feature: PresentationFeature | null; answer: PendingAnswer; busy?: boolean; failure?: string | null;
   onConfirm: () => void; onReject: () => void; testId: string;
+  /** M1-W2a: the proposal of the interview ("Tak zrozumiałem"): the sentence above it already says what was understood in words, so the block
+   *  shows only the two answers, in the given words - not the kernel's arguments (kind=remark, user_id=local ...), the plan or the model estimate. */
+  plain?: { confirm: string; reject: string };
 }) {
   const view = useMemo(() => proposalView(answer), [answer]);
   const texts = useMemo(() => proposalTexts(feature, answer, view), [feature, answer, view]);
+  if (plain) return (
+    <div className="pill warn" role="group" aria-label={texts.title ?? undefined} data-testid={testId} aria-live="polite" data-plain="true"
+      data-run-id={answer.runId} data-receipt-id={answer.receiptId} data-kind={answer.kind}>
+      <button type="button" className="primary" disabled={busy || !view.answerable} onClick={onConfirm}
+        data-testid={testId + "-confirm"}>{plain.confirm}</button>
+      <button type="button" disabled={busy || !view.answerable} onClick={onReject}
+        data-testid={testId + "-reject"}>{plain.reject}</button>
+      {failure && <p role="alert" data-testid={testId + "-failure"}>{texts.failed(failure)}</p>}
+    </div>
+  );
   return (
     <div className="pill warn" role="group" data-testid={testId} aria-live="polite"
       data-run-id={answer.runId} data-receipt-id={answer.receiptId} data-kind={answer.kind}>

@@ -53,6 +53,16 @@ test('the waiting question is the last message when it is an assistant message t
   assert.equal(st.waitingQuestion([plainQuestion, { ...answer, status: 'excluded' }]).messageId, 'm_3', 'an excluded message does not count');
 });
 
+test('the quick replies stand under the last message when it asks (or answers a status); never under a proposal or a person\'s message', () => {
+  assert.deepEqual(st.repliesTarget([levelMessage]), { messageId: 'm_1', idle: false });
+  assert.deepEqual(st.repliesTarget([levelMessage, answer, plainQuestion]), { messageId: 'm_3', idle: false });
+  const statusReply = { id: 'm_7', role: 'assistant', status: 'active', metadata: { routed: 'interview', interview: { kind: 'reply', question: null, mode: 'form' } } };
+  assert.deepEqual(st.repliesTarget([plainQuestion, answer, statusReply]), { messageId: 'm_7', idle: true });
+  assert.equal(st.repliesTarget([plainQuestion, answer, proposal]), null);
+  assert.equal(st.repliesTarget([plainQuestion, answer]), null, 'the person spoke last');
+  assert.equal(st.repliesTarget([]), null);
+});
+
 test('the card of the empty chat: show + never started + not tapped away in this launch', () => {
   const status = kind => ({ kind });
   for (const setting of ['show', 'later', 'never', null])
@@ -112,6 +122,13 @@ test('the quick replies: ids and labels from the pack, and every say-word is a c
     for (const chip of chips) assert.ok(words[chip.id][lang].map(x => x.toLowerCase()).includes(chip.say.toLowerCase()), `${lang}: "${chip.say}" is a word of ${chip.id}`);
   }
   assert.deepEqual(st.chipSpecs(id => id), [], 'without the words there are no chips');
+  for (const [lang, tr] of [['pl', t], ['en', tEn]]) {
+    const idle = st.chipSpecs(tr, true);
+    assert.deepEqual(idle.map(c => c.id), ['next', 'review', 'status'], 'under an answer that asks nothing: go on, summary, how many are left');
+    const control = Object.values(words).flatMap(w => w[lang]).map(x => x.toLowerCase());
+    for (const chip of idle) assert.ok(words[chip.id][lang].map(x => x.toLowerCase()).includes(chip.say.toLowerCase()), `${lang}: "${chip.say}" is a word of ${chip.id}`);
+    assert.ok(control.includes(idle[0].say.toLowerCase()));
+  }
 });
 
 test('the words: pl and en have the same keys and the same {{holes}}; no raw key or English phrase on the Polish screen', () => {

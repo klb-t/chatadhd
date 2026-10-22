@@ -74,12 +74,26 @@ export function cardVisible(input: { setting: CardSetting | null; status: Interv
 export const settingAtLaunch = (setting: CardSetting | null): CardSetting | null => (setting === "later" ? "show" : setting);
 
 export interface ChipSpec { id: string; label: string; say: string }
-/** The quick replies of a question, from the words of the pack: the ids in chips.order, each with its label and the control word it sends. */
-export function chipSpecs(t: (id: string) => string): ChipSpec[] {
-  const order = t("chips.order");
-  if (order === "chips.order") return [];
+/** The quick replies under a message of the interview, from the words of the pack: the ids in chips.order (a question waits) or chips.idle (the
+ *  message is an answer to "how many are left" or "summary": nothing waits, the person goes on or asks again), each with its label and the control
+ *  word it sends. */
+export function chipSpecs(t: (id: string) => string, idle = false): ChipSpec[] {
+  const key = idle ? "chips.idle" : "chips.order";
+  const order = t(key);
+  if (order === key) return [];
   return order.split(/\s+/).filter(Boolean).map(id => ({ id, label: t(`chip.${id}.label`), say: t(`chip.${id}.say`) }))
     .filter(c => c.label !== `chip.${c.id}.label` && c.say !== `chip.${c.id}.say`);
+}
+
+/** The message of the interview the quick replies stand under: the LAST message when it is an assistant message of the interview that asks something
+ *  (question | reply); `idle` when it carries no question (the answer to a status or a summary). A proposal waits for yes or no: no replies under it. */
+export function repliesTarget(messages: readonly RowLike[]): { messageId: string; idle: boolean } | null {
+  const active = messages.filter(m => m.status === undefined || m.status === "active");
+  const last = active[active.length - 1];
+  if (!last || last.role !== "assistant") return null;
+  const meta = interviewMeta(last.metadata);
+  if (!meta || (meta.kind !== "question" && meta.kind !== "reply")) return null;
+  return { messageId: last.id, idle: meta.question === null };
 }
 
 /** The line of the progress: how many questions are left; the level choice or the end have their own words. */

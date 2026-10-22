@@ -180,8 +180,9 @@ try {
     assert.deepEqual(small, [], "cards and chips are at least 44 x 44 px");
     assert.ok(await page.evaluate(() => document.documentElement.scrollWidth) <= 390, "no horizontal page scroll");
     await audit("04-level-cards"); await shot("04-level-cards");
-    await page.getByTestId("interview-level").nth(2).scrollIntoViewIfNeeded();
-    await shot("05-level-cards-end");
+    await page.getByTestId("interview-level").first().scrollIntoViewIfNeeded();
+    await page.getByTestId("interview-level-question").evaluate(el => el.scrollIntoView({ block: "start" }));
+    await audit("05-level-cards-start"); await shot("05-level-cards-start");
   });
 
   await step("B2 a tap on a level card is the person's answer (the label, as a normal message) and the next question comes", async () => {
@@ -207,8 +208,14 @@ try {
       assert.equal(await lastText("user"), wordOf(id), `${what}: the chip sent the control word, nothing else`);
       assert.ok((await lastText("assistant")).length > 0, `${what}: the kernel answered`);
     };
-    await asked("status", "Ile zostało"); await audit("07-status"); await shot("07-status");
+    await asked("status", "Ile zostało");
+    // the answer to a status asks nothing: the replies under it are "go on", "summary" and "how many are left", never skip / never
+    await page.locator('[data-testid="interview-chips"][data-idle="true"]').waitFor();
+    assert.deepEqual(await page.getByTestId("interview-chip").evaluateAll(els => els.map(el => el.dataset.chip)), w["chips.idle"].split(/\s+/));
+    await audit("07-status"); await shot("07-status");
     await asked("review", "Podsumowanie");
+    await asked("next", "Dalej");   // the question comes back and with it the whole row of replies
+    await page.locator('[data-testid="interview-chips"]:not([data-idle])').waitFor();
     await sendTyped("Mów mi Ala");
     assert.equal(await lastText("user"), "Mów mi Ala");
     assert.ok((await lastText("assistant")).length > 0);
@@ -225,12 +232,17 @@ try {
     const proposal = page.getByTestId("chat-action-proposal");
     await proposal.waitFor();
     const text = (await proposal.innerText()).replace(/\s+/g, " ");
-    assert.match(text, /Tak zrozumiałem/, "the kernel's sentence 'Tak zrozumiałem' is in the conversation");
-    assert.ok(await proposal.getByTestId("chat-action-proposal-confirm").isVisible() && await proposal.getByTestId("chat-action-proposal-reject").isVisible(), "yes and no");
+    console.log("[m1-profile] proposal block says: " + text);
+    // the sentence above says what was understood; the block is only the two answers - never the kernel's fields (kind=remark, user_id=local ...)
+    assert.equal(await proposal.getAttribute("data-plain"), "true");
+    assert.equal(text, `${say("proposal.yes")} ${say("proposal.no")}`, "the block holds nothing but the two answers");
+    assert.ok(!/[=_]/.test(text), "no raw kernel field in the block");
+    assert.match(await lastText("assistant"), /Tak zrozumiałem/, "the kernel's sentence 'Tak zrozumiałem' is in the conversation");
+    assert.ok(await proposal.locator('[data-testid="chat-action-proposal-confirm"]').isVisible() && await proposal.getByTestId("chat-action-proposal-reject").isVisible(), "yes and no");
     await audit("11-proposal"); await shot("11-proposal");
     assert.equal(await page.getByTestId("interview-chip").count(), 0, "a proposal waits for yes or no: no quick replies under it");
     const before = await messages().count();
-    await page.getByTestId("chat-action-proposal-confirm").tap();
+    await page.locator('[data-testid="chat-action-proposal-confirm"]').tap();
     await page.waitForFunction(n => document.querySelectorAll('[data-testid="message"]').length > n, before, { timeout: 30000 });
     await page.getByTestId("chat-action-proposal").waitFor({ state: "detached" });
     // the kernel is asked what was written (never typed here): the health topic is closed

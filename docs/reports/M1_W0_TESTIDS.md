@@ -617,6 +617,6 @@ Wywiad toczy się w rozmowie z `metadata.flow = profile.interview` (formularz, b
 | linia nad rozmową | `interview-info` (`data-variant`, `data-progress`), `interview-info-line`, `interview-info-why`, `interview-info-progress` | „Rozmowa bez modelu — tylko formularz”, „Pytań do zadania: N” z akcji `profile.interview` `status` |
 | pytanie o poziom | `interview-level-question`, `interview-levels`, `interview-level` (`data-level`), `interview-level-label`, `interview-level-asks`, `interview-level-stores`, `interview-level-model-sees`, `interview-level-hint` | trzy karty z podglądem z danych wiadomości; dotknięcie wysyła nazwę poziomu jako odpowiedź |
 | szybkie odpowiedzi | `interview-chips`, `interview-chip` (`data-chip` = `skip` / `decline` / `never` / `review` / `status`) | pod pytaniem, które czeka; każdy wysyła słowo sterujące jako zwykłą wiadomość |
-| „Tak zrozumiałem” | `chat-action-proposal`, `chat-action-proposal-confirm`, `chat-action-proposal-reject` | istniejący `ActionProposalBlock` (propozycja `profile.confirm`) |
+| „Tak zrozumiałem” | `chat-action-proposal` | istniejący `ActionProposalBlock` (propozycja `profile.confirm`); jego przyciski mają ten sam id z końcówką `-confirm` (Tak) i `-reject` (Nie) |
 
 Krok dla Androida (propozycja): `interview-card-start` → `interview-level` (`data-level` = `minimal`) → `interview-chip` (`data-chip` = `skip`) → `interview-info`.

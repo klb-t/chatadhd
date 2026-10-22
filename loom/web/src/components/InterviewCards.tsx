@@ -129,11 +129,11 @@ export function InterviewLevelCards({ t, levels, disabled, onPick }: { t: ShellT
 }
 
 /** The quick replies under a question: each sends its control word as the person's message. */
-export function InterviewChips({ t, disabled, onSay }: { t: ShellT; disabled: boolean; onSay: (word: string) => void }) {
-  const chips = useMemo(() => chipSpecs(t), [t]);
+export function InterviewChips({ t, idle, disabled, onSay }: { t: ShellT; idle: boolean; disabled: boolean; onSay: (word: string) => void }) {
+  const chips = useMemo(() => chipSpecs(t, idle), [t, idle]);
   if (chips.length === 0) return null;
   return (
-    <div className="interview-chips" role="group" aria-label={t("chips.aria")} data-testid="interview-chips">
+    <div className="interview-chips" role="group" aria-label={t("chips.aria")} data-testid="interview-chips" data-idle={idle ? "true" : undefined}>
       {chips.map(chip => <button key={chip.id} type="button" disabled={disabled} onClick={() => onSay(chip.say)} data-testid="interview-chip" data-chip={chip.id}>{chip.label}</button>)}
     </div>
   );

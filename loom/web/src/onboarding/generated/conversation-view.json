@@ -2767,7 +2767,12 @@
             "chip.review.label": "Summary",
             "chip.review.say": "summary",
             "chip.status.label": "How many left",
-            "chip.status.say": "how many left"
+            "chip.status.say": "how many left",
+            "chips.idle": "next review status",
+            "chip.next.label": "Go on",
+            "chip.next.say": "go on",
+            "proposal.yes": "Yes",
+            "proposal.no": "No"
           },
           "pl": {
             "card.title": "Poznajmy się",
@@ -2801,7 +2806,12 @@
             "chip.review.label": "Podsumowanie",
             "chip.review.say": "podsumowanie",
             "chip.status.label": "Ile zostało",
-            "chip.status.say": "ile zostało"
+            "chip.status.say": "ile zostało",
+            "chips.idle": "next review status",
+            "chip.next.label": "Dalej",
+            "chip.next.say": "dalej",
+            "proposal.yes": "Tak",
+            "proposal.no": "Nie"
           }
         }
       }

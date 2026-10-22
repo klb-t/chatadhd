@@ -48,7 +48,7 @@ import { useReceiptWords } from "./use-receipt-words";
 import { loadSelectorProfiles, useContextModify } from "./use-context-modify";
 import { modifySentence, profileChoices, type ProfileChoice } from "./context-receipt-state";
 import { InterviewCardDecision, InterviewChips, InterviewInfoLine, InterviewLevelCards, InterviewStartCard, useInterviewCard, useInterviewWords, useIsInterviewConversation } from "./InterviewCards";
-import { levelCards, waitingQuestion } from "../context/interview";
+import { levelCards, repliesTarget, waitingQuestion } from "../context/interview";
 import ContextStrip from "../shell/ContextStrip";
 import ModelProvenance from "../shell/ModelProvenance";
 import { lastReceiptProfile, pendingParts } from "../shell/context-strip";
@@ -1127,6 +1127,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
   const displayedStream = stream?.convId === convId ? stream : null;
   const displayedPending = pendingUserText?.convId === convId ? pendingUserText : null;
   const waitingInterview = interviewConv ? waitingQuestion(visibleMessages) : null;
+  const repliesUnder = interviewConv ? repliesTarget(visibleMessages) : null;
 
   return (
     <div className="chat-view" data-testid="chat-view">
@@ -1220,7 +1221,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
               ) : (
                 <div className="body" dangerouslySetInnerHTML={renderMarkdown(m.role === "assistant" ? nativeGraphDisplayText(graphReply, m.text) : m.text)} />
               )}
-              {waitingInterview?.messageId === m.id && <InterviewChips t={interviewT} disabled={!!stream} onSay={sayInInterview} />}
+              {repliesUnder?.messageId === m.id && <InterviewChips t={interviewT} idle={repliesUnder.idle} disabled={!!stream} onSay={sayInInterview} />}
               {m.role === "assistant" && (() => {
                 const question = semanticQuestion(m.metadata);
                 if (!question) return null;
@@ -1259,7 +1260,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
                     onAnswer={(result) => answerClient(answer.runId, result)} onCancel={() => void cancelRun(answer.runId)} />;
                 }
                 if (answer) {
-                  return <ActionProposalBlock testId="chat-action-proposal" feature={proposalFeature} answer={answer} busy={answering === answer.runId}
+                  return <ActionProposalBlock testId="chat-action-proposal" feature={proposalFeature} answer={answer} busy={answering === answer.runId} plain={interviewConv ? { confirm: interviewT("proposal.yes"), reject: interviewT("proposal.no") } : undefined}
                     failure={answerFailure && answerFailure.runId === answer.runId ? answerFailure.reason : null}
                     onConfirm={() => void answerAction(answer, true)} onReject={() => void answerAction(answer, false)} />;
                 }
