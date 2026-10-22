@@ -18,6 +18,29 @@ presets, no invented limits), record the decision and how to reverse it in
 the agreed budget, sending his private data to a new provider, or a product
 direction that contradicts the requirements — and then as a yes/no question.
 
+## How the owner works: long series of messages (owner, 2026-10-23)
+
+> „możesz też zapisać jako uwagi nt. mojego sposobu pracy, że komunikuje się jak mam czas i wtedy każdą
+> myśl na bieżąco pisze później pracuje nad następną więc się możesz spodziewać dłuższych serii”
+
+He talks to the assistant when he has time, writes each thought as it comes, then goes back to working on
+the next thing — so expect **longer series** of messages (several in a row, minutes apart, each a
+correction, an addition or a new question), then silence. What follows from it (coordinator's decisions,
+presets, reversible):
+
+- A series is one stream of thought spread over time, not a list of separate orders. Every message is
+  recorded durably **at once** (verbatim, with an id: `OWNER_REQUIREMENTS`, later `tools/spec.py add`);
+  that is cheap and loses nothing.
+- Expensive stages (Fable design, multi-agent workflows, anything that burns a package) are not started on
+  the first message of a series unless he orders it explicitly; preset: wait until about 15 minutes after his
+  last message, cheap read-only research may start at once. A running agent is never restarted for a
+  correction (waste control 6): the correction is recorded, and applied as an addendum after the agent ends.
+- Replies inside a series are short: what was understood, what was recorded, what changed. The deep dive
+  (reminder of the base, then the details, the non-intuitive ones) belongs to a question and to the end of
+  a series, as one consolidated answer with the list of what the series changed.
+- His silence is not agreement and not a pause in the work: the queue (`docs/reports/QUEUE_S1.md`) must
+  hold the whole state, because he reads it in bursts.
+
 ## Lists are examples (owner, 2026-10-16)
 
 > „o ile nie mówię inaczej, to listy które podaję, na przykład podstawowe węzły w podstawowym
