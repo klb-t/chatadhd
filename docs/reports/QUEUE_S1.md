@@ -1,7 +1,12 @@
-# Kolejka S1 — stan 2026-10-22 14:20 UTC
+# Kolejka S1 — stan 2026-10-22 15:10 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
+
+## `main` = `1ee7a6c8` (FLAKE-1) od 15:06; CI 269 (`b1b34f17`) SUCCESS (14:39, 124 min — asan wolny runner); CI 270 (id 39801749697) w toku, kontrola 16:35. Bramka `k2a` CZERWONA na jednym kroku (to samo audytem tekstu z K1c-4 — dobrze, że istnieje) → K2a-fix
+Bramka `k2a` (`67c235d3`): jedyna porażka `e2e/m1-navigator-native.mjs` „no screen shown so far has developer text”: na ekranie „Ty” (party:self) cztery wiersze pokazują surowe id pól: `interview.detail`, `health.needs`, `relations.people`, `routine.rhythm`
+(+ skrócone etykiety na mapie). Przyczyna: `slot_labels` w `graph_sources.pack` (klasa `party_self`) mają etykiety dla 9 z 13 pól `scenario.pack`; brakuje czterech (w tym nowego `interview.detail` z K2a). **K2a-fix** (`wf_0a950ca9-11e`, Sonnet, start 15:07): etykiety pl/en dla czterech pól + test-strażnik (każde pole scenariusza ma etykietę pl i en; sterowany danymi) + wyjaśnienie, czemu trzy starsze pola nie były wcześniej zgłaszane (czy K2a zmieniło to, co rzutuje party:self) + regeneracja profili + e2e navigator 2×.
+S2 poinformowany: smoke na `1ee7a6c8` (potwierdzenie FLAKE-1 na emulatorze). APK v2 po zielonym CI 270 i wyniku S2. FF K2a (+fix) po zielonej bramce `k2a2` i po końcu CI 270.
 
 ## K2a GOTOWE (14:15 UTC, `67c235d3` na `claude/m1-w0`, na wierzchu FLAKE-1 `1ee7a6c8`): jądro wywiadu „Ty” — pytania PL, poziomy, uwagi — bramka lokalna `k2a` w toku (start 14:16)
 Agent Sonnet (`wf_a8c61ce6-7fe`, 125 wywołań, 292 tys. tokenów, 26 min). (1) pytania i tytuły sekcji `{en,pl}` (brak pl = błąd testu; zostaje jawny `fallback:true` przy brakującym języku), (2) pierwsze pytanie „ile pytań możesz usłyszeć” + `detail_levels` minimalnie/zwykle/szczegółowo (przykłady z listy właściciela; progi 1/1, 2/2, bez limitu), podglądy
