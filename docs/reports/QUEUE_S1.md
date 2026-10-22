@@ -1,7 +1,13 @@
-# Kolejka S1 — stan 2026-10-22 20:15 UTC
+# Kolejka S1 — stan 2026-10-22 21:05 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
+
+## Bramka `w2a` CZERWONA (21:01, `5c15b2de`): 3 przyczyny, wszystkie skutki W2a → W2a-fix (`wf_38b54457-b3c`, Sonnet, start 21:02)
+(1) `unit.test_action_rules`: złoty plik `settings_fields.json` nie zgadza się, bo W2a dał ustawieniu `onboarding_card` czytnik (planned → implemented) — zmiana zamierzona, golden do zaktualizowania (nie `chat_request_legacy.json`). (2) `test:chat-send-gate` i (3) `test:interface-2`: ich atrapy backendu flagują NIEOCZEKIWANE żądania — W2a robi `GET /api/conversations/<id>` przy każdym otwarciu rozmowy (odczyt `metadata.flow` dla linii informacyjnej wywiadu). To realny koszt (dodatkowe żądanie na każdą rozmowę dla jednego rodzaju rozmowy), nie tylko luka atrapy.
+Decyzja (moja, dla agenta): wyprowadzić „to rozmowa wywiadu” z danych, które aplikacja już ma (`metadata.interview` na wiadomościach asystenta / wpisy listy rozmów), bez dodatkowego GET; nie osłabiać asercji `unexpected`.
+Nauka: bramka złapała to, czego e2e W2a nie widziało (agent nie uruchomił sąsiednich testów z atrapami backendu) → w briefach dla paczek webowych dodaję pełną listę `test:*` dotykających ChatView.
+CI 273 (`ae6d152f`) wciąż w toku o 21:02 (101 min), kontrola 21:30.
 
 ## W2a GOTOWE (20:11 UTC, `5c15b2de` na `claude/m1-w0`): wywiad „Poznajmy się” w aplikacji — bramka lokalna `w2a` w toku (start 20:13)
 Agent Sonnet (`wf_18afae68-0f2`, 182 wywołania — ok. 2,6× planu, każdy bieg e2e ≈ 2,5 min; 350 tys. tokenów, 51 min). Karta „Poznajmy się” w pustym czacie (Zacznij / Później / Nigdy nie pytaj, „bez modelu, nic nie wychodzi poza to urządzenie”), 3 karty poziomów z podglądami z jądra (e2e porównuje znak po znaku), chipy Pomiń/Nie teraz/Nigdy/Podsumowanie/Ile zostało,
