@@ -475,7 +475,9 @@ function m1GateChecks() {
   if (spec.missing) return [["M1 Gate 0 (screens of W0)", async () => { const e = new Error(spec.missing); e.skip = true; throw e; }]];
   return spec.steps.map(st => [`M1 Gate 0: ${st.name}`, async () => {
     const notes = [];
-    try {
+    // one navigation attempt; a tap the WebView dropped (settings panel never opened after ⋮ › Ustawienia, seen on 2 of 3
+    // profiles at random) gets one more attempt from the chat root, and the report says so
+    const navigate = async () => {
       for (const a of st.do || []) {
         if (a.click) { await waitTid(a.click, 20); await clickSettled(a.click); }
         else if (a.clickText) { await waitTid(a.clickText[0], 20); if (!(await clickText(a.clickText[0], `/${a.clickText[1]}/i`))) throw new Error(`no ${a.clickText[0]} matching /${a.clickText[1]}/`); }
@@ -483,6 +485,10 @@ function m1GateChecks() {
         else if (a.back) for (let k = 0; k < a.back; k++) { adb("shell", "input", "keyevent", "KEYCODE_BACK"); await sleep(1200); }
         await sleep(300);
       }
+    };
+    try {
+      try { await navigate(); }
+      catch (e) { notes.push(`second attempt after: ${String(e.message).split(" || ")[0]}`); await m1Reset(); await navigate(); }
       for (const x of st.expect || []) {
         if (x.exitQuestion) {
           const d = await until("the exit question", () => find(dump(), n => n["resource-id"] === "android:id/button2"), 15, 600);
@@ -658,6 +664,31 @@ const serverChecks = [
     if (kind !== "applied") throw new Error(`Szerzej -> ${kind}: "${said}"`);
     if (!next) throw new Error(`the strip does not say what the next message gets: "${strip}"`);
     return `Szerzej -> ${kind}: "${said}"; strip "${strip}"; model sheet "${prov}"`;
+  }],
+  // M1-K1c-3b: "Pokaż w grafie" in Co wysłaliśmy opens the navigator on the request with the perspective sent_to_model;
+  // the sent rows carry a mark, a derived row's card says it is derived; Back closes the card, then the navigator
+  ["context: Pokaż w grafie opens the record of the request in the navigator", async () => {
+    await waitTid("context-line-open", 30);
+    await page.ev(`[...document.querySelectorAll('[data-testid="context-line-open"]')].pop().click()`);
+    await until("the sheet with the receipt", () => page.ev(`${q("context-receipt")}?.getAttribute('data-state')`).then(v => v === "receipt"), 30, 300);
+    const graph = await until("the graph's answer for the button", () => page.ev(`${q("receipt-show-in-graph")}?.getAttribute('data-graph')`).then(v => v && v !== "checking" && v), 30, 300);
+    if (graph !== "yes") throw new Error(`Pokaż w grafie is off (${graph}): "${(await textTid("receipt-show-in-graph-reason")).replace(/\s+/g, " ").slice(0, 200)}"`);
+    await clickSettled("receipt-show-in-graph");
+    const nav = await until("the navigator on the request", () => page.ev(`(()=>{const n=${q("graph-navigator")};return n&&/sent_to_model/.test(n.getAttribute('data-perspectives')||'')?[n.getAttribute('data-focus'),n.getAttribute('data-perspectives')].join(' / '):''})()`), 30, 300);
+    await waitTid("nav-rows", 30);
+    const sent = await countTid("nav-sent");
+    const derivedRows = await page.ev(`document.querySelectorAll('[data-testid="nav-rows"] li[data-derived="true"]').length`);
+    let card = "no derived row";
+    if (derivedRows > 0) {
+      await page.ev(`document.querySelector('[data-testid="nav-rows"] li[data-derived="true"] .gnav-more').click()`);
+      await waitTid("card-derived-note", 20);
+      card = (await textTid("card-derived-note")).replace(/\s+/g, " ").slice(0, 200);
+    }
+    shot("receipt-graph");
+    await m1Reset();
+    if (await has("graph-navigator")) throw new Error("Back left the navigator open");
+    if (sent < 1) throw new Error(`the navigator on ${nav} marks no row as sent`);
+    return `focus/perspectives ${nav}; ${sent} rows marked sent; ${derivedRows} derived; card "${card}"; Back closed card and navigator`;
   }],
   ["chat command: przetłumacz -> proposal -> confirm", async () => {
     await send("Przetłumacz tę rozmowę na niemiecki");
