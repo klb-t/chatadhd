@@ -230,6 +230,7 @@ test('FLAKE-1: the wait is given up, more layers than the stale history are open
   open('a');                                                      // depth 1
   assert.equal(b.win.__loomBack(), true);                         // own back in flight (lands on 0)
   t += 5000;
+  closed.length = 0;
   open('x'); open('y');                                           // 2 layers over a history that is still at depth 1
   b.flush();
   assert.deepEqual(stack.ids, ['x', 'y']); assert.deepEqual(closed, []);
@@ -269,10 +270,11 @@ test('FLAKE-1: forgetBackAfterMs (optional, preset: never) drops a back that has
   open('a');
   assert.equal(b.win.__loomBack(), true);                         // own back to 0 in flight
   t += 20000;                                                     // silent longer than forgetBackAfterMs
+  closed.length = 0;
   open('x');                                                      // reconcile forgets it and works from the real history (depth 1)
   b.flush();                                                      // the very late answer: depth 0 over one layer
   assert.deepEqual(closed, ['x']);                                // now read as the person's Back
   const kept = setup({ now: () => t });                           // preset: never forget
-  kept.open('a'); kept.b.win.__loomBack(); t += 20000; kept.open('x'); kept.b.flush();
+  kept.open('a'); kept.b.win.__loomBack(); t += 20000; kept.closed.length = 0; kept.open('x'); kept.b.flush();
   assert.deepEqual(kept.closed, []); assert.deepEqual(kept.stack.ids, ['x']);
 });
