@@ -72,6 +72,7 @@ poprawki po nieudanym podejściu), nie cena tokena — dlatego pomiary w tabeli.
 | M1-K2a (wywiad „Ty”: pytania PL, poziomy, uwagi) | Sonnet (jawnie) | — | 36→? % (13:49→14:15) | tak (125 wywołań, 292 tys. tokenów, 26 min) | większy pakiet jądra; brief z istniejącym stanem (profile.cpp, scenario.pack) i listą testów dał 1 podejście |
 | M1-K2a-fix (etykiety pól „Ty” + testy-strażniki) | Sonnet (jawnie) | — | 36→? % (15:07→15:27) | tak (40 wywołań, 123 tys. tokenów, 21 min) | koszt czerwonej bramki: 50 min + 1 pakiet — audyt tekstu z K1c-4 złapał to, czego testy jądra nie łapały |
 | M1-K2b1 (akcje wywiadu „Ty”, tryb formularza) | Sonnet (jawnie) | — | 37→? % (16:17→16:58) | tak (102 wywołania, 312 tys. tokenów, 41 min) | 4 akcje, 9 przypadków testowych, łańcuch rejestru zrobiony przez agenta |
+| M1-K2b2 (wywiad w rozmowie + naprawa czerwonej bramki k2b1) | Sonnet (jawnie) | — | 37→? % (17:49→18:31) | tak (123 wywołania, 310 tys. tokenów, 42 min) | koszt luki w akceptacji K2b-1 (brak `chat` w regexie): 1 bramka (50 min) + część pakietu |
 
 ## Na co poszły tokeny S1 dziś (2026-10-21 od 00:00 UTC do 17:50; `tools/usage_report.py`, liczby z pól `usage`, bez treści)
 Tydzień: 3 % (00:14) → 30 % (17:40) = +27 pkt w ≈ 17,5 h na koncie (S1 + S2 + czaty właściciela). Zmierzone dla S1: **566 mln równoważników**

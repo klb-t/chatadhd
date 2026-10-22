@@ -1,7 +1,15 @@
-# Kolejka S1 — stan 2026-10-22 17:52 UTC
+# Kolejka S1 — stan 2026-10-22 18:35 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
+
+## K2b-2 GOTOWE (18:31 UTC, `ae6d152f` na `claude/m1-w0`, na wierzchu K2b-1 `aa45db5b`): wywiad „Ty” w oknie rozmowy, tryb formularza — bramka lokalna `k2b2` w toku (start 18:32)
+Agent Sonnet (`wf_9de01309-e76`, 123 wywołania, 310 tys. tokenów, 42 min). KROK 0 (czerwona bramka `k2b1`) naprawiony DANYMI: `chat_coverage.pack` ma `chat_outcome` (pending|executed|unavailable|continuation) + powód pl/en; test czyta dane, wyjątek `import.file` przeszedł do danych; `profile.confirm` = kontynuacja; `profile.set` ma prawdziwe zdanie „zapisz o mnie work.projects=klub szachowy” (wzorce `heuristic.arguments` mogą nazwać jedną akcję).
+Wywiad w rozmowie: `profile.interview start` bez `conv_id` otwiera rozmowę „Poznajmy się” (`metadata.flow = profile.interview`); gałąź jest w `chat_route::handle` (tam, gdzie wiadomości i tak stają się akcjami/propozycjami), NIE w `ChatEngine::send` (tam tylko odmowa z powodem jako zabezpieczenie) — działa także przy `intent_routing_method=off`, bez żadnego żądania do modelu (test liczy żądania transportu = 0).
+Słowa sterujące (nigdy / nie teraz / pomiń / podsumowanie / ile zostało / dalej) są DANYMI; uwaga typu „nie pytaj o zdrowie” → „Tak zrozumiałem…” + zwykła propozycja `profile.confirm`; po „tak” albo „nie” kolejne pytanie. Oczekujący slot nie jest nigdzie zapisany osobno — wyliczany z `plan()` w każdej turze (jedyny stan = magazyn profilu).
+Poziomy per kategoria podłączone; stary magazyn bez `detail_levels`/`remark_rules` dostaje propozycję jawnego odświeżenia (`update_pack`, odpowiedzi zostają). Zdania na ekranie bez nazw wewnętrznych („Minimalnie (minimal)” → „Minimalnie”, „ustawieniu profile_detail_level” → „ustawieniach”, „erase=true” → „Potwierdź, żeby usunąć”), test danych pl/en pilnuje snake_case/id/true/false/„=”.
+Odpowiedzi użytkownika w rozmowie wywiadu są zapisywane jako wiadomości prywatne (bez analizy semantycznej/grafu). Zostaje: W2 (ekran „Ty”, karta „Tak zrozumiałem” w UI, kontynuacja przez ActionProposalBlock), ścieżka modelu (privacy_decision + koszt).
+FF `main` (K2b-1 + K2b-2 `ae6d152f`) po zielonej bramce `k2b2` I po końcu CI 272 (jeszcze w toku o 18:13, kontrola 18:34).
 
 ## Bramka `k2b1` CZERWONA (17:47, `aa45db5b`): jeden test `unit.test_chat_ops` (12 asercji) — K2b-2 startuje od naprawy (KROK 0), `wf_9de01309-e76` start 17:49
 Przyczyna: test pokrycia czatu wysyła zdania przykładowe KAŻDEJ akcji z `chat_coverage.pack` i oczekuje „wykonane od razu” albo propozycji `pending` z `receipt_id`/`run_id`; dla nowych `profile.set` i `profile.confirm` router odpowiada `unavailable` (zdanie nie niesie wymaganych parametrów; `profile.confirm` to kontynuacja z propozycji wywiadu, nie coś, co się mówi).
