@@ -34,10 +34,12 @@ zapytanie. Pod spodem, nad polem wiadomości, jest pasek „Profil: z ustawień�
 
 ![arkusz Co wysłaliśmy](M1_CHECKPOINT_1/m1-context-sheet-top.png)
 
-To szuflada, która pokazuje zapytanie tak, jak je złożyliśmy dla modelu. Na górze: profil, zmiany tej tury, czy początek
-zapytania jest za każdym razem taki sam („prefiks stały: tak”), **strażnik ×10** („0× bazy — bez pytania”), suma tokenów
-(„123 tokenów (szacunek)”) i koszt: **„koszt nieznany — brak ceny”** (a nie „0”, bo ceny po prostu nie znamy). Niżej **sekcje w kolejności, w jakiej
-poszły**, każda z liczbą tokenów i z chipem „skąd” (Instrukcja 19 tok., Rozmowa 29 tok., Graf 64 tok., Pytanie 11 tok.),
+To szuflada, która pokazuje zapytanie tak, jak je złożyliśmy dla modelu. Na górze: profil, zmiany tej tury, kolejność i przepływ
+słowami („Kolejność: stabilna (profil i reguły na początku, graf na końcu)”, „Przepływ: zwykły tekst”), czy początek
+zapytania jest za każdym razem taki sam („prefiks stały: tak”), **strażnik ×10** („dużo mniej niż zwykle — bez pytania”; gdy nie ma
+jeszcze bazy do porównania: „nieznane — brak bazy”), suma tokenów
+(„98 tokenów (szacunek)”) i koszt: **„koszt nieznany — brak ceny”** (a nie „0”, bo ceny po prostu nie znamy). Niżej **sekcje w kolejności, w jakiej
+poszły**, każda z liczbą tokenów i z chipem „skąd” (Instrukcja 19 tok., Graf 64 tok., Pytanie 15 tok.; to pierwsza wiadomość w rozmowie, więc sekcja Rozmowa jest jeszcze pusta),
 a pod nimi „Puste sekcje (nic z nich nie poszło)”. Potem lista **„Pominięte”** z powodem przy każdej pozycji (na tym zrzucie:
 „Nic nie pominięto.”; z powodem — na zrzucie w pkt 4) i zdanie: **„Skompilowane żądanie, nie dowód odbioru przez dostawcę.”**
 To znaczy: arkusz pokazuje, co aplikacja złożyła i wysłała, a nie potwierdzenie, że dostawca to dostał.
@@ -51,7 +53,7 @@ Przycisk „Pokaż w grafie” jest widoczny, ale **wyłączony**, i mówi dlacz
 
 Szerzej, głębiej, węziej i płycej działają **tylko na następne zapytanie**; potem wszystko wraca do ustawień. Po dotknięciu
 „szerzej” w arkuszu aplikacja odpowiada: **„Gotowe: tylko dla następnego zapytania — szerzej. Po jego wysłaniu wszystko wraca do
-ustawień. Szacunek: następne zapytanie będzie ok. 1.1× zwykłego.”** i pojawia się przycisk „Cofnij zmiany następnej wiadomości”.
+ustawień. Szacunek wielkości następnego zapytania: ok. 1.1× zwykłego.”** i pojawia się przycisk „Cofnij zmiany następnej wiadomości”.
 
 ![arkusz zapytania wysłanego szerzej](M1_CHECKPOINT_1/m1-sheet-wider-request.png)
 
@@ -85,7 +87,7 @@ Wybór dotyczy jednego zapytania; następne wraca do profilu z ustawień.
 ![menu Kontekst](M1_CHECKPOINT_1/m1-menu-context.png)
 
 To nowe podmenu przy polu wiadomości, w którym ustawiasz kontekst następnego zapytania. Na górze cztery chipy:
-**Szerzej · Głębiej · Węziej · Płycej** (każdy ma co najmniej 44 px), pod nimi zdanie, że działają tylko na następne zapytanie.
+**Szerzej · Głębiej · Węziej · Płycej** (każdy ma co najmniej 44 px), pod nimi zdanie, że działają tylko na następne zapytanie, i drugie: „Kolejne kliknięcia dodają się: dwa razy Szerzej = szerzej ×2.”
 Dalej: **Profil selektora** (›), **Przepływ: tekst ↔ graf**, **Podgląd wysyłki** (na zrzucie „niedostępne — wpisz najpierw
 wiadomość”) oraz dwa przełączniki, które dostały nowe nazwy: **„Profil i pamięć (z węzła Ty)”** (włączone) i **„Twierdzenia
 z analizy”** (wyłączone) — wcześniej nazywały się „Pamięć” i „Wiedza”. **Nic nie zostało usunięte:** test sprawdza, że każda
@@ -127,8 +129,8 @@ paska) — to sprawdza test, zrzutu nie ma.
 ![pochodzenie modelu](M1_CHECKPOINT_1/m1-model-provenance.png)
 
 Na górze czatu chip pokazuje **krótką nazwę modelu** („second-model”), a przycisk ⓘ obok otwiera arkusz „Model tej rozmowy”. Arkusz
-mówi: **Model**, **Ustawiony na poziomie: Rozmowa**, **Klasa: nieznana** — z powodem słowami („żaden wzorzec nazwy żadnej klasy nie
-pasuje”), **Cena: nieznany — brak ceny** oraz poziomy, które coś mówią o modelu (Osoba — „przykryty bardziej szczegółowym”,
+mówi: **Model**, **Ustawiony na poziomie: Rozmowa**, **Klasa: nieznana** — a powód, który podaje jądro (zdanie po angielsku,
+pisane dla inżyniera), czeka w zwiniętym bloku „Szczegóły techniczne” (domyślnie zamkniętym; dokładnie to zdanie, nic nie zniknęło), **Cena: nieznany — brak ceny** oraz poziomy, które coś mówią o modelu (Osoba — „przykryty bardziej szczegółowym”,
 Rozmowa — „podał wartość”); pozostałe poziomy są wymienione jednym zdaniem. Na końcu: „Model zmienisz w menu +, pozycja „Wybierz
 model”.” Wybieranie modelu to dalej to samo pole wyboru co przedtem (sprawdza to test).
 
@@ -178,7 +180,7 @@ dowolną starą odpowiedzią.
 
 Każdy zrzut w tym raporcie powstał w przebiegu, który przechodzi przez te same ekrany co Ty — na telefonie 390×844, dotykiem,
 przeciw prawdziwemu jądru i sztucznemu modelowi. Uruchomiłem je 2026-10-22 na tej gałęzi: **oba przebiegi przeszły** (7 i 10 kroków,
-bez błędów), trzy skrypty jednostkowe także (11, 12 i 17 przypadków).
+bez błędów), trzy skrypty jednostkowe także (po poprawkach: 13, 12 i 17 przypadków).
 
 - `loom/web/e2e/m1-context-sent-native.mjs` — linia pod odpowiedzią (profil, liczba pozycji, tokeny; w czacie żadnego surowego JSON-a),
   arkusz (sekcje w kolejności wysyłki, tokeny, lista „Pominięte”, zdanie o dowodzie odbioru, koszt słowami), „Pokaż w grafie”
@@ -197,3 +199,13 @@ Zrzuty: **13 plików PNG** 390×844 (widok, nie cała strona; każdy < 90 KB) w 
 w tekst (§1–8). Dziennik decyzji i cofnięć tej Bramy jest osobno, w `docs/reports/INDEX.md` (wpis „S1 / M1-K1a, K1b, W1a, W1b”) na gałęzi sesji S1 — na
 tej gałęzi dojdzie po scaleniu.
 Ten raport mówi tylko, co możesz zrobić na telefonie i czego jeszcze nie ma.
+
+## Poprawki po pierwszym przebiegu emulatora
+
+Czytając teksty z trzech telefonów, znaleźliśmy trzy rzeczy, które brzmiały nieprawdziwie albo po inżyniersku; poprawione, bez zmiany tego, co robi jądro:
+
+- **Stosunek do bazy nie udaje zera.** Strażnik ×10 w arkuszu i szacunek w menu mówiły „0× bazy”, gdy pierwsza krótka wiadomość nowej rozmowy jest bardzo mała albo gdy nie ma w ogóle bazy do porównania. Teraz: brak bazy to „nieznane — brak bazy”, stosunek poniżej 0,1 to „dużo mniej niż zwykle”, od 0,1 w górę jest liczba z ×, np. „1.8× bazy”. Jedna funkcja robi to wszędzie; słowa są w katalogu (po polsku i angielsku).
+- **Arkusz modelu mówi krótko, a zdanie jądra jest schowane.** Zamiast długiego angielskiego zdania o wzorcach nazw stoi „Klasa: nieznana”; zdanie jądra jest w zwiniętym bloku „Szczegóły techniczne” (zamknięty, dopóki go nie otworzysz).
+- **Nagłówek arkusza nie pokazuje nazw wewnętrznych.** Zamiast „Kolejność: stability / Przepływ: plain” jest „Kolejność: stabilna (profil i reguły na początku, graf na końcu)” i „Przepływ: zwykły tekst”; nazwa bez słowa w katalogu pokazuje się tak, jak jest. Do menu Kontekst doszło jedno zdanie: kolejne kliknięcia dodają się (dwa razy Szerzej = szerzej ×2) — tak ma być.
+
+Przy okazji nowe zrzuty (te same pliki, ten sam sposób): arkusz z góry, arkusz zapytania wysłanego szerzej, arkusz po dotknięciu „szerzej”, arkusz kolejnego zapytania, profil Zgodność, menu Kontekst i pochodzenie modelu. Scenariusz zrzutu „arkusz z góry” jest teraz pierwszą wiadomością rozmowy (stąd 98 tokenów i pusta sekcja Rozmowa).

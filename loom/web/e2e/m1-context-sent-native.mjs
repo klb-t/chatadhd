@@ -153,17 +153,20 @@ try {
     await page.getByTestId("receipt-step-wider").tap();
     await page.getByTestId("receipt-modify-result").waitFor();
     assert.equal(await page.getByTestId("receipt-modify-result").getAttribute("data-kind"), "applied");
+    await page.getByTestId("receipt-modify-result").evaluate(el => el.scrollIntoView({ block: "end" }));   // the shot shows the sentence the kernel's answer became
     await shot("m1-context-sheet-wider-applied");
     await closeSheet();
     await send("and the database API server code again?");
     await openLast();
     const wider = await graphTokens();
+    await shot("m1-sheet-wider-request");
     assert.ok(wider > baseGraph, `Graf grows for the widened request (${baseGraph} -> ${wider} tokens)`);
     assert.match(await page.getByTestId("context-receipt-modifiers").innerText(), new RegExp(w["action.wider"]));
     await closeSheet();
     await send("and the database API server code once more?");
     await openLast();
     assert.equal(await graphTokens(), baseGraph, "the next request is back to the base");
+    await shot("m1-sheet-back-to-base");
     assert.equal(await page.getByTestId("context-receipt-modifiers").innerText(), w["header.modifiers_none"]);
     await closeSheet();
   });
