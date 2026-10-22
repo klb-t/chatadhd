@@ -7,7 +7,7 @@
 // A row's ⋯, a tap on a leaf or a tap on a mark opens the node card (NodeCard.tsx, P3) under them; the card is a history layer.
 // Perspektywa ▾ (r1:b2) ticks the kernel's perspectives (loom_perspectives), sent as `perspectives` to graph.navigate: the rows are then what
 // those relations reach from the focus. Działania opens the focus's card at "Co możesz zrobić" (the actions live on the card).
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import NodeCard from "./NodeCard";
 import NavigatorMap from "./NavigatorMap";
 import { api } from "../api";
@@ -57,6 +57,7 @@ export default function GraphNavigator({ profileHost, convId, language, initialF
   const [perspList, setPerspList] = useState<{ options: PerspectiveOption[] } | { error: string } | null>(null);
   const [actionsNote, setActionsNote] = useState<string | null>(null);
   const [cardSection, setCardSection] = useState<"actions" | null>(null);
+  const openedFocusCard = useRef(false);
   const [layout, setLayout] = useState<Layout>(() => layoutOf(layoutSetting));
   const [open, setOpen] = useState(() => openByLayout(layoutOf(layoutSetting)));
   const [viewMenu, setViewMenu] = useState(false);
@@ -72,7 +73,15 @@ export default function GraphNavigator({ profileHost, convId, language, initialF
     const actions = api.actions;
     if (!actions) { setError(t("error.no_actions")); setLoading(false); return; }   // a catalogue sentence, never a developer id
     actions.graphNavigate(request).then(
-      answer => { if (alive) { setResult(answer); setState(s => withFocusLabel(s, answer.focus)); setLoading(false); } },   // a focus from the menu gets its name
+      answer => {
+        if (!alive) return;
+        setResult(answer); setState(s => withFocusLabel(s, answer.focus)); setLoading(false);   // a focus from the menu gets its name
+        // M1-W1b: a node opened from the + menu or a sheet that has nothing below it (a setting) shows its card at once - there is no list to look at.
+        if (initialFocus && !openedFocusCard.current && answer.focus.address === initialFocus && answer.children.length === 0) {
+          openedFocusCard.current = true;
+          setCardSection(null); setCard({ address: answer.focus.address, label: answer.focus.label });
+        }
+      },
       failure => { if (alive) { setError(failure instanceof Error ? failure.message : String(failure)); setLoading(false); } });
     return () => { alive = false; };
     // eslint-disable-next-line react-hooks/exhaustive-deps

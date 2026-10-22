@@ -45,7 +45,9 @@ export function stripView(input: StripInput, t: ShellT, language: string): Strip
   const label = (id: string) => input.profiles.find(p => p.id === id)?.label ?? id;
   const pending = pendingParts(input.waiting, t, label);
   const p = input.profile;
-  const shown = p ? (p.status ? t("strip.profile_with_status", { label: p.label, status: wordOr(t, `status.${p.status}`, p.status) }) : p.label) : "";
+  // The status is appended unless the label already says it (the preset "Loom (preset)").
+  const statusWord = p?.status ? wordOr(t, `status.${p.status}`, p.status) : "";
+  const shown = p ? (statusWord && !p.label.toLowerCase().includes(statusWord.toLowerCase()) ? t("strip.profile_with_status", { label: p.label, status: statusWord }) : p.label) : "";
   const profileText = p ? t("strip.profile", { profile: shown }) : t("strip.profile_settings");
   const nextText = pending.length ? t("strip.next", { what: pending.join(", ") }) : "";
   const fullText = [p ? t("strip.full.profile", { profile: shown }) : t("strip.full.profile_settings"),

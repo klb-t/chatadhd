@@ -15,7 +15,8 @@ import { useDialogFocus } from "../shell/use-dialog-focus";
 import { useLayer } from "../shell/use-layer";
 import { usePresentationFeature } from "./ConversationSourceView";
 import UsagePendingBlock from "./UsagePendingBlock";
-import { profileChoices, sheetModel, stepIds, type ProfileChoice } from "./context-receipt-state";
+import { modifySentence, profileChoices, sheetModel, stepIds, type ProfileChoice } from "./context-receipt-state";
+import { pendingParts } from "../shell/context-strip";
 import { useReceiptWords } from "./use-receipt-words";
 import { loadSelectorProfiles, useContextModify } from "./use-context-modify";
 import "./context-receipt.css";
@@ -188,7 +189,7 @@ export default function ContextReceipt({ profileHost, language, convId, msgId, o
               </div>
             )}
             {busy && <p className="crs-note" data-testid="receipt-modify-busy">{t("modify.busy")}</p>}
-            {modify?.kind === "applied" && <p className="crs-result" data-kind="applied" data-testid="receipt-modify-result">{modify.text}</p>}
+            {modify?.kind === "applied" && <p className="crs-result" data-kind="applied" data-testid="receipt-modify-result">{modifySentence(modify, pendingParts(modify.waiting, t, id => profiles?.find(p => p.id === id)?.label ?? id).join(", "), t)}</p>}
             {modify?.kind === "declined" && <p className="crs-result" data-kind="declined" data-testid="receipt-modify-result">{t("modify.declined")}</p>}
             {modify?.kind === "failed" && <p className="crs-result" data-kind="failed" role="alert" data-testid="receipt-modify-result">{t("modify.failed", { reason: modify.message })}</p>}
             {modify?.kind === "question" && (

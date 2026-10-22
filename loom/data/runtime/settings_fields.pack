@@ -3973,16 +3973,16 @@
           }
         ],
         "status": {
-          "state": "planned",
-          "by": "M1-W1",
-          "reader": "web composer context strip",
+          "state": "implemented",
+          "by": "M1-W1b",
+          "reader": "web ContextStrip",
           "reason": {
-            "pl": "Część aplikacji, która czyta to pole — pasek kontekstu pod polem pisania — jeszcze nie powstała; do tego czasu wartość jest zapisywana, ale nic jej nie czyta.",
-            "en": "The part of the app that reads this field — the context strip under the composer — is not built yet; until then the value is stored but nothing reads it."
+            "pl": "Pasek kontekstu nad polem pisania (web ContextStrip, M1-W1b) czyta to pole; wartość ma czytelnika i działa.",
+            "en": "The context strip above the composer (web ContextStrip, M1-W1b) reads this field; the value has a reader and works."
           },
           "today": {
-            "pl": "Dziś tej części ekranu jeszcze nie ma, więc wartość niczego nie zmienia.",
-            "en": "Today this part of the screen does not exist yet, so the value changes nothing."
+            "pl": "Pasek nad polem pisania czyta to pole przy otwarciu czatu: chips = żetony „Profil: …” i, gdy to okno wie o zmianie na następne zapytanie, „Następne zapytanie: szerzej”; full = ten sam opis zdaniami; hidden = nic. Pasek zna tylko zmiany zrobione w tym oknie (silnik nie ma odczytu tego, co czeka na następne zapytanie). Model pokazuje chip modelu, nie pasek.",
+            "en": "The strip above the composer reads this field when the chat opens: chips = the chips “Profile: …” and, when this window knows of a change for the next request, “Next request: wider”; full = the same said in sentences; hidden = nothing. The strip knows only the changes made in this window (the engine cannot read what waits for the next request). The model is shown by the model chip, not by the strip."
           }
         },
         "human": {
@@ -4031,16 +4031,16 @@
           }
         ],
         "status": {
-          "state": "planned",
-          "by": "M1-W1",
+          "state": "implemented",
+          "by": "M1-W1a",
           "reader": "web receipt line under a reply",
           "reason": {
-            "pl": "Część aplikacji, która czyta to pole — linia „Kontekst” pod odpowiedzią — jeszcze nie powstała; do tego czasu wartość jest zapisywana, ale nic jej nie czyta.",
-            "en": "The part of the app that reads this field — the “Context” line under a reply — is not built yet; until then the value is stored but nothing reads it."
+            "pl": "Linia pod odpowiedzią (web ChatView, M1-W1a) czyta to pole; wartość ma czytelnika i działa.",
+            "en": "The line under a reply (web ChatView, M1-W1a) reads this field; the value has a reader and works."
           },
           "today": {
-            "pl": "Dziś tej części ekranu jeszcze nie ma, więc wartość niczego nie zmienia.",
-            "en": "Today this part of the screen does not exist yet, so the value changes nothing."
+            "pl": "Przy odpowiedzi asystenta w czacie: visible = linia „Kontekst: … — zobacz” otwiera arkusz „Co wysłaliśmy”; menu_only = linii nie ma, arkusz otwiera pozycja „Co wysłaliśmy” w menu wiadomości.",
+            "en": "Under an assistant reply in the chat: visible = the line “Context: … — see” opens the sheet “What we sent”; menu_only = no line, the entry “What we sent” of the message menu opens the sheet."
           }
         },
         "human": {

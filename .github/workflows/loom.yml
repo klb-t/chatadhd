@@ -245,12 +245,14 @@ jobs:
           npm run test:settings-human
           npm run test:role-card
           npm run test:context-receipt
+          npm run test:context-strip
           npm run test:testids-doc
           npx playwright install --with-deps chromium
           npm run e2e
           npm run test:m1-navigator
           npm run test:m1-settings
           npm run test:m1-context-sent
+          npm run test:m1-context-menu
           npm run test:chat-first
           npm run test:composer-menu-browser
           npm run test:workspace

@@ -46,10 +46,10 @@ import ComposerMenu from "../shell/ComposerMenu";
 import ContextReceipt from "./ContextReceipt";
 import { useReceiptWords } from "./use-receipt-words";
 import { loadSelectorProfiles, useContextModify } from "./use-context-modify";
-import { profileChoices, type ProfileChoice } from "./context-receipt-state";
+import { modifySentence, profileChoices, type ProfileChoice } from "./context-receipt-state";
 import ContextStrip from "../shell/ContextStrip";
 import ModelProvenance from "../shell/ModelProvenance";
-import { lastReceiptProfile } from "../shell/context-strip";
+import { lastReceiptProfile, pendingParts } from "../shell/context-strip";
 import { shortModelName, type ModelSource } from "../shell/model-chip";
 import { clearPendingTurn, pendingTurn, subscribePendingTurn } from "../shell/turn-pending";
 import { lineText, recordedReceipt, requestOf } from "./context-receipt-state";
@@ -1431,6 +1431,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
           {menuOpen && <ComposerMenu items={composedMenu.items} issues={menuIssues} ctx={{ upload: Boolean(api.actions?.clientBlobUpload), settings: menuSettings, blocked: menuBlocked }}
             modify={modify} profiles={profiles} profilesError={profilesError} onLoadProfiles={loadProfiles} usageFeature={usageCatalog.feature} waiting={Object.keys(waitingTurn).length > 0}
             onNode={(focus) => onShowInGraph?.(focus, [])} onPreview={() => send("preview")}
+            appliedText={modify.answer?.kind === "applied" ? modifySentence(modify.answer, pendingParts(modify.answer.waiting, receiptT, id => profiles?.find(p => p.id === id)?.label ?? id).join(", "), receiptT) : ""}
             flags={menuFlags} switches={switches} model={shownModel} models={models}
             onAttach={(kind) => (kind === "camera" ? cameraInputRef : fileInputRef).current?.click()}
             onFlag={toggleFlag} onSwitch={toggleSwitch} onModel={chooseModel} onPanel={(panel) => requestPanel(panel)} onClose={closeMenu} />}

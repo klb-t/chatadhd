@@ -35,12 +35,14 @@ interface Props {
   /** Opens the card of a graph node (node entries) and the preview of the request (preview entry). */
   onNode: (focus: string) => void;
   onPreview: () => void;
+  /** The sentence after a change was applied, in the pack's words (computed by the screen from what waits for the next request). */
+  appliedText: string;
 }
 
 const isFlag = (flag: string | undefined): flag is MenuFlag => (MENU_FLAGS as readonly string[]).includes(flag ?? "");
 
 /** The + menu: entries from data, a stack for submenus and the model list, keyboard (arrows, Home/End, Esc, Backspace = back) and touch (44 px rows, a sheet at phone width). */
-export default function ComposerMenu({ items, issues, ctx, flags, switches, model, models, onAttach, onFlag, onSwitch, onModel, onPanel, onClose, modify, profiles, profilesError, onLoadProfiles, usageFeature, waiting, onNode, onPreview }: Props) {
+export default function ComposerMenu({ items, issues, ctx, flags, switches, model, models, onAttach, onFlag, onSwitch, onModel, onPanel, onClose, modify, profiles, profilesError, onLoadProfiles, usageFeature, waiting, onNode, onPreview, appliedText }: Props) {
   const t = useShellText();
   const lang = useShellLanguage();
   const [stack, setStack] = useState<string[]>([]);  // ids of the opened submenus; "@model" is the model list, "@profiles" the selector profiles
@@ -161,7 +163,7 @@ export default function ComposerMenu({ items, issues, ctx, flags, switches, mode
           );
         })}
         {modify.busy && <p className="composer-menu-reason" role="status" data-testid="composer-menu-modify-busy">{t("cm_modify_busy")}</p>}
-        {modify.answer?.kind === "applied" && <p className="composer-menu-result" role="status" data-kind="applied" data-testid="composer-menu-modify-result">{modify.answer.text}</p>}
+        {modify.answer?.kind === "applied" && <p className="composer-menu-result" role="status" data-kind="applied" data-testid="composer-menu-modify-result">{appliedText}</p>}
         {modify.answer?.kind === "declined" && <p className="composer-menu-result" role="status" data-kind="declined" data-testid="composer-menu-modify-result">{t("cm_modify_declined")}</p>}
         {modify.answer?.kind === "failed" && <p className="composer-menu-result" role="alert" data-kind="failed" data-testid="composer-menu-modify-result">{t("cm_modify_failed", { reason: modify.answer.message })}</p>}
         {modify.answer?.kind === "question" && (

@@ -231,3 +231,11 @@ export function profileChoices(data: unknown, language: string): ProfileChoice[]
   }
   return out;
 }
+
+/** The sentence after a change was applied, in the words of the pack (the kernel's own sentence is in its language, not necessarily the screen's):
+ *  what waits for the next request (`what`, already in words) and, when the kernel measured it, how much larger the request will be. */
+export function modifySentence(answer: { waiting: Record<string, unknown>; ratio: number | null }, what: string, t: ShellT): string {
+  const lines = [what ? t("modify.applied", { what }) : t("modify.cleared")];
+  if (what && answer.ratio !== null) lines.push(t("modify.ratio", { ratio: numberText(answer.ratio) }));
+  return lines.join(" ");
+}

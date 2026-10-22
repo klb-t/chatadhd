@@ -2465,7 +2465,10 @@
             "strip.full.no_changes": "There are no changes for this request that this screen knows of. Changes made in another window show only in the receipt under the reply.",
             "preview.profile": "Profile of the next request: {{profile}}",
             "preview.pending": "Changes for the next request: {{what}}",
-            "preview.pending_none": "Changes for the next request: none (that this screen knows of)"
+            "preview.pending_none": "Changes for the next request: none (that this screen knows of)",
+            "modify.applied": "Done: for the next request only — {{what}}. Once it is sent everything is back to the settings.",
+            "modify.cleared": "Taken back: the next request goes without changes.",
+            "modify.ratio": "Estimate: the next request will be about {{ratio}}× the usual one."
           },
           "pl": {
             "title": "Co wysłaliśmy",
@@ -2596,7 +2599,10 @@
             "strip.full.no_changes": "Zmian na to zapytanie, o których ten ekran wie, nie ma. Zmiany zrobione w innym oknie widać dopiero w śladzie pod odpowiedzią.",
             "preview.profile": "Profil następnego zapytania: {{profile}}",
             "preview.pending": "Zmiany na następne zapytanie: {{what}}",
-            "preview.pending_none": "Zmiany na następne zapytanie: brak (o których ten ekran wie)"
+            "preview.pending_none": "Zmiany na następne zapytanie: brak (o których ten ekran wie)",
+            "modify.applied": "Gotowe: tylko dla następnego zapytania — {{what}}. Po jego wysłaniu wszystko wraca do ustawień.",
+            "modify.cleared": "Cofnięte: następne zapytanie pójdzie bez zmian.",
+            "modify.ratio": "Szacunek: następne zapytanie będzie ok. {{ratio}}× zwykłego."
           }
         }
       }
