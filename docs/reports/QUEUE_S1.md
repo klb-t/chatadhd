@@ -1,7 +1,12 @@
-# Kolejka S1 — stan 2026-10-21 23:55 UTC
+# Kolejka S1 — stan 2026-10-22 00:55 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
+
+## W1a: bramka `w1a2` ZIELONA (`d103d5d8`, 00:40); **W1b wystartowało 00:53 UTC** (`wf_63253a37-69f`, Sonnet, push na `claude/m1-w0`)
+Po pierwszej bramce `w1a` (RED: `unit.test_graph_entry` 109 vs 111 tras web) zregenerowałem rejestr interfejsów (`gen_graph_interfaces.py` → `gen_runtime_profiles.py` → pin `graph/interfaces.pack` w `data_domains.pack`) —
+ten łańcuch jest w briefie W1b. **FF `main` z commita `d103d5d8` (nie z roboczego stanu W1b) dopiero po końcu CI 261** (start 23:16, koniec ok. 01:10; kontrola 01:08).
+Tydzień 32 % (00:52), cel 23,0 % — jesteśmy 9 pkt nad.
 
 ## W1a GOTOWE (23:50 UTC, `1a3233f2` na `claude/m1-w0`) — bramka lokalna `w1a` w toku (po merge `59de144c`); FF `main` po zielonym CI 261
 Arkusz „Co wyświetliśmy/Co wysłaliśmy” (`wf_e2dce102-ea6`, 123 wywołania, 318 tys. tokenów): API `context.receipt`/`context.modify` w `loom-api/http/jni`, `ContextReceipt.tsx` + stan + słowa w
