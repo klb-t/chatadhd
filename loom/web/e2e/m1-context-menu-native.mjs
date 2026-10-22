@@ -10,6 +10,7 @@ import { existsSync, mkdirSync, mkdtempSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import net from "node:net";
 import path from "node:path";
+import { auditPage } from "./m1-audit.mjs";
 import { fileURLToPath } from "node:url";
 import { fill, forSource, modifiedSentence, ratioSource } from "./m1-words.mjs";
 
@@ -38,6 +39,7 @@ const mockPort = await freePort(), port = await freePort();
 const mock = spawn("python3", [path.join(here, "mock_llm_server.py"), String(mockPort)], { stdio: "ignore" });
 const server = spawn(SERVER_BIN, ["--host", "127.0.0.1", "--port", String(port), "--data-dir", mkdtempSync(path.join(tmpdir(), "loom-m1-menu-")), "--static-dir", DIST], { stdio: "ignore", cwd: LOOM });
 const base = `http://127.0.0.1:${port}`;
+const AUDIT = [];   // the lines a screenshot's screen shows that look like developer text (m1-audit.mjs)
 let browser, failed = false;
 const step = async (name, fn) => { try { await fn(); console.log(`[m1-context-menu] PASS ${name}`); } catch (e) { failed = true; console.error(`[m1-context-menu] FAIL ${name}\n${e.stack}`); } };
 const api = async (m, p, b) => { const r = await fetch(base + p, { method: m, headers: { "content-type": "application/json" }, body: b ? JSON.stringify(b) : undefined }); assert.ok(r.ok, `${m} ${p}: ${r.status}`); return r.json().catch(() => ({})); };
@@ -62,7 +64,8 @@ try {
   const page = await context.newPage();
   const errors = [];
   page.on("pageerror", e => errors.push(String(e)));
-  const shot = async name => { await page.evaluate(() => Promise.all(document.getAnimations().map(a => a.finished.catch(() => {})))); await page.screenshot({ path: path.join(SHOTS, `${name}.png`) }); };
+  const shot = async name => { await page.evaluate(() => Promise.all(document.getAnimations().map(a => a.finished.catch(() => {})))); await page.screenshot({ path: path.join(SHOTS, `${name}.png`) }); await audit(name); };
+  const audit = async name => { for (const f of await auditPage(page)) AUDIT.push({ shot: name, ...f }); };
   const sheet = () => page.getByTestId("context-receipt");
   const assistants = () => page.locator('[data-testid="message"][data-role="assistant"]');
   // send in the UI and wait until the answer is complete and its line is drawn (no sleep: the counts and the stream's end are awaited)
@@ -343,10 +346,15 @@ try {
     await api("PUT", "/api/config/composer_context_strip", { value: "chips" });
   });
 
+  await step("no screen shown so far has developer text: a raw key or an English sentence (m1-audit.mjs; the person's own messages and the fold Szczegóły techniczne are skipped)", async () => {
+    assert.deepEqual(AUDIT.map(a => `${a.shot}: ${a.why} | ${a.line} | ${a.where}`), [], "every line of the screens is in the words of the pack");
+  });
+
   assert.deepEqual(errors, [], "no page errors");
 } finally {
   await browser?.close().catch(() => {});
   server.kill("SIGTERM"); mock.kill("SIGTERM");
 }
+for (const a of AUDIT) console.log(`[m1-context-menu] AUDIT ${a.shot}: ${a.why} | ${a.line} | ${a.where}`);
 console.log(`[m1-context-menu] screenshots in ${SHOTS}`);
 process.exit(failed ? 1 : 0);

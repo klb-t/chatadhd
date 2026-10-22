@@ -95,13 +95,23 @@ export function sectionTitle(cls: string, t: ShellT): string { return wordOr(t, 
 export function itemsOf(section: ReceiptSection): number { return Array.isArray(section.items) ? section.items.length : 0; }
 export function totalItems(receipt: ContextReceipt): number { return receipt.sections.reduce((n, s) => n + itemsOf(s), 0); }
 
-/** The text of one item: the word for its fixed ref (the instruction, the question ...), the role of a history message, else the kernel's label. */
+/** The text of one item: the word for its fixed ref (the instruction, the question ...), the role of a history message, the word of its kind (a node of
+ *  the memory tree: its type is the kernel's label "text" | "folder" | "file" | "dir", a graph packet), else the kernel's label. */
 export function itemText(item: { ref: string; label?: string; source_kind?: string }, t: ShellT): string {
   const byRef = t(`ref.${item.ref}`);
   if (byRef !== `ref.${item.ref}`) return byRef;
   if (item.source_kind && item.source_kind.startsWith("message:")) {
     const role = t(`role.${item.label ?? ""}`);
     if (item.label && role !== `role.${item.label}`) return role;
+  }
+  if (item.source_kind === "memory_node") {
+    const type = wordOr(t, `node_type.${item.label ?? ""}`, item.label ?? "");
+    const word = t("item.memory_node", { type });
+    if (word !== "item.memory_node") return word;
+  }
+  if (item.source_kind === "graph_packet") {
+    const word = t("item.graph_packet");
+    if (word !== "item.graph_packet") return word;
   }
   return item.label || item.ref;
 }

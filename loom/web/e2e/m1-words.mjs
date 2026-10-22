@@ -20,3 +20,11 @@ export const guardLine = (w, state) => new RegExp("^" + fill(w[`guard.${state}`]
 
 /** The whole sentence after a change: "Gotowe: ... — {what}. ..." and the estimate sentence, whatever ratio the kernel measured. */
 export const modifiedSentence = (w, what) => new RegExp("^" + esc(w["modify.applied"].replace("{{what}}", what)) + " " + fill(w["modify.ratio"], { for: forSource(w), ratio: ratioSource(w) }) + "$");
+
+/** M1-K1c4: why an item was sent, as the pack says it: the word of the fixed ref (why.<ref>), else of the source kind (why.<kind>, ":" read as "."), else the
+ *  kernel's own sentence (what the record keeps). The facts are the kernel's answer (a derived row's `receipt`, an item of the receipt). */
+export const whyWord = (w, facts, kernelSentence) => {
+  for (const key of [facts?.ref && `why.${facts.ref}`, facts?.source_kind && `why.${String(facts.source_kind).replace(":", ".")}`])
+    if (key && typeof w[key] === "string") return w[key];
+  return kernelSentence ?? "";
+};

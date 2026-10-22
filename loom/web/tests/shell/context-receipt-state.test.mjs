@@ -79,6 +79,11 @@ test('a receipt of the first message: the sheet names the empty sections in one 
   assert.deepEqual([slot.sections[0].items[0].text, slot.sections[0].items[0].chip, slot.sections[0].items[0].why], ['Język odpowiedzi', 'z profilu', pl['why.profile_slot']]);
   const node = st.sheetModel({ ...base, sections: [{ class: 'memory', items: [{ ref: 'n_1', label: 'text', source_kind: 'memory_node', why: 'an active node of the memory tree', tokens_est: 3 }], tokens_est: 3 }] }, t, 'pl');
   assert.equal(node.sections[0].items[0].why, 'Jeden z włączonych węzłów pamięci.', 'a memory node says why in the pack\'s words, not in the kernel\'s English');
+  assert.equal(node.sections[0].items[0].text, 'Węzeł pamięci (tekst)', 'the type of a memory node is said in words, not as the kernel\'s "text"');
+  assert.equal(st.itemText({ ref: 'n_2', label: 'dir', source_kind: 'memory_node' }, tEn), 'Memory node (directory)');
+  assert.equal(st.itemText({ ref: 'n_3', label: 'a_later_type', source_kind: 'memory_node' }, t), 'Węzeł pamięci (a_later_type)', 'a type without a word shows itself');
+  assert.equal(st.itemText({ ref: 'gp_1', label: 'graph packet', source_kind: 'graph_packet' }, t), 'Pakiet grafu', 'a graph packet is not "graph packet"');
+  assert.equal(st.itemText({ ref: 'gp_1', label: 'graph packet', source_kind: 'graph_packet' }, id => id), 'graph packet', 'no words loaded: the kernel label');
   const none = st.sheetModel({ ...base, sections: [{ class: 'memory', items: [{ ref: 'n_1', label: 'text', source_kind: 'a_kind_of_a_later_kernel', why: 'a sentence of the kernel', tokens_est: 3 }], tokens_est: 3 }] }, t, 'pl');
   assert.equal(none.sections[0].items[0].why, 'a sentence of the kernel', 'a kind the pack has no word for keeps the kernel\'s sentence');
   assert.equal(m.profileLine, 'Profil: żaden nie wybrany — działają ustawienia');

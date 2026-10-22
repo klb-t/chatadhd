@@ -209,7 +209,7 @@ export default function GraphNavigator({ profileHost, convId, language, initialF
           open={open.map} onToggle={v => setOpen(o => ({ ...o, map: v }))}>
           <NavigatorMap result={result} open={open.map} t={t} onCard={showCard} onDrill={drill} />
         </Disclosure>}
-        {card && <NodeCard key={card.address} address={card.address} language={language} convId={convId} t={t} receiptT={receiptT} section={cardSection}
+        {card && <NodeCard key={card.address} address={card.address} label={card.label} language={language} convId={convId} t={t} receiptT={receiptT} section={cardSection}
           onClose={() => setCard(null)} onNavigate={(address, label) => drill({ address, label })} />}
         {lines.map(line => <p key={line.id} className="gnav-note gnav-honesty" data-testid={`nav-${line.id}`}>{line.text}</p>)}
       </div>

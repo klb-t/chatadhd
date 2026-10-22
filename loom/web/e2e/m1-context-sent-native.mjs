@@ -15,8 +15,9 @@ import { existsSync, mkdirSync, mkdtempSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import net from "node:net";
 import path from "node:path";
+import { auditPage } from "./m1-audit.mjs";
 import { fileURLToPath } from "node:url";
-import { guardLine } from "./m1-words.mjs";
+import { guardLine, whyWord } from "./m1-words.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const LOOM = path.resolve(here, "../..");
@@ -43,6 +44,7 @@ const mockPort = await freePort(), port = await freePort();
 const mock = spawn("python3", [path.join(here, "mock_llm_server.py"), String(mockPort)], { stdio: "ignore" });
 const server = spawn(SERVER_BIN, ["--host", "127.0.0.1", "--port", String(port), "--data-dir", mkdtempSync(path.join(tmpdir(), "loom-m1-context-")), "--static-dir", DIST], { stdio: "ignore", cwd: LOOM });
 const base = `http://127.0.0.1:${port}`;
+const AUDIT = [];   // the lines a screenshot's screen shows that look like developer text (m1-audit.mjs)
 let browser, failed = false;
 const step = async (name, fn) => { try { await fn(); console.log(`[m1-context-sent] PASS ${name}`); } catch (e) { failed = true; console.error(`[m1-context-sent] FAIL ${name}\n${e.stack}`); } };
 const api = async (m, p, b) => { const r = await fetch(base + p, { method: m, headers: { "content-type": "application/json" }, body: b ? JSON.stringify(b) : undefined }); assert.ok(r.ok, `${m} ${p}: ${r.status}`); return r.json().catch(() => ({})); };
@@ -66,7 +68,8 @@ try {
   const page = await context.newPage();
   const errors = [];
   page.on("pageerror", e => errors.push(String(e)));
-  const shot = async name => { await page.evaluate(() => Promise.all(document.getAnimations().map(a => a.finished.catch(() => {})))); await page.screenshot({ path: path.join(SHOTS, `${name}.png`) }); };
+  const shot = async name => { await page.evaluate(() => Promise.all(document.getAnimations().map(a => a.finished.catch(() => {})))); await page.screenshot({ path: path.join(SHOTS, `${name}.png`) }); await audit(name); };
+  const audit = async name => { for (const f of await auditPage(page)) AUDIT.push({ shot: name, ...f }); };
   const sheet = () => page.getByTestId("context-receipt");
   const assistants = () => page.locator('[data-testid="message"][data-role="assistant"]');
   // send in the UI and wait until the answer is complete and its line is drawn (no sleep: the counts and the stream's end are awaited)
@@ -82,6 +85,7 @@ try {
     await sheet().and(page.locator('[data-state="receipt"]')).waitFor();
     // the graph question is answered by an effect: wait until the button has its state (yes | no) before anything is read from it
     await page.locator('[data-testid="receipt-show-in-graph"]:not([data-graph="checking"])').waitFor();
+    await audit("sheet");
   };
   const closeSheet = async () => { await page.getByTestId("context-receipt-close").tap(); await sheet().waitFor({ state: "detached" }); };
   const sectionsWithItems = () => page.locator('[data-testid^="receipt-section-"][data-items]').evaluateAll(els => els.filter(el => Number(el.dataset.items) > 0).map(el => el.dataset.class));
@@ -106,7 +110,7 @@ try {
   };
   const navRows = () => page.locator('[data-testid="nav-rows"] > li').evaluateAll(els => els.map(el => ({
     address: el.querySelector(".gnav-row-main").dataset.testid.replace(/^nav-row-/, ""), label: el.querySelector(".gnav-label").textContent,
-    derived: el.dataset.derived === "true", tokens: el.dataset.sentTokens ?? null, leftOut: el.dataset.leftOut === "true",
+    derived: el.dataset.derived === "true", tokens: el.dataset.sentTokens ?? null, leftOut: el.dataset.leftOut === "true", why: el.querySelector('[data-testid="nav-row-why"]')?.textContent ?? null,
     chips: Object.fromEntries([...el.querySelectorAll('[data-testid="nav-sent"],[data-testid="nav-left-out"],[data-testid="nav-derived"],[data-testid="nav-left-out-reason"]')].map(c => [c.dataset.testid, c.textContent])),
   })));
   // The rows in the page are the rows of the kernel's answer; returns them once they are all drawn.
@@ -203,6 +207,19 @@ try {
       assert.match(row.chips["nav-sent"], /szacunek/);
       assert.equal(row.chips["nav-derived"], child.derived ? gsay("sent.derived") : undefined, "only derived rows carry the mark");
     }
+    // K1c-4: a sent element of the record says why in the pack's words; the kernel's English sentence stays in the record (the answer below) and is not on the screen
+    const whys = [];
+    for (const row of rows.filter(r => r.derived && !r.leftOut)) {
+      const child = expected.children.find(c => c.address === row.address);
+      const word = whyWord(w, child.receipt, child.why);
+      assert.ok(child.why && child.receipt.ref, "the kernel's record keeps its sentence and the ref of the element");
+      assert.equal(row.why, word, `${row.address}: the reason is the word of the pack`);
+      assert.notEqual(row.why, child.why, `${row.address}: the English sentence of the record is not what the screen says`);
+      whys.push({ ref: child.receipt.ref, kernel: child.why, screen: row.why });
+    }
+    assert.ok(whys.length >= 2, "at least two sent elements of the record say why");
+    console.log("[m1-context-sent] rendered why (record -> screen): " + JSON.stringify(whys));
+    await audit("sent-rows");
     const sample = rows.find(r => r.derived), real = rows.find(r => !r.derived && r.chips["nav-sent"]);
     console.log("[m1-context-sent] rendered sent row (real): " + JSON.stringify(real));
     console.log("[m1-context-sent] rendered sent row (derived): " + JSON.stringify(sample));
@@ -234,6 +251,9 @@ try {
     assert.ok((await page.getByTestId("card-derived-note").innerText()).endsWith(card.derived_note), "the card says the kernel's sentence: a view of the record, not a stored node");
     const value = await page.getByTestId("card-value").innerText();
     assert.ok(value.includes(card.value_human) && /szacunek/.test(card.value_human), `the card gives the tokens as an estimate: ${value}`);
+    assert.equal(await page.getByTestId("card-why").innerText(), `${gsay("card.why")} ${whyWord(w, card.receipt, card.why)}`, "the card says why in the pack's words, not in the kernel's English");
+    assert.notEqual(card.why, whyWord(w, card.receipt, card.why));
+    await audit("sent-card");
     console.log("[m1-context-sent] rendered derived card: " + JSON.stringify({ mark: await page.getByTestId("card-derived").innerText(), note: await page.getByTestId("card-derived-note").innerText(), value }));
     await page.getByTestId("card-derived-note").scrollIntoViewIfNeeded();
     await shot("m1-sent-card");
@@ -351,10 +371,32 @@ try {
     await sheet().waitFor({ state: "detached" });
   });
 
+  await step("a memory node that went with a request says why in the pack's words on the sheet (K1c-4), not in the kernel's English", async () => {
+    const created = await api("POST", "/api/memory", { content: "the person prefers short answers about the server", node_type: "text" });
+    await send("one more with a memory node");
+    await openLast();
+    const items = await page.locator('[data-testid="receipt-item"]').evaluateAll(els => els.map(el => ({ text: el.querySelector('[data-testid="receipt-item-text"]')?.textContent ?? "", chip: el.querySelector('[data-testid="receipt-item-chip"]')?.textContent ?? "", why: el.querySelector('[data-testid="receipt-item-why"]')?.textContent ?? null })));
+    const node = items.find(i => i.chip === w["chip.memory_node"] && i.why !== null);
+    assert.ok(node, `a memory node of the request has a reason line: ${JSON.stringify(items)}`);
+    assert.equal(node.why, w["why.memory_node"], "the pack's word");
+    assert.equal(node.text, say("item.memory_node", { type: say("node_type.text") }), "the type of the node is said in words, not as the kernel's label");
+    console.log("[m1-context-sent] rendered why on the sheet (memory node): " + JSON.stringify(node));
+    await page.getByTestId("receipt-item-why").first().scrollIntoViewIfNeeded();
+    await shot("m1-context-sheet-memory-why");
+    await closeSheet();
+    const id = created.id ?? created.node?.id;
+    if (id) await api("DELETE", `/api/memory/${id}`);
+  });
+
+  await step("no screen shown so far has developer text: a raw key or an English sentence (m1-audit.mjs; the person's own messages and the fold Szczegóły techniczne are skipped)", async () => {
+    assert.deepEqual(AUDIT.map(a => `${a.shot}: ${a.why} | ${a.line} | ${a.where}`), [], "every line of the screens is in the words of the pack");
+  });
+
   assert.deepEqual(errors, [], "no page errors");
 } finally {
   await browser?.close().catch(() => {});
   server.kill("SIGTERM"); mock.kill("SIGTERM");
 }
+for (const a of AUDIT) console.log(`[m1-context-sent] AUDIT ${a.shot}: ${a.why} | ${a.line} | ${a.where}`);
 console.log(`[m1-context-sent] screenshots in ${SHOTS}`);
 process.exit(failed ? 1 : 0);

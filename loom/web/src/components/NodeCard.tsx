@@ -19,6 +19,8 @@ import { actionRows, chainRows, draftOf, editorKind, layersLine, levelChoices, p
 
 interface Props {
   address: string;
+  /** The label the navigator already knows: said in the header while the card loads (never the raw address). */
+  label?: string;
   language: string;
   convId: string | null;
   t: ShellT;
@@ -36,7 +38,7 @@ interface Props {
 /** A gate waits for the user's yes, then `after` runs (the card reloads). */
 interface GateState extends PendingGate { after: () => void }
 
-export default function NodeCard({ address, language, convId, t, receiptT, onClose, onNavigate, onChanged, section = null }: Props) {
+export default function NodeCard({ address, label, language, convId, t, receiptT, onClose, onNavigate, onChanged, section = null }: Props) {
   const [card, setCard] = useState<GraphCardResult | null>(null);
   const [rules, setRules] = useState<ScopedRule[]>([]);
   const [loading, setLoading] = useState(true);
@@ -138,7 +140,7 @@ export default function NodeCard({ address, language, convId, t, receiptT, onClo
   return (
     <section ref={root} className="ncard" data-testid="node-card" data-address={address} data-step={step} data-section={section ?? undefined} aria-busy={busy || loading}>
       <header className="ncard-head">
-        <h2 className="ncard-title" data-testid="card-label">{card?.label ?? address}</h2>
+        <h2 className="ncard-title" data-testid="card-label">{card?.label ?? (label || t("loading"))}</h2>
         <button className="ncard-close" data-testid="card-close" aria-label={t("card.close")} onClick={onClose}>×</button>
       </header>
       {loading && <p className="gnav-note" data-testid="card-loading">{t("loading")}</p>}
