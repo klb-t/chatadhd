@@ -258,7 +258,17 @@ test("actual pack scenario and native snapshot projection preserve question orde
   };
   const projected = normalizeNativeSnapshot(native);
   assert.deepEqual(projected.scenario.sections[0].fields.map((field) => field.id), scenario.sections[0].questions.map((question) => question.field));
-  assert.equal(projected.scenario.sections[0].fields[0].question, scenario.sections[0].questions[0].text);
+  // The pack's texts are {en, pl}: English without a page language, the page language when it is one of them (M1-K2a).
+  assert.equal(projected.scenario.sections[0].fields[0].question, scenario.sections[0].questions[0].text.en);
+  assert.equal(projected.scenario.sections[0].title, scenario.sections[0].title.en);
+  globalThis.document = { documentElement: { lang: "pl" } };
+  try {
+    const polish = normalizeNativeSnapshot(native);
+    assert.equal(polish.scenario.sections[0].fields[0].question, scenario.sections[0].questions[0].text.pl);
+    assert.equal(polish.scenario.sections[0].title, scenario.sections[0].title.pl);
+    globalThis.document.documentElement.lang = "de";  // no German: English
+    assert.equal(normalizeNativeSnapshot(native).scenario.sections[0].title, scenario.sections[0].title.en);
+  } finally { delete globalThis.document; }
   assert.deepEqual(projected.scenario.source, scenario);
   assert.deepEqual(projected.privacy, privacy.rules);
   assert.equal(projected.session.summary, "retained native summary");

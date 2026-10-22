@@ -15,7 +15,14 @@ Json scenario_fixture() {
   auto path = std::filesystem::weakly_canonical(std::filesystem::path(LOOM_TEST_FIXTURES) / ".." / "..") / "data/onboarding/scenario.pack";
   std::ifstream input(path);
   std::stringstream text; text << input.rdbuf();
-  return unwrap(json::parse(text.str()));
+  auto scenario = unwrap(json::parse(text.str()));
+  // These engine tests walk the interview from the "identity" section, so the first section of the pack ("detail": how much to ask,
+  // M1-K2a) goes last here. The production order and that section are covered in test_onboarding_interview.cpp.
+  auto& sections = scenario["sections"];
+  const Json first = sections[0];
+  sections.erase(sections.begin());
+  sections.push_back(first);
+  return scenario;
 }
 Json rule_fixture(std::string category = "*") {
   return Json{{"id", "fixture/" + category}, {"category", category}, {"store", true}, {"infer", true},
@@ -184,7 +191,7 @@ TEST_SUITE("onboarding") {
     skip["id"] = "skip-last"; skip["section"] = "privacy";
     LOOM_REQUIRE_OK(restored.dispatch(skip));
     CHECK(restored.snapshot()["session"]["status"] == "active");
-    CHECK(restored.snapshot()["session"]["section"] == "identity");
+    CHECK(restored.snapshot()["session"]["section"] == "life");  // the next pending section after "privacy" (M1-K2a added "life" and "detail" after it in this fixture)
   }
 
   TEST_CASE("new fields migrate forward while existing user values settings and unrelated graph remain intact") {

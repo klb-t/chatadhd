@@ -4,6 +4,7 @@ from pathlib import Path
 import argparse
 import hashlib
 import json
+import re
 
 ROOT = Path(__file__).resolve().parents[2]
 DATA = ROOT / "data"
@@ -125,8 +126,124 @@ def compile_entry_packs(pack):
     return pack
 
 
+LOCALES = ("en", "pl")
+PLACEHOLDERS = {"{topics}", "{asks}", "{stores}", "{model_sees}"}
+SKIP_REASON_CODES = ("known", "declined", "never", "detail_above_level", "sensitivity_above_level", "privacy_denied", "setting", "level_not_chosen")
+
+
+def canonical(value):
+    """Same bytes as loom::json::canonical (sorted keys, compact, UTF-8 as is)."""
+    return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+
+
+def recipe_hash(scenario):
+    return hashlib.sha256(canonical(scenario["graph_method"]).encode("utf-8")).hexdigest()
+
+
+def need(condition, message):
+    if not condition:
+        raise ValueError("scenario: " + message)
+
+
+def localized(value, label):
+    """A text for the person exists in every language, and the Polish one is not a copy of the English one."""
+    need(isinstance(value, dict) and set(value) == set(LOCALES), label + " needs exactly {en, pl}")
+    for locale in LOCALES:
+        need(isinstance(value[locale], str) and value[locale].strip(), label + "." + locale + " must be a non-empty string")
+    need(value["pl"] != value["en"], label + ".pl must be translated, not copied from en")
+    return value
+
+
+def validate_scenario(scenario):
+    """Schema checks of the interview scenario (texts in {en, pl}, levels, remark rules); the C++ side re-validates on load."""
+    need(scenario.get("schema") == "loom.onboarding.scenario/1", "unknown schema")
+    sections = scenario["sections"]
+    section_ids = [section["id"] for section in sections]
+    need(len(set(section_ids)) == len(section_ids), "duplicate section id")
+    questions = {}
+    for section in sections:
+        localized(section["title"], "section " + section["id"] + ".title")
+        for question in section["questions"]:
+            localized(question["text"], "question " + question["field"])
+            need(question["field"] not in questions, "two questions for " + question["field"])
+            questions[question["field"]] = section["id"]
+    categories = {}
+    for category in scenario["categories"]:
+        need(category["id"] not in categories, "duplicate category " + category["id"])
+        localized(category["label"], "category " + category["id"] + ".label")
+        categories[category["id"]] = bool(category.get("meta"))
+    field_ids, used = set(), set()
+    for field in scenario["fields"]:
+        fid = field["id"]
+        need(fid not in field_ids, "duplicate field " + fid)
+        field_ids.add(fid)
+        need(field["section"] in section_ids, "field " + fid + " names an unknown section")
+        need(questions.get(fid) == field["section"], "field " + fid + " needs its question in its own section")
+        need(field["category"] in categories, "field " + fid + " names an unlisted category")
+        used.add(field["category"])
+        for key in ("detail", "sensitivity"):
+            need(isinstance(field[key], (int, float)) and field[key] >= 0, "field " + fid + "." + key + " must be a nonnegative number")
+        localized(field["topic"], "field " + fid + ".topic")
+        need(("setting_key" in field) == categories[field["category"]], "field " + fid + ": exactly the fields of a meta category carry setting_key")
+    need(used == set(categories), "a category without any field")
+    levels = scenario["detail_levels"]
+    need(len(levels) >= 1 and len({level["id"] for level in levels}) == len(levels), "detail_levels need unique ids")
+    previous = (0, 0)
+    for level in levels:
+        localized(level["label"], "level " + level["id"] + ".label")
+        caps = []
+        for key in ("max_detail", "max_sensitivity"):
+            value = level[key]
+            need(value is None or (isinstance(value, (int, float)) and value >= 0), "level " + level["id"] + "." + key + " must be null or nonnegative")
+            caps.append(float("inf") if value is None else value)
+        need(caps[0] >= previous[0] and caps[1] >= previous[1], "level caps must not shrink from one level to the next")
+        previous = (caps[0], caps[1])
+        for part, placeholder in (("asks", "{asks}"), ("stores", "{stores}"), ("model_sees", "{model_sees}")):
+            text = localized(level["preview"][part], "level " + level["id"] + ".preview." + part)
+            for locale in LOCALES:
+                need(placeholder in text[locale], "level " + level["id"] + ".preview." + part + "." + locale + " must name " + placeholder)
+                need(not any(ch.isdigit() for ch in text[locale]), "preview texts carry no digits of their own: the numbers are computed")
+                for token in re.findall(r"\{[^}]*\}", text[locale]):
+                    need(token in PLACEHOLDERS, "unknown placeholder " + token)
+    need(set(scenario["skip_reasons"]) == set(SKIP_REASON_CODES), "skip_reasons must cover exactly " + ", ".join(SKIP_REASON_CODES))
+    for code, text in scenario["skip_reasons"].items():
+        localized(text, "skip_reasons." + code)
+    for locale in LOCALES:
+        need(isinstance(scenario["remark_negators"][locale], list), "remark_negators." + locale + " must be a list")
+    rule_ids, never_categories = set(), {locale: set() for locale in LOCALES}
+    for rule in scenario["remark_rules"]:
+        need(rule["id"] not in rule_ids, "duplicate remark rule " + rule["id"])
+        rule_ids.add(rule["id"])
+        localized(rule["understood"], "rule " + rule["id"] + ".understood")
+        for locale in LOCALES:
+            patterns = rule["pattern"][locale]
+            need(isinstance(patterns, list) and patterns and all(isinstance(p, str) and p.strip() for p in patterns),
+                 "rule " + rule["id"] + " needs patterns in " + locale)
+        effect = rule["effect"]
+        if "detail_level_delta" in effect:
+            need(set(effect) == {"detail_level_delta"} and effect["detail_level_delta"] in (-1, 1), "rule " + rule["id"] + ": detail_level_delta is -1 or 1")
+            continue
+        need(effect.get("status") in ("never", "unknown") and set(effect) <= {"status", "category", "fields"} and ("category" in effect or "fields" in effect),
+             "rule " + rule["id"] + ": effect needs status never|unknown and a category and/or fields")
+        need(effect.get("category", next(iter(categories))) in categories, "rule " + rule["id"] + " names an unknown category")
+        for fid in effect.get("fields", []):
+            need(fid in field_ids, "rule " + rule["id"] + " names an unknown field")
+        if effect["status"] == "never" and "category" in effect:
+            for locale in LOCALES:
+                never_categories[locale].add(effect["category"])
+    for category, meta in categories.items():
+        if not meta:
+            for locale in LOCALES:
+                need(category in never_categories[locale], "category " + category + " has no never rule in " + locale)
+    need(scenario["graph_method"]["recipe"]["sections"] == sections, "graph_method.recipe.sections must equal sections")
+    return scenario
+
+
 def documents():
     result = {name: read_document(path) for name, path in FILES.items()}
+    validate_scenario(result["kOnboardingScenario"])
+    need(result["kOnboardingScenario"]["method_ref"]["recipe_hash"] == recipe_hash(result["kOnboardingScenario"]),
+         "method_ref.recipe_hash is stale; run gen_onboarding_pack.py without --check")
     compile_entry_packs(result["kOnboardingPack"])
     compile_layer_bindings(result["kOnboardingPack"])
     return result
@@ -164,10 +281,21 @@ def generated():
                                            if k not in ("schema", "section", "subsection", "units")})}
 
 
+def refresh_recipe_hash():
+    """method_ref.recipe_hash is derived from graph_method: the generator writes the derived value back into the canonical pack."""
+    path = FILES["kOnboardingScenario"]
+    scenario = json.loads(path.read_bytes().decode("utf-8"))
+    if scenario["method_ref"]["recipe_hash"] != recipe_hash(scenario):
+        scenario["method_ref"]["recipe_hash"] = recipe_hash(scenario)
+        path.write_bytes(serialized(scenario).encode("utf-8"))
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--check", action="store_true")
     args = parser.parse_args()
+    if not args.check:
+        refresh_recipe_hash()
     outputs = generated()
     if args.check:
         for path, content in outputs.items():

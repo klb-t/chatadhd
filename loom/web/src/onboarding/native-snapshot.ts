@@ -17,6 +17,17 @@ function text(value: unknown, label: string): string {
   return value;
 }
 
+// Scenario texts are a string (older stored scenarios) or {en, pl}: the language of the page (document lang), then English.
+function localized(value: unknown, label: string): string {
+  if (value && typeof value === "object" && !Array.isArray(value)) {
+    const record = value as Record<string, unknown>;
+    const lang = typeof document !== "undefined" ? document.documentElement.lang.slice(0, 2).toLowerCase() : "";
+    const picked = typeof record[lang] === "string" && record[lang] !== "" ? record[lang] : record.en;
+    return text(picked, label);
+  }
+  return text(value, label);
+}
+
 export function normalizeNativeSnapshot(input: JsonValue): OnboardingSnapshot {
   const raw = object(input, "snapshot");
   const profile = object(raw.profile ?? raw, "profile");
@@ -36,13 +47,13 @@ export function normalizeNativeSnapshot(input: JsonValue): OnboardingSnapshot {
       const question = questionMap.get(fieldId);
       return {
         id: fieldId, label: typeof descriptor.label === "string" ? descriptor.label : fieldId,
-        question: question ? text(question.text, "question.text") : undefined,
+        question: question ? localized(question.text, "question.text") : undefined,
         category: text(descriptor.category, "field.category"),
         input: typeof descriptor.input === "string" ? descriptor.input as ScenarioField["input"] : undefined,
         options: descriptor.options as unknown as ScenarioField["options"],
       };
     });
-    return { id, title: text(section.title, "section.title"), description: typeof section.description === "string" ? section.description : undefined, fields };
+    return { id, title: localized(section.title, "section.title"), description: typeof section.description === "string" ? section.description : undefined, fields };
   });
   const session = object(profile.session, "session");
   const sessionSections = object(session.sections, "session.sections");

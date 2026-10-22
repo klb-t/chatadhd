@@ -6551,23 +6551,43 @@ std::string_view(R"loom_onboard({
   "method_ref": {
     "method_id": "onboarding.interview",
     "version_id": "onboarding.interview/v1",
-    "recipe_hash": "9bd06de30a14b52a22a17caff6ff08dacf8f5c31e156bb469dd945aa84ea796b"
+    "recipe_hash": "f0f983192bab5dcfb453cf373562258c53e10a1cc3a92e4b658d847c1dc4b6a3"
   },
   "prompt": "Interview the user using only supplied allowed questions and context. Ask actively and adapt follow-up questions to the user’s answers. Treat unknown as unknown; never ask declined fields; never ask or infer never fields. Do not invent personal facts. After each section, summarize what you understood and ask the user to confirm or correct it. A missing answer may be skipped, paused, resumed or repeated. Return only JSON matching reply_schema. Candidates are proposed interpretations, not committed facts. Use caller-supplied IDs, timestamps and source references. Infer only where the supplied privacy policy permits it; explicit statements stay separately identified.",
   "fields": [
     {
+      "id": "interview.detail",
+      "section": "detail",
+      "category": "interview",
+      "detail": 0,
+      "sensitivity": 0,
+      "setting_key": "profile_detail_level",
+      "topic": {
+        "en": "how much to ask",
+        "pl": "ile pytać"
+      }
+    },
+    {
       "id": "identity.description",
       "section": "identity",
       "category": "identity",
-      "detail": 1,
-      "sensitivity": 1
+      "detail": 2,
+      "sensitivity": 1,
+      "topic": {
+        "en": "who you are",
+        "pl": "kim jesteś"
+      }
     },
     {
       "id": "work.projects",
       "section": "identity",
       "category": "work",
-      "detail": 1,
-      "sensitivity": 1
+      "detail": 2,
+      "sensitivity": 1,
+      "topic": {
+        "en": "work and projects",
+        "pl": "praca i projekty"
+      }
     },
     {
       "id": "communication.style",
@@ -6575,15 +6595,23 @@ std::string_view(R"loom_onboard({
       "category": "communication",
       "detail": 1,
       "sensitivity": 1,
-      "default_key": "preference.style"
+      "default_key": "preference.style",
+      "topic": {
+        "en": "conversation style",
+        "pl": "styl rozmowy"
+      }
     },
     {
       "id": "communication.length",
       "section": "communication",
       "category": "communication",
-      "detail": 1,
+      "detail": 2,
       "sensitivity": 1,
-      "default_key": "preference.length"
+      "default_key": "preference.length",
+      "topic": {
+        "en": "answer length",
+        "pl": "długość odpowiedzi"
+      }
     },
     {
       "id": "communication.language",
@@ -6591,98 +6619,1197 @@ std::string_view(R"loom_onboard({
       "category": "communication",
       "detail": 1,
       "sensitivity": 1,
-      "default_key": "preference.language"
+      "default_key": "preference.language",
+      "topic": {
+        "en": "language",
+        "pl": "język"
+      }
     },
     {
       "id": "communication.attention",
       "section": "communication",
       "category": "communication",
-      "detail": 1,
+      "detail": 2,
       "sensitivity": 2,
-      "default_key": "preference.adhd_needs"
+      "default_key": "preference.adhd_needs",
+      "topic": {
+        "en": "attention and organization",
+        "pl": "uwaga i organizacja"
+      }
     },
     {
       "id": "knowledge.remember",
       "section": "knowledge",
       "category": "knowledge",
-      "detail": 1,
-      "sensitivity": 1
+      "detail": 3,
+      "sensitivity": 1,
+      "topic": {
+        "en": "what to remember",
+        "pl": "co zapamiętać"
+      }
     },
     {
       "id": "knowledge.avoid",
       "section": "knowledge",
       "category": "knowledge",
-      "detail": 1,
-      "sensitivity": 1
+      "detail": 3,
+      "sensitivity": 1,
+      "topic": {
+        "en": "what to avoid",
+        "pl": "czego unikać"
+      }
     },
     {
       "id": "privacy.preferences",
       "section": "privacy",
       "category": "privacy",
-      "detail": 1,
-      "sensitivity": 1
+      "detail": 2,
+      "sensitivity": 1,
+      "topic": {
+        "en": "privacy",
+        "pl": "prywatność"
+      }
+    },
+    {
+      "id": "health.needs",
+      "section": "life",
+      "category": "health",
+      "detail": 3,
+      "sensitivity": 3,
+      "topic": {
+        "en": "health",
+        "pl": "zdrowie"
+      }
+    },
+    {
+      "id": "relations.people",
+      "section": "life",
+      "category": "relations",
+      "detail": 3,
+      "sensitivity": 3,
+      "topic": {
+        "en": "people close to you",
+        "pl": "bliscy"
+      }
+    },
+    {
+      "id": "routine.rhythm",
+      "section": "life",
+      "category": "routine",
+      "detail": 3,
+      "sensitivity": 2,
+      "topic": {
+        "en": "daily rhythm",
+        "pl": "rytm dnia"
+      }
     }
   ],
   "sections": [
     {
+      "id": "detail",
+      "title": {
+        "en": "How much to ask",
+        "pl": "Ile pytać"
+      },
+      "questions": [
+        {
+          "field": "interview.detail",
+          "text": {
+            "en": "How many questions may I ask you? Few (minimal), a normal amount, or as many as your privacy rules allow (detailed). You can change this at any time.",
+            "pl": "Ile pytań możesz usłyszeć? Mało (minimalnie), zwykle albo tyle, na ile pozwalają Twoje zasady prywatności (szczegółowo). Zmienisz to w każdej chwili."
+          }
+        }
+      ]
+    },
+    {
       "id": "identity",
-      "title": "Identity and work",
+      "title": {
+        "en": "Identity and work",
+        "pl": "Kim jesteś i czym się zajmujesz"
+      },
       "questions": [
         {
           "field": "identity.description",
-          "text": "Who are you, and what would you like the application to know about you?"
+          "text": {
+            "en": "Who are you, and what would you like the application to know about you?",
+            "pl": "Kim jesteś? Co warto o Tobie wiedzieć?"
+          }
         },
         {
           "field": "work.projects",
-          "text": "What are you working on and what do you want help with?"
+          "text": {
+            "en": "What are you working on and what do you want help with?",
+            "pl": "Nad czym pracujesz i w czym chcesz pomocy?"
+          }
         }
       ]
     },
     {
       "id": "communication",
-      "title": "Communication",
+      "title": {
+        "en": "Communication",
+        "pl": "Rozmowa"
+      },
       "questions": [
         {
           "field": "communication.style",
-          "text": "How should the application speak to you?"
+          "text": {
+            "en": "How should the application speak to you?",
+            "pl": "Jak mam do Ciebie mówić?"
+          }
         },
         {
           "field": "communication.length",
-          "text": "How much detail do you prefer?"
+          "text": {
+            "en": "How much detail do you prefer?",
+            "pl": "Ile szczegółów lubisz w odpowiedziach?"
+          }
         },
         {
           "field": "communication.language",
-          "text": "Which language or languages do you want to use?"
+          "text": {
+            "en": "Which language or languages do you want to use?",
+            "pl": "W jakim języku albo językach chcesz rozmawiać?"
+          }
         },
         {
           "field": "communication.attention",
-          "text": "Are there attention, organization or ADHD-related needs you want accommodated? You can leave this unanswered."
+          "text": {
+            "en": "Are there attention, organization or ADHD-related needs you want accommodated? You can leave this unanswered.",
+            "pl": "Czy są sprawy z uwagą, organizacją lub ADHD, które mam brać pod uwagę? Możesz nie odpowiadać."
+          }
         }
       ]
     },
     {
       "id": "knowledge",
-      "title": "What to remember",
+      "title": {
+        "en": "What to remember",
+        "pl": "Co zapamiętać"
+      },
       "questions": [
         {
           "field": "knowledge.remember",
-          "text": "Give examples of things you want the application to remember."
+          "text": {
+            "en": "Give examples of things you want the application to remember.",
+            "pl": "Podaj przykłady rzeczy, które mam zapamiętać."
+          }
         },
         {
           "field": "knowledge.avoid",
-          "text": "Give examples of things the application should not know, ask about or infer."
+          "text": {
+            "en": "Give examples of things the application should not know, ask about or infer.",
+            "pl": "Podaj przykłady rzeczy, o których nie mam wiedzieć, o które nie mam pytać albo których nie mam się domyślać."
+          }
         }
       ]
     },
     {
       "id": "privacy",
-      "title": "Privacy",
+      "title": {
+        "en": "Privacy",
+        "pl": "Prywatność"
+      },
       "questions": [
         {
           "field": "privacy.preferences",
-          "text": "Which categories may be stored, at what detail and sensitivity, sent to which providers, inferred or kept only when stated explicitly? What retention do you choose?"
+          "text": {
+            "en": "Which categories may be stored, at what detail and sensitivity, sent to which providers, inferred or kept only when stated explicitly? What retention do you choose?",
+            "pl": "Co wolno zapisać, jak szczegółowo i jak osobiste rzeczy, co wolno wysłać i do którego dostawcy, czego wolno się domyślać, a co trzymać tylko wtedy, gdy wyraźnie to powiesz? Jak długo mam trzymać zapisy?"
+          }
         }
       ]
+    },
+    {
+      "id": "life",
+      "title": {
+        "en": "More about you",
+        "pl": "Więcej o Tobie"
+      },
+      "questions": [
+        {
+          "field": "health.needs",
+          "text": {
+            "en": "Is there anything about your health that the application should keep in mind? You can leave this unanswered.",
+            "pl": "Czy jest coś o Twoim zdrowiu, co mam mieć na uwadze? Możesz nie odpowiadać."
+          }
+        },
+        {
+          "field": "relations.people",
+          "text": {
+            "en": "Are there people close to you that the application should know about, and what may it remember about them?",
+            "pl": "Czy są bliskie Ci osoby, o których mam wiedzieć? Powiedz, co o nich wolno mi pamiętać."
+          }
+        },
+        {
+          "field": "routine.rhythm",
+          "text": {
+            "en": "What does your day usually look like, and when do you like to be reminded of things?",
+            "pl": "Jak zwykle wygląda Twój dzień i kiedy lubisz, gdy coś Ci przypominam?"
+          }
+        }
+      ]
+    }
+  ],
+  "categories": [
+    {
+      "id": "interview",
+      "label": {
+        "en": "interview",
+        "pl": "wywiad"
+      },
+      "meta": true
+    },
+    {
+      "id": "identity",
+      "label": {
+        "en": "identity",
+        "pl": "tożsamość"
+      }
+    },
+    {
+      "id": "work",
+      "label": {
+        "en": "work",
+        "pl": "praca"
+      }
+    },
+    {
+      "id": "communication",
+      "label": {
+        "en": "communication",
+        "pl": "rozmowa"
+      }
+    },
+    {
+      "id": "knowledge",
+      "label": {
+        "en": "knowledge",
+        "pl": "wiedza"
+      }
+    },
+    {
+      "id": "privacy",
+      "label": {
+        "en": "privacy",
+        "pl": "prywatność"
+      }
+    },
+    {
+      "id": "health",
+      "label": {
+        "en": "health",
+        "pl": "zdrowie"
+      }
+    },
+    {
+      "id": "relations",
+      "label": {
+        "en": "people close to you",
+        "pl": "bliscy"
+      }
+    },
+    {
+      "id": "routine",
+      "label": {
+        "en": "daily rhythm",
+        "pl": "rytm dnia"
+      }
+    }
+  ],
+  "detail_levels": [
+    {
+      "id": "minimal",
+      "label": {
+        "en": "Minimal",
+        "pl": "Minimalnie"
+      },
+      "max_detail": 1,
+      "max_sensitivity": 1,
+      "preview": {
+        "asks": {
+          "en": "I will ask only the essentials: {topics}. Number of questions: {asks}.",
+          "pl": "Zapytam tylko o to, co najważniejsze: {topics}. Liczba pytań: {asks}."
+        },
+        "stores": {
+          "en": "I will store only the answers to these questions, with you, in local data. Number of things to store: {stores}.",
+          "pl": "Zapiszę tylko odpowiedzi na te pytania, u Ciebie, w lokalnych danych. Liczba rzeczy do zapisania: {stores}."
+        },
+        "model_sees": {
+          "en": "The model sees at most what is stored at this level (stored now: {model_sees}), and only if your privacy rules allow sending it.",
+          "pl": "Model zobaczy co najwyżej to, co zapisane na tym poziomie (zapisanych teraz: {model_sees}) i tylko wtedy, gdy Twoje zasady prywatności pozwalają to wysłać."
+        }
+      }
+    },
+    {
+      "id": "normal",
+      "label": {
+        "en": "Normal",
+        "pl": "Zwykle"
+      },
+      "max_detail": 2,
+      "max_sensitivity": 2,
+      "preview": {
+        "asks": {
+          "en": "I will ask what makes everyday conversation easier: {topics}. Number of questions: {asks}.",
+          "pl": "Zapytam o to, co ułatwia rozmowę na co dzień: {topics}. Liczba pytań: {asks}."
+        },
+        "stores": {
+          "en": "I will store the answers to these questions, with you, in local data. Number of things to store: {stores}.",
+          "pl": "Zapiszę odpowiedzi na te pytania, u Ciebie, w lokalnych danych. Liczba rzeczy do zapisania: {stores}."
+        },
+        "model_sees": {
+          "en": "The model sees at most as much as is stored at this level (stored now: {model_sees}); sending depends on your privacy rules.",
+          "pl": "Model zobaczy co najwyżej tyle, ile zapisane na tym poziomie (zapisanych teraz: {model_sees}); wysyłka zależy od Twoich zasad prywatności."
+        }
+      }
+    },
+    {
+      "id": "detailed",
+      "label": {
+        "en": "Detailed",
+        "pl": "Szczegółowo"
+      },
+      "max_detail": null,
+      "max_sensitivity": null,
+      "preview": {
+        "asks": {
+          "en": "I will ask about everything your privacy rules allow, including personal things: {topics}. Number of questions: {asks}.",
+          "pl": "Zapytam o wszystko, na co pozwalają Twoje zasady prywatności, także o rzeczy osobiste: {topics}. Liczba pytań: {asks}."
+        },
+        "stores": {
+          "en": "I will store the answers to all of these, with you, in local data. Number of things to store: {stores}.",
+          "pl": "Zapiszę odpowiedzi na wszystkie te pytania, u Ciebie, w lokalnych danych. Liczba rzeczy do zapisania: {stores}."
+        },
+        "model_sees": {
+          "en": "The model sees at most everything stored (stored now: {model_sees}); sending depends on your privacy rules.",
+          "pl": "Model zobaczy co najwyżej wszystko, co zapisane (zapisanych teraz: {model_sees}); wysyłka zależy od Twoich zasad prywatności."
+        }
+      }
+    }
+  ],
+  "skip_reasons": {
+    "known": {
+      "en": "already known",
+      "pl": "już to wiem"
+    },
+    "declined": {
+      "en": "answered: not now, so it is not asked again",
+      "pl": "odpowiedź: nie teraz, więc nie pytam ponownie"
+    },
+    "never": {
+      "en": "answered: never, so it is not asked and not guessed",
+      "pl": "odpowiedź: nigdy, więc nie pytam i nie zgaduję"
+    },
+    "detail_above_level": {
+      "en": "this question goes beyond the chosen level of detail",
+      "pl": "to pytanie wykracza poza wybrany poziom szczegółowości"
+    },
+    "sensitivity_above_level": {
+      "en": "this question is too personal for the chosen level",
+      "pl": "to pytanie jest zbyt osobiste jak na wybrany poziom"
+    },
+    "privacy_denied": {
+      "en": "your privacy rules do not allow asking it",
+      "pl": "Twoje zasady prywatności nie pozwalają o to pytać"
+    },
+    "setting": {
+      "en": "this question sets the level; it is not a question about you",
+      "pl": "to pytanie ustawia poziom, nie jest pytaniem o Ciebie"
+    },
+    "level_not_chosen": {
+      "en": "first I ask how many questions you want",
+      "pl": "najpierw zapytam, ile pytań chcesz"
+    }
+  },
+  "remark_negators": {
+    "pl": [
+      "nie",
+      "bez"
+    ],
+    "en": [
+      "not",
+      "no",
+      "never",
+      "without",
+      "t"
+    ]
+  },
+  "remark_rules": [
+    {
+      "id": "never.identity",
+      "pattern": {
+        "pl": [
+          "nie pytaj o tożsamość",
+          "nie pytaj mnie o tożsamość",
+          "nie rozmawiajmy o tożsamość",
+          "nie chcę mówić o tożsamość",
+          "nie pytaj o tożsamości",
+          "nie pytaj mnie o tożsamości",
+          "nie rozmawiajmy o tożsamości",
+          "nie chcę mówić o tożsamości",
+          "nie pytaj o kim jestem",
+          "nie pytaj mnie o kim jestem",
+          "nie rozmawiajmy o kim jestem",
+          "nie chcę mówić o kim jestem"
+        ],
+        "en": [
+          "do not ask about identity",
+          "don't ask about identity",
+          "do not ask me about identity",
+          "never ask about identity",
+          "stop asking about identity",
+          "i do not want to talk about identity",
+          "do not ask about who i am",
+          "don't ask about who i am",
+          "do not ask me about who i am",
+          "never ask about who i am",
+          "stop asking about who i am",
+          "i do not want to talk about who i am"
+        ]
+      },
+      "effect": {
+        "category": "identity",
+        "status": "never"
+      },
+      "understood": {
+        "en": "I will not ask about who you are, and I will not guess it.",
+        "pl": "Nie będę pytać o tożsamości i nie będę się tego domyślać."
+      }
+    },
+    {
+      "id": "reopen.identity",
+      "pattern": {
+        "pl": [
+          "możesz pytać o tożsamość",
+          "możesz znowu pytać o tożsamość",
+          "wolno pytać o tożsamość",
+          "możesz pytać o tożsamości",
+          "możesz znowu pytać o tożsamości",
+          "wolno pytać o tożsamości",
+          "możesz pytać o kim jestem",
+          "możesz znowu pytać o kim jestem",
+          "wolno pytać o kim jestem"
+        ],
+        "en": [
+          "you may ask about identity",
+          "you can ask about identity",
+          "you can ask about identity again",
+          "you may ask about who i am",
+          "you can ask about who i am",
+          "you can ask about who i am again"
+        ]
+      },
+      "effect": {
+        "category": "identity",
+        "status": "unknown"
+      },
+      "understood": {
+        "en": "I may ask about who you are again.",
+        "pl": "Znowu mogę pytać o tożsamości."
+      }
+    },
+    {
+      "id": "never.work",
+      "pattern": {
+        "pl": [
+          "nie pytaj o praca",
+          "nie pytaj mnie o praca",
+          "nie rozmawiajmy o praca",
+          "nie chcę mówić o praca",
+          "nie pytaj o pracy",
+          "nie pytaj mnie o pracy",
+          "nie rozmawiajmy o pracy",
+          "nie chcę mówić o pracy",
+          "nie pytaj o projekty",
+          "nie pytaj mnie o projekty",
+          "nie rozmawiajmy o projekty",
+          "nie chcę mówić o projekty",
+          "nie pytaj o projektach",
+          "nie pytaj mnie o projektach",
+          "nie rozmawiajmy o projektach",
+          "nie chcę mówić o projektach"
+        ],
+        "en": [
+          "do not ask about work",
+          "don't ask about work",
+          "do not ask me about work",
+          "never ask about work",
+          "stop asking about work",
+          "i do not want to talk about work",
+          "do not ask about my work",
+          "don't ask about my work",
+          "do not ask me about my work",
+          "never ask about my work",
+          "stop asking about my work",
+          "i do not want to talk about my work",
+          "do not ask about projects",
+          "don't ask about projects",
+          "do not ask me about projects",
+          "never ask about projects",
+          "stop asking about projects",
+          "i do not want to talk about projects"
+        ]
+      },
+      "effect": {
+        "category": "work",
+        "status": "never"
+      },
+      "understood": {
+        "en": "I will not ask about work and projects, and I will not guess it.",
+        "pl": "Nie będę pytać o pracy i projektów i nie będę się tego domyślać."
+      }
+    },
+    {
+      "id": "reopen.work",
+      "pattern": {
+        "pl": [
+          "możesz pytać o praca",
+          "możesz znowu pytać o praca",
+          "wolno pytać o praca",
+          "możesz pytać o pracy",
+          "możesz znowu pytać o pracy",
+          "wolno pytać o pracy",
+          "możesz pytać o projekty",
+          "możesz znowu pytać o projekty",
+          "wolno pytać o projekty",
+          "możesz pytać o projektach",
+          "możesz znowu pytać o projektach",
+          "wolno pytać o projektach"
+        ],
+        "en": [
+          "you may ask about work",
+          "you can ask about work",
+          "you can ask about work again",
+          "you may ask about my work",
+          "you can ask about my work",
+          "you can ask about my work again",
+          "you may ask about projects",
+          "you can ask about projects",
+          "you can ask about projects again"
+        ]
+      },
+      "effect": {
+        "category": "work",
+        "status": "unknown"
+      },
+      "understood": {
+        "en": "I may ask about work and projects again.",
+        "pl": "Znowu mogę pytać o pracy i projektów."
+      }
+    },
+    {
+      "id": "never.communication",
+      "pattern": {
+        "pl": [
+          "nie pytaj o komunikacja",
+          "nie pytaj mnie o komunikacja",
+          "nie rozmawiajmy o komunikacja",
+          "nie chcę mówić o komunikacja",
+          "nie pytaj o komunikacji",
+          "nie pytaj mnie o komunikacji",
+          "nie rozmawiajmy o komunikacji",
+          "nie chcę mówić o komunikacji",
+          "nie pytaj o styl rozmowy",
+          "nie pytaj mnie o styl rozmowy",
+          "nie rozmawiajmy o styl rozmowy",
+          "nie chcę mówić o styl rozmowy",
+          "nie pytaj o stylu rozmowy",
+          "nie pytaj mnie o stylu rozmowy",
+          "nie rozmawiajmy o stylu rozmowy",
+          "nie chcę mówić o stylu rozmowy"
+        ],
+        "en": [
+          "do not ask about communication",
+          "don't ask about communication",
+          "do not ask me about communication",
+          "never ask about communication",
+          "stop asking about communication",
+          "i do not want to talk about communication",
+          "do not ask about my communication style",
+          "don't ask about my communication style",
+          "do not ask me about my communication style",
+          "never ask about my communication style",
+          "stop asking about my communication style",
+          "i do not want to talk about my communication style"
+        ]
+      },
+      "effect": {
+        "category": "communication",
+        "status": "never"
+      },
+      "understood": {
+        "en": "I will not ask about how we talk, and I will not guess it.",
+        "pl": "Nie będę pytać o sposobu rozmowy i nie będę się tego domyślać."
+      }
+    },
+    {
+      "id": "reopen.communication",
+      "pattern": {
+        "pl": [
+          "możesz pytać o komunikacja",
+          "możesz znowu pytać o komunikacja",
+          "wolno pytać o komunikacja",
+          "możesz pytać o komunikacji",
+          "możesz znowu pytać o komunikacji",
+          "wolno pytać o komunikacji",
+          "możesz pytać o styl rozmowy",
+          "możesz znowu pytać o styl rozmowy",
+          "wolno pytać o styl rozmowy",
+          "możesz pytać o stylu rozmowy",
+          "możesz znowu pytać o stylu rozmowy",
+          "wolno pytać o stylu rozmowy"
+        ],
+        "en": [
+          "you may ask about communication",
+          "you can ask about communication",
+          "you can ask about communication again",
+          "you may ask about my communication style",
+          "you can ask about my communication style",
+          "you can ask about my communication style again"
+        ]
+      },
+      "effect": {
+        "category": "communication",
+        "status": "unknown"
+      },
+      "understood": {
+        "en": "I may ask about how we talk again.",
+        "pl": "Znowu mogę pytać o sposobu rozmowy."
+      }
+    },
+    {
+      "id": "never.knowledge",
+      "pattern": {
+        "pl": [
+          "nie pytaj o wiedza",
+          "nie pytaj mnie o wiedza",
+          "nie rozmawiajmy o wiedza",
+          "nie chcę mówić o wiedza",
+          "nie pytaj o wiedzy",
+          "nie pytaj mnie o wiedzy",
+          "nie rozmawiajmy o wiedzy",
+          "nie chcę mówić o wiedzy",
+          "nie pytaj o co zapamiętać",
+          "nie pytaj mnie o co zapamiętać",
+          "nie rozmawiajmy o co zapamiętać",
+          "nie chcę mówić o co zapamiętać"
+        ],
+        "en": [
+          "do not ask about knowledge",
+          "don't ask about knowledge",
+          "do not ask me about knowledge",
+          "never ask about knowledge",
+          "stop asking about knowledge",
+          "i do not want to talk about knowledge",
+          "do not ask about what to remember",
+          "don't ask about what to remember",
+          "do not ask me about what to remember",
+          "never ask about what to remember",
+          "stop asking about what to remember",
+          "i do not want to talk about what to remember"
+        ]
+      },
+      "effect": {
+        "category": "knowledge",
+        "status": "never"
+      },
+      "understood": {
+        "en": "I will not ask about what to remember, and I will not guess it.",
+        "pl": "Nie będę pytać o tego, co zapamiętać i nie będę się tego domyślać."
+      }
+    },
+    {
+      "id": "reopen.knowledge",
+      "pattern": {
+        "pl": [
+          "możesz pytać o wiedza",
+          "możesz znowu pytać o wiedza",
+          "wolno pytać o wiedza",
+          "możesz pytać o wiedzy",
+          "możesz znowu pytać o wiedzy",
+          "wolno pytać o wiedzy",
+          "możesz pytać o co zapamiętać",
+          "możesz znowu pytać o co zapamiętać",
+          "wolno pytać o co zapamiętać"
+        ],
+        "en": [
+          "you may ask about knowledge",
+          "you can ask about knowledge",
+          "you can ask about knowledge again",
+          "you may ask about what to remember",
+          "you can ask about what to remember",
+          "you can ask about what to remember again"
+        ]
+      },
+      "effect": {
+        "category": "knowledge",
+        "status": "unknown"
+      },
+      "understood": {
+        "en": "I may ask about what to remember again.",
+        "pl": "Znowu mogę pytać o tego, co zapamiętać."
+      }
+    },
+    {
+      "id": "never.privacy",
+      "pattern": {
+        "pl": [
+          "nie pytaj o prywatność",
+          "nie pytaj mnie o prywatność",
+          "nie rozmawiajmy o prywatność",
+          "nie chcę mówić o prywatność",
+          "nie pytaj o prywatności",
+          "nie pytaj mnie o prywatności",
+          "nie rozmawiajmy o prywatności",
+          "nie chcę mówić o prywatności"
+        ],
+        "en": [
+          "do not ask about privacy",
+          "don't ask about privacy",
+          "do not ask me about privacy",
+          "never ask about privacy",
+          "stop asking about privacy",
+          "i do not want to talk about privacy"
+        ]
+      },
+      "effect": {
+        "category": "privacy",
+        "status": "never"
+      },
+      "understood": {
+        "en": "I will not ask about privacy, and I will not guess it.",
+        "pl": "Nie będę pytać o prywatności i nie będę się tego domyślać."
+      }
+    },
+    {
+      "id": "reopen.privacy",
+      "pattern": {
+        "pl": [
+          "możesz pytać o prywatność",
+          "możesz znowu pytać o prywatność",
+          "wolno pytać o prywatność",
+          "możesz pytać o prywatności",
+          "możesz znowu pytać o prywatności",
+          "wolno pytać o prywatności"
+        ],
+        "en": [
+          "you may ask about privacy",
+          "you can ask about privacy",
+          "you can ask about privacy again"
+        ]
+      },
+      "effect": {
+        "category": "privacy",
+        "status": "unknown"
+      },
+      "understood": {
+        "en": "I may ask about privacy again.",
+        "pl": "Znowu mogę pytać o prywatności."
+      }
+    },
+    {
+      "id": "never.health",
+      "pattern": {
+        "pl": [
+          "nie pytaj o zdrowie",
+          "nie pytaj mnie o zdrowie",
+          "nie rozmawiajmy o zdrowie",
+          "nie chcę mówić o zdrowie",
+          "nie pytaj o zdrowiu",
+          "nie pytaj mnie o zdrowiu",
+          "nie rozmawiajmy o zdrowiu",
+          "nie chcę mówić o zdrowiu",
+          "nie pytaj o zdrowia",
+          "nie pytaj mnie o zdrowia",
+          "nie rozmawiajmy o zdrowia",
+          "nie chcę mówić o zdrowia",
+          "nie pytaj o choroby",
+          "nie pytaj mnie o choroby",
+          "nie rozmawiajmy o choroby",
+          "nie chcę mówić o choroby"
+        ],
+        "en": [
+          "do not ask about health",
+          "don't ask about health",
+          "do not ask me about health",
+          "never ask about health",
+          "stop asking about health",
+          "i do not want to talk about health",
+          "do not ask about my health",
+          "don't ask about my health",
+          "do not ask me about my health",
+          "never ask about my health",
+          "stop asking about my health",
+          "i do not want to talk about my health",
+          "do not ask about medical things",
+          "don't ask about medical things",
+          "do not ask me about medical things",
+          "never ask about medical things",
+          "stop asking about medical things",
+          "i do not want to talk about medical things"
+        ]
+      },
+      "effect": {
+        "category": "health",
+        "status": "never",
+        "fields": [
+          "communication.attention"
+        ]
+      },
+      "understood": {
+        "en": "I will not ask about health (including attention-related needs), and I will not guess it.",
+        "pl": "Nie będę pytać o zdrowia (także o potrzeby związane z uwagą) i nie będę się tego domyślać."
+      }
+    },
+    {
+      "id": "reopen.health",
+      "pattern": {
+        "pl": [
+          "możesz pytać o zdrowie",
+          "możesz znowu pytać o zdrowie",
+          "wolno pytać o zdrowie",
+          "możesz pytać o zdrowiu",
+          "możesz znowu pytać o zdrowiu",
+          "wolno pytać o zdrowiu",
+          "możesz pytać o zdrowia",
+          "możesz znowu pytać o zdrowia",
+          "wolno pytać o zdrowia",
+          "możesz pytać o choroby",
+          "możesz znowu pytać o choroby",
+          "wolno pytać o choroby"
+        ],
+        "en": [
+          "you may ask about health",
+          "you can ask about health",
+          "you can ask about health again",
+          "you may ask about my health",
+          "you can ask about my health",
+          "you can ask about my health again",
+          "you may ask about medical things",
+          "you can ask about medical things",
+          "you can ask about medical things again"
+        ]
+      },
+      "effect": {
+        "category": "health",
+        "status": "unknown",
+        "fields": [
+          "communication.attention"
+        ]
+      },
+      "understood": {
+        "en": "I may ask about health (including attention-related needs) again.",
+        "pl": "Znowu mogę pytać o zdrowia (także o potrzeby związane z uwagą)."
+      }
+    },
+    {
+      "id": "never.relations",
+      "pattern": {
+        "pl": [
+          "nie pytaj o bliskich",
+          "nie pytaj mnie o bliskich",
+          "nie rozmawiajmy o bliskich",
+          "nie chcę mówić o bliskich",
+          "nie pytaj o rodzinę",
+          "nie pytaj mnie o rodzinę",
+          "nie rozmawiajmy o rodzinę",
+          "nie chcę mówić o rodzinę",
+          "nie pytaj o rodzinie",
+          "nie pytaj mnie o rodzinie",
+          "nie rozmawiajmy o rodzinie",
+          "nie chcę mówić o rodzinie",
+          "nie pytaj o relacje",
+          "nie pytaj mnie o relacje",
+          "nie rozmawiajmy o relacje",
+          "nie chcę mówić o relacje",
+          "nie pytaj o relacjach",
+          "nie pytaj mnie o relacjach",
+          "nie rozmawiajmy o relacjach",
+          "nie chcę mówić o relacjach"
+        ],
+        "en": [
+          "do not ask about family",
+          "don't ask about family",
+          "do not ask me about family",
+          "never ask about family",
+          "stop asking about family",
+          "i do not want to talk about family",
+          "do not ask about relationships",
+          "don't ask about relationships",
+          "do not ask me about relationships",
+          "never ask about relationships",
+          "stop asking about relationships",
+          "i do not want to talk about relationships",
+          "do not ask about people close to me",
+          "don't ask about people close to me",
+          "do not ask me about people close to me",
+          "never ask about people close to me",
+          "stop asking about people close to me",
+          "i do not want to talk about people close to me"
+        ]
+      },
+      "effect": {
+        "category": "relations",
+        "status": "never"
+      },
+      "understood": {
+        "en": "I will not ask about people close to you, and I will not guess it.",
+        "pl": "Nie będę pytać o bliskich i nie będę się tego domyślać."
+      }
+    },
+    {
+      "id": "reopen.relations",
+      "pattern": {
+        "pl": [
+          "możesz pytać o bliskich",
+          "możesz znowu pytać o bliskich",
+          "wolno pytać o bliskich",
+          "możesz pytać o rodzinę",
+          "możesz znowu pytać o rodzinę",
+          "wolno pytać o rodzinę",
+          "możesz pytać o rodzinie",
+          "możesz znowu pytać o rodzinie",
+          "wolno pytać o rodzinie",
+          "możesz pytać o relacje",
+          "możesz znowu pytać o relacje",
+          "wolno pytać o relacje",
+          "możesz pytać o relacjach",
+          "możesz znowu pytać o relacjach",
+          "wolno pytać o relacjach"
+        ],
+        "en": [
+          "you may ask about family",
+          "you can ask about family",
+          "you can ask about family again",
+          "you may ask about relationships",
+          "you can ask about relationships",
+          "you can ask about relationships again",
+          "you may ask about people close to me",
+          "you can ask about people close to me",
+          "you can ask about people close to me again"
+        ]
+      },
+      "effect": {
+        "category": "relations",
+        "status": "unknown"
+      },
+      "understood": {
+        "en": "I may ask about people close to you again.",
+        "pl": "Znowu mogę pytać o bliskich."
+      }
+    },
+    {
+      "id": "never.routine",
+      "pattern": {
+        "pl": [
+          "nie pytaj o rytm dnia",
+          "nie pytaj mnie o rytm dnia",
+          "nie rozmawiajmy o rytm dnia",
+          "nie chcę mówić o rytm dnia",
+          "nie pytaj o rytmie dnia",
+          "nie pytaj mnie o rytmie dnia",
+          "nie rozmawiajmy o rytmie dnia",
+          "nie chcę mówić o rytmie dnia",
+          "nie pytaj o plan dnia",
+          "nie pytaj mnie o plan dnia",
+          "nie rozmawiajmy o plan dnia",
+          "nie chcę mówić o plan dnia",
+          "nie pytaj o rutynę",
+          "nie pytaj mnie o rutynę",
+          "nie rozmawiajmy o rutynę",
+          "nie chcę mówić o rutynę",
+          "nie pytaj o rutynie",
+          "nie pytaj mnie o rutynie",
+          "nie rozmawiajmy o rutynie",
+          "nie chcę mówić o rutynie"
+        ],
+        "en": [
+          "do not ask about daily rhythm",
+          "don't ask about daily rhythm",
+          "do not ask me about daily rhythm",
+          "never ask about daily rhythm",
+          "stop asking about daily rhythm",
+          "i do not want to talk about daily rhythm",
+          "do not ask about my routine",
+          "don't ask about my routine",
+          "do not ask me about my routine",
+          "never ask about my routine",
+          "stop asking about my routine",
+          "i do not want to talk about my routine",
+          "do not ask about my schedule",
+          "don't ask about my schedule",
+          "do not ask me about my schedule",
+          "never ask about my schedule",
+          "stop asking about my schedule",
+          "i do not want to talk about my schedule"
+        ]
+      },
+      "effect": {
+        "category": "routine",
+        "status": "never"
+      },
+      "understood": {
+        "en": "I will not ask about your daily rhythm, and I will not guess it.",
+        "pl": "Nie będę pytać o rytmu dnia i nie będę się tego domyślać."
+      }
+    },
+    {
+      "id": "reopen.routine",
+      "pattern": {
+        "pl": [
+          "możesz pytać o rytm dnia",
+          "możesz znowu pytać o rytm dnia",
+          "wolno pytać o rytm dnia",
+          "możesz pytać o rytmie dnia",
+          "możesz znowu pytać o rytmie dnia",
+          "wolno pytać o rytmie dnia",
+          "możesz pytać o plan dnia",
+          "możesz znowu pytać o plan dnia",
+          "wolno pytać o plan dnia",
+          "możesz pytać o rutynę",
+          "możesz znowu pytać o rutynę",
+          "wolno pytać o rutynę",
+          "możesz pytać o rutynie",
+          "możesz znowu pytać o rutynie",
+          "wolno pytać o rutynie"
+        ],
+        "en": [
+          "you may ask about daily rhythm",
+          "you can ask about daily rhythm",
+          "you can ask about daily rhythm again",
+          "you may ask about my routine",
+          "you can ask about my routine",
+          "you can ask about my routine again",
+          "you may ask about my schedule",
+          "you can ask about my schedule",
+          "you can ask about my schedule again"
+        ]
+      },
+      "effect": {
+        "category": "routine",
+        "status": "unknown"
+      },
+      "understood": {
+        "en": "I may ask about your daily rhythm again.",
+        "pl": "Znowu mogę pytać o rytmu dnia."
+      }
+    },
+    {
+      "id": "never.attention",
+      "pattern": {
+        "pl": [
+          "nie pytaj o adhd",
+          "nie pytaj mnie o adhd",
+          "nie pytaj o uwagę",
+          "nie pytaj o organizację",
+          "nie rozmawiajmy o adhd"
+        ],
+        "en": [
+          "do not ask about adhd",
+          "don't ask about adhd",
+          "do not ask me about adhd",
+          "never ask about adhd",
+          "stop asking about adhd",
+          "do not ask about attention"
+        ]
+      },
+      "effect": {
+        "fields": [
+          "communication.attention"
+        ],
+        "status": "never"
+      },
+      "understood": {
+        "en": "I will not ask about attention and ADHD needs, and I will not guess them.",
+        "pl": "Nie będę pytać o potrzeby związane z uwagą i ADHD i nie będę się ich domyślać."
+      }
+    },
+    {
+      "id": "reopen.attention",
+      "pattern": {
+        "pl": [
+          "możesz pytać o adhd",
+          "możesz znowu pytać o adhd",
+          "wolno pytać o adhd",
+          "możesz pytać o uwagę"
+        ],
+        "en": [
+          "you may ask about adhd",
+          "you can ask about adhd",
+          "you can ask about adhd again",
+          "you can ask about attention"
+        ]
+      },
+      "effect": {
+        "fields": [
+          "communication.attention"
+        ],
+        "status": "unknown"
+      },
+      "understood": {
+        "en": "I may ask about attention and ADHD needs again.",
+        "pl": "Znowu mogę pytać o potrzeby związane z uwagą i ADHD."
+      }
+    },
+    {
+      "id": "level.less",
+      "pattern": {
+        "pl": [
+          "wystarczy",
+          "to wystarczy",
+          "wystarczy już",
+          "dość pytań",
+          "mniej pytań",
+          "pytaj mniej",
+          "pytaj mnie mniej",
+          "mniej szczegółów"
+        ],
+        "en": [
+          "that is enough",
+          "that's enough",
+          "thats enough",
+          "enough questions",
+          "enough for now",
+          "ask less",
+          "ask me less",
+          "fewer questions",
+          "less detail"
+        ]
+      },
+      "effect": {
+        "detail_level_delta": -1
+      },
+      "understood": {
+        "en": "I will ask fewer questions (one level lower).",
+        "pl": "Będę zadawać mniej pytań (poziom niżej)."
+      }
+    },
+    {
+      "id": "level.more",
+      "pattern": {
+        "pl": [
+          "pytaj więcej",
+          "pytaj mnie więcej",
+          "więcej pytań",
+          "możesz pytać więcej",
+          "więcej szczegółów"
+        ],
+        "en": [
+          "ask more",
+          "ask me more",
+          "more questions",
+          "you can ask more",
+          "more detail"
+        ]
+      },
+      "effect": {
+        "detail_level_delta": 1
+      },
+      "understood": {
+        "en": "I will ask more questions (one level higher).",
+        "pl": "Będę zadawać więcej pytań (poziom wyżej)."
+      }
     }
   ],
   "reply_schema": {
@@ -6735,62 +7862,147 @@ std::string_view(R"loom_onboard({
     "recipe": {
       "sections": [
         {
+          "id": "detail",
+          "title": {
+            "en": "How much to ask",
+            "pl": "Ile pytać"
+          },
+          "questions": [
+            {
+              "field": "interview.detail",
+              "text": {
+                "en": "How many questions may I ask you? Few (minimal), a normal amount, or as many as your privacy rules allow (detailed). You can change this at any time.",
+                "pl": "Ile pytań możesz usłyszeć? Mało (minimalnie), zwykle albo tyle, na ile pozwalają Twoje zasady prywatności (szczegółowo). Zmienisz to w każdej chwili."
+              }
+            }
+          ]
+        },
+        {
           "id": "identity",
-          "title": "Identity and work",
+          "title": {
+            "en": "Identity and work",
+            "pl": "Kim jesteś i czym się zajmujesz"
+          },
           "questions": [
             {
               "field": "identity.description",
-              "text": "Who are you, and what would you like the application to know about you?"
+              "text": {
+                "en": "Who are you, and what would you like the application to know about you?",
+                "pl": "Kim jesteś? Co warto o Tobie wiedzieć?"
+              }
             },
             {
               "field": "work.projects",
-              "text": "What are you working on and what do you want help with?"
+              "text": {
+                "en": "What are you working on and what do you want help with?",
+                "pl": "Nad czym pracujesz i w czym chcesz pomocy?"
+              }
             }
           ]
         },
         {
           "id": "communication",
-          "title": "Communication",
+          "title": {
+            "en": "Communication",
+            "pl": "Rozmowa"
+          },
           "questions": [
             {
               "field": "communication.style",
-              "text": "How should the application speak to you?"
+              "text": {
+                "en": "How should the application speak to you?",
+                "pl": "Jak mam do Ciebie mówić?"
+              }
             },
             {
               "field": "communication.length",
-              "text": "How much detail do you prefer?"
+              "text": {
+                "en": "How much detail do you prefer?",
+                "pl": "Ile szczegółów lubisz w odpowiedziach?"
+              }
             },
             {
               "field": "communication.language",
-              "text": "Which language or languages do you want to use?"
+              "text": {
+                "en": "Which language or languages do you want to use?",
+                "pl": "W jakim języku albo językach chcesz rozmawiać?"
+              }
             },
             {
               "field": "communication.attention",
-              "text": "Are there attention, organization or ADHD-related needs you want accommodated? You can leave this unanswered."
+              "text": {
+                "en": "Are there attention, organization or ADHD-related needs you want accommodated? You can leave this unanswered.",
+                "pl": "Czy są sprawy z uwagą, organizacją lub ADHD, które mam brać pod uwagę? Możesz nie odpowiadać."
+              }
             }
           ]
         },
         {
           "id": "knowledge",
-          "title": "What to remember",
+          "title": {
+            "en": "What to remember",
+            "pl": "Co zapamiętać"
+          },
           "questions": [
             {
               "field": "knowledge.remember",
-              "text": "Give examples of things you want the application to remember."
+              "text": {
+                "en": "Give examples of things you want the application to remember.",
+                "pl": "Podaj przykłady rzeczy, które mam zapamiętać."
+              }
             },
             {
               "field": "knowledge.avoid",
-              "text": "Give examples of things the application should not know, ask about or infer."
+              "text": {
+                "en": "Give examples of things the application should not know, ask about or infer.",
+                "pl": "Podaj przykłady rzeczy, o których nie mam wiedzieć, o które nie mam pytać albo których nie mam się domyślać."
+              }
             }
           ]
         },
         {
           "id": "privacy",
-          "title": "Privacy",
+          "title": {
+            "en": "Privacy",
+            "pl": "Prywatność"
+          },
           "questions": [
             {
               "field": "privacy.preferences",
-              "text": "Which categories may be stored, at what detail and sensitivity, sent to which providers, inferred or kept only when stated explicitly? What retention do you choose?"
+              "text": {
+                "en": "Which categories may be stored, at what detail and sensitivity, sent to which providers, inferred or kept only when stated explicitly? What retention do you choose?",
+                "pl": "Co wolno zapisać, jak szczegółowo i jak osobiste rzeczy, co wolno wysłać i do którego dostawcy, czego wolno się domyślać, a co trzymać tylko wtedy, gdy wyraźnie to powiesz? Jak długo mam trzymać zapisy?"
+              }
+            }
+          ]
+        },
+        {
+          "id": "life",
+          "title": {
+            "en": "More about you",
+            "pl": "Więcej o Tobie"
+          },
+          "questions": [
+            {
+              "field": "health.needs",
+              "text": {
+                "en": "Is there anything about your health that the application should keep in mind? You can leave this unanswered.",
+                "pl": "Czy jest coś o Twoim zdrowiu, co mam mieć na uwadze? Możesz nie odpowiadać."
+              }
+            },
+            {
+              "field": "relations.people",
+              "text": {
+                "en": "Are there people close to you that the application should know about, and what may it remember about them?",
+                "pl": "Czy są bliskie Ci osoby, o których mam wiedzieć? Powiedz, co o nich wolno mi pamiętać."
+              }
+            },
+            {
+              "field": "routine.rhythm",
+              "text": {
+                "en": "What does your day usually look like, and when do you like to be reminded of things?",
+                "pl": "Jak zwykle wygląda Twój dzień i kiedy lubisz, gdy coś Ci przypominam?"
+              }
             }
           ]
         }
@@ -6842,7 +8054,7 @@ std::string_view(R"loom_onboard({
     "prompt_default_key": "prompt.onboarding"
   }
 }
-)loom_onboard", 9035)};
+)loom_onboard", 48224)};
 static constexpr std::string_view kOnboardingPresentation[] = {
 std::string_view(R"loom_onboard({
   "schema": "loom.onboarding.presentation/1",
