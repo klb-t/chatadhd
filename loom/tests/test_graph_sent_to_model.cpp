@@ -123,6 +123,12 @@ const Json* node_by_id(const Json& nodes, const std::string& id) {
   return nullptr;
 }
 
+Json section_of(const Json& receipt, const std::string& cls) {
+  for (const auto& s : receipt["sections"])
+    if (s["class"] == cls) return s;
+  return nullptr;
+}
+
 }  // namespace
 
 TEST_SUITE("graph_sent_to_model") {
@@ -349,6 +355,165 @@ TEST_CASE("the perspective asks for a message that exists") {
   // the status of the perspective says what it does today
   const auto persp = unwrap(views::effective(f.td.path(), "perspectives"));
   CHECK(persp.find("sent_to_model")->value.at("status").at("state") == "implemented");
+}
+
+TEST_CASE("M1-K1c2 B: the memory and the graph are listed by element - ids that exist, shares that add up to the aggregate, the request unchanged") {
+  Fixture f;
+  const std::string folder = unwrap(f.mem.add_node("FOLDER-S5", std::nullopt, "folder"));
+  const std::string child = unwrap(f.mem.add_node("CHILD-S6 detail", folder));
+  const std::string off = unwrap(f.mem.add_node("OFF-S7 inactive"));
+  REQUIRE(f.mem.update_node(off, Json{{"active", false}}));
+  const std::string text = "tell me about the database and API again";
+
+  // the detailed answers are the same text as the plain ones, byte for byte, and the pieces are the text
+  const auto md = unwrap(f.mem.get_active_context_detailed());
+  CHECK(md.text == f.mem.get_active_context());
+  REQUIRE(md.lines.size() == 3);  // the inactive node is not in the text and not in the list
+  std::string mem_rebuilt;
+  for (std::size_t i = 0; i < md.lines.size(); ++i) mem_rebuilt += (i ? md.separator : std::string()) + md.lines[i].line;
+  CHECK(mem_rebuilt == md.text);
+  GraphSelectOptions g;
+  g.current_conv_id = f.conv_id;
+  const auto gd = unwrap(f.gm.select_context_detailed(text, g));
+  CHECK(gd.text == f.gm.select_context(text, g));
+  REQUIRE_FALSE(gd.elements.empty());
+  std::string graph_rebuilt = gd.header;
+  for (std::size_t i = 0; i < gd.elements.size(); ++i) graph_rebuilt += (i ? gd.separator : std::string()) + gd.elements[i].row;
+  CHECK(graph_rebuilt == gd.text);
+
+  // the request is byte-identical with and without the record (the record asks for the detailed answers, nothing else)
+  ChatEngine e(f.cfg, f.secrets, *f.db, f.bus, f.transport, *f.analyzer, &f.mem, &f.gm);
+  Json trace = Json::object();
+  const Json with = unwrap(e.build_messages(f.conv_id, text, {}, ChatOptions{}, "", &trace));
+  const Json without = unwrap(e.build_messages(f.conv_id, text, {}, ChatOptions{}, "", nullptr));
+  CHECK(json::dump(with) == json::dump(without));
+  const Json receipt = trace["receipt"];
+  REQUIRE(receipt.is_object());
+  CHECK_FALSE(receipt.contains("elements_collapsed"));
+  CHECK(receipt["truncated"] == false);
+
+  // memory: one item per active node, in the order of the text; the ids are nodes of the memory tree
+  const Json mem_section = section_of(receipt, "memory");
+  REQUIRE(mem_section.is_object());
+  REQUIRE(mem_section["items"].size() == 3);
+  for (std::size_t i = 0; i < 3; ++i) {
+    const Json item = mem_section["items"][i];
+    CHECK(item["ref"] == md.lines[i].id);
+    CHECK(item["source_kind"] == "memory_node");
+    CHECK(f.mem.get_node(item["ref"].get<std::string>()).has_value());
+    CHECK(item["ref"] != off);
+    CHECK(item["node_type"] == md.lines[i].node_type);
+  }
+  CHECK(mem_section["items"][1]["ref"] == child);  // the child follows its folder, one level deeper
+  CHECK(mem_section["items"][1]["depth"] == 1);
+  CHECK(mem_section["tokens_est"] == std::max(1, ContextSelector::estimate_tokens(md.text)));  // the shares add up to what the aggregate said
+
+  // graph: the heading, then the messages the search reached; the ids are messages of the database, and the way there is named
+  const Json graph_section = section_of(receipt, "graph");
+  REQUIRE(graph_section.is_object());
+  REQUIRE(graph_section["items"].size() == gd.elements.size() + 1);
+  CHECK(graph_section["items"][0]["ref"] == "graph_memory");
+  for (std::size_t i = 0; i < gd.elements.size(); ++i) {
+    const Json item = graph_section["items"][i + 1];
+    CHECK(item["ref"] == gd.elements[i].id);
+    CHECK(item["source_kind"] == "message:graph");
+    CHECK(item["label"] == gd.elements[i].role);
+    CHECK(item["conv_id"] == gd.elements[i].conv_id);
+    CHECK(item["depth"] == gd.elements[i].depth);
+    CHECK(item["depth"].get<int>() >= 1);
+    CHECK(item["via"].is_string());  // a seed is the node that was found by label; the message came through a link
+    CHECK(unwrap(f.db->get_msg(item["ref"].get<std::string>())).has_value());
+  }
+  CHECK(graph_section["tokens_est"] == std::max(1, ContextSelector::estimate_tokens(gd.text)));
+
+  // references, not contents
+  const std::string stored = json::dump(receipt);
+  for (const char* secret : {"MEM-S1", "FOLDER-S5", "CHILD-S6", "OFF-S7", "we discussed the database"}) CHECK(stored.find(secret) == std::string::npos);
+
+  // the projection: the nodes of the memory and the messages of the graph are THEIR nodes (navigable), the heading is derived, nothing is written
+  const std::string req = f.send(ChatOptions{}, text);
+  const Json stored_receipt = f.receipt_of(req);
+  REQUIRE(stored_receipt.is_object());
+  std::size_t items = 0;
+  for (const auto& s : stored_receipt["sections"]) items += s["items"].size();
+  const std::size_t nodes_before = f.node_rows(), links_before = f.link_rows();
+  const Json r = f.render(Json{{"msg_id", req}, {"lang", "en"}});
+  CHECK(f.node_rows() == nodes_before);
+  CHECK(f.link_rows() == links_before);
+  CHECK(r["counts"]["sent"] == items);
+  const Json nodes = r["nodes"];
+  const Json* folder_node = node_by_id(nodes, "memory:" + folder);
+  REQUIRE(folder_node);
+  CHECK((*folder_node)["derived"] == false);
+  CHECK((*folder_node)["kind"] == "memory_note");
+  CHECK((*folder_node)["address"] == "memory:" + folder);
+  CHECK((*folder_node)["label"] == "FOLDER-S5");  // read live from the memory, not from the record
+  CHECK(node_by_id(nodes, "sent:" + req + ":memory_tree") == nullptr);  // the aggregate is gone: its elements stand in its place
+  for (const auto& el : gd.elements) {
+    const Json* n = node_by_id(nodes, el.id);
+    REQUIRE(n);
+    CHECK((*n)["derived"] == false);
+    CHECK((*n)["kind"] == "message");
+  }
+  const Json* heading = node_by_id(nodes, "sent:" + req + ":graph_memory");
+  REQUIRE(heading);
+  CHECK((*heading)["derived"] == true);
+  bool child_link = false;
+  for (const auto& edge : r["edges"])
+    if (edge["type"] == "sent_to_model" && edge["dst"] == "memory:" + child) {
+      child_link = true;
+      CHECK(edge["weight"].get<double>() == doctest::Approx(mem_section["items"][1]["tokens_est"].get<double>()));
+      CHECK(edge["metadata"]["class"] == "memory");
+    }
+  CHECK(child_link);
+}
+
+TEST_CASE("M1-K1c2 B: over context_receipt_max_bytes the elements fall back to the aggregate items before anything else is cut, and the tokens stay the same") {
+  Fixture f;
+  for (int i = 0; i < 6; ++i) unwrap(f.mem.add_node("NODE-S" + std::to_string(i) + " a note"));
+  const std::string text = "tell me about the database and API again";
+  ChatEngine e(f.cfg, f.secrets, *f.db, f.bus, f.transport, *f.analyzer, &f.mem, &f.gm);
+  const auto compile = [&](Json& trace) {
+    trace = Json::object();
+    return unwrap(e.build_messages(f.conv_id, text, {}, ChatOptions{}, "", &trace));
+  };
+  Json trace;
+  f.cfg.set("context_receipt_max_bytes", 0);  // no cap: the whole record
+  const Json whole_messages = compile(trace);
+  const Json whole = trace["receipt"];
+  const std::size_t whole_bytes = json::dump(whole).size();
+  CHECK(section_of(whole, "memory")["items"].size() == 7);
+  CHECK_FALSE(whole.contains("elements_collapsed"));
+
+  f.cfg.set("context_receipt_max_bytes", static_cast<std::int64_t>(whole_bytes) - 1);
+  const Json collapsed_messages = compile(trace);
+  const Json collapsed = trace["receipt"];
+  CHECK(json::dump(collapsed_messages) == json::dump(whole_messages));  // the request does not depend on how much of it is recorded
+  CHECK(collapsed["elements_collapsed"] == true);
+  CHECK(collapsed["elements_collapsed_reason"] == "context_receipt_max_bytes");
+  CHECK(collapsed["truncated"] == false);  // the record itself is not a summary: the other sections keep their items
+  const Json mem_section = section_of(collapsed, "memory");
+  REQUIRE(mem_section["items"].size() == 1);
+  CHECK(mem_section["items"][0]["ref"] == "memory_tree");
+  CHECK(mem_section["items"][0]["elements_omitted"] == 7);
+  CHECK(section_of(collapsed, "graph")["items"][0]["ref"] == "graph_memory");
+  CHECK(section_of(collapsed, "graph")["items"][0]["elements_omitted"].get<int>() >= 2);
+  CHECK(section_of(collapsed, "history")["items"].size() == 4);
+  CHECK(collapsed["tokens_est"] == whole["tokens_est"]);  // the sum is the same with the elements and without
+  CHECK(mem_section["tokens_est"] == section_of(whole, "memory")["tokens_est"]);
+  CHECK(json::dump(collapsed).size() < whole_bytes);
+
+  // a bound so small that even the aggregates do not fit: the existing summary takes over
+  f.cfg.set("context_receipt_max_bytes", 1);
+  compile(trace);
+  CHECK(trace["receipt"]["truncated"] == true);
+  CHECK(trace["receipt"]["truncated_reason"] == "context_receipt_max_bytes");
+
+  // "always" ignores the bound: whole, with the elements
+  f.cfg.set("context_receipt_store", "always");
+  compile(trace);
+  CHECK(section_of(trace["receipt"], "memory")["items"].size() == 7);
+  CHECK_FALSE(trace["receipt"].contains("elements_collapsed"));
 }
 
 }  // TEST_SUITE

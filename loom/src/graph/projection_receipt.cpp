@@ -13,6 +13,7 @@
 #include "graph/projection.h"
 #include "loom/db.h"
 #include "loom/log.h"
+#include "loom/memory_engine.h"
 #include "loom/runtime_profile.h"
 #include "loom/util/utf8.h"
 
@@ -158,6 +159,11 @@ Result<Json> render_receipt(const Env& env, const std::set<std::string>& kinds, 
       if (n) return std::optional<Json>(Json{{"id", ref}, {"address", cat.canonical(ref)}, {"kind", n->kind}, {"label", n->label}, {"derived", false},
                                              {"metadata", Json::object()}});
     }
+    // A node of the memory tree (memory.json), listed by the receipt per element: the node of the source "memory.notes" (address memory:<id>).
+    if (env.memory && !ref.empty() && ref.find(':') == std::string::npos)
+      if (const auto mn = env.memory->get_node(ref))
+        return std::optional<Json>(Json{{"id", "memory:" + ref}, {"address", "memory:" + ref}, {"kind", "memory_note"}, {"label", preview(mn->content)}, {"derived", false},
+                                        {"metadata", Json{{"node_type", mn->node_type}, {"tags", mn->tags}}}});
     return std::optional<Json>();
   };
   // The node for a ref: the real one, else a derived one (nothing is written; the id is stable for this request and ref).

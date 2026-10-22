@@ -113,6 +113,12 @@ struct Receipt {
 // tokens_est: the estimator of graph_memory.pack (codepoints_per_token), at least 1 for a text that is not empty.
 long long estimate_tokens(std::string_view text);
 Json receipt_item(const std::string& ref, const std::string& label, const std::string& source_kind, const std::string& why, std::string_view text);
+// An item for one ELEMENT of an aggregate text (a graph message, a memory node): the share of tokens is given (see token_shares), `extra` adds fields.
+Json receipt_element(const std::string& ref, const std::string& label, const std::string& source_kind, const std::string& why, long long tokens_est, Json extra = Json::object());
+// The token share of each piece of one text that is the pieces joined in order. The estimator is ceil(codepoints / codepoints_per_token), which does not
+// add up over pieces, so a share is the growth of the running estimate: the shares add up to estimate_tokens(whole) exactly (receipt sections stay equal to
+// what the aggregate item said before the elements were listed).
+std::vector<long long> token_shares(const std::vector<std::string>& pieces);
 // selection_packet -> what the receipt says about a graph packet: {packet_id, nodes, links, substituted, skipped}.
 Json packet_summary(const Json& selection);
 // header: {order, profile, modifiers, guard, flow, renderer, ...}; sha256 is that of the messages as sent.
