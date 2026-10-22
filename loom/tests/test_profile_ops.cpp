@@ -96,7 +96,8 @@ TEST_SUITE("profile_ops") {
     CHECK(d.at("level_choice_pending") == true);
     REQUIRE(d.at("question").at("is_level_question") == true);
     std::set<std::string> ids;
-    for (const auto& l : d.at("question").at("levels")) ids.insert(l.at("id").get<std::string>());
+    const Json level_rows = d.at("question").at("levels");
+    for (const auto& l : level_rows) ids.insert(l.at("id").get<std::string>());
     CHECK(ids == std::set<std::string>{"minimal", "normal", "detailed"});
     CHECK(Fx::text_of(run).find("formularz") != std::string::npos);  // it says it is a form, without a model
     // English on request

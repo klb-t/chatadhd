@@ -2477,7 +2477,7 @@
         },
         "examples": {
           "pl": "co o mnie wiesz",
-          "en": "what do you know about me"
+          "en": "show my profile"
         }
       },
       {
@@ -2518,7 +2518,7 @@
           ]
         },
         "examples": {
-          "pl": "potwierdź, co zrozumiałeś o mnie",
+          "pl": "zatwierdź to, co zrozumiałem o mnie",
           "en": "confirm what you understood about me"
         }
       },

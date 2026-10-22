@@ -14438,7 +14438,7 @@
         },
         "examples": {
           "en": [
-            "what do you know about me"
+            "show my profile"
           ],
           "pl": [
             "co o mnie wiesz"
@@ -14695,7 +14695,8 @@
             "confirm what you understood about me"
           ],
           "pl": [
-            "potwierdź, co zrozumiałeś o mnie"
+            "zatwierdź to, co zrozumiałem o mnie",
+            "zatwierdz* zrozumiał* o mnie"
           ]
         },
         "examples": {
@@ -14703,7 +14704,7 @@
             "confirm what you understood about me"
           ],
           "pl": [
-            "potwierdź, co zrozumiałeś o mnie"
+            "zatwierdź to, co zrozumiałem o mnie"
           ]
         },
         "result_text": {
