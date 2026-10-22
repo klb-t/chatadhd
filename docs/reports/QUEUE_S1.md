@@ -1,9 +1,9 @@
-# Kolejka S1 — stan 2026-10-22 06:30 UTC
+# Kolejka S1 — stan 2026-10-22 07:10 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
 
-## K1c-1 GOTOWE (06:25 UTC, `b15180c8` na `claude/m1-w0`, NIE na `main`): jedna liczba przed i po wysłaniu — bramka lokalna `k1c1` w toku (start 06:25)
+## K1c-1 GOTOWE (06:25 UTC, `b15180c8` na `claude/m1-w0`, NIE na `main`): jedna liczba przed i po wysłaniu — bramka lokalna `k1c1` ZIELONA (07:08, drzewo czyste); K1c-2 (kernel: perspektywa `sent_to_model` z paragonu, `wf_d8dbcfc0-f3f`) wystartowało 07:09
 Agent Sonnet (`wf_237e996f-ad3`, 129 wywołań, 276 tys. tokenów, 32 min). **Przyczyna (zmierzona):** szacunek po „Szerzej” był liczony z PUSTYM tekstem (`context.modify` → `context_guard(conv, "", …)`),
 a graf dobiera się po tekście pytania, więc „szerzej” nie miało czego poszerzać: szacunek 1394 B = 0,87× bazy (tyle co bez „szerzej”), a to samo zapytanie z tekstem wysyłki 1960 B = 1,23×, strażnik po wysłaniu 1961 B = 1,23×.
 Baza w obrębie jednego biegu ta sama (ten sam klucz `chat.send|endpoint|model`); porusza ją dopiero wysyłka (+1 próbka), a do 5. próbki to wartość startowa 16000 B (stąd wczesne „0,07×”). Pole to samo (`guard.ratio`), różniły się tylko słowa i brak nazwy bazy.
