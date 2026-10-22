@@ -1,7 +1,12 @@
-# Kolejka S1 — stan 2026-10-22 07:55 UTC
+# Kolejka S1 — stan 2026-10-22 08:25 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
+
+## APK Bramki 1 DOSTARCZONY właścicielowi (08:20 UTC): `package.yml` run 39741779475 = success (07:54, 17 min), sha `51684e78` (CI 264 zielony)
+Artefakty: `chatadhd-android-apk-TEST-KEY` (17,7 MB, sha256 0f5cda56…, podpis kluczem testowym — brak sekretów wydania), `chatadhd-server-linux-x64`/`-arm64`, `first-steps-screenshots`, `chatadhd-0.10.00-ci.23.51684e7`.
+Właściciel dostał: link do biegu + `M1_CHECKPOINT_1.md` (plik) + uczciwą listę: w APK jeszcze rozbieżność szacunku (1,1×) i strażnika (1,8×) — poprawiona dopiero na `main` (K1c-1); „Pokaż w grafie” wyłączony (jądro gotowe w K1c-2, web w K1c-3b); emulator S2 sprawdził W1b, W1c i K1c-1 w toku (smoke na `efb31fcf`).
+Wersja v2 (APK po K1c-3b + raport odświeżony o słowa K1c-1 i działający przycisk) po zielonym CI i smoke S2.
 
 ## K1c-2 GOTOWE (07:48 UTC, `e0f7c670`; po scaleniu z `main` `568afce9` na `claude/m1-w0`): perspektywa „wysłane do modelu” działa w jądrze — bramka lokalna `k1c2` w toku (start 07:50)
 2 agenci Sonnet (`wf_d8dbcfc0-f3f`, 154 wywołań, 420 tys. tokenów, 41 min): A) źródło `receipt` w `perspectives.cpp` + `projection_receipt.cpp`: zapisany paragon narysowany jako graf (wiadomość → pozycje, waga = tokeny, pominięte jako druga relacja `left_out_of_model`;
