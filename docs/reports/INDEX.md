@@ -1683,6 +1683,21 @@ budowy cmake nie uruchamiano (dysk zajęty przez bramkę gdzie indziej).
   11/11, `agent-proposal` 2/2 i 3/3 w przeglądarce; `m1-navigator` przeszedł dwa razy bez zmiany drzewa. Nie uruchomione przez agenta: pełna bramka
   i asan/tsan (robię ja), pełne `npm run e2e` (`run.mjs` tylko `node --check`).
 
+### S1 / M1-K1a, K1b, W1a, W1b (jądro kontekstu, paragon „Co wysłaliśmy”, modyfikatory tury, strona kompozytora) (2026-10-21/22, branch `claude/m1-w0`, na `main` od `59de144c` i `d103d5d8`)
+
+- Co jest: klasy `profile`/`rules` w `build_messages`, porządek `stability`, deterministyczny prefiks profilu, paragon `loom.context_receipt/1` w `messages.metadata.context_trace.receipt`
+  (K1a); nośnik tury (`TurnCarrier`, tylko następne żądanie), `Binding.turn`, ops `context.modify` i `context.receipt` (`POST /api/context/modify`, `/api/context/receipt`), router całych zdań
+  „szerzej/głębiej/węziej/płycej”, strażnik ×10 w `ChatEngine::context_guard` (K1b); arkusz „Co wysłaliśmy”, linia „Kontekst: …” pod odpowiedzią, wpis w menu wiadomości (W1a);
+  podmenu kontekstu w `+`, pasek kontekstu, chip modelu z arkuszem pochodzenia, podgląd z profilem (W1b). Pliki i testy: karty pakietów w `docs/reports/QUEUE_S1.md` (sekcje K1a/K1b/W1a/W1b).
+- Decyzje (R1–R53; każda odwracalna): (1) domyślny porządek kontekstu `stability` (decyzja 5 właściciela ze specyfikacji; przy pustych profile/rules równy `stable_first`); odwrót: ustawienie
+  `chat_context_order=legacy`. (2) Paragon domyślnie ZAWSZE zapisywany (`context_receipt_store=auto`); odwrót: `never` (różnicowy test Python↔Loom ustawia `never`, bo Python nie ma tego pola). (3) Modyfikator tury
+  działa tylko na następne żądanie i wraca przy nieudanej wysyłce; „na stałe w tej rozmowie” = reguła rozmowy (`rules.set`); odwrót: usunąć `heuristic.context_modifiers` z `intent_routing.pack`. (4) Frazy NIE w
+  `heuristic.rules.commands` (reguła-komenda omijałaby model routingu i zamieniała zwykłe „szerzej” w nieudaną komendę). (5) Strażnik ×10 liczy w silniku czatu (nie w `estimate.cpp`) na tym samym żądaniu, które
+  wyśle czat; pytanie przez istniejącego strażnika (`actions.confirm`), odmowa nic nie zmienia. (6) Pasek kontekstu zna tylko zmiany zrobione W TYM oknie (jądro nie ma odczytu nośnika) i mówi to w trybie pełnym.
+  (7) „Pokaż w grafie” widoczny i wyłączony z powodem słowami — jądro nie produkuje węzłów `sent_to_model`; (8) koszt „nieznany — brak ceny”, bo paragon nie niesie ceny. (9) Sekcja Graf ma jedną zagregowaną pozycję —
+  testy mierzą `tokens_est`, nie liczbę pozycji. (10) Terminy testów `chat_active_task_*` 5 s → 120 s i `server.chat_active_task` 90 s → 600 s (pod ASAN cięższa ścieżka `send` się nie mieściła); odwrót: poprzednie wartości.
+- Testy (fakty): bramki lokalne `k1a`, `k1b`, `w1a2` zielone; CI `main` 261 (`59de144c`) zielone po trzech poprawkach asan; CI dla `d103d5d8` w toku. Nie zmierzone: koszt paragonu „zawsze” na Release; pytanie ×10 w przeglądarce (e2e nie ma jak go wywołać).
+
 ## S1 — kontrola marnotrawstwa: cztery zasady od GPT + pomiary (2026-10-21)
 
 Właściciel przekazał podsumowanie rozmowy z GPT: (1) trwałe checkpointy, (2) małe samodzielne

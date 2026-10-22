@@ -1,7 +1,15 @@
-# Kolejka S1 — stan 2026-10-22 01:25 UTC
+# Kolejka S1 — stan 2026-10-22 02:20 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
+
+## W1b GOTOWE (02:15 UTC, `9b376773` na `claude/m1-w0`) — bramka lokalna `w1b` w toku; FF `main` po końcu biegu CI dla `d103d5d8` (≈ 03:20)
+W1b (`wf_63253a37-69f`, 156 wywołań, 371 tys. tokenów): podmenu `+` › Kontekst (chipy Szerzej/Głębiej/Węziej/Płycej, „Profil selektora” z listą i statusami preset/kalibracja/dawny, „Przepływ: tekst ↔ graf”,
+„Podgląd wysyłki”; przełączniki przemianowane na „Profil i pamięć (z węzła Ty)” i „Twierdzenia z analizy”, nic nie usunięte), pasek kontekstu (`composer_context_strip`), chip modelu z krótką nazwą i arkuszem
+pochodzenia (`model-provenance`: poziom, klasa, cena albo „nieznany — brak ceny”), podgląd z profilem w panelu Kontekst; nowa trasa API: żadna (rejestr bez zmian). Testy: 16 skryptów jednostkowych, e2e
+`m1-context-menu-native.mjs` 4× z rzędu, `m1-context-sent-native.mjs` 3× (raz padł podczas regeneracji packów pod trwającym przebiegiem — nie odtworzone). **Nie uruchomione:** pytanie ×10 w przeglądarce
+(brak punktu odniesienia w e2e), nowe linie w `ContextSlider` tylko jednostkowo, `npm run e2e` (`run.mjs`), Android. Pasek zna tylko zmiany z TEGO okna (jądro nie ma odczytu nośnika).
+S2 czeka na moje słowo „W1b na main”, żeby puścić jeden bieg android-smoke z krokiem „Kontekst” (`50c54661` na `claude/s2-parallel`).
 
 ## CI 261 = SUCCESS (01:15 UTC, 119 min): `main` `59de144c` (K1a + K1b + poprawki asan) ZIELONY; `main` = `d103d5d8` (W1a + rejestr interfejsów) od 01:21, nowy bieg w toku
 Pierwszy w pełni zielony `main` po K1 (asan przeszedł: `test_context_receipt`, `chat_active_task_*`). Push `d103d5d8` (bramka lokalna `w1a2` zielona) wyzwolił nowy bieg (≈ 120 min, do ok. 03:20; kontrola 03:18).
