@@ -1,7 +1,13 @@
-# Kolejka S1 — stan 2026-10-22 21:05 UTC
+# Kolejka S1 — stan 2026-10-22 21:30 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
+
+## W2a-fix GOTOWE (21:28 UTC, `9383d783`): bramka `w2a2` w toku (start 21:29)
+Agent Sonnet (`wf_38b54457-b3c`, 76 wywołań, 151 tys. tokenów, 27 min). (1) golden `settings_fields.json` zregenerowany przełącznikiem repo (`LOOM_UPDATE_GOLDEN=1`): zmienia się wyłącznie `onboarding_card` (planned → implemented, powód i „dziś” po polsku i angielsku). (2) Zbędne `GET /api/conversations/<id>` USUNIĘTE (nie dopisane do atrap): rozmowa wywiadu rozpoznawana z `metadata.interview` na już wczytanych wiadomościach (`isInterviewMessages`); otwarcie zwykłej rozmowy: 8 → 7 żądań /api;
+asercje `unexpected` bez zmian. (3) Dowody: ctest 49/49, 11 skryptów webowych dotykających czatu zielonych, `m1-profile-native` 2× (0 żądań do modelu, 0 znalezisk audytu), 4 sąsiednie m1 zielone.
+Uwagi agenta: `e2e/semantic-controls.mjs` pada (GET /api/auth/me, /api/events/stream) — NIE jest w bramce ani w CI, pada tak samo na `5c15b2de`, nie od W2a; do osobnego porządku. `test:product-integration` wymaga świeżego `ONBOARDING_HOST_EVIDENCE_DIR` albo usunięcia pliku wyników w `/home/user/wt/onboarding-host-verification-2026-10-05/` (artefakt stanu maszyny; w bramkach dotąd przechodził).
+FF `main` (W2a + fix) po zielonej bramce `w2a2` I po końcu CI 273 (kontrola 21:31).
 
 ## Bramka `w2a` CZERWONA (21:01, `5c15b2de`): 3 przyczyny, wszystkie skutki W2a → W2a-fix (`wf_38b54457-b3c`, Sonnet, start 21:02)
 (1) `unit.test_action_rules`: złoty plik `settings_fields.json` nie zgadza się, bo W2a dał ustawieniu `onboarding_card` czytnik (planned → implemented) — zmiana zamierzona, golden do zaktualizowania (nie `chat_request_legacy.json`). (2) `test:chat-send-gate` i (3) `test:interface-2`: ich atrapy backendu flagują NIEOCZEKIWANE żądania — W2a robi `GET /api/conversations/<id>` przy każdym otwarciu rozmowy (odczyt `metadata.flow` dla linii informacyjnej wywiadu). To realny koszt (dodatkowe żądanie na każdą rozmowę dla jednego rodzaju rozmowy), nie tylko luka atrapy.
