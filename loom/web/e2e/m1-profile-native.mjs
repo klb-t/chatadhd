@@ -237,8 +237,11 @@ try {
     assert.equal(await proposal.getAttribute("data-plain"), "true");
     assert.equal(text, `${say("proposal.yes")} ${say("proposal.no")}`, "the block holds nothing but the two answers");
     assert.ok(!/[=_]/.test(text), "no raw kernel field in the block");
+    const small = await proposal.locator("button").evaluateAll(els => els.map(el => { const r = el.getBoundingClientRect(); return { id: el.dataset.testid, w: Math.round(r.width), h: Math.round(r.height) }; }).filter(b => b.w < 44 || b.h < 44));
+    assert.deepEqual(small, [], "Tak and Nie are at least 44 x 44 px");
     assert.match(await lastText("assistant"), /Tak zrozumiałem/, "the kernel's sentence 'Tak zrozumiałem' is in the conversation");
     assert.ok(await proposal.locator('[data-testid="chat-action-proposal-confirm"]').isVisible() && await proposal.getByTestId("chat-action-proposal-reject").isVisible(), "yes and no");
+    await proposal.evaluate(el => el.scrollIntoView({ block: "end" }));   // the two answers are in the picture
     await audit("11-proposal"); await shot("11-proposal");
     assert.equal(await page.getByTestId("interview-chip").count(), 0, "a proposal waits for yes or no: no quick replies under it");
     const before = await messages().count();

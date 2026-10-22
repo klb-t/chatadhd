@@ -17,3 +17,8 @@
 
 .interview-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
 .interview-chips button { min-height: 44px; min-width: 44px; padding: 6px 14px; border-radius: 999px; }
+
+/* The two answers of "Tak zrozumiałem" (ActionProposalBlock, plain): side by side, each a full touch target (the group's buttons are `all: unset`, so they
+   are made inline-flex boxes again). */
+.pill[role="group"][data-plain="true"] { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 8px; }
+.pill[role="group"][data-plain="true"] button { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; min-width: 64px; margin-right: 0; padding: 6px 16px; }
