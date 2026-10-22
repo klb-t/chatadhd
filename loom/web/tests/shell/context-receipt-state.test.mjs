@@ -76,7 +76,16 @@ test('a receipt of the first message: the sheet names the empty sections in one 
   assert.equal(m.sections[0].items[0].tokens, 19);
   assert.equal(m.sections[0].items[0].why, '', 'the kernel\'s English sentence is not shown for an item the pack names');
   const slot = st.sheetModel({ ...base, sections: [{ class: 'profile', items: [{ ref: 'slot_1', label: 'Język odpowiedzi', source_kind: 'profile_slot', why: 'said by the person', tokens_est: 3 }], tokens_est: 3 }] }, t, 'pl');
-  assert.deepEqual([slot.sections[0].items[0].text, slot.sections[0].items[0].chip, slot.sections[0].items[0].why], ['Język odpowiedzi', 'z profilu', 'said by the person']);
+  assert.deepEqual([slot.sections[0].items[0].text, slot.sections[0].items[0].chip, slot.sections[0].items[0].why], ['Język odpowiedzi', 'z profilu', pl['why.profile_slot']]);
+  const node = st.sheetModel({ ...base, sections: [{ class: 'memory', items: [{ ref: 'n_1', label: 'text', source_kind: 'memory_node', why: 'an active node of the memory tree', tokens_est: 3 }], tokens_est: 3 }] }, t, 'pl');
+  assert.equal(node.sections[0].items[0].why, 'Jeden z włączonych węzłów pamięci.', 'a memory node says why in the pack\'s words, not in the kernel\'s English');
+  assert.equal(node.sections[0].items[0].text, 'Węzeł pamięci (tekst)', 'the type of a memory node is said in words, not as the kernel\'s "text"');
+  assert.equal(st.itemText({ ref: 'n_2', label: 'dir', source_kind: 'memory_node' }, tEn), 'Memory node (directory)');
+  assert.equal(st.itemText({ ref: 'n_3', label: 'a_later_type', source_kind: 'memory_node' }, t), 'Węzeł pamięci (a_later_type)', 'a type without a word shows itself');
+  assert.equal(st.itemText({ ref: 'gp_1', label: 'graph packet', source_kind: 'graph_packet' }, t), 'Pakiet grafu', 'a graph packet is not "graph packet"');
+  assert.equal(st.itemText({ ref: 'gp_1', label: 'graph packet', source_kind: 'graph_packet' }, id => id), 'graph packet', 'no words loaded: the kernel label');
+  const none = st.sheetModel({ ...base, sections: [{ class: 'memory', items: [{ ref: 'n_1', label: 'text', source_kind: 'a_kind_of_a_later_kernel', why: 'a sentence of the kernel', tokens_est: 3 }], tokens_est: 3 }] }, t, 'pl');
+  assert.equal(none.sections[0].items[0].why, 'a sentence of the kernel', 'a kind the pack has no word for keeps the kernel\'s sentence');
   assert.equal(m.profileLine, 'Profil: żaden nie wybrany — działają ustawienia');
   assert.equal(m.modifiersLine, 'Zmiany tej tury: brak');
   assert.equal(m.guardState, 'unknown');
@@ -251,4 +260,77 @@ test('"Pokaż w grafie" asks for the node the graph really has: the message id m
   assert.equal(st.messageAddress('msg:7d992485dd80'), 'msg:7d992485dd80', 'an address in the graph form is kept');
   assert.equal(st.messageAddress('7d992485dd80'), 'msg:7d992485dd80', 'a bare hex id gets the prefix');
   assert.ok(!st.messageAddress('m_abc').includes('m_'));
+});
+
+// M1-K1c4: the reason of an item is said in the pack's words (stable key: the fixed ref, else the source kind), the kernel's English sentence is the
+// fallback for a key without a word. The list of keys is READ from the kernel source (chat_engine.cpp: every receipt_item / receipt_element call and
+// the profile slot note), so a reason the kernel starts to write without a word here fails this test.
+function callsOf(src) {
+  const out = [];
+  for (const m of src.matchAll(/receipt_(?:item|element)\(/g)) {
+    let depth = 1, i = m.index + m[0].length, quote = false, cur = '';
+    const args = [];
+    for (; i < src.length && depth > 0; i++) {
+      const c = src[i];
+      if (quote) { cur += c; if (c === '\\') { cur += src[++i]; } else if (c === '"') quote = false; continue; }
+      if (c === '"') { quote = true; cur += c; continue; }
+      if (c === '(' || c === '{') depth++;
+      if (c === ')' || c === '}') { depth--; if (depth === 0) break; }
+      if (c === ',' && depth === 1) { args.push(cur.trim()); cur = ''; continue; }
+      cur += c;
+    }
+    args.push(cur.trim());
+    out.push(args);
+  }
+  return out;
+}
+const literal = a => /^"([^"]*)"$/.exec(a ?? '')?.[1] ?? null;
+
+test('whyWords: every reason the kernel writes today has a word in both languages, chosen by the fixed ref or by the source kind', async () => {
+  const src = await readFile(new URL('../../../src/chat/chat_engine.cpp', import.meta.url), 'utf8');
+  const calls = callsOf(src);
+  assert.ok(calls.length >= 12, 'the kernel source was read');
+  const refs = new Set(), kinds = new Set();
+  for (const args of calls) {
+    const ref = literal(args[0]), kind = literal(args[2]);
+    if (ref) refs.add(ref); else if (kind) kinds.add(kind);           // a dynamic ref (a message, a node, a packet) is named by its kind
+    if (!ref && !kind && /^"message:"\s*\+/.test(args[2])) for (const l of ['L0', 'L1', 'L2', 'L3']) kinds.add('message:' + l);   // the history levels
+  }
+  for (const m of src.matchAll(/"source_kind",\s*"([a-z_:]+)"/g)) kinds.add(m[1]);   // the profile slots
+  assert.deepEqual([...refs].sort(), ['active_task', 'graph_memory', 'graph_reply_instruction', 'guardian_rules', 'knowledge_context', 'memory_tree', 'question', 'system_prompt', 'unified_context'], 'the fixed refs of the kernel');
+  assert.ok(['memory_node', 'graph_packet', 'profile_slot', 'message:graph', 'message:L0', 'message:L3'].every(k => kinds.has(k)), 'the kinds of the kernel: ' + [...kinds].join(', '));
+  for (const [words, say] of [[pl, t], [en, tEn]]) {
+    for (const ref of refs) assert.ok(words[`why.${ref}`], `why.${ref}`);
+    for (const kind of kinds) if (!refs.has(kind) && !['instruction', 'question', 'task', 'rule', 'kb_claim', 'graph_node'].includes(kind)) assert.ok(words[`why.${kind.replace(':', '.')}`], `why.${kind}`);
+    for (const ref of refs) assert.equal(st.whyWords({ ref, source_kind: 'x', why: 'the kernel sentence' }, say), words[`why.${ref}`]);
+  }
+});
+
+test('whyWords: the word of a fixed ref wins over the kind, a dynamic ref is named by its kind, an unknown key falls back to the kernel sentence, nothing is made up', () => {
+  assert.equal(st.whyWords({ ref: 'system_prompt', source_kind: 'instruction', why: 'the instruction of the application or of the conversation' }, t), 'Instrukcja dla modelu ustawiona w aplikacji albo w tej rozmowie.');
+  assert.equal(st.whyWords({ ref: 'system_prompt', source_kind: 'instruction', why: 'the instruction of the application or of the conversation' }, tEn), 'The instruction for the model set in the application or in this conversation.');
+  assert.equal(st.whyWords({ ref: 'memory_tree', source_kind: 'memory_node', why: 'the active nodes of the memory tree' }, t), 'Włączone węzły Twojej pamięci.', 'the ref memory_tree, not the kind memory_node');
+  assert.equal(st.whyWords({ ref: 'n_8f2a', source_kind: 'memory_node', why: 'an active node of the memory tree' }, t), 'Jeden z włączonych węzłów pamięci.');
+  assert.equal(st.whyWords({ ref: 'n_8f2a', source_kind: 'memory_node', why: 'an active node of the memory tree' }, tEn), 'One of the memory nodes that are switched on.');
+  assert.equal(st.whyWords({ ref: 'm_1', source_kind: 'message:L1', why: 'a message of the conversation at the lossy level L1 chosen by the secretary' }, t), pl['why.message.L1']);
+  assert.equal(st.whyWords({ ref: 'm_2', source_kind: 'message:graph', why: 'a message found by walking the graph from the question' }, t), 'Wiadomość znaleziona po drodze przez graf, od Twojego pytania.');
+  assert.equal(st.whyWords({ ref: 'gp_1', source_kind: 'graph_packet', why: 'the selection as a graph packet (flow pack)' }, t), 'Wiadomości wybrane z grafu i wysłane jako jeden pakiet.');
+  // a key without a word: the kernel's own sentence; a kernel that sent none: nothing
+  assert.equal(st.whyWords({ ref: 'x_1', source_kind: 'a_kind_of_a_later_kernel', why: 'a sentence of the kernel' }, t), 'a sentence of the kernel');
+  assert.equal(st.whyWords({ ref: 'x_1', source_kind: 'a_kind_of_a_later_kernel' }, t), '');
+  assert.equal(st.whyWords({ ref: 'x_1', why: null }, t), '');
+  assert.equal(st.whyWords({ ref: 'system_prompt', why: 'the kernel sentence' }, id => id), 'the kernel sentence', 'no words loaded: the kernel sentence, never a bare key');
+  // every reason has its own words in each language (the Polish one is not the English one)
+  for (const key of Object.keys(pl).filter(k => k.startsWith('why.'))) assert.notEqual(pl[key], en[key], `${key} is translated`);
+});
+
+test('"Brak śladu": the sentence under it is in plain words (no setting names); the raw names are only for the folded technical block', () => {
+  for (const words of [pl, en]) {
+    assert.doesNotMatch(words['missing.also'], /context_receipt_store|trace_context|[a-z]+_[a-z]+|=/, 'no raw setting name or "=" in the visible sentence');
+    assert.ok(words['missing.technical']);
+  }
+  assert.equal(pl['missing.also'], 'Tak samo jest, gdy zapisywanie śladu żądań wyłączono w ustawieniach.');
+  assert.equal(pl['missing.technical'], 'Szczegóły techniczne');
+  const run = api.readReceiptRun({ id: 'ar_3', status: 'completed', result: { data: { msg_id: 'a0', request_msg_id: 'u0', missing_reason: 'before_m1', also_when: ['context_receipt_store=never', 'trace_context=false'] } } });
+  assert.deepEqual(run.alsoWhen, ['context_receipt_store=never', 'trace_context=false'], 'the kernel\'s names stay as data for the folded block');
 });

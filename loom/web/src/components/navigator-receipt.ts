@@ -5,6 +5,7 @@
 // summary line - and the fallback for a sentence an older kernel does not send. A missing word shows its id, never a guess.
 import type { GraphEdgeRow, GraphNavigateResult, GraphNodeRow } from "../api/graph-projection";
 import type { ShellT } from "../shell/text";
+import { whyWords } from "./context-receipt-state";
 
 export const SENT_EDGE_KIND = "sent_to_model";
 export const LEFT_OUT_EDGE_KIND = "left_out_of_model";
@@ -75,4 +76,15 @@ export function emptyText(result: Pick<GraphNavigateResult, "receipt">, perspect
 export function derivedCard(card: Pick<GraphNodeRow, "derived" | "derived_note">, t: ShellT): { mark: string; note: string } | null {
   if (!card.derived) return null;
   return { mark: t("sent.derived"), note: card.derived_note || t("sent.derived_note") };
+}
+
+/** The reason line of a row or a card. A derived node of the record of a request (it has the record's ref and source kind, and was SENT) says why it
+ *  was sent in the words of the pack (presentation.context_receipt why.*, the same function as the sheet "Co wysłaliśmy"): the kernel wrote that reason
+ *  in English at send time and it stays in the record, the screen says it in its own language. Any other row keeps the kernel's sentence as it is. */
+export function rowWhy(row: Pick<GraphNodeRow, "derived" | "why" | "receipt">, receiptT: ShellT): string {
+  const facts = row.receipt;
+  const ref = facts && typeof facts.ref === "string" ? facts.ref : "";
+  const kind = facts && typeof facts.source_kind === "string" ? facts.source_kind : "";
+  if (!row.derived || !ref || !kind || kind === "left_out") return row.why ?? "";   // a left-out element was not sent: no "why it was sent"
+  return whyWords({ ref, source_kind: kind, why: row.why }, receiptT);
 }

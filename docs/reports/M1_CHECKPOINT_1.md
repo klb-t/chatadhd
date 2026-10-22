@@ -15,7 +15,10 @@ emulator Androida. Sześć zrzutów menu i paska zrobił test `m1-context-menu-n
 tego, co test sprawdza; sam test, nietknięty, też przeszedł. Kopii z dopisanymi zrzutami nie ma w repozytorium.
 **Odświeżone 2026-10-22:** po poprawkach K1c (jedna liczba ze wskazaną podstawą, graf „wysłane do modelu”) zrobiłem od nowa tylko te zrzuty,
 na których zmienił się tekst — arkusz z pkt 2, 3, 4 i 8 — i dodałem cztery zrzuty grafu (pkt 9). Tym razem zrobił je wprost sam test
-`m1-context-sent-native.mjs` (zapisuje je do katalogu z `M1_SHOTS_DIR`), bez żadnej kopii. Liczby z różnych
+`m1-context-sent-native.mjs` (zapisuje je do katalogu z `M1_SHOTS_DIR`), bez żadnej kopii.
+**Odświeżone jeszcze raz (K1c-4, 2026-10-22):** po zamianie angielskich „po co” na zwykłe polskie słowa zrobiłem od nowa zrzuty z pkt 8 i pkt 9
+(`m1-context-sheet-missing`, `m1-sent-graph`, `m1-sent-graph-left-out`, `m1-sent-graph-notes`, `m1-sent-card`) i dodałem jeden nowy w pkt 2
+(`m1-context-sheet-memory-why`); reszta zrzutów nie zmieniła tekstu i została. Liczby z różnych
 przebiegów mogą się trochę różnić (na przykład 98 i 123 tok. w pkt 1 są z tego samego przebiegu co pkt 2). Pliki są w
 `docs/reports/M1_CHECKPOINT_1/`.
 Liczby na ekranie (tokeny, pozycje) pochodzą z odpowiedzi aplikacji, nie są wpisane w kodzie; „tok.” to tokeny, czyli kawałki
@@ -48,6 +51,12 @@ a pod nimi „Puste sekcje (nic z nich nie poszło)”. Potem lista **„Pomini�
 „Nic nie pominięto.”; z powodem — na zrzucie w pkt 4) i zdanie: **„Skompilowane żądanie, nie dowód odbioru przez dostawcę.”**
 To znaczy: arkusz pokazuje, co aplikacja złożyła i wysłała, a nie potwierdzenie, że dostawca to dostał.
 Przycisk „Pokaż w grafie” jest **włączony** i otwiera graf tego zapytania (pkt 9); pod odpowiedzią bez zapisu zostaje wyłączony i mówi dlaczego (pkt 8).
+
+![arkusz: węzeł pamięci z powodem](M1_CHECKPOINT_1/m1-context-sheet-memory-why.png)
+
+Pozycje, których nazwa sama nie mówi, po co poszły, dostają pod spodem **powód zwykłymi słowami**. Na zrzucie w sekcji Pamięć: „Węzeł pamięci (tekst)”
+(typ węzła jest słowem, nie surowym „text” z jądra), chip „z pamięci”, tokeny i powód **„Jeden z włączonych węzłów pamięci.”** Pozycje o nazwie, która już mówi, co to jest
+(„Instrukcja aplikacji lub rozmowy”, „Twoje pytanie w tej turze”, wiadomości rozmowy), nie powtarzają powodu w arkuszu — mają go w grafie (pkt 9).
 
 **Spróbuj:** otwórz arkusz pod dowolną odpowiedzią i przewiń do końca; na dole są przyciski „Następnym razem” (pkt 3) i „Zmień profil”.
 
@@ -151,7 +160,8 @@ model”.” Wybieranie modelu to dalej to samo pole wyboru co przedtem (sprawdz
 ![brak śladu](M1_CHECKPOINT_1/m1-context-sheet-missing.png)
 
 Gdy dla wiadomości nie ma zapisanego śladu, arkusz nie udaje, że coś wie: nagłówek **„Brak śladu (zapisane przed M1)”**, pod nim
-zdanie, że tak też jest, gdy zapis śladu wyłączono, i znów „Skompilowane żądanie, nie dowód odbioru przez dostawcę.” Pod
+zdanie **„Tak samo jest, gdy zapisywanie śladu żądań wyłączono w ustawieniach.”** (zwykłymi słowami; nazw dwóch ustawień, które podaje jądro, w tym zdaniu już nie ma — są tylko
+w zwiniętym bloku „Szczegóły techniczne” pod nim, domyślnie zamkniętym) i znów „Skompilowane żądanie, nie dowód odbioru przez dostawcę.” Pod
 tym jest przycisk „Pokaż w grafie”, **wyłączony**, z powodem: „Graf nie otworzył zapisu tego żądania, więc przycisk jest wyłączony. Powód: Brak śladu
 (zapisane przed M1)”. Przyciski „Następnym razem” i „Zmień profil” zostają. Linia pod taką odpowiedzią też mówi „brak śladu” (sprawdza to test). W teście taką
 wiadomość robi wyłączony zapis śladu — prawdziwych wiadomości sprzed M1 w tym przebiegu nie było; arkusz mówi to samo w obu przypadkach.
@@ -168,7 +178,10 @@ otwiera Graf na tym zapytaniu z perspektywą „Wysłane do modelu” (pod paski
 
 ![graf: wysłane elementy](M1_CHECKPOINT_1/m1-sent-graph.png)
 
-Każdy wiersz to jeden element zapytania. Wiersze „Instrukcja (prompt systemowy)”, „Kontekst z grafu” i „Twoje pytanie” mają chipy „ślad przy wiadomości”,
+Każdy wiersz to jeden element zapytania. Pod każdym wierszem zapisu stoi **powód, po co poszedł, po polsku** — „Instrukcja dla modelu ustawiona w aplikacji albo w tej rozmowie.”,
+„To, co graf dał do Twojego pytania (nagłówek bloku i znalezione wiadomości).”, „Tekst Twojej wiadomości w tej turze.” (K1c-4; wcześniej stały tu angielskie zdania jądra).
+Zdanie jądra, zapisane po angielsku w chwili wysyłki, **zostaje w zapisie bez zmian** (zapis to fakt zrobiony raz); ekran mówi to samo własnymi słowami z paczki, a pokazuje zdanie jądra
+tylko dla rodzaju pozycji, którego paczka jeszcze nie zna. Wiersze „Instrukcja (prompt systemowy)”, „Kontekst z grafu” i „Twoje pytanie” mają chipy „ślad przy wiadomości”,
 „zapis żądania, zrobiony w chwili wysłania”, **„widok zapisu”** (to nie jest zapisany węzeł grafu, tylko widok zapisu zapytania) i **„wysłane do modelu:
 19 tokenów (szacunek)”** (u kolejnych: 11 i 15). Tokeny są zawsze szacunkiem z długości tekstu, nie pomiarem po stronie dostawcy. Wiadomości z historii
 to prawdziwe wiadomości rozmowy (bez „widoku zapisu”), też z liczbą tokenów.
@@ -189,7 +202,7 @@ nie ma zrzutu); gdy zapisu nie ma, pusta lista podaje powód zdaniem jądra zami
 ![karta węzła pochodnego](M1_CHECKPOINT_1/m1-sent-card.png)
 
 Dotknięcie wiersza z „widokiem zapisu” otwiera jego kartę: chip **„widok zapisu”**, zdanie jądra „To jest widok zapisu żądania (ślad przy wiadomości), a nie
-zapisany węzeł grafu …”, **„Wartość: 19 tokenów (szacunek)”** i „Powiązania: wysłane do modelu: ← [zapytanie]”. Wstecz zamyka kartę, drugie Wstecz zamyka
+zapisany węzeł grafu …”, **„Wartość: 19 tokenów (szacunek)”**, **„Po co: Instrukcja dla modelu ustawiona w aplikacji albo w tej rozmowie.”** i „Powiązania: wysłane do modelu: ← [zapytanie]”. Wstecz zamyka kartę, drugie Wstecz zamyka
 graf i wraca do czatu (sprawdza to test; po nim żadna warstwa nie zostaje).
 
 **Spróbuj:** wyślij kilka wiadomości, otwórz „zobacz” pod ostatnią odpowiedzią, dotknij „Pokaż w grafie”, potem dotknij wiersza „Instrukcja” i „⋯” przy
@@ -199,9 +212,12 @@ pominiętym; na końcu Wstecz dwa razy.
 
 - **Graf „wysłane do modelu” działa, ale nie wszystko w nim jest jeszcze elementem.** Pamięć i graf są w zapisie wyliczone pozycja po pozycji
   (na zrzutach: nagłówek „Węzły grafu powiązane z pytaniem” i znalezione wiadomości), ale ścieżki „graf w odpowiedzi”, wiedza z analizy i pakiet grafu
-  dalej idą jako jedna pozycja zbiorcza. Zdania „po co” przy wierszach pochodnych („the instruction of the application or of the conversation”) zapisuje
-  jądro po angielsku w chwili wysyłki i ekran pokazuje je tak, jak są — widać je na zrzucie w pkt 9. Zdanie pod „Brak śladu” (pkt 8) podaje jeszcze nazwy
-  dwóch ustawień po angielsku (`context_receipt_store`, `trace_context`) — do zamiany na zwykłe słowa.
+  dalej idą jako jedna pozycja zbiorcza. **Zdania „po co” są już po polsku** (K1c-4): ekran bierze słowo z paczki dla każdej pozycji, jakie jądro dziś zapisuje
+  (instrukcja, reguły o Tobie, pamięć i jej węzły, graf, pamięć+graf+wiedza, wiedza, wiadomość rozmowy na każdym poziomie, wiadomość z grafu, pakiet grafu,
+  fragment profilu, zadanie, prośba o graf, pytanie). Zostają **dwa wyjątki**: (a) zdanie jądra w zapisie jest dalej angielskie (to dane zapisu; nie zmienialiśmy go, widać je tylko
+  w odpowiedzi jądra i w razie rodzaju pozycji, którego paczka nie zna), (b) wiersz „pakiet grafu” w nawigatorze ma etykietę, którą nadaje jądro („graph packet” — jądro ma
+  słowa tylko dla stałych pozycji), w arkuszu to „Pakiet grafu”. Wiersz „Kontekst z grafu” ma jedno zdanie na dwa przypadki (nagłówek bloku i cały blok), bo jądro daje im tę samą nazwę.
+  Zdanie pod „Brak śladu” (pkt 8) nie ma już nazw ustawień po angielsku: mówi „w ustawieniach”, a surowe nazwy są w zwiniętym „Szczegóły techniczne”.
 - **Cena jest nieznana.** Zapis w arkuszu nie niesie ceny, więc wszędzie jest „koszt nieznany — brak ceny” (a nie „0”). Model w zrzutach
   jest sztuczny, więc nie ma też zrzutu klasy prawdziwego modelu — jest tylko „klasa: nieznana” z powodem.
 - **Pasek kontekstu zna tylko zmiany zrobione w tym oknie.** Jądro nie ma odczytu „co jest zaplanowane na następne zapytanie”
@@ -217,8 +233,8 @@ pominiętym; na końcu Wstecz dwa razy.
 - **Ty i wywiad (K2)** — ekran „Ty”, pytania wywiadu, karta „Tak zrozumiałem”: to osobna Brama (jądro K2, ekrany W2). Nie ma ich tu.
 - **Przeciąganie po długim przytrzymaniu i pozostałe gesty mapy (W3)** — osobna pozycja; w tej Bramie nic się w nich nie zmieniło.
 - **Sekcja „Graf” w arkuszu jest teraz wyliczona pozycja po pozycji** (nagłówek „Węzły grafu powiązane z pytaniem” i znalezione wiadomości), więc przy „szerzej”
-  przybywa pozycji, nie tylko tokenów: na zrzutach 2 wiadomości z grafu (64 tok.) → 3 (90 tok.) → znów 2 (64 tok.). Uzasadnienie „dlaczego” przy pozycjach,
-  dla których dane nie mają polskiego opisu, bywa po angielsku.
+  przybywa pozycji, nie tylko tokenów: na zrzutach 2 wiadomości z grafu (64 tok.) → 3 (90 tok.) → znów 2 (64 tok.). Powód przy pozycji ma zwykłe polskie
+  słowo z paczki; zdanie jądra po angielsku widać już tylko dla rodzaju pozycji, którego paczka nie zna.
 - **Szacunek przed wysłaniem a liczba strażnika po wysłaniu — wyjaśnione (K1c-1).** Przyczyna: szacunek liczył się dla **pustej wiadomości**, a graf jest
   dobierany po tekście pytania, więc „szerzej” nie miało czego poszerzyć; wysłane zapytanie z tekstem było większe. Do tego podstawa porównania skakała
   z wartości startowej na średnią i nikt nie mówił, względem czego liczymy. Dziś to jedna liczba z nazwaną podstawą („N× zwykłego zapytania do tego modelu
@@ -234,15 +250,18 @@ pominiętym; na końcu Wstecz dwa razy.
 
 Każdy zrzut w tym raporcie powstał w przebiegu, który przechodzi przez te same ekrany co Ty — na telefonie 390×844, dotykiem,
 przeciw prawdziwemu jądru i sztucznemu modelowi. Po poprawkach K1c uruchomiłem trzy przebiegi (`m1-context-sent-native.mjs`, `m1-context-menu-native.mjs`,
-`m1-navigator-native.mjs`) **dwa razy z rzędu: wszystkie przeszły** (8, 11 i 14 kroków za każdym razem, bez błędów); skrypty jednostkowe: arkusz 14, pasek 12,
-menu „+” 17, nowy skrypt nawigatora (wysłane do modelu) 7 przypadków.
+`m1-navigator-native.mjs`) **dwa razy z rzędu: wszystkie przeszły** (po poprawkach K1c-4: 10, 12 i 15 kroków za każdym razem, bez błędów; w każdym jest krok „żaden
+pokazany ekran nie ma tekstu dla programisty”, który przy każdym zrzucie i otwarciu arkusza sprawdza widoczne napisy i podpisy: surowy klucz albo angielskie zdanie
+fail; wiadomości samej osoby i zwinięte „Szczegóły techniczne” są pomijane); skrypty jednostkowe: arkusz 17, pasek 12,
+menu „+” 17, skrypt nawigatora (wysłane do modelu) 9 przypadków.
 
 - `loom/web/e2e/m1-context-sent-native.mjs` — linia pod odpowiedzią (profil, liczba pozycji, tokeny; w czacie żadnego surowego JSON-a),
   arkusz (sekcje w kolejności wysyłki, tokeny, lista „Pominięte”, zdanie o dowodzie odbioru, koszt słowami), „Pokaż w grafie”
   **włączony**: dotknięcie otwiera graf na zapytaniu z wysłanymi elementami i ich tokenami, pominięte jako pominięte, wiersze pochodne z oznaczeniem „widok zapisu”,
   karta z zdaniem jądra, Wstecz wraca do czatu; bez zapisu (wyłączony zapis) i przy odmowie grafu przycisk jest wyłączony, z powodem;
   „szerzej” tylko na następne zapytanie (Graf rośnie, potem wraca do bazy), profil Zgodność (tylko Instrukcja,
-  Rozmowa i Pytanie), wyłączony zapis śladu (arkusz mówi to słowami), Wstecz zamyka arkusz przed czymkolwiek innym;
+  Rozmowa i Pytanie), wyłączony zapis śladu (arkusz mówi to słowami), Wstecz zamyka arkusz przed czymkolwiek innym; powód przy elemencie zapisu
+  (wiersze grafu, karta, węzeł pamięci w arkuszu) jest słowem z paczki, a nie zdaniem jądra po angielsku (oczekiwanie to słowo z paczki wybrane po kluczu elementu);
 - `loom/web/e2e/m1-context-menu-native.mjs` — pasek kontekstu przed wysłaniem, + › Kontekst (nowe pozycje i każda dawna, chipy po
   44 px), „Szerzej” i „Cofnij”, lista profili ze statusami, Podgląd wysyłki (niedostępny przy pustym polu, jednorazowy, można odrzucić),
   Przepływ tekst ↔ graf (karta ustawienia, Wstecz wraca do czatu), chip modelu z arkuszem pochodzenia, pasek ukryty i pełny;
@@ -252,7 +271,7 @@ menu „+” 17, nowy skrypt nawigatora (wysłane do modelu) 7 przypadków.
 W obu przebiegach ekrany są sprawdzane tak jak w Bramie 0: nic nie przewija się na boki, a przyciski mają co najmniej 44 px.
 Nie uruchamiałem pełnej bramki ani całego `npm run e2e`.
 
-Zrzuty: **17 plików PNG** 390×844 (widok, nie cała strona; każdy < 90 KB) w `docs/reports/M1_CHECKPOINT_1/`, wszystkie wstawione
+Zrzuty: **18 plików PNG** 390×844 (widok, nie cała strona; każdy < 92 KB) w `docs/reports/M1_CHECKPOINT_1/`, wszystkie wstawione
 w tekst (§1–9). Dziennik decyzji i cofnięć tej Bramy jest osobno, w `docs/reports/INDEX.md` (wpis „S1 / M1-K1a, K1b, W1a, W1b”) na gałęzi sesji S1 — na
 tej gałęzi dojdzie po scaleniu.
 Ten raport mówi tylko, co możesz zrobić na telefonie i czego jeszcze nie ma.

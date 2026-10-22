@@ -116,6 +116,13 @@ export default function ContextReceipt({ profileHost, language, convId, msgId, o
           <div data-testid="context-receipt-missing">
             <p data-testid="context-receipt-missing-word"><strong>{t("missing")}</strong></p>
             <p className="crs-note">{t("missing.also")}</p>
+            {/* the raw names of the settings the kernel names stay in this fold, never in the sentence above (K1c-4) */}
+            {answer.alsoWhen.length > 0 && (
+              <details className="crs-technical" data-testid="context-receipt-missing-technical">
+                <summary>{t("missing.technical")}</summary>
+                <p className="crs-note crs-technical-names" data-testid="context-receipt-missing-technical-names">{answer.alsoWhen.join("; ")}</p>
+              </details>
+            )}
             <p className="crs-note">{t("disclaimer")}</p>
           </div>
         )}

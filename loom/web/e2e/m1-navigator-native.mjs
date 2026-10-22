@@ -16,6 +16,7 @@ import { existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 
 import { tmpdir } from "node:os";
 import net from "node:net";
 import path from "node:path";
+import { auditPage } from "./m1-audit.mjs";
 import { fileURLToPath } from "node:url";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -42,6 +43,7 @@ async function chromium() { try { return (await import("playwright")).chromium; 
 const port = await freePort();
 const server = spawn(SERVER_BIN, ["--host", "127.0.0.1", "--port", String(port), "--data-dir", mkdtempSync(path.join(tmpdir(), "loom-m1-navigator-")), "--static-dir", DIST], { stdio: "ignore", cwd: LOOM });
 const base = `http://127.0.0.1:${port}`;
+const AUDIT = [];   // the lines a screenshot's screen shows that look like developer text (m1-audit.mjs)
 let browser, failed = false;
 const step = async (name, fn) => { try { await fn(); console.log(`[m1-navigator] PASS ${name}`); } catch (e) { failed = true; console.error(`[m1-navigator] FAIL ${name}\n${e.stack}`); } };
 const api = async (m, p, b) => { const r = await fetch(base + p, { method: m, headers: { "content-type": "application/json" }, body: b ? JSON.stringify(b) : undefined }); assert.ok(r.ok, `${m} ${p}: ${r.status}`); return r.json(); };
@@ -61,7 +63,8 @@ try {
   page.on("pageerror", e => errors.push(String(e)));
   const nav = () => page.getByTestId("graph-navigator");
   // a screenshot after the fade/slide animations end (opacity mid-animation would show the chat through the menu); viewport, not full page
-  const shot = async name => { await page.evaluate(() => Promise.all(document.getAnimations().map(a => a.finished.catch(() => {})))); await page.screenshot({ path: path.join(SHOTS, `${name}.png`) }); };
+  const shot = async name => { await page.evaluate(() => Promise.all(document.getAnimations().map(a => a.finished.catch(() => {})))); await page.screenshot({ path: path.join(SHOTS, `${name}.png`) }); await audit(name); };
+  const audit = async name => { for (const f of await auditPage(page)) AUDIT.push({ shot: name, ...f }); };
   const rowsOf = () => page.getByTestId("nav-rows").locator("li").evaluateAll(els => els.map(li => ({
     address: li.querySelector(".gnav-row-main").dataset.testid.replace("nav-row-", ""), label: li.querySelector(".gnav-label").textContent,
     count: li.querySelector('[data-testid="nav-count"]')?.textContent ?? null, chip: li.querySelector('[data-testid="nav-chip"]').textContent,
@@ -643,8 +646,12 @@ try {
     await page.getByTestId("chat-shell").waitFor();
     assert.deepEqual(errors, [], "no page errors");
   });
+  await step("no screen shown so far has developer text: a raw key or an English sentence (m1-audit.mjs; the person's own messages and the fold Szczegóły techniczne are skipped)", async () => {
+    assert.deepEqual(AUDIT.map(a => `${a.shot}: ${a.why} | ${a.line} | ${a.where}`), [], "every line of the screens is in the words of the pack");
+  });
 } finally {
   await browser?.close();
   server.kill("SIGTERM");
 }
+for (const a of AUDIT) console.log(`[m1-navigator] AUDIT ${a.shot}: ${a.why} | ${a.line} | ${a.where}`);
 if (failed) process.exit(1);

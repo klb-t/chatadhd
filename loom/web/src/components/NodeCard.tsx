@@ -13,15 +13,19 @@ import Disclosure from "../shell/Disclosure";
 import type { ShellT } from "../shell/text";
 import { useLayer } from "../shell/use-layer";
 import { chipText, evidenceText } from "./navigator-state";
-import { derivedCard } from "./navigator-receipt";
+import { derivedCard, rowWhy } from "./navigator-receipt";
 import { actionRows, chainRows, draftOf, editorKind, layersLine, levelChoices, parseDraft, pendingGate, relationGroups, runOutcome, unsetChoices,
   valueLine, writeRequest, type CardStep, type LevelChoice, type PendingGate, type ScopedRule, type UnsetChoice } from "./node-card-state";
 
 interface Props {
   address: string;
+  /** The label the navigator already knows: said in the header while the card loads (never the raw address). */
+  label?: string;
   language: string;
   convId: string | null;
   t: ShellT;
+  /** The words of "Co wysłaliśmy" (presentation.context_receipt): the card of a sent element says why it was sent in them; without them the kernel's sentence. */
+  receiptT?: ShellT;
   onClose: () => void;
   /** A tap on a related node: the navigator goes there (a path step) and the card closes. */
   onNavigate: (address: string, label: string) => void;
@@ -34,7 +38,7 @@ interface Props {
 /** A gate waits for the user's yes, then `after` runs (the card reloads). */
 interface GateState extends PendingGate { after: () => void }
 
-export default function NodeCard({ address, language, convId, t, onClose, onNavigate, onChanged, section = null }: Props) {
+export default function NodeCard({ address, label, language, convId, t, receiptT, onClose, onNavigate, onChanged, section = null }: Props) {
   const [card, setCard] = useState<GraphCardResult | null>(null);
   const [rules, setRules] = useState<ScopedRule[]>([]);
   const [loading, setLoading] = useState(true);
@@ -80,6 +84,7 @@ export default function NodeCard({ address, language, convId, t, onClose, onNavi
   const levels = useMemo(() => card ? levelChoices(card, convId, t) : [], [card, convId, t]);
   const unsets = useMemo(() => card ? unsetChoices(card, key, rules, t) : [], [card, key, rules, t]);
   const relations = useMemo(() => card ? relationGroups(card) : [], [card]);
+  const why = card ? (receiptT ? rowWhy(card, receiptT) : card.why ?? "") : "";   // a sent element: the pack's words (K1c-4); any other card: the kernel's sentence
   const derived = card ? derivedCard(card, t) : null;   // K1c-3b: a node of the record of a request says it is a view of it
   const actionList = useMemo(() => card ? actionRows(card, t) : [], [card, t]);
   const editable = !!card && (card.levels?.length ?? 0) > 0 && card.edit_rule !== "read_only";
@@ -135,7 +140,7 @@ export default function NodeCard({ address, language, convId, t, onClose, onNavi
   return (
     <section ref={root} className="ncard" data-testid="node-card" data-address={address} data-step={step} data-section={section ?? undefined} aria-busy={busy || loading}>
       <header className="ncard-head">
-        <h2 className="ncard-title" data-testid="card-label">{card?.label ?? address}</h2>
+        <h2 className="ncard-title" data-testid="card-label">{card?.label ?? (label || t("loading"))}</h2>
         <button className="ncard-close" data-testid="card-close" aria-label={t("card.close")} onClick={onClose}>×</button>
       </header>
       {loading && <p className="gnav-note" data-testid="card-loading">{t("loading")}</p>}
@@ -150,7 +155,7 @@ export default function NodeCard({ address, language, convId, t, onClose, onNavi
         {layersLine(card, t) !== null && <p className="ncard-line ncard-layers" data-testid="card-layers">{layersLine(card, t)}</p>}
         {valueLine(card, t) !== null && <p className="ncard-line ncard-value" data-testid="card-value">
           <span className="ncard-key">{t("card.value")}</span> <strong>{valueLine(card, t)}</strong></p>}
-        {card.why && <p className="ncard-line" data-testid="card-why"><span className="ncard-key">{t("card.why")}</span> {card.why}</p>}
+        {why && <p className="ncard-line" data-testid="card-why"><span className="ncard-key">{t("card.why")}</span> {why}</p>}
         {card.effect && <p className="ncard-line" data-testid="card-effect"><span className="ncard-key">{t("card.effect")}</span> {card.effect}</p>}
         {card.edit_rule && <p className="ncard-line" data-testid="card-edit-rule"><span className="ncard-key">{t("card.edit_rule")}</span> {t(`card.edit_rule.${card.edit_rule}`)}</p>}
         {/* r2:b1: a profile slot (Ty › Kim jesteś …) is answered in the onboarding interview, not here; the card says where, before any
