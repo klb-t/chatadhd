@@ -1,7 +1,12 @@
-# Kolejka S1 — stan 2026-10-22 23:35 UTC
+# Kolejka S1 — stan 2026-10-23 00:00 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
+
+## Pytania właściciela 23.10 ≈ 00:00: import jako pliki w grafie / pamięć podręczna / klony przepływów dostawców → badanie + dwa projekty Fable (`wf_9f67e0ac-2dd`, start ≈ 23:50)
+Zapisane jako R57 w `OWNER_REQUIREMENTS` (cytat dosłowny; w zapisach NIE było wymagania „nie kopiujemy, linkujemy, klasa plik>ZIP>eksport>dostawca>wersja, węzeł pamięć podręczna” — przeszukane SLOWA i OWNER_REQUIREMENTS; powiązane już istniejące: UI14, RE31, X-Port/P38). Badanie źródeł z wagami A–D (format eksportów OpenAI/Anthropic/Google, w tym czy chat.html to druga kopia i reguła podziału na pliki), sceptyk, potem Fable: `IMPORT_JAKO_PLIKI_W_GRAFIE_2026-10-23.md` i `REPLIKACJA_PRZEPLYWOW_DOSTAWCOW_2026-10-23.md` (klony na GitHubie zweryfikowane na żywo — twierdzenie Gemini traktowane jako niezweryfikowane).
+K2b-3 działa równolegle (`wf_0fe6ccf8-90c`, start 23:32). UWAGA: ten workflow wystartował PRZED terminem z planu tempa (najwcześniej 01:34 UTC) — na wprost wyrażoną prośbę właściciela; koszt Fable nieznany → po zakończeniu wiersz w `LIMITS_LEDGER.md`.
+Odpowiedź dla właściciela na plan (G1–G4, tabela etapów) wysłana 23:5x; po wynikach badania zaktualizuję plan (G1/G2 zależą od projektu importu jako plików).
 
 ## K2c-1 GOTOWE (23:23 UTC, `222fc2b5` na `claude/m1-w0`, wypchnięte): jednostki (`units.define/list/forget`, `conversation.set_unit/clear_unit`, bramkowane) + pochodzenie notatek pamięci (4 ścieżki zapisu oznaczone; stare notatki: „pochodzenie nieznane (zapisane przed M1)”)
 Agent Sonnet `wf_255ba3e4-de1`: 154 wywołania (≈3× planu), 335 tys. tokenów, 56 min. Znane luki: pytanie przy `units.forget` nie zawiera liczby rozmów (jest po „tak” i w `units.list`); zdanie swobodne nie poda rodzaju i id (router uczciwie „niedostępne”); „guardian/import” są w słowniku, ale nic jeszcze tak nie zapisuje.
