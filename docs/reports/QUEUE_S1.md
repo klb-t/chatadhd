@@ -1,7 +1,13 @@
-# Kolejka S1 — stan 2026-10-22 11:50 UTC
+# Kolejka S1 — stan 2026-10-22 12:45 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
+
+## CI 268 (`d0ea24cb`) = SUCCESS (12:17); S2 smoke 39768779032 na `4a454783` (= d0ea24cb + sterownik): „Pokaż w grafie” DZIAŁA na 3 profilach emulatora; 1 losowa porażka „Ustawienia nie otwierają się” na 2 profilach → FLAKE-1
+`main` = `b1b34f17` (K1c-4, bramka `k1c4` zielona 12:35) od 12:35, CI 269 (id 39779614521) w toku, kontrola ≈ 13:55. S2: wynik 42/0/0 (pixel_6 1.0), 41/1/0 (pixel_5 1.0, pixel_6 1.3); drugi raz losowy krok „panel Ustawienia nie zostaje otwarty”.
+**Hipoteza S1 (analiza statyczna `shell/history.ts`):** `LayerStack` uznaje popstate za „własny” tylko przez `backTimeoutMs` = 1000 ms i pamięta JEDNO własne `history.back()`; sterownik robi do 8× `__loomBack()` pod rząd, a na obciążonym emulatorze popstate może przyjść po > 1 s, gdy następna warstwa (menu, panel) jest już otwarta —
+spóźniony popstate czytany jak „Wstecz” użytkownika zamyka świeżą warstwę. To założenie szybkości w aplikacji, nie w sterowniku. **FLAKE-1** (`wf_155e0bcd-15a`, start 12:36): test jednostkowy z hostem dostarczającym popstate późno (na starym kodzie czerwony) → poprawka bez założenia czasu → pętla e2e 30× z podkładką opóźniającą `history.back`.
+S2 poinformowany; jego następny smoke ma iść na buildzie z poprawką. APK v2 po: zielony CI + smoke S2 na poprawce.
 
 ## K1c-4 GOTOWE (11:45 UTC, `b1b34f17` na `claude/m1-w0`): powody po polsku z paczki, zdanie „Brak śladu” bez kluczy — bramka lokalna `k1c4` w toku (start 11:46)
 Agent Sonnet (`wf_38d8c445-682`, 113 wywołań, 266 tys. tokenów, 35 min). Zapis (angielskie „why” przy wysyłce) bez zmian jako DANE; ekrany pokazują słowa z paczki wybrane po stałym kluczu (`why.<ref>` / `why.<source_kind>`), a gdy paczka nie ma słowa — zdanie jądra. Funkcja `whyWords`/`rowWhy` wspólna dla arkusza, wierszy nawigatora i karty;
