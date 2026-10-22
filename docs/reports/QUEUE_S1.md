@@ -3,9 +3,9 @@
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
 
-## CI 264 (`51684e78`) = SUCCESS (07:20, 91 min, wszystkie 4 joby) → APK w budowie; `main` = `b15180c8` (K1c-1, bramka `k1c1` zielona) od 07:37, CI 265 w toku
+## CI 264 (`51684e78`) = SUCCESS (07:20, 91 min, wszystkie 4 joby) → APK w budowie; `main` = `efb31fcf` (K1c-1 + `drive.mjs` od S2, FF S2 o 07:38; bieg CI 265 na `b15180c8` anulowany), CI 266 (id 39741867510) w toku
 `package.yml` run 39741779475 (ref main → sha `51684e78`, arm64-v8a Release + serwer + first_steps) wystartował 07:37 — APK dla właściciela z commitu z zielonym CI (zawiera W1a/W1b/W1c); kontrola 08:18.
-CI 265 (loom.yml, `b15180c8`, id 39741795972) kontrola 09:18. S2 dostał „main zielony” i opis różnicy 51684e78→b15180c8. K1c-2 (jądro, `wf_d8dbcfc0-f3f`) w toku od 07:09; jego commity nie idą na main przed końcem CI 265.
+CI 266 (loom.yml, `efb31fcf`, id 39741867510) kontrola 09:18. S2 puścił swój jedyny android-smoke na `efb31fcf` (wynik ≈ 08:30, linie „Kontekst” w nowych słowach W1c). S2 dostał „main zielony” i opis różnicy 51684e78→b15180c8. K1c-2 (jądro, `wf_d8dbcfc0-f3f`) w toku od 07:09; jego commity nie idą na main przed końcem CI 265.
 Uczciwie dla właściciela: emulator S2 sprawdził wersję W1b, a W1c (słowa) czeka na jego smoke.
 
 ## K1c-1 GOTOWE (06:25 UTC, `b15180c8` na `claude/m1-w0`, NIE na `main`): jedna liczba przed i po wysłaniu — bramka lokalna `k1c1` ZIELONA (07:08, drzewo czyste); K1c-2 (kernel: perspektywa `sent_to_model` z paragonu, `wf_d8dbcfc0-f3f`) wystartowało 07:09
