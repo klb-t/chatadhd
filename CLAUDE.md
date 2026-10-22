@@ -127,6 +127,17 @@ cannot be resumed at all, so their work is lost.
      mechanical packages and log reading run on the cheaper models (Haiku/Sonnet), Fable only for design stages; a review of a bug fix
      is one reviewer, proportional to the fix. The weekly pace is `tools/pace_plan.json` (owner, 2026-10-21) — run `tools/pace.py`
      before starting an agent.
+  6. *Corrections while an agent runs (measured 2026-10-22: three stops and restarts of one research + design
+     workflow wasted ≈ 19 million cost equivalents, about 0.9 point, nothing of it recoverable):* a running
+     workflow agent cannot be updated — its prompt is fixed at start and no channel reaches it
+     (`ListAgents` shows none). So: (a) research and design are separate workflows, giving the coordinator a
+     control point before the expensive stage; (b) the owner's rules live in `CLAUDE.md`, which every agent
+     receives at start — briefs point to them instead of pasting them; (c) a correction is applied by a short
+     addendum pass after the agent finishes, unless the agent is still in its first minutes and the
+     correction changes its whole direction; (d) `resumeFromRunId` replays only the unchanged PREFIX of
+     `agent()` calls — never edit the first call when later results should be kept; write stage results to
+     files and pass them as `args` to the next workflow; (e) before any stop, compare the sunk cost with the
+     cost of an addendum.
 
 ## Project Overview
 
