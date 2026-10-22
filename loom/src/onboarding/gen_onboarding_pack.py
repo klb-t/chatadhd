@@ -152,7 +152,10 @@ def generated():
                 current = ""
             current += line
         chunks.append(current)
-        body = ",\n".join(f'R"loom_onboard({chunk})loom_onboard"' for chunk in chunks)
+        # Each chunk is given with its byte length: a bare literal makes the compiler measure it with a constexpr strlen, and clang
+        # (the Android and the vendored builds) stops that at its constexpr step limit once the whole array passes ~400 KB
+        # (CI 262: kOnboardingPack too large). With an explicit length nothing is counted, so the pack can grow.
+        body = ",\n".join(f'std::string_view(R"loom_onboard({chunk})loom_onboard", {len(chunk.encode("utf-8"))})' for chunk in chunks)
         lines.append(f'static constexpr std::string_view {name}[] = {{\n{body}}};\n')
     ui = serialized(docs["kOnboardingPresentation"])
     return {OUT: "".join(lines), WEB_OUT: ui,

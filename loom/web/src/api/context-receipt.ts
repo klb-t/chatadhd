@@ -77,7 +77,7 @@ export function readReceiptRun(run: ActionRun | null | undefined): ReceiptAnswer
 
 /** What a context.modify run answers: applied (the kernel's sentence and what waits for the next message), the x10 question, declined or failed. */
 export type ModifyAnswer =
-  | { kind: "applied"; text: string; waiting: Record<string, unknown> }
+  | { kind: "applied"; text: string; waiting: Record<string, unknown>; ratio: number | null }
   | { kind: "question"; runId: string; receiptId: string; operationId: string | null; usage: Record<string, unknown> }
   | { kind: "declined"; text: string }
   | { kind: "failed"; message: string };
@@ -92,7 +92,9 @@ export function readModifyRun(run: ActionRun | null | undefined): ModifyAnswer {
   }
   if (run.status === "completed") {
     const data = (run.result?.data ?? {}) as Record<string, unknown>;
-    return { kind: "applied", text, waiting: (data.waiting && typeof data.waiting === "object" ? data.waiting : {}) as Record<string, unknown> };
+    const guard = (data.guard && typeof data.guard === "object" ? data.guard : {}) as Record<string, unknown>;
+    return { kind: "applied", text, waiting: (data.waiting && typeof data.waiting === "object" ? data.waiting : {}) as Record<string, unknown>,
+      ratio: typeof guard.ratio === "number" && Number.isFinite(guard.ratio) ? guard.ratio : null };
   }
   if (run.status === "rejected") return { kind: "declined", text: run.error?.message ?? text };
   return { kind: "failed", message: run.error?.message ?? text ?? run.status };

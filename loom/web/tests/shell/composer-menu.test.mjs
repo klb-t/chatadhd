@@ -3,6 +3,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
+import { readFileSync } from 'node:fs';
 import { createModuleLoader } from '../product-perspective/loader.mjs';
 const loader = await createModuleLoader();
 test.after(() => loader.close());
@@ -24,7 +25,9 @@ test('the shipped menu: the union of the popular chat apps, nothing invented as 
   assert.deepEqual(m.issues, []);
   assert.deepEqual(ids(m.items), ['attach_file', 'attach_photo', 'model', 'tools', 'context', 'import']);
   assert.deepEqual(ids(m.items.find(i => i.id === 'tools').items), ['web_search', 'deep_research', 'thinking', 'agent', 'image', 'music']);
-  assert.deepEqual(ids(m.items.find(i => i.id === 'context').items), ['memory', 'knowledge', 'perspective']);
+  // M1-W1b: the context submenu gained the steps, the profile list, the flow, the preview; the three old entries are still there, in their place after them.
+  assert.deepEqual(ids(m.items.find(i => i.id === 'context').items),
+    ['wider', 'deeper', 'narrower', 'shallower', 'selector_profile', 'flow_text_graph', 'preview_request', 'memory', 'knowledge', 'perspective']);
   // The existing actions are the entries: the agent runs agent.run, a picture is depict; deep research is the request's own field.
   const find = (id) => flat(m.items).find(i => i.id === id);
   assert.deepEqual([find('agent').field, find('agent').value], ['action', 'agent.run']);
@@ -111,7 +114,7 @@ test('problems are said in plain Polish, entries named by the label they show, n
 });
 
 test('a label that is not a word of the shell is shown as written; the id only when there is no label', () => {
-  assert.equal(cm.labelText('cm_memory', plT, 'pl', 'memory'), 'Pamięć');
+  assert.equal(cm.labelText('cm_memory', plT, 'pl', 'memory'), 'Profil i pamięć (z węzła Ty)');
   assert.equal(cm.labelText('Moje notatki', plT, 'pl', 'notes'), 'Moje notatki');
   assert.equal(cm.labelText({ en: 'Translate', pl: 'Tłumacz' }, plT, 'pl', 'translate'), 'Tłumacz');
   assert.equal(cm.labelText('', plT, 'pl', 'translate'), 'translate');
@@ -210,4 +213,57 @@ test('writing the model at the conversation level keeps the rest of the metadata
   assert.deepEqual(meta.settings, { chat_flow: 'graph' }, 'the input is not changed');
   assert.deepEqual(cm.withConversationModel(set, 'default_model', ''), { units: { project: 'p1' }, settings: { chat_flow: 'graph' } });
   assert.deepEqual(cm.withConversationModel(undefined, 'default_model', 'm'), { settings: { default_model: 'm' } });
+});
+
+// ---- M1-W1b: the + menu gets the context entries; nothing is deleted ----
+// The ids of the menu before M1-W1b (P33), written out: the test compares them with the data, so an entry that disappeared fails here.
+const P33_IDS = ['attach_file', 'attach_photo', 'model', 'tools', 'web_search', 'deep_research', 'thinking', 'agent', 'image', 'music', 'context', 'memory', 'knowledge', 'perspective', 'import'];
+
+test('M1-W1b: every entry of the old menu still exists; the new ones are in the context submenu, named by data', () => {
+  const m = cm.composeMenu(base, entry('chat.composer_menu_ops').value);
+  assert.deepEqual(m.issues, []);
+  const have = ids(flat(m.items));
+  for (const id of P33_IDS) assert.ok(have.includes(id), `the old entry ${id} is still in the menu`);
+  const find = (id) => flat(m.items).find(i => i.id === id);
+  for (const [id, step] of [['wider', 'wider'], ['deeper', 'deeper'], ['narrower', 'narrower'], ['shallower', 'shallower']]) {
+    assert.deepEqual([find(id).kind, find(id).step], ['step', step]);
+  }
+  assert.equal(find('selector_profile').kind, 'profiles');
+  assert.deepEqual([find('flow_text_graph').kind, find('flow_text_graph').focus], ['node', 'setting:chat_flow']);
+  assert.equal(find('preview_request').kind, 'preview');
+  // the toggles keep their behaviour (the flags), only the words changed
+  assert.deepEqual([find('memory').kind, find('memory').flag], ['toggle', 'memory']);
+  assert.deepEqual([find('knowledge').kind, find('knowledge').flag], ['toggle', 'knowledge']);
+});
+
+test('M1-W1b: the steps are the steps of the action rules (data), and every new entry has a label and a help word in both languages', () => {
+  const rules = JSON.parse(readFileSync(new URL('../../../data/runtime/action_rules.pack', import.meta.url), 'utf8')).defaults.scoped_values.keys;
+  const known = new Set(Object.values(rules).flatMap(k => Object.keys(k.steps ?? {})));
+  const m = cm.composeMenu(base, undefined);
+  for (const item of flat(m.items).filter(i => i.kind === 'step')) assert.ok(known.has(item.step), `${item.step} is a step of action_rules.pack`);
+  const tEn = tIn('en');
+  for (const item of flat(m.items).filter(i => ['step', 'profiles', 'node', 'preview'].includes(i.kind))) {
+    for (const t of [plT, tEn]) {
+      assert.notEqual(t(item.label), item.label, `${item.id} has a word`);
+      if (item.help !== undefined) assert.notEqual(t(item.help), item.help, `${item.id} help has a word`);
+    }
+  }
+  assert.equal(tEn('cm_memory'), 'Profile and memory (from the You node)');
+  assert.equal(plT('cm_knowledge'), 'Twierdzenia z analizy');
+});
+
+test('M1-W1b: a step without its step, a node without its address are said, not dropped', () => {
+  const m = cm.composeMenu({ items: [{ id: 'a', label: 'Szerzej', kind: 'step' }, { id: 'b', label: 'Karta', kind: 'node' }, { id: 'c', label: 'Ok', kind: 'step', step: 'wider' }] }, undefined);
+  assert.deepEqual(codes(m), ['no_step', 'no_focus']);
+  assert.deepEqual(ids(m.items), ['c']);
+  for (const code of ['no_step', 'no_focus']) for (const [t, lang] of [[plT, 'pl'], [tIn('en'), 'en']]) assert.ok(!cm.issueText({ code, params: { name: 'X' } }, t, lang).startsWith('cm_issue_'), `${code} has a word in ${lang}`);
+});
+
+test('M1-W1b: an entry the screen cannot run keeps its row and says why (blocked), the others stay usable', () => {
+  const m = cm.composeMenu(base, undefined);
+  const find = (id) => flat(m.items).find(i => i.id === id);
+  const ctx = { upload: true, settings: null, blocked: { preview_request: 'cm_reason_preview_empty' } };
+  assert.deepEqual(cm.itemState(find('preview_request'), ctx), { state: 'unavailable', reason: 'cm_reason_preview_empty' });
+  assert.deepEqual(cm.itemState(find('wider'), ctx), { state: 'ok' });
+  assert.notEqual(plT('cm_reason_preview_empty'), 'cm_reason_preview_empty');
 });

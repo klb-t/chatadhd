@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { marked } from "marked";
 import DOMPurify from "dompurify";
 import { api } from "../api";
@@ -45,6 +45,13 @@ import { createPortal } from "react-dom";
 import ComposerMenu from "../shell/ComposerMenu";
 import ContextReceipt from "./ContextReceipt";
 import { useReceiptWords } from "./use-receipt-words";
+import { loadSelectorProfiles, useContextModify } from "./use-context-modify";
+import { modifySentence, profileChoices, type ProfileChoice } from "./context-receipt-state";
+import ContextStrip from "../shell/ContextStrip";
+import ModelProvenance from "../shell/ModelProvenance";
+import { lastReceiptProfile, pendingParts } from "../shell/context-strip";
+import { shortModelName, type ModelSource } from "../shell/model-chip";
+import { clearPendingTurn, pendingTurn, subscribePendingTurn } from "../shell/turn-pending";
 import { lineText, recordedReceipt, requestOf } from "./context-receipt-state";
 import { useLayer } from "../shell/use-layer";
 import { attachmentName, attachmentRef, conversationModel, effectiveMenu, MODEL_SETTING, labelText, onSwitches, refusedAttachment, requestFields, switchToggle, withConversationModel, type MenuFlag, type MenuFlags, type MenuIssue } from "../shell/composer-menu";
@@ -220,10 +227,22 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
   const [lexicalShadow, setLexicalShadow] = useState(() => storedBool("lexicalShadow", false));
   const [requestOverride, setRequestOverride] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
+  const lastProfile = useMemo(() => lastReceiptProfile(messages, shellLanguage), [messages, shellLanguage]);
   const [showAllMessages, setShowAllMessages] = useState(false);
   const [input, setInput] = useState("");
   // P33: the + menu. Tools are on until turned off (chips above the field say which); files are chips too.
   const [menuOpen, setMenuOpen] = useState(false);
+  // M1-W1b: the context steps and the selector profile of the + menu (the same context.modify as the sheet), the model chip's sheet.
+  const modify = useContextModify(convId ?? null, receiptT("sheet.no_actions"));
+  const waitingTurn = useSyncExternalStore(subscribePendingTurn, () => pendingTurn(convId ?? null));
+  const [profiles, setProfiles] = useState<ProfileChoice[] | null>(null);
+  const [profilesError, setProfilesError] = useState<string | null>(null);
+  const loadProfiles = useCallback(() => {
+    if (profiles !== null) return;
+    setProfilesError(null);
+    loadSelectorProfiles().then(data => setProfiles(profileChoices(data, shellLanguage)), failure => setProfilesError(failure instanceof Error ? failure.message : String(failure)));
+  }, [profiles, shellLanguage]);
+  const [modelSheet, setModelSheet] = useState(false);
   // The field switches that are on (web search, deep research, deep thinking, an action ...), by the id of their entry in the menu's data.
   const [switches, setSwitches] = useState<Record<string, boolean>>({});
   const [attachments, setAttachments] = useState<ComposerAttachment[]>([]);
@@ -456,6 +475,14 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
   const shippedMenu = useMemo(() => featurePack.entries.find(entry => entry.key === "chat.composer_menu")?.value, []);
   const composedMenu = useMemo(() => effectiveMenu(menuBase, menuOps, shippedMenu), [menuBase, menuOps, shippedMenu]);
   const toggleSwitch = useCallback((id: string) => setSwitches(on => switchToggle(composedMenu.items, on, id)), [composedMenu]);
+  // Entries this screen cannot run right now keep their row and say why (a preview needs the text of a message and an idle composer; a card needs the navigator).
+  const menuBlocked = useMemo<Record<string, unknown>>(() => {
+    const blocked: Record<string, unknown> = {};
+    if (!input.trim()) blocked.preview_request = "cm_reason_preview_empty";
+    else if (stream || branchLeaf || gate.blocked) blocked.preview_request = "cm_reason_preview_busy";
+    if (!onShowInGraph) blocked.flow_text_graph = "cm_reason_no_navigator";
+    return blocked;
+  }, [input, stream, branchLeaf, gate.blocked, onShowInGraph]);
   const switchesOn = useMemo(() => onSwitches(composedMenu.items, switches), [composedMenu, switches]);
   // An action (the agent, painting) takes only the words: files staged with it are said next to Send, not dropped (the kernel refuses them too).
   const actionSwitch = switchesOn.find(i => i.field === "action") ?? null;
@@ -680,6 +707,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
           if (!isCurrent() || terminal) return;
           if (chunk.type === "start") {
             started = true;
+            clearPendingTurn(convId ?? null, chunk.conv_id, null);  // the kernel took what waited for this request (the turn carrier is empty after a send)
             if (notesAwaitStart) { notesForRef.current = chunk.conv_id; notesAwaitStart = false; }
             currentUserIdRef.current = chunk.user_message_id;
             currentConvIdRef.current = chunk.conv_id;
@@ -1390,11 +1418,20 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
           onClick={() => setBlockChoice(false)} data-testid="send-gate-unblock">{gateTexts.unblock}</button>}
       </div>}
       {gate.blocked && <span id={gateDescriptionId} hidden data-testid="send-gate-explanation">{gateTexts.blocked}</span>}
+      {chat && requestOverride !== null && <div className="chat-preview" data-testid="chat-preview-request">
+        <p><strong>{t("pv_title")}</strong> — {t("pv_note")}</p>
+        <textarea aria-label={t("pv_aria")} data-testid="one-call-request" rows={9} value={requestOverride} onChange={event => setRequestOverride(event.target.value)} disabled={!!stream} />
+        <button type="button" onClick={() => setRequestOverride(null)} data-testid="discard-one-call-request">{t("pv_discard")}</button>
+      </div>}
+      {chat && <ContextStrip convId={convId ?? null} language={shellLanguage} t={receiptT} lastProfile={lastProfile} messageCount={messages.length} />}
       <div className={chat ? "composer shell-composer" : "composer"}>
         {chat && <span className="composer-plus">
           <button type="button" ref={plusRef} aria-label={t("attach")} title={t("attach")} aria-haspopup="menu" aria-expanded={menuOpen} data-testid="shell-attach" onClick={() => setMenuOpen(v => !v)}>+</button>
           {/* The photo entry is shown wherever files can go: the capture input opens the camera on a phone and a picture file elsewhere. */}
-          {menuOpen && <ComposerMenu items={composedMenu.items} issues={menuIssues} ctx={{ upload: Boolean(api.actions?.clientBlobUpload), settings: menuSettings }}
+          {menuOpen && <ComposerMenu items={composedMenu.items} issues={menuIssues} ctx={{ upload: Boolean(api.actions?.clientBlobUpload), settings: menuSettings, blocked: menuBlocked }}
+            modify={modify} profiles={profiles} profilesError={profilesError} onLoadProfiles={loadProfiles} usageFeature={usageCatalog.feature} waiting={Object.keys(waitingTurn).length > 0}
+            onNode={(focus) => onShowInGraph?.(focus, [])} onPreview={() => send("preview")}
+            appliedText={modify.answer?.kind === "applied" ? modifySentence(modify.answer, pendingParts(modify.answer.waiting, receiptT, id => profiles?.find(p => p.id === id)?.label ?? id).join(", "), receiptT) : ""}
             flags={menuFlags} switches={switches} model={shownModel} models={models}
             onAttach={(kind) => (kind === "camera" ? cameraInputRef : fileInputRef).current?.click()}
             onFlag={toggleFlag} onSwitch={toggleSwitch} onModel={chooseModel} onPanel={(panel) => requestPanel(panel)} onClose={closeMenu} />}
@@ -1429,16 +1466,21 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
         >
           <option value="">{chat ? t("cm_model_default") : "default model"}</option>
           {models.map((m) => (
-            <option key={m.id} value={m.id}>
-              {m.name ?? m.id}
+            <option key={m.id} value={m.id} title={m.id}>
+              {chat ? shortModelName(m.id) : m.name ?? m.id}
             </option>
           ))}
           {/* A model the list does not have (a conversation's own, the person's pick from earlier) is still shown as what it is. */}
-          {shownModel !== "" && !models.some(m => m.id === shownModel) && <option value={shownModel}>{shownModel}</option>}
+          {shownModel !== "" && !models.some(m => m.id === shownModel) && <option value={shownModel} title={shownModel}>{chat ? shortModelName(shownModel) : shownModel}</option>}
         </select>;
           if (!chat) return picker;
+          // The chip: the short name (the select shows it) and an info button that opens the sheet of where the model comes from.
+          const chip = <span className="model-chip-wrap" data-testid="model-chip" data-model={shownModel || undefined}>{picker}
+            <button type="button" className="model-chip-info" data-testid="model-provenance-open" aria-label={t("mp_open")} title={t("mp_open")} aria-haspopup="dialog" onClick={() => setModelSheet(true)}>ⓘ</button></span>;
           const slot = document.getElementById("shell-model-slot");
-          return slot ? createPortal(picker, slot) : null; })()}
+          return slot ? createPortal(chip, slot) : null; })()}
+        {chat && modelSheet && <ModelProvenance convId={convId ?? null} model={shownModel} models={models} onClose={() => setModelSheet(false)}
+          source={((): ModelSource => shownModel === "" ? "chain" : convId !== null && ownModel?.convId === convId ? "conversation" : "window")()} />}
         {modelNote && <div className="pill composer-note" role="status" data-testid="composer-model-note" style={{ width: "100%" }}>{modelNote}</div>}
         {routeNotes.length > 0 && <div className="composer-note" style={{ width: "100%" }}>
           {routeNotes.map((note, i) => <div className="pill" role="status" key={i} data-testid="chat-route-note">{note}</div>)}

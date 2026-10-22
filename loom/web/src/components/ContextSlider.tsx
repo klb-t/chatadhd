@@ -3,6 +3,11 @@ import { api } from "../api";
 import type { ContextSet } from "../api/types";
 import { CONTEXT_PREVIEW_KEY, NATIVE_INT_MAX, useResourceParameters, useResourcePresets, validContextPreview } from "../context/resource-controls";
 import ResourcePresetEditor from "./ResourcePresetEditor";
+import { previewScopeLines } from "../context/retrieval-plan";
+import { pendingParts } from "../shell/context-strip";
+import { useNextRequest } from "../shell/use-next-request";
+import { useShellLanguage } from "../shell/text";
+import { useReceiptWords } from "./use-receipt-words";
 
 interface Props {
   convId: string | null;
@@ -16,6 +21,11 @@ export default function ContextSlider({ convId }: Props) {
   const [error, setError] = useState<string | null>(null);
   const generation = useRef(0);
   const valid = validContextPreview(parameters);
+  // M1-W1b: the profile and the changes that wait for the next request, said over the preview (the probe text is only the query).
+  const language = useShellLanguage();
+  const words = useReceiptWords(undefined, language);
+  const next = useNextRequest(convId, language, null, 0);
+  const scopeLines = previewScopeLines(pendingParts(next.waiting, words, id => next.profiles.find(p => p.id === id)?.label ?? id), next.profile, words);
 
   const select = useCallback(async () => {
     if (!validContextPreview(parameters)) return;
@@ -67,6 +77,7 @@ export default function ContextSlider({ convId }: Props) {
       {!valid && <p role="alert">Use finite nonnegative whole numbers representable by the native integer fields (0–{NATIVE_INT_MAX}).</p>}
 
       <div className="section-title">{parameters.auto_preview ? "Live preview" : "Manual preview"}</div>
+      <ul className="context-preview-scope" data-testid="context-preview-scope">{scopeLines.map((line, i) => <li key={i} data-testid={i === 0 ? "context-preview-profile" : "context-preview-pending"}>{line}</li>)}</ul>
       {loading && <div className="empty-state">Selecting…</div>}
       {error && <div className="empty-state" style={{ color: "var(--err)" }} role="alert">{error}</div>}
       {preview && !loading && (

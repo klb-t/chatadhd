@@ -89,3 +89,18 @@ details[open] > summary::before { content: var(--disclosure-glyph-expanded); ani
 }
 @media (prefers-reduced-motion: reduce) { .composer-menu { animation: none; } }
 .composer-hint { margin: 0; color: var(--dim); font-size: 12px; }
+
+/* M1-W1b: the context steps as chips in the + menu, the answer of the kernel, the strip above the composer, the model chip. */
+.composer-menu-chips { display: flex; flex-wrap: wrap; gap: 8px; padding: 6px 12px 4px; }
+.composer-menu-chip { min-height: 44px; min-width: 44px; padding: 8px 14px; border-radius: 999px; border: 1px solid var(--border, rgba(127,127,127,.4)); background: var(--input-bg, transparent); color: inherit; font: inherit; cursor: pointer; }
+.composer-menu-chip:disabled { opacity: .6; cursor: default; }
+.composer-menu-result { margin: 0; padding: 4px 12px 10px; font-size: 13px; white-space: normal; }
+.context-strip { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; padding: 4px 12px 2px; font-size: 12px; color: var(--dim); }
+.context-strip .context-strip-chip { display: inline-block; padding: 2px 10px; border-radius: 999px; border: 1px solid var(--border, rgba(127,127,127,.4)); }
+.context-strip p { margin: 0; white-space: normal; }
+.model-chip-wrap { display: inline-flex; align-items: center; gap: 2px; max-width: 58vw; }
+.model-chip-wrap select { min-width: 0; text-overflow: ellipsis; }
+.model-chip-info { min-width: 44px; min-height: 44px; margin: -6px 0; border: 0; background: transparent; color: var(--dim); font: inherit; font-size: 16px; cursor: pointer; }
+.mp-lines { list-style: none; margin: 0; padding: 0 0 8px; }
+.mp-lines li { padding: 4px 0; white-space: pre-wrap; }
+.mp-chain { margin: 0; padding: 0 0 8px 18px; }

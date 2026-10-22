@@ -2,7 +2,7 @@
 // changes (hide, add, move) from `chat.composer_menu_ops`. This file is the pure part: composing the entries and judging each one.
 import { SHELL_PANELS } from "./panels";
 
-export type MenuKind = "attach" | "camera" | "model" | "submenu" | "toggle" | "panel" | "unavailable";
+export type MenuKind = "attach" | "camera" | "model" | "submenu" | "toggle" | "panel" | "unavailable" | "step" | "profiles" | "node" | "preview";
 export interface MenuItem {
   id: string;
   /** A word of presentation.ui_shell, or {en, pl}. */
@@ -20,6 +20,12 @@ export interface MenuItem {
   panel?: string;
   reason?: unknown;
   items?: MenuItem[];
+  /** step: the step of context.modify it asks for (wider | narrower | deeper | shallower: the ids of action_rules.pack), for the next request only. */
+  step?: string;
+  /** node: the address of the graph node whose card it opens in the navigator (setting:chat_flow ...). */
+  focus?: string;
+  /** A word of presentation.ui_shell (or {en, pl}) said under the entry. */
+  help?: unknown;
 }
 export type MenuOp =
   | { op: "hide"; id: string }
@@ -29,7 +35,7 @@ export type MenuOp =
 export interface MenuIssue { code: string; params: Record<string, unknown> }
 export interface ComposedMenu { items: MenuItem[]; issues: MenuIssue[] }
 
-const KINDS: readonly string[] = ["attach", "camera", "model", "submenu", "toggle", "panel", "unavailable"];
+const KINDS: readonly string[] = ["attach", "camera", "model", "submenu", "toggle", "panel", "unavailable", "step", "profiles", "node", "preview"];
 /** The switches of this view a toggle may name by `flag`; any other switch names the request field it sets (`field`). */
 export const MENU_FLAGS = ["memory", "knowledge"] as const;
 export type MenuFlag = typeof MENU_FLAGS[number];
@@ -50,8 +56,9 @@ export function readItems(value: unknown, where: unknown, issues: MenuIssue[]): 
     const name = raw.label ?? raw.id;
     if (typeof raw.kind !== "string" || !KINDS.includes(raw.kind)) { issues.push(issue("unknown_kind", { name, kind: String(raw.kind) })); continue; }
     const item: MenuItem = { id: raw.id, label: name, kind: raw.kind as MenuKind };
-    for (const key of ["flag", "field", "panel"] as const) if (typeof raw[key] === "string" && raw[key] !== "") item[key] = raw[key] as string;
+    for (const key of ["flag", "field", "panel", "step", "focus"] as const) if (typeof raw[key] === "string" && raw[key] !== "") item[key] = raw[key] as string;
     if (raw.reason !== undefined) item.reason = raw.reason;
+    if (raw.help !== undefined) item.help = raw.help;
     if (raw.value !== undefined) item.value = raw.value;
     if (raw.exclusive === true) item.exclusive = true;
     if (Array.isArray(raw.needs)) item.needs = raw.needs.filter((k): k is string => typeof k === "string" && k !== "");
@@ -59,6 +66,8 @@ export function readItems(value: unknown, where: unknown, issues: MenuIssue[]): 
       issues.push(issue("toggle_target", { name })); continue;
     }
     if (item.kind === "panel" && !item.panel) { issues.push(issue("no_panel", { name })); continue; }
+    if (item.kind === "step" && !item.step) { issues.push(issue("no_step", { name })); continue; }
+    if (item.kind === "node" && !item.focus) { issues.push(issue("no_focus", { name })); continue; }
     if (item.panel && !(SHELL_PANELS as readonly string[]).includes(item.panel)) {
       issues.push(issue("unknown_panel", { name, panel: item.panel }));
       if (item.kind === "panel") continue;
@@ -158,10 +167,13 @@ export interface MenuContext {
   upload: boolean;
   /** The settings, for entries that need some (null: not read, the entries stay usable and the kernel says what is missing). */
   settings?: Record<string, unknown> | null;
+  /** Entries the screen cannot run right now, by id, with the word that says why (a preview with no text, no navigator around ...). */
+  blocked?: Record<string, unknown>;
 }
 export type ItemState = { state: "ok" } | { state: "unavailable"; reason: unknown };
 
 export function itemState(item: MenuItem, ctx: MenuContext): ItemState {
+  if (ctx.blocked && ctx.blocked[item.id] !== undefined) return { state: "unavailable", reason: ctx.blocked[item.id] };
   if (item.kind === "unavailable") return { state: "unavailable", reason: item.reason ?? "cm_reason_unknown_action" };
   if ((item.kind === "attach" || item.kind === "camera") && !ctx.upload) return { state: "unavailable", reason: "cm_reason_upload" };
   if (item.needs?.length && ctx.settings) {
@@ -171,6 +183,9 @@ export function itemState(item: MenuItem, ctx: MenuContext): ItemState {
   }
   return { state: "ok" };
 }
+
+/** The consecutive entries of one level that are context steps (they are drawn as one row of chips). */
+export function isStep(item: MenuItem): boolean { return item.kind === "step"; }
 
 /** Every entry, submenus included, in menu order. */
 export function flatItems(items: MenuItem[]): MenuItem[] {

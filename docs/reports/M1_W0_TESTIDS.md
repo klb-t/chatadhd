@@ -582,3 +582,21 @@ Arkusz otwiera linia pod odpowiedzią albo `⋯` wiadomości › Co wysłaliśmy
 | Zmień profil | `receipt-change-profile`, `receipt-profile-list`, `receipt-profile-<id>` (`data-status`, `aria-current`), `receipt-profile-status-<id>` | lista z widoku efektywnego `selector_profiles`, status preset / kalibracja / dawny słowami |
 
 Krok dla Androida (propozycja): `context-line-open` → `context-receipt` (`data-state` = `receipt`) → `receipt-step-wider` → `receipt-modify-result` → `context-receipt-close`.
+
+## Menu + › Kontekst, pasek kontekstu i chip modelu (paczka M1-W1b; `ComposerMenu.tsx`, `ContextStrip.tsx`, `ModelProvenance.tsx`, `ChatView.tsx`; e2e `loom/web/e2e/m1-context-menu-native.mjs`)
+
+| Ekran | testid | co pokazuje (słowami, z `presentation.ui_shell` i `presentation.context_receipt`) |
+|---|---|---|
+| menu + | `shell-attach`, `composer-menu`, `composer-menu-backdrop`, `composer-menu-context` | podmenu „Kontekst” |
+| kroki | `composer-menu-steps` (grupa), `composer-menu-wider`, `composer-menu-deeper`, `composer-menu-narrower`, `composer-menu-shallower` (`data-step`), `composer-menu-steps-help` | chipy „Szerzej / Głębiej / Węziej / Płycej” 44 px; działają tylko na następne zapytanie |
+| odpowiedź jądra | `composer-menu-modify-result` (`data-kind` = `applied` / `declined` / `failed`), `composer-menu-modify-busy`, `composer-menu-reset` | „Gotowe: tylko dla następnego zapytania — szerzej. Po jego wysłaniu wszystko wraca do ustawień.” (+ „Szacunek: … × zwykłego”, gdy jądro zmierzyło); pytanie ×10 jądra: `composer-menu-usage-pending` (w środku `-line`, `-confirm`, `-reject` jak w `receipt-usage-pending`) |
+| profil selektora | `composer-menu-selector_profile`, `composer-profiles-help`, `composer-profiles-loading`, `composer-profiles-error`, `composer-profiles-empty`, `composer-profile-<id>` (`data-status`), `composer-profile-status-<id>` | lista z widoku efektywnego; status słowem: preset / kalibracja / dawny |
+| przepływ | `composer-menu-flow_text_graph`, `composer-menu-help-flow_text_graph`, `composer-menu-reason-flow_text_graph` | otwiera kartę ustawienia „Przepływ żądania” (`node-card` z `data-address="setting:chat_flow"`); bez nawigatora wiersz jest wyszarzony z powodem |
+| podgląd wysyłki | `composer-menu-preview_request`, `composer-menu-help-preview_request`, `composer-menu-reason-preview_request`, `chat-preview-request`, `one-call-request`, `discard-one-call-request` | wyszarzony z powodem, dopóki pole jest puste albo trwa wysyłanie; potem żądanie do wysłania jednorazowo (to samo `preview-chat-request` zostaje w trybie eksperckim) |
+| przełączniki | `composer-menu-memory`, `composer-menu-knowledge` | „Profil i pamięć (z węzła Ty)”, „Twierdzenia z analizy” (tylko nazwy, działanie bez zmian) |
+| pasek kontekstu | `context-strip` (`data-mode` = `chips` / `full`, `data-pending`), `context-strip-profile` (`data-known`), `context-strip-next`, `context-strip-full` | „Profil: Loom (preset)”; „Następne zapytanie: szerzej” tylko gdy to okno wie o zmianie; ustawienie `composer_context_strip` = `hidden` usuwa pasek |
+| chip modelu | `model-chip` (`data-model`), `model-picker` (to samo `select`, nazwa krótka w opcjach), `model-provenance-open` | krótka nazwa modelu; „ⓘ” otwiera arkusz |
+| arkusz modelu | `model-provenance` (`data-state` = `loading` / `ready`, `data-model`), `model-provenance-title`, `model-provenance-close`, `model-provenance-backdrop`, `model-provenance-loading`, `model-provenance-model`, `model-provenance-set-by`, `model-provenance-class`, `model-provenance-price`, `model-provenance-chain-title`, `model-provenance-chain`, `model-provenance-change` | model, poziom łańcucha, który go ustawił (albo „wybrany w tym oknie”), klasa, cena albo „Cena: nieznany — brak ceny” |
+| podgląd planu | `context-preview-scope`, `context-preview-profile`, `context-preview-pending` | w panelu Kontekst nad wynikiem: profil i zmiany czekające na następne zapytanie |
+
+Krok dla Androida (propozycja): `shell-attach` → `composer-menu-context` → `composer-menu-wider` → `composer-menu-modify-result` → (Wstecz) → `context-strip-next`; `model-provenance-open` → `model-provenance` (`data-state` = `ready`) → `model-provenance-close`. Stary krok `model-picker` (liczy `option`) działa bez zmian.

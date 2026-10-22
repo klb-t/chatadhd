@@ -50,7 +50,7 @@ export function labelOf(label: unknown, language: string, fallback: string): str
 }
 
 /** A word that exists, else the fallback (a missing word must not show as its own id where a better text is known). */
-function wordOr(t: ShellT, id: string, fallback: string, params?: Record<string, string>): string {
+export function wordOr(t: ShellT, id: string, fallback: string, params?: Record<string, string>): string {
   const said = t(id, params);
   return said === id ? fallback : said;
 }
@@ -230,4 +230,12 @@ export function profileChoices(data: unknown, language: string): ProfileChoice[]
     out.push({ id, label: labelOf(entry.label, language, id), status: typeof entry.status === "string" ? entry.status : "", why: labelOf(entry.why, language, "") });
   }
   return out;
+}
+
+/** The sentence after a change was applied, in the words of the pack (the kernel's own sentence is in its language, not necessarily the screen's):
+ *  what waits for the next request (`what`, already in words) and, when the kernel measured it, how much larger the request will be. */
+export function modifySentence(answer: { waiting: Record<string, unknown>; ratio: number | null }, what: string, t: ShellT): string {
+  const lines = [what ? t("modify.applied", { what }) : t("modify.cleared")];
+  if (what && answer.ratio !== null) lines.push(t("modify.ratio", { ratio: numberText(answer.ratio) }));
+  return lines.join(" ");
 }
