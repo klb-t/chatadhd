@@ -1,7 +1,12 @@
-# Kolejka S1 — stan 2026-10-22 09:25 UTC
+# Kolejka S1 — stan 2026-10-22 09:50 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
+
+## Bramka `k1c3a` ZIELONA (09:45, `07988cce`) — ALE zaskoczenie: stary krok e2e „Pokaż w grafie wyłączony” nadal PRZESZEDŁ, więc w prawdziwej przeglądarce przycisk dalej jest wyłączony
+Mój przewidywany czerwony krok nie wystąpił: krok sprawdza tylko, że `data-kernel-answer` nie jest pusty, więc nie odróżnia przyczyn (brak `onShowInGraph` w tej uprzęży = „no_navigator”? odmowa na ścieżce HTTP `POST /api/graph/navigate`? inna odpowiedź dla `limit:1/hops:1`?).
+Test jądra (w procesie) przechodzi, a przeglądarka nie widzi działającego przycisku — nie uznaję „Pokaż w grafie” za działające, dopóki e2e nie pokaże włączonego przycisku i listy wysłanych elementów.
+**K1c-3b wystartowało 09:46** (`wf_873d4c52-07d`, Sonnet): pierwszy krok = wydrukować prawdziwą odpowiedź i naprawić właściwą warstwę (web przede wszystkim; minimalna poprawka jądra/HTTP dozwolona z testem), potem e2e z prawdziwym przepływem, renderowanie pól K1c-3a w nawigatorze i karcie, odświeżenie raportu.
 
 ## CI 266 (`efb31fcf`) = SUCCESS (09:07, 89 min); `main` = `568afce9` (K1c-2, bramka `k1c2` zielona) od 09:18, CI 267 (id 39754419991) w toku, kontrola ≈ 10:57
 S2 dostał „266 zielony, main 568afce9”. Zadanie #26 (K1c-1) zamknięte. Zawartość `main` teraz: W1a/W1b/W1c, K1c-1 (jedna liczba), K1c-2 (jądro „wysłane do modelu” z paragonu i pozycje per element).
