@@ -1,7 +1,13 @@
-# Kolejka S1 — stan 2026-10-22 17:05 UTC
+# Kolejka S1 — stan 2026-10-22 17:52 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
+
+## Bramka `k2b1` CZERWONA (17:47, `aa45db5b`): jeden test `unit.test_chat_ops` (12 asercji) — K2b-2 startuje od naprawy (KROK 0), `wf_9de01309-e76` start 17:49
+Przyczyna: test pokrycia czatu wysyła zdania przykładowe KAŻDEJ akcji z `chat_coverage.pack` i oczekuje „wykonane od razu” albo propozycji `pending` z `receipt_id`/`run_id`; dla nowych `profile.set` i `profile.confirm` router odpowiada `unavailable` (zdanie nie niesie wymaganych parametrów; `profile.confirm` to kontynuacja z propozycji wywiadu, nie coś, co się mówi).
+Wyjątek `import.file` był zakodowany na sztywno w teście. **Decyzja dla agenta:** oczekiwanie „co zdanie samo potrafi” staje się DANĄ wpisu pokrycia (`chat_outcome`: pending|executed|unavailable|continuation + powód pl/en), test ją czyta, wyjątek `import.file` przechodzi do danych; `profile.confirm` = kontynuacja; `profile.set` — zdanie prawdziwe, jeśli router uczciwie wypełni slot i wartość, inaczej `unavailable` z powodem (bez wymyślania parsera).
+Nauka: regex akceptacji K2b-1 nie zawierał `chat` — dodany (`chat|route|coverage|actions|profile|onboarding`). Reszta 255/256 testów jądra i cały web zielone; po KROKU 0 K2b-1 powinno być gate-zielone.
+Plan K2b-2: (1) KROK 0 naprawa; (2) start wywiadu w rozmowie (`metadata.flow = profile.interview`), gałąź w `ChatEngine::send` (bez modelu), propozycje jak w `agent.run`; (3) `profile_detail_by_category` + jawne odświeżenie starego scenariusza; (4) zdania na ekranie bez nazw wewnętrznych („(minimal)”, `profile_detail_level`, `erase=true`) + test danych pl/en. FF `main` (K2b-1 + K2b-2) po zielonej bramce i po końcu CI 272 (kontrola 18:13).
 
 ## APK v2 DOSTARCZONY właścicielowi (17:02 UTC): `package.yml` run 39815413284 = success (16:50, 14 min), sha `f07fc52a` (CI 271 zielony; smoke S2 39801974892 42/0/0 ×3)
 Artefakty: `chatadhd-android-apk-TEST-KEY` (17,8 MB, sha256 27818dd7…), `chatadhd-server-linux-x64/-arm64`, `first-steps-screenshots`, `chatadhd-0.10.00-ci.24.f07fc52`. Raport `M1_CHECKPOINT_1.md` (identyczny z commitem APK) wysłany jako plik.
