@@ -1,7 +1,13 @@
-# Kolejka S1 — stan 2026-10-22 08:40 UTC
+# Kolejka S1 — stan 2026-10-22 09:05 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
+
+## K1c-3a GOTOWE (08:59 UTC, `07988cce` na `claude/m1-w0`): jądro rysuje „wysłane do modelu” także w nawigatorze i na karcie — bramka `k1c3a` w toku (start 09:00), PRZEWIDYWANIE: czerwony krok e2e
+Agent Sonnet (`wf_37698f0d-16b`, 75 wywołań, 207 tys. tokenów, 21 min): `graph.navigate` z perspektywą `sent_to_model` i fokusem `msg:` rysuje linki paragonu (waga = tokeny, pominięte jako `left_out_of_model`, węzły pochodne `sent:<id>:<ref>`),
+`graph.card` zna adresy `sent:`, `perspectives.show` deklaruje `msg_id`/`label_chars`. Nic nie zapisuje do `nodes`/`links`. Bez nowej trasy API. Testy jądra 48/48.
+**Przewidywana czerwień bramki:** `e2e/m1-context-sent-native.mjs` (~linia 143) nadal twierdzi, że „Pokaż w grafie” jest wyłączony — a teraz jądro odpowiada i przycisk włącza się sam. To nie błąd jądra; krok zastępuje K1c-3b (web + e2e + odświeżenie raportu), który startuje ≥ 09:44 (odstęp pace).
+Plan FF: po końcu CI 266 (≈ 09:10) → `main` ← `568afce9` (K1c-2, bramka `k1c2` zielona); K1c-3a + K1c-3b razem po zielonej bramce `k1c3b`.
 
 ## Bramka `k1c2` ZIELONA (08:37, `568afce9`, drzewo czyste); S2: android-smoke 39741874779 na `efb31fcf` = success 41/0/0 na 3 profilach (W1c + K1c-1 na emulatorze); K1c-3a wystartowało 08:38 (`wf_37698f0d-16b`)
 S2 widzi na emulatorze: „Klasa: nieznana” z rozwiniętymi szczegółami, szacunek z nazwaną podstawą („dla pustej wiadomości”), zero „0×”; Agent R38 bez zmian. Następny smoke S2 dopiero po K1c-3b (przycisk „Pokaż w grafie”).
