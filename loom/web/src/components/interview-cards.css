@@ -1,0 +1,19 @@
+/* M1-W2a: the interview about the person in the conversation window: the card of the empty chat, the info line, the level cards, the quick replies. */
+.interview-card { border-color: var(--accent, var(--warn)); }
+.interview-card-privacy, .interview-card-note { font-size: 13px; opacity: 0.85; }
+.interview-card-buttons { display: flex; flex-wrap: wrap; gap: 8px; }
+.interview-card-buttons button { min-height: 44px; }
+.interview-card-decision { margin: 8px var(--gutter); font-size: 13px; opacity: 0.85; }
+
+.interview-info { display: flex; flex-direction: column; gap: 2px; margin: 6px var(--gutter); padding: 8px 12px; border: 1px solid var(--border, var(--warn)); border-radius: var(--radius); background: var(--input-bg); font-size: 13px; }
+.interview-info strong { font-size: 14px; }
+
+.interview-levels { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+.interview-level { display: flex; flex-direction: column; align-items: stretch; gap: 4px; min-height: 44px; padding: 10px 12px; text-align: left; border: 1px solid var(--border, var(--warn)); border-radius: var(--radius); background: var(--input-bg); color: inherit; font: inherit; }
+.interview-level dl { margin: 0; display: grid; gap: 2px; }
+.interview-level dt { margin-top: 6px; font-size: 12px; opacity: 0.75; }
+.interview-level dd { margin: 0; font-size: 14px; overflow-wrap: anywhere; }
+.interview-hint { margin: 2px 0 0; font-size: 13px; opacity: 0.85; }
+
+.interview-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.interview-chips button { min-height: 44px; min-width: 44px; padding: 6px 14px; border-radius: 999px; }

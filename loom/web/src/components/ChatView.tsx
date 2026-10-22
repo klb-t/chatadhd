@@ -47,6 +47,8 @@ import ContextReceipt from "./ContextReceipt";
 import { useReceiptWords } from "./use-receipt-words";
 import { loadSelectorProfiles, useContextModify } from "./use-context-modify";
 import { modifySentence, profileChoices, type ProfileChoice } from "./context-receipt-state";
+import { InterviewCardDecision, InterviewChips, InterviewInfoLine, InterviewLevelCards, InterviewStartCard, useInterviewCard, useInterviewWords } from "./InterviewCards";
+import { isInterviewConversation, levelCards, waitingQuestion } from "../context/interview";
 import ContextStrip from "../shell/ContextStrip";
 import ModelProvenance from "../shell/ModelProvenance";
 import { lastReceiptProfile, pendingParts } from "../shell/context-strip";
@@ -151,6 +153,10 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
   }, [refreshKey]);
   const [convRecord, setConvRecord] = useState<Conversation | null>(null);
   const [hasKey, setHasKey] = useState<boolean | null>(null);
+  // M1-W2a: the interview about the person (form mode, no model): its words, the card of the empty chat, and whether this conversation is one.
+  const interviewT = useInterviewWords(profileHost, shellLanguage);
+  const interviewConv = isInterviewConversation(convRecord?.metadata);
+  const interviewCard = useInterviewCard(shellLanguage, onConversationCreated, chat);
   const [actionsFor, setActionsFor] = useState<string | null>(null);
   const [copied, setCopied] = useState<string | null>(null);
   const pressTimer = useRef<number | null>(null);
@@ -866,6 +872,14 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
     setInput(draft);  // what the user was typing is not the sentence being sent
   }, [convId, messages, send, input]);
 
+  // M1-W2a: a tap on a level card or a quick reply is the person's message (the level's name, a control word): the same send as a typed one, no model.
+  const sayInInterview = useCallback((word: string) => {
+    if (!convId) return;
+    const draft = input;
+    send("send", { message: word, conv_id: convId });
+    setInput(draft);
+  }, [convId, send, input]);
+
   const undoWritten = useCallback(async (written: WrittenView) => {
     if (!api.actions) return;
     setUndoing(written.id);
@@ -1112,6 +1126,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
       .filter(message => message.conv_id === convId), [messages, convId, branchLeaf, branchMessages, conversationView, showAllMessages, olderMessages]);
   const displayedStream = stream?.convId === convId ? stream : null;
   const displayedPending = pendingUserText?.convId === convId ? pendingUserText : null;
+  const waitingInterview = interviewConv ? waitingQuestion(visibleMessages) : null;
 
   return (
     <div className="chat-view" data-testid="chat-view">
@@ -1127,6 +1142,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
       </p>}
       {conversationView && conversationView.resources.length > 0 && <ConversationSourceView key={convId} view={conversationView}
         profileHost={profileHost} catalog={sourceCatalog} busy={sourceBusy} onRead={readSources} onReload={() => { if (convId) void refreshMessages(convId); }} />}
+      {interviewConv && convId && <InterviewInfoLine t={interviewT} convId={convId} refreshKey={messages.length} language={shellLanguage} variant={variant} />}
       <div className="chat-scroll" ref={scrollRef} onScroll={e => { if (e.currentTarget.scrollTop < 40 && pageInfo?.truncated) void loadOlder(); }}>
         {pageInfo?.truncated && <div className="chat-older" data-testid="chat-older">
           <span data-testid="chat-older-count">{olderMessages.length + messages.length} / {pageInfo.total}</span>{" "}
@@ -1138,6 +1154,9 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
               <strong>{t("first_run_title")}</strong><span>{t("first_run_body")}</span>
               <button className="primary" data-testid="first-run-open-settings" onClick={() => requestPanel("settings")}>{t("first_run_button")}</button>
             </div>}
+            {interviewCard.visible && <InterviewStartCard t={interviewT} busy={interviewCard.busy} failure={interviewCard.failure}
+              onStart={() => void interviewCard.start()} onLater={() => void interviewCard.later()} onNever={() => void interviewCard.never()} />}
+            {!interviewCard.visible && interviewCard.note && <InterviewCardDecision t={interviewT} note={interviewCard.note} />}
             <h2>{t("empty_title")}</h2>
             <div className="shell-starters">{[1, 2, 3, 4].map(n => <button key={n} data-testid="shell-starter" onClick={() => setInput(t("starter_" + n))}>{t("starter_" + n)}</button>)}</div>
           </div> : <div className="empty-state">Say something to start the conversation.</div>
@@ -1193,9 +1212,15 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
                 } : undefined} />
               ) : m.storage === "reference" ? (
                 <pre className="body">{m.text}</pre>
+              ) : waitingInterview?.messageId === m.id && levelCards(m.metadata).length > 0 ? (
+                <div className="body" data-testid="interview-level-question">
+                  <p>{waitingInterview.question.text}</p>
+                  <InterviewLevelCards t={interviewT} levels={levelCards(m.metadata)} disabled={!!stream} onPick={level => sayInInterview(level.label)} />
+                </div>
               ) : (
                 <div className="body" dangerouslySetInnerHTML={renderMarkdown(m.role === "assistant" ? nativeGraphDisplayText(graphReply, m.text) : m.text)} />
               )}
+              {waitingInterview?.messageId === m.id && <InterviewChips t={interviewT} disabled={!!stream} onSay={sayInInterview} />}
               {m.role === "assistant" && (() => {
                 const question = semanticQuestion(m.metadata);
                 if (!question) return null;
@@ -1436,9 +1461,9 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
         <textarea aria-label={t("pv_aria")} data-testid="one-call-request" rows={9} value={requestOverride} onChange={event => setRequestOverride(event.target.value)} disabled={!!stream} />
         <button type="button" onClick={() => setRequestOverride(null)} data-testid="discard-one-call-request">{t("pv_discard")}</button>
       </div>}
-      {chat && <ContextStrip convId={convId ?? null} language={shellLanguage} t={receiptT} lastProfile={lastProfile} messageCount={messages.length} />}
+      {chat && !interviewConv && <ContextStrip convId={convId ?? null} language={shellLanguage} t={receiptT} lastProfile={lastProfile} messageCount={messages.length} />}
       <div className={chat ? "composer shell-composer" : "composer"}>
-        {chat && <span className="composer-plus">
+        {chat && !interviewConv && <span className="composer-plus">
           <button type="button" ref={plusRef} aria-label={t("attach")} title={t("attach")} aria-haspopup="menu" aria-expanded={menuOpen} data-testid="shell-attach" onClick={() => setMenuOpen(v => !v)}>+</button>
           {/* The photo entry is shown wherever files can go: the capture input opens the camera on a phone and a picture file elsewhere. */}
           {menuOpen && <ComposerMenu items={composedMenu.items} issues={menuIssues} ctx={{ upload: Boolean(api.actions?.clientBlobUpload), settings: menuSettings, blocked: menuBlocked }}
@@ -1486,6 +1511,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
           {/* A model the list does not have (a conversation's own, the person's pick from earlier) is still shown as what it is. */}
           {shownModel !== "" && !models.some(m => m.id === shownModel) && <option value={shownModel} title={shownModel}>{chat ? shortModelName(shownModel) : shownModel}</option>}
         </select>;
+          if (interviewConv) return null;   // a form without a model: no model to choose, no price to show
           if (!chat) return picker;
           // The chip: the short name (the select shows it) and an info button that opens the sheet of where the model comes from.
           const chip = <span className="model-chip-wrap" data-testid="model-chip" data-model={shownModel || undefined}>{picker}
