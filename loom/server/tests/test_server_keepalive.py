@@ -34,7 +34,7 @@ class Conn:
     """One HTTP/1.1 connection, spoken by hand."""
 
     def __init__(self, port: int):
-        self.sock = socket.create_connection(("127.0.0.1", port), timeout=10)
+        self.sock = socket.create_connection(("127.0.0.1", port), timeout=60)
         self.buf = b""
 
     def get(self, path: str = "/api/healthz") -> tuple[str, bytes, float]:
@@ -106,7 +106,7 @@ class Server:
         self.proc.terminate()
         self.stderr = ""
         try:
-            self.proc.wait(timeout=15)
+            self.proc.wait(timeout=120)   # a sanitizer build on a loaded runner needs far longer than 15 s to shut down; the answer is awaited, not slept
             self.stderr = self.proc.stderr.read().decode(errors="replace")
         finally:
             for pipe in (self.proc.stdout, self.proc.stderr):
@@ -116,14 +116,15 @@ class Server:
 
 
 def rejected(extra, env=None) -> str:
-    """Starts loom-server with arguments it must refuse; returns its stderr. AssertionError if it did not exit with 2 at once."""
+    """Starts loom-server with arguments it must refuse; returns its stderr. AssertionError if it did not exit with 2 (it refuses before it opens anything, so a hang is a bug, not slowness)."""
     full_env = dict(os.environ)
     full_env.pop("LOOM_SERVER_KEEP_ALIVE_TIMEOUT_S", None)
     full_env.update(env or {})
     with tempfile.TemporaryDirectory() as data:
         try:
             done = subprocess.run([BINARY, "--host", "127.0.0.1", "--port", str(free_port()), "--data-dir", data, *extra],
-                                  stdin=subprocess.DEVNULL, capture_output=True, env=full_env, timeout=10)
+                                  stdin=subprocess.DEVNULL, capture_output=True, env=full_env,
+                                  timeout=120)   # a sanitizer build on a loaded runner needs far longer than 10 s just to start; the refusal returns as soon as the process exits
         except subprocess.TimeoutExpired:
             raise AssertionError(f"loom-server {extra} {env} kept running; it had to refuse the value")
     err = done.stderr.decode(errors="replace")
