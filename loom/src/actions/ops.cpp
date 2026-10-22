@@ -42,6 +42,7 @@
 #include "loom/money_format.h"
 #include "loom/memory_engine.h"
 #include "loom/path_policy.h"
+#include "profile_ops.h"
 #include "loom/port_profile.h"
 #include "loom/provenance.h"
 #include "loom/providers.h"
@@ -2477,6 +2478,55 @@ StepOutcome context_receipt(Ctx& x) {
   return answer(join_lines(lines), Json{{"msg_id", id}, {"request_msg_id", request_id}, {"receipt", receipt}});
 }
 
+// ── the interview of the person (M1-K2b-1): the words, the setting and the profile are the pack's, the store's and the config's ─────────
+
+// profile_detail_level is written like any setting: the read-only rule and the declared values of its field apply.
+Status write_profile_setting(Runtime& rt, const std::string& key, const Json& value) {
+  if (auto ok = check_config_write(key, rt.paths().root); !ok) return ok;
+  auto doc = settings_fields(rt.paths().root);
+  if (!doc) return doc.error();
+  const Json fields = doc->value("fields", Json::array());
+  for (const auto& f : fields)
+    if (json::get_string(f, "key") == key) {
+      auto declared = check_declared_value(f, value);
+      if (!declared) return declared.error();
+      break;
+    }
+  rt.config().set(key, value);
+  return rt.config().save();
+}
+
+using ProfileFn = Result<profile::Reply> (*)(const profile::Env&, const Json&);
+
+StepOutcome profile_run(Ctx& x, ProfileFn fn, std::initializer_list<const char*> names) {
+  Ctx lx = x;  // the language of the words may be named by the call (locale), the run's own otherwise
+  if (const std::string loc = x.str("locale"); !loc.empty()) lx.lang = loc.substr(0, loc.find_first_of("-_"));
+  Json args = Json::object();
+  for (const char* n : names)
+    if (x.has(n)) args[n] = x.arg(n);
+  Ctx* cx = &lx;
+  Runtime* rt = &x.rt;
+  profile::Env env{x.rt.db(),
+                   lx.lang,
+                   json::get_string(lx.cfg.value("profile", Json::object()), "default_user"),
+                   [cx](const std::string& id, const Json& v) { return cx->say(id, v); },
+                   [cx](const std::string& t) { return cx->fold(t); },
+                   [rt](const std::string& k) { return rt->config().get(k); },
+                   [rt](const std::string& k, const Json& v) { return write_profile_setting(*rt, k, v); }};
+  auto r = fn(env, args);
+  if (!r) return fail(r.error());
+  return answer(r->text, r->data);
+}
+
+StepOutcome profile_interview_op(Ctx& x) {
+  return profile_run(x, profile::interview, {"op", "slot", "text", "category", "section", "user_id", "expected_revision", "reopen", "erase", "mode", "locale", "conv_id"});
+}
+StepOutcome profile_show_op(Ctx& x) { return profile_run(x, profile::show, {"user_id", "locale"}); }
+StepOutcome profile_set_op(Ctx& x) { return profile_run(x, profile::set, {"slot", "value", "user_id", "expected_revision", "locale"}); }
+StepOutcome profile_confirm_op(Ctx& x) {
+  return profile_run(x, profile::confirm, {"kind", "text", "section", "decision", "user_id", "expected_revision", "locale"});
+}
+
 using Op = StepOutcome (*)(Ctx&);
 
 const std::map<std::string, Op>& table() {
@@ -2498,7 +2548,8 @@ const std::map<std::string, Op>& table() {
       {"views.effective", views_effective}, {"views.write", views_write}, {"perspectives.show", perspectives_show}, {"scopes.explain", scopes_explain},
       {"view_model.show", view_model_show}, {"interaction.show", interaction_show}, {"interaction.rebind", interaction_rebind}, {"edge_kinds.list", edge_kinds_list}, {"edge_kinds.classify", edge_kinds_classify},
       {"graph.navigate", graph_navigate}, {"graph.card", graph_card}, {"settings.resolved", settings_resolved_op}, {"roles.resolved", roles_resolved_op},
-      {"rom.override", rom_override_op}, {"context.modify", context_modify}, {"context.receipt", context_receipt}};
+      {"rom.override", rom_override_op}, {"context.modify", context_modify}, {"context.receipt", context_receipt},
+      {"profile.interview", profile_interview_op}, {"profile.show", profile_show_op}, {"profile.set", profile_set_op}, {"profile.confirm", profile_confirm_op}};
   return t;
 }
 

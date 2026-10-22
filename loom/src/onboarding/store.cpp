@@ -473,6 +473,33 @@ Result<Json> OnboardingStore::install_entries(std::string_view user, std::int64_
   } catch (const std::exception& e) { return invalid(std::string("onboarding entry installation: ") + e.what()); }
 }
 
+Result<Json> OnboardingStore::interview_view(std::string_view user, const Json& request) {
+  try {
+    if (!request.is_object()) return invalid("interview view request must be an object");
+    auto lock = db_.lock();
+    LOOM_TRY_ASSIGN(auto state, read_locked(user));
+    LOOM_TRY_ASSIGN(auto layers, DefaultLayers::create(state.at("pack"), state.at("layers")));
+    LOOM_TRY_ASSIGN(auto defaults, defaults_for(state.at("pack"), layers));
+    LOOM_TRY_ASSIGN(auto scenario, effective_scenario(state.at("pack"), state.at("scenario_definition"), layers, false));
+    LOOM_TRY_ASSIGN(auto session, ProfileSession::create(scenario, defaults, state.at("profile")));
+    const std::string what = request.value("what", "");
+    const std::string locale = request.value("locale", "");
+    Json view;
+    if (what == "questions") view = session.questions(locale);
+    else if (what == "plan") {
+      Json options{{"level", request.value("level", "")}};
+      if (request.contains("by_category")) options["by_category"] = request.at("by_category");
+      LOOM_TRY_ASSIGN(view, session.plan(options));
+    } else if (what == "levels") {
+      LOOM_TRY_ASSIGN(view, session.levels(locale.empty() ? "en" : locale));
+    } else if (what == "remark") {
+      // apply is never passed: a remark is only matched here (proposals), written by the caller through apply()
+      LOOM_TRY_ASSIGN(view, session.apply_remark(request.value("text", ""), locale, Json{{"level", request.value("level", "")}}));
+    } else return invalid("unknown interview view: " + what);
+    return Json{{"revision", state.at("revision")}, {"view", std::move(view)}};
+  } catch (const std::exception& e) { return invalid(std::string("onboarding interview view: ") + e.what()); }
+}
+
 Result<Json> OnboardingStore::model_request(std::string_view user, std::string_view provider) {
   try {
     auto lock = db_.lock();

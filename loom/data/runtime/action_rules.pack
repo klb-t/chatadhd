@@ -269,6 +269,36 @@
           "pl": "Zapisanie reguły zmienia od teraz zachowanie aplikacji; każdą potwierdzasz sam."
         }
       },
+      "confirm:profile.set": {
+        "id": "confirm:profile.set",
+        "scope": "app_preset",
+        "target": {
+          "kind": "class",
+          "id": "application"
+        },
+        "action": "profile.set",
+        "effect": "confirm",
+        "initiator": "application preset",
+        "reason": {
+          "en": "Writing a fact about you changes what the application remembers about you; you confirm each one.",
+          "pl": "Zapisanie faktu o Tobie zmienia to, co aplikacja o Tobie pamięta; każdy potwierdzasz sam."
+        }
+      },
+      "confirm:profile.confirm": {
+        "id": "confirm:profile.confirm",
+        "scope": "app_preset",
+        "target": {
+          "kind": "class",
+          "id": "application"
+        },
+        "action": "profile.confirm",
+        "effect": "confirm",
+        "initiator": "application preset",
+        "reason": {
+          "en": "Applying what the interview understood (closing a topic, changing the level, accepting answers) changes what is asked and remembered; you confirm each one.",
+          "pl": "Zastosowanie tego, co wywiad zrozumiał (zamknięcie tematu, zmiana poziomu, przyjęcie odpowiedzi), zmienia to, o co pytam i co pamiętam; każde potwierdzasz sam."
+        }
+      },
       "confirm:rules.disable": {
         "id": "confirm:rules.disable",
         "scope": "app_preset",

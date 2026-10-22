@@ -14159,6 +14159,555 @@
           "pl": "Kontekst następnej wiadomości:"
         }
       },
+      "profile.interview": {
+        "id": "profile.interview",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Get to know you (interview)",
+        "description": "The interview of the person as a form, without a model and without anything leaving the device. op: start (opens the profile, asks how many questions you want to hear), answer (slot + text: a remark such as 'do not ask about health' is read first and only PROPOSED, the answer is otherwise stored as waiting for your yes), review (the card of the section, to be confirmed with profile.confirm), skip (a section, for this session only), decline ('not now': not asked again), never (a slot or a category: not asked and not guessed; reopen=true reopens, erase=true allows erasing stored answers), status (progress). Every answer says what is asked next. The model path is not available: mode=model is refused with the reason.",
+        "why": {
+          "pl": "Wywiad o Tobie jako formularz: bez modelu i bez wysyłania czegokolwiek poza urządzenie. Pyta, ile pytań chcesz usłyszeć, zapisuje Twoje odpowiedzi, szanuje „nie teraz” i „nigdy”."
+        },
+        "labels": {
+          "pl": "Poznajmy się (wywiad)"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "port": "actions",
+        "action": "profile.interview",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "op",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "start, answer, review, skip, decline, never or status (default: status).",
+              "pl": "start, answer, review, skip, decline, never albo status (domyślnie: status)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "slot",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The field of the profile (for example work.projects); for answer without it: the question being asked.",
+              "pl": "Pole profilu (na przykład work.projects); przy answer bez niego: pytanie, które teraz zadaję."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "text",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Your answer or remark.",
+              "pl": "Twoja odpowiedź albo uwaga."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "category",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "never or decline for a whole category (health, work ...).",
+              "pl": "never albo decline dla całej kategorii (health, work ...)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "section",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The section (skip, review).",
+              "pl": "Sekcja (skip, review)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "reopen",
+            "type": "boolean",
+            "required": false,
+            "description": {
+              "en": "never: reopen what you closed with 'never'.",
+              "pl": "never: otwórz znowu to, co zamknąłeś słowem „nigdy”."
+            },
+            "has_default": false,
+            "edit": "toggle"
+          },
+          {
+            "name": "erase",
+            "type": "boolean",
+            "required": false,
+            "description": {
+              "en": "never: allow erasing the answers already stored for the slot or category.",
+              "pl": "never: pozwól usunąć odpowiedzi już zapisane dla pola lub kategorii."
+            },
+            "has_default": false,
+            "edit": "toggle"
+          },
+          {
+            "name": "mode",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "form (the only mode today); model is refused with the reason.",
+              "pl": "form (jedyny tryb dziś); model jest odrzucany z powodem."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "conv_id",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The conversation the interview runs in (reserved: the conversation flow is the next package).",
+              "pl": "Rozmowa, w której toczy się wywiad (zarezerwowane: przepływ w rozmowie to następna paczka)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "user_id",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The profile (default: profile.default_user of the pack chat_ops).",
+              "pl": "Profil (domyślnie: profile.default_user z paczki chat_ops)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "expected_revision",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The revision of the profile you saw (the field revision of an answer); a write against another revision is refused as a conflict.",
+              "pl": "Rewizja profilu, którą widziałeś (pole revision odpowiedzi); zapis przy innej rewizji jest odrzucany jako konflikt."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "locale",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Language of the words and of the questions (en, pl); default: the language of the run.",
+              "pl": "Język słów i pytań (en, pl); domyślnie język uruchomienia."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/profile/interview"
+        },
+        "phrases": {
+          "en": [
+            "get to know me",
+            "interview about me",
+            "start the interview about me",
+            "let us get to know each other"
+          ],
+          "pl": [
+            "poznajmy się",
+            "wywiad o mnie",
+            "zacznij wywiad o mnie",
+            "zacznij poznawać mnie"
+          ]
+        },
+        "examples": {
+          "en": [
+            "get to know me"
+          ],
+          "pl": [
+            "poznajmy się"
+          ]
+        },
+        "result_text": {
+          "en": "The interview:",
+          "pl": "Wywiad:"
+        }
+      },
+      "profile.show": {
+        "id": "profile.show",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "What I know about you",
+        "description": "The slots of your profile with their state (known, unknown, declined, never), the value only of a known slot with where it came from, the chosen level of detail and what is still to be asked at it. A slot above the chosen level says so (asked_at_level false, reason above_level). Reads only; a value of a slot you closed with 'never' is never shown.",
+        "why": {
+          "pl": "Pokazuje, co o Tobie wiem: pola ze stanem, wartość tylko znanych, skąd pochodzi, wybrany poziom i co jeszcze zapytam."
+        },
+        "labels": {
+          "pl": "Co o mnie wiesz"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "port": "actions",
+        "action": "profile.show",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "user_id",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The profile (default: profile.default_user of the pack chat_ops).",
+              "pl": "Profil (domyślnie: profile.default_user z paczki chat_ops)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "locale",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Language of the words and of the questions (en, pl); default: the language of the run.",
+              "pl": "Język słów i pytań (en, pl); domyślnie język uruchomienia."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/profile/show"
+        },
+        "phrases": {
+          "en": [
+            "what do you know about me",
+            "show my profile"
+          ],
+          "pl": [
+            "co o mnie wiesz",
+            "co wiesz o mnie",
+            "pokaż mój profil"
+          ]
+        },
+        "examples": {
+          "en": [
+            "what do you know about me"
+          ],
+          "pl": [
+            "co o mnie wiesz"
+          ]
+        },
+        "result_text": {
+          "en": "What I know about you:",
+          "pl": "Co o Tobie wiem:"
+        }
+      },
+      "profile.set": {
+        "id": "profile.set",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Write a fact about you",
+        "description": "Writes one slot of your profile with the value you give, as your own statement (provenance user_stated), after you confirm. A slot you closed with 'never' is refused with the way to reopen it. The change is recorded in the history of the profile like any answer.",
+        "why": {
+          "pl": "Zapisuje jedno pole Twojego profilu tak, jak je podasz, jako Twoją własną odpowiedź - po Twoim potwierdzeniu. Pole zamknięte słowem „nigdy” jest odrzucane."
+        },
+        "labels": {
+          "pl": "Zapisz o mnie"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "port": "actions",
+        "action": "profile.set",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "slot",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "The field of the profile (for example work.projects).",
+              "pl": "Pole profilu (na przykład work.projects)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "value",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "The value.",
+              "pl": "Wartość."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "user_id",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The profile (default: profile.default_user of the pack chat_ops).",
+              "pl": "Profil (domyślnie: profile.default_user z paczki chat_ops)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "expected_revision",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The revision of the profile you saw (the field revision of an answer); a write against another revision is refused as a conflict.",
+              "pl": "Rewizja profilu, którą widziałeś (pole revision odpowiedzi); zapis przy innej rewizji jest odrzucany jako konflikt."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "locale",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Language of the words and of the questions (en, pl); default: the language of the run.",
+              "pl": "Język słów i pytań (en, pl); domyślnie język uruchomienia."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/profile/set"
+        },
+        "phrases": {
+          "en": [
+            "save about me",
+            "write this about me"
+          ],
+          "pl": [
+            "zapisz o mnie",
+            "zapisz to o mnie"
+          ]
+        },
+        "examples": {
+          "en": [
+            "save about me work.projects=chess club"
+          ],
+          "pl": [
+            "zapisz o mnie work.projects=klub szachowy"
+          ]
+        },
+        "result_text": {
+          "en": "Your profile:",
+          "pl": "Twój profil:"
+        }
+      },
+      "profile.confirm": {
+        "id": "profile.confirm",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Confirm what I understood",
+        "description": "Applies what the interview proposed after you confirm: kind=remark (text: the remark, for example 'do not ask about health' - closes the topic, may raise or lower the level) or kind=section (the card of a section: confirmed or rejected). Anything that erases stored answers was named in the proposal.",
+        "why": {
+          "pl": "Zapisuje to, co wywiad zaproponował, po Twoim potwierdzeniu: uwagę (na przykład „nie pytaj o zdrowie”) albo kartę sekcji."
+        },
+        "labels": {
+          "pl": "Potwierdź, co zrozumiałem"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "port": "actions",
+        "action": "profile.confirm",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "kind",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "remark or section.",
+              "pl": "remark albo section."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "text",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "kind=remark: the remark.",
+              "pl": "kind=remark: uwaga."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "section",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "kind=section: the section.",
+              "pl": "kind=section: sekcja."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "decision",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "kind=section: confirmed (default) or rejected.",
+              "pl": "kind=section: confirmed (domyślnie) albo rejected."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "user_id",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The profile (default: profile.default_user of the pack chat_ops).",
+              "pl": "Profil (domyślnie: profile.default_user z paczki chat_ops)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "expected_revision",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The revision of the profile you saw (the field revision of an answer); a write against another revision is refused as a conflict.",
+              "pl": "Rewizja profilu, którą widziałeś (pole revision odpowiedzi); zapis przy innej rewizji jest odrzucany jako konflikt."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "locale",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Language of the words and of the questions (en, pl); default: the language of the run.",
+              "pl": "Język słów i pytań (en, pl); domyślnie język uruchomienia."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/profile/confirm"
+        },
+        "phrases": {
+          "en": [
+            "confirm what you understood about me"
+          ],
+          "pl": [
+            "potwierdź, co zrozumiałeś o mnie"
+          ]
+        },
+        "examples": {
+          "en": [
+            "confirm what you understood about me"
+          ],
+          "pl": [
+            "potwierdź, co zrozumiałeś o mnie"
+          ]
+        },
+        "result_text": {
+          "en": "Confirmed:",
+          "pl": "Potwierdzone:"
+        }
+      },
       "context.receipt": {
         "id": "context.receipt",
         "kind": "atomic",

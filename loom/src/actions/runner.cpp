@@ -937,6 +937,8 @@ Result<Json> ActionRunner::invoke(std::string_view action, const Json& request) 
   // The context of the next message and the record of what was sent (M1-K1b): a call from HTTP or the C ABI is a run like any other, so a change that
   // the usage guard asks about (a jump of ten times) waits for the answer as a run does (actions.confirm).
   if (action == "context.modify" || action == "context.receipt") return run_gated(action, request);
+  // The interview of the person (M1-K2b-1): a run like any other, so profile.set and profile.confirm wait for the person (confirm:profile.set / .confirm).
+  if (action == "profile.interview" || action == "profile.show" || action == "profile.set" || action == "profile.confirm") return run_gated(action, request);
   if (action == "graph.navigate" || action == "graph.card" || action == "settings.resolved" || action == "roles.resolved")
     return projection::invoke(rt_, action, request);
   // The context guardian (guardian.h). What changes the user's rules or the representation is a run like rules.set (the rules of the

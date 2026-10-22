@@ -2439,6 +2439,90 @@
         }
       },
       {
+        "id": "profile_interview",
+        "title": {
+          "pl": "Poznajmy się (wywiad o Tobie)",
+          "en": "Get to know you (interview)"
+        },
+        "via": "action",
+        "action": "profile.interview",
+        "surfaces": {
+          "http": [
+            "POST /api/profile/interview"
+          ],
+          "invoke": [
+            "actions.profile.interview"
+          ]
+        },
+        "examples": {
+          "pl": "poznajmy się",
+          "en": "get to know me"
+        }
+      },
+      {
+        "id": "profile_show",
+        "title": {
+          "pl": "Co o mnie wiesz",
+          "en": "What you know about me"
+        },
+        "via": "action",
+        "action": "profile.show",
+        "surfaces": {
+          "http": [
+            "POST /api/profile/show"
+          ],
+          "invoke": [
+            "actions.profile.show"
+          ]
+        },
+        "examples": {
+          "pl": "co o mnie wiesz",
+          "en": "what do you know about me"
+        }
+      },
+      {
+        "id": "profile_set",
+        "title": {
+          "pl": "Zapisz o mnie",
+          "en": "Write a fact about me"
+        },
+        "via": "action",
+        "action": "profile.set",
+        "surfaces": {
+          "http": [
+            "POST /api/profile/set"
+          ],
+          "invoke": [
+            "actions.profile.set"
+          ]
+        },
+        "examples": {
+          "pl": "zapisz o mnie work.projects=klub szachowy",
+          "en": "save about me work.projects=chess club"
+        }
+      },
+      {
+        "id": "profile_confirm",
+        "title": {
+          "pl": "Potwierdź, co zrozumiałem",
+          "en": "Confirm what I understood"
+        },
+        "via": "action",
+        "action": "profile.confirm",
+        "surfaces": {
+          "http": [
+            "POST /api/profile/confirm"
+          ],
+          "invoke": [
+            "actions.profile.confirm"
+          ]
+        },
+        "examples": {
+          "pl": "potwierdź, co zrozumiałeś o mnie",
+          "en": "confirm what you understood about me"
+        }
+      },
+      {
         "id": "context_receipt",
         "title": {
           "pl": "Co wysłaliśmy do modelu",
