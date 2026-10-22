@@ -610,6 +610,33 @@ const resumed = () => new RegExp(`(mResumedActivity|topResumedActivity)[^\\n]*${
   execFileSync("adb", ["shell", "dumpsys", "activity", "activities"], { encoding: "utf8", maxBuffer: 16 << 20 }));
 
 const serverChecks = [
+  // M1-W2a: an empty chat offers "Poznajmy się"; the interview is a form in a conversation, so the model sees no request
+  ["interview: Poznajmy się -> level -> chip -> 'nie pytaj o zdrowie' -> Tak, no model request", async () => {
+    const before = providerCalls().length;
+    await click("shell-drawer-toggle"); await waitTid("shell-new-chat", 10); await click("shell-new-chat");
+    await waitTid("shell-empty", 15);
+    const shown = await until("the empty chat knows whether to offer the interview", () => page.ev(`${q("shell-empty")}?.getAttribute('data-interview')`).then(v => v && v !== "checking" && v), 30, 300);
+    if (shown !== "shown") throw new Error(`the empty chat does not offer the interview (data-interview=${shown})`);
+    const card = (await textTid("interview-card-title")).trim();
+    await clickSettled("interview-card-start");
+    await waitTid("interview-levels", 30);
+    const levels = await page.ev(`[...document.querySelectorAll('[data-testid="interview-level"]')].map(e=>e.getAttribute('data-level')).join(',')`);
+    await page.ev(`(document.querySelector('[data-testid="interview-level"][data-level="minimal"]')||document.querySelector('[data-testid="interview-level"]')).click()`);
+    await waitTid("interview-chips", 30);
+    const chips = await page.ev(`[...document.querySelectorAll('[data-testid="interview-chip"]')].map(e=>e.getAttribute('data-chip')).join(',')`);
+    await page.ev(`document.querySelector('[data-testid="interview-chip"][data-chip="skip"]')?.click()`);
+    const info = (await until("the line over the interview", () => textTid("interview-info").then(t => t.trim() && t), 20, 300)).replace(/\s+/g, " ").slice(0, 160);
+    await send("nie pytaj o zdrowie");
+    await waitTid("chat-action-proposal", 60);
+    const proposal = (await textTid("chat-action-proposal")).replace(/\s+/g, " ").slice(0, 200);
+    await click("chat-action-proposal-confirm");
+    await waitGone("chat-action-proposal", 60);
+    if (await has("chat-error")) throw new Error("chat-error: " + await page.ev(`${q("chat-error")}.innerText`));
+    shot("interview");
+    const calls = providerCalls().slice(before);
+    if (calls.length) throw new Error(`the model got ${calls.length} request(s) during the interview: ${JSON.stringify(calls.map(c => c.model))}`);
+    return `card "${card}"; levels ${levels}; chips ${chips}; info "${info}"; proposal "${proposal}"; Tak; 0 model requests`;
+  }],
   ["new conversation (drawer -> New chat -> message -> listed)", async () => {
     const before = (await convs()).length;
     await click("shell-drawer-toggle"); await waitTid("shell-new-chat", 10); await click("shell-new-chat");
