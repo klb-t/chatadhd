@@ -1,7 +1,10 @@
-# Kolejka S1 — stan 2026-10-22 13:00 UTC
+# Kolejka S1 — stan 2026-10-22 13:52 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
+
+## Bramka `flake1` ZIELONA (13:48, `1ee7a6c8`, drzewo czyste); K2a wystartowało 13:49 (`wf_a8c61ce6-7fe`, Sonnet): jądro wywiadu „Ty” — pytania PL, poziomy szczegółowości (minimalny/normalny/szczegółowy jako przykłady), uwagi „nie pytaj o …”
+CI 269 (`b1b34f17`) jeszcze w toku (start 12:35, kontrola 13:57). FF `main` ← `1ee7a6c8` (FLAKE-1) po końcu CI 269; potem CI 270, smoke S2 na tym buildzie i APK v2. K2a nie rusza gałęzi chat_engine/ops (to K2b).
 
 ## FLAKE-1 GOTOWE (12:55 UTC, `1ee7a6c8` na `claude/m1-w0`): przyczyna losowego „Ustawienia się nie otwierają” POTWIERDZONA i naprawiona — bramka lokalna `flake1` w toku (start 12:56)
 Agent Sonnet (`wf_155e0bcd-15a`, 39 wywołań, 170 tys. tokenów, 19 min). Hipoteza S1 z analizy statycznej potwierdzona: stary `LayerStack` pamiętał JEDNO oczekiwanie na własne `history.back()` i uznawał popstate za „własny” tylko przez 1000 ms; spóźniony popstate (obciążony WebView/emulator) po otwarciu nowej warstwy był czytany jak „Wstecz”
