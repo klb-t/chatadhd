@@ -15,7 +15,7 @@ import { useDialogFocus } from "../shell/use-dialog-focus";
 import { useLayer } from "../shell/use-layer";
 import { usePresentationFeature } from "./ConversationSourceView";
 import UsagePendingBlock from "./UsagePendingBlock";
-import { modifySentence, profileChoices, sheetModel, stepIds, type ProfileChoice } from "./context-receipt-state";
+import { messageAddress, modifySentence, profileChoices, sheetModel, stepIds, type ProfileChoice } from "./context-receipt-state";
 import { pendingParts } from "../shell/context-strip";
 import { useReceiptWords } from "./use-receipt-words";
 import { loadSelectorProfiles, useContextModify } from "./use-context-modify";
@@ -69,7 +69,7 @@ export default function ContextReceipt({ profileHost, language, convId, msgId, o
     const actions = api.actions;
     if (!answer || answer.kind !== "receipt") { setGraph({ state: "checking" }); return; }
     if (!actions || !onShowInGraph) { setGraph({ state: "no", answer: "no_navigator" }); return; }
-    actions.graphNavigate({ focus: `msg:${requestId}`, perspectives: [SENT_PERSPECTIVE], hops: 1, limit: 1, lang: language })
+    actions.graphNavigate({ focus: messageAddress(requestId), perspectives: [SENT_PERSPECTIVE], hops: 1, limit: 1, lang: language })
       .then(() => { if (alive) setGraph({ state: "yes" }); })
       .catch(failure => { if (alive) setGraph({ state: "no", answer: failure instanceof Error ? failure.message : String(failure) }); });
     return () => { alive = false; };
@@ -162,7 +162,7 @@ export default function ContextReceipt({ profileHost, language, convId, msgId, o
               {answer.kind === "receipt" && (
                 <button type="button" data-testid="receipt-show-in-graph" disabled={graph.state !== "yes"}
                   data-graph={graph.state} aria-describedby="receipt-show-in-graph-reason"
-                  onClick={() => { if (graph.state === "yes") onShowInGraph?.(`msg:${requestId}`, [SENT_PERSPECTIVE]); }}>{t("action.show_in_graph")}</button>
+                  onClick={() => { if (graph.state === "yes") onShowInGraph?.(messageAddress(requestId), [SENT_PERSPECTIVE]); }}>{t("action.show_in_graph")}</button>
               )}
             </div>
             {answer.kind === "receipt" && graph.state !== "yes" && (

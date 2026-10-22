@@ -219,6 +219,14 @@ export function sheetModel(receipt: ContextReceipt, t: ShellT, language: string)
   };
 }
 
+/** The address the graph gives a message. The database id "m_<hex>" is "msg:<hex>" there (graph_sources.pack: db_prefix "m_" -> address_prefix
+ *  "msg:"); "msg:m_<hex>" is no node (measured 2026-10-22: the kernel answered "no node at ..." and the button stayed disabled). An address
+ *  that already has the graph form is kept. */
+export function messageAddress(id: string): string {
+  if (id.startsWith("msg:")) return id;
+  return `msg:${id.startsWith("m_") ? id.slice(2) : id}`;
+}
+
 /** The line under an answer: "Kontekst: Loom (preset) · pozycji: 12 · ~1240 tok. — zobacz"; without a receipt, the missing word in its place. */
 export function lineText(receipt: ContextReceipt | null, t: ShellT, language: string): string {
   if (!receipt) return t("line", { summary: t("missing") });
