@@ -659,6 +659,31 @@ const serverChecks = [
     if (!next) throw new Error(`the strip does not say what the next message gets: "${strip}"`);
     return `Szerzej -> ${kind}: "${said}"; strip "${strip}"; model sheet "${prov}"`;
   }],
+  // M1-K1c-3b: "Pokaż w grafie" in Co wysłaliśmy opens the navigator on the request with the perspective sent_to_model;
+  // the sent rows carry a mark, a derived row's card says it is derived; Back closes the card, then the navigator
+  ["context: Pokaż w grafie opens the record of the request in the navigator", async () => {
+    await waitTid("context-line-open", 30);
+    await page.ev(`[...document.querySelectorAll('[data-testid="context-line-open"]')].pop().click()`);
+    await until("the sheet with the receipt", () => page.ev(`${q("context-receipt")}?.getAttribute('data-state')`).then(v => v === "receipt"), 30, 300);
+    const graph = await until("the graph's answer for the button", () => page.ev(`${q("receipt-show-in-graph")}?.getAttribute('data-graph')`).then(v => v && v !== "checking" && v), 30, 300);
+    if (graph !== "yes") throw new Error(`Pokaż w grafie is off (${graph}): "${(await textTid("receipt-show-in-graph-reason")).replace(/\s+/g, " ").slice(0, 200)}"`);
+    await clickSettled("receipt-show-in-graph");
+    const nav = await until("the navigator on the request", () => page.ev(`(()=>{const n=${q("graph-navigator")};return n&&/sent_to_model/.test(n.getAttribute('data-perspectives')||'')?[n.getAttribute('data-focus'),n.getAttribute('data-perspectives')].join(' / '):''})()`), 30, 300);
+    await waitTid("nav-rows", 30);
+    const sent = await countTid("nav-sent");
+    const derivedRows = await page.ev(`document.querySelectorAll('[data-testid="nav-rows"] li[data-derived="true"]').length`);
+    let card = "no derived row";
+    if (derivedRows > 0) {
+      await page.ev(`document.querySelector('[data-testid="nav-rows"] li[data-derived="true"] .gnav-more').click()`);
+      await waitTid("card-derived-note", 20);
+      card = (await textTid("card-derived-note")).replace(/\s+/g, " ").slice(0, 200);
+    }
+    shot("receipt-graph");
+    await m1Reset();
+    if (await has("graph-navigator")) throw new Error("Back left the navigator open");
+    if (sent < 1) throw new Error(`the navigator on ${nav} marks no row as sent`);
+    return `focus/perspectives ${nav}; ${sent} rows marked sent; ${derivedRows} derived; card "${card}"; Back closed card and navigator`;
+  }],
   ["chat command: przetłumacz -> proposal -> confirm", async () => {
     await send("Przetłumacz tę rozmowę na niemiecki");
     await waitTid("chat-action-proposal", 90);
