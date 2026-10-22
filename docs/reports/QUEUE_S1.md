@@ -1,7 +1,14 @@
-# Kolejka S1 — stan 2026-10-22 07:40 UTC
+# Kolejka S1 — stan 2026-10-22 07:55 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
+
+## K1c-2 GOTOWE (07:48 UTC, `e0f7c670`; po scaleniu z `main` `568afce9` na `claude/m1-w0`): perspektywa „wysłane do modelu” działa w jądrze — bramka lokalna `k1c2` w toku (start 07:50)
+2 agenci Sonnet (`wf_d8dbcfc0-f3f`, 154 wywołań, 420 tys. tokenów, 41 min): A) źródło `receipt` w `perspectives.cpp` + `projection_receipt.cpp`: zapisany paragon narysowany jako graf (wiadomość → pozycje, waga = tokeny, pominięte jako druga relacja `left_out_of_model`;
+elementy prawdziwe to adresy `msg:`/`memory:`, zbiorcze to węzły pochodne `sent:<id>:<ref>`; nic nie jest zapisywane do `nodes`/`links`); paragon bez śladu = pusty graf + „brak śladu”, nie błąd. B) paragon wymienia pamięć i graf PER ELEMENT (id węzła pamięci, id wiadomości, `via`, głębokość), udziały tokenów sumują się dokładnie do sumy;
+tekst żądania bajt w bajt ten sam (`select_context_detailed` / `get_active_context_detailed` tylko dodatkowo); nad `context_receipt_max_bytes` wraca do zbiorczych pozycji (`elements_collapsed`). Treść węzłów NIE trafia do paragonu (tylko typ/rola). Brak nowej trasy API.
+**Luki (do K1c-3a, jądro):** `graph.navigate` z perspektywą `sent_to_model` i fokusem `msg:` nie rysuje jeszcze linków paragonu (działa `perspectives.show`); `graph.card` nie zna adresów `sent:`; akcja `perspectives.show` nie deklaruje `msg_id`/`label_chars` w katalogu. Potem K1c-3b (web: przycisk „Pokaż w grafie” + e2e).
+FF `main` dopiero po zielonej bramce `k1c2` I po końcu CI 266 (≈ 09:10; przed FF merge `origin/main`).
 
 ## CI 264 (`51684e78`) = SUCCESS (07:20, 91 min, wszystkie 4 joby) → APK w budowie; `main` = `efb31fcf` (K1c-1 + `drive.mjs` od S2, FF S2 o 07:38; bieg CI 265 na `b15180c8` anulowany), CI 266 (id 39741867510) w toku
 `package.yml` run 39741779475 (ref main → sha `51684e78`, arm64-v8a Release + serwer + first_steps) wystartował 07:37 — APK dla właściciela z commitu z zielonym CI (zawiera W1a/W1b/W1c); kontrola 08:18.
