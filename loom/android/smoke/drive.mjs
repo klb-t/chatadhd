@@ -765,27 +765,22 @@ const serverChecks = [
     if (focus) throw new Error(`the navigator opened on "${focus}", not at the root; rows: ${rows}`);
     return `root rows: ${rows}`;
   }],
-  // K2c-2: ⋮ › Ty lists the parts of the person (subgraph:self/…) with counts; a part opens its slots
-  ["Ty: ⋮ › Ty shows the parts with counts; the first part opens its rows", async () => {
+  // W2b-1: ⋮ › Ty is MeView: sections with counts; a section opens rows with an evidence chip and a provenance line (as e2e m1-me)
+  ["Ty: ⋮ › Ty shows the sections with counts; a section opens rows with a chip and 'Skąd'", async () => {
     await openMenu("me");
-    // the navigator keeps its perspectives between openings: "sent to the model" from the Pokaż w grafie step leaves Ty empty
-    const left = await until("the navigator", () => page.ev(`${q("graph-navigator")}?.getAttribute('data-perspectives')`).then(v => v === null ? false : v || "none"), 30, 300);
-    if (left !== "none") {
-      await clickSettled("nav-bar-perspective"); await waitTid("nav-perspective-none", 10); await click("nav-perspective-none");
-      await until("no perspective", () => page.ev(`${q("graph-navigator")}?.getAttribute('data-perspectives')||''`).then(v => v === ""), 15, 300);
-      await m1Reset(); await openMenu("me");
-    }
-    await until("Ty's rows", () => page.ev(`document.querySelectorAll('[data-testid="nav-rows"] .gnav-row-main').length`), 30, 300)
-      .catch(async e => { throw new Error(`${e.message} || on screen: ${await m1Visible()}`); });
-    const parts = await page.ev(`[...document.querySelectorAll('[data-testid="nav-rows"] .gnav-row-main')].map(b=>b.dataset.testid.replace('nav-row-','')+' '+(b.innerText||'').replace(/\\s+/g,' ').slice(0,40)).slice(0,6)`);
-    const first = await page.ev(`(()=>{const b=[...document.querySelectorAll('[data-testid="nav-rows"] .gnav-row-main')].find(b=>/subgraph:self/.test(b.dataset.testid)&&b.dataset.hasChildren!=='false');return b?b.dataset.testid:''})()`);
-    if (!first) { const screen = await m1Visible(); await m1Reset(); throw new Error(`no part subgraph:self/… with children under Ty: ${parts.join(' | ')} || on screen: ${screen}`); }
-    await clickSettled(first);
-    await until("the part's rows", () => page.ev(`${q("graph-navigator")}?.getAttribute('data-focus')||''`).then(f => f && first.includes(f) && f), 30, 300);
-    const slots = await page.ev(`[...document.querySelectorAll('[data-testid="nav-rows"] .gnav-label')].slice(0,6).map(e=>e.innerText).join(' | ')`);
-    shot("ty-part");
+    await until("MeView", () => has("me-view"), 30, 300).catch(async e => { throw new Error(`${e.message} || on screen: ${await m1Visible()}`); });
+    const heads = await page.ev(`[...document.querySelectorAll('[data-testid^="me-section-subgraph:"]')].filter(e=>!/body|rows/.test(e.dataset.testid)).map(e=>({a:e.dataset.testid.replace('me-section-',''),t:(e.querySelector('.disclosure-head')?.innerText||'').replace(/\\s+/g,' ').trim()}))`);
+    if (!heads.length) { const screen = await m1Visible(); await m1Reset(); throw new Error(`no sections in MeView || on screen: ${screen}`); }
+    // the first section that has rows (a count above 0 in its head), else the first one
+    const pick = heads.find(h => /[1-9]/.test(h.t)) || heads[0];
+    await page.ev(`(()=>{const h=document.querySelector('[data-testid="me-section-${pick.a}"] .disclosure-head');if(h&&h.getAttribute('aria-expanded')!=='true')h.click()})()`);
+    await until("the section's rows or its empty line", () => page.ev(`!!document.querySelector('[data-testid="me-section-rows-${pick.a}"], [data-testid="me-section-body-${pick.a}"] [data-testid="me-section-empty"]')`), 30, 300);
+    const rows = await page.ev(`[...document.querySelectorAll('[data-testid="me-section-rows-${pick.a}"] > li')].slice(0,3).map(li=>[li.querySelector('[data-testid="me-row-label"]')?.innerText, li.querySelector('[data-testid="me-row-chip"]')?.innerText, (li.querySelector('[data-testid="me-row-provenance"]')?.innerText||'').replace(/\\s+/g,' ').slice(0,60)].join(' / '))`);
+    shot("ty-me");
     await m1Reset();
-    return `${left !== "none" ? `perspective left on from before: ${left} (cleared); ` : ""}parts: ${parts.join(' | ')}; ${first.replace('nav-row-','')} -> ${slots}`;
+    if (/[1-9]/.test(pick.t) && !rows.length) throw new Error(`the section "${pick.t}" has a count but no rows`);
+    if (rows.some(r => r.split(' / ')[1] === undefined || r.split(' / ')[1] === '')) throw new Error(`a row without an evidence chip: ${rows.join(' | ')}`);
+    return `sections: ${heads.map(h => h.t).join(' | ')}; "${pick.t}" -> ${rows.join(' | ') || "empty (no entries yet)"}`;
   }],
   // G1: "Co tu widzę?" on the navigator opens a help text
   ["graph: ⋮ › Graf › 'Co tu widzę?' opens the help", async () => {
