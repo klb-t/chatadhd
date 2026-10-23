@@ -618,7 +618,7 @@ std::string trim_typed(std::string t) {
 // K2b-4: the words are read in the languages of the preset (Env::match_languages; the language of the conversation first, so a word that two
 // languages share means what it means in the conversation's), whatever the language of the conversation: the person may type in another
 // language than the one the screen is in. The reply is in e.lang either way.
-std::string control_op(const Env& e, const std::string& text) {
+std::string control_op_impl(const Env& e, const std::string& text) {
   const std::string typed = trim_typed(e.fold(text));
   if (typed.empty() || !e.words.is_object()) return std::string();
   Json present = Json::object();
@@ -680,6 +680,8 @@ Result<Reply> op_status(const Env& e, const Json& args) {
 }
 
 }  // namespace
+
+std::string control_op(const Env& e, const std::string& text) { return control_op_impl(e, text); }
 
 static Result<Reply> dispatch(const Env& e, const Json& args, const std::string& op);
 

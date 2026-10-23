@@ -74,6 +74,8 @@ bool matched(const Json& result, const std::string& rule) {
   for (const auto& id : result["matched"]) if (id == rule) return true;
   return false;
 }
+// A refusal as InvalidArgument (never a crash when the call succeeds by mistake).
+bool is_invalid(const Result<Json>& r) { return !r && r.error().code == Errc::InvalidArgument; }
 Json apply_options(Json extra = Json::object()) {
   Json o{{"apply", true}, {"id", "remark/1"}, {"time", "2000-01-02T00:00:00Z"}};
   for (const auto& [k, v] : extra.items()) o[k] = v;
@@ -497,9 +499,9 @@ TEST_SUITE("onboarding") {
     CHECK(remark(s, "nie pytaj o zdrowie", "pl", only_en)["matched"].empty());
     CHECK(remark(s, "nie pytaj o zdrowie", "en", Json{{"match_languages", Json::array()}})["matched"].empty());  // an empty list reads nothing - and says so (match_languages: [])
     // a value that is none of these is refused, never turned into a guess
-    CHECK(s.apply_remark("x", "en", Json{{"match_languages", "bogus"}}).error().code == Errc::InvalidArgument);
-    CHECK(s.apply_remark("x", "en", Json{{"match_languages", 7}}).error().code == Errc::InvalidArgument);
-    CHECK(s.apply_remark("x", "en", Json{{"match_languages", Json::array({"pl", 7})}}).error().code == Errc::InvalidArgument);
+    CHECK(is_invalid(s.apply_remark("x", "en", Json{{"match_languages", "bogus"}})));
+    CHECK(is_invalid(s.apply_remark("x", "en", Json{{"match_languages", 7}})));
+    CHECK(is_invalid(s.apply_remark("x", "en", Json{{"match_languages", Json::array({"pl", 7})}})));
     // the negator is looked up in the language of the pattern that matched: "nie" negates a Polish phrase, not an English one, and "not" the reverse
     const Json level{{"level", "normal"}};
     CHECK(remark(s, "nie wystarczy", "en", level)["matched"].empty());
@@ -524,8 +526,9 @@ TEST_SUITE("onboarding") {
     CHECK(matched(remark(s, "frag nicht nach gesundheit", "pl"), "never.health"));
     CHECK(matched(remark(s, "genug", "pl", level), "level.less"));
     CHECK(remark(s, "nicht genug", "pl", level)["matched"].empty());  // the German negator, in German
-    CHECK(unwrap(s.apply_remark("x", "en"))["match_languages"] == Json::array({"en", "de", "pl"}));
-    CHECK(unwrap(s.apply_remark("x", "pl"))["match_languages"] == Json::array({"pl", "de", "en"}));
+    CHECK(unwrap(s.apply_remark("x", "en"))["match_languages"] == Json::array({"en", "pl", "de"}));  // the conversation's first, then the order of the pack
+    CHECK(unwrap(s.apply_remark("x", "pl"))["match_languages"] == Json::array({"pl", "en", "de"}));
+    CHECK(unwrap(s.apply_remark("x", "de"))["match_languages"] == Json::array({"de", "en", "pl"}));
     CHECK(remark(s, "genug", "pl", Json{{"level", "normal"}, {"match_languages", Json::array({"pl", "en"})}})["matched"].empty());
     CHECK(matched(remark(s, "genug", "pl", Json{{"level", "normal"}, {"match_languages", Json::array({"de"})}}), "level.less"));
     CHECK(remark(s, "genug", "pl", Json{{"level", "normal"}, {"match_languages", "conversation"}})["matched"].empty());

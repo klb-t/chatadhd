@@ -39,6 +39,10 @@ struct Reply {
   Json data;
 };
 
+// K2b-4: the operation a whole message stands for when it is exactly one of the control words of env.words in a language of the preset
+// env.match_languages (the language of the conversation first), else "". Pure: nothing is read from the database or written.
+std::string control_op(const Env& env, const std::string& text);
+
 Result<Reply> interview(const Env& env, const Json& args);  // op: start|answer|say|next|review|skip|decline|never|status
 Result<Reply> show(const Env& env, const Json& args);       // read only
 Result<Reply> set(const Env& env, const Json& args);        // gated: confirm:profile.set
