@@ -5,8 +5,8 @@
  "sources": {
   "owner": {
    "path": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
-   "sha256": "297dd4c1b89cd3b77ddad0283f9514b1a06ba2cdcbad51ae62052794971b1d4e",
-   "lines": 786
+   "sha256": "97fbf490dad3e77ccf907891fa25cfcc3c61360d2ab96dc57c9e8b61ae1020c6",
+   "lines": 791
   },
   "slowa": {
    "path": "docs/architecture/SLOWA_WLASCICIELA_2026-10-16.md",
@@ -3810,6 +3810,58 @@
    ]
   },
   {
+   "id": "s_5a8666c3f7e4",
+   "aliases": [
+    "R68"
+   ],
+   "kind": "requirement",
+   "title": "Move the coordinator to GCP: code there and deploy at once; prepare for the move, possibly tomorrow",
+   "date": "2026-10-23",
+   "theme": "owner_requirements",
+   "theme_inferred": false,
+   "understanding": {
+    "state": "none"
+   },
+   "quotes": [
+    {
+     "text": "właśnie a ja zapomniałem że miałem cię przenieść bezpośrednio na gcp tam byś sobie kodził i od razu deployował. trzeba będzie, nie? Przygotuj się może na przeprowadzkę? na jutro?",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:773",
+     "ref": null,
+     "attr": [],
+     "lead": null,
+     "secondary": false
+    }
+   ],
+   "sense": null,
+   "summary": null,
+   "restatement": [
+    {
+     "text": "Właściciel przypomina, że miał przenieść sesję koordynatora na GCP (kodowanie i natychmiastowy deploy w jednym miejscu) i pyta, czy to konieczne i czy przygotować przeprowadzkę na jutro. Kontekst: dwa restarty kontenera przez dysk (23.10), CI 2 h, emulator w GH Actions.",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:775"
+    }
+   ],
+   "commentary": [],
+   "status": null,
+   "gap_text": null,
+   "evidence": [],
+   "next_step": null,
+   "refs": [],
+   "supersedes": [],
+   "superseded_by": [],
+   "supersession_notes": [],
+   "tags": [],
+   "heading_note": "owner, 2026-10-23",
+   "sources": [
+    {
+     "role": "owner",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:772-775"
+    }
+   ],
+   "files": [
+    "owner"
+   ]
+  },
+  {
    "id": "s_18ec73967a7b",
    "aliases": [
     "owner:decision-rebuild-don-t-recover"
@@ -3825,7 +3877,7 @@
    "quotes": [
     {
      "text": "\"nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane\"",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:773",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:778",
      "ref": null,
      "attr": [],
      "lead": null,
@@ -3837,7 +3889,7 @@
    "restatement": [
     {
      "text": "Recovered versions (`history/chatadhd_v0.8.3`, `history/chatadhd_v0.9.0`) and\nthe historical report are sources of requirements, ideas and data assets\n(e.g. `film_structure.json`), and real ground truth for self-discovery tests —\nnot code to merge. Everything is rebuilt in Loom with tests.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:775-778"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:780-783"
     }
    ],
    "commentary": [],
@@ -3854,7 +3906,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:772-778"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:777-783"
     }
    ],
    "files": [
@@ -3880,7 +3932,7 @@
    "restatement": [
     {
      "text": "`workbench_mockup_2026-09-26.webp`: dockable/floating panels (conversation\nlist, active conversation, knowledge graph with active context window, project\nstructure with dimmed high-confidence auto-completable nodes, artifact views\nfor music/video with timeline + storyboard, video player, execution\nenvironment with agent), multi-format ingestion, Loom SDK at the centre.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:781-785"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:786-790"
     }
    ],
    "commentary": [],
@@ -3897,7 +3949,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:780-785"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:785-790"
     }
    ],
    "files": [

@@ -769,6 +769,11 @@ Zgłoszenia z telefonu po APK v2: import bez załączników w jednej rozmowie; �
 
 Na Androidzie zobaczył w „Kontekście” wybór z pól wyboru (checkboxy) — zasmuciło go to jako atrapa sprzeczna z filozofią (bez makiet, placeholderów, fałszywek, tymczasowych mostków). Kontekst wywołania API ma wynikać z szerokiego, wielowymiarowego kontekstu (historia, teleologia, perspektywa…); głębokość i szerokość to argumenty opcjonalne: domyślnie wnioskowane z kontekstu, przekazywalne jako parametry bezwzględne albo modyfikujące.
 
+## R68 — Move the coordinator to GCP: code there and deploy at once; prepare for the move, possibly tomorrow (owner, 2026-10-23)
+> właśnie a ja zapomniałem że miałem cię przenieść bezpośrednio na gcp tam byś sobie kodził i od razu deployował. trzeba będzie, nie? Przygotuj się może na przeprowadzkę? na jutro?
+
+Właściciel przypomina, że miał przenieść sesję koordynatora na GCP (kodowanie i natychmiastowy deploy w jednym miejscu) i pyta, czy to konieczne i czy przygotować przeprowadzkę na jutro. Kontekst: dwa restarty kontenera przez dysk (23.10), CI 2 h, emulator w GH Actions.
+
 ## Decision — rebuild, don't recover
 > "nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane"
 

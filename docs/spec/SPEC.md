@@ -5,13 +5,13 @@ Ten plik jest **wygenerowany** z `docs/spec/spec.json` poleceniem `python3 tools
 
 Status pochodzi z pliku luk i jest **obserwacją z podanej daty**, nie ograniczeniem.
 
-Pozycji razem: **491**.
+Pozycji razem: **492**.
 
 | Status (z LUKI) | liczba |
 |---|---|
 | częściowo | 210 |
 | jest | 151 |
-| bez statusu (nie ma w LUKI) | 108 |
+| bez statusu (nie ma w LUKI) | 109 |
 | brak | 16 |
 | nieaktualne | 5 |
 | sprzeczne | 1 |
@@ -19,7 +19,7 @@ Pozycji razem: **491**.
 | Rodzaj | liczba |
 |---|---|
 | remark | 367 |
-| requirement | 67 |
+| requirement | 68 |
 | philosophy | 36 |
 | statement | 10 |
 | decision | 4 |
@@ -28,13 +28,13 @@ Pozycji razem: **491**.
 
 | Rozumienie (R61) | liczba |
 |---|---|
-| none | 488 |
+| none | 489 |
 | proposed | 3 |
 
 | W których plikach | liczba |
 |---|---|
 | LUKI + SLOWA | 379 |
-| rejestr R/D | 74 |
+| rejestr R/D | 75 |
 | SLOWA | 34 |
 | LUKI | 4 |
 
@@ -54,7 +54,7 @@ Pozycji razem: **491**.
 | Proces i współpraca | 67 |
 | Pozostałe | 33 |
 | Uzupełnienia (wypowiedzi bez numeru) | 10 |
-| Rejestr wymagań R/D | 74 |
+| Rejestr wymagań R/D | 75 |
 | bez tematu | 3 |
 
 ## Filozofia
@@ -587,8 +587,9 @@ Pozycji razem: **491**.
 - `s_432987447e8c` **R65** — Graph screens after an import: attachments missing, chat sentences about the graph not understood, a moving cobweb of three nodes, no 3D/alpha/dimensions, texts that say nothing; are the guidelines collected? — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L755)
 - `s_b554d8b8de19` **R66** — Was the workbench only for tests? Present a plan with perspectives: when the functionality, when the interface — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L760)
 - `s_d70418b3948e` **R67** — No mock-ups, placeholders, fakes or temporary bridges - only full functionality; the context of an API call is inferred from the wide, multi-dimensional context (history, teleology, perspective...); depth and width are optional arguments, inferred by default, passable as absolute or modifying parameters — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L766)
-- `s_18ec73967a7b` **owner:decision-rebuild-don-t-recover** — Decision — rebuild, don't recover — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L772)
-- `s_223e1568b3b9` **owner:ui-reference** — UI reference — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L780)
+- `s_5a8666c3f7e4` **R68** — Move the coordinator to GCP: code there and deploy at once; prepare for the move, possibly tomorrow — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L772)
+- `s_18ec73967a7b` **owner:decision-rebuild-don-t-recover** — Decision — rebuild, don't recover — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L777)
+- `s_223e1568b3b9` **owner:ui-reference** — UI reference — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L785)
 
 ## Bez tematu
 
