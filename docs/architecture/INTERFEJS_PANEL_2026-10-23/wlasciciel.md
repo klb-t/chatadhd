@@ -213,3 +213,79 @@ Do kąta ekonomii i kanałów:
    „stop” z telefonu ma dotrzeć do obu?
 5. Digest W9 i liczniki W1: generowane statycznie po każdej zmianie (dziś `spec_html`) czy liczone na żywo z bazy strony —
    koszt, opóźnienie, co gdy baza strony niedostępna?
+
+## §6 Po dyskusji (2026-10-23)
+
+Przeczytane: `koordynator.md` (K1–K9) i `ekonomia.md` (E1–E10). Niżej tylko to, co zmienia mój projekt: co biorę, co odrzucam
+albo osłabiam (filozofia / dowód / koszt), gdzie jest prawdziwy konflikt do jednej decyzji, i teza po poprawce. Wszystko dalej
+to presety (R83, R84); fakty datowane 23.10.
+
+### 6.1 Co biorę i dlaczego
+
+| Skąd | Co biorę | Dlaczego (z mojego kąta) |
+|---|---|---|
+| K7 | **Zapis biegu jako dane, linie statusu jako RENDER** zdarzeń started / finished / building / failed / original_ideas | To jest ŹRÓDŁO liczników W1 i strumienia W7, którego mój projekt nie miał: dziś licznik „zrobione od Twojej wizyty” musiałby być liczony z prozy QUEUE. Jego lista z 00:1x (CLAUDE.md „Thread style”) jest schematem zdarzeń, nie prośbą o styl. Dowód kosztu obu walut: 37/60 commitów to księgowość Fable. |
+| K3 | **Pakiet kontekstu jako lista odwołań z hashem**, w tym `spec:<id>` przez `spec.py cite --full` | Pomiar koordynatora: `spec:` w 0/21 briefów — jego słowa SĄ danymi od pierwszej sekundy (W2), ale żaden agent ich nie czyta, tylko moje parafrazy. Bez K3 znacznik W4 „to przykład” nie ma gdzie wylądować u agenta. Jego przykład z R90 („całą filozofię mu zapodać”) = jedna instancja pakietu, zgodnie z „przypominam przykład to jest”. |
+| K9 (pyt. 2) | **Jedna tabela słów, zasiana jego słownikiem**, dwa rendery: telefon (W8) i warsztat (makra K9) | Koordynator pyta, jakich słów on używa — odpowiedź jest w cytatach: „stop” (R89), „wolna ręka” (R89), „rób to co wiesz” (R75), „podkręć” (R62), „nie gadaj tyle” (CLAUDE.md), „odpal” (R90), „idę spać” (R75), „co pamiętasz” (R73). Dwie tabele słów = dwa źródła błędów; jeden pack, pole `render`. |
+| K6 | **Operator na tanim modelu wykonuje `if_silent` po `ask_after`** i zapisuje jego dotknięcia | W3 („milczenie = zadeklarowany skutek”) bez wykonawcy to obietnica; tura koordynatora na to kosztuje ≈ 0,28 mln kontekstu (R89 §4.2), a jego „Zatwierdzam” nie wymaga osądu. Warunek z mojego kąta (6.2 p. 6): między jego dotknięciem a zapisem nie stoi model. |
+| K5 | **Warunki wstępne jako dane z powodem i datą** (dysk ≥ 5 GB, jeden build) | Ta sama klasa, co mój „stop” z kosztem (W8) i gaśnięcie VM (E5): polityka z pokazanym skutkiem, nie wiedza plemienna. Przenoszę kształt `{check, why, since}` na gesty: `{gesture, effect, cost, reversal, since}`. |
+| E5 | **Mapa miejsc i usług** jako wiersz liczników W1 („miejsca: 3 żyją · 1 śpi · 2 nie postawiono”) z rozwinięciem | Jego pytania z R90 („czy ogarniesz stamtąd wszystko?”, „Masz podgląd na wszystkie sesje, nie?”, „nie pamiętam czy ageds też ma serwer?”) to dokładnie pytania do tabeli miejsc, na które dziś odpowiada tura Fable. Zamyka moje pyt. 4 do ekonomii. Wyłączanie VM po 30 min = jego pieniądze → pytanie W3 z liczbą i `if_silent: nie podtrzymywać` (zgodne z E5). |
+| E3 | **Licznik PRZED startem** (`preflight`: rola→model, pkt, okno, miejsce, co przekroczy) | To jest źródło liczby na moim „stop” („zatrzymać X: 14 min, ≈ 0,4 pkt?”) i na każdej pozycji „czeka na Ciebie” z klasą kosztu odwrotu. Bez E3 W8 pokazuje koszt zmyślony. Dowód: poprawki check-before-use na Fable przez brak `model` (ledger 11:23). |
+| E9 | **Routing klasa × pora × budżet jako dane** zamiast mojego „trybu nocnego” | Mój W8 „idę spać” był TRYBEM (flaga); u ekonomii to wiersz tabeli routingu. Wiersz jest lepszy: nic do wyłączania, odwrót = usunięcie wiersza, a jego słowo („idę spać”, „wróciłem”) tylko przestawia wartość `hour`/`mode` w danych. Usuwam z W8 pojęcie trybu; zostaje słowo → zmiana wiersza. |
+| E4 (pyt. 3) | **Jego liczba („46 %”) jako próbka `source: owner`**: rozpoznawana w jego zdaniach przez sekretarza (regex „% tygodniowego”) i POTWIERDZANA jednym dotknięciem; pole na stronie jako drugie wejście | R71 („żebym znów nie musiał szukać”): nie każę mu szukać pola. Ale sam regex bez potwierdzenia to interpretacja jego słów bez niego — potwierdzenie w kolejce W3 z `if_silent: przyjmij` po czasie. |
+| E7 (pyt. 5) | **Jeden kształt `handover`** dla teleportu, karty pakietu, rekordu sekretarza — **i dla mojego W9** | W9 „Od Twojego wyjścia” to przekazanie zmiany: od nocnej zmiany (koordynator + agenci) do niego. Czwarta instancja tego samego rekordu; render dla niego = liczniki, dla sesji = karta. Oryginalne w dyskusji; zapisać w syntezie. |
+| E2 (część) | **Pomiar słów/dobę do niego** jako licznik W1 („dziś do Ciebie: N słów”) i baza do zmierzenia z QUEUE/czatu 21–23.10 | Moja teza (każda linia musi zmieniać licznik) bez liczby jest hasłem; E2 daje jej miarę. Biorę licznik i pomiar; budżet jako filtr odrzucam (6.2 p. 1). |
+
+### 6.2 Co odrzucam albo osłabiam i dlaczego
+
+1. **E1/E2 jako filtr tego, co widzi.** „Każda linia obciąża budżet” — tak, jako LICZNIK i advisory dla koordynatora; **nie** jako
+   mechanizm, który linii nie pokaże. Filtr wybierający za niego, co zobaczy, to ZASADA WŁAŚCICIELA łamana po cichu (ukrywa). Preset:
+   wszystko widoczne, zwinięte wg routingu E9, z wierszem „N pozycji zwiniętych — pokaż”; budżet przestawia on jednym słowem („mniej”,
+   „pokazuj wszystko”), nie edycją `attention_plan.json`. Plik może istnieć, ale jego wartości ustawiają słowa W8.
+2. **E1 paragon przy każdej pozycji w JEGO perspektywie** (odpowiedź na pyt. 1 ekonomii). Dla niego liczba przy każdej linii to szum
+   i fałszywa precyzja (SLOWA:66 „nie bierz bezwzględnych liczb za bardzo serio”). Preset: koszt pojawia się **przy geście** (zanim
+   zatrzyma, zatwierdzi start, podtrzyma VM) jako klasa/zakres, i jako jedna suma dnia; paragony per węzeł istnieją jako dane i są o
+   dotknięcie dalej. Jednostka jego uwagi: nie wymyślam jednej — zapisuję to, co obserwowalne bez nadzoru (słowa pokazane, dotknięcia,
+   czas do gestu); „minuty” to wyprowadzony preset. Odwrót: włączyć paragon per pozycja w jego perspektywie.
+3. **E2/E9 pora wnioskowana z czasów wizyt** (pyt. 2 ekonomii). Wnioskowanie z `localStorage` to datowana obserwacja, która może
+   ZAPROPONOWAĆ wiersz routingu („widzę, że czytasz o 00–01 i 08–10 — ustawić noc 01–07? Tak/Nie”); nigdy nie przestawia routingu
+   sama. Powód: cicha decyzja o tym, co widzi i kiedy — ukrywa. Przełącznik to jego słowo lub jawny preset.
+4. **K9 „Widok Warsztat” jako ekran dla niego** (pyt. 3 koordynatora). Warsztat jest koordynatora i operatora. Dla niego biegi to
+   jeden wiersz liczników („w toku: 2 biegi · 14 min · ≈ 0,4 pkt”) i wariant zapytania W5 („co robisz / co biegnie” → gałąź biegów).
+   Nie drugi ekran, którego ma się nauczyć; ten sam silnik. Nic nie jest przed nim ukryte — jest o jedno rozwinięcie dalej.
+5. **K „confirm: owner” jako pauza biegu do jego odpowiedzi** (np. `apk.release`). Osłabiam do W3: pytanie niesie odpowiedź domyślną,
+   `ask_after`, `cost_to_reverse` i `if_silent`; bieg czeka na niego **tylko** w klasach z CLAUDE.md (jego pieniądze poza budżetem,
+   jego dane u nowego dostawcy, ×10) — reszta to decyzja wstępna z odwrotem (R75 „ostrożnie podejmij wstępną”). Koordynator sam
+   to wpisuje w ryzykach; tu staje się decyzją.
+6. **K6 operator „z routingiem po cechach” na JEGO wejściu.** Routing po cechach jest dla parafraz i korekt złożonych (R88
+   „żonglerka modelami”), nie dla jego dotknięcia ani jego cytatu. Zasada z W2: cytat nietykalny, model dokłada tylko warstwę odczytu;
+   „Zatwierdzam” → `spec.py approve` bez modelu po drodze. Koordynator tego nie łamie, ale K6 tego nie mówi — ma mówić.
+7. **K1 „kto może uruchomić” jako podzbiór dla właściciela** (pyt. 2 koordynatora). R90: „wyeksponować wszystkie narzędzia” — wszystko
+   widoczne i uruchamialne przez niego z kartą E3 przed startem; preset KOLEJNOŚCI na pierwszym ekranie: to, o co kiedykolwiek
+   prosił (R71, R90 „odpal”, R62 „podkręć”), reszta o dotknięcie dalej. Zbiór „kto może” zostaje otwarty, ale żaden element nie
+   jest dla niego niedostępny z definicji.
+8. **E6 w moim kącie — tylko advisory.** Zlecenia na VM/webhooki to nie moja działka; z jego strony liczy się jedno: wiersz „w toku”
+   pokazuje bieg zegarowy z „maszyna może zgasnąć o HH:MM” (E5). Nic więcej z E6 nie trafia na jego ekran.
+
+### 6.3 Prawdziwe konflikty — po jednej decyzji każdy
+
+| # | Konflikt | Strony | Moja propozycja (preset, odwracalna) |
+|---|---|---|---|
+| 1 | **Jedna skrzynka czy dwie.** Koordynator chce kolejki `routine_requests`; ja używam istniejącej `spec_inbox` (W2–W4); ekonomia routuje wiadomości klasą. | K6/K9 vs W2–W4 vs E9 | Jedna skrzynka: jego gest = datowana wypowiedź z polem `class` (statement / approval / correction / marker / routine_request / sample — lista otwarta); konsumenci (sekretarz, operator, koordynator) filtrują po klasie. Dwie skrzynki = dwa stany „czeka”, których on nie rozróżni. |
+| 2 | **Widoczność paragonu dla niego.** E1: przy każdej pozycji; ja: przy geście i jako suma dnia. | E1 vs W1/W8 | Preset „przy geście + suma dnia”, per urządzenie; „przy każdej pozycji” jako preset do włączenia. Mierzyć: czy otwiera paragony (rzadko = preset dobry). |
+| 3 | **Kto wykonuje `if_silent` po terminie** i czy operator (K6) to ten sam proces, co sekretarz. | K6 vs sekretarz (R88 v1, działa) vs tura koordynatora | Jedno zadanie zaplanowane (sekretarz = operator v1), rozszerzony prompt: wykonuje `if_silent` dla klas o niskim koszcie odwrotu, resztę eskaluje. Drugie zadanie dopiero, gdy pomiar pokaże, że jedno nie nadąża. Koszt: zero nowych biegów. |
+| 4 | **Dom zapisu biegu a świeżość liczników.** K7: commit per bieg na gałęzi dokumentów; ekonomia (pyt. 7): `runs.jsonl` bez commitu, zbiorczo; moje W1/W9 potrzebują zdarzeń od razu. | K7 vs E vs W1 | Zdarzenie biegu idzie **od razu do bazy strony** (ta sama kolekcja, co skrzynka — 0 tokenów, liczniki żywe), do repo zbiorczo co N biegów (preset). Bieg niezacommitowany ginie z maszyną (R68) — stąd oba miejsca, nie jedno. |
+| 5 | **Zasięg „stop” z telefonu.** Ja: pauza z kosztem; E5: miejsca (S1 chmura, S1-VM, S2…); K1: `interrupt` dostępne per maszyna, nie sprawdzone na VM. | W8 vs E5 vs K1 | „stop” adresuje MIEJSCA: lista tego, co drogie biegnie, per miejsce, z kosztem; preset: pauza wszędzie, odpowiedź jednym dotknięciem per wiersz. Warunek: mapa miejsc (E5) i katalog narzędzi (K1) istnieją wcześniej; do tego czasu „stop” = dzisiejsze zachowanie + zapis, kto i kiedy. |
+| 6 | **Co jedzie do agenta jako filozofia** (pyt. 5 moje, K3). `CLAUDE.md` całe (≈ 39 tys. tokenów, 7,3 % wydatku — nasze-02) vs wybrane węzły spec wg tematu. | K3 vs E10 | Oba, mierzone: `CLAUDE.md` jako prefiks wspólny (trafienie cache) + `spec:` wg tematu pakietu w części własnej; miara = znaleziska check-before-use na pakiet przed/po. Nie decyzja z góry, pomiar na następnym pakiecie. |
+
+### 6.4 Teza po dyskusji
+
+Jego słowa są danymi od pierwszej sekundy i **docierają do agentów dosłownie** (`spec:` w pakiecie kontekstu, dziś 0/21), a jego
+czytanie jest wyjątkiem, **mierzonym** (słowa/dobę do niego jako licznik, nigdy jako filtr). Trzy gesty zostają — wrzucić myśl,
+dotknąć raz, zobaczyć różnicę — ale dostają fundament z dwóch pozostałych kątów: licznik ma ŹRÓDŁO (zapis biegu K7 i mapa miejsc
+E5, nie proza QUEUE), gest ma CENĘ pokazaną przed nim tylko wtedy, gdy odwrót kosztuje (preflight E3, nie paragon przy każdej
+linii), a jego powrót po przerwie jest **czwartą instancją `handover`** (obok teleportu, karty pakietu i rekordu sekretarza) —
+nocna zmiana przekazuje mu zmianę. Jedna skrzynka dla wszystkich jego gestów z klasą jako polem; jedna tabela słów zasiana jego
+słownikiem, renderowana dwa razy (telefon, warsztat); pora i uwaga jako wiersze routingu, które przestawia jego słowo albo
+jawny preset — nigdy ciche wnioskowanie. Każda linia, którą ma przeczytać, nadal musi zmieniać jakiś licznik; teraz wiadomo, który
+i skąd ten licznik bierze liczbę.
