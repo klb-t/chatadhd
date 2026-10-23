@@ -202,6 +202,28 @@
         "loom/tests/test_graph_entry.cpp",
         "loom/web/tests/graph-entry"
       ]
+    },
+    {
+      "path": "graph/dimensions.pack",
+      "schema": "loom.dimensions/1",
+      "sha256": "8215ee11be5b8e131b7142d68a9420beb0cc4fe00833149fb416dd9a0557b1ff",
+      "domain": "graph_address",
+      "role": "configuration",
+      "validation_refs": [
+        "loom/tests/test_address.cpp",
+        "loom/tests/test_dimensions.cpp"
+      ]
+    },
+    {
+      "path": "graph/address_syntax.pack",
+      "schema": "loom.address_syntax/1",
+      "sha256": "a5ad42c559f04023455b17357afa62e6601b61df25eed6826c1c5c3e5a62d82f",
+      "domain": "graph_address",
+      "role": "configuration",
+      "validation_refs": [
+        "loom/tests/test_address.cpp",
+        "loom/tests/test_dimensions.cpp"
+      ]
     }
   ]
 }
