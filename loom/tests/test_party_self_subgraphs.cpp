@@ -76,6 +76,7 @@ struct Person {
     unwrap(rt->memory().add_node("Stara notatka sprzed zapisywania pochodzenia"));
     NodeOptions topic;
     unwrap(rt->db().create_node("kuchnia", "topic", topic));
+    unwrap(rt->db().create_node("Jan Kowalski", "person", topic));  // a person the analysis found: a contact, an inference
   }
 };
 
@@ -136,6 +137,7 @@ TEST_SUITE("party_self_subgraphs") {
     CHECK(child(you, "subgraph:self/memory")->at("count") == 2);
     CHECK(child(you, "subgraph:self/units")->at("count") == 1);
     CHECK(child(you, "subgraph:self/interests")->at("count") == 1);
+    CHECK(child(you, "subgraph:self/network")->at("count") == 1);
     CHECK(child(you, "subgraph:self/policies")->at("count").get<int>() >= 1);
     CHECK(child(you, "subgraph:self/preferences")->at("count").get<int>() >= 4);
     // the memory part offers to remember, the units part to define a unit (the catalogue's own titles, no ids)
@@ -236,6 +238,13 @@ TEST_SUITE("party_self_subgraphs") {
     CHECK(action_of(u, "units.forget").at("args").at("kind") == "project");
     const Json home = p.navigate("area:context_projects");
     CHECK(child(home, "unit:project/remont"));
+    // a contact is a person the analysis found: it hangs under the network as an inference, never as something you said
+    const Json network = p.navigate("subgraph:self/network");
+    REQUIRE(network.at("children").size() == 1);
+    CHECK(network.at("children").at(0).at("label") == "Jan Kowalski");
+    CHECK(network.at("children").at(0).at("kind") == "person");
+    CHECK(network.at("children").at(0).at("evidence").at("class") == "inferred");
+    CHECK(network.at("children").at(0).at("address").get<std::string>().rfind("party:", 0) == 0);
     const Json interests = p.navigate("subgraph:self/interests");
     REQUIRE(interests.at("children").size() == 1);
     CHECK(interests.at("children").at(0).at("evidence").at("class") == "inferred");
@@ -286,7 +295,7 @@ TEST_SUITE("party_self_subgraphs") {
         for (const auto& a : card.at("actions")) CHECK(a.at("label").get<std::string>() != a.at("id").get<std::string>());
       }
       // the kinds under You: the parts, the interview's fields, the preferences, the rules, the interests, the units and the notes
-      for (const char* k : {"person_subgraph", "profile_slot", "preference", "privacy_rule", "interest", "unit", "memory_note"}) CHECK(kinds.count(k) == 1);
+      for (const char* k : {"person_subgraph", "profile_slot", "preference", "privacy_rule", "interest", "unit", "memory_note", "person"}) CHECK(kinds.count(k) == 1);
     }
   }
 
@@ -295,7 +304,8 @@ TEST_SUITE("party_self_subgraphs") {
     const Json pack = unwrap(onboarding::builtin_pack());
     const auto layers = unwrap(onboarding::DefaultLayers::create(pack));
     Json table = unwrap(layers.resolve("profile.subgraphs")).at("value");
-    for (auto& e : table.at("subgraphs"))
+    Json& parts = table["subgraphs"];
+    for (auto& e : parts)
       if (e.at("id") == "memory") e["hidden"] = true;
     const Json state = unwrap(layers.dispatch(Json{{"op", "override"}, {"key", "profile.subgraphs"}, {"value", table}}));
     projection::Env env = projection::env_of(*p.rt, Json{{"lang", "pl"}});
@@ -312,12 +322,15 @@ TEST_SUITE("party_self_subgraphs") {
     Person p;
     Json pack = unwrap(onboarding::builtin_pack());
     for (auto& e : pack.at("entries"))
-      if (e.at("key") == "profile.subgraphs")
-        for (auto& s : e.at("value").at("subgraphs")) {
+      if (e.at("key") == "profile.subgraphs") {
+        Json& value = e["value"];
+        Json& parts = value["subgraphs"];
+        for (auto& s : parts) {
           s.erase("members");
           s.erase("actions");
           s.erase("actions_here");
         }
+      }
     const auto layers = unwrap(onboarding::DefaultLayers::create(pack));
     projection::Env env = projection::env_of(*p.rt, Json{{"lang", "pl"}});
     env.profile = Json{{"pack", pack}, {"layers", layers.snapshot()}, {"fields", Json::object()}};
