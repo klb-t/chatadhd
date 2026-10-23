@@ -5,8 +5,8 @@
  "sources": {
   "owner": {
    "path": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
-   "sha256": "ab762357885fc9a5ccebdce176ea487ce2b46a7d210ba40d0b00a3c6f32455e0",
-   "lines": 853
+   "sha256": "be6a89ef315d19c6559628c24fd6a967cd1e78641745f1130fece46020094890",
+   "lines": 858
   },
   "slowa": {
    "path": "docs/architecture/SLOWA_WLASCICIELA_2026-10-16.md",
@@ -4586,6 +4586,64 @@
    ]
   },
   {
+   "id": "s_bd1b2ff5b6ea",
+   "aliases": [
+    "R80"
+   ],
+   "kind": "requirement",
+   "title": "Reprezentacje węzła (zdjęcie: bitmapa i rekonstrukcja 3D renderowana na bieżąco, niedeterministyczna, ale zawsze adresowalna); brak renderera = problem ustalany z użytkownikiem; agent sprawdza wszystko sam, a pyta z gotowym, ważonym zestawem kryteriów",
+   "date": "2026-10-23",
+   "theme": "owner_requirements",
+   "theme_inferred": false,
+   "understanding": {
+    "state": "none"
+   },
+   "quotes": [
+    {
+     "text": "gra powinien mieć reprezentację zdjęcia zarówno bitmapę jak i dla naszego przykładu bo się zajmujemy również grafiką 3D video i tak dalej ale to jest wymaganie na dalsze etapy mało pilne że ze zdjęcia też powinna być rekonstrukcja 3D może być na bieżąco renderowana nie deterministyczna może być ale zawsze adresowalna. w przypadku braku renderera spełniającego kryteria wywala problem i z użytkownikiem ustala metodę rozwiązania. oczywiście tutaj można się odwołać do abstrakcji eksperymentów wielotorowych, może użytkownik sobie zażyczyć żeby nie odpowiadać za dużo na pytania Ale za to agent niech wszystko sprawdzi sam zanim zapyta i pytając ma już przygotowany do wyboru i lub modyfikacji zestaw kryteriów zoptymalizowanych według zestawów warzonych kryteriów wciągniętych z profilu użytkownika i charakterystyki zadania",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:840",
+     "ref": null,
+     "attr": [],
+     "lead": null,
+     "secondary": false
+    }
+   ],
+   "sense": null,
+   "summary": null,
+   "restatement": [
+    {
+     "text": "(„gra” = graf, ASR; 08:5x UTC; właściciel sam oznacza: wymaganie na dalsze etapy, mało pilne.) (1) Węzeł taki jak zdjęcie ma w grafie wiele reprezentacji: bitmapę i pochodne — np. rekonstrukcję 3D (projekt obejmuje też grafikę 3D, wideo itd.), renderowaną na bieżąco; może być niedeterministyczna, ale zawsze ADRESOWALNA (adres z R74–R77 wskazuje reprezentację wraz z parametrami jej wyprowadzenia i pochodzeniem, więc da się do niej wrócić). (2) Gdy żaden renderer nie spełnia kryteriów: nie cicha porażka ani domysł — zgłoszony problem i metoda rozwiązania ustalona z użytkownikiem. (3) Odwołanie do abstrakcji eksperymentów wielotorowych (kilka metod równolegle, porównanie). (4) Dyscyplina pytań agenta (ogólna, także dla koordynatora, por. R61): użytkownik może nie chcieć odpowiadać na wiele pytań — agent najpierw sprawdza wszystko sam, a gdy pyta, ma gotowy zestaw kryteriów do wyboru i/lub modyfikacji, zoptymalizowany według ważonych zestawów kryteriów z profilu użytkownika i charakterystyki zadania. Liczba pytań, wagi, zestawy = presety w danych.",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:842"
+    }
+   ],
+   "commentary": [],
+   "status": null,
+   "gap_text": null,
+   "evidence": [],
+   "next_step": null,
+   "refs": [
+    "s_0f005a5e98e8",
+    "s_c3819e63f872",
+    "s_90982d5337ef",
+    "s_aeb05ddf56b2",
+    "s_daef127d5ef9"
+   ],
+   "supersedes": [],
+   "superseded_by": [],
+   "supersession_notes": [],
+   "tags": [],
+   "heading_note": "owner, 2026-10-23",
+   "sources": [
+    {
+     "role": "owner",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:839-842"
+    }
+   ],
+   "files": [
+    "owner"
+   ]
+  },
+  {
    "id": "s_18ec73967a7b",
    "aliases": [
     "owner:decision-rebuild-don-t-recover"
@@ -4601,7 +4659,7 @@
    "quotes": [
     {
      "text": "\"nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane\"",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:840",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:845",
      "ref": null,
      "attr": [],
      "lead": null,
@@ -4613,7 +4671,7 @@
    "restatement": [
     {
      "text": "Recovered versions (`history/chatadhd_v0.8.3`, `history/chatadhd_v0.9.0`) and\nthe historical report are sources of requirements, ideas and data assets\n(e.g. `film_structure.json`), and real ground truth for self-discovery tests —\nnot code to merge. Everything is rebuilt in Loom with tests.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:842-845"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:847-850"
     }
    ],
    "commentary": [],
@@ -4630,7 +4688,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:839-845"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:844-850"
     }
    ],
    "files": [
@@ -4656,7 +4714,7 @@
    "restatement": [
     {
      "text": "`workbench_mockup_2026-09-26.webp`: dockable/floating panels (conversation\nlist, active conversation, knowledge graph with active context window, project\nstructure with dimmed high-confidence auto-completable nodes, artifact views\nfor music/video with timeline + storyboard, video player, execution\nenvironment with agent), multi-format ingestion, Loom SDK at the centre.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:848-852"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:853-857"
     }
    ],
    "commentary": [],
@@ -4673,7 +4731,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:847-852"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:852-857"
     }
    ],
    "files": [
