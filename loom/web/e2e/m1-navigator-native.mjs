@@ -536,6 +536,11 @@ try {
       await page.getByTestId(`shell-menu-${menuId}`).tap();
       await page.locator(`[data-testid="graph-navigator"][data-focus="${focus}"]`).waitFor();
       await page.getByTestId("nav-loading").waitFor({ state: "detached" });
+      // W2b-1: Ty is the page of the person (me-view); the generic rows of the same focus wait under a closed 'Wszystkie wiersze' - open them, the assertions below are about those rows
+      if (await page.getByTestId("me-view").count()) {
+        if (!(await page.getByTestId("nav-rows").isVisible())) await page.getByTestId("nav-list-disclosure").locator(".disclosure-head").first().tap();
+        await page.getByTestId("nav-rows").waitFor({ state: "visible" });
+      }
       const expected = await navigate({ focus });
       await shot(`m1-navigator-${menuId}`);
       const crumbs = await page.locator('[data-testid^="nav-crumb-"]').evaluateAll(els => els.map(el => el.textContent));
