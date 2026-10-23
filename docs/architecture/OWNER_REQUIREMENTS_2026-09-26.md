@@ -871,6 +871,11 @@ Domknięcie R81–R84 (09:2x UTC): to, co nazwałem pokrętłem (jedna wartość
 
 Domknięcie R85 (09:3x UTC; „grafię” = grafie, ASR): wielowymiarowa dana preferencji nie jest osobnym magazynem ustawień, tylko WĘZŁEM GRAFU; jej „wymiary” to bogate krawędzie (z atrybutami: waga, pochodzenie, data, kontekst, rozdzielczość, kto ustawił) do innych węzłów — rodzajów zadań, jednostek, osób, rozmów, interakcji, perspektyw. Wzrost rozdzielczości = nowe lub doprecyzowane krawędzie; odczyt w potrzebnej rozdzielczości = przejście po krawędziach z wagami; presety = krawędzie z pochodzeniem „preset”. Spójne z tym, co już jest: łańcuch zakresów preferencji (instalacja → osoba → jednostki → rozmowa, K2c-2) i chip „kto ustawił” to już węzły i krawędzie; K3 i R81–R85 tylko to uogólniają (graf jest hubem).
 
+## R87 — Pokrętło jako kontrolka: można je zdefiniować i wyrenderować, przypisać mu węzeł grafu, a ten węzeł — polu jakiejś konfiguracji (owner, 2026-10-23)
+> ale skoro wspomniałeś o pokrętle No to oczywiście musi być możliwość zdefiniowanie i wyrenderowania pokrętła przypisania do niego węzła w grafie i tegoż do jakiegoś pola jakieś konfiguracji
+
+Uzupełnienie R85/R86 (09:3x UTC): skoro pokrętło padło jako słowo — oczywiście kontrolka „pokrętło” (jak każda inna: suwak, przełącznik, pole, gest, głos…) musi być definiowalna i renderowalna jako dane; kontrolkę przypisuje się do węzła grafu (R86: preferencja = węzeł), a węzeł — do pola jakiejś konfiguracji (ustawienie jądra, parametr przepływu, atrybut krawędzi). Trzy osobne, luźno sprzężone rzeczy: reprezentacja (kontrolka), węzeł (dana z pochodzeniem), wiązanie z polem (gdzie wartość działa) — każde wymienialne i wielokrotne (jeden węzeł → wiele kontrolek i wiele pól; jedna kontrolka → inny węzeł po przepięciu). Pokrętło jest przykładem kontrolki; rodzaje kontrolek to lista otwarta (R84).
+
 ## Decision — rebuild, don't recover
 > "nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane"
 
