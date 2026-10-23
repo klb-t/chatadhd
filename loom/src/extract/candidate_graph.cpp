@@ -1,5 +1,6 @@
 #include "loom/knowledge_candidate_graph.h"
 
+#include <array>
 #include <algorithm>
 #include <cmath>
 #include <functional>
@@ -227,7 +228,8 @@ class Validator {
       source_bytes += o["text"].get_ref<const std::string&>().size();
     }
     need(source_bytes <= limits.at("max_source_bytes"), "budget", "observations", "source byte budget exceeded");
-    for (auto pair : {std::make_pair("entities", &existing_entities), std::make_pair("claims", &existing_claims)}) {
+    const auto existing_namespaces = std::array{std::make_pair("entities", &existing_entities), std::make_pair("claims", &existing_claims)};
+    for (auto pair : existing_namespaces) {
       for (const auto& record : packet[pair.first]) {
         need(record.is_object() && record.contains("id") && record["id"].is_string() && !str(record["id"]).empty() && str(record["id"])[0] != '@', "packet_id", pair.first, "existing record needs nonlocal ID");
         need(pair.second->emplace(str(record["id"]), &record).second, "duplicate_id", pair.first, "duplicate existing ID");
@@ -253,7 +255,8 @@ class Validator {
     for (auto key : {"entity_drafts", "claim_drafts", "roots", "coverage", "unknowns"}) need(bundle[key].is_array(), "shape", key, "expected list");
     need(bundle["entity_drafts"].size() <= limits.at("max_entities") && bundle["claim_drafts"].size() <= limits.at("max_claims"), "budget", "bundle", "draft count limit exceeded");
     std::set<std::string> handles;
-    for (auto pair : {std::make_pair("entity_drafts", &entities), std::make_pair("claim_drafts", &claims)}) {
+    const auto draft_namespaces = std::array{std::make_pair("entity_drafts", &entities), std::make_pair("claim_drafts", &claims)};
+    for (auto pair : draft_namespaces) {
       for (const auto& d : bundle[pair.first]) {
         need(d.is_object() && d.contains("handle") && handle(d["handle"]), "handle", pair.first, "invalid local handle");
         auto h = str(d["handle"]);
