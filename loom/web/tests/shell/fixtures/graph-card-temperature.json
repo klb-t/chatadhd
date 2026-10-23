@@ -99,7 +99,9 @@
           "label": "Grupa grup",
           "role": "none",
           "active": true,
-          "meaning": "jednostka nadrzędna, która zbiera kilka zespołów"
+          "meaning": "jednostka nadrzędna, która zbiera kilka zespołów",
+          "unit_level": true,
+          "no_unit": true
         },
         {
           "level": "team",
@@ -234,7 +236,9 @@
       "label": "Grupa grup",
       "role": "none",
       "active": true,
-      "meaning": "jednostka nadrzędna, która zbiera kilka zespołów"
+      "meaning": "jednostka nadrzędna, która zbiera kilka zespołów",
+      "unit_level": true,
+      "no_unit": true
     },
     {
       "level": "team",
