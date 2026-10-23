@@ -1,5 +1,20 @@
 # Przeprowadzka koordynatora na GCP: przygotowanie (2026-10-23)
 
+## Jedna komenda (R71)
+
+Na świeżej VM (Ubuntu 24.04), przez ssh, jako zwykły użytkownik z sudo:
+
+```
+curl -fsSL https://raw.githubusercontent.com/klb-t/chatadhd/claude/chataddhd-cpp-loom-core-IRGRN/tools/vm_oneliner.sh | bash -s -- --android --emulator --bashrc
+```
+
+Skrypt `tools/vm_oneliner.sh` stawia pakiety, klonuje repo do `~/chatadhd`, uruchamia `tools/bootstrap_dev_vm.sh`
+z podanymi flagami, instaluje Claude Code i wypisuje trzy kroki, które wymagają człowieka: `claude auth login`
+(kod z przeglądarki), `gh auth login --web` (pushe), `claude remote-control` w tmux (pytania Enable/Trust). Po scaleniu
+gałęzi do `main` adres skraca się do `.../klb-t/chatadhd/main/tools/vm_oneliner.sh`. Oba skrypty są nieprzetestowane na
+prawdziwej VM (2026-10-23) — pierwszy raz z `--dry-run`.
+
+
 Pakiet OPS1. To jest **przygotowanie**: nic nie zostało uruchomione na GCP (ta sesja nie ma żadnych
 poświadczeń GCP), skrypt `tools/bootstrap_dev_vm.sh` nie był uruchomiony na prawdziwej VM, żadnej strony
 GCP nie czytałem. Ty uruchamiasz polecenia jutro; ten dokument mówi które, w jakiej kolejności i co jest
