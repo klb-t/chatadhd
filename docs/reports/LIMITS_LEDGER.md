@@ -138,3 +138,5 @@ czy trzymać linię tygodniową.
 **23.10 00:2x — plan tempa podniesiony na prośbę właściciela** (56 % pt 20:00, 80 % sob 08:00, 92 % pon 08:00); jego słowa: „podkręć trochę”, „działaj śmiało”, „jak zmieniam model na lepszy to domyślnie możesz poluzować troszkę wymagania”. Start SPEC1 mimo „CZEKAJ” (reguła odstępu) — trzeci agent w toku (D1 Fable, K2b-4, SPEC1) = preset 3.
 
 **2026-10-23 00:22 UTC — koszt R57 (badanie + sceptyk + 2 projekty Fable, z 3 restartami):** 93,8 mln rów. ≈ 4,3 pkt; same projekty Fable 35,2 + 25,1 mln (≈ 1,6 + 1,1 pkt), przerwany zalążek 5,6 mln. Preset `cost_per_package.fable` = 1,5 pkt. Badacze Sonnet 3,8–7,2 mln każdy.
+
+**Próbka 2026-10-23 07:50 UTC (rate_limit_event sesji S1):** tydzień 52 % (z nadwyżką 61 %; nadwyżka wyłączona: out_of_credits), okno 5 h 3 % (reset 10:00 UTC); reset tygodnia 2026-10-27 00:00 UTC. `pace.py --used 52`: cel na teraz 47,9 % (+4,1 pkt), następny punkt 56 % o 20:00 — tempo ok, odstęp od ostatniego startu (06:50) za krótki do 08:21. Od próbki właściciela 00:12 (46 %) zużyte 6 pkt w 7,6 h: K2c-2-fix, G1b, W2b-1 ×2, OPS1, SPEC1, G4, R57-fix, trzy bramki.

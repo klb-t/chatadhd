@@ -28,8 +28,8 @@ Pozycji razem: **495**.
 
 | Rozumienie (R61) | liczba |
 |---|---|
-| none | 492 |
-| proposed | 3 |
+| none | 487 |
+| proposed | 8 |
 
 | W których plikach | liczba |
 |---|---|
@@ -586,11 +586,11 @@ Pozycji razem: **495**.
 - `s_64e0a794ea00` **R64** — Windows (panels): dockable, floating, maximizable; the standard interface is one maximized window; the union of functionality and the style alternatives of popular apps — _bez statusu_ · rozumienie: proposed · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L750)
 - `s_432987447e8c` **R65** — Graph screens after an import: attachments missing, chat sentences about the graph not understood, a moving cobweb of three nodes, no 3D/alpha/dimensions, texts that say nothing; are the guidelines collected? — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L755)
 - `s_b554d8b8de19` **R66** — Was the workbench only for tests? Present a plan with perspectives: when the functionality, when the interface — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L760)
-- `s_d70418b3948e` **R67** — No mock-ups, placeholders, fakes or temporary bridges - only full functionality; the context of an API call is inferred from the wide, multi-dimensional context (history, teleology, perspective...); depth and width are optional arguments, inferred by default, passable as absolute or modifying parameters — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L766)
-- `s_5a8666c3f7e4` **R68** — Move the coordinator to GCP: code there and deploy at once; prepare for the move, possibly tomorrow — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L772)
-- `s_9d68f9c43c49` **R69** — Depth and width as arguments of a function: a context selector that takes a graph node corresponding to ... (continuation of R67; the sentence breaks off) — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L777)
-- `s_13a549d5ba3f` **R70** — The context selector takes the node of the reply being generated (message dimension, position -1 to the last user prompt), sees what converges in all perspectives, minds the cache, appends modifications at the end, builds from the most general to the most specific (project > branch > module > function); the flow is called by the user, the agent or the experimenter (retry with wider/deeper context), and narrows on a topic change when no return is expected within the cache lifetime — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L783)
-- `s_728a73b626a0` **R71** — Write the bootstrap: one command to paste over ssh (kept in the repo for now), so he does not have to look up all the names again — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L788)
+- `s_d70418b3948e` **R67** — No mock-ups, placeholders, fakes or temporary bridges - only full functionality; the context of an API call is inferred from the wide, multi-dimensional context (history, teleology, perspective...); depth and width are optional arguments, inferred by default, passable as absolute or modifying parameters — _bez statusu_ · rozumienie: proposed · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L766)
+- `s_5a8666c3f7e4` **R68** — Move the coordinator to GCP: code there and deploy at once; prepare for the move, possibly tomorrow — _bez statusu_ · rozumienie: proposed · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L772)
+- `s_9d68f9c43c49` **R69** — Depth and width as arguments of a function: a context selector that takes a graph node corresponding to ... (continuation of R67; the sentence breaks off) — _bez statusu_ · rozumienie: proposed · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L777)
+- `s_13a549d5ba3f` **R70** — The context selector takes the node of the reply being generated (message dimension, position -1 to the last user prompt), sees what converges in all perspectives, minds the cache, appends modifications at the end, builds from the most general to the most specific (project > branch > module > function); the flow is called by the user, the agent or the experimenter (retry with wider/deeper context), and narrows on a topic change when no return is expected within the cache lifetime — _bez statusu_ · rozumienie: proposed · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L783)
+- `s_728a73b626a0` **R71** — Write the bootstrap: one command to paste over ssh (kept in the repo for now), so he does not have to look up all the names again — _bez statusu_ · rozumienie: proposed · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L788)
 - `s_18ec73967a7b` **owner:decision-rebuild-don-t-recover** — Decision — rebuild, don't recover — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L793)
 - `s_223e1568b3b9` **owner:ui-reference** — UI reference — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L801)
 

@@ -3768,7 +3768,18 @@
    "theme": "owner_requirements",
    "theme_inferred": false,
    "understanding": {
-    "state": "none"
+    "state": "proposed",
+    "history": [
+     {
+      "state": "proposed",
+      "by": "koordynator (Fable)",
+      "date": "2026-10-23",
+      "text": "Bez atrap w apce: każdy element na ekranie działa naprawdę albo go nie ma (ukryty, dopóki nie ma czytelnika). Kontekst wysyłany do modelu nie jest wybierany ręcznie checkboxami, tylko wnioskowany z szerokiego, wielowymiarowego kontekstu (historia, cel/teleologia, perspektywa). Głębokość i szerokość to opcjonalne argumenty: domyślnie wnioskowane, przekazywalne jako wartości bezwzględne albo modyfikatory (szerzej/głębiej). Ręczny wybór zostaje jako jedna z konfiguracji, nie jedyny mechanizm."
+     }
+    ],
+    "text": "Bez atrap w apce: każdy element na ekranie działa naprawdę albo go nie ma (ukryty, dopóki nie ma czytelnika). Kontekst wysyłany do modelu nie jest wybierany ręcznie checkboxami, tylko wnioskowany z szerokiego, wielowymiarowego kontekstu (historia, cel/teleologia, perspektywa). Głębokość i szerokość to opcjonalne argumenty: domyślnie wnioskowane, przekazywalne jako wartości bezwzględne albo modyfikatory (szerzej/głębiej). Ręczny wybór zostaje jako jedna z konfiguracji, nie jedyny mechanizm.",
+    "by": "koordynator (Fable)",
+    "date": "2026-10-23"
    },
    "quotes": [
     {
@@ -3820,7 +3831,18 @@
    "theme": "owner_requirements",
    "theme_inferred": false,
    "understanding": {
-    "state": "none"
+    "state": "proposed",
+    "history": [
+     {
+      "state": "proposed",
+      "by": "koordynator (Fable)",
+      "date": "2026-10-23",
+      "text": "Koordynator (ta sesja) ma pracować na maszynie w GCP: tam kodować, budować i od razu wdrażać; przygotować przeprowadzkę na jutro. Przygotowanie zrobione (docs/ops/PRZEPROWADZKA_GCP_2026-10-23.md, tools/vm_oneliner.sh, tools/bootstrap_dev_vm.sh); sama przeprowadzka po Twoim tak/nie o pieniądze i (dla kształtu B) o dane na dysku GCP."
+     }
+    ],
+    "text": "Koordynator (ta sesja) ma pracować na maszynie w GCP: tam kodować, budować i od razu wdrażać; przygotować przeprowadzkę na jutro. Przygotowanie zrobione (docs/ops/PRZEPROWADZKA_GCP_2026-10-23.md, tools/vm_oneliner.sh, tools/bootstrap_dev_vm.sh); sama przeprowadzka po Twoim tak/nie o pieniądze i (dla kształtu B) o dane na dysku GCP.",
+    "by": "koordynator (Fable)",
+    "date": "2026-10-23"
    },
    "quotes": [
     {
@@ -3872,7 +3894,18 @@
    "theme": "owner_requirements",
    "theme_inferred": false,
    "understanding": {
-    "state": "none"
+    "state": "proposed",
+    "history": [
+     {
+      "state": "proposed",
+      "by": "koordynator (Fable)",
+      "date": "2026-10-23",
+      "text": "Głębokość i szerokość kontekstu to argumenty FUNKCJI (selektora kontekstu), nie pola w ustawieniach: opcjonalne, domyślnie wnioskowane, przekazywalne jako wartości bezwzględne albo modyfikujące (R67). Architektura „po staremu”: jedna funkcja, która bierze węzeł grafu i zwraca kontekst."
+     }
+    ],
+    "text": "Głębokość i szerokość kontekstu to argumenty FUNKCJI (selektora kontekstu), nie pola w ustawieniach: opcjonalne, domyślnie wnioskowane, przekazywalne jako wartości bezwzględne albo modyfikujące (R67). Architektura „po staremu”: jedna funkcja, która bierze węzeł grafu i zwraca kontekst.",
+    "by": "koordynator (Fable)",
+    "date": "2026-10-23"
    },
    "quotes": [
     {
@@ -3926,7 +3959,18 @@
    "theme": "owner_requirements",
    "theme_inferred": false,
    "understanding": {
-    "state": "none"
+    "state": "proposed",
+    "history": [
+     {
+      "state": "proposed",
+      "by": "koordynator (Fable)",
+      "date": "2026-10-23",
+      "text": "Selektor kontekstu bierze węzeł grafu odpowiadający generowanej właśnie odpowiedzi (wymiar wiadomości, pozycja −1 względem ostatniego promptu użytkownika), patrzy co się schodzi we wszystkich perspektywach, zna stan pamięci podręcznej modelu (stabilny prefiks, modyfikacje dopisywane na końcu) i buduje kontekst od najogólniejszego do szczegółu (projekt → gałąź → moduł → funkcja). Woła go użytkownik, agent albo eksperymentator; po niewystarczającej odpowiedzi ponawia pytanie z szerszym/głębszym kontekstem; przy zmianie tematu zawęża kontekst dla oszczędności, gdy wiadomo, że powrotu nie będzie w czasie życia pamięci podręcznej. Wszystko konfigurowalne; wartości domyślne to presety."
+     }
+    ],
+    "text": "Selektor kontekstu bierze węzeł grafu odpowiadający generowanej właśnie odpowiedzi (wymiar wiadomości, pozycja −1 względem ostatniego promptu użytkownika), patrzy co się schodzi we wszystkich perspektywach, zna stan pamięci podręcznej modelu (stabilny prefiks, modyfikacje dopisywane na końcu) i buduje kontekst od najogólniejszego do szczegółu (projekt → gałąź → moduł → funkcja). Woła go użytkownik, agent albo eksperymentator; po niewystarczającej odpowiedzi ponawia pytanie z szerszym/głębszym kontekstem; przy zmianie tematu zawęża kontekst dla oszczędności, gdy wiadomo, że powrotu nie będzie w czasie życia pamięci podręcznej. Wszystko konfigurowalne; wartości domyślne to presety.",
+    "by": "koordynator (Fable)",
+    "date": "2026-10-23"
    },
    "quotes": [
     {
@@ -3980,7 +4024,18 @@
    "theme": "owner_requirements",
    "theme_inferred": false,
    "understanding": {
-    "state": "none"
+    "state": "proposed",
+    "history": [
+     {
+      "state": "proposed",
+      "by": "koordynator (Fable)",
+      "date": "2026-10-23",
+      "text": "Jedna komenda do wklejenia przez ssh na świeżą VM: stawia pakiety, klonuje repo, buduje środowisko, instaluje Claude Code i wypisuje kroki wymagające człowieka (logowania, Remote Control); skrypt tymczasowo w repo. Zrobione: tools/vm_oneliner.sh (komenda na górze PRZEPROWADZKA_GCP_2026-10-23.md), nieprzetestowane na prawdziwej VM."
+     }
+    ],
+    "text": "Jedna komenda do wklejenia przez ssh na świeżą VM: stawia pakiety, klonuje repo, buduje środowisko, instaluje Claude Code i wypisuje kroki wymagające człowieka (logowania, Remote Control); skrypt tymczasowo w repo. Zrobione: tools/vm_oneliner.sh (komenda na górze PRZEPROWADZKA_GCP_2026-10-23.md), nieprzetestowane na prawdziwej VM.",
+    "by": "koordynator (Fable)",
+    "date": "2026-10-23"
    },
    "quotes": [
     {
