@@ -1811,3 +1811,12 @@ Niezweryfikowane (dokument to nazywa): wszystkie ceny i nazwy typów GCP (z pami
 Ustalone przy okazji: `claude/m1-w1` ma 1 commit przed `origin`, `claude/r35-android` nie ma gałęzi na `origin` (wypchnąć przed przeprowadzką); `tools/gate.sh` i 21 plików w `tools/workflows` mają na sztywno `/home/user`.
 Decyzje (moje, D1–D7 w dokumencie): VM odtwarza układ `/home/user/…`; preset kształtu; Python 3.11 z `deadsnakes`; Node 22 z archiwum nodejs.org; `--dry-run`; dokument nie wybiera A/B/C. Odwrót: `git revert 2c20caae 4eb8a9f2` (nic innego nie zmieniono); każdy preset zmienia się bez odwołania.
 Nie zrobione: nic na GCP, żadnej strony GCP/GitHub nie czytałem; parametryzacja `gate.sh` pod `$HOME` (mały pakiet OPS2); pytania tak/nie zadaje koordynator po wyborze kształtu.
+
+
+## S1 / R88-v1 — skrzynka decyzji na żywej stronie spec + sekretarz (2026-10-23 09:36 UTC)
+- Co: `tools/spec_html.py` renderuje przy każdej pozycji przyciski decyzji (approve / correct / remark) zapisujące do bazy
+  artefaktu (`spec_inbox`); zadanie zaplanowane „Sekretarz spec” (Sonnet, co godzinę) stosuje wpisy do spec i odświeża stronę.
+- Decyzje (koordynator, R75 — właściciel śpi): sekretarz na Sonnecie (preset; Haiku taniej, ale git+spec wymaga pewności),
+  co godzinę o :23 (preset), nietypowe wpisy eskalowane do S1 wiadomością; słowa właściciela ze skrzynki zapisywane dosłownie.
+- Odwrót: `update_trigger enabled=false`; publikacja strony z `capabilities: {}` wyłącza bazę; `tools/spec_html.py` bez bloku `wireDb`.
+- Nie sprawdzone: pierwszy bieg sekretarza (narzędzia w świeżej sesji), zachowanie przycisków na telefonie w aplikacji Claude.

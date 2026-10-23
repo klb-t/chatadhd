@@ -125,3 +125,15 @@ wypisuje niezaklasyfikowane fragmenty.
   po 16.10 ten pakiet nie robił.
 - Status w `spec.json` nie jest odświeżany: to obserwacja z 2026-10-16. Nowy przegląd luk = nowy plik LUKI i
   zmiana ścieżki w `config.json` (`sources.luki`) albo nowa wersja pliku, potem `build`.
+
+
+## Skrzynka decyzji na żywej stronie (R88 v1, 2026-10-23)
+
+Strona drzewa (`python3 tools/spec.py html`, artefakt https://claude.ai/artifact/MfbrGaubViGGhsp2Z4ZEm7) ma przy każdej
+pozycji przyciski: **Zatwierdzam parafrazę** (gdy parafraza jest w stanie `proposed`/`corrected`), **Popraw swoimi
+słowami** (tekst), **Uwaga / dopisek** (tekst). Każde kliknięcie zapisuje wpis w bazie strony (kolekcja `spec_inbox`:
+`node`, `alias`, `kind` = approve | correct | remark, `text`, `at`, `state` = new). Zadanie zaplanowane **„Sekretarz
+spec”** (świeża sesja na Sonnecie, co godzinę o :23; preset) czyta wpisy `new`, stosuje je przez `spec.py approve /
+correct / add` (tekst właściciela dosłownie), odświeża stronę, robi commit i push na gałąź dokumentów; wpis dostaje
+`state` = applied (z komendą) albo escalated (z powodem) — nietypowe trafiają wiadomością do koordynatora. Czat zostaje
+do dyskusji. Odwrót: wyłączyć zadanie i opublikować stronę bez `capabilities`.

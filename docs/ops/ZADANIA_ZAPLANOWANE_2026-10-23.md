@@ -19,6 +19,11 @@ If nothing changed, say nothing.
 Uwaga: używa narzędzi GitHub (MCP) albo `git fetch origin` — na VM wystarczy `gh auth login` i zwykły git.
 Ostatnia zmiana na gałęziach GPT widziana 2026-10-16; od tego czasu każdy bieg kończył się „bez zmian”.
 
+### „Sekretarz spec (R88)” — cron `23 * * * *` (UTC), ŚWIEŻA sesja na Sonnecie (nie przypięta), od 2026-10-23 09:35
+Treść: w `docs/reports/QUEUE_S1.md` (sekcja „R88 v1”) i w `docs/spec/README.md`; pełny prompt w zadaniu
+`trig_01VyHbcN2o8DQhwKq6D9iNaU` (list_triggers → derived_state.prompt). Czyta `spec_inbox` artefaktu
+https://claude.ai/artifact/MfbrGaubViGGhsp2Z4ZEm7, stosuje `spec.py approve/correct/add`, odświeża stronę, commit+push.
+
 ## Jednorazowe żywe w chwili zapisu (wygasną same)
 - `CI check (main 94872898)` — 08:55 UTC, sesja S1: czy loom.yml na 94872898 zielony → APK v4.
 - `Read android-smoke 32c7a401` — 08:33 UTC, sesja S2 (nie moja): odczyt smoke sterownika.
