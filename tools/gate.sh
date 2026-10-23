@@ -2,6 +2,8 @@
 # Full gate for one checkout: GCC Debug dev build (+server), full CTest with the
 # executed-case guard (verify_ctest.py), JNI smoke, web build + web test scripts.
 # Usage: gate.sh <repo-root> [label]   -> writes $GATE_OUT (default $TMPDIR/gate-<label>)/gate.log, exit 0 iff all green.
+# Duration: 40-90 min on this machine (longer when another worktree builds in parallel) - start it with a 2 h background timeout,
+# a 1 h limit killed gate k2b4 on 2026-10-23 in the middle of the web e2e (the kill shows up as 'Target page ... has been closed').
 # (copied from the session scratchpad into tools/ on 2026-10-21; the lint step is a heuristic report, it does not fail the gate)
 set -uo pipefail
 export CCACHE_BASEDIR=/home/user CCACHE_NOHASHDIR=true CCACHE_DIR=/home/user/.ccache CCACHE_MAXSIZE=12G

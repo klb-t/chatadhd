@@ -1,10 +1,12 @@
-# Kolejka S1 — stan 2026-10-23 02:07 UTC
+# Kolejka S1 — stan 2026-10-23 02:39 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
 
 ## Reguła właściciela R58 (22.10 ≈ 23:40 UTC; wcześniejsze znaczniki „23.10 00:00/00:20” w tym pliku to pomyłka zegara, prawdziwa godzina to 23:3x–23:4x): przykłady są przykładami, silnik obsługuje każdą konfigurację, mała użyteczność = niewiążąca podpowiedź „czy celowe? nie pytać następnym razem”
 Powód: w tabeli planu napisałem „kolor = rodzaj, przezroczystość = pewność, głębia = czas, jak mówiłeś” — to były moje konkretne przypisania podane jak wymaganie i fałszywie przypisane jemu (jego własne słowa: „to jest tylko jedna z konfiguracji, a zakodować trzeba silnik”). Zapisane: `CLAUDE.md` (sekcja „Examples are examples…”), `OWNER_REQUIREMENTS` R58 (cytat dosłowny), `tools/workflows/single-package.js` (reguła w każdym briefie). Zadanie G3 (#30) ma teraz warunki wstępne: (a) skala: punkt odniesienia + odległość ze znakiem, kierunek zależny od drugiej miary, kilka kodowań jednej miary (dziś `view_engine.cpp` ~595–622: tylko `range`/`domain`/`type` i statyczne `invert`); (b) podpowiedź niewiążąca + zapamiętane „celowe, nie pytaj” + wykrycie wyniku zdegenerowanego (nic nie widać). Silnik już nigdy nie odrzuca kodowania (`promoted`/`allowed` z powodami), brakuje pytania i pamięci odpowiedzi.
+
+## Bramka `k2b4` (02:39 UTC): jądro ZIELONE — ctest 258/258 rc=0, strażnik 0, skrypty 0, build webu 0; web-testy przerwane po 60 min MOIM limitem tła (kill w środku `m1-history` — „browser has been closed” to artefakt zabicia, nie błąd); 41 skryptów webu zielonych przed przerwaniem; pozostałe 18 (od `test:m1-history`) biegną teraz osobno (`rest-*.log` w `wp/gate-k2b4`, limit 2 h). Brak osieroconych serwerów. Lekcja w `tools/gate.sh`: bramka trwa 40–90 min, start z limitem 2 h.
 
 ## G4-fix GOTOWE (02:07 UTC, `9e748032`): 17 uwag kontroli zastosowanych (profil stylu per okno jako opcja `profile_layout_fields`; ekran „Połączenie” = rodzaj okna `planned` z obserwacją z datą, nie `not_window`; D18–D20 dopisane; liczba e2e z #warsztat zweryfikowana: 32). Wpis INDEX `S1 / G4`. Dokument gotowy jako brief dla W0–W2 (po zielonej bramce i FF main).
 
