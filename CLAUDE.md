@@ -18,6 +18,17 @@ presets, no invented limits), record the decision and how to reverse it in
 the agreed budget, sending his private data to a new provider, or a product
 direction that contradicts the requirements — and then as a yes/no question.
 
+
+**Before a question (owner, 2026-10-23):** „upewniając się że dobrze rozumiesz to zanim zaczniesz mi
+zadawać pytania, to przeanalizuj twoje zrozumienie w kontekście filozofii. Bo jeśli coś się nie zgadza
+i nie było wyraźnie zaznaczone to najpewniej źle rozumiesz”. So a doubt is first checked against the
+philosophy (everything configurable, defaults are presets, examples are examples, nothing decided for the
+user, the engine covers every configuration): a mismatch that he did not mark explicitly is most likely my
+misunderstanding, and I repair my understanding instead of asking. Only what survives that check — a fact
+only he knows, his money, his private data, a contradiction of a requirement — becomes a question, shown
+together with the analysis that led to it. When the answer would only select one case among possible ones,
+the design covers all cases (R59) and no question is asked.
+
 ## How the owner works: long series of messages (owner, 2026-10-23)
 
 > „możesz też zapisać jako uwagi nt. mojego sposobu pracy, że komunikuje się jak mam czas i wtedy każdą
@@ -31,10 +42,15 @@ presets, reversible):
 - A series is one stream of thought spread over time, not a list of separate orders. Every message is
   recorded durably **at once** (verbatim, with an id: `OWNER_REQUIREMENTS`, later `tools/spec.py add`);
   that is cheap and loses nothing.
-- Expensive stages (Fable design, multi-agent workflows, anything that burns a package) are not started on
-  the first message of a series unless he orders it explicitly; preset: wait until about 15 minutes after his
-  last message, cheap read-only research may start at once. A running agent is never restarted for a
-  correction (waste control 6): the correction is recorded, and applied as an addendum after the agent ends.
+- **Expensive work starts only after approval (owner, 2026-10-23, later message, supersedes the 15-minute
+  timer I had set).** „droga praca, to startujesz po upewnieniu się że dobrze zrozumiałeś, parafrazując
+  wymagania i prosząc o ewentualne korekty i zatwierdzenie”. Expensive = a Fable stage, a multi-agent
+  workflow, any package beyond a trivial fix (preset; cheap and free of approval: read-only checks, gates,
+  log readers, recording his words, small fixes). Procedure: paraphrase the requirement in my own words,
+  mark what is an example, show the philosophy check (below), ask for corrections and approval, record the
+  approved understanding (`understanding` of the spec node), only then start. An approved paraphrase stays
+  valid for the packages that implement it. A running agent is never restarted for a correction (waste
+  control 6): the correction is recorded and applied as an addendum after the agent ends.
 - Replies inside a series are short: what was understood, what was recorded, what changed. The deep dive
   (reminder of the base, then the details, the non-intuitive ones) belongs to a question and to the end of
   a series, as one consolidated answer with the list of what the series changed.
