@@ -41,7 +41,10 @@ jobs:
     # ASan+UBSan, measured: cold build ~25 min + FFI companion ~8 min (run 38528837225: job cancelled at 45 min with
     # only 11 min of Test) + CTest ~80 CPU-minutes (slowest: onboarding_store 350 s, kb_pack 280 s, cli.smoke 495 s).
     # The 45 min job limit is therefore far too small for this leg; the others fit.
-    timeout-minutes: ${{ matrix.preset == 'asan' && 150 || 45 }}
+    # dev (g++), measured 2026-10-23 (run 39959453902 on 5090ab2c): build 2 min + CTest 30 min + JNI + web workbench
+    # (npm ci, build, unit, 60+ e2e scripts) hit the 45 min limit at 12 min of the web step; GitHub reports a job
+    # timeout as "cancelled". The web stage grows with every M1 package, so dev gets 100 (a preset, not a target).
+    timeout-minutes: ${{ matrix.preset == 'asan' && 150 || matrix.preset == 'dev' && 100 || 45 }}
     strategy:
       fail-fast: false
       matrix:
