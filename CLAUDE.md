@@ -105,6 +105,10 @@ philosophy implies, and say what was added. Unless he says a list is closed, it 
   raises a **non-blocking advisory** that says what looks of little use and why (evidence, not a verdict),
   asks whether it is intended, and offers "don't ask next time" (remembered like `declined`, reversible in
   settings; how often to ask, up to never, is a configurable preset).
+- **A number in a list is never the list (owner, 2026-10-23 09:1x: „żadne dwa pokrętła, nie zamykaj list wybranymi nie
+  zawsze reprezentatywnymi przykładami”).** When he names two limits or three settings, writing „two knobs” or „three
+  positions” closes the list; the record says „limits such as …” / „positions such as …”, and the engine takes an open
+  set. His examples may be unrepresentative on purpose; their choice never defines the range.
 - Every agent brief carries this rule (`tools/workflows/single-package.js`).
 - **Scripts and tools too (owner, 2026-10-23 07:5x, first run of the VM bootstrap: it stopped on „skrypt jest pisany pod
   Ubuntu 24.04” while his VM runs 26.04 — „A słyszałeś kiedyś o mojej tzw. filozofii?”).** An observation about the
