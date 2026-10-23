@@ -226,7 +226,7 @@ jest git.
 - **O1.** Odpowiedzi na dwa pytania z §4 (po zobaczeniu liczby z kalkulatora).
 - **O2.** Projekt GCP z rozliczeniami; zalecany budżet z alertami (§3).
 - **O3.** Utworzenie VM o kształcie z §2 (konsola: Compute Engine, utwórz instancję; szkic polecenia niżej).
-- **O4.** Wkleić jedną komendę z §6 na VM; potem pierwsze logowania: Claude Code (interaktywnie) i GitHub (klucz
+- **O4.** Wkleić jedną komendę z początku dokumentu na VM; potem pierwsze logowania: Claude Code (interaktywnie) i GitHub (klucz
   lub token ograniczony do repo).
 - **O5.** (Tylko B) domena z rekordem A na IP VM; porty 80 i 443.
 - **O6.** Powiedzieć „przełączamy”, kiedy bramka na VM jest zielona.
