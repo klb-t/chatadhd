@@ -5,13 +5,13 @@ Ten plik jest **wygenerowany** z `docs/spec/spec.json` poleceniem `python3 tools
 
 Status pochodzi z pliku luk i jest **obserwacją z podanej daty**, nie ograniczeniem.
 
-Pozycji razem: **506**.
+Pozycji razem: **507**.
 
 | Status (z LUKI) | liczba |
 |---|---|
 | częściowo | 210 |
 | jest | 151 |
-| bez statusu (nie ma w LUKI) | 123 |
+| bez statusu (nie ma w LUKI) | 124 |
 | brak | 16 |
 | nieaktualne | 5 |
 | sprzeczne | 1 |
@@ -19,7 +19,7 @@ Pozycji razem: **506**.
 | Rodzaj | liczba |
 |---|---|
 | remark | 367 |
-| requirement | 82 |
+| requirement | 83 |
 | philosophy | 36 |
 | statement | 10 |
 | decision | 4 |
@@ -28,14 +28,14 @@ Pozycji razem: **506**.
 
 | Rozumienie (R61) | liczba |
 |---|---|
-| none | 494 |
+| none | 495 |
 | proposed | 10 |
 | corrected | 2 |
 
 | W których plikach | liczba |
 |---|---|
 | LUKI + SLOWA | 379 |
-| rejestr R/D | 89 |
+| rejestr R/D | 90 |
 | SLOWA | 34 |
 | LUKI | 4 |
 
@@ -55,7 +55,7 @@ Pozycji razem: **506**.
 | Proces i współpraca | 67 |
 | Pozostałe | 33 |
 | Uzupełnienia (wypowiedzi bez numeru) | 10 |
-| Rejestr wymagań R/D | 89 |
+| Rejestr wymagań R/D | 90 |
 | bez tematu | 3 |
 
 ## Filozofia
@@ -601,10 +601,11 @@ Pozycji razem: **506**.
 - `s_a943f67d9f89` **R78** — Przykład abstrakcyjny (nie do realizacji): zdjęcie i stopniowy zoom aż do piany kwantowej — skala jako ciągły wymiar bez granicy — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L829)
 - `s_7fb787bed8cd` **R79** — Zoom to nie ruch: zoom = zakres pola widzenia; szybkość ruchu jest z nim związana (na skali piany kwantowej idziesz długościami Plancka na sekundę) — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L834)
 - `s_bd1b2ff5b6ea` **R80** — Reprezentacje węzła (zdjęcie: bitmapa i rekonstrukcja 3D renderowana na bieżąco, niedeterministyczna, ale zawsze adresowalna); brak renderera = problem ustalany z użytkownikiem; agent sprawdza wszystko sam, a pyta z gotowym, ważonym zestawem kryteriów — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L839)
-- `s_281f9b0d06cf` **R81** — Dwa pokrętła użytkownika: ile inwencji twórczej wolno modelowi przy renderowaniu niepewnych danych i ile mocy obliczeniowej; z nich i z zoomu wyłania się struktura (nie piksele, lecz mikro-, atomowa, subatomowa, kwantowa) — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L844)
+- `s_281f9b0d06cf` **R81** — Granice ustawiane przez użytkownika (przykłady: ile inwencji twórczej wolno modelowi przy niepewnych danych, ile mocy obliczeniowej; lista otwarta, R83); z nich i z zoomu wyłania się struktura (nie piksele, lecz mikro-, atomowa, subatomowa, kwantowa) — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L844)
 - `s_4bbd386eaca6` **R82** — Proste reprezentacje silnik ogarnia na bieżąco sam, o trudniejsze pyta — to standard; użytkownik może zażyczyć sobie, by pytać o wszystko albo o nic — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L849)
-- `s_18ec73967a7b` **owner:decision-rebuild-don-t-recover** — Decision — rebuild, don't recover — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L854)
-- `s_223e1568b3b9` **owner:ui-reference** — UI reference — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L862)
+- `s_80c95f8ca565` **R83** — Żadne „dwa pokrętła”: nie zamykać list wybranymi, nie zawsze reprezentatywnymi przykładami — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L854)
+- `s_18ec73967a7b` **owner:decision-rebuild-don-t-recover** — Decision — rebuild, don't recover — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L859)
+- `s_223e1568b3b9` **owner:ui-reference** — UI reference — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L867)
 
 ## Bez tematu
 

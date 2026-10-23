@@ -5,8 +5,8 @@
  "sources": {
   "owner": {
    "path": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
-   "sha256": "f4599bee30481efecd1c19ac7b358908ce843861e9446baba8985305d99f83cd",
-   "lines": 868
+   "sha256": "8482b3126b154565c700191d487192e540413e05065afa269d1a04e11727834c",
+   "lines": 873
   },
   "slowa": {
    "path": "docs/architecture/SLOWA_WLASCICIELA_2026-10-16.md",
@@ -4649,7 +4649,7 @@
     "R81"
    ],
    "kind": "requirement",
-   "title": "Dwa pokrętła użytkownika: ile inwencji twórczej wolno modelowi przy renderowaniu niepewnych danych i ile mocy obliczeniowej; z nich i z zoomu wyłania się struktura (nie piksele, lecz mikro-, atomowa, subatomowa, kwantowa)",
+   "title": "Granice ustawiane przez użytkownika (przykłady: ile inwencji twórczej wolno modelowi przy niepewnych danych, ile mocy obliczeniowej; lista otwarta, R83); z nich i z zoomu wyłania się struktura (nie piksele, lecz mikro-, atomowa, subatomowa, kwantowa)",
    "date": "2026-10-23",
    "theme": "owner_requirements",
    "theme_inferred": false,
@@ -4670,7 +4670,7 @@
    "summary": null,
    "restatement": [
     {
-     "text": "Najprostsze rozwiązanie R78/R80 (09:0x UTC): użytkownik ustawia DWIE rzeczy — (a) ile inwencji twórczej wolno modelowi, gdy dane są niepewne (od „tylko to, co zmierzone” po „zmyślaj swobodnie”), (b) ile mocy obliczeniowej na to poświęcić — a reszta WYŁANIA SIĘ: z tych dwu ustawień i z samego faktu, że użytkownik zoomuje (pole widzenia maleje, R79), poniżej pikseli pojawia się nie powiększony piksel, lecz wygenerowana mikrostruktura: atomowa, subatomowa, kwantowa. Oba pokrętła to presety w danych, konfigurowalne per węzeł/zadanie/jednostkę; inwencja i jej koszt są widoczne w pochodzeniu reprezentacji (co zmierzone, co wyekstrapolowane, przy jakim ustawieniu). Wzorzec ogólny: zamiast pytać o każdą decyzję renderowania, użytkownik ustawia granice swobody i budżet, a silnik wyprowadza resztę (por. R80 pkt 4).",
+     "text": "Najprostsze rozwiązanie R78/R80 (09:0x UTC): użytkownik ustawia GRANICE — jego przykłady: ile inwencji twórczej wolno modelowi, gdy dane są niepewne (od „tylko to, co zmierzone” po „zmyślaj swobodnie”), ile mocy obliczeniowej na to poświęcić; lista otwarta (R83: „żadne dwa pokrętła”), np. czas, koszt, dokładność, zaufanie, prywatność — a reszta WYŁANIA SIĘ: z tych ustawień i z samego faktu, że użytkownik zoomuje (pole widzenia maleje, R79), poniżej pikseli pojawia się nie powiększony piksel, lecz wygenerowana mikrostruktura: atomowa, subatomowa, kwantowa. Każda granica to preset w danych, konfigurowalne per węzeł/zadanie/jednostkę; inwencja i jej koszt są widoczne w pochodzeniu reprezentacji (co zmierzone, co wyekstrapolowane, przy jakim ustawieniu). Wzorzec ogólny: zamiast pytać o każdą decyzję renderowania, użytkownik ustawia granice swobody i budżet, a silnik wyprowadza resztę (por. R80 pkt 4).",
      "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:847"
     }
    ],
@@ -4680,6 +4680,7 @@
    "evidence": [],
    "next_step": null,
    "refs": [
+    "s_80c95f8ca565",
     "s_a943f67d9f89",
     "s_bd1b2ff5b6ea",
     "s_7fb787bed8cd"
@@ -4726,7 +4727,7 @@
    "summary": null,
    "restatement": [
     {
-     "text": "Domknięcie R80/R81 (09:1x UTC): preset „pytaj” ma trzy położenia — (a) standard: proste reprezentacje/decyzje silnik wyprowadza na bieżąco bez pytania, o trudniejsze pyta (z gotowym zestawem kryteriów, R80 pkt 4); (b) pytaj o wszystko; (c) nie pytaj o nic (silnik decyduje sam w granicach swobody i budżetu z R81, a decyzje zostają w pochodzeniu do wglądu). Gdzie leży granica „proste/trudne” — to dane (ważone kryteria z profilu i zadania), konfigurowalne per węzeł, rodzaj zadania, jednostkę; ten sam mechanizm co propozycje Tak/Nie w akcjach i podpowiedzi R58 („nie pytaj następnym razem”).",
+     "text": "Domknięcie R80/R81 (09:1x UTC): preset „pytaj” to przestrzeń ustawień, której jego słowa dają trzy PRZYKŁADY (R83: nie zamykać list) — (a) standard: proste reprezentacje/decyzje silnik wyprowadza na bieżąco bez pytania, o trudniejsze pyta (z gotowym zestawem kryteriów, R80 pkt 4); (b) pytaj o wszystko; (c) nie pytaj o nic (silnik decyduje sam w granicach swobody i budżetu z R81, a decyzje zostają w pochodzeniu do wglądu). Gdzie leży granica „proste/trudne” — to dane (ważone kryteria z profilu i zadania), konfigurowalne per węzeł, rodzaj zadania, jednostkę; ten sam mechanizm co propozycje Tak/Nie w akcjach i podpowiedzi R58 („nie pytaj następnym razem”).",
      "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:852"
     }
    ],
@@ -4738,6 +4739,7 @@
    "refs": [
     "s_bd1b2ff5b6ea",
     "s_281f9b0d06cf",
+    "s_80c95f8ca565",
     "s_acee58464df3"
    ],
    "supersedes": [],
@@ -4749,6 +4751,63 @@
     {
      "role": "owner",
      "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:849-852"
+    }
+   ],
+   "files": [
+    "owner"
+   ]
+  },
+  {
+   "id": "s_80c95f8ca565",
+   "aliases": [
+    "R83"
+   ],
+   "kind": "requirement",
+   "title": "Żadne „dwa pokrętła”: nie zamykać list wybranymi, nie zawsze reprezentatywnymi przykładami",
+   "date": "2026-10-23",
+   "theme": "owner_requirements",
+   "theme_inferred": false,
+   "understanding": {
+    "state": "none"
+   },
+   "quotes": [
+    {
+     "text": "żadne dwa pokrętła, nie zamykaj list wybranymi nie zawsze reprezentatywnymi przykładami",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:855",
+     "ref": null,
+     "attr": [],
+     "lead": null,
+     "secondary": false
+    }
+   ],
+   "sense": null,
+   "summary": null,
+   "restatement": [
+    {
+     "text": "Korekta mojego zapisu R81 („dwa pokrętła”) i R82 („trzy położenia”): inwencja twórcza i moc obliczeniowa to PRZYKŁADY granic, które użytkownik ustawia, nie zamknięta lista dwóch; podobnie standard / o wszystko / o nic to przykłady położeń presetu „pytaj”, nie trzy wartości. Lista granic jest otwarta (np. czas, koszt pieniężny, dokładność, zaufanie do źródeł, prywatność, zużycie energii, cokolwiek, co da się ważyć) i wypełniana wg zasady „listy są przykładami” (CLAUDE.md, 2026-10-16); preset „pytaj” to przestrzeń ustawień (progi, kategorie, konteksty), której te trzy punkty są tylko przykładami. Zasada ogólna, przypomnienie R58/R59: przykłady wybrane przez właściciela bywają niereprezentatywne — ich dobór nigdy nie wyznacza zakresu.",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:857"
+    }
+   ],
+   "commentary": [],
+   "status": null,
+   "gap_text": null,
+   "evidence": [],
+   "next_step": null,
+   "refs": [
+    "s_281f9b0d06cf",
+    "s_4bbd386eaca6",
+    "s_acee58464df3",
+    "s_c461e9ba42ec"
+   ],
+   "supersedes": [],
+   "superseded_by": [],
+   "supersession_notes": [],
+   "tags": [],
+   "heading_note": "owner, 2026-10-23",
+   "sources": [
+    {
+     "role": "owner",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:854-857"
     }
    ],
    "files": [
@@ -4771,7 +4830,7 @@
    "quotes": [
     {
      "text": "\"nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane\"",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:855",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:860",
      "ref": null,
      "attr": [],
      "lead": null,
@@ -4783,7 +4842,7 @@
    "restatement": [
     {
      "text": "Recovered versions (`history/chatadhd_v0.8.3`, `history/chatadhd_v0.9.0`) and\nthe historical report are sources of requirements, ideas and data assets\n(e.g. `film_structure.json`), and real ground truth for self-discovery tests —\nnot code to merge. Everything is rebuilt in Loom with tests.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:857-860"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:862-865"
     }
    ],
    "commentary": [],
@@ -4800,7 +4859,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:854-860"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:859-865"
     }
    ],
    "files": [
@@ -4826,7 +4885,7 @@
    "restatement": [
     {
      "text": "`workbench_mockup_2026-09-26.webp`: dockable/floating panels (conversation\nlist, active conversation, knowledge graph with active context window, project\nstructure with dimmed high-confidence auto-completable nodes, artifact views\nfor music/video with timeline + storyboard, video player, execution\nenvironment with agent), multi-format ingestion, Loom SDK at the centre.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:863-867"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:868-872"
     }
    ],
    "commentary": [],
@@ -4843,7 +4902,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:862-867"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:867-872"
     }
    ],
    "files": [
