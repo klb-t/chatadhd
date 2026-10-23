@@ -109,6 +109,11 @@ philosophy implies, and say what was added. Unless he says a list is closed, it 
   zawsze reprezentatywnymi przykładami”).** When he names two limits or three settings, writing „two knobs” or „three
   positions” closes the list; the record says „limits such as …” / „positions such as …”, and the engine takes an open
   set. His examples may be unrepresentative on purpose; their choice never defines the range.
+- **Option lists only where necessary (owner, 2026-10-23 09:2x: „listy opcji definiujemy jedynie wtedy gdy są
+  konieczne”).** The default shape of a setting is an open value (number, text, range, predicate, reference to data)
+  with presets as examples; a closed list (enum, fixed set of allowed values) exists only where the thing itself forces
+  it (a provider protocol, a file format, the law), with the reason and the date recorded so it can be opened again
+  when the reason goes away. No enums invented for convenience in the kernel or in the packs.
 - Every agent brief carries this rule (`tools/workflows/single-package.js`).
 - **Scripts and tools too (owner, 2026-10-23 07:5x, first run of the VM bootstrap: it stopped on „skrypt jest pisany pod
   Ubuntu 24.04” while his VM runs 26.04 — „A słyszałeś kiedyś o mojej tzw. filozofii?”).** An observation about the

@@ -856,6 +856,11 @@ Domknięcie R80/R81 (09:1x UTC): preset „pytaj” to przestrzeń ustawień, kt
 
 Korekta mojego zapisu R81 („dwa pokrętła”) i R82 („trzy położenia”): inwencja twórcza i moc obliczeniowa to PRZYKŁADY granic, które użytkownik ustawia, nie zamknięta lista dwóch; podobnie standard / o wszystko / o nic to przykłady położeń presetu „pytaj”, nie trzy wartości. Lista granic jest otwarta (np. czas, koszt pieniężny, dokładność, zaufanie do źródeł, prywatność, zużycie energii, cokolwiek, co da się ważyć) i wypełniana wg zasady „listy są przykładami” (CLAUDE.md, 2026-10-16); preset „pytaj” to przestrzeń ustawień (progi, kategorie, konteksty), której te trzy punkty są tylko przykładami. Zasada ogólna, przypomnienie R58/R59: przykłady wybrane przez właściciela bywają niereprezentatywne — ich dobór nigdy nie wyznacza zakresu.
 
+## R84 — Listy opcji definiujemy jedynie wtedy, gdy są konieczne (owner, 2026-10-23)
+> listy opcji definiujemy jedynie wtedy gdy są konieczne
+
+Uzupełnienie R83 (09:2x UTC): nie tylko nie zamykać list przykładami — w ogóle nie definiować list opcji (enumów, wyliczeń dozwolonych wartości, stałych zestawów), jeśli nie są konieczne. Domyślny kształt ustawienia to wartość otwarta (liczba, tekst, zakres, predykat, odwołanie do danych) z presetami jako przykładami; zamknięta lista tylko tam, gdzie wymusza ją rzecz sama (np. protokół dostawcy, format pliku, prawo) i wtedy z zapisanym powodem oraz datą (obserwacja, R60), żeby dało się ją otworzyć, gdy powód zniknie. Dla kodu: żadnych enumów „z głowy” w jądrze i w danych; tam, gdzie dziś są (np. stany, rodzaje), rodzaje dodaje się przez użycie (CLAUDE.md: „add new kinds by just using them”).
+
 ## Decision — rebuild, don't recover
 > "nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane"
 
