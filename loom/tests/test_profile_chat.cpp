@@ -3,8 +3,12 @@
 // names. A scripted transport sees every request: the interview makes none. Synthetic data only.
 #include <doctest/doctest.h>
 
+#include <algorithm>
+#include <filesystem>
+#include <fstream>
 #include <regex>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "loom/action_runner.h"
@@ -30,7 +34,13 @@ struct Fx {
   fsutil::TempDir td;
   std::shared_ptr<net::ScriptedTransport> transport = std::make_shared<net::ScriptedTransport>();
   std::unique_ptr<Runtime> rt;
-  Fx() {
+  // `chat_ops_overrides`: an overlay of the pack chat_ops written into the data directory before the runtime opens (<data>/profiles/chat_ops.pack).
+  explicit Fx(const Json& chat_ops_overrides = Json(nullptr)) {
+    if (!chat_ops_overrides.is_null()) {
+      std::filesystem::create_directories(td.path() / "profiles");
+      std::ofstream(td.path() / "profiles" / "chat_ops.pack")
+          << Json{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", "chat_ops"}, {"overrides", chat_ops_overrides}}.dump();
+    }
     RuntimeOptions o;
     o.data_dir = td.path().string();
     o.start_workers = false;
@@ -336,5 +346,171 @@ TEST_SUITE("profile interview in the conversation") {
     f.say(conv, "tak");
     CHECK(unwrap(store.read("local")).at("scenario_definition").contains("detail_levels"));
     CHECK(f.transport->requests().empty());
+  }
+
+  // K2b-4 (S2, android-smoke run 39870977153, three emulator profiles): the emulator's interface language is English (the device locale is en),
+  // the driver types Polish. The language of the conversation (metadata.lang, fixed at start) decides the language of the words ON THE SCREEN; what
+  // the person types is understood in every language the pack has words for. Before the fix 'nie pytaj o zdrowie' in an English conversation was
+  // stored as the ANSWER to the waiting question.
+  std::string slot_states(Fx& f) {
+    std::string out;
+    for (const auto& s : f.slots()) out += s.at("slot").get<std::string>() + "=" + s.at("state").get<std::string>() + ";";
+    return out;
+  }
+  int never_count(Fx& f) {
+    int n = 0;
+    for (const auto& s : f.slots()) n += s.at("state") == "never" ? 1 : 0;
+    return n;
+  }
+
+  TEST_CASE("K2b-4: a remark typed in the other language is a remark - proposal first, nothing written, the lines in the language of the conversation") {
+    struct Case {
+      const char* conv_lang;
+      const char* level;
+      const char* skip;
+      const char* remark;
+      const char* yes;
+      const char* head;        // the sentence that opens the proposal, in the language of the conversation
+      const char* understood;  // the rule's own line, in the language of the conversation
+      const char* other_head;  // the same sentence in the OTHER language: must not appear
+      const char* stored;      // the sentence of a stored answer, in the language of the conversation: must not appear
+    };
+    const Case cases[] = {
+        {"en", "minimal", "skip", "nie pytaj o zdrowie", "yes", "This is how I understood it:", "I will not ask about health", "Tak zrozumiałem", "I stored your answer"},
+        {"pl", "minimalnie", "pomiń", "do not ask about health", "tak", "Tak zrozumiałem:", "Nie będę pytać o zdrowie", "This is how I understood it", "Zapisałem Twoją odpowiedź"},
+    };
+    for (const auto& c : cases) {
+      for (const bool question_waiting : {true, false}) {
+        INFO("conversation " << c.conv_lang << ", remark \"" << c.remark << "\", question waiting: " << question_waiting);
+        Fx f;
+        const std::string conv = f.start(Json{{"locale", c.conv_lang}});
+        REQUIRE(unwrap(f.rt->db().get_conv(conv))->metadata.value("lang", "") == c.conv_lang);
+        f.say(conv, c.level);
+        if (!question_waiting)
+          for (int i = 0; i < 20 && remaining(f) > 0; ++i) f.say(conv, c.skip);
+        REQUIRE((remaining(f) > 0) == question_waiting);
+        const Json before = f.slots();
+        const std::string states_before = slot_states(f);
+        f.say(conv, c.remark);
+        INFO(f.transcript(conv));
+        const Message last = f.last(conv);
+        MESSAGE(c.conv_lang, " conversation, remark \"", c.remark, "\" -> ", last.text);
+        CHECK(last.role == "assistant");
+        REQUIRE(last.metadata.contains("action_proposal"));
+        CHECK(last.metadata.at("action_proposal").at("action") == "profile.confirm");
+        CHECK(last.metadata.at("action_proposal").at("status") == "pending");
+        CHECK(last.text.find(c.head) != std::string::npos);
+        CHECK(last.text.find(c.understood) != std::string::npos);
+        CHECK(last.text.find(c.other_head) == std::string::npos);
+        CHECK(last.text.find(c.stored) == std::string::npos);
+        CHECK(f.slots() == before);  // nothing is written before the yes
+        CHECK(slot_states(f) == states_before);
+        f.say(conv, c.yes);
+        CHECK(never_count(f) >= 1);
+        CHECK(f.transport->requests().empty());
+      }
+    }
+  }
+
+  TEST_CASE("K2b-4: every control word of the pack works in a conversation of any language of the pack, and does what the same word in the conversation's language does") {
+    const Json words = unwrap(RuntimeProfile::builtin("chat_ops")).values().at("profile").at("words");
+    std::vector<std::string> langs;
+    for (auto op = words.begin(); op != words.end(); ++op)
+      for (auto l = op.value().begin(); l != op.value().end(); ++l)
+        if (std::find(langs.begin(), langs.end(), l.key()) == langs.end()) langs.push_back(l.key());
+    REQUIRE(langs.size() >= 2);
+    auto level_word = [](const std::string& lang) { return lang == "pl" ? "minimalnie" : "minimal"; };
+    // One run of one word in a fresh conversation: what the person sees and the state of the profile afterwards.
+    auto run_word = [&](const std::string& conv_lang, const std::string& word) {
+      Fx f;
+      const std::string conv = f.start(Json{{"locale", conv_lang}});
+      f.say(conv, level_word(conv_lang));
+      REQUIRE(remaining(f) > 0);  // a question waits: a word that is not understood would be stored as its answer
+      f.say(conv, word);
+      const Message last = f.last(conv);
+      return std::make_pair(last.text, slot_states(f) + "|" + last.metadata.at("interview").at("kind").get<std::string>() + "|" +
+                                           (last.metadata.contains("action_proposal") ? "proposal" : "plain"));
+    };
+    int crossed = 0;
+    for (auto op = words.begin(); op != words.end(); ++op) {
+      for (const auto& conv_lang : langs) {
+        const Json own = op.value().value(conv_lang, Json::array());
+        REQUIRE_FALSE(own.empty());
+        const auto expected = run_word(conv_lang, own.at(0).get<std::string>());
+        for (const auto& word_lang : langs) {
+          if (word_lang == conv_lang) continue;
+          for (const auto& w : op.value().value(word_lang, Json::array())) {
+            INFO("operation " << op.key() << ": \"" << w.get<std::string>() << "\" (" << word_lang << ") in a " << conv_lang << " conversation");
+            const auto got = run_word(conv_lang, w.get<std::string>());
+            CHECK(got.first == expected.first);
+            CHECK(got.second == expected.second);
+            CHECK(got.first.find(conv_lang == "pl" ? "Zapisałem Twoją odpowiedź" : "I stored your answer") == std::string::npos);
+            ++crossed;
+          }
+        }
+      }
+    }
+    CHECK(crossed >= 20);
+  }
+
+  TEST_CASE("K2b-4: the languages the person is understood in are a preset of the pack (profile.match_languages): 'all' by default, changeable in the overlay") {
+    CHECK(unwrap(RuntimeProfile::builtin("chat_ops")).values().at("profile").at("match_languages") == "all");
+    struct Case {
+      Json overrides;
+      bool polish_remark_understood;   // 'nie pytaj o zdrowie' in an English conversation
+      bool english_remark_understood;  // 'do not ask about health' in an English conversation
+      bool polish_control_understood;  // 'pomiń' in an English conversation
+      bool english_control_understood;  // 'skip' in an English conversation
+    };
+    const Case cases[] = {
+        {Json{{"profile", Json{{"match_languages", "all"}}}}, true, true, true, true},
+        {Json{{"profile", Json{{"match_languages", "conversation"}}}}, false, true, false, true},  // the old reading, chosen on purpose
+        {Json{{"profile", Json{{"match_languages", Json::array({"pl"})}}}}, true, false, true, false},
+        {Json{{"profile", Json{{"match_languages", Json::array({"pl", "en"})}}}}, true, true, true, true},
+    };
+    for (const auto& c : cases) {
+      INFO("match_languages " << c.overrides.at("profile").at("match_languages").dump());
+      auto proposed = [&](const char* text) {
+        Fx f(c.overrides);
+        const std::string conv = f.start(Json{{"locale", "en"}});
+        f.say(conv, "minimal");
+        REQUIRE(remaining(f) > 0);
+        f.say(conv, text);
+        return f.last(conv).metadata.contains("action_proposal");
+      };
+      CHECK(proposed("nie pytaj o zdrowie") == c.polish_remark_understood);
+      CHECK(proposed("do not ask about health") == c.english_remark_understood);
+      // a control word changes the state of the questions (skip: the section is held); a word that is not understood is stored as the answer
+      auto stored_as_answer = [&](const char* text) {
+        Fx f(c.overrides);
+        const std::string conv = f.start(Json{{"locale", "en"}});
+        f.say(conv, "minimal");
+        f.say(conv, text);
+        return f.last(conv).text.find("I stored your answer") != std::string::npos;
+      };
+      CHECK(stored_as_answer("pomiń") == !c.polish_control_understood);
+      CHECK(stored_as_answer("skip") == !c.english_control_understood);  // a list that leaves the conversation's own language out reads none of its words
+    }
+  }
+
+  TEST_CASE("K2b-4: the sentence of a stored answer promises only what happens - the whole section is confirmed at its end - in both languages") {
+    for (const char* lang : {"pl", "en"}) {
+      Fx f;
+      const std::string conv = f.start(Json{{"locale", lang}});
+      f.say(conv, std::string(lang) == "pl" ? "szczegółowo" : "detailed");
+      f.say(conv, std::string(lang) == "pl" ? "odpowiedź testowa" : "a test answer");
+      const std::string text = f.last(conv).text;
+      MESSAGE(lang, ": ", text);
+      const std::string stored = std::string(lang) == "pl" ? "Zapisałem Twoją odpowiedź o:" : "I stored your answer about:";
+      const std::string promise = std::string(lang) == "pl" ? "Potwierdzisz ją razem z całą sekcją, gdy ją skończymy." : "You will confirm it together with the whole section, when we finish it.";
+      const std::string old_promise = std::string(lang) == "pl" ? "Czeka na Twoje potwierdzenie" : "waits for your confirmation";
+      // the answer was taken as an answer (it names the question it was given to), and the sentence no longer says that a confirmation waits right now
+      CHECK(text.find(stored) != std::string::npos);
+      CHECK(text.find(promise) != std::string::npos);
+      CHECK(text.find(old_promise) == std::string::npos);
+      std::string what;
+      CHECK_MESSAGE(!has_internal_name(text, &what), "internal name \"" << what << "\" in: " << text);
+      CHECK(f.transport->requests().empty());
+    }
   }
 }

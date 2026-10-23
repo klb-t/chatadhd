@@ -434,8 +434,11 @@ TEST_SUITE("onboarding") {
       CHECK(none["matched"].empty()); CHECK(none["proposals"].empty());
     }
     CHECK(remark(s, "do not ask more", "en")["matched"].empty());
-    CHECK(remark(s, "nie pytaj o zdrowie", "en")["matched"].empty());       // Polish words do not count as English
-    CHECK(remark(s, "nie pytaj o zdrowie", "")["matched"].size() == 1);    // no language named: both are tried
+    // K2b-4: the language of the conversation decides the language of the lines, not what is understood: Polish words count in an English
+    // conversation by default (the preset 'all'); only the preset 'conversation' keeps the old reading, on purpose
+    CHECK(remark(s, "nie pytaj o zdrowie", "en")["matched"].size() == 1);
+    CHECK(remark(s, "nie pytaj o zdrowie", "en", Json{{"match_languages", "conversation"}})["matched"].empty());
+    CHECK(remark(s, "nie pytaj o zdrowie", "")["matched"].size() == 1);    // no language named: all are tried
     // contradicting remarks are reported and refused, not resolved by guessing
     const auto both = remark(s, "wystarczy, ale pytaj więcej", "pl", Json{{"level", "normal"}});
     CHECK(both["conflicts"].size() == 1);
@@ -449,5 +452,82 @@ TEST_SUITE("onboarding") {
     CHECK(matched(r, "never.attention")); CHECK_FALSE(matched(r, "never.health"));
     CHECK(s.snapshot()["fields"]["communication.attention"]["status"] == "never");
     CHECK(s.snapshot()["fields"]["health.needs"]["status"] == "unknown");
+  }
+
+  // ── K2b-4: the person types in a language other than the one of the conversation (S2, android-smoke run 39870977153) ─────────────────────────────
+  TEST_CASE("K2b-4: every pattern of every rule is read in a conversation of any language of the scenario; the line comes out in the language of the conversation") {
+    const auto scenario = scenario_pack();
+    auto s = chosen();
+    std::set<std::string> langs;
+    for (const auto& rule : scenario["remark_rules"]) for (auto it = rule["pattern"].begin(); it != rule["pattern"].end(); ++it) langs.insert(it.key());
+    REQUIRE(langs.size() >= 2);
+    int checked = 0;
+    for (const auto& rule : scenario["remark_rules"])
+      for (auto it = rule["pattern"].begin(); it != rule["pattern"].end(); ++it)
+        for (const auto& pattern : it.value())
+          for (const auto& locale : langs) {
+            INFO("rule " << rule["id"].get<std::string>() << ", pattern \"" << pattern.get<std::string>() << "\" (" << it.key() << ") in a " << locale << " conversation");
+            const auto r = remark(s, pattern.get<std::string>(), locale, Json{{"level", "normal"}});
+            CHECK(matched(r, rule["id"].get<std::string>()));
+            bool line = false;
+            for (const auto& u : r["understood"]) if (u == rule["understood"][locale == "pl" ? "pl" : "en"]) line = true;
+            CHECK(line);
+            ++checked;
+          }
+    CHECK(checked > 300);
+  }
+
+  TEST_CASE("K2b-4: the languages a remark is read in are a preset (all, only the conversation's, a list); a negator belongs to the language of its pattern") {
+    auto s = chosen();
+    const Json conversation{{"match_languages", "conversation"}};
+    // absent = 'all' = every language the rules have words in, the language of the conversation first
+    CHECK(unwrap(s.apply_remark("x", "en"))["match_languages"] == Json::array({"en", "pl"}));
+    CHECK(unwrap(s.apply_remark("x", "pl"))["match_languages"] == Json::array({"pl", "en"}));
+    CHECK(unwrap(s.apply_remark("x", "xx"))["match_languages"] == Json::array({"en", "pl"}));  // a language the scenario has no words in: English first, as before
+    CHECK(unwrap(s.apply_remark("x", "en", Json{{"match_languages", "all"}}))["match_languages"] == Json::array({"en", "pl"}));
+    CHECK(unwrap(s.apply_remark("x", "en", conversation))["match_languages"] == Json::array({"en"}));
+    CHECK(unwrap(s.apply_remark("x", "xx", conversation))["match_languages"] == Json::array({"en"}));
+    CHECK(unwrap(s.apply_remark("x", "en", Json{{"match_languages", Json::array({"pl"})}}))["match_languages"] == Json::array({"pl"}));
+    CHECK(unwrap(s.apply_remark("x", "en", Json{{"match_languages", Json::array({"pl", "en"})}}))["match_languages"] == Json::array({"en", "pl"}));
+    // a list reads only what it names
+    const Json only_pl{{"match_languages", Json::array({"pl"})}}, only_en{{"match_languages", Json::array({"en"})}};
+    CHECK(matched(remark(s, "nie pytaj o zdrowie", "en", only_pl), "never.health"));
+    CHECK(remark(s, "do not ask about health", "en", only_pl)["matched"].empty());
+    CHECK(matched(remark(s, "do not ask about health", "pl", only_en), "never.health"));
+    CHECK(remark(s, "nie pytaj o zdrowie", "pl", only_en)["matched"].empty());
+    CHECK(remark(s, "nie pytaj o zdrowie", "en", Json{{"match_languages", Json::array()}})["matched"].empty());  // an empty list reads nothing - and says so (match_languages: [])
+    // a value that is none of these is refused, never turned into a guess
+    CHECK(s.apply_remark("x", "en", Json{{"match_languages", "bogus"}}).error().code == Errc::InvalidArgument);
+    CHECK(s.apply_remark("x", "en", Json{{"match_languages", 7}}).error().code == Errc::InvalidArgument);
+    CHECK(s.apply_remark("x", "en", Json{{"match_languages", Json::array({"pl", 7})}}).error().code == Errc::InvalidArgument);
+    // the negator is looked up in the language of the pattern that matched: "nie" negates a Polish phrase, not an English one, and "not" the reverse
+    const Json level{{"level", "normal"}};
+    CHECK(remark(s, "nie wystarczy", "en", level)["matched"].empty());
+    CHECK(remark(s, "not ask less", "pl", level)["matched"].empty());
+    CHECK(matched(remark(s, "nie ask less", "pl", level), "level.less"));
+    CHECK(matched(remark(s, "not wystarczy", "en", level), "level.less"));
+    CHECK(matched(remark(s, "wystarczy", "en", level), "level.less"));
+    CHECK(matched(remark(s, "ask less", "pl", level), "level.less"));
+  }
+
+  TEST_CASE("K2b-4: a language the pack gains later is read like the others - nothing here names pl or en") {
+    Json scenario = scenario_pack();
+    scenario["remark_negators"]["de"] = Json::array({"nicht"});
+    for (auto& rule : scenario["remark_rules"]) {
+      if (rule["id"] == "never.health") { rule["pattern"]["de"] = Json::array({"frag nicht nach gesundheit"}); rule["understood"]["de"] = "Ich frage nicht mehr nach Gesundheit."; }
+      if (rule["id"] == "level.less") { rule["pattern"]["de"] = Json::array({"genug"}); rule["understood"]["de"] = "Ich frage weniger."; }
+    }
+    auto s = unwrap(ProfileSession::create(scenario, defaults_with(wildcard_rule())));
+    know(s, "interview.detail", "normal");
+    const Json level{{"level", "normal"}};
+    CHECK(matched(remark(s, "frag nicht nach gesundheit", "en"), "never.health"));
+    CHECK(matched(remark(s, "frag nicht nach gesundheit", "pl"), "never.health"));
+    CHECK(matched(remark(s, "genug", "pl", level), "level.less"));
+    CHECK(remark(s, "nicht genug", "pl", level)["matched"].empty());  // the German negator, in German
+    CHECK(unwrap(s.apply_remark("x", "en"))["match_languages"] == Json::array({"en", "de", "pl"}));
+    CHECK(unwrap(s.apply_remark("x", "pl"))["match_languages"] == Json::array({"pl", "de", "en"}));
+    CHECK(remark(s, "genug", "pl", Json{{"level", "normal"}, {"match_languages", Json::array({"pl", "en"})}})["matched"].empty());
+    CHECK(matched(remark(s, "genug", "pl", Json{{"level", "normal"}, {"match_languages", Json::array({"de"})}}), "level.less"));
+    CHECK(remark(s, "genug", "pl", Json{{"level", "normal"}, {"match_languages", "conversation"}})["matched"].empty());
   }
 }
