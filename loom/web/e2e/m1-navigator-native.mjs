@@ -556,11 +556,46 @@ try {
     assert.equal(await back(), true);
     await nav().waitFor({ state: "detached" });
     const me = await openAt("me", "party:self");
-    assert.ok(me.children.length > 0, "Ty has rows (the profile, preferences, interests, memory)");
+    assert.ok(me.children.length > 0, "Ty has rows (the parts)");
+    // K2c-2: the children of Ty are PARTS (kind person_subgraph, address subgraph:self/<id>), each with the count of its entries; the interview
+    // slots hang one level down, under the part(s) that hold them. Which part holds them is read from the kernel's answer (the parts table is
+    // data: profiles/user.pack profile.subgraphs, a user layer may reorder or rename them), never from a Polish label.
+    const parts = me.children.filter(c => c.kind === "person_subgraph");
+    assert.ok(parts.length > 0, "Ty has parts");
+    assert.deepEqual(me.children.map(c => c.address), parts.map(c => c.address).concat(me.children.filter(c => c.kind !== "person_subgraph").map(c => c.address)), "parts come first");
+    const partViews = [];
+    for (const part of parts) {
+      assert.ok(part.address.startsWith("subgraph:self/"), `${part.address}: a part has the address subgraph:self/<id>`);
+      const inside = await navigate({ focus: part.address });
+      assert.equal(inside.focus.address, part.address, `${part.address}: the part is its own focus`);
+      assert.equal(part.count, inside.counts.total, `${part.address}: the count on the part is the number of entries inside it`);
+      assert.ok(inside.breadcrumbs.some(b => b.address === "party:self"), `${part.address}: the crumbs lead through Ty`);
+      partViews.push({ part, inside });
+    }
+    const shownParts = await rowsOf();
+    for (const { part } of partViews) {
+      const row = shownParts.find(r => r.address === part.address);
+      assert.ok(row, `${part.address}: the part is a row of Ty`);
+      assert.equal(row.label, part.label, `${part.address}: the row is labelled as the kernel labels the part`);
+      assert.ok(row.count !== null, `${part.address}: the row shows a count`);
+    }
+    const holders = partViews.filter(v => v.inside.children.some(c => c.kind === "profile_slot"));
+    assert.ok(holders.length > 0, `some part of Ty holds the interview slots (parts ${JSON.stringify(partViews.map(v => [v.part.address, v.part.count]))})`);
+    const { part: holder, inside: holderView } = holders[0];
+    await page.getByTestId(`nav-row-${holder.address}`).tap();
+    await page.locator(`[data-testid="graph-navigator"][data-focus="${holder.address}"]`).waitFor();
+    // the focus changes at the tap, the rows when the kernel's answer arrives: wait for the rows of the part, not for the end of a spinner that may not have started
+    await page.waitForFunction(want => !document.querySelector('[data-testid="nav-loading"]') &&
+      JSON.stringify([...document.querySelectorAll('[data-testid="nav-rows"] .gnav-row-main')].map(el => el.dataset.testid.replace("nav-row-", ""))) === want,
+      JSON.stringify(holderView.children.map(c => c.address)), { timeout: 10000 });
+    await shot("m1-navigator-me-part");
+    assert.deepEqual((await rowsOf()).map(r => r.address), holderView.children.map(c => c.address), "the rows of the part, in the kernel's order");
+    await noMissingWord();
+    await layoutFits();
     // r2:b1: a profile slot's chip says what its evidence says ("pytanie z wywiadu — bez odpowiedzi"), never "Preset (ROM)" on your own
     // profile; its card says where the answer is given (the interview) and has no empty "Skąd jest wartość" header.
-    const slots = me.children.filter(c => c.kind === "profile_slot");
-    assert.ok(slots.length > 0, "Ty has profile slots");
+    const slots = holderView.children.filter(c => c.kind === "profile_slot");
+    assert.ok(slots.length > 0, "the part holds profile slots");
     const shownRows = await rowsOf();
     for (const s of slots) {
       const row = shownRows.find(r => r.address === s.address);
@@ -586,7 +621,9 @@ try {
     await shot("m1-navigator-card-profile");
     await page.getByTestId(`nav-row-${slot.address}`).tap();
     await page.getByTestId("node-card").waitFor({ state: "detached" });
-    assert.equal(await back(), true);
+    assert.equal(await back(), true, "back from the part to Ty");
+    await page.locator('[data-testid="graph-navigator"][data-focus="party:self"]').waitFor();
+    assert.equal(await back(), true, "back from Ty closes the panel");
     await nav().waitFor({ state: "detached" });
     assert.deepEqual(errors, [], "no page errors");
   });
