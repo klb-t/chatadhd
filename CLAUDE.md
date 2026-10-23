@@ -116,6 +116,12 @@ philosophy implies, and say what was added. Unless he says a list is closed, it 
   what others come to read. A fact about the present state of the world (who imports what, which app has
   which feature) is a **dated observation** with a validity window and a source rating (R59 ledger), may
   feed an advisory, and is never a constraint.
+- **Check before use (coordinator's rule, 2026-10-23, after a Haiku review of two Fable designs found
+  8 blocking and 26 wording violations of R58–R60).** Every design document and every brief gets a cheap
+  read-only check (Haiku, 4 anti-patterns: a choice written as a requirement or attributed to the owner
+  without his verbatim words; an option demoted for cost or usefulness; a present-state fact used as a
+  constraint; a fact the document itself marks unverified) plus the R60 question, BEFORE it is used; the
+  findings are claims to verify, the fixes run on Sonnet as an addendum, never as a restart.
 - **Necessary, insufficient.** Examples are necessary and not sufficient; only the full exhaustion of the
   list of possibilities is sufficient. Accepting an engine feature therefore means: the examples pass AND
   the possibility space is covered (generative / property-based tests where feasible), and what stays
