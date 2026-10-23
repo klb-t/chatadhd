@@ -206,7 +206,7 @@
     {
       "path": "graph/dimensions.pack",
       "schema": "loom.dimensions/1",
-      "sha256": "8215ee11be5b8e131b7142d68a9420beb0cc4fe00833149fb416dd9a0557b1ff",
+      "sha256": "28abb9ce96f641ee1ec0d51ed7c3ca470a39d48f36d7d04c1f6bd6ec20013fbc",
       "domain": "graph_address",
       "role": "configuration",
       "validation_refs": [
