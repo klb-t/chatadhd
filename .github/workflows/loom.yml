@@ -44,7 +44,9 @@ jobs:
     # dev (g++), measured 2026-10-23 (run 39959453902 on 5090ab2c): build 2 min + CTest 30 min + JNI + web workbench
     # (npm ci, build, unit, 60+ e2e scripts) hit the 45 min limit at 12 min of the web step; GitHub reports a job
     # timeout as "cancelled". The web stage grows with every M1 package, so dev gets 100 (a preset, not a target).
-    timeout-minutes: ${{ matrix.preset == 'asan' && 150 || matrix.preset == 'dev' && 100 || 45 }}
+    # Presets, not limits: asan's ctest step alone took 142 min on 2026-10-23 (run 283) and was cut at the 150-min job
+    # limit in run 284 (build+configure ~10 min before it); 240 leaves room for the suite to grow. dev 100 since run 281.
+    timeout-minutes: ${{ matrix.preset == 'asan' && 240 || matrix.preset == 'dev' && 100 || 45 }}
     strategy:
       fail-fast: false
       matrix:
