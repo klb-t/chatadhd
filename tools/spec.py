@@ -1385,6 +1385,19 @@ def _und_cmd(root, cfg, args, action):
     cur.setdefault("history", [])
     date = args.date or _dt.date.today().isoformat()
     by = args.by
+    extra = {}
+    if action in ("propose", "correct"):
+        # R89 P2: pola opcjonalne dla kolejki "Czeka na Ciebie"; wartosci otwarte (dowolny napis).
+        # Brak flagi = zostaje poprzednia wartosc; pusty napis ("") usuwa pole.
+        for fld, val in (("if_silent", getattr(args, "if_silent", None)),
+                         ("cost_to_reverse", getattr(args, "cost_to_reverse", None))):
+            if val is None:
+                continue
+            if val.strip():
+                cur[fld] = val.strip()
+                extra[fld] = val.strip()
+            else:
+                cur.pop(fld, None)
     if action == "propose":
         cur.update(state="proposed", text=args.text, by=by, date=date)
         cur.pop("corrected_text", None)
@@ -1395,7 +1408,8 @@ def _und_cmd(root, cfg, args, action):
             raise SystemExit("odmowa: nie ma czego zatwierdzić (brak propozycji ani poprawki); najpierw propose")
         cur.update(state="approved", by=by, date=date)
     cur["history"].append({k: v for k, v in {"state": cur["state"], "by": by, "date": date,
-                                               "text": args.text if action != "approve" else None}.items() if v is not None})
+                                               "text": args.text if action != "approve" else None,
+                                               **extra}.items() if v is not None})
     und[n["id"]] = cur
     save_und(root, cfg, und)
     spec2, reg, changed = build_model(root, cfg, allocate=True)
@@ -1438,6 +1452,10 @@ def main(argv=None) -> int:
         p.add_argument("--text", required=True)
         p.add_argument("--by", default="claude" if name == "propose" else "owner")
         p.add_argument("--date")
+        p.add_argument("--if-silent", dest="if_silent", metavar="TEKST",
+                       help="co zrobie bez Twojej odpowiedzi (pokazane na stronie w kolejce; pusty napis usuwa; brak = bez zmian)")
+        p.add_argument("--cost-to-reverse", dest="cost_to_reverse", metavar="TEKST",
+                       help="koszt odwrotu, wartosc otwarta (przyklady: low, normal, high; strona domyslnie stawia 'high' na poczatku kolejki)")
     p = sub.add_parser("approve")
     p.add_argument("id")
     p.add_argument("--by", default="owner")
@@ -1447,6 +1465,8 @@ def main(argv=None) -> int:
     h.add_argument("--focus", nargs="*", default=[], help="pozycje w edycji (id/alias): rozwinięte i podświetlone")
     h.add_argument("--recent-hours", type=int, default=48)
     h.add_argument("--out")
+    h.add_argument("--queue-first", nargs="*", default=None, metavar="KOSZT",
+                   help="koszty odwrotu, ktore ida na poczatek kolejki 'Czeka na Ciebie' (preset: high; bez wartosci = bez pierwszenstwa)")
     args = ap.parse_args(argv)
     root = Path(args.root).resolve()
     cfg = load_config(root)
@@ -1470,6 +1490,8 @@ def main(argv=None) -> int:
             argv2 += ["--out", args.out]
         if args.focus:
             argv2 += ["--focus", *args.focus]
+        if args.queue_first is not None:
+            argv2 += ["--queue-first", *args.queue_first]
         return spec_html.main(argv2)
     return _und_cmd(root, cfg, args, args.cmd)
 

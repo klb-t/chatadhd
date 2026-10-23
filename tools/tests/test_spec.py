@@ -444,6 +444,27 @@ class Understanding(Base):
         self.assertEqual((u["state"], u["corrected_text"], u["text"]), ("corrected", "Raczej tak.", "Moje rozumienie."))
         self.assertEqual([h["state"] for h in u["history"]], ["proposed", "approved", "corrected"])
 
+    def test_if_silent_and_cost_to_reverse_are_open_optional_fields(self):
+        """R89 P2: pola dla kolejki na stronie; dowolny napis, brak flagi = bez zmian, pusty napis usuwa."""
+        run(self.root, "propose", "R1", "--text", "A.", "--date", "2026-10-23")
+        u = node(load(self.root), "R1")["understanding"]
+        self.assertNotIn("if_silent", u)
+        self.assertNotIn("cost_to_reverse", u)
+        run(self.root, "propose", "R1", "--text", "B.", "--date", "2026-10-23",
+            "--if-silent", "czekam, nic nie ruszam", "--cost-to-reverse", "bardzo-drogi")
+        u = node(load(self.root), "R1")["understanding"]
+        self.assertEqual((u["if_silent"], u["cost_to_reverse"]), ("czekam, nic nie ruszam", "bardzo-drogi"))
+        self.assertEqual(u["history"][-1]["if_silent"], "czekam, nic nie ruszam")
+        run(self.root, "correct", "R1", "--text", "C.", "--date", "2026-10-24")  # bez flag: zostaje
+        u = node(load(self.root), "R1")["understanding"]
+        self.assertEqual((u["state"], u["if_silent"], u["cost_to_reverse"]), ("corrected", "czekam, nic nie ruszam", "bardzo-drogi"))
+        run(self.root, "propose", "R1", "--text", "D.", "--date", "2026-10-25", "--if-silent", "", "--cost-to-reverse", "high")
+        u = node(load(self.root), "R1")["understanding"]
+        self.assertNotIn("if_silent", u)
+        self.assertEqual(u["cost_to_reverse"], "high")
+        rc, out = run(self.root, "check")
+        self.assertEqual(rc, 0, out)
+
     def test_quote_untouched_and_survives_rebuild(self):
         before = node(load(self.root), "PH01")["quotes"]
         run(self.root, "propose", "PH01", "--text", "x")
