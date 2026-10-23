@@ -2,7 +2,8 @@
 """Check that the settings an action says it reads (actions.pack `reads`) are the settings its executor reads.
 
 M1-D1. For every action of loom/data/runtime/actions.pack that declares `reads` (settings keys of
-settings_fields.pack) the files in `implemented_in` are searched for the keys:
+settings_fields.pack) or names its executor (`implemented_in`; no `reads` then means "reads no setting") the files in
+`implemented_in` are searched for the keys:
 
   * a C++/C/Python/TypeScript file: every literal "<key>" of a settings key;
   * a data file (.pack/.json), optionally narrowed by a JSON pointer ("loom/data/runtime/archive.pack#/defaults/refinement"):
@@ -281,10 +282,13 @@ def check(data, verbose=False, discover=None, out=print):
                 out(f'{k}: {", ".join(where)}{mark}')
         return []
 
-    annotated = {aid: a for aid, a in actions.items() if 'reads' in a}
+    # An action is checked when it declares `reads` or names its executor (`implemented_in`): one that names files and no
+    # reads declares that it reads no setting, and a settings key its files name fails like any undeclared read (M1-K2c3:
+    # graph.card, profile.show and profile.interview read profile_detail_level and were skipped for lack of the `reads` key).
+    annotated = {aid: a for aid, a in actions.items() if 'reads' in a or 'implemented_in' in a}
     own = {}
     for aid, a in annotated.items():
-        reads = a['reads']
+        reads = a.get('reads', [])
         if not isinstance(reads, list) or not all(isinstance(k, str) for k in reads):
             errors.append(f'{aid}: reads must be a list of settings keys')
             continue
@@ -527,6 +531,11 @@ def self_test():
             acts(doc)[aid]['reads'].remove(key)
         return change
 
+    def drop_reads_key(aid):
+        def change(doc):
+            del acts(doc)[aid]['reads']
+        return change
+
     def bump_count(doc):
         doc['not_a_read'][0]['count'] += 1
 
@@ -569,6 +578,8 @@ def self_test():
         ('semantic.analyse declares max_tokens', mutated(ACTIONS, add_read('semantic.analyse', 'max_tokens')), "semantic.analyse: declares 'max_tokens'"),
         # the plain cases
         ('goal.typing without semantic_model', mutated(ACTIONS, drop_read('goal.typing', 'semantic_model')), "goal.typing: reads 'semantic_model'"),
+        # an action that names its files and no reads declares that it reads nothing: its files are still checked (M1-K2c3)
+        ('profile.show without a reads key', mutated(ACTIONS, drop_reads_key('profile.show')), "profile.show: reads 'profile_detail_level'"),
         ('semantic.analyse with role intent.routing', mutated(ACTIONS, set_role('semantic.analyse', 'intent.routing')), "semantic.analyse: uses_role 'intent.routing'"),
         ('a not_a_read count that no longer matches', mutated(ALLOW, bump_count), 'the exception explains'),
         # a planned flow reads nothing yet; an id that is no action is a typo
@@ -612,7 +623,7 @@ def main(argv):
         return 1 if errors else 0
     for e in errors:
         print(e, file=sys.stderr)
-    annotated = sum(1 for a in data.load(ACTIONS)['defaults']['actions'].values() if 'reads' in a)
+    annotated = sum(1 for a in data.load(ACTIONS)['defaults']['actions'].values() if 'reads' in a or 'implemented_in' in a)
     print(f'check_action_reads: {annotated} actions with reads, {len(errors)} problems')
     return 1 if errors else 0
 

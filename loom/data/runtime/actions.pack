@@ -13748,7 +13748,13 @@
         "result_text": {
           "en": "Card:",
           "pl": "Karta:"
-        }
+        },
+        "reads": [
+          "profile_detail_level"
+        ],
+        "implemented_in": [
+          "loom/src/graph/projection.cpp"
+        ]
       },
       "settings.resolved": {
         "id": "settings.resolved",
@@ -14381,7 +14387,13 @@
           "en": "The interview:",
           "pl": "Wywiad:"
         },
-        "default_element": "application"
+        "default_element": "application",
+        "reads": [
+          "profile_detail_level"
+        ],
+        "implemented_in": [
+          "loom/src/actions/profile_ops.cpp"
+        ]
       },
       "profile.show": {
         "id": "profile.show",
@@ -14470,7 +14482,13 @@
           "en": "What I know about you:",
           "pl": "Co o Tobie wiem:"
         },
-        "default_element": "application"
+        "default_element": "application",
+        "reads": [
+          "profile_detail_level"
+        ],
+        "implemented_in": [
+          "loom/src/actions/profile_ops.cpp"
+        ]
       },
       "profile.set": {
         "id": "profile.set",

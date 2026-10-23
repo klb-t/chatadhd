@@ -4327,7 +4327,7 @@
         "group": "context",
         "type": "string",
         "has_default": true,
-        "description": "Detail level of your profile, the ids planned for onboarding/scenario.pack detail_levels (M1-K2): minimal, normal (preset) or detailed. It decides which interview fields are asked (detail <= level), what is stored and how much of the profile the profile prefix of a request carries; the privacy decisions of the profile (onboarding.privacy: max_detail, max_sensitivity) decide what may be stored or sent at all. The first question of the profile interview will write it (person; M1-K2); a remark such as 'shorter' lowers it by one. Default: normal.",
+        "description": "Detail level of your profile, the ids of onboarding/scenario.pack detail_levels: minimal, normal (preset) or detailed. Today the profile interview asks only the fields whose detail and sensitivity the level allows (profile.show lists what is still to be asked at it, the Ty screen marks the rest as not asked at your level), and the profile prefix of a request carries the same region of what you said; the privacy decisions of the profile (onboarding.privacy: max_detail, max_sensitivity) decide what may be stored or sent at all. The first question of the interview writes it (person); a remark such as 'shorter' lowers it by one once you have seen the line. Default: normal.",
         "values": [
           {
             "value": "minimal",
@@ -4352,16 +4352,16 @@
           }
         ],
         "status": {
-          "state": "partial",
+          "state": "implemented",
           "by": "M1-K2",
-          "reader": "kernel build_messages (profile prefix); K2: kernel action profile.interview",
+          "reader": "kernel actions profile.interview, profile.show, graph.card (the Ty screen); kernel build_messages (profile prefix)",
           "reason": {
-            "pl": "Wartość jest czytana przy składaniu żądania: wybiera, ile z tego, co sam powiedziałeś o sobie, idzie do modelu (część „Profil”). Część aplikacji, która pyta o ten poziom w wywiadzie o Tobie, jeszcze nie powstała.",
-            "en": "The value is read when the request is compiled: it chooses how much of what you said about yourself goes to the model (the part “Profile”). The part of the app that asks for this level in the interview about you is not built yet."
+            "pl": "Wartość jest czytana w trzech miejscach: wywiad „Poznaj mnie” wybiera po niej pytania, ekran „Ty” i „Co o mnie wiesz” pokazują po niej, o co jeszcze zapytam, a żądanie do modelu bierze po niej część „Profil”.",
+            "en": "The value is read in three places: the “Get to know me” interview chooses its questions by it, the “You” screen and “What do you know about me” show by it what I will still ask, and a request to the model takes its “Profile” part by it."
           },
           "today": {
-            "pl": "Dziś zmienia tylko to, ile z Twojego profilu dostaje model; wywiad o Tobie nie bierze tej wartości pod uwagę.",
-            "en": "Today it only changes how much of your profile the model gets; the interview about you does not take this value into account."
+            "pl": "Wywiad pyta tylko o pola, które mieszczą się w wybranym poziomie, ekran „Ty” oznacza resztę jako niepytaną na Twoim poziomie, a model dostaje z Twojego profilu tyle samo.",
+            "en": "The interview asks only the fields that fit the chosen level, the “You” screen marks the rest as not asked at your level, and the model gets the same amount of your profile."
           }
         },
         "human": {
@@ -4370,12 +4370,12 @@
             "en": "How closely the app should know you"
           },
           "why": {
-            "pl": "Poziom szczegółowości profilu: minimalnie, zwykle (preset) albo szczegółowo. Dziś od niego zależy, ile z tego, co sam o sobie powiedziałeś, widzi model. Wywiad „Poznaj mnie” jeszcze go nie bierze pod uwagę — dojdzie z jego własną częścią.",
-            "en": "The detail level of your profile: minimal, normal (preset) or detailed. Today it decides how much of what you said about yourself the model sees. The “Get to know me” interview does not take it into account yet — that comes with its own part."
+            "pl": "Poziom szczegółowości profilu: minimalnie, zwykle (preset) albo szczegółowo. Od niego zależy, o co pyta wywiad „Poznaj mnie” i ile z tego, co sam o sobie powiedziałeś, widzi model.",
+            "en": "The detail level of your profile: minimal, normal (preset) or detailed. It decides what the “Get to know me” interview asks and how much of what you said about yourself the model sees."
           },
           "effect": {
-            "pl": "Wyżej = pełniejszy opis Ciebie w żądaniu (więcej pytań w wywiadzie dojdzie później); zasady prywatności profilu i tak decydują, co wolno zapisać i wysłać. Pierwsze pytanie wywiadu ustawi to pole, gdy wywiad powstanie.",
-            "en": "Higher = a fuller description of you in a request (more interview questions come later); the profile's privacy rules still decide what may be stored and sent. The interview's first question will set this field once the interview exists."
+            "pl": "Wyżej = więcej pytań w wywiadzie i pełniejszy opis Ciebie w żądaniu; zasady prywatności profilu i tak decydują, co wolno zapisać i wysłać. Pierwsze pytanie wywiadu ustawia to pole, a uwaga „krócej” obniża je o jeden poziom.",
+            "en": "Higher = more questions in the interview and a fuller description of you in a request; the profile's privacy rules still decide what may be stored and sent. The first question of the interview sets this field, and the remark “shorter” lowers it by one level."
           },
           "levels": [
             "person"
@@ -4384,7 +4384,10 @@
           "subgroup": "profil",
           "flows": [
             "chat.send",
-            "graph.navigate"
+            "graph.navigate",
+            "graph.card",
+            "profile.show",
+            "profile.interview"
           ]
         },
         "on_unlisted": "refuse"
