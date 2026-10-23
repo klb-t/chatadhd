@@ -71,7 +71,7 @@ DEFAULT_CONFIG = {
     ],
     # w dodatkach bez numerow: od tego wiersza w dol to zapis asystenta, nie cytat
     "chunk_assistant_markers": ["Co z tego wynika", "Wymaganie (", "Wymaganie:"],
-    "min_quote_letters": 2,
+    "min_quote_letters": 1,
     "status_labels_pl": {
         "JEST": "jest", "CZĘŚCIOWO": "częściowo", "BRAK": "brak",
         "NIEAKTUALNE": "nieaktualne", "SPRZECZNE": "sprzeczne",
@@ -89,8 +89,8 @@ ISO = re.compile(r"\d{4}-\d\d-\d\d")
 CODE = r"[A-Z]{1,5}\d{1,3}"
 NUM_RE = re.compile(r"^(\d+)\. \*\*(" + CODE + r")\b")
 SUM_RE = re.compile(r"^- \*\*(" + CODE + r")\*\*\s*(.*)$")
-THEME_RE = re.compile(r"^# (.+?) \(`([A-Za-z_]+)`\)\s*$")
-LUKI_THEME_RE = re.compile(r"^## (.+?) \(`([A-Za-z_]+)`\)(?:\s+—\s+(.*?))?\s*$")
+THEME_RE = re.compile(r"^# (.+?) \(`([A-Za-z_0-9]+)`\)\s*$")
+LUKI_THEME_RE = re.compile(r"^## (.+?) \(`([A-Za-z_0-9]+)`\)(?:\s+—\s+(.*?))?\s*$")
 LUKI_ITEM_RE = re.compile(r"^- \*\*([A-ZĄĆĘŁŃÓŚŹŻ]+)\*\* `([^`]+)`\s*(.*)$")
 OWNER_HEAD_RE = re.compile(r"^## ((?:R|D)\d+)\s+—\s+(.*)$")
 OPEN, CLOSE = "„", "”"
@@ -201,7 +201,8 @@ class QuoteScanner:
 
 
 def letters(s: str) -> int:
-    return sum(1 for c in s if c.isalpha())
+    """Liczba liter i cyfr: odsiewa „…” i podobne cudzyslowy bez tresci."""
+    return sum(1 for c in s if c.isalnum())
 
 
 REF_TICK = re.compile(r"`([^`]+)`")
