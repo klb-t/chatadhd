@@ -7,6 +7,7 @@
 #include <set>
 #include <vector>
 
+#include "loom/onboarding.h"
 #include "loom/onboarding_store.h"
 #include "loom/util/ids.h"
 #include "loom/util/time.h"
@@ -67,6 +68,8 @@ Result<Loaded> load(const Env& e, const Json& args, bool create) {
 
 Result<Json> view(const Env& e, const Loaded& l, Json request) {
   if (!request.contains("locale")) request["locale"] = e.lang;
+  // The words of a remark are read in the languages of the preset, the lines are said in e.lang (K2b-4).
+  if (json::get_string(request, "what") == "remark" && !request.contains("match_languages") && !e.match_languages.is_null()) request["match_languages"] = e.match_languages;
   auto r = OnboardingStore(e.db).interview_view(l.user, request);
   if (!r) {
     if (r.error().code == Errc::Unsupported) return err(Errc::Unsupported, e.say("profile_scenario_old", Json::object()));
@@ -612,15 +615,25 @@ std::string trim_typed(std::string t) {
 }
 
 // The operation a whole message stands for when it is exactly one of the control words (pack chat_ops, profile.words), else empty.
+// K2b-4: the words are read in the languages of the preset (Env::match_languages; the language of the conversation first, so a word that two
+// languages share means what it means in the conversation's), whatever the language of the conversation: the person may type in another
+// language than the one the screen is in. The reply is in e.lang either way.
 std::string control_op(const Env& e, const std::string& text) {
   const std::string typed = trim_typed(e.fold(text));
   if (typed.empty() || !e.words.is_object()) return std::string();
-  for (auto it = e.words.begin(); it != e.words.end(); ++it) {
-    const Json* list = json::find(it.value(), e.lang);
-    if (!list || !list->is_array()) continue;
-    for (const auto& w : *list)
-      if (w.is_string() && trim_typed(e.fold(w.get<std::string>())) == typed) return it.key();
-  }
+  Json present = Json::object();
+  for (auto it = e.words.begin(); it != e.words.end(); ++it)
+    if (it.value().is_object())
+      for (auto l = it.value().begin(); l != it.value().end(); ++l) present[l.key()] = true;
+  auto order = onboarding::match_languages(e.lang, e.match_languages, present);
+  if (!order) return std::string();  // an unreadable preset reads no word; the remark path names it to the person
+  for (const auto& lang : *order)
+    for (auto it = e.words.begin(); it != e.words.end(); ++it) {
+      const Json* list = json::find(it.value(), lang);
+      if (!list || !list->is_array()) continue;
+      for (const auto& w : *list)
+        if (w.is_string() && trim_typed(e.fold(w.get<std::string>())) == typed) return it.key();
+    }
   return std::string();
 }
 

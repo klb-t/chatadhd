@@ -25,6 +25,10 @@ struct Env {
   // listener for what a client wants to hear about (conv_created); both may stay empty.
   Json words = Json::object();
   std::function<void(const std::string&, const Json&)> announce;
+  // K2b-4: the languages the person's words are understood in (pack chat_ops, profile.match_languages): null/"all" = every language the words and the
+  // remark rules have (the preset), "conversation" = only the language of the conversation, a list = those. The language of the conversation (lang)
+  // stays the language of what is SAID; see onboarding::match_languages.
+  Json match_languages = Json(nullptr);
 };
 
 // The id of the flow a conversation carries in its metadata when it is the interview (conversations.metadata.flow).

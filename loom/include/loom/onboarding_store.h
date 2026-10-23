@@ -35,7 +35,8 @@ class OnboardingStore {
                                const Json& extension);
   Result<Json> model_request(std::string_view user, std::string_view provider);
   // K2b-1: a read-only view of the interview over the stored profile, nothing is written and nothing leaves the machine.
-  // request: {what: questions|plan|levels|remark, locale?, level? (plan, remark), by_category? (plan), text? (remark)}.
+  // request: {what: questions|plan|levels|remark, locale?, level? (plan, remark), by_category? (plan), text? (remark),
+  // match_languages? (remark: "all" | "conversation" | [language ids], see onboarding::match_languages)}.
   // Result: {revision (the outer CAS token), view}. A stored scenario that lacks the parts of the question (detail_levels,
   // remark_rules) answers Unsupported, as ProfileSession does.
   Result<Json> interview_view(std::string_view user, const Json& request);

@@ -1154,7 +1154,7 @@
         "profile_unknown_category": "There is no category \"{{category}}\" in this profile.",
         "profile_no_value": "The value (value) is missing.",
         "profile_never_blocked": "You closed the topic \"{{topic}}\" with \"never\". I write nothing here. To ask about it again, say \"you may ask about ... again\".",
-        "profile_answer_saved": "I stored your answer about: {{topic}}. It waits for your confirmation.",
+        "profile_answer_saved": "I stored your answer about: {{topic}}. You will confirm it together with the whole section, when we finish it.",
         "profile_remark_head": "This is how I understood it:",
         "profile_remark_already": "It is already set that way.",
         "profile_remark_erases": "This will erase the stored answers: {{fields}}.",
@@ -1575,7 +1575,7 @@
         "profile_unknown_category": "Nie ma kategorii „{{category}}” w tym profilu.",
         "profile_no_value": "Brakuje wartości (value).",
         "profile_never_blocked": "Temat „{{topic}}” zamknąłeś słowem „nigdy”. Nic tu nie zapisuję. Aby znów o to pytać, napisz „możesz znowu pytać o ...”.",
-        "profile_answer_saved": "Zapisałem Twoją odpowiedź o: {{topic}}. Czeka na Twoje potwierdzenie.",
+        "profile_answer_saved": "Zapisałem Twoją odpowiedź o: {{topic}}. Potwierdzisz ją razem z całą sekcją, gdy ją skończymy.",
         "profile_remark_head": "Tak zrozumiałem:",
         "profile_remark_already": "To już jest tak ustawione.",
         "profile_remark_erases": "To usunie zapisane odpowiedzi: {{fields}}.",
@@ -1823,6 +1823,7 @@
     },
     "profile": {
       "default_user": "local",
+      "match_languages": "all",
       "words": {
         "never": {
           "pl": [

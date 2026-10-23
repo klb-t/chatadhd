@@ -377,11 +377,42 @@ std::size_t find_phrase(const std::vector<std::string>& words, const std::vector
     if (std::equal(phrase.begin(), phrase.end(), words.begin() + static_cast<std::ptrdiff_t>(at))) return at;
   return std::string::npos;
 }
-std::vector<std::string> languages(std::string_view locale) {
-  if (locale.empty() || locale == "any") return {"pl", "en"};
-  return {locale == "pl" ? "pl" : "en"};
-}
 }  // namespace
+
+// K2b-4. The language of a conversation decides the language of the lines on the screen; it does not decide what the person is understood in.
+Result<std::vector<std::string>> match_languages(std::string_view locale, const Json& spec, const Json& present) {
+  enum class Mode { all, conversation, list } mode = Mode::all;
+  std::set<std::string> listed;
+  if (spec.is_string()) {
+    const auto& name = spec.get_ref<const std::string&>();
+    if (name == "conversation") mode = Mode::conversation;
+    else if (name != "all" && name != "any") return invalid("match_languages must be \"all\", \"conversation\" or a list of language ids, not \"" + name + "\"");
+  } else if (spec.is_array()) {
+    mode = Mode::list;
+    for (const auto& l : spec) {
+      if (!l.is_string()) return invalid("match_languages: a list holds language ids (strings)");
+      listed.insert(l.get<std::string>());
+    }
+  } else if (!spec.is_null()) {
+    return invalid("match_languages must be \"all\", \"conversation\" or a list of language ids");
+  }
+  const bool anywhere = locale.empty() || locale == "any";  // no language named: nothing is "the conversation's"
+  const std::string here = anywhere ? std::string() : std::string(locale);
+  const std::string fallback = here == "pl" ? "pl" : "en";  // a language the data has no words in is read as English, as before
+  const bool has = present.is_object();
+  const std::string primary = has && present.contains(here) ? here : fallback;
+  std::vector<std::string> out;
+  auto take = [&](const std::string& lang) {
+    if (!has || !present.contains(lang) || std::find(out.begin(), out.end(), lang) != out.end()) return;
+    const bool allowed = mode == Mode::all || (mode == Mode::list && listed.count(lang) > 0) || (mode == Mode::conversation && (anywhere || lang == primary));
+    if (allowed) out.push_back(lang);
+  };
+  take(primary);
+  take(fallback);
+  if (has)
+    for (auto it = present.begin(); it != present.end(); ++it) take(it.key());
+  return out;
+}
 
 Result<Json> privacy_decision(const Json& state, const Json& request) {
   try {
@@ -909,6 +940,13 @@ Result<Json> ProfileSession::apply_remark(std::string_view remark, std::string_v
     const bool apply = json::get_bool(options, "apply");
     if (apply) LOOM_TRY(event_identity(options));
     const auto text_words = split_words(holder.norm->fold(remark));
+    // The languages the rules have words in, and the ones the person is read in (preset 'all'; options.match_languages names another reading).
+    Json present = Json::object();
+    for (const auto& rule : *rules)
+      if (const auto* pattern = json::find(rule, "pattern"); pattern && pattern->is_object())
+        for (auto it = pattern->begin(); it != pattern->end(); ++it) present[it.key()] = true;
+    const auto* spec = json::find(options, "match_languages");
+    LOOM_TRY_ASSIGN(const auto tried, match_languages(locale, spec ? *spec : Json(nullptr), present));
     const auto* negators = json::find(scenario_, "remark_negators");
     const auto level_now = json::get_string(options, "level");
     const auto* defs = json::find(scenario_, "detail_levels");
@@ -918,7 +956,7 @@ Result<Json> ProfileSession::apply_remark(std::string_view remark, std::string_v
       const auto& effect = rule["effect"];
       const bool is_never = json::get_string(effect, "status") == "never";
       bool hit = false;
-      for (const auto& lang : languages(locale)) {
+      for (const auto& lang : tried) {
         const auto* list = json::find(rule["pattern"], lang);
         if (!list) continue;
         for (const auto& pattern : *list) {
@@ -1003,7 +1041,8 @@ Result<Json> ProfileSession::apply_remark(std::string_view remark, std::string_v
         }
       }
     }
-    return Json{{"matched", matched}, {"proposals", proposals}, {"applied", applied}, {"conflicts", conflicts}, {"understood", understood}, {"applies", apply}};
+    return Json{{"matched", matched}, {"proposals", proposals}, {"applied", applied}, {"conflicts", conflicts}, {"understood", understood}, {"applies", apply},
+                {"match_languages", tried}};
   } catch (const std::exception& e) { state_ = before; return invalid(std::string("malformed remark input: ") + e.what()); }
 }
 }  // namespace loom::onboarding

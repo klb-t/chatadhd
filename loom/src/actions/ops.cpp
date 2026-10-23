@@ -2538,7 +2538,8 @@ StepOutcome profile_run(Ctx& x, ProfileFn fn, std::initializer_list<const char*>
                    lx.cfg.value("profile", Json::object()).value("words", Json::object()),
                    [rt](const std::string& what, const Json& payload) {
                      if (what == "conv_created") rt->bus().emit(events::kConvCreated, payload);
-                   }};
+                   },
+                   lx.cfg.value("profile", Json::object()).value("match_languages", Json(nullptr))};
   auto r = fn(env, args);
   if (!r) return fail(r.error());
   return answer(r->text, r->data);

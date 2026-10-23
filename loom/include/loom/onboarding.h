@@ -1,6 +1,8 @@
 // Data-driven user profile, privacy and resumable interview. No network calls.
 #pragma once
+#include <string>
 #include <string_view>
+#include <vector>
 #include "loom/result.h"
 #include "loom/util/json.h"
 
@@ -9,6 +11,12 @@ namespace loom::onboarding {
 // request: {op: ask|store|send|infer, category, field?, provider?, detail?,
 // sensitivity?, provenance?}. The result explains the selected rule/denial.
 Result<Json> privacy_decision(const Json& state, const Json& request);
+
+// K2b-4: the languages a free message of the person is read in, in the order they are tried. `locale` is the language of the conversation (the
+// language of the lines on the screen); `present` is an object keyed by the languages the data has words in; `spec` is the preset: null or "all" =
+// every language of `present` (the conversation's first), "conversation" = only the conversation's (English when `present` has no words in it), a
+// list of language ids = those. Anything else is InvalidArgument. An empty locale or "any" names no conversation: "conversation" then means all.
+Result<std::vector<std::string>> match_languages(std::string_view locale, const Json& spec, const Json& present);
 
 class ProfileSession {
  public:

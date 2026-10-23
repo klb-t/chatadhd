@@ -494,7 +494,9 @@ Result<Json> OnboardingStore::interview_view(std::string_view user, const Json& 
       LOOM_TRY_ASSIGN(view, session.levels(locale.empty() ? "en" : locale));
     } else if (what == "remark") {
       // apply is never passed: a remark is only matched here (proposals), written by the caller through apply()
-      LOOM_TRY_ASSIGN(view, session.apply_remark(request.value("text", ""), locale, Json{{"level", request.value("level", "")}}));
+      Json options{{"level", request.value("level", "")}};
+      if (request.contains("match_languages")) options["match_languages"] = request.at("match_languages");  // K2b-4: the preset of the languages
+      LOOM_TRY_ASSIGN(view, session.apply_remark(request.value("text", ""), locale, options));
     } else return invalid("unknown interview view: " + what);
     return Json{{"revision", state.at("revision")}, {"view", std::move(view)}};
   } catch (const std::exception& e) { return invalid(std::string("onboarding interview view: ") + e.what()); }
