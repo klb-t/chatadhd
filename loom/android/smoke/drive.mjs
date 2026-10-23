@@ -615,10 +615,17 @@ const serverChecks = [
   ["interview: Poznajmy się -> level -> remark with a question waiting -> Tak; skip to the end -> remark again -> Tak; no model request", async () => {
     const before = providerCalls().length;
     const lastAnswer = () => page.ev(`(()=>{const b=[...document.querySelectorAll('.msg.assistant .body')].pop();return (b&&b.innerText||'').replace(/\\s+/g,' ').slice(0,240)})()`);
+    // the remark is understood when the proposal comes, or (the same rule already set by the first remark) when the kernel
+    // answers that it understood it and nothing changes ("This is how I understood it: … It is already set that way.")
     const remark = async when => {
+      const n = await page.ev(`document.querySelectorAll('.msg.assistant .body').length`);
       await send("nie pytaj o zdrowie");
-      await until(`the proposal 'Tak zrozumiałem' (${when})`, () => has("chat-action-proposal"), 60, 400)
-        .catch(async e => { throw new Error(`${e.message}; the last answer: "${await lastAnswer()}"`); });
+      const got = await until(`the proposal 'Tak zrozumiałem' or 'already set' (${when})`, async () => {
+        if (await has("chat-action-proposal")) return "proposal";
+        if ((await page.ev(`document.querySelectorAll('.msg.assistant .body').length`)) > n && /understood it|zrozumiałem/i.test(await lastAnswer()) && !(await has("chat-action-proposal"))) return "already";
+        return false;
+      }, 60, 400).catch(async e => { throw new Error(`${e.message}; the last answer: "${await lastAnswer()}"`); });
+      if (got === "already") { await sleep(1500); if (!(await has("chat-action-proposal"))) return `understood, already set: "${await lastAnswer()}"`; }
       const text = (await textTid("chat-action-proposal")).replace(/\s+/g, " ").slice(0, 160);
       await click("chat-action-proposal-confirm"); await waitGone("chat-action-proposal", 60);
       return text;
@@ -640,7 +647,7 @@ const serverChecks = [
     for (; skips < 40; skips++) {
       await sleep(800);
       if (!(await skipChip())) break;
-      await page.ev(`document.querySelector('[data-testid="interview-chip"][data-chip="skip"]').click()`);
+      await page.ev(`document.querySelector('[data-testid="interview-chip"][data-chip="skip"]')?.click()`);   // it may go away between the check and the tap
     }
     if (await skipChip()) throw new Error(`a question still waits after ${skips} skips`);
     const second = await remark("no question waiting");
@@ -865,7 +872,7 @@ const serverChecks = [
       await page.ev("location.reload()").catch(() => {});
       await waitTid("chat-input", 60); await backToChat();
       await click("shell-drawer-toggle"); await waitTid("shell-conv", 10);
-      if (!(await clickText("shell-conv", "/Poznajmy|Get to know|Let.s get/i"))) throw new Error("the interview conversation is not in the list: " + (await textTid("shell-conv")).slice(0, 200));
+      if (!(await clickText("shell-conv", "/Poznajmy|Getting to know|Get to know|Let.s get/i"))) throw new Error("the interview conversation is not in the list: " + (await textTid("shell-conv")).slice(0, 200));
       await waitTid("interview-info", 30);
       const info = (await textTid("interview-info")).replace(/\s+/g, " ").slice(0, 160);
       const chips = (await textTid("interview-chips")).replace(/\s+/g, " ").slice(0, 160);
