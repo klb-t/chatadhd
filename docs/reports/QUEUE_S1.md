@@ -1,8 +1,10 @@
-# Kolejka S1 — stan 2026-10-23 19:23 UTC
+# Kolejka S1 — stan 2026-10-23 20:05 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
 **Teleport (R72):** karta startowa nowej sesji S1 = `docs/ops/TELEPORT_S1.md` (aktualizowana tuż przed przełączeniem); zadania zaplanowane = `docs/ops/ZADANIA_ZAPLANOWANE_2026-10-23.md`; przeprowadzka = `docs/ops/PRZEPROWADZKA_GCP_2026-10-23.md`.
+
+## 20:04 UTC: pace MOŻNA (71 % przy celu 80 % na sobotę 08:00) → **kontrola przed użyciem syntezy panelu** START (`wf_04712c04-50f`, Haiku odczyt + Sonnet poprawki, `INTERFEJS_WSPOLPRACY_v2_2026-10-23.md`, 302 linie po addendum `df1593c5`). Sesja VM (gcp) zrobiła pierwszy build na maszynie: 12 min na zimno, ctest 242/242 z Pythonem 3.11 (systemowy 3.14 daje 7 czerwonych środowiskowo — do odnotowania w bootstrapie), poprawka ostrzeżenia g++15 `-Wdangling-reference` w `loom/src/extract/candidate_graph.cpp` (`1a7df48b`) wylądowała na gałęzi dokumentów → S1 przenosi ją na `claude/m1-w1` (build + testy extract/research w tle), na main pojedzie z następnym pakietem przez bramkę (sam fakt: gałąź dokumentów nigdy nie idzie na main; uwaga dla sesji VM w skrzynce). Spot-guard gotowy w `tools/gcp/`, nie wdrożony (klasyfikator; właściciel ma uruchomić instalator sam); `tools/cloud/login_all.sh` czeka na właściciela; przegląd usług i kredytów właściciel zatwierdził w sesji VM bezpośrednio (20:5x jego czasu).
 
 ## VM 21:0x UTC (sesja gcp): build dev zimny ≈ 12 min, ctest 1217 s, 242/242 z Pythonem 3.11 (`~/.venvs/loom311`, z 3.14 systemowym 7 czerwonych środowiskowo); poprawka g++15 `-Wdangling-reference` w `candidate_graph.cpp` (`1a7df48b`); spot-guard (awans Spot→Standard przy wywłaszczeniu z zadaniami) gotowy w `tools/gcp/`, NIE wdrożony (klasyfikator; właściciel uruchamia instalator); `tools/cloud/login_all.sh` czeka na właściciela; przegląd usług/kredytów (zatwierdzony przez właściciela 20:5x) po podpięciu kont.
 

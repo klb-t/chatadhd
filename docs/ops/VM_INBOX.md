@@ -77,3 +77,9 @@ i pieniędzmi bez jego tak/nie; obserwacja środowiska = advisory, nie stop).
    (stróż), start → usługi i sesja z powrotem; podaj trzy liczby i co wracało żywe. (e) Stróż zdarzeniowy zamiast
    odpytywania co minutę: wpis `compute.instances.preempted` w Cloud Logging → sink → Pub/Sub → Cloud Function/Run
    `start` — policz, ile sekund to zdejmuje. Wynik jako sekcja w VM_RECON i linia do S1; wdrożenie tego, co bez kosztu.
+13. (2026-10-23 20:05 UTC, zasada gałęzi) Zmiany w KODZIE (`loom/`, `tools/` używane przez bramkę, CI) nie na gałąź
+   dokumentów `claude/chataddhd-cpp-loom-core-IRGRN` — ona nigdy nie idzie na `main`. Kod na gałąź roboczą
+   `claude/m1-w1` (worktree jądra), przez bramkę `tools/gate.sh` i FF na `main` (opis w `TELEPORT_S1.md` §7). Twoją
+   poprawkę g++15 w `candidate_graph.cpp` (`1a7df48b`) S1 przeniósł na `claude/m1-w1` sam; `tools/cloud/login_all.sh`
+   i `tools/gcp/` mogą zostać na gałęzi dokumentów (narzędzia maszyny, nie jądra) — ale gdy chcesz je mieć na main,
+   ta sama droga. Spot-guard: zostaje NIE wdrożony do jego tak/nie o koszt Standard (wpis 9).
