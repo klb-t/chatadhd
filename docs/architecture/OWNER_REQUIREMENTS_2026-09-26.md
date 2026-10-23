@@ -893,6 +893,12 @@ Uogólnienie R88 (09:5x UTC; właściciel zmęczony, „wolna ręka”, „to ni
 
 (17:3x UTC, zrzut: Claude Code v2.1.309 na VM, Opus 5.5, Claude Max, ~/chatadhd, tryb auto; sesja widoczna w aplikacji po .) Seria: (1) VM miała gościć WSZYSTKIE jego projekty, nie tylko ChatADHD — czy ogarnę stamtąd wszystko; czy widzę wszystkie sesje; poza ChatADHD postawić „watchdoga”; czy „ageds” ma serwer (do sprawdzenia w repozytoriach). (2) Najpierw rekonesans instancji: śmieci po niedokończonych instalacjach; koordynator administruje tą maszyną. (3) Interfejs współpracy (przeglądarkowy) „na bogato”: wyeksponować wszystkie narzędzia, rutyny/makra/szablony dla czynności (jego przykład: start nowego podwykonawcy = cała filozofia do kontekstu) — przykład, nie wymóg; przemyśleć to ma kilku mocnych agentów w dyskusji, analizując jego styl pracy. (4) Prompt-wprowadzenie dla sesji na GCP; ogarnąć wszystko, równolegle gdy trzeba. (5) VM wyłącza się po 30 min bezczynności — sprawdzić, czy działający Claude Code to blokuje; zadbać.
 
+## R91 — Limity tygodnia: Fable do końca, reszta do 90 %; linie do wklejenia w Claude nie mogą wyglądać jak shell (owner, 2026-10-23)
+> ruszyło ale zmyliłeś mnie bo jak widzę git pull &&... to piszę w bashu.
+> limit się tylko na fabla kończy. jego możesz do samego końca dojechać, resztę do 90
+
+Zrzut Usage 20:44: sesja 11 %, tydzień wszystkie modele 70 %, Fable 93 % (reset wt 08:59), kredyty uzycia WLACZONE z limitem miesiecznym 40 EUR i saldem 0 EUR (obserwacja datowana: po wyczerpaniu limitu Fable platforma zacznie zuzywac kredyty do 40 EUR/mies. - to jego wlasne ustawienie). Regula: Fable wolno wyjechac do 100 % limitu tygodnia; pozostale modele do 90 % paska 'All models' (preset w tools/pace_plan.json). Uwaga robocza: linia do wklejenia w prompt Claude nie moze zaczynac sie od polecenia shella (git pull && ...), bo wtedy wpisuje ja w bashu - pisac zdaniem.
+
 ## Decision — rebuild, don't recover
 > "nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane"
 
