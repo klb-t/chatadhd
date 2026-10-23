@@ -5,8 +5,8 @@
  "sources": {
   "owner": {
    "path": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
-   "sha256": "0ece3a156761a75a490b6342370a8d9a792bf14b56e2573ac1f5d05b9e221e95",
-   "lines": 848
+   "sha256": "ab762357885fc9a5ccebdce176ea487ce2b46a7d210ba40d0b00a3c6f32455e0",
+   "lines": 853
   },
   "slowa": {
    "path": "docs/architecture/SLOWA_WLASCICIELA_2026-10-16.md",
@@ -4501,7 +4501,7 @@
    "summary": null,
    "restatement": [
     {
-     "text": "Ilustracja R77, wyraźnie oznaczona jako przykład, którego nie trzeba realizować: jeśli filozofia (wszystko konfigurowalne, żadnych wymyślonych granic, współrzędne ciągłe, ekstrapolacja) jest cały czas dobrze reprezentowana w silniku, to zoomowanie zdjęcia stopniowo aż do piany kwantowej nie byłoby nawet trudne. Wniosek projektowy do K3/G3: rozdzielczość (skala) to zwykły, ciągły wymiar grafu; zoom = ruch wzdłuż niego; treść na danej skali jest albo zapisana, albo wyprowadzona (interpolacja/ekstrapolacja/generacja) z zaznaczonym pochodzeniem i kosztem; silnik nie ma górnej ani dolnej granicy skali — tylko podpowiedzi o koszcie i wiarygodności (R58, R59).",
+     "text": "Ilustracja R77, wyraźnie oznaczona jako przykład, którego nie trzeba realizować: jeśli filozofia (wszystko konfigurowalne, żadnych wymyślonych granic, współrzędne ciągłe, ekstrapolacja) jest cały czas dobrze reprezentowana w silniku, to zoomowanie zdjęcia stopniowo aż do piany kwantowej nie byłoby nawet trudne. Wniosek projektowy do K3/G3: rozdzielczość (skala) to zakres pola widzenia widoku (R79: zoom to nie ruch; pozycja i ruch są osobne, a krok ruchu wynika z pola widzenia); treść na danej skali jest albo zapisana, albo wyprowadzona (interpolacja/ekstrapolacja/generacja) z zaznaczonym pochodzeniem i kosztem; silnik nie ma górnej ani dolnej granicy skali — tylko podpowiedzi o koszcie i wiarygodności (R58, R59).",
      "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:832"
     }
    ],
@@ -4512,6 +4512,7 @@
    "next_step": null,
    "refs": [
     "s_aeb05ddf56b2",
+    "s_7fb787bed8cd",
     "s_acee58464df3",
     "s_c461e9ba42ec"
    ],
@@ -4524,6 +4525,60 @@
     {
      "role": "owner",
      "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:829-832"
+    }
+   ],
+   "files": [
+    "owner"
+   ]
+  },
+  {
+   "id": "s_7fb787bed8cd",
+   "aliases": [
+    "R79"
+   ],
+   "kind": "requirement",
+   "title": "Zoom to nie ruch: zoom = zakres pola widzenia; szybkość ruchu jest z nim związana (na skali piany kwantowej idziesz długościami Plancka na sekundę)",
+   "date": "2026-10-23",
+   "theme": "owner_requirements",
+   "theme_inferred": false,
+   "understanding": {
+    "state": "none"
+   },
+   "quotes": [
+    {
+     "text": "Zoom to nie jest ruch zum to jest zakres pola widzenia a z nim związane jest szybkość ruchu, jak wyzomujesz na pijanych kwantową i idziesz do przodu to się poruszasz długościami planka na sekundę",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:835",
+     "ref": null,
+     "attr": [],
+     "lead": null,
+     "secondary": false
+    }
+   ],
+   "sense": null,
+   "summary": null,
+   "restatement": [
+    {
+     "text": "Korekta mojego sensu R78 („zoom = ruch wzdłuż wymiaru skali” — źle). Dwie osobne rzeczy: (a) pole widzenia = zakres (rozciągłość okna) wzdłuż wymiaru — to jest zoom; (b) pozycja i ruch wzdłuż wymiaru — osobne, a KROK/SZYBKOŚĆ ruchu jest związana z polem widzenia (wyzoomowany do piany kwantowej idziesz długościami Plancka na sekundę). Przeniesienie na selektor kontekstu (K3): bieżący węzeł (0) = pozycja; głębokość/szerokość kontekstu = pole widzenia; „szerzej/głębiej” zmienia pole, a wielkość kroku przy poruszaniu się (−1, następna wersja, dalej w czasie) wynika z pola widzenia; skala sama w sobie jest cechą widoku, nie współrzędną węzła. Dotyczy też grafu i perspektyw (G3): zoom widoku ≠ nawigacja.",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:837"
+    }
+   ],
+   "commentary": [],
+   "status": null,
+   "gap_text": null,
+   "evidence": [],
+   "next_step": null,
+   "refs": [
+    "s_a943f67d9f89"
+   ],
+   "supersedes": [],
+   "superseded_by": [],
+   "supersession_notes": [],
+   "tags": [],
+   "heading_note": "owner, 2026-10-23",
+   "sources": [
+    {
+     "role": "owner",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:834-837"
     }
    ],
    "files": [
@@ -4546,7 +4601,7 @@
    "quotes": [
     {
      "text": "\"nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane\"",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:835",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:840",
      "ref": null,
      "attr": [],
      "lead": null,
@@ -4558,7 +4613,7 @@
    "restatement": [
     {
      "text": "Recovered versions (`history/chatadhd_v0.8.3`, `history/chatadhd_v0.9.0`) and\nthe historical report are sources of requirements, ideas and data assets\n(e.g. `film_structure.json`), and real ground truth for self-discovery tests —\nnot code to merge. Everything is rebuilt in Loom with tests.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:837-840"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:842-845"
     }
    ],
    "commentary": [],
@@ -4575,7 +4630,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:834-840"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:839-845"
     }
    ],
    "files": [
@@ -4601,7 +4656,7 @@
    "restatement": [
     {
      "text": "`workbench_mockup_2026-09-26.webp`: dockable/floating panels (conversation\nlist, active conversation, knowledge graph with active context window, project\nstructure with dimmed high-confidence auto-completable nodes, artifact views\nfor music/video with timeline + storyboard, video player, execution\nenvironment with agent), multi-format ingestion, Loom SDK at the centre.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:843-847"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:848-852"
     }
    ],
    "commentary": [],
@@ -4618,7 +4673,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:842-847"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:847-852"
     }
    ],
    "files": [
