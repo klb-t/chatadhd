@@ -1518,10 +1518,12 @@ Result<Read> read_preferences(Impl& c, const Json& src, const std::string&, cons
     const Json named = src.value("value_meanings", Json::object()).value(name, Json::object());
     if (named.is_object())
       for (const auto& m : named.items()) meanings.push_back(Json{{"value", m.key()}, {"meaning", m.value()}});
-    // The interview's slot that asks about the same thing is the same preference seen from the interview (same_as).
-    if (const std::string slot = json::get_string(src.value("slot_of", Json::object()), name); !slot.empty())
-      r.edges.push_back(Json{{"src", "preference:" + name}, {"dst", "party:self/" + slot}, {"kind", "same_as"}});
+    // The interview's slot that asks about the same thing is the same preference seen from the interview (same_as); changing the preference is
+    // changing that slot, so the node carries it (attrs.slot: the argument of the actions the parts table offers on a preference).
+    const std::string slot = json::get_string(src.value("slot_of", Json::object()), name);
+    if (!slot.empty()) r.edges.push_back(Json{{"src", "preference:" + name}, {"dst", "party:self/" + slot}, {"kind", "same_as"}});
     n["attrs"] = Json{{"key", key}, {"layer", layer}};
+    if (!slot.empty()) n["attrs"]["slot"] = slot;
     if (status != "effective") {
       n["value"] = res.value("value", Json(nullptr));
       n["value_human"] = c.human_value(n["value"], Json{{"values", meanings}});
@@ -1531,7 +1533,7 @@ Result<Read> read_preferences(Impl& c, const Json& src, const std::string&, cons
       continue;
     }
     // The pack entry is what ships; a "user" layer is the person's override of it.
-    Json field{{"key", key}, {"values", meanings}, {"preset_value", e.value("value", Json(nullptr))}, {"preset_source", "profile:profiles/user.pack"},
+    Json field{{"key", key}, {"values", meanings}, {"preset_value", e.value("value", Json(nullptr))}, {"preset_source", "preset:profiles/user.pack"},
                {"person_layer", "profiles/user.pack"}, {"person_source", "profile:profiles/user.pack#" + key}};
     if (layer == "user") field["person_value"] = res.value("value", Json(nullptr));
     const Json resolved = c.resolve_field(field, src);

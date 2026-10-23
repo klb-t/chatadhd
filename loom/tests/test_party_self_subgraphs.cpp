@@ -256,8 +256,15 @@ TEST_SUITE("party_self_subgraphs") {
     const Json length = p.card("preference:length");
     CHECK(length.at("value") == "concise");
     CHECK(length.at("provenance").at("scope") == "installation");
+    CHECK(length.at("provenance").at("layer") == "rom");
     CHECK(length.at("evidence").at("class") == "declared");
-    for (const auto& l : length.at("attrs").at("resolved").at("inheritance"))
+    // changing a preference is changing the interview's field it is the same as: the node offers that action with that field (GR38)
+    const Json& style_row = *child(prefs, "preference:style");
+    REQUIRE(has_action(style_row, "profile.set"));
+    CHECK(action_of(style_row, "profile.set").at("args").at("slot") == "communication.style");
+    CHECK(has_action(*child(prefs, "preference:length"), "profile.set"));
+    const Json& length_chain = length.at("attrs").at("resolved").at("inheritance");
+    for (const auto& l : length_chain)
       if (l.at("level") == "person") CHECK(l.at("role") == "none");
   }
 
@@ -278,7 +285,8 @@ TEST_SUITE("party_self_subgraphs") {
     CHECK(card.at("provenance").at("scope") == "conversation");
     CHECK(card.at("evidence").at("class") == "observed");
     std::map<std::string, Json> level;
-    for (const auto& l : card.at("attrs").at("resolved").at("inheritance")) level[l.at("level").get<std::string>()] = l;
+    const Json& card_chain = card.at("attrs").at("resolved").at("inheritance");
+    for (const auto& l : card_chain) level[l.at("level").get<std::string>()] = l;
     CHECK(level.at("conversation").at("role") == "supplied");
     CHECK(level.at("installation").at("role") == "overridden");
     CHECK(level.at("installation").at("value") == "concise");
