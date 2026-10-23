@@ -866,6 +866,11 @@ Uzupełnienie R83 (09:2x UTC): nie tylko nie zamykać list przykładami — w og
 
 Domknięcie R81–R84 (09:2x UTC): to, co nazwałem pokrętłem (jedna wartość), jest wielowymiarową daną — mapą preferencji/granic — której rozdzielczość rośnie z każdą interakcją z użytkownikiem (odpowiedź, poprawka, wybór, „nie pytaj następnym razem”, zoom, odrzucenie). Preset to gruba mapa startowa; każda interakcja dokłada punkt z pochodzeniem (K2c: dowód, data, metoda); silnik odpytuje mapę w rozdzielczości potrzebnej do decyzji (R79: pole widzenia) i tam, gdzie mapa jest rzadka, albo wyprowadza (R81: w granicach swobody), albo pyta (R82). Wymiary mapy nie są z góry wyliczone (R84) — wyłaniają się z interakcji i z charakterystyki zadań. Ten sam mechanizm dla wszystkich ustawień, nie tylko renderowania.
 
+## R86 — Ustawienie/preferencja = po prostu węzeł w grafie powiązany z innymi bogatymi krawędziami (owner, 2026-10-23)
+> czyli po prostu węzeł w grafię powiązany z innymi bogatymi krawędziami...
+
+Domknięcie R85 (09:3x UTC; „grafię” = grafie, ASR): wielowymiarowa dana preferencji nie jest osobnym magazynem ustawień, tylko WĘZŁEM GRAFU; jej „wymiary” to bogate krawędzie (z atrybutami: waga, pochodzenie, data, kontekst, rozdzielczość, kto ustawił) do innych węzłów — rodzajów zadań, jednostek, osób, rozmów, interakcji, perspektyw. Wzrost rozdzielczości = nowe lub doprecyzowane krawędzie; odczyt w potrzebnej rozdzielczości = przejście po krawędziach z wagami; presety = krawędzie z pochodzeniem „preset”. Spójne z tym, co już jest: łańcuch zakresów preferencji (instalacja → osoba → jednostki → rozmowa, K2c-2) i chip „kto ustawił” to już węzły i krawędzie; K3 i R81–R85 tylko to uogólniają (graf jest hubem).
+
 ## Decision — rebuild, don't recover
 > "nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane"
 

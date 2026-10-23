@@ -5,8 +5,8 @@
  "sources": {
   "owner": {
    "path": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
-   "sha256": "6c9810ec1f28c1fd29ea3e6527e9c0cad6d8c2a8e81bc78e8b625c04229bfaaf",
-   "lines": 883
+   "sha256": "05dee61326b82bca3bbcb42e768d91309b8af0d772f7234271fe9f1952893582",
+   "lines": 888
   },
   "slowa": {
    "path": "docs/architecture/SLOWA_WLASCICIELA_2026-10-16.md",
@@ -4928,6 +4928,64 @@
    ]
   },
   {
+   "id": "s_b0cd2d2de684",
+   "aliases": [
+    "R86"
+   ],
+   "kind": "requirement",
+   "title": "Ustawienie/preferencja = po prostu węzeł w grafie powiązany z innymi bogatymi krawędziami",
+   "date": "2026-10-23",
+   "theme": "owner_requirements",
+   "theme_inferred": false,
+   "understanding": {
+    "state": "none"
+   },
+   "quotes": [
+    {
+     "text": "czyli po prostu węzeł w grafię powiązany z innymi bogatymi krawędziami...",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:870",
+     "ref": null,
+     "attr": [],
+     "lead": null,
+     "secondary": false
+    }
+   ],
+   "sense": null,
+   "summary": null,
+   "restatement": [
+    {
+     "text": "Domknięcie R85 (09:3x UTC; „grafię” = grafie, ASR): wielowymiarowa dana preferencji nie jest osobnym magazynem ustawień, tylko WĘZŁEM GRAFU; jej „wymiary” to bogate krawędzie (z atrybutami: waga, pochodzenie, data, kontekst, rozdzielczość, kto ustawił) do innych węzłów — rodzajów zadań, jednostek, osób, rozmów, interakcji, perspektyw. Wzrost rozdzielczości = nowe lub doprecyzowane krawędzie; odczyt w potrzebnej rozdzielczości = przejście po krawędziach z wagami; presety = krawędzie z pochodzeniem „preset”. Spójne z tym, co już jest: łańcuch zakresów preferencji (instalacja → osoba → jednostki → rozmowa, K2c-2) i chip „kto ustawił” to już węzły i krawędzie; K3 i R81–R85 tylko to uogólniają (graf jest hubem).",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:872"
+    }
+   ],
+   "commentary": [],
+   "status": null,
+   "gap_text": null,
+   "evidence": [],
+   "next_step": null,
+   "refs": [
+    "s_52ddb515794e",
+    "s_281f9b0d06cf",
+    "s_4bbd386eaca6",
+    "s_80c95f8ca565",
+    "s_20c566121cde"
+   ],
+   "supersedes": [],
+   "superseded_by": [],
+   "supersession_notes": [],
+   "tags": [],
+   "heading_note": "owner, 2026-10-23",
+   "sources": [
+    {
+     "role": "owner",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:869-872"
+    }
+   ],
+   "files": [
+    "owner"
+   ]
+  },
+  {
    "id": "s_18ec73967a7b",
    "aliases": [
     "owner:decision-rebuild-don-t-recover"
@@ -4943,7 +5001,7 @@
    "quotes": [
     {
      "text": "\"nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane\"",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:870",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:875",
      "ref": null,
      "attr": [],
      "lead": null,
@@ -4955,7 +5013,7 @@
    "restatement": [
     {
      "text": "Recovered versions (`history/chatadhd_v0.8.3`, `history/chatadhd_v0.9.0`) and\nthe historical report are sources of requirements, ideas and data assets\n(e.g. `film_structure.json`), and real ground truth for self-discovery tests —\nnot code to merge. Everything is rebuilt in Loom with tests.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:872-875"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:877-880"
     }
    ],
    "commentary": [],
@@ -4972,7 +5030,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:869-875"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:874-880"
     }
    ],
    "files": [
@@ -4998,7 +5056,7 @@
    "restatement": [
     {
      "text": "`workbench_mockup_2026-09-26.webp`: dockable/floating panels (conversation\nlist, active conversation, knowledge graph with active context window, project\nstructure with dimmed high-confidence auto-completable nodes, artifact views\nfor music/video with timeline + storyboard, video player, execution\nenvironment with agent), multi-format ingestion, Loom SDK at the centre.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:878-882"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:883-887"
     }
    ],
    "commentary": [],
@@ -5015,7 +5073,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:877-882"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:882-887"
     }
    ],
    "files": [
