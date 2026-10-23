@@ -1,8 +1,10 @@
-# Kolejka S1 — stan 2026-10-23 19:05 UTC
+# Kolejka S1 — stan 2026-10-23 19:15 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
 **Teleport (R72):** karta startowa nowej sesji S1 = `docs/ops/TELEPORT_S1.md` (aktualizowana tuż przed przełączeniem); zadania zaplanowane = `docs/ops/ZADANIA_ZAPLANOWANE_2026-10-23.md`; przeprowadzka = `docs/ops/PRZEPROWADZKA_GCP_2026-10-23.md`.
+
+## R93 (właściciel ≈ 19:15 UTC, dosłownie w spec): sprawozdania pełnymi wypowiedziami, po ludzku, bez skrótów, których nie rozumie; slang tylko taki, jakiego sam używa. Zmienia R62/R63 „same linie statusu”: zapisane w CLAUDE.md (sekcja o stylu wątku). Obserwacja: moje ostatnie wiadomości (skróty FF, CI, r67c, R92, APK v5, S2, KVM) były dla niego nieczytelne — od teraz każda nazwa robocza słowami albo pominięta.
 
 ## R92 (właściciel ≈ 19:00 UTC, dosłownie w spec): sesja S1 chmurowa wygaszana, wszystko na GCP; **administrator VM = standardowy i jedyny punkt kontaktu** (chyba że jest powód); wdrażamy wszystko, co mamy, ale dane i importy wprowadza sam. Zrobione: R92 w spec; karta przejęcia `docs/ops/TELEPORT_S1.md` §7 (co VM przejmuje, co zostaje w chmurze z id zadań, protokół, wdrożenia bez danych, odwrót); skrzynka `VM_INBOX.md` wpisy 5–7 (przejęcie roli, wdrożenia chatadhd 8787 + AGEDS 8090 bez danych + `VM_DEPLOY`, `claude-rc.service` = decyzja techniczna tak). Pytania z rekonesansu: (3) i (4) odpowiedziane przez R92 (wdrożyć bez jego danych), (2) decyzja techniczna, (1) Spot→Standard dalej jego tak/nie. S1 chmurowa dokańcza: r67c → FF → CI → sha do S2 → APK v5 → kontrola Haiku; potem czuwanie. Krytyka zapisana w czacie: Spot = losowe zniknięcie jedynego punktu kontaktu (auto-start + stan w git łagodzi, Standard usuwa); 16 GB dysku = jeden build, bez równoległości; emulator zostaje w chmurze.
 

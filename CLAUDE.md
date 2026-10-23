@@ -61,6 +61,12 @@ presets, reversible):
   it; a paraphrase for approval (R61) is at most five lines. Long reasoning goes to `docs/reports/QUEUE_S1.md`,
   not to the chat. He also set the coordinator model to Fable himself („jesteś Fable, baw się dobrze, korzystaj
   z Ultra koda z rozsądkiem, tym większym im droższe zadanie”) — workflows scaled to the cost of the task.
+- **R93 (owner, 2026-10-23 ≈ 19:1x UTC) supersedes the "status lines only" shorthand:** „sprawozdanie mi dawaj pełnymi
+  wypowiedziami Nie oszczędzaj aż tak tokenów bo nie rozumiem o co ci chodzi jak tak piszesz skrótami. słowa ze slangu
+  Koterskiego to możesz stosować Jak widzisz że Ja je stosuję. tak to po ludzku mi gadaj”. So: reports in full sentences and
+  plain Polish; every working name or abbreviation (package ids, gate labels, session names, CI, FF, sha) is said in words
+  at first use or left out; slang only when he uses it himself. Short is still good — but never at the cost of his
+  understanding; the long reasoning still goes to `docs/reports/QUEUE_S1.md`.
 - **R62/R63 (2026-10-23):** chat output costs his time more than tokens — status lines only when they
   carry news. While he is away (tens of hours) and the coordinator knows with high probability what would
   satisfy him, it acts without waiting; the R61 paraphrase is then recorded as `proposed` for his review.

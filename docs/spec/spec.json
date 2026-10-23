@@ -5,8 +5,8 @@
  "sources": {
   "owner": {
    "path": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
-   "sha256": "a34b4e7bf8694c04d7f3bbbb163ce28cd1a02483edcd3aba726ee6121b6b0603",
-   "lines": 921
+   "sha256": "d05ebd425258d04e806ce2c492506bde23e1849b9c1cd1dcee625cd1c521cd13",
+   "lines": 926
   },
   "slowa": {
    "path": "docs/architecture/SLOWA_WLASCICIELA_2026-10-16.md",
@@ -5346,6 +5346,61 @@
    ]
   },
   {
+   "id": "s_a700030d69da",
+   "aliases": [
+    "R93"
+   ],
+   "kind": "requirement",
+   "title": "Sprawozdania pełnymi zdaniami, po ludzku; skróty i slang tylko te, których sam używa",
+   "date": "2026-10-23",
+   "theme": "owner_requirements",
+   "theme_inferred": false,
+   "understanding": {
+    "state": "none"
+   },
+   "quotes": [
+    {
+     "text": "sprawozdanie mi dawaj pełnymi wypowiedziami Nie oszczędzaj aż tak tokenów bo nie rozumiem o co ci chodzi jak tak piszesz skrótami. słowa ze slangu Koterskiego to możesz stosować Jak widzisz że Ja je stosuję. tak to po ludzku mi gadaj",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:908",
+     "ref": null,
+     "attr": [],
+     "lead": null,
+     "secondary": false
+    }
+   ],
+   "sense": null,
+   "summary": null,
+   "restatement": [
+    {
+     "text": "Zmienia styl watku z R62/R63 (same linie statusu): sprawozdanie dla wlasciciela to pelne wypowiedzi, zwykla polszczyzna, kazdy skrot albo nazwa robocza (identyfikatory pakietow, bramek, sesji, CI, FF) wyjasniona slowami przy pierwszym uzyciu albo pominieta; oszczednosc tokenow nie moze kosztowac zrozumienia. Slang (jak u Koterskiego) wolno stosowac tylko wtedy, gdy on sam go uzywa.",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:910"
+    }
+   ],
+   "commentary": [],
+   "status": null,
+   "gap_text": null,
+   "evidence": [],
+   "next_step": null,
+   "refs": [
+    "s_2d3cdd28adb2",
+    "s_67f863afdb8c"
+   ],
+   "supersedes": [],
+   "superseded_by": [],
+   "supersession_notes": [],
+   "tags": [],
+   "heading_note": "owner, 2026-10-23",
+   "sources": [
+    {
+     "role": "owner",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:907-910"
+    }
+   ],
+   "files": [
+    "owner"
+   ]
+  },
+  {
    "id": "s_18ec73967a7b",
    "aliases": [
     "owner:decision-rebuild-don-t-recover"
@@ -5361,7 +5416,7 @@
    "quotes": [
     {
      "text": "\"nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane\"",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:908",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:913",
      "ref": null,
      "attr": [],
      "lead": null,
@@ -5373,7 +5428,7 @@
    "restatement": [
     {
      "text": "Recovered versions (`history/chatadhd_v0.8.3`, `history/chatadhd_v0.9.0`) and\nthe historical report are sources of requirements, ideas and data assets\n(e.g. `film_structure.json`), and real ground truth for self-discovery tests —\nnot code to merge. Everything is rebuilt in Loom with tests.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:910-913"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:915-918"
     }
    ],
    "commentary": [],
@@ -5390,7 +5445,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:907-913"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:912-918"
     }
    ],
    "files": [
@@ -5416,7 +5471,7 @@
    "restatement": [
     {
      "text": "`workbench_mockup_2026-09-26.webp`: dockable/floating panels (conversation\nlist, active conversation, knowledge graph with active context window, project\nstructure with dimmed high-confidence auto-completable nodes, artifact views\nfor music/video with timeline + storyboard, video player, execution\nenvironment with agent), multi-format ingestion, Loom SDK at the centre.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:916-920"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:921-925"
     }
    ],
    "commentary": [],
@@ -5433,7 +5488,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:915-920"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:920-925"
     }
    ],
    "files": [

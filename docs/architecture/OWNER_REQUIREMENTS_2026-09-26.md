@@ -904,6 +904,11 @@ Zrzut Usage 20:44: sesja 11 %, tydzień wszystkie modele 70 %, Fable 93 % (reset
 
 Koordynacja przenosi sie do sesji na VM (gcp): ona jest standardowym i jedynym punktem kontaktu z nim, chyba ze jest powod, zeby bylo inaczej (powody dzisiaj, obserwacje datowane: zadania zaplanowane i strona spec zyja w chmurze; emulator Androida nie dziala na VM - brak KVM; sesja chmurowa nie moze pisac do sesji VM). Wdrazamy na VM wszystko, co mamy (serwer chatadhd + web, AGEDS, WatchDog juz chodzi) - bez jego danych: importy i dane wprowadza sam i sam najszybciej zobaczy, co nie tak. Pytanie o Spot->Standard (pieniadze) pozostaje otwarte; auto-start Remote Control po starcie maszyny to decyzja techniczna koordynatora (tak, odwracalna).
 
+## R93 — Sprawozdania pełnymi zdaniami, po ludzku; skróty i slang tylko te, których sam używa (owner, 2026-10-23)
+> sprawozdanie mi dawaj pełnymi wypowiedziami Nie oszczędzaj aż tak tokenów bo nie rozumiem o co ci chodzi jak tak piszesz skrótami. słowa ze slangu Koterskiego to możesz stosować Jak widzisz że Ja je stosuję. tak to po ludzku mi gadaj
+
+Zmienia styl watku z R62/R63 (same linie statusu): sprawozdanie dla wlasciciela to pelne wypowiedzi, zwykla polszczyzna, kazdy skrot albo nazwa robocza (identyfikatory pakietow, bramek, sesji, CI, FF) wyjasniona slowami przy pierwszym uzyciu albo pominieta; oszczednosc tokenow nie moze kosztowac zrozumienia. Slang (jak u Koterskiego) wolno stosowac tylko wtedy, gdy on sam go uzywa.
+
 ## Decision — rebuild, don't recover
 > "nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane"
 
