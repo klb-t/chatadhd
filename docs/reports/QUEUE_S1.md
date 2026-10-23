@@ -1,10 +1,12 @@
-# Kolejka S1 — stan 2026-10-23 00:32 UTC
+# Kolejka S1 — stan 2026-10-23 00:33 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
 
 ## Reguła właściciela R58 (22.10 ≈ 23:40 UTC; wcześniejsze znaczniki „23.10 00:00/00:20” w tym pliku to pomyłka zegara, prawdziwa godzina to 23:3x–23:4x): przykłady są przykładami, silnik obsługuje każdą konfigurację, mała użyteczność = niewiążąca podpowiedź „czy celowe? nie pytać następnym razem”
 Powód: w tabeli planu napisałem „kolor = rodzaj, przezroczystość = pewność, głębia = czas, jak mówiłeś” — to były moje konkretne przypisania podane jak wymaganie i fałszywie przypisane jemu (jego własne słowa: „to jest tylko jedna z konfiguracji, a zakodować trzeba silnik”). Zapisane: `CLAUDE.md` (sekcja „Examples are examples…”), `OWNER_REQUIREMENTS` R58 (cytat dosłowny), `tools/workflows/single-package.js` (reguła w każdym briefie). Zadanie G3 (#30) ma teraz warunki wstępne: (a) skala: punkt odniesienia + odległość ze znakiem, kierunek zależny od drugiej miary, kilka kodowań jednej miary (dziś `view_engine.cpp` ~595–622: tylko `range`/`domain`/`type` i statyczne `invert`); (b) podpowiedź niewiążąca + zapamiętane „celowe, nie pytaj” + wykrycie wyniku zdegenerowanego (nic nie widać). Silnik już nigdy nie odrzuca kodowania (`promoted`/`allowed` z powodami), brakuje pytania i pamięci odpowiedzi.
+
+## Bramka `k2c1b3`: ctest CZERWONY tylko na `unit.test_runtime_profile` (hash osadzonego `chat_ops` ≠ plik) — ARTEFAKT POMIARU: agent K2b-4 edytował `chat_ops.pack` w tym samym worktree podczas ctest (jego commit `98657b91` ma już zregenerowany `.inc`, drzewo czyste). Nie wina K2c-1/K2b-3. Decyzja: bramki nie powtarzam na 2bed65b1; po zakończeniu K2b-4 JEDNA bramka na końcowym drzewie (K2c-1 + K2b-3 + K2b-4), a reguła „jeden worktree, jeden piszący” w `CLAUDE.md`. Bieżąca bramka dobiega końca (web) — wynik webu informacyjny.
 
 ## CI 274 (`01dd2319`) = SUCCESS (00:28, 123 min, wszystkie 4 joby — poprawka użycia po zwolnieniu DOWIEDZIONA w asan); `main` = `01dd2319` ZIELONY. Bramka `k2c1b3`: ctest rc=8 (co najmniej jeden test czerwony — czytam), web w toku. S2 poinformowany (może FF sterownika).
 

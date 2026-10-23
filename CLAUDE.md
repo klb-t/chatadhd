@@ -586,6 +586,12 @@ firewall), returns caller-freed heap JSON strings, and is covered by
 neighbour's `first-steps-ui` run fail at random). Record the pid you started, or match your own port
 (`pkill -f "loom-server --port N"`), and kill only that.
 
+**A gate measures a tree nobody edits** (2026-10-23: gate `k2c1b3` went red on `unit.test_runtime_profile` only
+because an agent was editing `chat_ops.pack` in the same worktree while ctest compared the embedded profile with
+the file on disk; the agent's later commit made the tree consistent again and the red was void). One worktree, one
+writer: no package agent starts in a worktree while a gate runs there, and no gate starts while an agent works
+there — the gate's result is otherwise a measurement of a moving target, and the cheapest fix is a second worktree.
+
 **C++ pitfall that only AddressSanitizer catches** (CI found it after the asan preset had been broken for
 days): never range-for over `.at()` / `.value()` / `operator[]` of a by-value temporary, e.g.
 `for (auto& a : unwrap(f()).at("k"))` — only the last reference is lifetime-extended, the temporary dies
