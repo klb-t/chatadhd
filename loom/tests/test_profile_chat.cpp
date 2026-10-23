@@ -439,7 +439,8 @@ TEST_SUITE("profile interview in the conversation") {
         const auto expected = run_word(conv_lang, own.at(0).get<std::string>());
         for (const auto& word_lang : langs) {
           if (word_lang == conv_lang) continue;
-          for (const auto& w : op.value().value(word_lang, Json::array())) {
+          const Json foreign = op.value().value(word_lang, Json::array());  // named: no loop over a temporary
+          for (const auto& w : foreign) {
             INFO("operation " << op.key() << ": \"" << w.get<std::string>() << "\" (" << word_lang << ") in a " << conv_lang << " conversation");
             const auto got = run_word(conv_lang, w.get<std::string>());
             CHECK(got.first == expected.first);
