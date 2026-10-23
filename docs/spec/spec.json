@@ -5,8 +5,8 @@
  "sources": {
   "owner": {
    "path": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
-   "sha256": "5bc867ec75c750c7b5bc04325a86aa7c620d2b6c5ae52fc4ace01aaea6f63f27",
-   "lines": 780
+   "sha256": "297dd4c1b89cd3b77ddad0283f9514b1a06ba2cdcbad51ae62052794971b1d4e",
+   "lines": 786
   },
   "slowa": {
    "path": "docs/architecture/SLOWA_WLASCICIELA_2026-10-16.md",
@@ -3758,6 +3758,58 @@
    ]
   },
   {
+   "id": "s_d70418b3948e",
+   "aliases": [
+    "R67"
+   ],
+   "kind": "requirement",
+   "title": "No mock-ups, placeholders, fakes or temporary bridges - only full functionality; the context of an API call is inferred from the wide, multi-dimensional context (history, teleology, perspective...); depth and width are optional arguments, inferred by default, passable as absolute or modifying parameters",
+   "date": "2026-10-23",
+   "theme": "owner_requirements",
+   "theme_inferred": false,
+   "understanding": {
+    "state": "none"
+   },
+   "quotes": [
+    {
+     "text": "o Tak mi się przypomniało co tam jeszcze jak tą apkę na Androida oglądałem mnie zasmuciło, co jest sprzeczne z filozofią bez mokapów, placeholderów, fakeów, tymczasowych mostków... tylko pełne funkcjonalności. a tam widzę żeby w kontekście wybrać boxy... \nkontekst (api call) zależy od kontekstu szerokiego, wielowymiarowego- historia, teleologia,, perspektywa....głębokość i szerokość jako argumenty opcjonalne, domyślnie wnioskowane z kontekstu, możliwe do przekazania jako parametry bewzględne lub modyfikujące...",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:767-768",
+     "ref": null,
+     "attr": [],
+     "lead": null,
+     "secondary": false
+    }
+   ],
+   "sense": null,
+   "summary": null,
+   "restatement": [
+    {
+     "text": "Na Androidzie zobaczył w „Kontekście” wybór z pól wyboru (checkboxy) — zasmuciło go to jako atrapa sprzeczna z filozofią (bez makiet, placeholderów, fałszywek, tymczasowych mostków). Kontekst wywołania API ma wynikać z szerokiego, wielowymiarowego kontekstu (historia, teleologia, perspektywa…); głębokość i szerokość to argumenty opcjonalne: domyślnie wnioskowane z kontekstu, przekazywalne jako parametry bezwzględne albo modyfikujące.",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:770"
+    }
+   ],
+   "commentary": [],
+   "status": null,
+   "gap_text": null,
+   "evidence": [],
+   "next_step": null,
+   "refs": [],
+   "supersedes": [],
+   "superseded_by": [],
+   "supersession_notes": [],
+   "tags": [],
+   "heading_note": "owner, 2026-10-23",
+   "sources": [
+    {
+     "role": "owner",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:766-770"
+    }
+   ],
+   "files": [
+    "owner"
+   ]
+  },
+  {
    "id": "s_18ec73967a7b",
    "aliases": [
     "owner:decision-rebuild-don-t-recover"
@@ -3773,7 +3825,7 @@
    "quotes": [
     {
      "text": "\"nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane\"",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:767",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:773",
      "ref": null,
      "attr": [],
      "lead": null,
@@ -3785,7 +3837,7 @@
    "restatement": [
     {
      "text": "Recovered versions (`history/chatadhd_v0.8.3`, `history/chatadhd_v0.9.0`) and\nthe historical report are sources of requirements, ideas and data assets\n(e.g. `film_structure.json`), and real ground truth for self-discovery tests —\nnot code to merge. Everything is rebuilt in Loom with tests.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:769-772"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:775-778"
     }
    ],
    "commentary": [],
@@ -3802,7 +3854,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:766-772"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:772-778"
     }
    ],
    "files": [
@@ -3828,7 +3880,7 @@
    "restatement": [
     {
      "text": "`workbench_mockup_2026-09-26.webp`: dockable/floating panels (conversation\nlist, active conversation, knowledge graph with active context window, project\nstructure with dimmed high-confidence auto-completable nodes, artifact views\nfor music/video with timeline + storyboard, video player, execution\nenvironment with agent), multi-format ingestion, Loom SDK at the centre.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:775-779"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:781-785"
     }
    ],
    "commentary": [],
@@ -3845,7 +3897,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:774-779"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:780-785"
     }
    ],
    "files": [

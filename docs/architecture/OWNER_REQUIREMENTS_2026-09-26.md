@@ -763,6 +763,12 @@ Zgłoszenia z telefonu po APK v2: import bez załączników w jednej rozmowie; �
 
 „Warsztat” (workbench) był w jego pamięci narzędziem testowym; prosi o plan z perspektywami i o rozdzielenie: kiedy funkcje, kiedy interfejs. Plan G1–G4 z 23.10 (daty ze zmierzonego tempa).
 
+## R67 — No mock-ups, placeholders, fakes or temporary bridges - only full functionality; the context of an API call is inferred from the wide, multi-dimensional context (history, teleology, perspective...); depth and width are optional arguments, inferred by default, passable as absolute or modifying parameters (owner, 2026-10-23)
+> o Tak mi się przypomniało co tam jeszcze jak tą apkę na Androida oglądałem mnie zasmuciło, co jest sprzeczne z filozofią bez mokapów, placeholderów, fakeów, tymczasowych mostków... tylko pełne funkcjonalności. a tam widzę żeby w kontekście wybrać boxy... 
+> kontekst (api call) zależy od kontekstu szerokiego, wielowymiarowego- historia, teleologia,, perspektywa....głębokość i szerokość jako argumenty opcjonalne, domyślnie wnioskowane z kontekstu, możliwe do przekazania jako parametry bewzględne lub modyfikujące...
+
+Na Androidzie zobaczył w „Kontekście” wybór z pól wyboru (checkboxy) — zasmuciło go to jako atrapa sprzeczna z filozofią (bez makiet, placeholderów, fałszywek, tymczasowych mostków). Kontekst wywołania API ma wynikać z szerokiego, wielowymiarowego kontekstu (historia, teleologia, perspektywa…); głębokość i szerokość to argumenty opcjonalne: domyślnie wnioskowane z kontekstu, przekazywalne jako parametry bezwzględne albo modyfikujące.
+
 ## Decision — rebuild, don't recover
 > "nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane"
 
