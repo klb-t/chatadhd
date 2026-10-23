@@ -4326,8 +4326,7 @@
           "group": "prywatnosc",
           "subgroup": "dane",
           "flows": [
-            "chat.send",
-            "input.route_intent"
+            "chat.send"
           ]
         },
         "on_unlisted": "refuse"

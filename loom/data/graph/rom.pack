@@ -324,6 +324,9 @@
           "path": "loom/data/runtime/chat_reasoning.pack"
         },
         {
+          "path": "loom/data/runtime/chat_secrets.pack"
+        },
+        {
           "path": "loom/data/runtime/cli.pack"
         },
         {

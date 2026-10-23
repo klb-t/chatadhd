@@ -281,6 +281,7 @@
           "temperature",
           "max_tokens",
           "stream",
+          "secrets_in_chat",
           "auto_title",
           "language",
           "chat_context_order",
