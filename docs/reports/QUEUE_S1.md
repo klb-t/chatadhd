@@ -1,8 +1,10 @@
-# Kolejka S1 — stan 2026-10-23 19:35 UTC
+# Kolejka S1 — stan 2026-10-23 19:23 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
 **Teleport (R72):** karta startowa nowej sesji S1 = `docs/ops/TELEPORT_S1.md` (aktualizowana tuż przed przełączeniem); zadania zaplanowane = `docs/ops/ZADANIA_ZAPLANOWANE_2026-10-23.md`; przeprowadzka = `docs/ops/PRZEPROWADZKA_GCP_2026-10-23.md`.
+
+## Bramka `r67c` ZIELONA (19:22 UTC: ctest 264/264, wszystkie testy webu PASSED) → **`main` = `f025ed34`** (FF 19:23; brak biegu CI w toku, więc nic nie anulowane). Zawiera: R67-fix (filtr sekretów przed wysyłką, prawdziwy chip modelu, motyw z config, Diagnostyka w ⋮, blok kontekstu po polsku), dwie poprawki oczekiwań e2e, naprawę asan (nasycenie arytmetyki adresu + T6, limit startu serwera jako ustawienie). CI rusza z pushem; kontrola zaplanowana ≈ 21:50 UTC (job asan ≈ 2 h 20 min). Sha wysłane do S2: APK v5 (pierwszy bez atrap) po zielonym CI. Następne w tej sesji: kontrola Haiku syntezy panelu (20:02), potem czuwanie (R92).
 
 ## R94 (właściciel ≈ 19:3x UTC, dosłownie w spec): pyta o mechanizm znikania VM i brak zabezpieczenia; obserwuje lag kart zgody (pytanie dociera po minutach, po kliknięciu już failed — nie priorytet); zgoda: administrator VM sam dokłada dysk przez API, gdy potrzebuje; przykład przepływu (sygnał wyłączenia → szybki zapis stanu → nowa VM Standard z obrazu → niezauważalne przepięcie usług); pamięta skrypty z 2024 od Claude/GPT. Zrobione: wpisy 8–10 w `VM_INBOX.md` (poszukiwanie skryptów 2024 w projekcie GCP, repozytoriach i na maszynie; projekt i budowa stróża wg faktów z dokumentacji GCP z datą — co zostaje (dysk), co ginie (RAM), skąd biegnie stróż, `claude --resume`; wdrożyć od razu części bez kosztu, promocję na Standard po jego tak/nie z szacunkiem; dysk dokładany samodzielnie z zapisem ceny). Odpowiedź w czacie: fakty z rekonesansu + ocena jego przepływu (dysk trwały zostaje, RAM nie; 30 s; jedna maszyna = przerwa minutowa; sekundowe przepięcie = druga maszyna + balanser = pieniądze). Lag kart zgody zapisany jako obserwacja platformy (23.10: karta w przeglądarce „Waiting for this request's details… can't be allowed”).
 
