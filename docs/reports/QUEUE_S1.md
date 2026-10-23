@@ -1,10 +1,13 @@
-# Kolejka S1 — stan 2026-10-22 23:56 UTC
+# Kolejka S1 — stan 2026-10-23 00:03 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
 
 ## Reguła właściciela R58 (22.10 ≈ 23:40 UTC; wcześniejsze znaczniki „23.10 00:00/00:20” w tym pliku to pomyłka zegara, prawdziwa godzina to 23:3x–23:4x): przykłady są przykładami, silnik obsługuje każdą konfigurację, mała użyteczność = niewiążąca podpowiedź „czy celowe? nie pytać następnym razem”
 Powód: w tabeli planu napisałem „kolor = rodzaj, przezroczystość = pewność, głębia = czas, jak mówiłeś” — to były moje konkretne przypisania podane jak wymaganie i fałszywie przypisane jemu (jego własne słowa: „to jest tylko jedna z konfiguracji, a zakodować trzeba silnik”). Zapisane: `CLAUDE.md` (sekcja „Examples are examples…”), `OWNER_REQUIREMENTS` R58 (cytat dosłowny), `tools/workflows/single-package.js` (reguła w każdym briefie). Zadanie G3 (#30) ma teraz warunki wstępne: (a) skala: punkt odniesienia + odległość ze znakiem, kierunek zależny od drugiej miary, kilka kodowań jednej miary (dziś `view_engine.cpp` ~595–622: tylko `range`/`domain`/`type` i statyczne `invert`); (b) podpowiedź niewiążąca + zapamiętane „celowe, nie pytaj” + wykrycie wyniku zdegenerowanego (nic nie widać). Silnik już nigdy nie odrzuca kodowania (`promoted`/`allowed` z powodami), brakuje pytania i pamięci odpowiedzi.
+
+## K2b-3 GOTOWE (00:03 UTC, `2bed65b1` na `claude/m1-w0`, wypchnięte): „nie pytaj o zdrowie” rozumiane także gdy żadne pytanie nie czeka; bramka `k2c1b3` (K2c-1 + K2b-3) w toku od 00:01
+Agent Sonnet `wf_0fe6ccf8-90c`: 63 wywołania, 164 tys. tokenów, 27 min. Test wcześniej czerwony na starym kodzie (3 przypadki), po poprawce zielone; odpowiedź na uwagę bez pytania: „Tak zrozumiałem: • Nie będę pytać o zdrowie…”; na zwykły tekst: „Teraz nie czekam na Twoją odpowiedź i niczego nie zapisałem. Możesz napisać „nie pytaj o ...”, „pytaj więcej” albo „podsumowanie”.” Nie zrobione: dziwne sformułowanie „podsumowanie” gdy nic nie czeka (w INDEX), brak ponownego smoke S2. Po zielonej bramce: merge `origin/main` (dziś = `01dd2319`, w gałęzi), FF `main` po końcu CI 274, potem powiedzieć S2 sha.
 
 ## Sposób pracy właściciela (2026-10-22 23:56 UTC): pisze, gdy ma czas, każdą myśl na bieżąco, potem pracuje nad następną — oczekiwać DŁUGICH SERII
 Zapisane w `CLAUDE.md` (sekcja „How the owner works…”, cytat dosłowny). Wnioski (moje decyzje, presety, do odwrócenia): każda wiadomość zapisywana trwale od razu; drogie etapy (Fable, wieloagentowe workflow) nie startują na pierwszej wiadomości serii, chyba że to wyraźne polecenie — preset: ok. 15 min ciszy; działającego agenta nie restartuję (dodatek po zakończeniu); odpowiedzi w serii krótkie, pełna odpowiedź z listą zmian na koniec serii; kolejka musi nieść cały stan.
