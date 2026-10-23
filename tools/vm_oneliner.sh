@@ -93,9 +93,9 @@ esac
 "$HOME/.local/bin/claude" --version 2>/dev/null || claude --version || echo "(claude nie odpowiada - otwórz nową powłokę albo sprawdź ~/.local/bin)"
 
 say "lekarz: co jest, czego brakuje (BRAK = uruchom komendę z prawej)"
-doctor() { local name="$1" cmd="$2" fix="$3"; if command -v "$cmd" >/dev/null 2>&1; then printf '  %-10s %s\n' "$name" "$("$cmd" --version 2>&1 | head -1)"; else printf '  %-10s BRAK -> %s\n' "$name" "$fix"; fi; }
+doctor() { local name="$1" cmd="$2" fix="$3"; if command -v "$cmd" >/dev/null 2>&1; then printf '  %-10s %s\n' "$name" "$( { "$cmd" --version 2>/dev/null || "$cmd" -V 2>&1; } | head -1)"; else printf '  %-10s BRAK -> %s\n' "$name" "$fix"; fi; }
 doctor node node "sudo apt-get install -y nodejs npm   (albo ponowny bieg tej komendy, gdy nodejs.org było niedostępne)"
-doctor npm node "jw."
+doctor npm npm "sudo apt-get install -y npm"
 doctor cmake cmake "sudo apt-get install -y cmake ninja-build ccache build-essential"
 doctor ninja ninja "sudo apt-get install -y ninja-build"
 doctor ccache ccache "sudo apt-get install -y ccache"
