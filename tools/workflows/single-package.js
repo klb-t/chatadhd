@@ -14,7 +14,9 @@ export const meta = {
 //  rules_extra   repo/area specific rules appended to the common ones
 //  model         optional model override for the agent ('fable' for hard design/judgement packages)
 const A = args
-const TRAILER = 'Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>\nClaude-Session: https://claude.ai/code/session_015yMVYJqXDd8sNSZdYq3gu5'
+const MODEL_NAMES = { fable: 'Claude Fable 5.1', opus: 'Claude Opus 5.5', sonnet: 'Claude Sonnet 5.5', haiku: 'Claude Haiku 5.5' }
+// The trailer names the model the AGENT runs on (the model override, else the session default Sonnet), not the coordinator.
+const TRAILER = `Co-Authored-By: ${MODEL_NAMES[A.model] || MODEL_NAMES.sonnet} <noreply@anthropic.com>\nClaude-Session: https://claude.ai/code/session_015yMVYJqXDd8sNSZdYq3gu5`
 const PUSH = A.remote_branch
   ? `Push with: git push origin HEAD:${A.remote_branch} (never force; if it is not a fast-forward, fetch and merge first).${A.ci_workflow ? ` After a push read the CI run for your commit (workflow ${A.ci_workflow}; GitHub MCP tools via ToolSearch select:mcp__github__actions_list,mcp__github__actions_get,mcp__github__get_job_logs); if it fails, fix and push again, at most 3 pushes.` : ''}`
   : 'Do not push.'
