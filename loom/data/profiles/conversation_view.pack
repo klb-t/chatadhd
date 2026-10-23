@@ -1145,7 +1145,7 @@
             "src_kind_unknown": "Unknown source block",
             "src_refkind_attachment": "attachment",
             "src_refkind_citation": "citation",
-            "src_refkind_pointer": "pointer"
+            "src_refkind_media_pointer": "media pointer"
           },
           "pl": {
             "menu_open": "Menu",
@@ -1482,7 +1482,7 @@
             "src_kind_unknown": "Nieznany blok źródła",
             "src_refkind_attachment": "załącznik",
             "src_refkind_citation": "cytat",
-            "src_refkind_pointer": "wskaźnik"
+            "src_refkind_media_pointer": "wskaźnik multimediów"
           }
         }
       }

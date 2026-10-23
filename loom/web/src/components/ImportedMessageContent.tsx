@@ -2,6 +2,7 @@ import { createContext, useContext, useMemo, useState } from "react";
 import { marked } from "marked";
 import DOMPurify from "dompurify";
 import type { Message } from "../api/types";
+import { useShellText } from "../shell/text";
 import { importedCitationUrl, importedJson, importedMediaDataUrl, importedMediaRenderer, projectImportedMessage } from "../content/imported-message";
 import type { ImportedArtifact, ImportedBlock } from "../content/imported-message";
 import "./imported-message-content.css";
@@ -36,6 +37,15 @@ function importedHtml(html: string): { __html: string } {
 }
 
 const OpaqueSourceEvidence = createContext(false);
+
+/** The words of the imported source block come from the pack (presentation.ui_shell src_*, pl + en); a screen with no catalogue keeps the English text written here. */
+function useSrc() {
+  const t = useShellText();
+  return (id: string, fallback: string, params: Record<string, string> = {}): string => {
+    const text = t(id, params);
+    return text !== id ? text : fallback.replace(/\{\{(\w+)\}\}/g, (_, key: string) => params[key] ?? "");
+  };
+}
 
 function SourceJson({ title, value, testId }: { title: string; value: unknown; testId?: string }) {
   const [open, setOpen] = useState(false);
@@ -82,6 +92,7 @@ function MediaBlock({ block }: { block: ImportedBlock }) {
 }
 
 function Artifact({ artifact, wrapCode }: { artifact: ImportedArtifact; wrapCode: boolean }) {
+  const s = useSrc();
   const [mode, setMode] = useState("source");
   const opaqueEvidence = useContext(OpaqueSourceEvidence);
   const isHtml = artifact.type === "text/html";
@@ -89,7 +100,7 @@ function Artifact({ artifact, wrapCode }: { artifact: ImportedArtifact; wrapCode
   const supportsPreview = isHtml || isMarkdown;
   return <section className="imported-artifact" data-testid="imported-artifact">
     <h4>{artifact.title} · {artifact.type ?? "unrecorded artifact type"}</h4>
-    {artifact.path && <p className="imported-source-path">Source pointer: <code>{artifact.path}</code></p>}
+    {artifact.path && <p className="imported-source-path">{s("src_pointer", "Source pointer:")} <code>{artifact.path}</code></p>}
     {artifact.version && <p>Source version: <code>{artifact.version}</code></p>}
     {artifact.command && <p>Recorded operation: {artifact.command} (source only).</p>}
     {artifact.parsedFromText && <p>Display derivative parsed from the retained source text.</p>}
@@ -111,6 +122,7 @@ function Artifact({ artifact, wrapCode }: { artifact: ImportedArtifact; wrapCode
 
 /** Pure source display: text/JSON and user-clicked citations; no tools, code or media fetches. */
 export default function ImportedMessageContent({ message, includeVisibleText = true, initialView, opaqueSourceEvidence }: Props) {
+  const s = useSrc();
   const source = useMemo(() => projectImportedMessage(message), [message]);
   const [view, setView] = useState<ImportedSourceView>({ blocks: true, artifacts: true, references: true, wrapCode: false, ...initialView });
   if (!source) return null;
@@ -118,37 +130,37 @@ export default function ImportedMessageContent({ message, includeVisibleText = t
     {opaqueSourceEvidence && <p>{opaqueSourceEvidence.description}</p>}
     {includeVisibleText && <div className="body" dangerouslySetInnerHTML={importedMarkdown(message.text)} />}
     <details className="imported-source-details" data-testid="imported-source-details">
-      <summary>Imported source · {source.provider} · {source.blocks.length} blocks · {source.references.length} references · {source.artifacts.length} artifacts</summary>
-      <p>Source blocks reflect the original import and remain separate from current message text.</p>
-      <div className="imported-source-controls" aria-label="Source display options">
-        {(["blocks", "artifacts", "references", "wrapCode"] as const).map(key => <label key={key}><input type="checkbox" checked={view[key]} onChange={event => setView(current => ({ ...current, [key]: event.target.checked }))} />{key === "wrapCode" ? "Wrap code" : `Show ${key}`}</label>)}
+      <summary>{s("src_summary", "Imported source · {{provider}} · {{blocks}} blocks · {{references}} references · {{artifacts}} artifacts", { provider: source.provider, blocks: String(source.blocks.length), references: String(source.references.length), artifacts: String(source.artifacts.length) })}</summary>
+      <p>{s("src_intro", "Source blocks reflect the original import and remain separate from current message text.")}</p>
+      <div className="imported-source-controls" aria-label={s("src_options", "Source display options")}>
+        {(["blocks", "artifacts", "references", "wrapCode"] as const).map(key => <label key={key}><input type="checkbox" checked={view[key]} onChange={event => setView(current => ({ ...current, [key]: event.target.checked }))} />{key === "wrapCode" ? s("src_wrap", "Wrap code") : s(`src_show_${key}`, `Show ${key}`)}</label>)}
       </div>
-      {source.hidden && <p>Source visibility: hidden{source.hiddenReasons.length ? ` (${source.hiddenReasons.join(", ")})` : ""}.</p>}
+      {source.hidden && <p>{s("src_hidden", "Source visibility: hidden{{reasons}}.", { reasons: source.hiddenReasons.length ? ` (${source.hiddenReasons.join(", ")})` : "" })}</p>}
       {view.blocks && source.blocks.map(block => <section className="imported-source-block" key={block.id} data-testid="imported-source-block" data-kind={block.kind}>
-        <h4>{labels[block.kind] ?? block.kind} · {block.type}{block.toolName && ` · ${block.toolName}`}{block.language && ` · ${block.language}`}</h4>
-        {block.path && <p className="imported-source-path">Source pointer: <code>{block.path}</code></p>}
-        {block.inferred && <p>Importer classification is inferred{block.guess && ` (${block.guess})`}.</p>}
-        {!block.resolved && <p>The block payload is not independently located. The complete preserved source is available below.</p>}
+        <h4>{s(`src_kind_${block.kind}`, labels[block.kind] ?? block.kind)} · {block.type}{block.toolName && ` · ${block.toolName}`}{block.language && ` · ${block.language}`}</h4>
+        {block.path && <p className="imported-source-path">{s("src_pointer", "Source pointer:")} <code>{block.path}</code></p>}
+        {block.inferred && <p>{s("src_inferred", "Importer classification is inferred{{guess}}.", { guess: block.guess ? ` (${block.guess})` : "" })}</p>}
+        {!block.resolved && <p>{s("src_unlocated", "The block payload is not independently located. The complete preserved source is available below.")}</p>}
         {block.segments.map((segment, index) => <div key={index}>
           <strong>{segment.label}</strong>{block.kind === "code" ? <pre className={`imported-source-code${view.wrapCode ? " wrap" : ""}`}><code data-language={block.language ?? ""}>{segment.text}</code></pre> : <pre className="imported-source-text">{segment.text}</pre>}
         </div>)}
         {block.kind === "media" && <MediaBlock block={block} />}
-        <SourceJson title="Raw source block" value={block.raw} />
-        <SourceJson title="Native importer block summary" value={block.summary} />
+        <SourceJson title={s("src_raw_block", "Raw source block")} value={block.raw} />
+        <SourceJson title={s("src_native_block", "Native importer block summary")} value={block.summary} />
       </section>)}
       {view.artifacts && source.artifacts.map(artifact => <Artifact key={artifact.id} artifact={artifact} wrapCode={view.wrapCode} />)}
       {view.references && source.references.map(reference => <section className="imported-source-reference" key={reference.id} data-testid="imported-source-reference" data-kind={reference.kind}>
-        <h4>{reference.kind}: {reference.label}</h4>
-        {reference.path && <p className="imported-source-path">Source pointer: <code>{reference.path}</code></p>}
-        {reference.resolved !== null && <p>{reference.resolved ? "Resolved in source archive" : "File bytes unresolved"}{reference.member && ` · ${reference.member}`}</p>}
-        {reference.blobHash && <p className="imported-source-path">Content hash: <code>{reference.blobHash}</code></p>}
-        {reference.href && <a href={reference.href} target="_blank" rel="noopener noreferrer">Open citation source</a>}
+        <h4>{s(`src_refkind_${reference.kind.replace(/-/g, "_")}`, reference.kind)}: {reference.label}</h4>
+        {reference.path && <p className="imported-source-path">{s("src_pointer", "Source pointer:")} <code>{reference.path}</code></p>}
+        {reference.resolved !== null && <p>{reference.resolved ? s("src_resolved", "Resolved in source archive") : s("src_unresolved", "File bytes unresolved")}{reference.member && ` · ${reference.member}`}</p>}
+        {reference.blobHash && <p className="imported-source-path">{s("src_hash", "Content hash:")} <code>{reference.blobHash}</code></p>}
+        {reference.href && <a href={reference.href} target="_blank" rel="noopener noreferrer">{s("src_open_citation", "Open citation source")}</a>}
         {reference.extractedText !== null && <pre className="imported-source-text">{reference.extractedText}</pre>}
-        <SourceJson title="Raw reference" value={reference.raw} />
-        <SourceJson title="Native importer reference summary" value={reference.summary} />
+        <SourceJson title={s("src_raw_ref", "Raw reference")} value={reference.raw} />
+        <SourceJson title={s("src_native_ref", "Native importer reference summary")} value={reference.summary} />
       </section>)}
-      <SourceJson title="Complete preserved source message" value={source.raw} testId="imported-source-raw" />
-      <SourceJson title="Complete native export metadata" value={source.metadata} testId="imported-source-metadata" />
+      <SourceJson title={s("src_whole", "Complete preserved source message")} value={source.raw} testId="imported-source-raw" />
+      <SourceJson title={s("src_meta", "Complete native export metadata")} value={source.metadata} testId="imported-source-metadata" />
     </details>
   </div></OpaqueSourceEvidence.Provider>;
 }

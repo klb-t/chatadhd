@@ -48,6 +48,7 @@
     "test:shell-menu": "node tests/shell/menu.test.mjs",
     "test:label-guard": "node tests/shell/label-guard.test.mjs",
     "test:import-truth-state": "node tests/shell/import-truth-state.test.mjs",
+    "test:attachment-chips": "node tests/shell/attachment-chips.test.mjs",
     "test:navigator-state": "node tests/shell/navigator-state.test.mjs",
     "test:node-card-state": "node tests/shell/node-card-state.test.mjs",
     "test:navigator-receipt": "node tests/shell/navigator-receipt.test.mjs",

@@ -12,6 +12,7 @@ import UsagePendingBlock from "./UsagePendingBlock";
 import AgentProposalBlock from "./AgentProposalBlock";
 import { agentLoopOf, agentLoopView, resumeRequest } from "../context/agent-proposal";
 import ActionProposalBlock, { ProposalOffer, ProposalWritten } from "./ActionProposalBlock";
+import { attachmentChips, chipStateText } from "../content/attachment-chips";
 import ClientStepBlock from "./ClientStepBlock";
 import { CLIENT_STEP_FEATURE, type BlobLoader, type BlobUploader } from "../context/client-device";
 import { browserHost } from "../context/browser-host";
@@ -1283,8 +1284,13 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
                 }
                 return null;
               })()}
-              {m.role === "user" && Array.isArray(m.attachments) && m.attachments.length > 0 && <p className="composer-chips" data-testid="message-attachments">
-                {m.attachments.filter((x): x is string => typeof x === "string").map((ref, i) => <span key={i} className="composer-chip" data-testid="message-attachment"><span className="chip-name">{attachmentName(ref)}</span></span>)}</p>}
+              {(() => {
+                const chips = attachmentChips(m);
+                if (chips.length === 0) return null;
+                return <p className="composer-chips" data-testid="message-attachments" data-count={chips.length}>
+                  {chips.map((chip, i) => { const state = chipStateText(chip, t); return <span key={i} className="composer-chip" data-testid="message-attachment" data-state={chip.state}>
+                    <span className="chip-name">{chip.name}</span>{state && <span className="chip-state" data-testid="message-attachment-state"> · {state}</span>}</span>; })}</p>;
+              })()}
               {m.role === "assistant" && (() => {
                 const made = producedView(m.metadata, m.id);
                 const label = made ? producedText(featureInLanguage(proposalCatalog.feature, messageLanguage(m.metadata)), made) : null;

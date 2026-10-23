@@ -1312,7 +1312,7 @@ std::string_view(R"loom_onboard(                "empty_title": "How can I help?"
                 "src_kind_unknown": "Unknown source block",
                 "src_refkind_attachment": "attachment",
                 "src_refkind_citation": "citation",
-                "src_refkind_pointer": "pointer"
+                "src_refkind_media_pointer": "media pointer"
               },
               "pl": {
                 "menu_open": "Menu",
@@ -1649,7 +1649,7 @@ std::string_view(R"loom_onboard(                "empty_title": "How can I help?"
                 "src_kind_unknown": "Nieznany blok źródła",
                 "src_refkind_attachment": "załącznik",
                 "src_refkind_citation": "cytat",
-                "src_refkind_pointer": "wskaźnik"
+                "src_refkind_media_pointer": "wskaźnik multimediów"
               }
             }
           }
@@ -1928,9 +1928,9 @@ std::string_view(R"loom_onboard(                "empty_title": "How can I help?"
                 "inheritance.no_unit.team": "no team",
                 "inheritance.no_unit.organization": "no organisation",
                 "inheritance.no_unit.group_of_groups": "no group of groups",
-                "inheritance.no_unit.role_in_context": "no role in context",
-)loom_onboard", 59983),
-std::string_view(R"loom_onboard(                "inheritance.role.supplied": "supplies the value",
+)loom_onboard", 59937),
+std::string_view(R"loom_onboard(                "inheritance.no_unit.role_in_context": "no role in context",
+                "inheritance.role.supplied": "supplies the value",
                 "inheritance.role.overridden": "overridden",
                 "inheritance.role.same_as_preset": "the preset, kept in your settings",
                 "inheritance.role.same_value": "the same value",
@@ -2739,7 +2739,7 @@ std::string_view(R"loom_onboard(                "inheritance.role.supplied": "su
                 "why.message.L0": "A message of this conversation, as written.",
                 "why.message.L1": "A message of this conversation in a shortened form (without fillers), chosen by the application.",
                 "why.message.L2": "A message of this conversation in a shortened form (without digressions), chosen by the application.",
-)loom_onboard", 59895),
+)loom_onboard", 59972),
 std::string_view(R"loom_onboard(                "why.message.L3": "A message of this conversation turned into a compiled instruction, chosen by the application.",
                 "why.message.graph": "A message found on the way through the graph, starting from your question.",
                 "why.graph_packet": "Messages selected from the graph and sent as one packet.",
@@ -5037,7 +5037,7 @@ std::string_view(R"loom_onboard(            "scene_hint_screen": "Drag: turn · 
             "src_kind_unknown": "Unknown source block",
             "src_refkind_attachment": "attachment",
             "src_refkind_citation": "citation",
-            "src_refkind_pointer": "pointer"
+            "src_refkind_media_pointer": "media pointer"
           },
           "pl": {
             "menu_open": "Menu",
@@ -5374,7 +5374,7 @@ std::string_view(R"loom_onboard(            "scene_hint_screen": "Drag: turn · 
             "src_kind_unknown": "Nieznany blok źródła",
             "src_refkind_attachment": "załącznik",
             "src_refkind_citation": "cytat",
-            "src_refkind_pointer": "wskaźnik"
+            "src_refkind_media_pointer": "wskaźnik multimediów"
           }
         }
       }
@@ -5808,9 +5808,9 @@ std::string_view(R"loom_onboard(            "scene_hint_screen": "Drag: turn · 
             "evidence.method.model_inferred": "a model's inference",
             "evidence.method.role_resolution": "the model a role resolves to",
             "evidence.method.description": "described in the catalogue",
-            "evidence.method.profile_value": "a value of a runtime profile",
-)loom_onboard", 59984),
-std::string_view(R"loom_onboard(            "evidence.method.not_recorded": "no record of where it came from",
+)loom_onboard", 59938),
+std::string_view(R"loom_onboard(            "evidence.method.profile_value": "a value of a runtime profile",
+            "evidence.method.not_recorded": "no record of where it came from",
             "evidence.method.code_preset": "what the code does without a value",
             "message.role.user": "You",
             "message.role.assistant": "Model",
@@ -6677,9 +6677,9 @@ std::string_view(R"loom_onboard(            "evidence.method.not_recorded": "no 
             "source.conversation": "w tej rozmowie",
             "source.person": "Twój",
             "source.unit": "jednostka",
-            "scope.turn": "tylko ta wiadomość",
-)loom_onboard", 59960),
-std::string_view(R"loom_onboard(            "scope.conversation": "cała rozmowa",
+)loom_onboard", 59987),
+std::string_view(R"loom_onboard(            "scope.turn": "tylko ta wiadomość",
+            "scope.conversation": "cała rozmowa",
             "modifier.profile": "profil {{profile}}",
             "prefix.unavailable.no_profile": "profil pusty — nic o Tobie nie zapisano",
             "prefix.state.order_without_profile_class": "ten porządek nie ma sekcji profilu",
@@ -6997,7 +6997,7 @@ std::string_view(R"loom_onboard(            "scope.conversation": "cała rozmowa
   },
   "presentation_key": "presentation.onboarding"
 }
-)loom_onboard", 15625)};
+)loom_onboard", 15675)};
 static constexpr std::string_view kOnboardingScenario[] = {
 std::string_view(R"loom_onboard({
   "schema": "loom.onboarding.scenario/1",
