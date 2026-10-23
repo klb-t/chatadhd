@@ -134,3 +134,5 @@ czy trzymać linię tygodniową.
 
 
 **Próbka właściciela 2026-10-23 00:12 UTC:** tydzień 46 % („dopiero 46% tygodniowego poszło, za to mniejsze pół tygodnia zostało do resetu”); linia planu na tę godzinę ≈ 38 %, punkt 50 % o 20:00; do 90 % (pon. 08:00) zostaje 44 pkt na 80 h = 0,55 pkt/h ≈ 1,1 pakietu/h przy 0,5 pkt/pakiet. Koordynator od tej chwili = Fable (decyzja właściciela), koszt do zmierzenia osobno.
+
+**23.10 00:2x — plan tempa podniesiony na prośbę właściciela** (56 % pt 20:00, 80 % sob 08:00, 92 % pon 08:00); jego słowa: „podkręć trochę”, „działaj śmiało”, „jak zmieniam model na lepszy to domyślnie możesz poluzować troszkę wymagania”. Start SPEC1 mimo „CZEKAJ” (reguła odstępu) — trzeci agent w toku (D1 Fable, K2b-4, SPEC1) = preset 3.

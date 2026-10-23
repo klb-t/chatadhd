@@ -61,6 +61,11 @@ presets, reversible):
   it; a paraphrase for approval (R61) is at most five lines. Long reasoning goes to `docs/reports/QUEUE_S1.md`,
   not to the chat. He also set the coordinator model to Fable himself („jesteś Fable, baw się dobrze, korzystaj
   z Ultra koda z rozsądkiem, tym większym im droższe zadanie”) — workflows scaled to the cost of the task.
+- **R62/R63 (2026-10-23):** chat output costs his time more than tokens — status lines only when they
+  carry news. While he is away (tens of hours) and the coordinator knows with high probability what would
+  satisfy him, it acts without waiting; the R61 paraphrase is then recorded as `proposed` for his review.
+  A stronger coordinator model may loosen the procedural rules a little (they were written for Sonnet);
+  the philosophy itself stays.
 - His silence is not agreement and not a pause in the work: the queue (`docs/reports/QUEUE_S1.md`) must
   hold the whole state, because he reads it in bursts.
 
