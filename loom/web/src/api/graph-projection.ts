@@ -58,6 +58,10 @@ export interface GraphNodeRow {
   no_translation?: { lang: string; shown_lang: string; words: string };
   /** A node shown here although its own place is elsewhere (its parent stays the breadcrumbs). */
   shown_also_in?: string;
+  /** M1-K2c-2: the actions of the catalogue that fit this node, with the arguments the node fills in (a slot, a note id ...). A part of Ty carries the actions of the part itself. */
+  actions?: { id: string; label: string; decision?: string | null; implementation?: string | null; args?: Record<string, unknown> }[];
+  /** A part of Ty (kind person_subgraph): how many of its entries carry each evidence class. */
+  evidence_classes?: Record<string, number>;
   value_unknown_reason?: string;
   /** K1c-3a: a node of the perspective sent_to_model that is a VIEW of the record of a request, not a stored node; derived_note says so in the language asked. */
   derived?: boolean;

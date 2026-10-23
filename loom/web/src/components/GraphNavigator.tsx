@@ -7,9 +7,13 @@
 // A row's ⋯, a tap on a leaf or a tap on a mark opens the node card (NodeCard.tsx, P3) under them; the card is a history layer.
 // Perspektywa ▾ (r1:b2) ticks the kernel's perspectives (loom_perspectives), sent as `perspectives` to graph.navigate: the rows are then what
 // those relations reach from the focus. Działania opens the focus's card at "Co możesz zrobić" (the actions live on the card).
+// M1-W2b-1: on the person's node (party:self) the page above the rows is MeView.tsx (the screen "Ty"): sections from the kernel's parts, evidence and
+// provenance of every entry, actions of the node as buttons; the generic rows and the map stay under it, closed (Wszystkie wiersze, Pokaż w mapie).
 import { useEffect, useMemo, useRef, useState } from "react";
 import NodeCard from "./NodeCard";
 import NavigatorMap from "./NavigatorMap";
+import MeView from "./MeView";
+import { isMeFocus } from "./me-view-state";
 import { api } from "../api";
 import type { GraphNavigateResult, GraphNodeRow } from "../api/graph-projection";
 import type { UserProfileHost } from "../api/onboarding-host";
@@ -41,7 +45,12 @@ interface Props {
   /** The setting navigator_help_open as loaded: whether the help "Co tu widzę?" starts open (preset closed). */
   helpSetting?: unknown;
   /** The app learns a setting this screen saved (so the next opening starts as the person left it). */
-  onSetting?: (key: string, value: boolean) => void;
+  onSetting?: (key: string, value: boolean | string) => void;
+  /** M1-W2b-1: the settings of the screen "Ty": the sections the person left open (me_open_sections) and the look of an inferred entry (me_inferred_opacity). */
+  meOpenSetting?: unknown;
+  meInferredOpacity?: unknown;
+  /** "Poznaj mnie" opened the conversation of the interview: the app shows it (and this panel closes). */
+  onOpenConversation?: (convId: string) => void;
 }
 
 /** One step of the path as one history layer: Back closes the topmost step (the last one). */
@@ -50,7 +59,7 @@ function StepLayer({ index, onClose }: { index: number; onClose: (index: number)
   return null;
 }
 
-export default function GraphNavigator({ profileHost, convId, language, initialFocus = "", initialPerspectives, layout: layoutSetting, helpSetting, onSetting }: Props) {
+export default function GraphNavigator({ profileHost, convId, language, initialFocus = "", initialPerspectives, layout: layoutSetting, helpSetting, onSetting, meOpenSetting, meInferredOpacity, onOpenConversation }: Props) {
   const words = usePresentationFeature(profileHost, "graph_screen");
   const t = useMemo(() => shellTranslator(words.feature, language), [words.feature, language]);
   const receiptT = useReceiptWords(profileHost, language);   // the words of "Co wysłaliśmy": the reason of a sent element is said in them (K1c-4)
@@ -70,6 +79,9 @@ export default function GraphNavigator({ profileHost, convId, language, initialF
   const [open, setOpen] = useState(() => openByLayout(layoutOf(layoutSetting)));
   const [viewMenu, setViewMenu] = useState(false);
   const [viewNote, setViewNote] = useState<string | null>(null);
+  const [reloadTick, setReloadTick] = useState(0);   // a write on the screen "Ty" (a value corrected, a note forgotten): the counts are read again
+  const [meOpen, setMeOpen] = useState({ rows: false, map: false });   // PRESET: under the page "Ty" the map and all the rows start closed
+  const proposalWords = usePresentationFeature(profileHost, "action_proposal");
   // The setting arrives after the config loads: follow it until the person chooses here.
   useEffect(() => { const next = layoutOf(layoutSetting); setLayout(next); setOpen(openByLayout(next)); }, [layoutSetting]);
 
@@ -93,7 +105,7 @@ export default function GraphNavigator({ profileHost, convId, language, initialF
       failure => { if (alive) { setError(failure instanceof Error ? failure.message : String(failure)); setLoading(false); } });
     return () => { alive = false; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [requestKey]);
+  }, [requestKey, reloadTick]);
 
   // The search field asks the kernel a moment after the last keystroke.
   useEffect(() => {
@@ -147,6 +159,7 @@ export default function GraphNavigator({ profileHost, convId, language, initialF
   const focus = focusOf(state);
   const crumbs = [{ address: "", label: t("root") }, ...state.path];
   const lines = result ? [...honestyLines(result, t, language), ...receiptLines(result, t)] : [];
+  const meMode = !!result && isMeFocus(result.focus.address) && state.perspectives.length === 0;
   const perspectiveNames = state.perspectives.map(id => (perspList && "options" in perspList ? perspList.options.find(o => o.id === id)?.label : undefined) ?? id);
 
   return (
@@ -168,13 +181,15 @@ export default function GraphNavigator({ profileHost, convId, language, initialF
       {searchOpen && <input className="gnav-search" data-testid="nav-search-input" type="search" autoFocus value={draft} aria-label={t("search")}
         placeholder={t("query.placeholder")} onChange={e => setDraft(e.target.value)} />}
       <GraphHelp screen="navigator" t={t} setting={helpSetting} onSetting={onSetting} testId="nav-help" />
-      {result && focus && result.focus.why && <p className="gnav-why gnav-focus-why" data-testid="nav-focus-why">{result.focus.why}</p>}
+      {result && focus && result.focus.why && !meMode && <p className="gnav-why gnav-focus-why" data-testid="nav-focus-why">{result.focus.why}</p>}
 
       <div className="gnav-body">
         {loading && <p className="gnav-note" data-testid="nav-loading">{t("loading")}</p>}
         {error && <p className="gnav-note gnav-error" data-testid="nav-error">{t("error", { reason: error })}</p>}
-        {result && <Disclosure testId="nav-list-disclosure" className="gnav-disclosure" labels={{ show: t("list.show"), hide: t("list.hide") }}
-          open={open.list} onToggle={v => setOpen(o => ({ ...o, list: v }))}>
+        {result && meMode && <MeView result={result} t={t} language={language} convId={convId} proposalFeature={proposalWords.feature} openSetting={meOpenSetting}
+          inferredOpacity={meInferredOpacity} onSetting={onSetting} onChanged={() => setReloadTick(n => n + 1)} onOpenConversation={onOpenConversation} reloadKey={reloadTick} />}
+        {result && <Disclosure testId="nav-list-disclosure" className="gnav-disclosure" labels={meMode ? { show: t("me.rows.show"), hide: t("me.rows.hide") } : { show: t("list.show"), hide: t("list.hide") }}
+          open={meMode ? meOpen.rows : open.list} onToggle={v => meMode ? setMeOpen(o => ({ ...o, rows: v })) : setOpen(o => ({ ...o, list: v }))}>
           <ul className="gnav-rows" data-testid="nav-rows" data-shown={result.counts.shown} data-total={result.counts.total}>
           {result.children.map(row => {
             const count = countText(row, t), chip = chipText(row, t), evidence = evidenceText(row, t), status = statusText(row, t), noTr = noTranslationText(row, t);
@@ -211,9 +226,9 @@ export default function GraphNavigator({ profileHost, convId, language, initialF
           </ul>
           {!loading && result.children.length === 0 && <p className="gnav-note" data-testid="nav-empty" data-missing-reason={result.receipt && !result.receipt.present ? result.receipt.missing_reason : undefined}>{emptyText(result, state.perspectives.length > 0, t)}</p>}
         </Disclosure>}
-        {result && <Disclosure testId="nav-map-disclosure" className="gnav-disclosure" labels={{ show: t("map.show"), hide: t("map.hide") }}
-          open={open.map} onToggle={v => setOpen(o => ({ ...o, map: v }))}>
-          <NavigatorMap result={result} open={open.map} t={t} onCard={showCard} onDrill={drill} />
+        {result && <Disclosure testId="nav-map-disclosure" className="gnav-disclosure" labels={meMode ? { show: t("me.map.show"), hide: t("me.map.hide") } : { show: t("map.show"), hide: t("map.hide") }}
+          open={meMode ? meOpen.map : open.map} onToggle={v => meMode ? setMeOpen(o => ({ ...o, map: v })) : setOpen(o => ({ ...o, map: v }))}>
+          <NavigatorMap result={result} open={meMode ? meOpen.map : open.map} t={t} onCard={showCard} onDrill={drill} />
         </Disclosure>}
         {card && <NodeCard key={card.address} address={card.address} label={card.label} language={language} convId={convId} t={t} receiptT={receiptT} section={cardSection}
           onClose={() => setCard(null)} onNavigate={(address, label) => drill({ address, label })} />}
