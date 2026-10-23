@@ -291,7 +291,9 @@ async function main() {
       await page.click('[data-testid="start-import"]');
       await page.waitForSelector('[data-testid="import-result"]', { timeout: 15000 });
       const resultText = await page.textContent('[data-testid="import-result"]');
-      assert(resultText && resultText.includes("Imported"), `import result shown: ${resultText}`);
+      // G1b: the panel shows the kernel's summary sentence (pl/en) instead of the old "Imported N messages" line
+      assert(resultText && /Import (finished|zakończony)|Imported \d+/.test(resultText) && /(Conversations|Rozmowy): \d+|Imported \d+/.test(resultText),
+        `import result shown: ${resultText}`);
       await page.click('[data-testid="close-panel"]');
     });
     await page.screenshot({ path: path.join(SCREENSHOT_DIR, "desktop-04-import-result.png") });

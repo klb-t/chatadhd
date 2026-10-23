@@ -106,8 +106,11 @@ def confirmed(s, base, path, body, status=200):
 
 
 def sse_events(r):
+    # The stream is UTF-8 JSON; `r.text` would decode text/event-stream without a charset as latin-1 and
+    # str.splitlines() then breaks a line at the 0x85 byte of "ą" (U+0085 NEL) - seen 2026-10-23 when the
+    # import summary gained Polish words. Decode explicitly and split on newlines only.
     out = []
-    for line in r.text.splitlines():
+    for line in r.content.decode("utf-8", "replace").split("\n"):
         if line.startswith("data:"):
             try:
                 out.append(json.loads(line[5:].strip()))
