@@ -4,6 +4,8 @@ Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerw
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
 **Teleport (R72):** karta startowa nowej sesji S1 = `docs/ops/TELEPORT_S1.md` (aktualizowana tuż przed przełączeniem); zadania zaplanowane = `docs/ops/ZADANIA_ZAPLANOWANE_2026-10-23.md`; przeprowadzka = `docs/ops/PRZEPROWADZKA_GCP_2026-10-23.md`.
 
+## VM 21:0x UTC (sesja gcp): build dev zimny ≈ 12 min, ctest 1217 s, 242/242 z Pythonem 3.11 (`~/.venvs/loom311`, z 3.14 systemowym 7 czerwonych środowiskowo); poprawka g++15 `-Wdangling-reference` w `candidate_graph.cpp` (`1a7df48b`); spot-guard (awans Spot→Standard przy wywłaszczeniu z zadaniami) gotowy w `tools/gcp/`, NIE wdrożony (klasyfikator; właściciel uruchamia instalator); `tools/cloud/login_all.sh` czeka na właściciela; przegląd usług/kredytów (zatwierdzony przez właściciela 20:5x) po podpięciu kont.
+
 ## R96 (właściciel ≈ 19:4x UTC): pyta o szybszy mechanizm przepięcia, cel ok. 20 s (zrzut RAM na SSD + power down). Wpis 12 w `VM_INBOX.md`: zmierzyć używany RAM i przepustowość dysku, sprawdzić natywny suspend dla Spot, hibernację Linuksa (swap + resume=), test prawdziwym wywłaszczeniem (`simulate-maintenance-event`), stróż zdarzeniowy (Logging → Pub/Sub → Function). Odpowiedź w czacie: 20 s realne tylko przy kilku GB używanych i dysku ≥ 200 MB/s; bez RAM: ok. 40–60 s ze stróżem zdarzeniowym, 1–3 min z odpytywaniem.
 
 ## R95 (właściciel ≈ 19:3x UTC): R93 dotyczy tylko słownictwa (bez słów, których definicji może nie znać); nie tłumaczyć oczywistości ani po raz kolejny tego samego — ostatnie wiadomości były w 60–70 % takim tłumaczeniem. Zapisane w spec i CLAUDE.md.
