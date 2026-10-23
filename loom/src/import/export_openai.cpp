@@ -266,6 +266,7 @@ MsgFacts analyse_message(const Json& m, OpenAiCtx& cx, Counts& counts) {
       }
       atts.push_back(rec);
       counts.attachment += 1;
+      if (rec.value("resolved", false)) counts.attachment_linked += 1;
       ++i;
     }
   }
@@ -285,6 +286,7 @@ MsgFacts analyse_message(const Json& m, OpenAiCtx& cx, Counts& counts) {
         }
         atts.push_back(rec);
         counts.attachment += 1;
+        if (rec.value("resolved", false)) counts.attachment_linked += 1;
         ++i;
       }
     }

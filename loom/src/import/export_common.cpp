@@ -27,6 +27,7 @@ void Counts::add(const Counts& o) {
   message += o.message;
   block += o.block;
   attachment += o.attachment;
+  attachment_linked += o.attachment_linked;
   citation += o.citation;
   citation_group += o.citation_group;
   branch += o.branch;
@@ -50,6 +51,7 @@ Counts Counts::from_json(const Json& value) {
   result.message = json::get_int(value, "message");
   result.block = json::get_int(value, "block");
   result.attachment = json::get_int(value, "attachment");
+  result.attachment_linked = json::get_int(value, "attachment_linked");
   result.citation = json::get_int(value, "citation");
   result.citation_group = json::get_int(value, "citation_group");
   result.branch = json::get_int(value, "branch");
@@ -76,6 +78,7 @@ Json Counts::to_json() const {
   j["account"] = account;
   j["artifact"] = artifact;
   j["attachment"] = attachment;
+  j["attachment_linked"] = attachment_linked;
   j["block"] = block;
   j["block_kind"] = bk;
   j["branch"] = branch;

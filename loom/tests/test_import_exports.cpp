@@ -71,7 +71,7 @@ std::int64_t geti(const Json& j, const char* k) { return json::get_int(j, k, -12
 // Tally of the DB contents in the shape of EXPECTED.json "counts".
 Json recount(Database& db, const std::vector<Conversation>& convs) {
   std::map<std::string, std::int64_t> t, bk;
-  for (const char* k : {"account", "artifact", "attachment", "block", "branch", "citation", "citation_group", "conversation",
+  for (const char* k : {"account", "artifact", "attachment", "attachment_linked", "block", "branch", "citation", "citation_group", "conversation",
                         "current_path_messages", "custom_instruction", "feedback", "fork_points", "memory", "message", "project",
                         "project_doc", "record", "shared_link"})
     t[k] = 0;
@@ -89,6 +89,7 @@ Json recount(Database& db, const std::vector<Conversation>& convs) {
         bk[b["kind"].get<std::string>()]++;
       }
       t["attachment"] += static_cast<std::int64_t>(ex["attachments"].size());
+      for (const auto& a : ex["attachments"]) t["attachment_linked"] += (a.contains("resolved") && a["resolved"] == true) ? 1 : 0;
       t["citation"] += static_cast<std::int64_t>(ex["citations"].size());
       t["citation_group"] += static_cast<std::int64_t>(ex["citation_groups"].size());
       t["custom_instruction"] += geti(ex, "custom_instruction");

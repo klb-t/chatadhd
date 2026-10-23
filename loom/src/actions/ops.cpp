@@ -5,6 +5,7 @@
 
 #include "chat/context_format.h"
 #include "graph/projection.h"
+#include "import/import_truth.h"
 #include "loom/action_spend.h"
 #include "loom/client_blobs.h"
 #include "loom/archive.h"
@@ -740,9 +741,13 @@ StepOutcome import_run(Ctx& x) {
   }
   const std::size_t shown = std::min<std::size_t>(lines.size(), static_cast<std::size_t>(x.limit("list", 20)));
   lines.resize(shown);
+  // G1a: what was found and what was saved per kind of element, the reason when not all of it, in one sentence (the language of the run)
+  const Json truth = import_truth::for_runtime(*done, x.rt.paths().root);
+  const Json summary = truth.value("summary", Json::object());
+  const std::string truth_said = json::get_string(summary, x.lang, json::get_string(summary, "en"));
   return answer(x.say("imported", Json{{"format", done->format.empty() ? format : done->format}, {"conversations", convs.size()}, {"messages", done->messages}}) +
-                    (lines.empty() ? "" : "\n" + join_lines(lines)),
-                Json{{"format", done->format}, {"conversations", convs}, {"messages", done->messages}, {"source", source}});
+                    (lines.empty() ? "" : "\n" + join_lines(lines)) + (truth_said.empty() ? "" : "\n" + truth_said),
+                Json{{"format", done->format}, {"conversations", convs}, {"messages", done->messages}, {"source", source}, {"truth", truth}});
 }
 
 // ── storage ─────────────────────────────────────────────────────────

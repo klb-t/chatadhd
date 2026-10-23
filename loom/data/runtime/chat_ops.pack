@@ -1910,6 +1910,268 @@
           ]
         }
       }
+    },
+    "import_truth": {
+      "description": {
+        "pl": "Co import mówi o tym, co znalazł i co zapisał (G1a): dla każdego rodzaju elementu „znaleziono / zapisano”, a gdy nie wszystko – powód z tej tabeli (pierwszy pasujący) i zdanie podsumowania. Tabele to przykłady z datą obserwacji, nie reguły: powód z „observed” opisuje stan z tego dnia. Warunki when: path (export|legacy), provider, archive, found_min, imported_min, imported_max, missing_min, files_min, unreferenced_min, cancelled, partial_import; nieznany klucz nie pasuje. elements: counts = klucz w liczniku eksportu, linked = klucz policzonych jako zapisane (brak = tyle, ile znaleziono), imported_from i legacy = skąd bierze się liczba zapisanych, gdy nie z licznika (result_conversations|result_messages|unread = czytnik tego nie odczytuje; brak legacy = pomijany w czytniku bez eksportu).",
+        "en": "What the import says about what it found and what it saved (G1a): per kind of element “found / saved”, and when not all of it the reason from this table (first match) and a summary sentence. The tables are examples with the date of the observation, not rules: a reason with “observed” describes the state on that day. when conditions: path (export|legacy), provider, archive, found_min, imported_min, imported_max, missing_min, files_min, unreferenced_min, cancelled, partial_import; an unknown key does not match. elements: counts = the key in the export counter, linked = the key counted as saved (none = as many as found), imported_from and legacy = where the saved number comes from when not the counter (result_conversations|result_messages|unread = the reader does not read it; no legacy = skipped for the reader without an export)."
+      },
+      "schema": "loom.import_truth/1",
+      "elements": [
+        {
+          "kind": "conversations",
+          "counts": "conversation",
+          "always": true,
+          "label": {
+            "pl": "Rozmowy",
+            "en": "Conversations"
+          },
+          "imported_from": "result_conversations",
+          "legacy": "result_conversations"
+        },
+        {
+          "kind": "messages",
+          "counts": "message",
+          "always": true,
+          "label": {
+            "pl": "Wiadomości",
+            "en": "Messages"
+          },
+          "imported_from": "result_messages",
+          "legacy": "result_messages"
+        },
+        {
+          "kind": "attachments",
+          "counts": "attachment",
+          "linked": "attachment_linked",
+          "always": true,
+          "label": {
+            "pl": "Załączniki",
+            "en": "Attachments"
+          },
+          "legacy": "unread"
+        },
+        {
+          "kind": "citations",
+          "counts": "citation",
+          "label": {
+            "pl": "Cytaty",
+            "en": "Citations"
+          }
+        },
+        {
+          "kind": "artifacts",
+          "counts": "artifact",
+          "label": {
+            "pl": "Artefakty",
+            "en": "Artifacts"
+          }
+        },
+        {
+          "kind": "memories",
+          "counts": "memory",
+          "label": {
+            "pl": "Wpisy pamięci",
+            "en": "Memory entries"
+          }
+        },
+        {
+          "kind": "custom_instructions",
+          "counts": "custom_instruction",
+          "label": {
+            "pl": "Własne instrukcje",
+            "en": "Custom instructions"
+          }
+        },
+        {
+          "kind": "projects",
+          "counts": "project",
+          "label": {
+            "pl": "Projekty",
+            "en": "Projects"
+          }
+        },
+        {
+          "kind": "project_docs",
+          "counts": "project_doc",
+          "label": {
+            "pl": "Dokumenty projektów",
+            "en": "Project documents"
+          }
+        },
+        {
+          "kind": "feedback",
+          "counts": "feedback",
+          "label": {
+            "pl": "Oceny wiadomości",
+            "en": "Message feedback"
+          }
+        },
+        {
+          "kind": "shared_links",
+          "counts": "shared_link",
+          "label": {
+            "pl": "Udostępnione linki",
+            "en": "Shared links"
+          }
+        },
+        {
+          "kind": "accounts",
+          "counts": "account",
+          "label": {
+            "pl": "Dane konta",
+            "en": "Account records"
+          }
+        }
+      ],
+      "reasons": [
+        {
+          "id": "attachments.export_without_files",
+          "kind": "attachments",
+          "when": {
+            "path": "export",
+            "provider": [
+              "anthropic"
+            ],
+            "found_min": 1,
+            "imported_max": 0
+          },
+          "observed": {
+            "date": "2026-10-22",
+            "basis": {
+              "pl": "komentarz w kodzie czytnika eksportu Claude.ai i audyt S1 z 2026-10-22; nowszych eksportów nie sprawdzano",
+              "en": "comment in the Claude.ai export reader and the S1 audit of 2026-10-22; newer exports were not checked"
+            }
+          },
+          "text": {
+            "pl": "według obserwacji z 2026-10-22 eksport Claude.ai nie zawiera plików załączników – zapisano tylko ich nazwy i opisy",
+            "en": "as observed on 2026-10-22, the Claude.ai export contains no attachment files – only their names and descriptions were saved"
+          }
+        },
+        {
+          "id": "attachments.not_in_archive",
+          "kind": "attachments",
+          "when": {
+            "path": "export",
+            "found_min": 1,
+            "imported_max": 0
+          },
+          "text": {
+            "pl": "w archiwum nie znaleziono plików pasujących do załączników – zapisano tylko ich nazwy i opisy",
+            "en": "no files matching the attachments were found in the archive – only their names and descriptions were saved"
+          }
+        },
+        {
+          "id": "attachments.some_not_in_archive",
+          "kind": "attachments",
+          "when": {
+            "path": "export",
+            "imported_min": 1,
+            "missing_min": 1
+          },
+          "text": {
+            "pl": "dla {{missing}} załączników nie znaleziono pliku w archiwum – zapisano tylko ich nazwy i opisy",
+            "en": "no file was found in the archive for {{missing}} attachments – only their names and descriptions were saved"
+          }
+        },
+        {
+          "id": "attachments.json_without_archive",
+          "kind": "attachments",
+          "when": {
+            "path": "legacy",
+            "archive": false
+          },
+          "text": {
+            "pl": "plik .json bez archiwum: załączników nie ma w pliku, a ten czytnik nie odczytuje nawet ich nazw – nic o nich nie zapisano (wczytaj całe archiwum .zip z eksportu)",
+            "en": "a .json file without the archive: the attachments are not in the file, and this reader does not even read their names – nothing about them was saved (load the whole .zip archive of the export)"
+          }
+        },
+        {
+          "id": "attachments.archive_not_recognised",
+          "kind": "attachments",
+          "when": {
+            "path": "legacy",
+            "archive": true
+          },
+          "text": {
+            "pl": "to archiwum nie zostało rozpoznane jako eksport znanego dostawcy, więc załączników nie odczytano – nic o nich nie zapisano",
+            "en": "this archive was not recognised as an export of a known provider, so the attachments were not read – nothing about them was saved"
+          }
+        },
+        {
+          "id": "any.cancelled",
+          "kind": "*",
+          "when": {
+            "cancelled": true
+          },
+          "text": {
+            "pl": "import został przerwany",
+            "en": "the import was cancelled"
+          }
+        },
+        {
+          "id": "any.partial",
+          "kind": "*",
+          "when": {
+            "partial_import": true,
+            "missing_min": 1
+          },
+          "text": {
+            "pl": "import jest częściowy (zobacz ostrzeżenia i błędy)",
+            "en": "the import is partial (see the warnings and errors)"
+          }
+        }
+      ],
+      "notes": [
+        {
+          "id": "attachments.files_copied",
+          "kind": "attachments",
+          "when": {
+            "path": "export",
+            "files_min": 1
+          },
+          "text": {
+            "pl": "Pliki skopiowane z archiwum do magazynu: {{files}}.",
+            "en": "Files copied from the archive to the store: {{files}}."
+          }
+        },
+        {
+          "id": "attachments.files_unreferenced",
+          "kind": "attachments",
+          "when": {
+            "path": "export",
+            "unreferenced_min": 1
+          },
+          "text": {
+            "pl": "Z nich {{unreferenced}} nie przypisano do żadnej wiadomości.",
+            "en": "Of these, {{unreferenced}} were not attached to any message."
+          }
+        }
+      ],
+      "texts": {
+        "pl": {
+          "head_done": "Import zakończony.",
+          "head_cached": "Ten plik był już zaimportowany – to wynik z zapisu, nic nowego nie zapisano.",
+          "element_all": "{{label}}: {{imported}}.",
+          "element_short": "{{label}}: znaleziono {{found}}, zapisano {{imported}}{{reason}}.",
+          "element_uncounted": "{{label}}: nie policzono, zapisano {{imported}}{{reason}}.",
+          "reason_join": " — {{reason}}",
+          "sentence_join": " ",
+          "warnings": "Ostrzeżenia: {{count}}.",
+          "errors": "Błędy: {{count}}."
+        },
+        "en": {
+          "head_done": "Import finished.",
+          "head_cached": "This file was already imported – this is the stored result, nothing new was saved.",
+          "element_all": "{{label}}: {{imported}}.",
+          "element_short": "{{label}}: found {{found}}, saved {{imported}}{{reason}}.",
+          "element_uncounted": "{{label}}: not counted, saved {{imported}}{{reason}}.",
+          "reason_join": " — {{reason}}",
+          "sentence_join": " ",
+          "warnings": "Warnings: {{count}}.",
+          "errors": "Errors: {{count}}."
+        }
+      }
     }
   },
   "value_schema": {

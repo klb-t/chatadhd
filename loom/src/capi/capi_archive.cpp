@@ -2,6 +2,7 @@
 #include <limits>
 
 #include "context.h"
+#include "import/import_truth.h"
 #include "loom/archive.h"
 #include "loom/importer.h"
 #include "loom/provenance.h"
@@ -51,7 +52,9 @@ LOOM_API const char* loom_import_file_ex(LoomContext* ctx, const char* path, con
     }
     auto r = ctx->rt->importer().import_file(path, opts);
     if (!r) return out_error(r.error());
-    return out(r->to_json());
+    Json result = r->to_json();
+    result["truth"] = import_truth::for_runtime(*r, ctx->rt->paths().root);  // G1a, additive: per kind found / saved, the reason, one sentence pl+en
+    return out(result);
   });
 }
 
