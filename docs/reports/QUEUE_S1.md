@@ -1,10 +1,12 @@
-# Kolejka S1 — stan 2026-10-23 00:28 UTC
+# Kolejka S1 — stan 2026-10-23 00:32 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
 
 ## Reguła właściciela R58 (22.10 ≈ 23:40 UTC; wcześniejsze znaczniki „23.10 00:00/00:20” w tym pliku to pomyłka zegara, prawdziwa godzina to 23:3x–23:4x): przykłady są przykładami, silnik obsługuje każdą konfigurację, mała użyteczność = niewiążąca podpowiedź „czy celowe? nie pytać następnym razem”
 Powód: w tabeli planu napisałem „kolor = rodzaj, przezroczystość = pewność, głębia = czas, jak mówiłeś” — to były moje konkretne przypisania podane jak wymaganie i fałszywie przypisane jemu (jego własne słowa: „to jest tylko jedna z konfiguracji, a zakodować trzeba silnik”). Zapisane: `CLAUDE.md` (sekcja „Examples are examples…”), `OWNER_REQUIREMENTS` R58 (cytat dosłowny), `tools/workflows/single-package.js` (reguła w każdym briefie). Zadanie G3 (#30) ma teraz warunki wstępne: (a) skala: punkt odniesienia + odległość ze znakiem, kierunek zależny od drugiej miary, kilka kodowań jednej miary (dziś `view_engine.cpp` ~595–622: tylko `range`/`domain`/`type` i statyczne `invert`); (b) podpowiedź niewiążąca + zapamiętane „celowe, nie pytaj” + wykrycie wyniku zdegenerowanego (nic nie widać). Silnik już nigdy nie odrzuca kodowania (`promoted`/`allowed` z powodami), brakuje pytania i pamięci odpowiedzi.
+
+## CI 274 (`01dd2319`) = SUCCESS (00:28, 123 min, wszystkie 4 joby — poprawka użycia po zwolnieniu DOWIEDZIONA w asan); `main` = `01dd2319` ZIELONY. Bramka `k2c1b3`: ctest rc=8 (co najmniej jeden test czerwony — czytam), web w toku. S2 poinformowany (może FF sterownika).
 
 ## Kontrola filozofii projektów R57 (Haiku, 14 wywołań): 34 znaleziska — IMP 7 blokujących + 14 słownych, REP 1 blokujące + 12 słownych → poprawka `R57-fix` (Sonnet, start 00:28)
 Blokujące: „repack na życzenie (jak chciał właściciel)” nad parafrazą (W9 to jego dosłowne zdanie o pracy WYŁĄCZNIE na ZIP-ie — ma być preset dostępności, nie degradacja); załączniki Claude.ai „tylko index_only” z jednej próbki (usunięte tryby zamiast „nie do zastosowania dziś”); „NOT POSSIBLE” na niezweryfikowanym negatywie; wymyślony próg „1–2 milczą”; zakaz czytania wycieków przypisany UI14 (to moja decyzja prawna). Brak: własny eksport Loom jako format do czytania przez innych (R60) — dopisywany. Wniosek: kontrola przed użyciem wchodzi do `CLAUDE.md` jako stała reguła (znaleziska Haiku są twierdzeniami do weryfikacji; poprawki na Sonnecie jako dodatek).
