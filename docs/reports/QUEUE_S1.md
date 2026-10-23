@@ -1,10 +1,13 @@
-# Kolejka S1 — stan 2026-10-23 00:12 UTC
+# Kolejka S1 — stan 2026-10-23 00:15 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
 
 ## Reguła właściciela R58 (22.10 ≈ 23:40 UTC; wcześniejsze znaczniki „23.10 00:00/00:20” w tym pliku to pomyłka zegara, prawdziwa godzina to 23:3x–23:4x): przykłady są przykładami, silnik obsługuje każdą konfigurację, mała użyteczność = niewiążąca podpowiedź „czy celowe? nie pytać następnym razem”
 Powód: w tabeli planu napisałem „kolor = rodzaj, przezroczystość = pewność, głębia = czas, jak mówiłeś” — to były moje konkretne przypisania podane jak wymaganie i fałszywie przypisane jemu (jego własne słowa: „to jest tylko jedna z konfiguracji, a zakodować trzeba silnik”). Zapisane: `CLAUDE.md` (sekcja „Examples are examples…”), `OWNER_REQUIREMENTS` R58 (cytat dosłowny), `tools/workflows/single-package.js` (reguła w każdym briefie). Zadanie G3 (#30) ma teraz warunki wstępne: (a) skala: punkt odniesienia + odległość ze znakiem, kierunek zależny od drugiej miary, kilka kodowań jednej miary (dziś `view_engine.cpp` ~595–622: tylko `range`/`domain`/`type` i statyczne `invert`); (b) podpowiedź niewiążąca + zapamiętane „celowe, nie pytaj” + wykrycie wyniku zdegenerowanego (nic nie widać). Silnik już nigdy nie odrzuca kodowania (`promoted`/`allowed` z powodami), brakuje pytania i pamięci odpowiedzi.
+
+## K2b-4 START (00:15 UTC, `wf_a578c761-63d`, Sonnet): uwagi i słowa sterujące rozumiane w każdym języku paczki
+S2 (run 39870977153, 42/1/0 ×3): przy czekającym pytaniu „nie pytaj o zdrowie” zapisane jako ODPOWIEDŹ. Przyczyna sprawdzona w kodzie (inna niż K2b-3): `apply_remark` dopasowuje tylko `languages(locale)`, `control_op` tylko `e.lang`; język rozmowy ustalony na starcie z języka UI, a emulator ma UI po angielsku (locale urządzenia en, brak `ui_language`), sterownik pisze po polsku. Decyzja: dopasowanie we wszystkich językach paczki (preset konfigurowalny), wyświetlanie w języku rozmowy; zdanie „Czeka na Twoje potwierdzenie” uczciwe (potwierdzenie przy końcu sekcji). Start mimo „CZEKAJ” tempa: błąd blokuje smoke S2 i wywiad na telefonie z UI innym niż język pisania; 0,5 pkt mieści się w 4 pkt do punktu 50 % o 20:00. Agent czeka z buildem na koniec bramki `k2c1b3` (ten sam build/dev). Odpowiedź do S2 wysłana (przyczyna, sha po naprawie, wariant smoke z ui_language=pl).
 
 ## 00:12 UTC: koordynator = Fable (właściciel, `/model`); styl wątku = tylko statusy; tydzień 46 %
 Właściciel: „nie gadaj tyle…”, tylko: co zaczynam / kończę / buduję / co nie wyszło / co agenci wymyślili oryginalnego; dyskusja tylko gdy on ją otwiera; parafraza R61 ≤ 5 linii. Zapisane w `CLAUDE.md`. Pace: `--used 46`. W toku: bramka `k2c1b3`, CI 274 asan (kontrola 00:31), Fable D1 (import jako pliki). Czeka: zatwierdzenie SPEC1 (jedna linia pytania).
