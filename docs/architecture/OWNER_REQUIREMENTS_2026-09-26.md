@@ -921,6 +921,11 @@ Trzy rzeczy: (1) pytanie o mechanizm znikania VM i brak zabezpieczenia - odpowie
 
 R93 dotyczy wylacznie slow: nie uzywac slow i nazw, co do ktorych nie mam pewnosci, ze zna ich definicje (skroty robocze, zargon). Nie tlumaczyc rzeczy oczywistych ani po raz kolejny tych samych; gestosc tresci normalna, bez dumbing down. Miara jego: 60-70 % ostatnich wiadomosci to bylo tlumaczenie oczywistosci.
 
+## R96 — Cel: przepięcie maszyny w ok. 20 s (zrzut RAM na SSD + power down) (owner, 2026-10-23)
+> A z tym przepinaniem maszyny to nie ma na pewno jakiegoś mechanizmu szybszego? Bo ja to szacowałem na jakieś nie wiem 20 sekund? : zrzut Ramu na SSD + power Down
+
+Cel do zmierzenia, nie zalozenie: hibernacja Linuksa (zrzut uzywanego RAM do swapu na dysku trwalym w oknie 120 s uprzedzenia, resume= przy nastepnym starcie) albo natywny suspend GCE (do sprawdzenia, czy dostepny dla Spot i w trakcie wywlaszczenia). Czas zrzutu = uzywany RAM / przepustowosc zapisu dysku (pd-ssd rosnie z rozmiarem, hyperdisk z provisioningiem; e2 ma limit ok. 240 MB/s) - 20 s realne tylko przy kilku GB uzywanych i szybkim dysku; dysk to pieniadze, na ktore zgodzil sie w R94. Test: gcloud compute instances simulate-maintenance-event wywoluje prawdziwe wywlaszczenie Spot - mierzyc, nie zgadywac.
+
 ## Decision — rebuild, don't recover
 > "nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane"
 

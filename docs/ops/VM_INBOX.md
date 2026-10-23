@@ -62,3 +62,18 @@ i pieniędzmi bez jego tak/nie; obserwacja środowiska = advisory, nie stop).
    pakietów trzymały blokadę, i po 120 s uprzedzenia dostała twarde zatrzymanie. Skrypt wyłączenia musi zdążyć mimo
    tego: albo aktualizacje bez blokady zamknięcia (konfiguracja unattended-upgrades / `InhibitShutdown`), albo
    aktualizacje tylko w oknie, gdy nic nie biegnie — zdecyduj, zapisz powód, zmierz czas od sygnału do commit+push.
+12. (2026-10-23 19:4x UTC, **R96 — cel właściciela: przepięcie w ok. 20 s, „zrzut RAM-u na SSD + power down”**; uzupełnia
+   wpis 9) Zmierz, nie zgaduj. (a) Zmierz na maszynie: używany RAM w typowej pracy (`free -m` podczas builda i agenta),
+   typ i rozmiar dysku rozruchowego (`gcloud compute disks describe`) oraz realną przepustowość zapisu (`fio` albo `dd`
+   z `oflag=direct`, 2 GB); policz czas zrzutu = używany RAM / przepustowość i podaj, jaki dysk (pd-ssd o jakim
+   rozmiarze albo hyperdisk z provisioningiem) dawałby 20 s — to pieniądze, na które zgodził się w R94 (dysk), więc
+   dolicz cenę z datą. (b) Sprawdź w dokumentacji GCE (link + data): czy natywny `suspend` jest dostępny dla Spot VM
+   i czy wywołany z wnętrza w oknie uprzedzenia wyprzedza zatrzymanie przez Google; jeśli tak — to najczystsza droga.
+   (c) Hibernacja Linuksa jako plan B: swap ≥ używany RAM na dysku trwałym, `resume=` w parametrach jądra, Secure Boot
+   (czy włączony), obraz Ubuntu 26.04 na GCE — czy `systemctl hibernate` działa i czy po `start` maszyna wraca z obrazu
+   z żywymi procesami (tmux, build, sesja Claude). (d) Test całego przepływu prawdziwym wywłaszczeniem:
+   `gcloud compute instances simulate-maintenance-event devbox-20260923 --zone europe-west4-c` (na Spot wywołuje
+   preemption) — najpierw z commit+push WIP, w porze bez biegnącej pracy; zmierz: sygnał → zrzut gotowy, stop → start
+   (stróż), start → usługi i sesja z powrotem; podaj trzy liczby i co wracało żywe. (e) Stróż zdarzeniowy zamiast
+   odpytywania co minutę: wpis `compute.instances.preempted` w Cloud Logging → sink → Pub/Sub → Cloud Function/Run
+   `start` — policz, ile sekund to zdejmuje. Wynik jako sekcja w VM_RECON i linia do S1; wdrożenie tego, co bez kosztu.

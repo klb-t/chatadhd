@@ -5,8 +5,8 @@
  "sources": {
   "owner": {
    "path": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
-   "sha256": "cdfaf532a06df06a09ab617cd7bd33c649b067af2d28f88a3200f2c52abb3b5e",
-   "lines": 938
+   "sha256": "0c28938d554fb6ce103f8b11fe138dc49fa676c36b366879c3d72902160b093f",
+   "lines": 943
   },
   "slowa": {
    "path": "docs/architecture/SLOWA_WLASCICIELA_2026-10-16.md",
@@ -5507,6 +5507,60 @@
    ]
   },
   {
+   "id": "s_474247e42847",
+   "aliases": [
+    "R96"
+   ],
+   "kind": "requirement",
+   "title": "Cel: przepięcie maszyny w ok. 20 s (zrzut RAM na SSD + power down)",
+   "date": "2026-10-23",
+   "theme": "owner_requirements",
+   "theme_inferred": false,
+   "understanding": {
+    "state": "none"
+   },
+   "quotes": [
+    {
+     "text": "A z tym przepinaniem maszyny to nie ma na pewno jakiegoś mechanizmu szybszego? Bo ja to szacowałem na jakieś nie wiem 20 sekund? : zrzut Ramu na SSD + power Down",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:925",
+     "ref": null,
+     "attr": [],
+     "lead": null,
+     "secondary": false
+    }
+   ],
+   "sense": null,
+   "summary": null,
+   "restatement": [
+    {
+     "text": "Cel do zmierzenia, nie zalozenie: hibernacja Linuksa (zrzut uzywanego RAM do swapu na dysku trwalym w oknie 120 s uprzedzenia, resume= przy nastepnym starcie) albo natywny suspend GCE (do sprawdzenia, czy dostepny dla Spot i w trakcie wywlaszczenia). Czas zrzutu = uzywany RAM / przepustowosc zapisu dysku (pd-ssd rosnie z rozmiarem, hyperdisk z provisioningiem; e2 ma limit ok. 240 MB/s) - 20 s realne tylko przy kilku GB uzywanych i szybkim dysku; dysk to pieniadze, na ktore zgodzil sie w R94. Test: gcloud compute instances simulate-maintenance-event wywoluje prawdziwe wywlaszczenie Spot - mierzyc, nie zgadywac.",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:927"
+    }
+   ],
+   "commentary": [],
+   "status": null,
+   "gap_text": null,
+   "evidence": [],
+   "next_step": null,
+   "refs": [
+    "s_e438242fe59f"
+   ],
+   "supersedes": [],
+   "superseded_by": [],
+   "supersession_notes": [],
+   "tags": [],
+   "heading_note": "owner, 2026-10-23",
+   "sources": [
+    {
+     "role": "owner",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:924-927"
+    }
+   ],
+   "files": [
+    "owner"
+   ]
+  },
+  {
    "id": "s_18ec73967a7b",
    "aliases": [
     "owner:decision-rebuild-don-t-recover"
@@ -5522,7 +5576,7 @@
    "quotes": [
     {
      "text": "\"nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane\"",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:925",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:930",
      "ref": null,
      "attr": [],
      "lead": null,
@@ -5534,7 +5588,7 @@
    "restatement": [
     {
      "text": "Recovered versions (`history/chatadhd_v0.8.3`, `history/chatadhd_v0.9.0`) and\nthe historical report are sources of requirements, ideas and data assets\n(e.g. `film_structure.json`), and real ground truth for self-discovery tests —\nnot code to merge. Everything is rebuilt in Loom with tests.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:927-930"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:932-935"
     }
    ],
    "commentary": [],
@@ -5551,7 +5605,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:924-930"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:929-935"
     }
    ],
    "files": [
@@ -5577,7 +5631,7 @@
    "restatement": [
     {
      "text": "`workbench_mockup_2026-09-26.webp`: dockable/floating panels (conversation\nlist, active conversation, knowledge graph with active context window, project\nstructure with dimmed high-confidence auto-completable nodes, artifact views\nfor music/video with timeline + storyboard, video player, execution\nenvironment with agent), multi-format ingestion, Loom SDK at the centre.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:933-937"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:938-942"
     }
    ],
    "commentary": [],
@@ -5594,7 +5648,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:932-937"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:937-942"
     }
    ],
    "files": [
