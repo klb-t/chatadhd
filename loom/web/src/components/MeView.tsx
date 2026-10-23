@@ -181,6 +181,7 @@ function MeRow({ row, view, t, language, convId, proposalFeature, opacity, onCha
       <div className="me-row-top">
         <span className="me-row-label" data-testid="me-row-label">{view.label}</span>
         {view.value !== null && <span className="me-row-value" data-testid="me-row-value">{view.value}</span>}
+        {view.state !== null && <span className="me-row-state gnav-note" data-testid="me-row-state">{view.state}</span>}
       </div>
       <div className="gnav-chips">
         <span className="gnav-chip gnav-chip-evidence" data-testid="me-row-chip" data-class={view.classId}>{view.chip}</span>

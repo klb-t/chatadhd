@@ -2189,7 +2189,7 @@ std::string_view(R"loom_onboard(                "inheritance.no_unit.organizatio
                 "me.section.partial": "Showing {{shown}} of {{total}}.",
                 "me.section.mix": "Evidence: {{list}}",
                 "me.section.mix_item": "{{class}} {{n}}",
-                "me.class.declared": "recorded",
+                "me.class.declared": "from the app",
                 "me.class.observed": "observed",
                 "me.class.derived": "derived",
                 "me.class.inferred": "inferred",
@@ -2576,7 +2576,7 @@ std::string_view(R"loom_onboard(                "inheritance.no_unit.organizatio
                 "me.section.partial": "Pokazano {{shown}} z {{total}}.",
                 "me.section.mix": "Dowody: {{list}}",
                 "me.section.mix_item": "{{class}} {{n}}",
-                "me.class.declared": "zapisane",
+                "me.class.declared": "z aplikacji",
                 "me.class.observed": "zaobserwowane",
                 "me.class.derived": "wyprowadzone",
                 "me.class.inferred": "wywnioskowane",
@@ -2762,7 +2762,7 @@ std::string_view(R"loom_onboard(                "inheritance.no_unit.organizatio
               "by": "M1-K1, M1-W1a",
               "today": {
                 "pl": "Arkusz „Co wysłaliśmy” jest w aplikacji (loom/web/src/components/ContextReceipt.tsx): pod odpowiedzią linia „Kontekst: … — zobacz” (ustawienie receipt_link) i pozycja „Co wysłaliśmy” w menu wiadomości otwierają arkusz z sekcjami w kolejności wysłania, tokenami (szacunek), listą „Pominięte” z powodami, profilem, zmianami tej tury, prefiksem i strażnikiem ×10; przyciski „Następnym razem” (szerzej, węziej, głębiej, płycej) i „Zmień profil” wołają akcję context.modify tylko na następną wiadomość (pytanie ×10 zadaje jądro). Koszt pokazuje „nieznany — brak ceny”, bo ślad nie niesie ceny. „Pokaż w grafie” jest widoczne, ale wyłączone z powodem, dopóki jądro nie ma źródła „Wysłane do modelu” w grafie. Wiadomości sprzed M1 pokazują „Brak śladu (zapisane przed M1)”. Menu + › Kontekst (Szerzej, Głębiej, Węziej, Płycej, Profil selektora, Przepływ tekst ↔ graf, Podgląd wysyłki, Profil i pamięć, Twierdzenia z analizy) woła tę samą akcję; pasek nad polem pisania (ustawienie composer_context_strip) mówi słowami, co pójdzie z następnym zapytaniem; chip modelu ma „ⓘ” z arkuszem pochodzenia modelu (poziom łańcucha, klasa, cena albo „nieznany — brak ceny”). Silnik nie ma odczytu zmian czekających na następne zapytanie, więc pasek zna tylko te, które zrobiło to okno.",
-)loom_onboard", 59380),
+)loom_onboard", 59387),
 std::string_view(R"loom_onboard(                "en": "The “What we sent” sheet is in the app (loom/web/src/components/ContextReceipt.tsx): the line “Context: … — see” under a reply (setting receipt_link) and the entry “What we sent” in the message menu open the sheet with the sections in the order they were sent, tokens (an estimate), the “Left out” list with reasons, the profile, the changes of this turn, the prefix and the ×10 guard; the buttons “Next time” (wider, narrower, deeper, shallower) and “Change profile” call the action context.modify for the next message only (the kernel asks the ×10 question). Cost says “cost unknown — no price” because the receipt carries no price. “Show in the graph” is visible but disabled with its reason until the kernel has the “Sent to the model” source in the graph. Messages saved before M1 show “No receipt (saved before M1)”. The + › Context menu (Wider, Deeper, Narrower, Shallower, Selector profile, Flow text ↔ graph, Preview of the request, Profile and memory, Claims from the analysis) calls the same action; the strip above the composer (setting composer_context_strip) says in words what goes with the next request; the model chip has an “ⓘ” with a sheet of the model's provenance (level of the chain, class, price or “unknown — no price”). The engine cannot read what waits for the next request, so the strip knows only the changes this window made."
               },
               "reason": {
@@ -6223,7 +6223,7 @@ std::string_view(R"loom_onboard(            "perspective.help": "Tick one or mor
             "me.section.partial": "Showing {{shown}} of {{total}}.",
             "me.section.mix": "Evidence: {{list}}",
             "me.section.mix_item": "{{class}} {{n}}",
-            "me.class.declared": "recorded",
+            "me.class.declared": "from the app",
             "me.class.observed": "observed",
             "me.class.derived": "derived",
             "me.class.inferred": "inferred",
@@ -6610,7 +6610,7 @@ std::string_view(R"loom_onboard(            "perspective.help": "Tick one or mor
             "me.section.partial": "Pokazano {{shown}} z {{total}}.",
             "me.section.mix": "Dowody: {{list}}",
             "me.section.mix_item": "{{class}} {{n}}",
-            "me.class.declared": "zapisane",
+            "me.class.declared": "z aplikacji",
             "me.class.observed": "zaobserwowane",
             "me.class.derived": "wyprowadzone",
             "me.class.inferred": "wywnioskowane",
@@ -6796,7 +6796,7 @@ std::string_view(R"loom_onboard(            "perspective.help": "Tick one or mor
           "by": "M1-K1, M1-W1a",
           "today": {
             "pl": "Arkusz „Co wysłaliśmy” jest w aplikacji (loom/web/src/components/ContextReceipt.tsx): pod odpowiedzią linia „Kontekst: … — zobacz” (ustawienie receipt_link) i pozycja „Co wysłaliśmy” w menu wiadomości otwierają arkusz z sekcjami w kolejności wysłania, tokenami (szacunek), listą „Pominięte” z powodami, profilem, zmianami tej tury, prefiksem i strażnikiem ×10; przyciski „Następnym razem” (szerzej, węziej, głębiej, płycej) i „Zmień profil” wołają akcję context.modify tylko na następną wiadomość (pytanie ×10 zadaje jądro). Koszt pokazuje „nieznany — brak ceny”, bo ślad nie niesie ceny. „Pokaż w grafie” jest widoczne, ale wyłączone z powodem, dopóki jądro nie ma źródła „Wysłane do modelu” w grafie. Wiadomości sprzed M1 pokazują „Brak śladu (zapisane przed M1)”. Menu + › Kontekst (Szerzej, Głębiej, Węziej, Płycej, Profil selektora, Przepływ tekst ↔ graf, Podgląd wysyłki, Profil i pamięć, Twierdzenia z analizy) woła tę samą akcję; pasek nad polem pisania (ustawienie composer_context_strip) mówi słowami, co pójdzie z następnym zapytaniem; chip modelu ma „ⓘ” z arkuszem pochodzenia modelu (poziom łańcucha, klasa, cena albo „nieznany — brak ceny”). Silnik nie ma odczytu zmian czekających na następne zapytanie, więc pasek zna tylko te, które zrobiło to okno.",
-)loom_onboard", 58651),
+)loom_onboard", 58658),
 std::string_view(R"loom_onboard(            "en": "The “What we sent” sheet is in the app (loom/web/src/components/ContextReceipt.tsx): the line “Context: … — see” under a reply (setting receipt_link) and the entry “What we sent” in the message menu open the sheet with the sections in the order they were sent, tokens (an estimate), the “Left out” list with reasons, the profile, the changes of this turn, the prefix and the ×10 guard; the buttons “Next time” (wider, narrower, deeper, shallower) and “Change profile” call the action context.modify for the next message only (the kernel asks the ×10 question). Cost says “cost unknown — no price” because the receipt carries no price. “Show in the graph” is visible but disabled with its reason until the kernel has the “Sent to the model” source in the graph. Messages saved before M1 show “No receipt (saved before M1)”. The + › Context menu (Wider, Deeper, Narrower, Shallower, Selector profile, Flow text ↔ graph, Preview of the request, Profile and memory, Claims from the analysis) calls the same action; the strip above the composer (setting composer_context_strip) says in words what goes with the next request; the model chip has an “ⓘ” with a sheet of the model's provenance (level of the chain, class, price or “unknown — no price”). The engine cannot read what waits for the next request, so the strip knows only the changes this window made."
           },
           "reason": {

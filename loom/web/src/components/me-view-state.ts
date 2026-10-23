@@ -70,12 +70,17 @@ export function formatTime(iso: string, language: string): string {
   try { return new Intl.DateTimeFormat(language, { dateStyle: "medium", timeStyle: "short" }).format(date); } catch { return iso; }
 }
 
-/** The value of a row in the kernel's words. A slot the person closed ("never"), skipped or left unknown has no value in the answer: only the
- *  kernel's word for its state is shown, never a value of this file's. */
+/** The value of a row in the kernel's words. A slot the person closed ("never"), skipped or left unknown has NO value in the answer (value null):
+ *  it shows no value at all, only the kernel's word for its state (stateText) - never a value of this file's. */
 export function valueText(row: Pick<GraphNodeRow, "value" | "value_human">): string | null {
+  if (row.value === null || row.value === undefined) return null;
   if (typeof row.value_human === "string" && row.value_human !== "") return row.value_human;
   const v = row.value;
   return typeof v === "string" || typeof v === "number" || typeof v === "boolean" ? String(v) : null;
+}
+export function stateText(row: Pick<GraphNodeRow, "value" | "value_human">): string | null {
+  if (row.value !== null && row.value !== undefined) return null;
+  return typeof row.value_human === "string" && row.value_human !== "" ? row.value_human : null;
 }
 
 export interface ActionButton {
@@ -165,6 +170,8 @@ export interface RowView {
   address: string;
   label: string;
   value: string | null;
+  /** The kernel's word for the state of an entry that has no value (nieznane, nigdy, pominięte ...). */
+  state: string | null;
   chip: string;
   classId: string;
   inferred: boolean;
@@ -180,7 +187,7 @@ export function rowView(row: GraphNodeRow, t: ShellT, language: string): RowView
   const inferred = isInferred(row);
   const who = row.provenance?.chip?.label ?? null;
   return {
-    address: row.address, label: row.label, value: valueText(row), chip: classWord(row.evidence, t), classId: row.evidence?.class ?? "",
+    address: row.address, label: row.label, value: valueText(row), state: stateText(row), chip: classWord(row.evidence, t), classId: row.evidence?.class ?? "",
     inferred, setBy: row.kind === "preference" && who ? t("me.chip.set_by", { who }) : null,
     provenance: provenanceLine(row, t, language), why: row.why ?? "",
     inferredNote: inferred ? t("me.inferred.note") : null, actions: actionButtons(row.actions, t),
