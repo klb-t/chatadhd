@@ -113,7 +113,6 @@ Json build(const ImportResult& r, const Json& words) {
     Json notes = Json::array();
     Json label = Json::object();
   };
-  std::vector<Shown> shown;
   for (const auto& el : elements) {
     const std::string kind = json::get_string(el, "kind");
     const bool always = json::get_bool(el, "always");

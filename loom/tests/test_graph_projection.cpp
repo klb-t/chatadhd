@@ -878,7 +878,8 @@ TEST_SUITE("graph_projection") {
       const std::string address = a.at("address").get<std::string>();
       CHECK_MESSAGE((areas.count(address) > 0 || address == "levels:scope_chain"), address << " is neither an area of the root nor the levels node");
       for (const char* lang : {"pl", "en"}) {
-        for (const auto& w : a.at("words").value(lang, Json::array())) {
+        const Json in_lang = a.at("words").value(lang, Json::array());
+        for (const auto& w : in_lang) {
           const std::string word = w.get<std::string>();
           INFO(lang << " / " << word << " -> " << address);
           CHECK(unwrap(projection::find_address(f.env(lang), word)) == address);
