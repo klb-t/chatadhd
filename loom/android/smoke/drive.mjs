@@ -747,15 +747,16 @@ const serverChecks = [
   }],
   // G1a: a chat sentence opens the navigator at the root of the graph
   ["graph: 'pokaż katalog główny grafu' in the chat opens the navigator root", async () => {
+    // S1: the sentence is a rule command answered by a proposal; "tak" confirms it and the navigator opens at the root
+    // (as the web e2e m1-import-truth step 3). A new conversation, so no earlier proposal is on screen.
+    await click("shell-drawer-toggle"); await waitTid("shell-new-chat", 10); await click("shell-new-chat");
+    await waitTid("shell-empty", 15);
+    const lastAnswer = () => page.ev(`(()=>{const b=[...document.querySelectorAll('.msg.assistant .body')].pop();return (b&&b.innerText||'').replace(/\\s+/g,' ').slice(0,200)})()`);
     await send("pokaż katalog główny grafu");
-    // a chat command may come as a proposal first (as 'przetłumacz'): confirm it, then the navigator opens
-    await until("the navigator or a proposal", async () => (await has("graph-navigator")) || (await has("chat-action-proposal")), 60, 400)
-      .catch(async e => { throw new Error(`${e.message} || on screen: ${await m1Visible()}`); });
-    if (!(await has("graph-navigator"))) {
-      await click("chat-action-proposal-confirm");
-      await until("the navigator after Tak", () => has("graph-navigator"), 60, 400)
-        .catch(async e => { throw new Error(`${e.message} || on screen: ${await m1Visible()}`); });
-    }
+    await until("the proposal", () => has("chat-action-proposal"), 60, 400).catch(async e => { throw new Error(`${e.message}; the last answer: "${await lastAnswer()}"`); });
+    await send("tak");
+    await until("the navigator after 'tak'", () => has("graph-navigator"), 60, 400)
+      .catch(async e => { throw new Error(`${e.message}; the last answer: "${await lastAnswer()}"`); });
     await waitTid("nav-rows", 30);
     const focus = await page.ev(`${q("graph-navigator")}.getAttribute('data-focus')||''`);
     const rows = await page.ev(`[...document.querySelectorAll('[data-testid="nav-rows"] .gnav-label')].slice(0,6).map(e=>e.innerText).join(' | ')`);
@@ -767,6 +768,13 @@ const serverChecks = [
   // K2c-2: ⋮ › Ty lists the parts of the person (subgraph:self/…) with counts; a part opens its slots
   ["Ty: ⋮ › Ty shows the parts with counts; the first part opens its rows", async () => {
     await openMenu("me");
+    // the navigator keeps its perspectives between openings: "sent to the model" from the Pokaż w grafie step leaves Ty empty
+    const left = await until("the navigator", () => page.ev(`${q("graph-navigator")}?.getAttribute('data-perspectives')`).then(v => v === null ? false : v || "none"), 30, 300);
+    if (left !== "none") {
+      await clickSettled("nav-bar-perspective"); await waitTid("nav-perspective-none", 10); await click("nav-perspective-none");
+      await until("no perspective", () => page.ev(`${q("graph-navigator")}?.getAttribute('data-perspectives')||''`).then(v => v === ""), 15, 300);
+      await m1Reset(); await openMenu("me");
+    }
     await until("Ty's rows", () => page.ev(`document.querySelectorAll('[data-testid="nav-rows"] .gnav-row-main').length`), 30, 300)
       .catch(async e => { throw new Error(`${e.message} || on screen: ${await m1Visible()}`); });
     const parts = await page.ev(`[...document.querySelectorAll('[data-testid="nav-rows"] .gnav-row-main')].map(b=>b.dataset.testid.replace('nav-row-','')+' '+(b.innerText||'').replace(/\\s+/g,' ').slice(0,40)).slice(0,6)`);
@@ -777,7 +785,7 @@ const serverChecks = [
     const slots = await page.ev(`[...document.querySelectorAll('[data-testid="nav-rows"] .gnav-label')].slice(0,6).map(e=>e.innerText).join(' | ')`);
     shot("ty-part");
     await m1Reset();
-    return `parts: ${parts.join(' | ')}; ${first.replace('nav-row-','')} -> ${slots}`;
+    return `${left !== "none" ? `perspective left on from before: ${left} (cleared); ` : ""}parts: ${parts.join(' | ')}; ${first.replace('nav-row-','')} -> ${slots}`;
   }],
   // G1: "Co tu widzę?" on the navigator opens a help text
   ["graph: ⋮ › Graf › 'Co tu widzę?' opens the help", async () => {
