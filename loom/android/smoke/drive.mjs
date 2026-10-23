@@ -610,6 +610,45 @@ const resumed = () => new RegExp(`(mResumedActivity|topResumedActivity)[^\\n]*${
   execFileSync("adb", ["shell", "dumpsys", "activity", "activities"], { encoding: "utf8", maxBuffer: 16 << 20 }));
 
 const serverChecks = [
+  // M1-W2a: an empty chat offers "Poznajmy się"; the interview is a form in a conversation, so the model sees no request
+  // M1-W2a (S1's path, one interview per account): the remark is understood with a question waiting and with none
+  ["interview: Poznajmy się -> level -> remark with a question waiting -> Tak; skip to the end -> remark again -> Tak; no model request", async () => {
+    const before = providerCalls().length;
+    const lastAnswer = () => page.ev(`(()=>{const b=[...document.querySelectorAll('.msg.assistant .body')].pop();return (b&&b.innerText||'').replace(/\\s+/g,' ').slice(0,240)})()`);
+    const remark = async when => {
+      await send("nie pytaj o zdrowie");
+      await until(`the proposal 'Tak zrozumiałem' (${when})`, () => has("chat-action-proposal"), 60, 400)
+        .catch(async e => { throw new Error(`${e.message}; the last answer: "${await lastAnswer()}"`); });
+      const text = (await textTid("chat-action-proposal")).replace(/\s+/g, " ").slice(0, 160);
+      await click("chat-action-proposal-confirm"); await waitGone("chat-action-proposal", 60);
+      return text;
+    };
+    await click("shell-drawer-toggle"); await waitTid("shell-new-chat", 10); await click("shell-new-chat");
+    await waitTid("shell-empty", 15);
+    const shown = await until("the empty chat knows whether to offer the interview", () => page.ev(`${q("shell-empty")}?.getAttribute('data-interview')`).then(v => v && v !== "checking" && v), 30, 300);
+    if (shown !== "shown") throw new Error(`the empty chat does not offer the interview (data-interview=${shown})`);
+    await clickSettled("interview-card-start");
+    await waitTid("interview-levels", 30);
+    await page.ev(`(document.querySelector('[data-testid="interview-level"][data-level="detailed"]')||document.querySelector('[data-testid="interview-level"]')).click()`);
+    await waitTid("interview-chips", 30);
+    await page.ev(`document.querySelector('[data-testid="interview-chip"][data-chip="skip"]')?.click()`);
+    const skipChip = () => page.ev(`!!document.querySelector('[data-testid="interview-chip"][data-chip="skip"]')`);
+    await until("a question waiting", skipChip, 30, 300);
+    const first = await remark("a question waiting");
+    // skip until no question waits (bounded: the detailed level has a dozen or so)
+    let skips = 0;
+    for (; skips < 40; skips++) {
+      await sleep(800);
+      if (!(await skipChip())) break;
+      await page.ev(`document.querySelector('[data-testid="interview-chip"][data-chip="skip"]').click()`);
+    }
+    if (await skipChip()) throw new Error(`a question still waits after ${skips} skips`);
+    const second = await remark("no question waiting");
+    shot("interview");
+    const calls = providerCalls().slice(before);
+    if (calls.length) throw new Error(`the model got ${calls.length} request(s) during the interview`);
+    return `with a question: "${first}"; after ${skips} skips, none waiting: "${second}"; 0 model requests`;
+  }],
   ["new conversation (drawer -> New chat -> message -> listed)", async () => {
     const before = (await convs()).length;
     await click("shell-drawer-toggle"); await waitTid("shell-new-chat", 10); await click("shell-new-chat");
@@ -816,6 +855,38 @@ const serverChecks = [
   // R38: the fake provider (deploy/first-steps-provider.py) routes "agent" to agent.run and, offered tools, asks for one
   // irreversible tool (usage_compact): the policy local_reversible proposes it, the run stops, the chat shows the block;
   // Accept resumes the run with the transcript, and the provider then answers with text.
+  // the owner's phone runs the UI in Polish: the same interview conversation opened with ui_language = pl; UI words are Polish,
+  // Polish control words work. The kernel's replies keep the conversation's language (English here) until S1's K2b-5: not checked.
+  ["interview in Polish (ui_language=pl): the same conversation, Polish UI words, 'pomiń' and 'podsumowanie' work", async () => {
+    const was = (await apiJson("GET", "/api/config")).body?.ui_language;
+    const set = async v => { const r = await apiJson("PATCH", "/api/config", { ui_language: v }); if (r.status >= 400) throw new Error("cannot set ui_language: " + JSON.stringify(r.body).slice(0, 200)); };
+    await set("pl");
+    try {
+      await page.ev("location.reload()").catch(() => {});
+      await waitTid("chat-input", 60); await backToChat();
+      await click("shell-drawer-toggle"); await waitTid("shell-conv", 10);
+      if (!(await clickText("shell-conv", "/Poznajmy|Get to know|Let.s get/i"))) throw new Error("the interview conversation is not in the list: " + (await textTid("shell-conv")).slice(0, 200));
+      await waitTid("interview-info", 30);
+      const info = (await textTid("interview-info")).replace(/\s+/g, " ").slice(0, 160);
+      const chips = (await textTid("interview-chips")).replace(/\s+/g, " ").slice(0, 160);
+      if (!/bez modelu|Rozmowa/i.test(info)) throw new Error(`the info line is not Polish: "${info}"`);
+      if (!/Pomiń|Nigdy|Podsumowanie|Dalej|Ile zostało|Nie teraz/i.test(chips)) throw new Error(`the quick replies are not Polish: "${chips}"`);
+      const count = () => page.ev(`document.querySelectorAll('.msg.assistant .body').length`);
+      const replies = [];
+      for (const word of ["pomiń", "podsumowanie"]) {
+        const n = await count();
+        await send(word);
+        await until(`an answer to '${word}'`, async () => (await count()) > n, 60, 400);
+        if (await has("chat-error")) throw new Error("chat-error: " + await page.ev(`${q("chat-error")}.innerText`));
+        replies.push(`${word} -> "${(await page.ev(`[...document.querySelectorAll('.msg.assistant .body')].pop().innerText`)).replace(/\s+/g, " ").slice(0, 120)}"`);
+      }
+      shot("interview-pl");
+      return `info "${info}"; chips "${chips}"; ${replies.join("; ")}`;
+    } finally {
+      await set(was ?? "");
+      await page.ev("location.reload()").catch(() => {}); await waitTid("chat-input", 60).catch(() => {});
+    }
+  }],
   ["agent proposals: the run stops on a proposal, Accept resumes it to the end", async () => {
     await send("poproś agenta żeby uporządkował moje notatki");   // the example phrase of agent.run: a rule routes it locally
     const proposed = await until("the action proposal or the agent block",
