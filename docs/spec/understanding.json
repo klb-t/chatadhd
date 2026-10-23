@@ -99,11 +99,21 @@
      "by": "koordynator (Fable)",
      "date": "2026-10-23",
      "text": "Koordynator (ta sesja) ma pracować na maszynie w GCP: tam kodować, budować i od razu wdrażać; przygotować przeprowadzkę na jutro. Przygotowanie zrobione (docs/ops/PRZEPROWADZKA_GCP_2026-10-23.md, tools/vm_oneliner.sh, tools/bootstrap_dev_vm.sh); sama przeprowadzka po Twoim tak/nie o pieniądze i (dla kształtu B) o dane na dysku GCP."
+    },
+    {
+     "state": "proposed",
+     "by": "koordynator (Fable)",
+     "date": "2026-10-23",
+     "text": "Koordynator (ta sesja) ma pracować na maszynie w GCP: tam kodować, budować i od razu wdrażać; przygotować przeprowadzkę na jutro. Przygotowanie zrobione (docs/ops/PRZEPROWADZKA_GCP_2026-10-23.md, tools/vm_oneliner.sh, tools/bootstrap_dev_vm.sh); sama przeprowadzka po Twoim tak/nie o pieniądze i (dla kształtu B) o dane na dysku GCP.",
+     "if_silent": "Przeprowadzka nie rusza bez Twojego tak/nie o pieniądze (VM to Twoje konto); do tego czasu praca zostaje tutaj, skrypty czekają gotowe.",
+     "cost_to_reverse": "high"
     }
    ],
    "text": "Koordynator (ta sesja) ma pracować na maszynie w GCP: tam kodować, budować i od razu wdrażać; przygotować przeprowadzkę na jutro. Przygotowanie zrobione (docs/ops/PRZEPROWADZKA_GCP_2026-10-23.md, tools/vm_oneliner.sh, tools/bootstrap_dev_vm.sh); sama przeprowadzka po Twoim tak/nie o pieniądze i (dla kształtu B) o dane na dysku GCP.",
    "by": "koordynator (Fable)",
-   "date": "2026-10-23"
+   "date": "2026-10-23",
+   "if_silent": "Przeprowadzka nie rusza bez Twojego tak/nie o pieniądze (VM to Twoje konto); do tego czasu praca zostaje tutaj, skrypty czekają gotowe.",
+   "cost_to_reverse": "high"
   },
   "s_64e0a794ea00": {
    "state": "proposed",
@@ -203,11 +213,19 @@
      "by": "koordynator (Fable)",
      "date": "2026-10-23",
      "text": "Bez atrap w apce: każdy element na ekranie działa naprawdę albo go nie ma (ukryty, dopóki nie ma czytelnika). Kontekst wysyłany do modelu nie jest wybierany ręcznie checkboxami, tylko wnioskowany z szerokiego, wielowymiarowego kontekstu (historia, cel/teleologia, perspektywa). Głębokość i szerokość to opcjonalne argumenty: domyślnie wnioskowane, przekazywalne jako wartości bezwzględne albo modyfikatory (szerzej/głębiej). Ręczny wybór zostaje jako jedna z konfiguracji, nie jedyny mechanizm."
+    },
+    {
+     "state": "proposed",
+     "by": "koordynator (Fable)",
+     "date": "2026-10-23",
+     "text": "Bez atrap w apce: każdy element na ekranie działa naprawdę albo go nie ma (ukryty, dopóki nie ma czytelnika). Kontekst wysyłany do modelu nie jest wybierany ręcznie checkboxami, tylko wnioskowany z szerokiego, wielowymiarowego kontekstu (historia, cel/teleologia, perspektywa). Głębokość i szerokość to opcjonalne argumenty: domyślnie wnioskowane, przekazywalne jako wartości bezwzględne albo modyfikatory (szerzej/głębiej). Ręczny wybór zostaje jako jedna z konfiguracji, nie jedyny mechanizm.",
+     "if_silent": "Pakiet R67-fix (atrapy na ekranie czatu, blok kontekstu Warsztatu po polsku) rusza wg tej parafrazy; odwrót = jedna gałąź."
     }
    ],
    "text": "Bez atrap w apce: każdy element na ekranie działa naprawdę albo go nie ma (ukryty, dopóki nie ma czytelnika). Kontekst wysyłany do modelu nie jest wybierany ręcznie checkboxami, tylko wnioskowany z szerokiego, wielowymiarowego kontekstu (historia, cel/teleologia, perspektywa). Głębokość i szerokość to opcjonalne argumenty: domyślnie wnioskowane, przekazywalne jako wartości bezwzględne albo modyfikatory (szerzej/głębiej). Ręczny wybór zostaje jako jedna z konfiguracji, nie jedyny mechanizm.",
    "by": "koordynator (Fable)",
-   "date": "2026-10-23"
+   "date": "2026-10-23",
+   "if_silent": "Pakiet R67-fix (atrapy na ekranie czatu, blok kontekstu Warsztatu po polsku) rusza wg tej parafrazy; odwrót = jedna gałąź."
   },
   "s_f375473e2c9d": {
    "state": "proposed",
