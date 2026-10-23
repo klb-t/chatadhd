@@ -1,8 +1,10 @@
-# Kolejka S1 — stan 2026-10-23 17:31 UTC
+# Kolejka S1 — stan 2026-10-23 17:41 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
 **Teleport (R72):** karta startowa nowej sesji S1 = `docs/ops/TELEPORT_S1.md` (aktualizowana tuż przed przełączeniem); zadania zaplanowane = `docs/ops/ZADANIA_ZAPLANOWANE_2026-10-23.md`; przeprowadzka = `docs/ops/PRZEPROWADZKA_GCP_2026-10-23.md`.
+
+## Naprawa dwu testów GOTOWA (17:41 UTC, `51bfe946` na `claude/m1-w1` po merge main 06119372; Sonnet, 17 wywołań, 99 tys. tokenów, 10 min): test motywu czeka na odpowiedź PUT /api/config i sprawdza wartość w config; test chipu buduje oczekiwanie z modelu odczytanego z arkusza pochodzenia + słowa paczki `ui.tb_model_default` (bez polskiego napisu na sztywno). run.mjs 18/18 ×2, m1-context-menu 12/12 ×2. Tylko pliki testów. **Bramka `r67b`** start 17:41 (pełna, bo drzewo się zmieniło: merge + testy).
 
 ## Bramka `r67` CZERWONA (17:31 UTC) na DWU testach webu, oba to nieaktualne oczekiwania po R67-fix (kod produktu w porządku; ctest 264/264 zielony): (1) `run.mjs` „zmiana motywu przetrwa przeładowanie”: przełącznik zapisuje teraz `config.theme` (PUT /api/config), a przy starcie wartość z config nadpisuje localStorage — test przeładowywał stronę PRZED zakończeniem PUT (wyścig w teście) → dostał `dark`; naprawa: czekać na odpowiedź PUT i sprawdzać także wartość w config (prawdziwa trwałość). (2) `m1-context-menu-native.mjs:325` oczekiwał atrapy „model domyślny”, a chip mówi teraz prawdę: „e2e-model (domyślny)” → oczekiwanie z nazwy modelu rozwiązanej przez jądro + słowo paczki. Pakiet naprawczy (Sonnet, ~25 wywołań) + merge main 06119372 (limit CI) → potem pełna bramka ponownie.
 
