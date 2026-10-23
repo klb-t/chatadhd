@@ -815,6 +815,12 @@ Doprecyzowanie R70/R72 (08:2x UTC): 0 i −1 nie są sztywnymi etykietami ani pr
 
 Po obejrzeniu żywego widoku specyfikacji (R73) właściciel idzie spać i zostawia zasadę pracy: rób to, co wiesz; brak jego decyzji nie blokuje — podejmij decyzję wstępną, ostrożną, taką, którą da się wycofać małym kosztem, i jedź dalej z namysłem. Uzupełnia R62 (działaj śmiało, gdy wiesz) i R61 (parafraza przed drogą pracą): parafraza zostaje w stanie proposed, praca rusza, decyzja wstępna zapisana z odwrotem.
 
+## R76 — Przykład wersji: adres względny po hierarchii (z poprzedniej dużej wersji ostatnia mała/poprawka); adresowanie w grafie nie jest ograniczone do liczb całkowitych (owner, 2026-10-23)
+> A ostatnio dobrze zrozumiałeś właśnie wersję programu to pomyślałem że dobry przykład bo można na ten właśnie przykład mieć na myśli z poprzedniej dużej wersji wszystkie ostatnie... poprawki? małej wersji? czy jak to się nazywa? 
+> i to oczywiście tylko przykłady które swoim doborem nie ograniczają adresowania w grafie do liczb całkowitych
+
+Uzupełnienie R74 (08:3x UTC). Przykład wersji programu jest dobry, bo pokazuje adres względny po HIERARCHII: „z poprzedniej dużej wersji wszystkie ostatnie poprawki / ostatnia mała wersja” (duża.mała.poprawka — jego -1."00" czytam jako: poprzednia duża, w niej ostatnia). I zastrzeżenie: to tylko przykłady, których dobór NIE ogranicza adresowania w grafie do liczb całkowitych — współrzędne mogą być nazwami, datami, ułamkami, zakresami, czymkolwiek, co wymiar niesie.
+
 ## Decision — rebuild, don't recover
 > "nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane"
 

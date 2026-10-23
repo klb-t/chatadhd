@@ -5,8 +5,8 @@
  "sources": {
   "owner": {
    "path": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
-   "sha256": "15d4bbbb9f461ddf8e16f627abb5d6df6765599311860a34242bf0767b4dce7c",
-   "lines": 832
+   "sha256": "5e15cdbb204748027b0c4ae9f796ce7711c2273ff55bfbb36683338ab14dffbe",
+   "lines": 838
   },
   "slowa": {
    "path": "docs/architecture/SLOWA_WLASCICIELA_2026-10-16.md",
@@ -4238,9 +4238,15 @@
       "by": "koordynator (Fable)",
       "date": "2026-10-23",
       "text": "Adres względny w grafie: współrzędna liczona od węzła bieżącego wzdłuż wybranego wymiaru (perspektywy). W wymiarze kolejnych wiadomości 0 = bieżąca (dla której budujemy kontekst), −1 = poprzednia, −n = n wstecz; w wymiarze wersji: ostatnia/max, pierwsza, −1 od ostatniej; w innych wymiarach (gałąź, jednostka, perspektywa) tak samo; adresy składają się (wiadomość −1 → jej ostatnia wersja). Składnia i skróty to dane do zaprojektowania w K3 (jego zapis jest przykładem); silnik obsługuje każdy wymiar i każdą kombinację, także bezużyteczną (podpowiedź R58, nie odmowa). Selektor kontekstu używa tych adresów, a zakres wnioskuje z ostatnich wiadomości i celu (R72)."
+     },
+     {
+      "state": "proposed",
+      "by": "koordynator (Fable)",
+      "date": "2026-10-23",
+      "text": "Adres względny w grafie: współrzędna liczona od węzła bieżącego wzdłuż wybranego wymiaru (perspektywy). Wiadomości: 0 = bieżąca (dla której budujemy kontekst), −1 = poprzednia, −n = n wstecz. Wymiary bywają HIERARCHICZNE (R76: wersja duża.mała.poprawka): adres idzie po poziomach, np. poprzednia duża wersja → w niej ostatnia mała → w niej ostatnia poprawka; słowa typu ostatnia/pierwsza/wszystkie są częścią adresu. Współrzędne nie są ograniczone do liczb całkowitych (R76): nazwa, data, czas, ułamek, zakres, predykat — co wymiar niesie. Adresy składają się między wymiarami (wiadomość −1 → jej ostatnia wersja). Składnia i skróty to dane do zaprojektowania w K3 (jego zapisy to przykłady); silnik obsługuje każdy wymiar i każdą kombinację, także bezużyteczną (podpowiedź R58, nie odmowa). Selektor kontekstu używa tych adresów, a zakres wnioskuje z ostatnich wiadomości i celu (R72)."
      }
     ],
-    "text": "Adres względny w grafie: współrzędna liczona od węzła bieżącego wzdłuż wybranego wymiaru (perspektywy). W wymiarze kolejnych wiadomości 0 = bieżąca (dla której budujemy kontekst), −1 = poprzednia, −n = n wstecz; w wymiarze wersji: ostatnia/max, pierwsza, −1 od ostatniej; w innych wymiarach (gałąź, jednostka, perspektywa) tak samo; adresy składają się (wiadomość −1 → jej ostatnia wersja). Składnia i skróty to dane do zaprojektowania w K3 (jego zapis jest przykładem); silnik obsługuje każdy wymiar i każdą kombinację, także bezużyteczną (podpowiedź R58, nie odmowa). Selektor kontekstu używa tych adresów, a zakres wnioskuje z ostatnich wiadomości i celu (R72).",
+    "text": "Adres względny w grafie: współrzędna liczona od węzła bieżącego wzdłuż wybranego wymiaru (perspektywy). Wiadomości: 0 = bieżąca (dla której budujemy kontekst), −1 = poprzednia, −n = n wstecz. Wymiary bywają HIERARCHICZNE (R76: wersja duża.mała.poprawka): adres idzie po poziomach, np. poprzednia duża wersja → w niej ostatnia mała → w niej ostatnia poprawka; słowa typu ostatnia/pierwsza/wszystkie są częścią adresu. Współrzędne nie są ograniczone do liczb całkowitych (R76): nazwa, data, czas, ułamek, zakres, predykat — co wymiar niesie. Adresy składają się między wymiarami (wiadomość −1 → jej ostatnia wersja). Składnia i skróty to dane do zaprojektowania w K3 (jego zapisy to przykłady); silnik obsługuje każdy wymiar i każdą kombinację, także bezużyteczną (podpowiedź R58, nie odmowa). Selektor kontekstu używa tych adresów, a zakres wnioskuje z ostatnich wiadomości i celu (R72).",
     "by": "koordynator (Fable)",
     "date": "2026-10-23"
    },
@@ -4360,6 +4366,60 @@
    ]
   },
   {
+   "id": "s_90982d5337ef",
+   "aliases": [
+    "R76"
+   ],
+   "kind": "requirement",
+   "title": "Przykład wersji: adres względny po hierarchii (z poprzedniej dużej wersji ostatnia mała/poprawka); adresowanie w grafie nie jest ograniczone do liczb całkowitych",
+   "date": "2026-10-23",
+   "theme": "owner_requirements",
+   "theme_inferred": false,
+   "understanding": {
+    "state": "none"
+   },
+   "quotes": [
+    {
+     "text": "A ostatnio dobrze zrozumiałeś właśnie wersję programu to pomyślałem że dobry przykład bo można na ten właśnie przykład mieć na myśli z poprzedniej dużej wersji wszystkie ostatnie... poprawki? małej wersji? czy jak to się nazywa? \ni to oczywiście tylko przykłady które swoim doborem nie ograniczają adresowania w grafie do liczb całkowitych",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:819-820",
+     "ref": null,
+     "attr": [],
+     "lead": null,
+     "secondary": false
+    }
+   ],
+   "sense": null,
+   "summary": null,
+   "restatement": [
+    {
+     "text": "Uzupełnienie R74 (08:3x UTC). Przykład wersji programu jest dobry, bo pokazuje adres względny po HIERARCHII: „z poprzedniej dużej wersji wszystkie ostatnie poprawki / ostatnia mała wersja” (duża.mała.poprawka — jego -1.\"00\" czytam jako: poprzednia duża, w niej ostatnia). I zastrzeżenie: to tylko przykłady, których dobór NIE ogranicza adresowania w grafie do liczb całkowitych — współrzędne mogą być nazwami, datami, ułamkami, zakresami, czymkolwiek, co wymiar niesie.",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:822"
+    }
+   ],
+   "commentary": [],
+   "status": null,
+   "gap_text": null,
+   "evidence": [],
+   "next_step": null,
+   "refs": [
+    "s_0f005a5e98e8"
+   ],
+   "supersedes": [],
+   "superseded_by": [],
+   "supersession_notes": [],
+   "tags": [],
+   "heading_note": "owner, 2026-10-23",
+   "sources": [
+    {
+     "role": "owner",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:818-822"
+    }
+   ],
+   "files": [
+    "owner"
+   ]
+  },
+  {
    "id": "s_18ec73967a7b",
    "aliases": [
     "owner:decision-rebuild-don-t-recover"
@@ -4375,7 +4435,7 @@
    "quotes": [
     {
      "text": "\"nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane\"",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:819",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:825",
      "ref": null,
      "attr": [],
      "lead": null,
@@ -4387,7 +4447,7 @@
    "restatement": [
     {
      "text": "Recovered versions (`history/chatadhd_v0.8.3`, `history/chatadhd_v0.9.0`) and\nthe historical report are sources of requirements, ideas and data assets\n(e.g. `film_structure.json`), and real ground truth for self-discovery tests —\nnot code to merge. Everything is rebuilt in Loom with tests.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:821-824"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:827-830"
     }
    ],
    "commentary": [],
@@ -4404,7 +4464,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:818-824"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:824-830"
     }
    ],
    "files": [
@@ -4430,7 +4490,7 @@
    "restatement": [
     {
      "text": "`workbench_mockup_2026-09-26.webp`: dockable/floating panels (conversation\nlist, active conversation, knowledge graph with active context window, project\nstructure with dimmed high-confidence auto-completable nodes, artifact views\nfor music/video with timeline + storyboard, video player, execution\nenvironment with agent), multi-format ingestion, Loom SDK at the centre.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:827-831"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:833-837"
     }
    ],
    "commentary": [],
@@ -4447,7 +4507,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:826-831"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:832-837"
     }
    ],
    "files": [
