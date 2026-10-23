@@ -1,10 +1,12 @@
-# Kolejka S1 — stan 2026-10-23 04:33 UTC
+# Kolejka S1 — stan 2026-10-23 04:51 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
 
 ## Reguła właściciela R58 (22.10 ≈ 23:40 UTC; wcześniejsze znaczniki „23.10 00:00/00:20” w tym pliku to pomyłka zegara, prawdziwa godzina to 23:3x–23:4x): przykłady są przykładami, silnik obsługuje każdą konfigurację, mała użyteczność = niewiążąca podpowiedź „czy celowe? nie pytać następnym razem”
 Powód: w tabeli planu napisałem „kolor = rodzaj, przezroczystość = pewność, głębia = czas, jak mówiłeś” — to były moje konkretne przypisania podane jak wymaganie i fałszywie przypisane jemu (jego własne słowa: „to jest tylko jedna z konfiguracji, a zakodować trzeba silnik”). Zapisane: `CLAUDE.md` (sekcja „Examples are examples…”), `OWNER_REQUIREMENTS` R58 (cytat dosłowny), `tools/workflows/single-package.js` (reguła w każdym briefie). Zadanie G3 (#30) ma teraz warunki wstępne: (a) skala: punkt odniesienia + odległość ze znakiem, kierunek zależny od drugiej miary, kilka kodowań jednej miary (dziś `view_engine.cpp` ~595–622: tylko `range`/`domain`/`type` i statyczne `invert`); (b) podpowiedź niewiążąca + zapamiętane „celowe, nie pytaj” + wykrycie wyniku zdegenerowanego (nic nie widać). Silnik już nigdy nie odrzuca kodowania (`promoted`/`allowed` z powodami), brakuje pytania i pamięci odpowiedzi.
+
+## CI 276 (`270a065f`) = SUCCESS (04:44, 118 min, wszystkie joby) → `main` ZIELONY; APK v3 zlecony z `main` 270a065f (04:51 UTC, package.yml: android+server+first_steps, arm64-v8a, Release), kontrola 05:12. S2 poinformowany (FF sterownika). Zawartość v3 względem v2 (f07fc52a): wywiad „Poznajmy się” w rozmowie (W2a + K2b-3/K2b-4 sprawdzone na emulatorze), jednostki (jądro, bez ekranu), pochodzenie notatek pamięci, poprawka użycia po zwolnieniu, FLAKE-1 już w v2. NIE w v3: słowa grafu i prawda importu (G1a/G1b — po bramce g1), podgraf „Ty” (K2c-2), ekran „Ty” (W2b). Uwaga techniczna: `actions_list` honoruje `perPage` (camelCase), nie `per_page`.
 
 ## S2 smoke 39896257680 na 09ef26d7 (= main 270a065f + sterownik), 04:33 UTC: 43/1/0 ×3 — OBA kroki wywiadu DZIAŁAJĄ na emulatorze (uwaga przy pytaniu → Tak; po pominięciu wszystkiego → „It is already set that way”; UI po polsku: linia „Rozmowa bez modelu — tylko formularz…”, chipy „Dalej Podsumowanie Ile zostało”, „pomiń”/„podsumowanie” rozumiane; odpowiedzi po angielsku = K2b-5). Jedyna porażka: krok agenta sterownika wysłał „poproś agenta…” do otwartej rozmowy wywiadu (formularz bez routera) — poprawka sterownika a6516c5c, nowy bieg po czyste 44/0/0 (id za ~50 min). loom.yml 276 na 270a065f w toku o 04:31 (moja kontrola 04:50).
 
