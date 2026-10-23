@@ -156,3 +156,60 @@ Do kąta ekonomii i kanałów:
    rozbicie na tury, czy to pomiar do zrobienia w P1/P3?
 7. Teleport: czy zapis biegów na gałęzi dokumentów (commit per bieg) jest akceptowalnym kosztem (push, CI dokumentów), czy wolisz
    `runs.jsonl` dopisywany bez commitu i commit zbiorczy co N biegów (preset)?
+
+## §6 Po dyskusji (2026-10-23)
+
+Przeczytane: `wlasciciel.md` (W1–W10) i `ekonomia.md` (E1–E10). Niżej tylko to, co zmienia ten kąt; reszta §1–§5 stoi.
+Jak wszędzie: nazwy i liczby to przykłady/presety, fakty datowane, jego słowa tylko z R-id.
+
+### 6.1 Co biorę
+
+| Od | Co | Dlaczego i co to zmienia u mnie |
+|---|---|---|
+| W1/W7/W9 | linia do niego = zmiana licznika; status i dyskusja to dwa strumienie | mój K7 jest PRODUCENTEM tych zdarzeń: zapis biegu dostaje pole `counter_delta` (który licznik, o ile) i klasę; `status.lines` renderuje tylko zdarzenia z niezerową deltą (preset). Jego lista z 00:1x (started / finished / building / failed / original_ideas) = ziarno liczników, otwarte. Odpowiedź na jego pyt. 3: zdarzenia workflow stają się węzłami, bo bieg je pisze — koordynator nie pisze linii ręcznie. |
+| W3 | pytanie zawsze z `if_silent`, `cost_to_reverse`, `ask_after`, `criteria[]`, gestami | bramka `confirm` w rutynie (K2/K5) ma DOKŁADNIE ten kształt rekordu; preset `owner_if_cost_to_reverse_high` z §3.3 rozpisuję jako predykat klasa × koszt odwrotu (dane), nie nazwę. Moje pyt. 1 do kąta właściciela — rozstrzygnięte tak: na jego stronę trafia pauza, której klasa to pieniądze / jego dane / ×10 albo drogi odwrót; reszta do koordynatora, a po `ask_after` rozstrzyga `if_silent`. Pola już są w `spec.py` (23.10, `--if-silent`, `--cost-to-reverse`) — dopisać `ask_after`, `criteria`. |
+| W8 | węzeł mandatu („wolna ręka”: zakres, do kiedy, wyjątki) | runner czyta mandat Z GRAFU/spec przy każdej bramce `confirm`, zanim zapyta — nie jako `args` skryptu (args stają się nieaktualne; węzeł ma termin i odwrót). Odpowiedź na jego pyt. 2. |
+| W8 | „stop” z kosztem utopionym | zapis biegu zna koszt dotychczasowy (paragon E1) → pauza „zatrzymać X (14 min, ≈ 0,4 pkt)?” jest renderem z K7, zero nowej logiki. |
+| W4 | znacznik „to przykład” / „to nie moje słowa” jako krawędź | znacznik = ZNALEZISKO na wejściu `check.before_use` i `addendum.apply`; agent w biegu nie jest restartowany (kontrola marnotrawstwa 6). Odpowiedź na jego pyt. 4: oba warianty jako presety — addendum po karcie (domyślny) i kolejka korekt czytana przez agenta w kroku `card.write` (tańszy, gdy agent jeszcze żyje). |
+| W6 | projekt czytany jako diff decyzji | `check.before_use` emituje dane (decyzje, przykłady, dodatki, pomiary jako węzły), nie prozę — zmiana schematu wyjścia jednej rutyny, render robi strona. |
+| E1 | paragon z otwartą listą walut | pole `cost` w `loom.routine_run/1` = `receipt[]` w kształcie E1 (waluta, wartość, źródło, data, wiarygodność). Odpowiedź na moje pyt. 4: `rate_limit_event` całego konta NIE przypisuje się do biegu — bieg nosi estymatę + tokeny z `usage_report`, próbka okna zostaje na poziomie dnia. |
+| E3 | licznik PRZED startem | `pace.check` z §3.3 uogólniam do kroku `start_gate` (model/rola, estymata, okno, miejsce, co przekroczy); każdy `agent()` niesie `model` jawnie — walidowane w `brief.render` (K4) jako advisory, nie jako wyjątek. Odpowiedź na jego pyt. 4: rutyna niesie ROLĘ; tabela rola→model to osobne datowane dane (R89 §4.2); luz R63 = parametr tej tabeli per model koordynatora, nie osąd poza danymi. |
+| E5 | mapa miejsc z walutą, polityką bezczynności, tętnem | warunki wstępne rutyny (§3.3 `disk_free_gb`, `build_dirs_on_machine`) stają się ODCZYTAMI pól węzła `place`, nie własnymi checkami; krok dostaje pole `where` (węzeł miejsca). Jądro ma `environments.h` — to ten węzeł. |
+| E6 | praca bez tokenów w miejscu bez tokenów | krok ma rekord `{where, clock, tokens}`; `gate.full`, `ci.read`, `log.excerpt` z `where: vm|ci` — preset `cloud` dopóki rekonesans VM nie zmierzy narzędzi (TELEPORT §5, 23.10: nic nie sprawdzone). |
+| E7 | teleport jako generowana karta z paragonem | TAK na jego pyt. 5: karta pakietu, karta teleportu i rekord sekretarza to TRZY RENDERY jednego źródła — zapisów biegów (K7) + głowy kolejki + spec `proposed`; `loom.handover/1` jest kształtem renderu, nie czwartym magazynem. |
+| E10 | prefiks bajt w bajt, część własna na końcu | to K3/K4 w liczbach: pakiet kontekstu pierwszy (trafienie cache), brief własny ostatni; pomiar `cache_creation` na bieg dopisany do `measurements`. |
+
+### 6.2 Co odrzucam albo osłabiam
+
+| Co | Dlaczego |
+|---|---|
+| W10 (aplikacja ChatADHD jako konsola) — nie teraz, zostaje opcją | jego słowa R90: „ten nasz Interfejs do komunikacji to przeglądarkowy, nie?”; W10 wymaga synchronizacji grafu spec z telefonem (P7) i buildu, którego jedyna maszyna jest zajęta (23.10). Koszt wysoki, odwrót tani — więc jako preset „później”, nie skreślenie. |
+| W §5 pyt. 1: kryterium „jego przyciskiem jest to, o co kiedykolwiek prosił” | zamyka listę zachowaniem z przeszłości; nic nie ukrywamy (R89 §6). Wszystkie rutyny widoczne dla niego, filtr i kolejność to preset (R89 §4.4), jego prośby są ziarnem kolejności. |
+| W „każda linia MUSI zmieniać licznik, inaczej nie powinna trafić” jako reguła | jako prawo zamyka strumień dyskusji, który sam otwiera; jako preset filtru (W8 „nie gadaj tyle” ↔ „gadaj”) — biorę. Różnica: słowo w danych, nie zdanie w CLAUDE.md. |
+| E2 `attention_plan.json` jako drugi plik planu | baza niezmierzona (E własne ryzyko: słowa/dobę za 21–23.10 nikt nie policzył) → plik byłby zgadywaniem z własnym cyklem utrzymania. Osłabiam do: czas czytania = WALUTA na paragonie E1 (liczona od dziś), próg = jeden preset w danych routingu E9; osobny plik dopiero gdy pomiar pokaże, że próg zależy od pory/klasy. |
+| E3 „każdy `agent()` MUSI nieść `model`” jako błąd twardy | to reguła wymuszona błędem z 11:23 (626 tys. tokenów) — ważna, ale jako advisory z pokazanym dziedziczonym modelem (E sam tak pisze w „mechanizm”); twardy błąd = wymyślone ograniczenie. |
+| E5 preset „nie podtrzymywać VM do czasu jego tak/nie” | sprzeczny z jego R90: „nie wiem czy chodzący Code to blokuje, Zadbaj o te wszystkie rzeczy” — prosił, by zadbać. Podtrzymanie W TRAKCIE biegu, który sam uruchomił (agent, bramka), nie jest nowym wydatkiem poza budżetem — to koszt tego biegu, na paragonie. Pytanie tak/nie dotyczy tylko podtrzymania NA BEZCZYNNOŚCI. Zapisuję jako konflikt (6.3 nr 3). |
+| W „pomiar jego uwagi” (wizyty, dotknięcia, czas do gestu) z presetem otwartym | „no telemetry” (CLAUDE.md) dotyczy śledzenia na zewnątrz; baza strony jest jego. Mimo to preset: tylko znacznik ostatniej wizyty (konieczny dla W9), bez czasów dotknięć — włączane przez niego jednym słowem; odwrotne domyślne wymagałoby jego zgody, o którą nie pytamy w nocy. |
+| E §4 „nie odpytywać agentów z sesji głównej” — biorę, ale uściślam | bieg pisze zapis (K7) i to ZAPIS jest odpytywany (0 tokenów koordynatora); zakaz pollingu bez zapisu biegu byłby zakazem wiedzy. |
+
+### 6.3 Konflikty do jednej decyzji
+
+1. **Jeden magazyn zdarzeń biegu.** W chce liczników na żywo z bazy strony, E — ledger `jsonl`, ja — `docs/reports/runs/*.json` + commit per bieg (gałąź dokumentów). Trzy miejsca = trzy prawdy. Do rozstrzygnięcia: źródło pierwotne (repo czy baza strony) i co jest lustrem; koszt: commit per bieg (push, CI dokumentów, moje pyt. 7) vs dostępność bazy strony z sesji VM (23.10: platforma odmówiła wysyłki do sesji VM bez jego zgody — ryzyko W). Moja propozycja: repo pierwotne (teleport przenosi pliki, git = historia), baza strony = lustro pisane przez sekretarza; commit zbiorczy co N biegów (preset N=1 na start).
+2. **Gdzie biegnie operator (K6) i kto wykonuje rutyny bez tokenów (E6, E pyt. 6).** Chmura ma `create_trigger`/`send_message`/MCP; VM ma `systemd`/cron bez modelu i nic sprawdzonego (TELEPORT §5). Propozycja: podział po tokenach — tętno, dysk, zgaś/obudź, build na zlecenie = `systemd`/cron na VM (zero tokenów, wynik jako rekord w repo); kroki z modelem = zadanie zaplanowane w chmurze (jak „Sekretarz spec”); S1-VM tylko do administracji. Decyzja po rekonesansie — do tej pory `where: cloud`.
+3. **Podtrzymanie VM pod biegnącą pracą** (6.2): preset E „nie podtrzymywać” vs moje „podtrzymywać na czas biegu, paragon na biegu; pytanie tak/nie tylko o bezczynność”. Jedno zdanie do jego skrzynki z liczbą godzin/dobę; do odpowiedzi — moja wersja jako decyzja wstępna (R75), odwrót: wyłączyć `vm.keepalive`.
+4. **Czy rutyna niesie rola→model i miejsce (E3/E10), czy tylko rolę** — rozstrzygam w 6.1 (rola w rutynie, tabela osobno, miejsce jako `where` z presetem); E musi to przyjąć albo wskazać, czego brakuje `start_gate` bez modelu w rutynie.
+5. **Preset pomiaru jego uwagi**: W i E pytają nawzajem; decyzja wstępna wyżej (tylko ostatnia wizyta). Jeśli synteza chce więcej — to pytanie do niego, jedno, na stronie, z `if_silent: nie`.
+6. **`attention_plan.json`**: osobny plik (E2) czy waluta + jeden próg (6.2). Tanie w obie strony; rozstrzygnąć, żeby nie powstały dwa.
+
+### 6.4 Teza po dyskusji
+
+Warsztat koordynatora jest kodem i prozą; staje się danymi w kształcie, który jądro już ma (akcja złożona `actions.pack`, bramki
+`confirm`, trwały bieg, węzły `environment`). Po dyskusji środek ciężkości przesuwa się z rutyny na **zapis biegu** (`loom.routine_run/1`):
+to jedno źródło, z którego trzy kąty czytają trzy rzeczy — jego liczniki i linie statusu (W1/W7/W9: zdarzenie z deltą licznika),
+paragon w otwartych walutach (E1: tokeny, jego czas, godziny VM, dysk) i kartę przekazania (E7: pakiet, teleport, sekretarz = trzy
+rendery). Bramka w rutynie ma kształt jego pytania (W3: `if_silent`, `cost_to_reverse`, `ask_after`, `criteria`) i czyta węzeł mandatu
+(W8) zanim zapyta; każdy krok ma `where` (E5/E6) i zaczyna się `start_gate` (E3); znaczniki „to przykład” są znaleziskami dla addendum
+(W4). Tani operator biegnie tam, gdzie są tokeny tylko dla kroków z modelem; praca bez tokenów idzie na VM/CI, gdy rekonesans to
+potwierdzi. Jego przykład („cała filozofia do kontekstu”) zostaje jednym krokiem `context_pack` jednej rutyny — ale pierwszy pakiet
+zmienia kolejność: **K7 (zapis biegu, scala P1 `sekretarz_runs.jsonl`) razem z K1+K3**, bo bez zapisu biegu ani liczniki W, ani
+paragony E nie mają czego renderować. Każda lista wyżej jest otwarta; każdy próg to preset z `_history`.
