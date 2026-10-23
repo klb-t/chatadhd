@@ -10,9 +10,10 @@ curl -fsSL https://raw.githubusercontent.com/klb-t/chatadhd/claude/chataddhd-cpp
 
 Skrypt `tools/vm_oneliner.sh` stawia pakiety, klonuje repo do `~/chatadhd`, uruchamia `tools/bootstrap_dev_vm.sh`
 z podanymi flagami, instaluje Claude Code i wypisuje trzy kroki, które wymagają człowieka: `claude auth login`
-(kod z przeglądarki), `gh auth login --web` (pushe), `claude remote-control` w tmux (pytania Enable/Trust). Po scaleniu
-gałęzi do `main` adres skraca się do `.../klb-t/chatadhd/main/tools/vm_oneliner.sh`. Oba skrypty są nieprzetestowane na
-prawdziwej VM (2026-10-23) — pierwszy raz z `--dry-run`.
+(kod z przeglądarki), `gh auth login --web` (pushe), `claude remote-control` w tmux (pytania Enable/Trust). Klon staje na
+tej samej gałęzi, z której pobrano skrypt (`claude/chataddhd-cpp-loom-core-IRGRN` — tak jak katalog koordynatora tutaj;
+na `main` tych skryptów jeszcze nie ma); inną gałąź wybierasz przez `CHATADHD_BRANCH=... bash -s -- ...`. Oba skrypty są
+nieprzetestowane na prawdziwej VM (2026-10-23) — pierwszy raz z `--dry-run`.
 
 
 Pakiet OPS1. To jest **przygotowanie**: nic nie zostało uruchomione na GCP (ta sesja nie ma żadnych
@@ -264,10 +265,10 @@ dopisuję opcji z pamięci. Użytkownik `user` (decyzja D1): **[do sprawdzenia]*
 
 **Jedna komenda (R71)** jest na samej górze tego dokumentu (`tools/vm_oneliner.sh` klonuje repozytorium i woła
 `tools/bootstrap_dev_vm.sh`). Trzy uwagi do niej, z pakietu OPS1 (sprawdzone w repozytorium, nie na VM):
-1. **Dopóki skrypty nie są na `main`, komenda z domyślną gałęzią `main` się wywróci:** `vm_oneliner.sh` klonuje i
-   przełącza na `CHATADHD_BRANCH` (domyślnie `main`), a `tools/vm_oneliner.sh` i `tools/bootstrap_dev_vm.sh`
-   leżą (2026-10-23) tylko na gałęzi `claude/chataddhd-cpp-loom-core-IRGRN` (sprawdzone `git cat-file` na
-   `origin/main`). Obejście do czasu scalenia: `… | CHATADHD_BRANCH=claude/chataddhd-cpp-loom-core-IRGRN bash -s -- …`.
+1. Skrypty `tools/vm_oneliner.sh` i `tools/bootstrap_dev_vm.sh` leżą (2026-10-23) tylko na gałęzi
+   `claude/chataddhd-cpp-loom-core-IRGRN` (sprawdzone `git cat-file` na `origin/main`), dlatego `vm_oneliner.sh`
+   domyślnie klonuje i przełącza na TĘ gałąź (koordynator, 2026-10-23 07:5x, po uwadze OPS1: wcześniejsze domyślne
+   `main` by się wywróciło). Inną gałąź: `… | CHATADHD_BRANCH=main bash -s -- …`.
 2. Gdy użytkownik na VM nie nazywa się `user`, dopisz do flag `--home-link` (dowiązanie `/home/user` -> katalog
    domowy; dlaczego: D1). Niesprawdzone.
 3. Ostrożniejsza wersja: pobierz `vm_oneliner.sh` do pliku, przeczytaj (`less`), uruchom z `--dry-run`.

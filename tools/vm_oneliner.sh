@@ -4,7 +4,7 @@
 #
 #   curl -fsSL https://raw.githubusercontent.com/klb-t/chatadhd/claude/chataddhd-cpp-loom-core-IRGRN/tools/vm_oneliner.sh | bash -s -- --android --emulator --bashrc
 #
-#   (po scaleniu gałęzi do main krótszy adres: .../klb-t/chatadhd/main/tools/vm_oneliner.sh; flagi są opcjonalne i idą
+#   (klon staje na tej samej gałęzi; po scaleniu do main zmienią się adres i domyślna gałąź; flagi są opcjonalne i idą
 #    do tools/bootstrap_dev_vm.sh: --android (Java 17 + Android SDK/NDK), --emulator (test KVM), --bashrc (dopisz środowisko),
 #    --dry-run (tylko pokaż), --help).
 #
@@ -29,7 +29,9 @@ set -euo pipefail
 
 REPO_URL="${CHATADHD_REPO_URL:-https://github.com/klb-t/chatadhd.git}"
 REPO_DIR="${CHATADHD_REPO_DIR:-$HOME/chatadhd}"
-BRANCH="${CHATADHD_BRANCH:-main}"
+# Domyślnie ta sama gałąź, z której pobrano ten skrypt (tam leżą oba skrypty; na main ich jeszcze nie ma) - to
+# odwzorowuje układ koordynatora (/home/user/chatadhd na tej gałęzi). Inną gałąź: CHATADHD_BRANCH=... przed bash.
+BRANCH="${CHATADHD_BRANCH:-claude/chataddhd-cpp-loom-core-IRGRN}"
 RC_NAME="${CHATADHD_RC_NAME:-chatadhd-vm}"
 
 say()  { printf '\n==> %s\n' "$*"; }
