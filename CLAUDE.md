@@ -591,6 +591,10 @@ because an agent was editing `chat_ops.pack` in the same worktree while ctest co
 the file on disk; the agent's later commit made the tree consistent again and the red was void). One worktree, one
 writer: no package agent starts in a worktree while a gate runs there, and no gate starts while an agent works
 there — the gate's result is otherwise a measurement of a moving target, and the cheapest fix is a second worktree.
+**One gate at a time on this machine** (2026-10-23 ≈ 04:55: two full gates in parallel in two worktrees — two native
+builds plus two web e2e suites — ended in a container restart; both gates were lost, the second build dir had grown to
+6.4 GB and the disk was at 93 %). Gates run one after another; a second worktree is for an agent writing while a gate
+runs elsewhere, not for a second gate. Before a gate: at least ~5 GB free (the web build, screenshots and junit need it).
 
 **C++ pitfall that only AddressSanitizer catches** (CI found it after the asan preset had been broken for
 days): never range-for over `.at()` / `.value()` / `operator[]` of a by-value temporary, e.g.
