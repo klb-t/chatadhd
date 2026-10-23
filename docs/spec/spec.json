@@ -5,8 +5,8 @@
  "sources": {
   "owner": {
    "path": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
-   "sha256": "257eaae659f65fa6fcefaba721697110e19803e100d884744052e02b446d6c0f",
-   "lines": 807
+   "sha256": "6031a0d6e05d2787c0138b2080d25521a7e16137b92acf730bae09e069354de2",
+   "lines": 814
   },
   "slowa": {
    "path": "docs/architecture/SLOWA_WLASCICIELA_2026-10-16.md",
@@ -3959,18 +3959,25 @@
    "theme": "owner_requirements",
    "theme_inferred": false,
    "understanding": {
-    "state": "proposed",
+    "state": "corrected",
     "history": [
      {
       "state": "proposed",
       "by": "koordynator (Fable)",
       "date": "2026-10-23",
       "text": "Selektor kontekstu bierze węzeł grafu odpowiadający generowanej właśnie odpowiedzi (wymiar wiadomości, pozycja −1 względem ostatniego promptu użytkownika), patrzy co się schodzi we wszystkich perspektywach, zna stan pamięci podręcznej modelu (stabilny prefiks, modyfikacje dopisywane na końcu) i buduje kontekst od najogólniejszego do szczegółu (projekt → gałąź → moduł → funkcja). Woła go użytkownik, agent albo eksperymentator; po niewystarczającej odpowiedzi ponawia pytanie z szerszym/głębszym kontekstem; przy zmianie tematu zawęża kontekst dla oszczędności, gdy wiadomo, że powrotu nie będzie w czasie życia pamięci podręcznej. Wszystko konfigurowalne; wartości domyślne to presety."
+     },
+     {
+      "state": "corrected",
+      "by": "właściciel (R72, 2026-10-23)",
+      "date": "2026-10-23",
+      "text": "KOREKTA właściciela (R72): nie „pozycja −1 względem ostatniego promptu”, tylko: 0 = generowana odpowiedź, −1 = prompt użytkownika (najczęściej; najważniejszy). Zapis liczbowy = podpowiedź, że przesunięcia są DANYMI (preset w kodzie/danych), nie regułą. Jeszcze lepiej: selektor z kilku ostatnich wiadomości sam ustala zakres kontekstu potrzebny do celu; właściciel wątpi, czy stałą pozycję w ogóle wyróżniać. Projekt K3: zakres wnioskowany z ostatnich wiadomości + celu, przesunięcia jako preset w danych (0, −1 jako przykład), nic na sztywno. Reszta parafrazy R70 (perspektywy, pamięć podręczna, od ogółu do szczegółu, wołanie przez użytkownika/agenta/eksperymentatora, ponowienie szerzej/głębiej, zawężenie przy zmianie tematu) bez zmian."
      }
     ],
     "text": "Selektor kontekstu bierze węzeł grafu odpowiadający generowanej właśnie odpowiedzi (wymiar wiadomości, pozycja −1 względem ostatniego promptu użytkownika), patrzy co się schodzi we wszystkich perspektywach, zna stan pamięci podręcznej modelu (stabilny prefiks, modyfikacje dopisywane na końcu) i buduje kontekst od najogólniejszego do szczegółu (projekt → gałąź → moduł → funkcja). Woła go użytkownik, agent albo eksperymentator; po niewystarczającej odpowiedzi ponawia pytanie z szerszym/głębszym kontekstem; przy zmianie tematu zawęża kontekst dla oszczędności, gdy wiadomo, że powrotu nie będzie w czasie życia pamięci podręcznej. Wszystko konfigurowalne; wartości domyślne to presety.",
-    "by": "koordynator (Fable)",
-    "date": "2026-10-23"
+    "by": "właściciel (R72, 2026-10-23)",
+    "date": "2026-10-23",
+    "corrected_text": "KOREKTA właściciela (R72): nie „pozycja −1 względem ostatniego promptu”, tylko: 0 = generowana odpowiedź, −1 = prompt użytkownika (najczęściej; najważniejszy). Zapis liczbowy = podpowiedź, że przesunięcia są DANYMI (preset w kodzie/danych), nie regułą. Jeszcze lepiej: selektor z kilku ostatnich wiadomości sam ustala zakres kontekstu potrzebny do celu; właściciel wątpi, czy stałą pozycję w ogóle wyróżniać. Projekt K3: zakres wnioskowany z ostatnich wiadomości + celu, przesunięcia jako preset w danych (0, −1 jako przykład), nic na sztywno. Reszta parafrazy R70 (perspektywy, pamięć podręczna, od ogółu do szczegółu, wołanie przez użytkownika/agenta/eksperymentatora, ponowienie szerzej/głębiej, zawężenie przy zmianie tematu) bez zmian."
    },
    "quotes": [
     {
@@ -4079,6 +4086,71 @@
    ]
   },
   {
+   "id": "s_20b2e5caeba0",
+   "aliases": [
+    "R72"
+   ],
+   "kind": "requirement",
+   "title": "Teleport, nie bootstrap; pozycje w selektorze kontekstu to dane, nie reguła",
+   "date": "2026-10-23",
+   "theme": "owner_requirements",
+   "theme_inferred": false,
+   "understanding": {
+    "state": "proposed",
+    "history": [
+     {
+      "state": "proposed",
+      "by": "koordynator (Fable)",
+      "date": "2026-10-23",
+      "text": "Przeprowadzka = teleport: na VM mam mieć to, co tu — stan (kolejka, spec, briefy w repo), warsztat (bramka, e2e w Chromium, emulator gdy jest KVM) i narzędzia sesji; bootstrap jest tylko środkiem. Kontekst: 0 = generowana odpowiedź, −1 = prompt użytkownika jako preset w danych, zakres wnioskowany z ostatnich wiadomości i celu; żadnej stałej pozycji jako reguły."
+     }
+    ],
+    "text": "Przeprowadzka = teleport: na VM mam mieć to, co tu — stan (kolejka, spec, briefy w repo), warsztat (bramka, e2e w Chromium, emulator gdy jest KVM) i narzędzia sesji; bootstrap jest tylko środkiem. Kontekst: 0 = generowana odpowiedź, −1 = prompt użytkownika jako preset w danych, zakres wnioskowany z ostatnich wiadomości i celu; żadnej stałej pozycji jako reguły.",
+    "by": "koordynator (Fable)",
+    "date": "2026-10-23"
+   },
+   "quotes": [
+    {
+     "text": "teleporta bardziej niż buttstrapa\nzero to generowana, prąd użytkownikanajczęściej Najważniejsze to -1. napisałem liczbowo żeby zasugerować że ta dana może być w kodzie. można by w sumie zrobić że z kilku ostatnich wiadomości ustala zakres kontekstu potrzebny dorealizacji celu. nie wiem czy jest sens to w ogóle definiować, wyróżniać, moja filozofia sama mnie dopadła i skopała\nwiesz o co mi chodzi że testy z przeglądarce robisz na przykład",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:794-796",
+     "ref": null,
+     "attr": [],
+     "lead": null,
+     "secondary": false
+    }
+   ],
+   "sense": null,
+   "summary": null,
+   "restatement": [
+    {
+     "text": "Dwie rzeczy (ASR, ok. 08:0x UTC, po pierwszym biegu bootstrapu na VM). (1) „teleporta bardziej niż buttstrapa”: przeprowadzka ma być teleportem — koordynator przybywa z całym stanem i warsztatem (kolejka, spec, briefy, to, co robi tu, np. testy w przeglądarce), nie świeżą maszyną z pakietami; ostatnie zdanie czytam jako przykład tego, co ma działać po przeprowadzce. (2) Korekta do R70: pozycja 0 = generowana odpowiedź, −1 = prompt użytkownika („prąd” = ASR), najczęściej i najważniejszy; zapis liczbowy sugeruje, że ta dana może być w kodzie/danych (przesunięcia jako dane). Lepiej: z kilku ostatnich wiadomości selektor sam ustala zakres kontekstu potrzebny do celu; sam wątpi, czy warto w ogóle wyróżniać stałą pozycję — „moja filozofia sama mnie dopadła”. Czyli: żadnych stałych pozycji jako reguły; preset w danych + wnioskowanie zakresu z ostatnich wiadomości i celu.",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:798"
+    }
+   ],
+   "commentary": [],
+   "status": null,
+   "gap_text": null,
+   "evidence": [],
+   "next_step": null,
+   "refs": [
+    "s_13a549d5ba3f"
+   ],
+   "supersedes": [],
+   "superseded_by": [],
+   "supersession_notes": [],
+   "tags": [],
+   "heading_note": "owner, 2026-10-23",
+   "sources": [
+    {
+     "role": "owner",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:793-798"
+    }
+   ],
+   "files": [
+    "owner"
+   ]
+  },
+  {
    "id": "s_18ec73967a7b",
    "aliases": [
     "owner:decision-rebuild-don-t-recover"
@@ -4094,7 +4166,7 @@
    "quotes": [
     {
      "text": "\"nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane\"",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:794",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:801",
      "ref": null,
      "attr": [],
      "lead": null,
@@ -4106,7 +4178,7 @@
    "restatement": [
     {
      "text": "Recovered versions (`history/chatadhd_v0.8.3`, `history/chatadhd_v0.9.0`) and\nthe historical report are sources of requirements, ideas and data assets\n(e.g. `film_structure.json`), and real ground truth for self-discovery tests —\nnot code to merge. Everything is rebuilt in Loom with tests.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:796-799"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:803-806"
     }
    ],
    "commentary": [],
@@ -4123,7 +4195,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:793-799"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:800-806"
     }
    ],
    "files": [
@@ -4149,7 +4221,7 @@
    "restatement": [
     {
      "text": "`workbench_mockup_2026-09-26.webp`: dockable/floating panels (conversation\nlist, active conversation, knowledge graph with active context window, project\nstructure with dimmed high-confidence auto-completable nodes, artifact views\nfor music/video with timeline + storyboard, video player, execution\nenvironment with agent), multi-format ingestion, Loom SDK at the centre.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:802-806"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:809-813"
     }
    ],
    "commentary": [],
@@ -4166,7 +4238,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:801-806"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:808-813"
     }
    ],
    "files": [

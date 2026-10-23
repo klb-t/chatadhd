@@ -790,6 +790,13 @@ Ciąg dalszy R69 (odczyt ASR: „prąd” = prompt, „kmini” = pomni/uwzględ
 
 Przeprowadzka (R68): właściciel chce JEDNĄ komendę do wklejenia przez ssh na świeżej VM, która stawia środowisko (nazwy pakietów, Claude Code, Remote Control) — skrypt może leżeć tymczasowo w repo.
 
+## R72 — Teleport, nie bootstrap; pozycje w selektorze kontekstu to dane, nie reguła (owner, 2026-10-23)
+> teleporta bardziej niż buttstrapa
+> zero to generowana, prąd użytkownikanajczęściej Najważniejsze to -1. napisałem liczbowo żeby zasugerować że ta dana może być w kodzie. można by w sumie zrobić że z kilku ostatnich wiadomości ustala zakres kontekstu potrzebny dorealizacji celu. nie wiem czy jest sens to w ogóle definiować, wyróżniać, moja filozofia sama mnie dopadła i skopała
+> wiesz o co mi chodzi że testy z przeglądarce robisz na przykład
+
+Dwie rzeczy (ASR, ok. 08:0x UTC, po pierwszym biegu bootstrapu na VM). (1) „teleporta bardziej niż buttstrapa”: przeprowadzka ma być teleportem — koordynator przybywa z całym stanem i warsztatem (kolejka, spec, briefy, to, co robi tu, np. testy w przeglądarce), nie świeżą maszyną z pakietami; ostatnie zdanie czytam jako przykład tego, co ma działać po przeprowadzce. (2) Korekta do R70: pozycja 0 = generowana odpowiedź, −1 = prompt użytkownika („prąd” = ASR), najczęściej i najważniejszy; zapis liczbowy sugeruje, że ta dana może być w kodzie/danych (przesunięcia jako dane). Lepiej: z kilku ostatnich wiadomości selektor sam ustala zakres kontekstu potrzebny do celu; sam wątpi, czy warto w ogóle wyróżniać stałą pozycję — „moja filozofia sama mnie dopadła”. Czyli: żadnych stałych pozycji jako reguły; preset w danych + wnioskowanie zakresu z ostatnich wiadomości i celu.
+
 ## Decision — rebuild, don't recover
 > "nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane"
 

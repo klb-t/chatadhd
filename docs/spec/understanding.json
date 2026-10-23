@@ -16,16 +16,37 @@
    "date": "2026-10-23"
   },
   "s_13a549d5ba3f": {
-   "state": "proposed",
+   "state": "corrected",
    "history": [
     {
      "state": "proposed",
      "by": "koordynator (Fable)",
      "date": "2026-10-23",
      "text": "Selektor kontekstu bierze węzeł grafu odpowiadający generowanej właśnie odpowiedzi (wymiar wiadomości, pozycja −1 względem ostatniego promptu użytkownika), patrzy co się schodzi we wszystkich perspektywach, zna stan pamięci podręcznej modelu (stabilny prefiks, modyfikacje dopisywane na końcu) i buduje kontekst od najogólniejszego do szczegółu (projekt → gałąź → moduł → funkcja). Woła go użytkownik, agent albo eksperymentator; po niewystarczającej odpowiedzi ponawia pytanie z szerszym/głębszym kontekstem; przy zmianie tematu zawęża kontekst dla oszczędności, gdy wiadomo, że powrotu nie będzie w czasie życia pamięci podręcznej. Wszystko konfigurowalne; wartości domyślne to presety."
+    },
+    {
+     "state": "corrected",
+     "by": "właściciel (R72, 2026-10-23)",
+     "date": "2026-10-23",
+     "text": "KOREKTA właściciela (R72): nie „pozycja −1 względem ostatniego promptu”, tylko: 0 = generowana odpowiedź, −1 = prompt użytkownika (najczęściej; najważniejszy). Zapis liczbowy = podpowiedź, że przesunięcia są DANYMI (preset w kodzie/danych), nie regułą. Jeszcze lepiej: selektor z kilku ostatnich wiadomości sam ustala zakres kontekstu potrzebny do celu; właściciel wątpi, czy stałą pozycję w ogóle wyróżniać. Projekt K3: zakres wnioskowany z ostatnich wiadomości + celu, przesunięcia jako preset w danych (0, −1 jako przykład), nic na sztywno. Reszta parafrazy R70 (perspektywy, pamięć podręczna, od ogółu do szczegółu, wołanie przez użytkownika/agenta/eksperymentatora, ponowienie szerzej/głębiej, zawężenie przy zmianie tematu) bez zmian."
     }
    ],
    "text": "Selektor kontekstu bierze węzeł grafu odpowiadający generowanej właśnie odpowiedzi (wymiar wiadomości, pozycja −1 względem ostatniego promptu użytkownika), patrzy co się schodzi we wszystkich perspektywach, zna stan pamięci podręcznej modelu (stabilny prefiks, modyfikacje dopisywane na końcu) i buduje kontekst od najogólniejszego do szczegółu (projekt → gałąź → moduł → funkcja). Woła go użytkownik, agent albo eksperymentator; po niewystarczającej odpowiedzi ponawia pytanie z szerszym/głębszym kontekstem; przy zmianie tematu zawęża kontekst dla oszczędności, gdy wiadomo, że powrotu nie będzie w czasie życia pamięci podręcznej. Wszystko konfigurowalne; wartości domyślne to presety.",
+   "by": "właściciel (R72, 2026-10-23)",
+   "date": "2026-10-23",
+   "corrected_text": "KOREKTA właściciela (R72): nie „pozycja −1 względem ostatniego promptu”, tylko: 0 = generowana odpowiedź, −1 = prompt użytkownika (najczęściej; najważniejszy). Zapis liczbowy = podpowiedź, że przesunięcia są DANYMI (preset w kodzie/danych), nie regułą. Jeszcze lepiej: selektor z kilku ostatnich wiadomości sam ustala zakres kontekstu potrzebny do celu; właściciel wątpi, czy stałą pozycję w ogóle wyróżniać. Projekt K3: zakres wnioskowany z ostatnich wiadomości + celu, przesunięcia jako preset w danych (0, −1 jako przykład), nic na sztywno. Reszta parafrazy R70 (perspektywy, pamięć podręczna, od ogółu do szczegółu, wołanie przez użytkownika/agenta/eksperymentatora, ponowienie szerzej/głębiej, zawężenie przy zmianie tematu) bez zmian."
+  },
+  "s_20b2e5caeba0": {
+   "state": "proposed",
+   "history": [
+    {
+     "state": "proposed",
+     "by": "koordynator (Fable)",
+     "date": "2026-10-23",
+     "text": "Przeprowadzka = teleport: na VM mam mieć to, co tu — stan (kolejka, spec, briefy w repo), warsztat (bramka, e2e w Chromium, emulator gdy jest KVM) i narzędzia sesji; bootstrap jest tylko środkiem. Kontekst: 0 = generowana odpowiedź, −1 = prompt użytkownika jako preset w danych, zakres wnioskowany z ostatnich wiadomości i celu; żadnej stałej pozycji jako reguły."
+    }
+   ],
+   "text": "Przeprowadzka = teleport: na VM mam mieć to, co tu — stan (kolejka, spec, briefy w repo), warsztat (bramka, e2e w Chromium, emulator gdy jest KVM) i narzędzia sesji; bootstrap jest tylko środkiem. Kontekst: 0 = generowana odpowiedź, −1 = prompt użytkownika jako preset w danych, zakres wnioskowany z ostatnich wiadomości i celu; żadnej stałej pozycji jako reguły.",
    "by": "koordynator (Fable)",
    "date": "2026-10-23"
   },
