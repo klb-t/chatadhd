@@ -1,8 +1,10 @@
-# Kolejka S1 — stan 2026-10-23 09:24 UTC
+# Kolejka S1 — stan 2026-10-23 09:30 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
 **Teleport (R72):** karta startowa nowej sesji S1 = `docs/ops/TELEPORT_S1.md` (aktualizowana tuż przed przełączeniem); zadania zaplanowane = `docs/ops/ZADANIA_ZAPLANOWANE_2026-10-23.md`; przeprowadzka = `docs/ops/PRZEPROWADZKA_GCP_2026-10-23.md`.
+
+## S2 smoke 39925901191 na ff17786a (= main 9db553b2 + sterownik), 09:30 UTC: **47/0/0 ×3** — DOWÓD EMULATOROWY dla W2b-1 i G1: ⋮ > Ty pokazuje sekcje z licznikami (Tożsamość 2 | Preferencje 4 | Zasady 1 | Jednostki 0 | Zainteresowania 0 | Sieć 0 | Co pamiętam 0 | Pola wywiadu 11), sekcja otwiera wiersze z chipem i „Skąd”; Zasady (1) = „nie pytaj o zdrowie” z kroku wywiadu (spójne); „pokaż katalog główny grafu” otwiera korzeń (ROM | Ty | Model siebie | Technologie i adaptery | Interfejsy | Profile i ustawienia). MeView otwiera się mimo pozostawionej perspektywy (W2b-1 ignoruje ją w praktyce) → punkt W2b-2 kurczy się do „Wyłącz perspektywę” przy zdaniu starych wierszy. Nowe znalezisko (do K2c-3): pusty slot wywiadu ma chip „z aplikacji” + „brak odpowiedzi” — klasa dowodu opisuje pochodzenie WARTOŚCI, a wartości nie ma → bez chipa dowodu, chip stanu „bez odpowiedzi” (słowa w paczce), linia „Skąd: pytanie wywiadu” zostaje. APK v4 z 9db553b2 po CI 279 (kontrola 10:45) — to będzie pierwszy APK z ekranem „Ty” i słowami grafu.
 
 ## VM właściciela, drugi i trzeci bieg komendy (09:23 UTC, zrzut): krok 1/5 (apt) padł dwa razy na „Could not get lock /var/lib/dpkg/lock-frontend. It is held by process 552449 (unattended-upgr)” — świeża VM robi automatyczne aktualizacje po pierwszym starcie i trzyma blokadę dpkg kilka minut; mój skrypt pod `set -e` się wywracał zamiast czekać. Poprawka (09:24, wypchnięta): `vm_oneliner.sh` czeka na blokadę (pętla z `fuser`, komunikat kto ją trzyma, limit preset `CHATADHD_APT_LOCK_WAIT=900 s`) i każde `apt-get` w obu skryptach dostaje `-o DPkg::Lock::Timeout=900`; `psmisc` w pakietach podstawowych. Ta sama komenda uruchomiona ponownie kontynuuje. Doc PRZEPROWADZKA §6 pkt 1 uzupełniony.
 
