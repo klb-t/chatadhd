@@ -1,4 +1,6 @@
-# Kolejka S1 — stan 2026-10-23 21:55 UTC
+# Kolejka S1 — stan 2026-10-23 22:25 UTC
+
+## CI 284 na `f025ed34` = „cancelled” (21:53 UTC) = **limit jobu asan** (150 min): krok testów biegł 140 min po ~10 min budowy; dev/vendored/libcxx zielone; żadnego czerwonego testu (S2 odczytała). To ten sam wzorzec co dev przy 45 min (CI 281). Naprawa: `loom.yml` asan 150 → 240 min (preset, z datą i powodem) prosto na main jako commit CI (bez bramki, jak 06119372), main zmerge'owany do `claude/m1-w1`; nowy bieg CI rusza z pushem (≈ 2,7 h; kontrola 22:30 przestawi się na kolejny termin). Haiku czyta log asan z 284: czy `unit.test_address` i `server.chat_active_task` przeszły pod sanitizerem (biegły wcześnie, więc są w logu) i które testy zjadają 140 min (w 283: `unit.test_profile_chat` 2433 s, `cli.smoke` 786 s, kompaty po 250–390 s). Decyzja o APK v5: po potwierdzeniu tych dwóch testów z logu 284 S2 buduje v5 bez czekania na pełny bieg (vendored zielony, emulator 47/0/0); pełny asan z 240 min jest formalnym dowodem. Następny krok poza tym: skrócić asan (podział suite albo `-j` wyżej, `test_profile_chat` 40 min pod ASan) — wpis do skrzynki VM.
 
 ## S2 2026-10-23 22:24 UTC: loom.yml run 284 on main f025ed34 = cancelled, not green: dev, vendored and libcxx passed, asan (g++) hit its 150-min job limit inside "Test" (19:33-21:53) - a timeout, no test failure reported; APK v5 NOT built (waits for a green CI); https://github.com/klb-t/chatadhd/actions/runs/40010943514
 
