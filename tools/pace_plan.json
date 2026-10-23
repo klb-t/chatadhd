@@ -28,7 +28,8 @@
   "_note": "punkty tygodnia na jeden pakiet ~50 wywołań narzędzi z moją koordynacją; kalibracja 2026-10-21: S1 (566 mln równoważników) + S2 (48 mln) ≈ 614 mln na +27 pkt konta, czyli ≈ 22 mln równoważników na 1 pkt (GÓRNA granica kosztu: czaty właściciela i niewidoczne zapisy sprzed kompresji też są w tych punktach); pakiet R38 = agent 11,3 mln (0,5 pkt) + ok. 20 tur koordynacji po ok. 0,28 mln (0,25 pkt) ≈ 0,75. Haiku: agent czytający log (5 ruchów) ≈ 1,5 mln ≈ 0,07 pkt; pakiet 50 ruchów na Haiku jeszcze niezmierzony || KALIBRACJA 2026-10-22 04:40: od 17:33 (30 %) do 04:40 (33 %) = +3 pkt (±1 z zaokrągleń) na ok. 7 pakietów agentów S1 (D2, K1a×2, K1b, W1a, W1b, DOC1) razem z moją koordynacją i pracą S2 => ok. 0,43 pkt na pakiet; preset obniżony z 0,75 do 0,5 (nadal górne oszacowanie).",
   "haiku": null,
   "sonnet": null,
-  "fable": null
+  "fable": 1.5,
+  "_fable_note": "pomiar 23.10 00:2x: dwa projekty Fable (import jako pliki 35,2 mln rów.; replikacja 25,1 mln) ≈ 1,2–1,6 pkt każdy; wagi Fable względem odczytu cache Sonnet: odczyt 1,25, zapis 62,5, wyjście 250 (ceny katalogowe)"
  },
  "margin": 1.0,
  "lookahead_h": 2.0,
