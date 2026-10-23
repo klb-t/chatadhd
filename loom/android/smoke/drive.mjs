@@ -768,6 +768,17 @@ const serverChecks = [
   // W2b-1: ⋮ › Ty is MeView: sections with counts; a section opens rows with an evidence chip and a provenance line (as e2e m1-me)
   ["Ty: ⋮ › Ty shows the sections with counts; a section opens rows with a chip and 'Skąd'", async () => {
     await openMenu("me");
+    // until W2b-2 a perspective left on by another entry (receipt › Pokaż w grafie) stays, and Ty falls back to the old rows:
+    // switch it off here and say so in the report (S1, 2026-10-23)
+    let left = "none";
+    const persp = await until("Ty opened", () => page.ev(`(()=>{if(document.querySelector('[data-testid="me-view"]'))return 'me';const n=${q("graph-navigator")};return n?(n.getAttribute('data-perspectives')||'none'):false})()`), 30, 300)
+      .catch(async e => { throw new Error(`${e.message} || on screen: ${await m1Visible()}`); });
+    if (persp !== "me" && persp !== "none") {
+      left = persp;
+      await clickSettled("nav-bar-perspective"); await waitTid("nav-perspective-none", 10); await click("nav-perspective-none");
+      await until("no perspective", () => page.ev(`${q("graph-navigator")}?.getAttribute('data-perspectives')||''`).then(v => v === ""), 15, 300);
+      await m1Reset(); await openMenu("me");
+    }
     await until("MeView", () => has("me-view"), 30, 300).catch(async e => { throw new Error(`${e.message} || on screen: ${await m1Visible()}`); });
     const heads = await page.ev(`[...document.querySelectorAll('[data-testid^="me-section-subgraph:"]')].filter(e=>!/body|rows/.test(e.dataset.testid)).map(e=>({a:e.dataset.testid.replace('me-section-',''),t:(e.querySelector('.disclosure-head')?.innerText||'').replace(/\\s+/g,' ').trim()}))`);
     if (!heads.length) { const screen = await m1Visible(); await m1Reset(); throw new Error(`no sections in MeView || on screen: ${screen}`); }
@@ -780,7 +791,7 @@ const serverChecks = [
     await m1Reset();
     if (/[1-9]/.test(pick.t) && !rows.length) throw new Error(`the section "${pick.t}" has a count but no rows`);
     if (rows.some(r => r.split(' / ')[1] === undefined || r.split(' / ')[1] === '')) throw new Error(`a row without an evidence chip: ${rows.join(' | ')}`);
-    return `sections: ${heads.map(h => h.t).join(' | ')}; "${pick.t}" -> ${rows.join(' | ') || "empty (no entries yet)"}`;
+    return `${left !== "none" ? `perspective left on from before: ${left} (cleared); ` : ""}sections: ${heads.map(h => h.t).join(' | ')}; "${pick.t}" -> ${rows.join(' | ') || "empty (no entries yet)"}`;
   }],
   // G1: "Co tu widzę?" on the navigator opens a help text
   ["graph: ⋮ › Graf › 'Co tu widzę?' opens the help", async () => {
