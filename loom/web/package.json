@@ -59,6 +59,8 @@
     "test:role-card": "node tests/shell/role-card-state.test.mjs",
     "test:context-receipt": "node tests/shell/context-receipt-state.test.mjs",
     "test:interview": "node tests/shell/interview.test.mjs",
+    "test:me-view": "node tests/shell/me-view-state.test.mjs",
+    "test:m1-me": "node e2e/m1-me-native.mjs",
     "test:m1-navigator": "node e2e/m1-navigator-native.mjs",
     "test:m1-settings": "node e2e/m1-settings-native.mjs",
     "test:m1-context-sent": "node e2e/m1-context-sent-native.mjs",

@@ -636,3 +636,25 @@ Krok dla Androida (propozycja): `interview-card-start` → `interview-level` (`d
 | pomoc „Co tu widzę?” | `nav-help` (nawigator, pod wierszem ścieżki), `graph-help` (stara mapa sił w Warsztacie) | rozwijane, domyślnie zwinięte; wiersze tekstu mają id z końcówką `-line-1`, `-line-2` … ; zapamiętane w ustawieniach `navigator_help_open` / `graph_view_help_open` |
 
 Krok dla Androida (propozycja): Warsztat → `nav-import` → `import-file-input` → `start-import` → `import-summary` → `import-truth-table` → `import-details`.
+
+## Ekran „Ty” — części, dowód, pochodzenie, akcje z jądra (paczka M1-W2b-1; `loom/web/src/components/MeView.tsx`, `me-view-state.ts`; e2e `loom/web/e2e/m1-me-native.mjs`)
+
+Menu ⋮ › Ty otwiera nawigator na `party:self` (`graph-navigator`, `data-focus="party:self"`): nad zwykłymi wierszami jest strona osoby (`me-view`). Sekcje, wiersze i przyciski są odpowiedzią jądra (`graph.navigate`, `graph.card`), nie listą w kodzie — test wybiera sekcję po danych jądra (jej `count`, rodzaju jej wpisów), nigdy po polskiej etykiecie.
+
+| ekran | testid | uwagi |
+|---|---|---|
+| strona osoby | `me-view` (`data-parts` = liczba części) | tylko na `party:self`; pod nią zwinięte `nav-map-disclosure` („Pokaż w mapie”) i `nav-list-disclosure` („Wszystkie wiersze”) |
+| nagłówek | `me-title` (etykieta z `graph.card`), `me-lead` (zdanie jądra „Wszystko, co aplikacja o Tobie wie…”), `me-hint`, `me-sections-title` | |
+| „Poznaj mnie” | `me-actions-interview` › `me-action` (`data-action="profile.interview"`), `me-interview-hint` | otwiera rozmowę wywiadu (ta sama co karta w pustym czacie); panel się zamyka |
+| akcje z karty osoby | `me-actions-header` › `me-action` | z `graph.card`, bez `profile.interview` (to jest przycisk „Poznaj mnie”) |
+| sekcja (część) | `me-section-<adres części>` (rozwijana; nagłówek = etykieta + liczba z jądra: „Tożsamość (2)”), `me-section-body-<adres>` (`data-count`) | adres to `subgraph:self/<id>`; stan otwarty/zamknięty zapamiętany w ustawieniu `me_open_sections` (napis z adresami po spacji) |
+| w sekcji | `me-section-why`, `me-section-mix` (rozkład dowodów), `me-section-loading`, `me-section-empty`, `me-section-error`, `me-section-partial` | wpisy czytane z jądra przy otwarciu |
+| wiersze sekcji | `me-section-rows-<adres>` (`data-shown`, `data-total`), `me-row-<adres wpisu>` (`data-kind`, `data-class` = klasa dowodu, `data-inferred="true"` dla wniosku, `data-status`) | |
+| w wierszu | `me-row-label`, `me-row-value` (tylko gdy jądro dało wartość), `me-row-state` (słowo jądra o stanie, gdy wartości nie ma: „nigdy”), `me-row-chip` (klasa dowodu słowami), `me-row-setby` (preferencja: „ustawił: Ty”), `me-row-inferred-note`, `me-row-provenance` (`data-time`, `data-method`), `me-row-why` | slot „nigdy” nie ma `me-row-value` |
+| szczegóły wiersza | `me-details-<adres>` (rozwijane), `me-details-loading`, `me-detail-line`, `me-chain` › `me-chain-<poziom>` | z `graph.card`: powód pola, słowa pochodzenia notatki, łańcuch dziedziczenia preferencji |
+| przyciski wiersza i sekcji | `me-actions-<adres>` › `me-action` (`data-action` = id akcji z jądra), `me-action-planned` | przyciski = `actions[]` węzła, nic dopisanego w kodzie |
+| pole do wpisania | `me-input-form` (`data-action`), `me-input-<argument>`, `me-input-next`, `me-input-cancel` | argumenty, które wpisuje osoba, zapowiadają słowa paczki (`me.input.<akcja>`) |
+| pytanie reguł | `me-gate`, `me-proposal-ask`, `me-proposal-reason`, `me-proposal` (blok propozycji; przyciski mają id bloku z końcówką `-confirm` = Tak i `-reject` = Nie, czyli `me-proposal` + `-confirm`) | akcja z `confirm:` czeka na Tak/Nie |
+| wynik | `me-action-note` (rola `status`), `me-action-result` (tekst jądra akcji bez pytania), `me-done` (u góry: ostatnia zmiana) | po zmianie nawigator czyta liczby jeszcze raz |
+
+Krok dla Androida (propozycja): ⋮ → `shell-menu-me` → `me-view` → `me-section-subgraph:self/<id>` → `me-row-<adres>` → `me-action` (`data-action="memory.forget"`) → przycisk Tak w `me-proposal` (id bloku + `-confirm`).
