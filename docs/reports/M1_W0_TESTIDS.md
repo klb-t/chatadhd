@@ -620,3 +620,19 @@ Wywiad toczy się w rozmowie z `metadata.flow = profile.interview` (formularz, b
 | „Tak zrozumiałem” | `chat-action-proposal` | istniejący `ActionProposalBlock` (propozycja `profile.confirm`); jego przyciski mają ten sam id z końcówką `-confirm` (Tak) i `-reject` (Nie) |
 
 Krok dla Androida (propozycja): `interview-card-start` → `interview-level` (`data-level` = `minimal`) → `interview-chip` (`data-chip` = `skip`) → `interview-info`.
+
+## Import mówi prawdę, załączniki w czacie, pomoc grafu (paczka M1-G1b; `ImportPanel.tsx`, `import-truth-state.ts`, `ChatView.tsx`, `attachment-chips.ts`, `GraphHelp.tsx`; e2e `loom/web/e2e/m1-import-truth-native.mjs`)
+
+| ekran | testid | uwagi |
+|---|---|---|
+| Warsztat › Import, po imporcie | `import-result` (`data-truth` = `true` / `false`) | `false` = starsze jądro bez `truth`: zostaje jedna linia, po polsku |
+| zdanie z jądra | `import-summary` | `truth.summary` w języku ekranu; klasa `warn`, gdy nie wszystko zapisano |
+| tabela rodzajów | `import-truth-table`, `import-row-<rodzaj>` (`data-status` = `all` / `some` / `none` / `not_counted` / `empty`, `data-found`, `data-saved`) | wiersz na rodzaj z jądra: Rozmowy, Wiadomości, Załączniki … ; `data-found="null"` = „nie policzono” |
+| powód pod wierszem | `import-row-reason-<rodzaj>` | tylko gdy jądro podało powód lub notatkę |
+| czego nie było | `import-absent` | jedna linia: rodzaje, których archiwum nie miało (nic nie jest ukryte) |
+| szczegóły | `import-details` (rozwijany, domyślnie zwinięty), `import-raw` | surowa odpowiedź jądra jako JSON; `import-raw` jest techniczne |
+| postęp | `import-progress` (`data-status` = surowy status jądra) | tylko w trakcie importu |
+| chipy załączników pod wiadomością | `message-attachments` (`data-count`), `message-attachment` (`data-state` = `saved` / `names_only` / `plain`), `message-attachment-state` | dla każdej roli; stan tylko z danych wiadomości |
+| pomoc „Co tu widzę?” | `nav-help` (nawigator, pod wierszem ścieżki), `graph-help` (stara mapa sił w Warsztacie) | rozwijane, domyślnie zwinięte; wiersze tekstu mają id z końcówką `-line-1`, `-line-2` … ; zapamiętane w ustawieniach `navigator_help_open` / `graph_view_help_open` |
+
+Krok dla Androida (propozycja): Warsztat → `nav-import` → `import-file-input` → `start-import` → `import-summary` → `import-truth-table` → `import-details`.

@@ -15,6 +15,8 @@ const WORDS = {
   },
   title: { en: "Title override (optional)", pl: "Własny tytuł (opcjonalnie)" },
   importing: { en: "Importing…", pl: "Importuję…" },
+  fileLabel: { en: "File (ZIP, JSON, JSONL, HTML, MHT, SQLite, Markdown, text, screenshot)", pl: "Plik (ZIP, JSON, JSONL, HTML, MHT, SQLite, Markdown, tekst, zrzut ekranu)" },
+  start: { en: "Import", pl: "Importuj" },
 } as const;
 
 interface Props {
@@ -82,7 +84,7 @@ export default function ImportPanel({ onImported }: Props) {
       ) : (
       <div className="form-row">
         <label htmlFor="import-file">
-          File (ZIP, JSON, JSONL, HTML, MHT, SQLite, Markdown, text, screenshot)
+          {w("fileLabel")}
         </label>
         <input
           id="import-file"
@@ -98,14 +100,14 @@ export default function ImportPanel({ onImported }: Props) {
       </div>
       {!native && (
       <button className="primary" onClick={start} disabled={!file || busy} data-testid="start-import">
-        {busy ? "Importing…" : "Import"}
+        {busy ? w("importing") : w("start")}
       </button>
       )}
 
-      {progress && (
-        <div style={{ marginTop: 12 }} data-testid="import-progress">
+      {busy && progress && (
+        <div style={{ marginTop: 12 }} data-testid="import-progress" data-status={progress.status}>
           <div className="empty-state" style={{ textAlign: "left", padding: 0 }}>
-            {progress.status} {pct !== null ? `(${pct}%)` : `(${progress.current}/${progress.total || "?"})`}
+            {w("importing")} {pct !== null ? `(${pct}%)` : `(${progress.current}/${progress.total || "?"})`}
           </div>
           <div style={{ height: 6, background: "var(--input-bg)", borderRadius: 4, overflow: "hidden", marginTop: 4 }}>
             <div
@@ -155,7 +157,7 @@ export default function ImportPanel({ onImported }: Props) {
             )}
             {absent && <p className="import-absent" data-testid="import-absent">{absent}</p>}
             <Disclosure testId="import-details" className="import-details" labels={{ show: t("import_details_show"), hide: t("import_details_hide") }}>
-              <pre data-testid="import-raw" className="import-raw">{JSON.stringify(result, null, 2)}</pre>
+              <pre data-testid="import-raw" className="import-raw" data-audit-skip>{JSON.stringify(result, null, 2)}</pre>
             </Disclosure>
           </div>
         );
