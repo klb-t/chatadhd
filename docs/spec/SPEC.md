@@ -5,13 +5,13 @@ Ten plik jest **wygenerowany** z `docs/spec/spec.json` poleceniem `python3 tools
 
 Status pochodzi z pliku luk i jest **obserwacją z podanej daty**, nie ograniczeniem.
 
-Pozycji razem: **501**.
+Pozycji razem: **502**.
 
 | Status (z LUKI) | liczba |
 |---|---|
 | częściowo | 210 |
 | jest | 151 |
-| bez statusu (nie ma w LUKI) | 118 |
+| bez statusu (nie ma w LUKI) | 119 |
 | brak | 16 |
 | nieaktualne | 5 |
 | sprzeczne | 1 |
@@ -19,7 +19,7 @@ Pozycji razem: **501**.
 | Rodzaj | liczba |
 |---|---|
 | remark | 367 |
-| requirement | 77 |
+| requirement | 78 |
 | philosophy | 36 |
 | statement | 10 |
 | decision | 4 |
@@ -28,14 +28,14 @@ Pozycji razem: **501**.
 
 | Rozumienie (R61) | liczba |
 |---|---|
-| none | 489 |
+| none | 490 |
 | proposed | 10 |
 | corrected | 2 |
 
 | W których plikach | liczba |
 |---|---|
 | LUKI + SLOWA | 379 |
-| rejestr R/D | 84 |
+| rejestr R/D | 85 |
 | SLOWA | 34 |
 | LUKI | 4 |
 
@@ -55,7 +55,7 @@ Pozycji razem: **501**.
 | Proces i współpraca | 67 |
 | Pozostałe | 33 |
 | Uzupełnienia (wypowiedzi bez numeru) | 10 |
-| Rejestr wymagań R/D | 84 |
+| Rejestr wymagań R/D | 85 |
 | bez tematu | 3 |
 
 ## Filozofia
@@ -598,8 +598,9 @@ Pozycji razem: **501**.
 - `s_c3819e63f872` **R75** — Gdy brak decyzji właściciela blokuje: ostrożna decyzja wstępna, tania do wycofania; jechać do przodu z pomyślunkiem — _bez statusu_ · rozumienie: proposed · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L813)
 - `s_90982d5337ef` **R76** — Przykład wersji: adres względny po hierarchii (z poprzedniej dużej wersji ostatnia mała/poprawka); adresowanie w grafie nie jest ograniczone do liczb całkowitych — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L818)
 - `s_aeb05ddf56b2` **R77** — Współrzędne grafowe zmiennoprzecinkowe (double): zastosowanie tam, gdzie da się ekstrapolować/interpolować w dużej rozdzielczości — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L824)
-- `s_18ec73967a7b` **owner:decision-rebuild-don-t-recover** — Decision — rebuild, don't recover — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L829)
-- `s_223e1568b3b9` **owner:ui-reference** — UI reference — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L837)
+- `s_a943f67d9f89` **R78** — Przykład abstrakcyjny (nie do realizacji): zdjęcie i stopniowy zoom aż do piany kwantowej — skala jako ciągły wymiar bez granicy — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L829)
+- `s_18ec73967a7b` **owner:decision-rebuild-don-t-recover** — Decision — rebuild, don't recover — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L834)
+- `s_223e1568b3b9` **owner:ui-reference** — UI reference — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L842)
 
 ## Bez tematu
 

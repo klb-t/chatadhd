@@ -5,8 +5,8 @@
  "sources": {
   "owner": {
    "path": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
-   "sha256": "1ebde2397c6ebec72d71514dffeb5b8e9c040829eae8c9146aed4aa84a9c3204",
-   "lines": 843
+   "sha256": "0ece3a156761a75a490b6342370a8d9a792bf14b56e2573ac1f5d05b9e221e95",
+   "lines": 848
   },
   "slowa": {
    "path": "docs/architecture/SLOWA_WLASCICIELA_2026-10-16.md",
@@ -4475,6 +4475,62 @@
    ]
   },
   {
+   "id": "s_a943f67d9f89",
+   "aliases": [
+    "R78"
+   ],
+   "kind": "requirement",
+   "title": "Przykład abstrakcyjny (nie do realizacji): zdjęcie i stopniowy zoom aż do piany kwantowej — skala jako ciągły wymiar bez granicy",
+   "date": "2026-10-23",
+   "theme": "owner_requirements",
+   "theme_inferred": false,
+   "understanding": {
+    "state": "none"
+   },
+   "quotes": [
+    {
+     "text": "abstrakcyjny przykład którego nie trzeba realizować Ale pomyśl że to w zasadzie jeśli filozofię mamy cały czas dobrze reprezentowaną to my nawet nie było takie trudne żeby zrobić zdjęcie i zoomować stopniowo do piany kwantowej",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:830",
+     "ref": null,
+     "attr": [],
+     "lead": null,
+     "secondary": false
+    }
+   ],
+   "sense": null,
+   "summary": null,
+   "restatement": [
+    {
+     "text": "Ilustracja R77, wyraźnie oznaczona jako przykład, którego nie trzeba realizować: jeśli filozofia (wszystko konfigurowalne, żadnych wymyślonych granic, współrzędne ciągłe, ekstrapolacja) jest cały czas dobrze reprezentowana w silniku, to zoomowanie zdjęcia stopniowo aż do piany kwantowej nie byłoby nawet trudne. Wniosek projektowy do K3/G3: rozdzielczość (skala) to zwykły, ciągły wymiar grafu; zoom = ruch wzdłuż niego; treść na danej skali jest albo zapisana, albo wyprowadzona (interpolacja/ekstrapolacja/generacja) z zaznaczonym pochodzeniem i kosztem; silnik nie ma górnej ani dolnej granicy skali — tylko podpowiedzi o koszcie i wiarygodności (R58, R59).",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:832"
+    }
+   ],
+   "commentary": [],
+   "status": null,
+   "gap_text": null,
+   "evidence": [],
+   "next_step": null,
+   "refs": [
+    "s_aeb05ddf56b2",
+    "s_acee58464df3",
+    "s_c461e9ba42ec"
+   ],
+   "supersedes": [],
+   "superseded_by": [],
+   "supersession_notes": [],
+   "tags": [],
+   "heading_note": "owner, 2026-10-23",
+   "sources": [
+    {
+     "role": "owner",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:829-832"
+    }
+   ],
+   "files": [
+    "owner"
+   ]
+  },
+  {
    "id": "s_18ec73967a7b",
    "aliases": [
     "owner:decision-rebuild-don-t-recover"
@@ -4490,7 +4546,7 @@
    "quotes": [
     {
      "text": "\"nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane\"",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:830",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:835",
      "ref": null,
      "attr": [],
      "lead": null,
@@ -4502,7 +4558,7 @@
    "restatement": [
     {
      "text": "Recovered versions (`history/chatadhd_v0.8.3`, `history/chatadhd_v0.9.0`) and\nthe historical report are sources of requirements, ideas and data assets\n(e.g. `film_structure.json`), and real ground truth for self-discovery tests —\nnot code to merge. Everything is rebuilt in Loom with tests.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:832-835"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:837-840"
     }
    ],
    "commentary": [],
@@ -4519,7 +4575,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:829-835"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:834-840"
     }
    ],
    "files": [
@@ -4545,7 +4601,7 @@
    "restatement": [
     {
      "text": "`workbench_mockup_2026-09-26.webp`: dockable/floating panels (conversation\nlist, active conversation, knowledge graph with active context window, project\nstructure with dimmed high-confidence auto-completable nodes, artifact views\nfor music/video with timeline + storyboard, video player, execution\nenvironment with agent), multi-format ingestion, Loom SDK at the centre.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:838-842"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:843-847"
     }
    ],
    "commentary": [],
@@ -4562,7 +4618,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:837-842"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:842-847"
     }
    ],
    "files": [

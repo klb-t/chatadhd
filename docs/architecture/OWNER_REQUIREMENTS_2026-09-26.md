@@ -826,6 +826,11 @@ Uzupełnienie R74 (08:3x UTC). Przykład wersji programu jest dobry, bo pokazuje
 
 Uzupełnienie R74/R76 (08:4x UTC): przypuszczenie, że współrzędne grafowe typu double znajdą porządne zastosowanie — gdy wzdłuż wymiaru da się coś ładnie ekstrapolować (albo interpolować) w dużej rozdzielczości, np. między dwiema wiadomościami/wersjami, w czasie, w ciągłych miarach. Wniosek do K3: typ współrzędnej to cecha wymiaru (liczba całkowita, double, nazwa, data…), a adres może wskazać punkt między węzłami; co to znaczy (interpolacja, najbliższy węzeł, węzeł wyłaniający się), definiuje wymiar jako dane. To przypuszczenie, nie wymaganie o konkretnym zastosowaniu.
 
+## R78 — Przykład abstrakcyjny (nie do realizacji): zdjęcie i stopniowy zoom aż do piany kwantowej — skala jako ciągły wymiar bez granicy (owner, 2026-10-23)
+> abstrakcyjny przykład którego nie trzeba realizować Ale pomyśl że to w zasadzie jeśli filozofię mamy cały czas dobrze reprezentowaną to my nawet nie było takie trudne żeby zrobić zdjęcie i zoomować stopniowo do piany kwantowej
+
+Ilustracja R77, wyraźnie oznaczona jako przykład, którego nie trzeba realizować: jeśli filozofia (wszystko konfigurowalne, żadnych wymyślonych granic, współrzędne ciągłe, ekstrapolacja) jest cały czas dobrze reprezentowana w silniku, to zoomowanie zdjęcia stopniowo aż do piany kwantowej nie byłoby nawet trudne. Wniosek projektowy do K3/G3: rozdzielczość (skala) to zwykły, ciągły wymiar grafu; zoom = ruch wzdłuż niego; treść na danej skali jest albo zapisana, albo wyprowadzona (interpolacja/ekstrapolacja/generacja) z zaznaczonym pochodzeniem i kosztem; silnik nie ma górnej ani dolnej granicy skali — tylko podpowiedzi o koszcie i wiarygodności (R58, R59).
+
 ## Decision — rebuild, don't recover
 > "nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane"
 
