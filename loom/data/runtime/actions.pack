@@ -13643,7 +13643,8 @@
         },
         "reads": [
           "navigator_children_limit",
-          "loom_graph_data_limit"
+          "loom_graph_data_limit",
+          "profile_detail_level"
         ],
         "implemented_in": [
           "loom/src/graph/projection.cpp",

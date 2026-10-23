@@ -283,6 +283,15 @@
       ],
       "reason": "projection.cpp carries the five graph actions; the budget of a level is read by graph.navigate, never by roles.resolved",
       "count": 2
+    },
+    {
+      "file": "loom/src/graph/projection.cpp",
+      "key": "profile_detail_level",
+      "actions": [
+        "roles.resolved"
+      ],
+      "reason": "the one literal is the slot plan of the Ty (party:self) subgraph, built only while graph.navigate projects that node; roles_resolved opens the model Catalogue and never builds a node, so it cannot reach this read",
+      "count": 1
     }
   ],
   "read_elsewhere": [],

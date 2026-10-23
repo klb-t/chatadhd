@@ -4383,7 +4383,8 @@
           "group": "ty",
           "subgroup": "profil",
           "flows": [
-            "chat.send"
+            "chat.send",
+            "graph.navigate"
           ]
         },
         "on_unlisted": "refuse"
