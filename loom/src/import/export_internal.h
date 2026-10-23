@@ -60,7 +60,9 @@ struct Counts {
   std::map<std::string, std::int64_t> block_kind;
   void add(const Counts& o);
   static Counts from_json(const Json& value);
-  Json to_json() const;
+  // with_extras false: exactly the keys of the oracle tests/fixtures/exports/EXPECTED.json (the report's "counts"); attachment_linked is then
+  // reported beside it (Report::to_json "attachment_linked"). The checkpoint keeps it (with_extras true) so a resumed import does not lose it.
+  Json to_json(bool with_extras = true) const;
 };
 
 // ── report ──

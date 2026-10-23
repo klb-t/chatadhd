@@ -10,7 +10,8 @@
 
 namespace loom::import_truth {
 
-// The truth of one import result. `words` is the "import_truth" section of chat_ops (null: facts only, no texts).
+// The truth of one import result. `words` is the "import_truth" section of chat_ops (null: only the facts of the run - path, provider, warnings -
+// with no elements and no summary: the kinds and the sentences are the data's).
 // Shape: {schema, path: "export"|"legacy", provider, archive, already_imported, cancelled, partial, warnings, errors,
 //         elements: [{kind, label: {pl,en}, found: N|null, imported: N, status: all|some|none|not_counted|empty,
 //                     reason: {id, text: {pl,en}, observed?}|null, notes: [{id, text: {pl,en}}]}],

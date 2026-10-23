@@ -692,8 +692,10 @@ TEST_SUITE("chat_ops") {
     const auto root_run = f.say_and_confirm("pokaż katalog główny grafu", "graph.navigate", "tak");
     const std::string root_text = f.text_of(root_run);
     INFO(root_text);
-    CHECK(root_text.rfind("Graf: ", 0) == 0);  // the head of the root level, not a refusal and not the model's guess
+    CHECK(root_text.find("\nGraf: ") != std::string::npos);  // the head of the root level (the answer opens with "Gotowe: ..."), not a refusal and not the model's guess
+    CHECK(root_text.find("• Dane i korpusy") != std::string::npos);  // the area that holds the import is one of the places of the root
     CHECK(root_text.find("nie ma nic o nazwie") == std::string::npos);
+    MESSAGE("answer to 'pokaż katalog główny grafu': " << root_text);
 
     const Json imp = f.route("pokaż import w grafie");
     REQUIRE(imp.at("kind") == "command");
@@ -704,17 +706,21 @@ TEST_SUITE("chat_ops") {
     INFO(imp_text);
     CHECK(imp_text.find("Dane i korpusy") != std::string::npos);  // the area that holds imported data today
     CHECK(imp_text.find("nie ma nic o nazwie") == std::string::npos);
+    MESSAGE("answer to 'pokaż import w grafie': " << imp_text);
   }
 
   TEST_CASE("G1a: a name the graph does not know is answered with the names it knows (the nearest first), in both languages") {
     Fixture f;
     const std::string unknown = f.text_of(f.say_and_confirm("pokaż qwxz w grafie", "graph.navigate", "tak"));
+    MESSAGE("answer to an unknown name (pl): " << unknown);
     INFO(unknown);
     CHECK(unknown.find("nie ma nic o nazwie „qwxz”") != std::string::npos);
     CHECK(unknown.find("Nazwy, które znam: ") != std::string::npos);
-    CHECK(unknown.find("Dane i korpusy (mówisz też: ") != std::string::npos);  // the words the data gives the area
+    CHECK(unknown.find(" (mówisz też: ") != std::string::npos);                  // the words the data gives the areas
+    CHECK(unknown.find("powiedz „otwórz graf”") != std::string::npos);           // and how to see all of them
     CHECK(unknown.find("i jeszcze ") != std::string::npos);                     // not all fit: the rest is counted, not dropped
     const std::string near = f.text_of(f.say_and_confirm("pokaż rozmaitości w grafie", "graph.navigate", "tak"));
+    MESSAGE("answer to a name that starts like an area (pl): " << near);
     INFO(near);
     CHECK(near.find("Najbliżej tego, co powiedziałeś, jest: Kontekst i projekty") != std::string::npos);
     const std::string en = f.text_of(f.say_and_confirm("show qwxz in the graph", "graph.navigate", "yes"));

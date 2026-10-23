@@ -114,6 +114,8 @@ TEST_SUITE("import_truth") {
     CHECK(element(t, "messages").at("imported") == 8);
     const std::string pl = t.at("summary").at("pl");
     const std::string en = t.at("summary").at("en");
+    MESSAGE("Claude.ai archive, summary pl: " << pl);
+    MESSAGE("Claude.ai archive, summary en: " << en);
     CHECK(pl.find("Import zakończony. Rozmowy: 2. Wiadomości: 8. Załączniki: znaleziono 3, zapisano 0 — ") != std::string::npos);
     CHECK(en.find("Import finished. Conversations: 2. Messages: 8. Attachments: found 3, saved 0 — ") != std::string::npos);
     // the kinds the archive also carries are counted, not skipped (its projects and memories)
@@ -136,6 +138,8 @@ TEST_SUITE("import_truth") {
     CHECK(t.at("summary").at("pl").get<std::string>().find("Załączniki: 1.") != std::string::npos);
     CHECK(t.at("summary").at("pl").get<std::string>().find("Pliki skopiowane z archiwum do magazynu: 1.") != std::string::npos);
     CHECK(t.at("summary").at("en").get<std::string>().find("Attachments: 1.") != std::string::npos);
+    MESSAGE("ChatGPT archive with its file, summary pl: " << t.at("summary").at("pl").get<std::string>());
+    MESSAGE("ChatGPT archive with its file, summary en: " << t.at("summary").at("en").get<std::string>());
 
     Fx g;
     const ImportResult none = g.run(chatgpt_zip(g.td.path(), false), ExportMode::Auto);
@@ -154,7 +158,7 @@ TEST_SUITE("import_truth") {
     INFO(t.dump(2));
     const Json& att = element(t, "attachments");
     CHECK(att.at("found") == r.export_report.at("counts").at("attachment"));
-    CHECK(att.at("imported") == r.export_report.at("counts").at("attachment_linked"));
+    CHECK(att.at("imported") == r.export_report.at("attachment_linked"));  // beside the oracle-shaped counts
     CHECK(att.at("imported").get<int>() >= 1);
     CHECK(att.at("imported").get<int>() < att.at("found").get<int>());
     CHECK(att.at("status") == "some");
@@ -177,6 +181,7 @@ TEST_SUITE("import_truth") {
     CHECK(att.at("reason").at("id") == "attachments.json_without_archive");
     CHECK(att.at("reason").at("text").at("pl").get<std::string>().find("plik .json bez archiwum: załączników nie ma w pliku") != std::string::npos);
     CHECK(t.at("summary").at("pl").get<std::string>().find("Załączniki: nie policzono, zapisano 0 — plik .json bez archiwum") != std::string::npos);
+    MESSAGE("bare .json, summary pl: " << t.at("summary").at("pl").get<std::string>());
     CHECK(t.at("summary").at("en").get<std::string>().find("Attachments: not counted, saved 0 — a .json file without the archive") != std::string::npos);
     CHECK(element(t, "messages").at("imported") == r.messages);
     CHECK(element(t, "conversations").at("imported") == r.conversations.size());
@@ -276,9 +281,11 @@ TEST_SUITE("import_truth") {
     CHECK(att.at("status") == "none");
     CHECK(att.at("reason").is_null());
     CHECK(t.at("summary").at("pl").get<std::string>().find("Załączniki: znaleziono 3, zapisano 0.") != std::string::npos);
-    // without words at all the facts still come out, and say so
+    // without words at all only the facts of the run come out (path, provider, counts of warnings), no kinds and no sentences
     const Json bare = import_truth::build(r, Json(nullptr));
-    CHECK(element(bare, "attachments").at("found") == 3);
+    CHECK(bare.at("path") == "export");
+    CHECK(bare.at("provider") == "anthropic");
+    CHECK(bare.at("elements").empty());  // the kinds are the data's: without them nothing is claimed
     CHECK_FALSE(bare.contains("summary"));
   }
 

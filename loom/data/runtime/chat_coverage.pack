@@ -2346,14 +2346,7 @@
         },
         "via": "action",
         "action": "graph.navigate",
-        "surfaces": {
-          "http": [
-            "POST /api/graph/navigate"
-          ],
-          "invoke": [
-            "actions.graph.navigate"
-          ]
-        },
+        "surfaces": {},
         "examples": {
           "pl": "pokaż katalog główny grafu",
           "en": "open the root of the graph"
@@ -2367,14 +2360,7 @@
         },
         "via": "action",
         "action": "graph.navigate",
-        "surfaces": {
-          "http": [
-            "POST /api/graph/navigate"
-          ],
-          "invoke": [
-            "actions.graph.navigate"
-          ]
-        },
+        "surfaces": {},
         "examples": {
           "pl": "pokaż import w grafie",
           "en": "show the import in the graph"

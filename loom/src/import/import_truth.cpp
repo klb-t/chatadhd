@@ -126,7 +126,8 @@ Json build(const ImportResult& r, const Json& words) {
     if (exported) {
       found = json::get_int(counts, json::get_string(el, "counts"));
       const std::string linked = json::get_string(el, "linked");
-      imported = linked.empty() ? *found : json::get_int(counts, linked);
+      // the counter of saved ones sits in the counts or, for the keys the oracle shape of the counts leaves out, beside them in the report
+      imported = linked.empty() ? *found : json::get_int(counts.contains(linked) ? counts : report, linked);
       if (auto n = result_number(json::get_string(el, "imported_from"))) imported = *n;
     } else {
       const std::string legacy = json::get_string(el, "legacy");
