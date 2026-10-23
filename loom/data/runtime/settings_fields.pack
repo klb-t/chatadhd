@@ -70,6 +70,17 @@
               "pl": "To, co Sekretarz zapamiętał o Tobie i wysyła z żądaniem.",
               "en": "What the Secretary remembered about you and sends with a request."
             }
+          },
+          {
+            "id": "ekran",
+            "label": {
+              "pl": "Ekran „Ty”",
+              "en": "The “You” screen"
+            },
+            "why": {
+              "pl": "Jak wygląda ekran „Co o Tobie wiem” i co z niego aplikacja zapamiętuje dla Ciebie.",
+              "en": "How the screen “What I know about you” looks and what the app remembers of it for you."
+            }
           }
         ]
       },
@@ -4391,6 +4402,88 @@
           ]
         },
         "on_unlisted": "refuse"
+      },
+      {
+        "key": "me_open_sections",
+        "scope": "config",
+        "group": "ui",
+        "type": "string",
+        "has_default": false,
+        "description": "The parts of the screen Ty (What I know about you) that the person left open: the addresses of the parts separated by spaces (an address has no spaces). Not set or empty = every part folded (the preset of the screen). The screen writes it by itself when a part is opened or closed (PUT /api/config) and opens the same parts the next time.",
+        "status": {
+          "state": "implemented",
+          "by": "M1-W2b-1",
+          "reader": "web MeView",
+          "reason": {
+            "pl": "Ekran „Ty” (web MeView, M1-W2b-1) czyta to pole i sam je zapisuje; wartość ma czytelnika i działa.",
+            "en": "The “You” screen (web MeView, M1-W2b-1) reads this field and writes it itself; the value has a reader and works."
+          },
+          "today": {
+            "pl": "Ekran „Ty” otwiera przy wejściu te części, które zostawiłeś otwarte; otwarcie lub zwinięcie części zapisuje się od razu. Puste pole = wszystkie części zwinięte.",
+            "en": "The “You” screen opens on entry the parts you left open; opening or folding a part is saved at once. An empty field = every part folded."
+          }
+        },
+        "human": {
+          "label": {
+            "pl": "Które części ekranu „Ty” zostają otwarte",
+            "en": "Which parts of the “You” screen stay open"
+          },
+          "why": {
+            "pl": "Ekran „Ty” pamięta, które części (np. Tożsamość, Preferencje) zostawiłeś otwarte, żeby przy następnym wejściu było tak, jak było.",
+            "en": "The “You” screen remembers which parts (for example Identity, Preferences) you left open, so the next visit looks as you left it."
+          },
+          "effect": {
+            "pl": "Zmienia tylko to, co jest rozwinięte; nic nie jest usuwane ani wysyłane. Puste = wszystko zwinięte.",
+            "en": "Changes only what is unfolded; nothing is removed or sent. Empty = everything folded."
+          },
+          "levels": [
+            "person"
+          ],
+          "group": "ty",
+          "subgroup": "ekran",
+          "flows": []
+        }
+      },
+      {
+        "key": "me_inferred_opacity",
+        "scope": "config",
+        "group": "ui",
+        "type": "number",
+        "has_default": false,
+        "description": "How strongly an entry that the app only concluded (an inference, not something you said) is drawn on the screen Ty: a number from 0 (invisible) to 1 (drawn like any other entry). Not set or not a number in that range = the preset of the screen, 0.72. Only the drawing changes; the entry, its evidence chip and its note stay.",
+        "status": {
+          "state": "implemented",
+          "by": "M1-W2b-1",
+          "reader": "web MeView",
+          "reason": {
+            "pl": "Ekran „Ty” (web MeView, M1-W2b-1) czyta to pole przy rysowaniu wpisów; wartość ma czytelnika i działa.",
+            "en": "The “You” screen (web MeView, M1-W2b-1) reads this field when it draws the entries; the value has a reader and works."
+          },
+          "today": {
+            "pl": "Wpisy, które aplikacja tylko wywnioskowała, są na ekranie „Ty” rysowane z tą przezroczystością (preset 0,72); 1 rysuje je jak każdy inny wpis. Liczba spoza zakresu od 0 do 1 jest ignorowana i działa preset.",
+            "en": "Entries the app only concluded are drawn on the “You” screen with this opacity (preset 0.72); 1 draws them like any other entry. A number outside 0 to 1 is ignored and the preset applies."
+          }
+        },
+        "human": {
+          "label": {
+            "pl": "Przezroczystość wniosków na ekranie „Ty”",
+            "en": "Opacity of inferences on the “You” screen"
+          },
+          "why": {
+            "pl": "To, co aplikacja wywnioskowała o Tobie (a Ty tego nie mówiłeś), jest na ekranie „Ty” bledsze niż to, co sam powiedziałeś.",
+            "en": "What the app concluded about you (and you did not say) is drawn paler on the “You” screen than what you said yourself."
+          },
+          "effect": {
+            "pl": "Od 0 do 1; 1 = bez różnicy w wyglądzie. Zmienia tylko rysunek — wniosek nadal ma swoją plakietkę i dopisek „wniosek, nie Twoje słowa”.",
+            "en": "From 0 to 1; 1 = no difference in look. Changes only the drawing — an inference keeps its chip and its note “a conclusion, not your words”."
+          },
+          "levels": [
+            "person"
+          ],
+          "group": "ty",
+          "subgroup": "ekran",
+          "flows": []
+        }
       },
       {
         "key": "context_receipt_store",

@@ -358,7 +358,7 @@ Result<Json> project_graph(const Json& pack, const Json& scenario, const Json& p
       const std::string provenance = json::get_string(field, "provenance");
       if (status != "known" && status != "unknown" && status != "declined" && status != "never") return invalid("unknown profile field state");
       const bool inferred = provenance == "model_inferred";
-      const bool explicit_value = provenance == "user_stated" || provenance == "form";
+      const bool explicit_value = provenance == "user_stated" || provenance == "user_corrected" || provenance == "form";
       const auto origin = inferred ? Origin::ModelKnowledge : explicit_value ? Origin::User : Origin::System;
       const auto evidence = inferred ? EvidenceClass::Inferred : explicit_value ? EvidenceClass::User : EvidenceClass::Derived;
       Json attrs = field;

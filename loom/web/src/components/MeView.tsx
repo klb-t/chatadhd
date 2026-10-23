@@ -184,11 +184,12 @@ function MeRow({ row, view, t, language, convId, proposalFeature, opacity, onCha
         {view.state !== null && <span className="me-row-state gnav-note" data-testid="me-row-state">{view.state}</span>}
       </div>
       <div className="gnav-chips">
-        <span className="gnav-chip gnav-chip-evidence" data-testid="me-row-chip" data-class={view.classId}>{view.chip}</span>
+        {view.chip !== null && <span className="gnav-chip gnav-chip-evidence" data-testid="me-row-chip" data-class={view.classId}>{view.chip}</span>}
+        {view.stateChip !== null && <span className="gnav-chip" data-testid="me-row-state-chip" data-state={row.state ?? undefined}>{view.stateChip}</span>}
         {view.setBy && <span className="gnav-chip" data-testid="me-row-setby">{view.setBy}</span>}
         {view.inferredNote && <span className="gnav-chip gnav-chip-derived" data-testid="me-row-inferred-note">{view.inferredNote}</span>}
       </div>
-      <p className="me-row-provenance" data-testid="me-row-provenance" data-time={view.provenance.time ?? undefined} data-method={view.provenance.method ?? undefined}>{view.provenance.text}</p>
+      {view.provenance && <p className="me-row-provenance" data-testid="me-row-provenance" data-time={view.provenance.time ?? undefined} data-method={view.provenance.method ?? undefined}>{view.provenance.text}</p>}
       {view.why !== "" && <p className="gnav-why me-row-why" data-testid="me-row-why">{view.why}</p>}
       <ActionBar buttons={view.actions} subject={view.label} defaultValue={typeof row.value === "string" ? row.value : ""} scope={row.address} t={t} language={language} convId={convId}
         proposalFeature={proposalFeature} onChanged={onChanged} onOpenConversation={onOpenConversation} />

@@ -348,11 +348,11 @@ TEST_SUITE("units") {
     for (const auto& it : data.at("items")) items[it.at("id").get<std::string>()] = it;
     REQUIRE(items.count("aaaaaaaaaaaa"));
     CHECK(items.at("aaaaaaaaaaaa").at("provenance").at("known") == false);
-    CHECK(items.at("aaaaaaaaaaaa").at("provenance").at("words") == "pochodzenie nieznane (zapisane przed M1)");
+    CHECK(items.at("aaaaaaaaaaaa").at("provenance").at("words") == "pochodzenie niezapisane - starsza notatka");
     CHECK(items.at(rid).at("provenance").at("known") == true);
     CHECK(items.at(rid).at("provenance").at("source") == "user");
     const std::string text = Fx::text_of(recall);
-    CHECK(text.find("stara notatka sprzed M1 (aaaaaaaaaaaa) - pochodzenie nieznane (zapisane przed M1)") != std::string::npos);
+    CHECK(text.find("stara notatka sprzed M1 (aaaaaaaaaaaa) - pochodzenie niezapisane - starsza notatka") != std::string::npos);
     CHECK(text.find("lubię herbatę") != std::string::npos);
     CHECK(text.find("pochodzenie: napisałeś to Ty, ") != std::string::npos);
     CHECK(text.find("(m_123456789abc)") != std::string::npos);

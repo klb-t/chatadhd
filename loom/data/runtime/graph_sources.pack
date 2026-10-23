@@ -321,11 +321,23 @@
             "pl": "Osoby i organizacje, które analiza znalazła w Twoich wiadomościach (węzły tych rodzajów): wniosek, a nie coś, co powiedziałeś."
           }
         },
-        "description": "You (party:self) and the slots of the profile interview (party:self/<slot>): a slot you answered is what you said (observed, with the interview's provenance); a slot a model proposed is inferred and never shown as said by you.",
+        "description": "You (party:self) and the slots of the profile interview (party:self/<slot>): a slot you answered or corrected is what you said (class said, with the interview's provenance); a slot a model proposed is inferred and never shown as said by you; a slot with no value has no evidence at all and carries a state (unanswered, declined, never) instead.",
         "evidence_by_method": {
           "model_inferred": {
             "class": "inferred",
             "confidence": null
+          },
+          "user_stated": {
+            "class": "said",
+            "confidence": 1.0
+          },
+          "user_corrected": {
+            "class": "said",
+            "confidence": 1.0
+          },
+          "form": {
+            "class": "said",
+            "confidence": 1.0
           },
           "*": {
             "class": "observed",
@@ -1295,8 +1307,8 @@
         "pl": "zapamiętane przez strażnika z tego, co powiedziałeś"
       },
       "evidence.method.not_recorded_before_m1": {
-        "en": "origin unknown (saved before M1)",
-        "pl": "pochodzenie nieznane (zapisane przed M1)"
+        "en": "origin not recorded - an older note",
+        "pl": "pochodzenie niezapisane - starsza notatka"
       },
       "byte_units": [
         "B",

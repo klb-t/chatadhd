@@ -46,20 +46,24 @@ test('the sections are the kernel\'s parts, in its order, each with its count an
 });
 
 test('the evidence chip is the class in words for every class; an unknown class says so instead of showing its id', () => {
-  for (const cls of ['declared', 'observed', 'derived', 'inferred', 'extrapolated']) {
+  for (const cls of ['declared', 'observed', 'said', 'derived', 'inferred', 'extrapolated']) {
     assert.equal(me.classWord({ class: cls }, t), pl[`me.class.${cls}`]);
     assert.equal(me.classWord({ class: cls }, tEn), en[`me.class.${cls}`]);
   }
   assert.equal(me.classWord({ class: 'inferred', confidence: 0.4 }, t), t('me.class.inferred_conf', { confidence: '0.4' }));
   assert.equal(me.classWord({ class: 'telepathy' }, t), pl['me.class.other']);
+  // a person's own interview answer is 'powiedziane', not 'zaobserwowane' (M1-K2c3)
+  assert.equal(me.classWord({ class: 'said' }, t), 'powiedziane'); assert.equal(me.classWord({ class: 'said' }, tEn), 'said');
+  // the list of classes is open: a class the pack has a word for is worded without a code change, a word that is no class is not taken for one
+  assert.equal(me.classWord({ class: 'other' }, t), pl['me.class.other']); assert.equal(me.classWord({ class: 'inferred_conf' }, t), pl['me.class.other']);
 });
 
 test('the provenance line is the kernel\'s words with the time when there is one; without words it says "brak zapisu", never an id', () => {
   const timed = me.provenanceLine(row({ evidence: ev('observed', 'napisałeś to Ty', { time: '2026-10-22T10:00:00Z', method: 'note_user' }) }), t, 'pl');
   assert.ok(timed.text.startsWith('Skąd: napisałeś to Ty · '), timed.text);
   assert.equal(timed.time, '2026-10-22T10:00:00Z'); assert.equal(timed.method, 'note_user');
-  const old = me.provenanceLine(row({ evidence: ev('declared', 'pochodzenie nieznane (zapisane przed M1)', { method: 'not_recorded_before_m1' }) }), t, 'pl');
-  assert.equal(old.text, 'Skąd: pochodzenie nieznane (zapisane przed M1)');
+  const old = me.provenanceLine(row({ evidence: ev('declared', 'pochodzenie niezapisane - starsza notatka', { method: 'not_recorded_before_m1' }) }), t, 'pl');
+  assert.equal(old.text, 'Skąd: pochodzenie niezapisane - starsza notatka');
   assert.equal(me.provenanceLine(row({ evidence: ev('declared', undefined) }), t, 'pl').text, pl['me.provenance.none']);
   assert.equal(me.provenanceLine(row({ evidence: ev('declared', '  ') }), t, 'pl').text, pl['me.provenance.none']);
   assert.equal(me.formatTime('not a time', 'pl'), 'not a time', 'an unreadable time is shown as it came');
@@ -132,14 +136,14 @@ test('the inferred look is a labelled preset that a setting changes; the open se
 test('details: the reason of a slot, that it is within the level, the words of a note\'s origin', () => {
   assert.deepEqual(me.detailLines({ reason_text: 'wykracza poza wybrany poziom', asked_at_level: false }, t), ['Dlaczego tak: wykracza poza wybrany poziom']);
   assert.deepEqual(me.detailLines({ asked_at_level: true }, t), [pl['me.details.in_level']]);
-  assert.deepEqual(me.detailLines({ provenance: { known: false, words: 'pochodzenie nieznane (zapisane przed M1)' } }, t), ['Pochodzenie: pochodzenie nieznane (zapisane przed M1)']);
+  assert.deepEqual(me.detailLines({ provenance: { known: false, words: 'pochodzenie niezapisane - starsza notatka' } }, t), ['Pochodzenie: pochodzenie niezapisane - starsza notatka']);
   assert.deepEqual(me.detailLines(undefined, t), []); assert.deepEqual(me.detailLines({}, t), []);
 });
 
 // The possibility space: every class x human words x time x confidence x value shape gives a row view in words only (no dotted/snake id), the
 // inferred look exactly for inferred and extrapolated, and the setter chip only on a preference.
 test('every combination of evidence and value shape gives a row in words', () => {
-  const classes = ['declared', 'observed', 'derived', 'inferred', 'extrapolated', 'weird'];
+  const classes = ['declared', 'observed', 'said', 'derived', 'inferred', 'extrapolated', 'weird'];
   const humans = [undefined, '', 'napisałeś to Ty', 'wniosek z analizy wiadomości'];
   const times = [null, '2026-10-22T10:00:00Z', 'garbage'];
   const values = [[undefined, undefined], [null, 'nigdy'], [null, undefined], ['a', 'a'], [3, '3'], [false, 'wyłączone'], [{ x: 1 }, undefined]];
@@ -157,6 +161,15 @@ test('every combination of evidence and value shape gives a row in words', () =>
     assert.ok(v.value === null || typeof v.value === 'string');
   }
   assert.ok(n > 3000);
+  // an entry with no value has no evidence: the chip is its state in words (bez odpowiedzi), the provenance line is absent, nothing is inferred
+  for (const state of ['unanswered', 'declined', 'never', 'something_new', undefined]) for (const kind of kinds) {
+    const v = me.rowView(row({ kind, value: null, value_human: 'nieznane', evidence: null, state, status: 'unknown' }), t, 'pl');
+    assert.equal(v.chip, null); assert.equal(v.provenance, null); assert.equal(v.inferred, false); assert.equal(v.classId, '');
+    assert.ok(v.stateChip && !/[._]/.test(v.stateChip), `state chip ${state}: ${v.stateChip}`);
+    if (state === 'unanswered') assert.equal(v.stateChip, 'bez odpowiedzi');
+    if (state === 'something_new' || state === undefined) assert.equal(v.stateChip, pl['me.state.other'], 'a state with no word says "no value", never its id');
+  }
+  assert.equal(me.rowView(row(), t, 'pl').stateChip, null, 'an entry with evidence has no state chip');
 });
 
 test('the chain of a preference is read from the card of a setting (inheritance) or of a person\'s preference (attrs.resolved.inheritance)', () => {

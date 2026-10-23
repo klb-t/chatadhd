@@ -804,13 +804,15 @@ Result<Reply> set(const Env& e, const Json& args) {
   if (json::get_string(*f, "status") == "never") return err(Errc::Auth, e.say("profile_never_blocked", Json{{"topic", topic}}));
   if (f->contains("setting_key")) return err(Errc::InvalidArgument, e.say("profile_set_level_slot", Json::object()));
   const std::string cid = gen_id("iv_");
-  // The person typed it and confirmed through the gate: answer and confirmation in one, provenance user_stated; the history is the store's own.
-  LOOM_TRY(write(e, l, Json{{"op", "answer"}, {"id", cid}, {"field", slot}, {"value", *given}, {"provenance", "user_stated"}}));
+  // The person typed it and confirmed through the gate: answer and confirmation in one; the history is the store's own. A slot that already held a value
+  // is corrected, not answered: its provenance says so (user_corrected), with the time of the write, so the screen can say "corrected by you, <date>".
+  const std::string how = json::get_string(*f, "status") == "known" ? "user_corrected" : "user_stated";
+  LOOM_TRY(write(e, l, Json{{"op", "answer"}, {"id", cid}, {"field", slot}, {"value", *given}, {"provenance", how}}));
   LOOM_TRY(write(e, l, Json{{"op", "review"}, {"candidate", cid}, {"decision", "confirmed"}}));
   Json data = base_data(l);
   data["written"] = true;
   data["slot"] = slot;
-  data["provenance"] = "user_stated";
+  data["provenance"] = how;
   return Reply{e.say("profile_set_done", Json{{"topic", topic}, {"value", value_text(*given)}}), data};
 }
 

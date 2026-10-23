@@ -733,7 +733,7 @@ void App::route_chat() {
     });
 
     res.set_chunked_content_provider(
-        "text/event-stream",
+        "text/event-stream; charset=utf-8",
         [queue](size_t offset, httplib::DataSink& sink) { return queue->provide(offset, sink); },
         [thread_ptr, queue](bool success) {
           if (!success) queue->cancel();
@@ -1238,7 +1238,7 @@ void App::route_import_export() {
     });
 
     res.set_chunked_content_provider(
-        "text/event-stream",
+        "text/event-stream; charset=utf-8",
         [queue](size_t offset, httplib::DataSink& sink) { return queue->provide(offset, sink); },
         [thread_ptr, queue](bool success) {
           if (!success) queue->cancel();
@@ -1316,7 +1316,7 @@ void App::route_provenance_events_tasks() {
     }
 
     res.set_chunked_content_provider(
-        "text/event-stream",
+        "text/event-stream; charset=utf-8",
         [queue](size_t offset, httplib::DataSink& sink) { return queue->provide(offset, sink); },
         [ctx, token, sub](bool /*success*/) {
           loom_unsubscribe(ctx, token);
@@ -1443,7 +1443,7 @@ void App::route_archive_placeholder() {
       queue->close();
     });
     res.set_chunked_content_provider(
-        "text/event-stream",
+        "text/event-stream; charset=utf-8",
         [queue](size_t offset, httplib::DataSink& sink) { return queue->provide(offset, sink); },
         [thread_ptr, queue, ctx](bool success) {
           if (!success) {

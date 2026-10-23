@@ -136,6 +136,7 @@ struct Catalogue::Impl {
   std::optional<Json> self_table_cache;      // subgraph_table()
   std::string self_table_layer;              // the layer that supplied it: builtin | user
   std::optional<Json> slot_plan_cache;       // slot_plan()
+  std::optional<Json> level_labels_cache;    // level_label(): detail level id -> label {pl, en, ...}
   std::optional<Json> action_table_cache;    // the actions of the class application: action id -> {label, decision, implementation}
 
   using Reader = std::function<Result<Read>(Impl&, const Json& source, const std::string& parent, const Json& paging)>;
@@ -752,6 +753,21 @@ struct Catalogue::Impl {
     return false;
   }
 
+  // The label of a detail level of the interview scenario in the language asked, by its id (what the person chose: "Minimalnie", not "minimal");
+  // "" when the scenario names no such level, so the caller keeps the id.
+  std::string level_label(const std::string& id) {
+    if (!level_labels_cache) {
+      level_labels_cache = Json::object();
+      auto scenario = onboarding::builtin_scenario();
+      if (!scenario) log::write(log::Level::Debug, kLog, "detail level labels: the scenario is not readable: " + scenario.error().message);
+      else
+        for (const auto& l : scenario->value("detail_levels", Json::array()))
+          if (l.is_object() && l.contains("label")) (*level_labels_cache)[json::get_string(l, "id")] = l["label"];
+    }
+    const Json* l = json::find(*level_labels_cache, id);
+    return l ? say(*l) : std::string();
+  }
+
   // Which slots the interview asks at the chosen level and why it will not ask the others (the same plan profile.show answers from):
   // {level, asked[field], skipped{field: {reason, reason_text}}} or {unknown_reason}.
   const Json& slot_plan() {
@@ -1240,6 +1256,8 @@ Result<std::vector<Json>> profile_slots(const Env& env) {
                        {"state", f.value("status", "unknown")},
                        {"value", f.value("value", Json(nullptr))},
                        {"provenance", prov},
+                       {"time", f.value("time", Json(nullptr))},
+                       {"setting_key", f.value("setting_key", Json(nullptr))},
                        {"interviewed", snap != nullptr}});
   }
   return out;
@@ -1374,20 +1392,41 @@ Result<Read> read_party(Impl& c, const Json& src, const std::string&, const Json
     std::string label = c.say(labels.value(id, Json()));
     if (label.empty()) label = id;
     const Json prov = s.value("provenance", Json(nullptr));
-    const std::string method = prov.is_object() ? json::get_string(prov, "method", json::get_string(prov, "kind", "interview")) : std::string("interview");
+    // The store keeps how an answer came as a word (user_stated | form | user_corrected | model_inferred); an older or foreign snapshot may carry an object.
+    // The evidence class is chosen by that word (evidence_by_method: your own words are said, a model's inference is inferred); the method is what
+    // the screen says about it (the interview, a correction, a model's inference).
+    const std::string how = prov.is_string() ? prov.get<std::string>() : std::string();
+    const std::string method = prov.is_object() ? json::get_string(prov, "method", json::get_string(prov, "kind", "interview"))
+                               : how == "model_inferred" ? std::string("model_inferred") : how == "user_corrected" ? std::string("corrected") : std::string("interview");
+    const Json when = prov.is_object() ? prov.value("time", prov.value("created", Json(nullptr))) : s.value("time", Json(nullptr));
     const bool known = state == "known";
     Json n = c.make(src, "party:self/" + id, label, "party:self", known ? "onboarding" : "rom", known ? "onboarding.profile.fields." + id : "onboarding/scenario.pack#/fields/" + id,
-                    known ? method : "scenario", prov.is_object() ? prov.value("time", prov.value("created", Json(nullptr))) : Json(nullptr));
+                    known ? method : "scenario", known ? when : Json(nullptr));
     n["kind"] = "profile_slot";
     n["status"] = state;
     // Only a known slot has a value: unknown, declined and never say nothing about the person.
     n["value"] = known ? s.value("value", Json(nullptr)) : Json(nullptr);
     n["value_human"] = known ? c.human_value(s.value("value", Json(nullptr)), Json::object()) : c.say(c.words.value("slot_" + state, Json(state)));
-    // A slot nobody answered carries the scenario's declaration; an answer is what you said, an inference is never shown as said.
-    Json cls = known ? evidence_by_method(src, method, src.value("epistemic_default", Json::object())) : Json{{"class", "declared"}, {"confidence", nullptr}};
-    n["evidence"] = evidence_of(cls, known ? "onboarding" : "rom", json::get_string(n["evidence"]["provenance"], "source_ref"), known ? method : "scenario",
-                                json::get_string(n["evidence"]["provenance"], "time").empty() ? Json(nullptr) : n["evidence"]["provenance"]["time"]);
+    // A slot that holds a choice among the levels of the scenario (the question that sets profile_detail_level) says the level's label in the language
+    // asked; the id stays in attrs.value_id (it is what the setting holds).
+    Json value_id = Json(nullptr);
+    if (known && s.value("setting_key", Json(nullptr)).is_string() && s.value("value", Json(nullptr)).is_string()) {
+      if (const std::string lab = c.level_label(s["value"].get<std::string>()); !lab.empty()) {
+        value_id = s["value"];
+        n["value_human"] = lab;
+      }
+    }
+    // An answer is what you said, an inference is never shown as said. A slot with no value has no evidence at all (an empty slot holds nothing to
+    // be evidence of): evidence is null and `state` says why - unanswered (unknown), declined or never - in the words of the screen.
+    if (known) {
+      Json cls = evidence_by_method(src, how.empty() ? method : how, src.value("epistemic_default", Json::object()));
+      n["evidence"] = evidence_of(cls, "onboarding", json::get_string(n["evidence"]["provenance"], "source_ref"), method, json::get_string(n["evidence"]["provenance"], "time").empty() ? Json(nullptr) : n["evidence"]["provenance"]["time"]);
+    } else {
+      n["evidence"] = nullptr;
+      n["state"] = state == "unknown" ? std::string("unanswered") : state;
+    }
     n["attrs"] = Json{{"slot", id}, {"section", s.value("section", "")}, {"category", s.value("category", "")}};
+    if (!value_id.is_null()) n["attrs"]["value_id"] = value_id;
     // Whether the interview asks this slot at your level, and when it will not, why (profile.show says the same): null = no level or no interview yet.
     if (plan.contains("asked")) {
       const bool is_asked = asked.count(id) > 0;
@@ -2687,7 +2726,7 @@ namespace {
 
 const std::set<std::string> kRowKeys = {"address", "label", "kind", "value", "value_human", "count", "count_unknown_reason", "provenance", "evidence",
                                         "evidence_overrides", "has_children", "status", "why", "order", "same_as", "source", "empty_reason", "no_translation",
-                                        "shown_also_in", "count_unknown_human", "value_unknown_reason", "derived", "derived_note", "receipt", "actions"};
+                                        "shown_also_in", "count_unknown_human", "value_unknown_reason", "derived", "derived_note", "receipt", "actions", "state"};
 
 Json row_of(const Json& n) {
   Json r = Json::object();

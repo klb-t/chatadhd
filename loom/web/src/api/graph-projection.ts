@@ -3,8 +3,9 @@
 // Reached through loom_invoke("actions", ...) / POST /api/graph/navigate | /api/graph/card | /api/settings/resolved |
 // /api/roles/resolved | /api/rom/override (routes from the action catalogue). Types only; the navigator UI is M1-W0.
 
-/** declared (ROM, presets) | observed (what you said or did) | derived | inferred (an analysis or model concluded it) | extrapolated. */
-export type EvidenceClass = "declared" | "observed" | "derived" | "inferred" | "extrapolated";
+/** declared (ROM, presets) | observed (what you did or what was measured) | said (what you told the app yourself: an interview answer, a correction) | derived | inferred
+ *  (an analysis or model concluded it) | extrapolated. An open list: GraphEvidence.class is any string, a class the screen has no word for is shown as unknown. */
+export type EvidenceClass = "declared" | "observed" | "said" | "derived" | "inferred" | "extrapolated";
 
 export interface GraphEvidence {
   class: EvidenceClass | string;
@@ -43,7 +44,10 @@ export interface GraphNodeRow {
   count_unknown_human?: string;
   count_partial?: { source: string; reason: string }[];
   provenance: GraphProvenance;
-  evidence: GraphEvidence;
+  /** null for an entry that holds no value (an unanswered slot): an empty entry is no evidence of anything; `state` says why. */
+  evidence: GraphEvidence | null;
+  /** Why an entry has no evidence, in the kernel's open vocabulary: unanswered | declined | never ... (the screen has a word for each: me.state.<state>). */
+  state?: string;
   evidence_overrides?: Record<string, GraphEvidence>;
   has_children: boolean;
   status?: string;

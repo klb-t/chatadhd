@@ -107,15 +107,22 @@ export function countText(row: GraphNodeRow, t: ShellT): string | null {
 /** The provenance chip: the kernel's own words when it sends a chip; a profile slot (a row under Ty) says what its evidence says —
  *  "pytanie z wywiadu — bez odpowiedzi" / "Twoja odpowiedź w wywiadzie" (the kernel's evidence.human, else the method's word) — never
  *  "Preset (ROM)" on your own profile (r2:b1); else the layer's word (chip.<layer>; a missing word shows its id). */
-export function chipText(row: Pick<GraphNodeRow, "provenance"> & Partial<Pick<GraphNodeRow, "kind" | "evidence">>, t: ShellT): string {
+export function chipText(row: Pick<GraphNodeRow, "provenance"> & Partial<Pick<GraphNodeRow, "kind" | "evidence" | "state">>, t: ShellT): string {
   if (row.provenance.chip?.label) return row.provenance.chip.label;
   if (row.kind === "profile_slot" && row.evidence) return row.evidence.human ?? t(`evidence.method.${row.evidence.provenance.method}`);
+  // A slot with no value has no evidence: its chip is the state in words (bez odpowiedzi), never the layer of the scenario ("Preset (ROM)").
+  if (row.kind === "profile_slot" && row.evidence === null) return stateWord(row.state, t);
   return t(`chip.${row.provenance.layer}`);
+}
+/** The state of an entry that holds no value, in the pack's words (me.state.<state>); a state without a word says "no value" (never the id). */
+export function stateWord(state: string | undefined, t: ShellT): string {
+  const word = state ? t(`me.state.${state}`) : `me.state.`;
+  return !state || word === `me.state.${state}` ? t("me.state.other") : word;
 }
 /** The evidence chip, only when it is not the plain "declared" of a preset, and not for a profile slot (its provenance chip already
  *  says the evidence: one chip, not the same words twice). */
 export function evidenceText(row: Pick<GraphNodeRow, "evidence"> & Partial<Pick<GraphNodeRow, "kind">>, t: ShellT): string | null {
-  if (row.kind === "profile_slot") return null;
+  if (row.kind === "profile_slot" || !row.evidence) return null;
   if (row.evidence.class === "declared") return null;
   if (row.evidence.human) return row.evidence.human;
   const confidence = row.evidence.confidence;

@@ -786,11 +786,11 @@ const serverChecks = [
     const pick = heads.find(h => /[1-9]/.test(h.t)) || heads[0];
     await page.ev(`(()=>{const h=document.querySelector('[data-testid="me-section-${pick.a}"] .disclosure-head');if(h&&h.getAttribute('aria-expanded')!=='true')h.click()})()`);
     await until("the section's rows or its empty line", () => page.ev(`!!document.querySelector('[data-testid="me-section-rows-${pick.a}"], [data-testid="me-section-body-${pick.a}"] [data-testid="me-section-empty"]')`), 30, 300);
-    const rows = await page.ev(`[...document.querySelectorAll('[data-testid="me-section-rows-${pick.a}"] > li')].slice(0,3).map(li=>[li.querySelector('[data-testid="me-row-label"]')?.innerText, li.querySelector('[data-testid="me-row-chip"]')?.innerText, (li.querySelector('[data-testid="me-row-provenance"]')?.innerText||'').replace(/\\s+/g,' ').slice(0,60)].join(' / '))`);
+    const rows = await page.ev(`[...document.querySelectorAll('[data-testid="me-section-rows-${pick.a}"] > li')].slice(0,3).map(li=>[li.querySelector('[data-testid="me-row-label"]')?.innerText, (li.querySelector('[data-testid="me-row-chip"]') || li.querySelector('[data-testid="me-row-state-chip"]'))?.innerText, (li.querySelector('[data-testid="me-row-provenance"]')?.innerText||'').replace(/\\s+/g,' ').slice(0,60)].join(' / '))`);
     shot("ty-me");
     await m1Reset();
     if (/[1-9]/.test(pick.t) && !rows.length) throw new Error(`the section "${pick.t}" has a count but no rows`);
-    if (rows.some(r => r.split(' / ')[1] === undefined || r.split(' / ')[1] === '')) throw new Error(`a row without an evidence chip: ${rows.join(' | ')}`);
+    if (rows.some(r => r.split(' / ')[1] === undefined || r.split(' / ')[1] === '')) throw new Error(`a row without an evidence chip (or the state chip of an entry with no value): ${rows.join(' | ')}`);
     return `${left !== "none" ? `perspective left on from before: ${left} (cleared); ` : ""}sections: ${heads.map(h => h.t).join(' | ')}; "${pick.t}" -> ${rows.join(' | ') || "empty (no entries yet)"}`;
   }],
   // G1: "Co tu widzę?" on the navigator opens a help text

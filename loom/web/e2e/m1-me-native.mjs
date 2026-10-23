@@ -39,7 +39,7 @@ async function until(what, check, ms = 15000) { for (const end = Date.now() + ms
 
 const mockPort = await freePort(), port = await freePort();
 const dataDir = mkdtempSync(path.join(tmpdir(), "loom-m1-me-"));
-// A note written before M1 has no recorded origin: the kernel says "pochodzenie nieznane (zapisane przed M1)" for it.
+// A note written before M1 has no recorded origin: the kernel says "pochodzenie niezapisane - starsza notatka" for it.
 writeFileSync(path.join(dataDir, "memory.json"), JSON.stringify([{ id: "0e2e00000001", content: "Lubię herbatę bez cukru", parent_id: null, node_type: "text", active: true, depth: 0, weight: 1.0, tags: [], created: "2026-09-01T10:00:00Z", metadata: {} }], null, 2));
 const mock = spawn("python3", [path.join(here, "mock_llm_server.py"), String(mockPort)], { stdio: "ignore" });
 const server = spawn(SERVER_BIN, ["--host", "127.0.0.1", "--port", String(port), "--data-dir", dataDir, "--static-dir", DIST], { stdio: "ignore", cwd: LOOM });
@@ -153,13 +153,25 @@ try {
     for (const c of kernel.children) {
       const r = row(c.address);
       assert.equal(await r.getByTestId("me-row-label").innerText(), c.label);
-      assert.equal(await r.getByTestId("me-row-chip").innerText(), say(`me.class.${c.evidence.class}`), `${c.address}: the chip is the class in words`);
-      const prov = (await r.getByTestId("me-row-provenance").innerText()).replace(/\s+/g, " ");
-      assert.ok(prov.startsWith(say("me.provenance.line", { human: c.evidence.human }).slice(0, -1) ) || prov.includes(c.evidence.human), `${c.address}: the provenance line has the kernel's words (${prov})`);
-      assert.equal(await r.getByTestId("me-row-provenance").getAttribute("data-method"), c.evidence.provenance.method);
+      if (c.evidence === null) {
+        // an entry that holds no value has no evidence: a state chip in the pack's word (bez odpowiedzi) instead of an evidence chip, and no provenance line
+        assert.equal(await r.getByTestId("me-row-chip").count(), 0, `${c.address}: no evidence chip on an empty slot`);
+        assert.equal(await r.getByTestId("me-row-provenance").count(), 0, `${c.address}: no provenance line on an empty slot`);
+        assert.equal(await r.getByTestId("me-row-state-chip").innerText(), say(`me.state.${c.state}`), `${c.address}: the state chip is the state in words`);
+        console.log(`[m1-me] empty slot ${c.address}: state=${c.state}, chip="${await r.getByTestId("me-row-state-chip").innerText()}", no evidence chip`);
+      } else {
+        assert.equal(await r.getByTestId("me-row-state-chip").count(), 0, `${c.address}: a slot with evidence has no state chip`);
+        assert.equal(await r.getByTestId("me-row-chip").innerText(), say(`me.class.${c.evidence.class}`), `${c.address}: the chip is the class in words`);
+        const prov = (await r.getByTestId("me-row-provenance").innerText()).replace(/\s+/g, " ");
+        assert.ok(prov.startsWith(say("me.provenance.line", { human: c.evidence.human }).slice(0, -1) ) || prov.includes(c.evidence.human), `${c.address}: the provenance line has the kernel's words (${prov})`);
+        assert.equal(await r.getByTestId("me-row-provenance").getAttribute("data-method"), c.evidence.provenance.method);
+        if (c.kind === "profile_slot" && c.status === "known") console.log(`[m1-me] own answer ${c.address}: class=${c.evidence.class}, chip="${await r.getByTestId("me-row-chip").innerText()}"`);
+      }
       assert.ok(await r.locator('[data-testid="me-action"]').count() === (c.actions ?? []).filter(a => a.implementation === "implemented" || !a.implementation).length, `${c.address}: the buttons are the node's actions[]`);
     }
     const known = kernel.children.find(c => c.kind === "profile_slot" && c.status === "known");
+    assert.equal(known.evidence.class, "said", "a person's own interview answer is class said, not observed");
+    assert.equal(await row(known.address).getByTestId("me-row-chip").innerText(), "powiedziane", "and its chip says so");
     assert.equal(await row(known.address).getByTestId("me-row-value").innerText(), known.value_human);
     assert.equal(await row(known.address).getByTestId("me-row-state").count(), 0);
     await fits(); await sizesOk(section(holder.address));
@@ -236,6 +248,10 @@ try {
     await until("the new value on the screen", async () => (await row(slot.address).getByTestId("me-row-value").innerText()) === after.value_human);
     const prov = (await row(slot.address).getByTestId("me-row-provenance").innerText()).replace(/\s+/g, " ");
     assert.ok(prov.includes(after.evidence.human), `the provenance line says what the kernel says now: ${prov}`);
+    assert.equal(after.evidence.provenance.method, "corrected", "the kernel recorded that the person corrected it");
+    assert.ok(after.evidence.provenance.time, "with the time");
+    assert.ok(prov.includes(say("evidence.method.corrected")), `and the line says so: ${prov}`);
+    assert.equal(after.evidence.class, "said");
     const title = slot.actions.find(a => a.id === "profile.set").label;
     assert.equal(await page.getByTestId("me-done").innerText(), say("me.confirm.done", { action: title }));
     console.log(`[m1-me] after Popraw: ${slot.label} = ${after.value_human}; provenance line: ${prov}; kernel evidence: ${JSON.stringify(after.evidence.provenance)}`);
@@ -250,7 +266,7 @@ try {
     assert.equal(before.children.length, 2, "the two seeded notes");
     await openSection(holder.address);
     const legacy = before.children.find(c => c.label.includes("herbatę"));
-    assert.ok(/nieznane/.test(legacy.evidence.human), `the kernel says the origin is unknown: ${legacy.evidence.human}`);
+    assert.ok(/niezapisane/.test(legacy.evidence.human) && !/M1/.test(legacy.evidence.human), `the kernel says the origin was not recorded, without a project name: ${legacy.evidence.human}`);
     const legacyLine = row(legacy.address).getByTestId("me-row-provenance");
     assert.ok((await legacyLine.innerText()).replace(/\s+/g, " ").startsWith(say("me.provenance.line", { human: legacy.evidence.human }).replace(/\.?$/, "")), "the line says the kernel's words: the origin is unknown");
     assert.equal(await legacyLine.getAttribute("data-time"), legacy.evidence.provenance.time, "and when the note was written");

@@ -6,6 +6,7 @@
 import type { GraphNavigateResult, GraphNodeRow, InheritanceLevel } from "../api/graph-projection";
 import type { ActionRun } from "../api/types";
 import type { ShellT } from "../shell/text";
+import { stateWord } from "./navigator-state";
 import { pendingGate, runOutcome, type PendingGate } from "./node-card-state";
 
 /** PRESET (not a rule): an inferred row is drawn with this opacity (UI11: an inference visibly marked, one of many ways). Configurable through
@@ -44,12 +45,14 @@ export function wordOrNull(t: ShellT, id: string, params?: Record<string, string
   return text === id ? null : text;
 }
 
-const CLASS_IDS = ["declared", "observed", "derived", "inferred", "extrapolated"];
-/** The evidence class in words (the chip of a row). An inferred row with a known confidence says it. */
+/** The order of the evidence classes in the line of a part ("Dowody: ..."): the classes the pack has words for first, in this order, any other class after them. */
+const CLASS_ORDER = ["declared", "observed", "said", "derived", "inferred", "extrapolated"];
+/** The evidence class in words (the chip of a row): the pack's word for the class (me.class.<class>) - an open list, a class with no word is "kind of
+ *  evidence unknown". An inferred row with a known confidence says it. */
 export function classWord(evidence: { class: string; confidence?: number | null }, t: ShellT): string {
   const cls = evidence.class;
   if (cls === "inferred" && typeof evidence.confidence === "number") return t("me.class.inferred_conf", { confidence: String(evidence.confidence) });
-  return CLASS_IDS.includes(cls) ? t(`me.class.${cls}`) : t("me.class.other");
+  return (cls !== "" && cls !== "other" && cls !== "inferred_conf" ? wordOrNull(t, `me.class.${cls}`) : null) ?? t("me.class.other");
 }
 /** A conclusion of the app, not something the person said or did: drawn differently (preset opacity, a note). */
 export const isInferred = (row: Pick<GraphNodeRow, "evidence">): boolean => row.evidence?.class === "inferred" || row.evidence?.class === "extrapolated";
@@ -161,7 +164,7 @@ export const looseRows = (result: Pick<GraphNavigateResult, "children">): GraphN
 export function classMix(classes: Record<string, number> | undefined, t: ShellT): string | null {
   const entries = Object.entries(classes ?? {}).filter(([, n]) => n > 0);
   if (entries.length === 0) return null;
-  const order = (c: string) => { const i = CLASS_IDS.indexOf(c); return i < 0 ? CLASS_IDS.length : i; };
+  const order = (c: string) => { const i = CLASS_ORDER.indexOf(c); return i < 0 ? CLASS_ORDER.length : i; };
   entries.sort((a, b) => order(a[0]) - order(b[0]));
   return t("me.section.mix", { list: entries.map(([c, n]) => t("me.section.mix_item", { class: classWord({ class: c }, t), n: String(n) })).join(" · ") });
 }
@@ -172,11 +175,15 @@ export interface RowView {
   value: string | null;
   /** The kernel's word for the state of an entry that has no value (nieznane, nigdy, pominięte ...). */
   state: string | null;
-  chip: string;
+  /** The evidence chip (the class in words); null for an entry that holds no value (an unanswered slot has no evidence). */
+  chip: string | null;
+  /** The chip of an entry with no evidence: its state in words (bez odpowiedzi); null when the entry has evidence. */
+  stateChip: string | null;
   classId: string;
   inferred: boolean;
   setBy: string | null;
-  provenance: { text: string; time: string | null; method: string | null };
+  /** Where the entry comes from; null for an entry with no evidence (there is nothing to be the source of). */
+  provenance: { text: string; time: string | null; method: string | null } | null;
   /** The kernel's sentence for the row (for a slot above the person's level it is the reason). */
   why: string;
   inferredNote: string | null;
@@ -187,9 +194,10 @@ export function rowView(row: GraphNodeRow, t: ShellT, language: string): RowView
   const inferred = isInferred(row);
   const who = row.provenance?.chip?.label ?? null;
   return {
-    address: row.address, label: row.label, value: valueText(row), state: stateText(row), chip: classWord(row.evidence, t), classId: row.evidence?.class ?? "",
+    address: row.address, label: row.label, value: valueText(row), state: stateText(row),
+    chip: row.evidence ? classWord(row.evidence, t) : null, stateChip: row.evidence ? null : stateWord(row.state, t), classId: row.evidence?.class ?? "",
     inferred, setBy: row.kind === "preference" && who ? t("me.chip.set_by", { who }) : null,
-    provenance: provenanceLine(row, t, language), why: row.why ?? "",
+    provenance: row.evidence ? provenanceLine(row, t, language) : null, why: row.why ?? "",
     inferredNote: inferred ? t("me.inferred.note") : null, actions: actionButtons(row.actions, t),
     expandable: true,
   };

@@ -191,6 +191,72 @@ TEST_SUITE("party_self_subgraphs") {
     CHECK(p.card("party:self/knowledge.avoid").at("value").is_null());
     // the preferences of the same interview are named apart from its fields, and carry the field they are the same as
     CHECK(child(prefs, "preference:language"));
+    // (M1-K2c3 e) a slot without a value holds no evidence: evidence is null and the state says why (the words of the screen, not the app's declaration)
+    for (const Json* empty : {never, declined, above}) {
+      INFO(empty->at("address").get<std::string>());
+      CHECK(empty->at("evidence").is_null());
+      CHECK(empty->contains("state"));
+    }
+    CHECK(above->at("state") == "unanswered");
+    CHECK(declined->at("state") == "declined");
+    CHECK(never->at("state") == "never");
+    // the card of such a slot carries no evidence either (and no state of a slot that has a value)
+    CHECK(p.card("party:self/identity.description").at("evidence").is_null());
+    CHECK_FALSE(style->contains("state"));
+    // (M1-K2c3 c) what the person answered is what the person said: class said, not observed; the interview's words and the time of the answer stay
+    for (const Json* answered : {style, language}) {
+      INFO(answered->at("address").get<std::string>());
+      CHECK(answered->at("evidence").at("class") == "said");
+      CHECK(answered->at("evidence").at("provenance").at("method") == "interview");
+      CHECK(answered->at("evidence").at("human") == "Twoja odpowiedź w wywiadzie");
+      CHECK(answered->at("evidence").at("provenance").at("time").is_string());
+    }
+  }
+
+  TEST_CASE("the slot of the level question says the label of the level in the language asked; the id stays apart, and the chip is what the person said") {
+    Person& p = shared_person();
+    const Json slots = p.navigate("subgraph:self/slots", "pl");
+    const Json* detail = child(slots, "party:self/interview.detail");
+    REQUIRE(detail);
+    CHECK(detail->at("status") == "known");
+    CHECK(detail->at("value") == "minimal");  // the value is what the setting holds
+    CHECK(detail->at("value_human") == "Minimalnie");
+    CHECK(detail->at("evidence").at("class") == "said");
+    const Json card = p.card("party:self/interview.detail");
+    CHECK(card.at("value_human") == "Minimalnie");
+    CHECK(card.at("attrs").at("value_id") == "minimal");  // the id in its own field
+    const Json en = p.navigate("subgraph:self/slots", "en");
+    CHECK(child(en, "party:self/interview.detail")->at("value_human") == "Minimal");
+    // a free-text answer is not a level: its words are shown as they are, and carry no value_id
+    const Json* style = child(slots, "party:self/communication.style");
+    REQUIRE(style);
+    CHECK(style->at("value_human") == "direct");
+    CHECK_FALSE(p.card("party:self/communication.style").at("attrs").contains("value_id"));
+  }
+
+  TEST_CASE("a value the person corrected is worded as corrected by the person, with the time; an unanswered slot becomes a first answer, not a correction") {
+    Person p;
+    p.go("start");
+    REQUIRE(p.go("answer", Json{{"slot", "interview.detail"}, {"text", "normal"}}).at("status") == "completed");
+    p.confirmed("profile.set", Json{{"slot", "communication.style"}, {"value", "direct"}});
+    auto evidence_of_style = [&](const std::string& lang) {
+      for (const auto& part : {std::string("subgraph:self/slots"), std::string("subgraph:self/preferences"), std::string("subgraph:self/identity")}) {
+        const Json nav = p.navigate(part, lang);
+        if (const Json* s = child(nav, "party:self/communication.style")) return s->at("evidence");
+      }
+      FAIL("communication.style is under no part");
+      return Json();
+    };
+    const Json before = evidence_of_style("pl");
+    CHECK(before.at("class") == "said");
+    CHECK(before.at("provenance").at("method") == "interview");
+    p.confirmed("profile.set", Json{{"slot", "communication.style"}, {"value", "bezpośrednio"}});
+    const Json after = evidence_of_style("pl");
+    CHECK(after.at("class") == "said");  // the person's own words, still
+    CHECK(after.at("provenance").at("method") == "corrected");
+    CHECK(after.at("human") == "poprawione przez Ciebie");
+    CHECK(after.at("provenance").at("time").is_string());
+    CHECK(evidence_of_style("en").at("human") == "corrected by you");
   }
 
   TEST_CASE("Co pamiętam lists the notes with where each came from; an old note says its origin is unknown, in the words of the app") {
@@ -207,7 +273,7 @@ TEST_SUITE("party_self_subgraphs") {
     REQUIRE(old);
     CHECK(known->at("evidence").at("human") == "napisałeś to Ty");
     CHECK(known->at("evidence").at("class") == "observed");
-    CHECK(old->at("evidence").at("human") == "pochodzenie nieznane (zapisane przed M1)");
+    CHECK(old->at("evidence").at("human") == "pochodzenie niezapisane - starsza notatka");
     CHECK(old->at("evidence").at("class") == "declared");  // not claimed to be something you said
     const Json note = p.card(known->at("address"));
     CHECK(note.at("attrs").at("provenance").at("known") == true);
@@ -215,7 +281,7 @@ TEST_SUITE("party_self_subgraphs") {
     CHECK(note.at("attrs").at("provenance").at("ref") == "m_test");
     const Json old_card = p.card(old->at("address"));
     CHECK(old_card.at("attrs").at("provenance").at("known") == false);
-    CHECK(old_card.at("attrs").at("provenance").at("words") == "pochodzenie nieznane (zapisane przed M1)");
+    CHECK(old_card.at("attrs").at("provenance").at("words") == "pochodzenie niezapisane - starsza notatka");
     // forgetting is offered on each note, with the note's own id in the arguments (the card shows no id as text)
     CHECK(action_of(old_card, "memory.forget").at("args").at("id") == old_card.at("attrs").at("note_id"));
     // the breadcrumbs lead through the part to You
@@ -227,7 +293,7 @@ TEST_SUITE("party_self_subgraphs") {
     const Json en = p.navigate("subgraph:self/memory", "en");
     bool found = false;
     for (const auto& c : en.at("children"))
-      if (c.at("evidence").at("human") == "origin unknown (saved before M1)") found = true;
+      if (c.at("evidence").at("human") == "origin not recorded - an older note") found = true;
     CHECK(found);
   }
 

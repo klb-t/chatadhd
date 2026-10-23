@@ -193,6 +193,9 @@ def main() -> int:
         r = sa.post(b + "/api/import", files={"file": ("alice.md", md.encode(), "text/markdown")},
                     data={"title": "alice import"}, timeout=120)
         assert r.status_code == 200, r.text
+        # the stream is UTF-8: it says so, so a client that decodes by the header (requests' r.text, a browser) does not read Polish words as latin-1
+        ctype = r.headers.get("Content-Type", "")
+        assert ctype.replace(" ", "").lower() == "text/event-stream;charset=utf-8", ctype
         done = [e for e in sse_events(r) if e.get("type") == "done"]
         assert done, r.text
         cid = done[0]["conversations"][0]["id"]

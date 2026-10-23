@@ -91,6 +91,11 @@ test('the words of a row: count or unknown with the reason (never 0), the chip f
   assert.equal(nav.evidenceText(row({ evidence: { class: 'observed', confidence: null, human: 'powiedziałeś', provenance: {} } }), t), 'powiedziałeś');
   assert.equal(nav.evidenceText(row({ evidence: { class: 'inferred', confidence: null, provenance: {} } }), t), pl['evidence.inferred_unknown']);
   assert.equal(nav.evidenceText(row({ evidence: { class: 'inferred', confidence: 0.7, provenance: {} } }), t), pl['evidence.inferred'].replace('{{confidence}}', '0.7'));
+  // a slot with no value has no evidence: the chip is its state in words, never the scenario's layer ("Preset (ROM)"), and there is no evidence chip
+  const empty = { kind: 'profile_slot', evidence: null, state: 'unanswered' };
+  assert.equal(nav.chipText(row(empty), t), 'bez odpowiedzi'); assert.equal(nav.evidenceText(row(empty), t), null);
+  assert.equal(nav.chipText(row({ ...empty, state: 'never' }), t), pl['me.state.never']);
+  assert.equal(nav.chipText(row({ ...empty, state: 'a_state_with_no_word' }), t), pl['me.state.other'], 'a state with no word says "no value", not its id');
   assert.equal(nav.statusText(row({ status: 'partial' }), t), pl['status.partial']);
   assert.equal(nav.statusText(row({ status: 'odd' }), t), 'status.odd');
   assert.equal(nav.statusText(row({}), t), null);

@@ -3,7 +3,7 @@ import type { PresentationAvailability, PresentationPack } from "./presentation.
  * No persisted user data or policy defaults belong in this frontend contract. */
 export type JsonValue = null | boolean | number | string | JsonValue[] | { [key: string]: JsonValue };
 export type FieldStatus = "unknown" | "known" | "declined" | "never";
-export type Provenance = "user_stated" | "model_inferred" | "form";
+export type Provenance = "user_stated" | "user_corrected" | "model_inferred" | "form";
 export type ReviewDecision = "confirmed" | "rejected";
 
 export interface ScenarioField {

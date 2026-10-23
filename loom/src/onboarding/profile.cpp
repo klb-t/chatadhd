@@ -728,7 +728,7 @@ Result<Json> ProfileSession::apply(const Json& action) {
   if (op != "answer" && op != "propose") return invalid("unsupported onboarding operation");
   if (!action.contains("value")) return invalid("answer/proposal needs value");
   const auto provenance = json::get_string(action, "provenance", op == "answer" ? "user_stated" : "model_inferred");
-  if (!one_of(provenance, {"user_stated", "model_inferred", "form"})) return invalid("unknown information provenance");
+  if (!one_of(provenance, {"user_stated", "user_corrected", "model_inferred", "form"})) return invalid("unknown information provenance");
   if (json::get_string(f, "status") == "never") return make_error(Errc::Auth, "never field must be explicitly reopened first");
   Json classification = f;
   for (const char* key : {"detail", "sensitivity"}) {

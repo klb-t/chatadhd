@@ -604,8 +604,14 @@ try {
     const shownRows = await rowsOf();
     for (const s of slots) {
       const row = shownRows.find(r => r.address === s.address);
-      assert.ok(s.evidence?.human, `${s.address}: the kernel says the evidence in words`);
-      assert.equal(row.chip, s.evidence.human, `${s.address}: the chip is the evidence`);
+      if (s.evidence === null) {
+        // an unanswered slot holds no value, so no evidence: the chip is its state in words (M1-K2c3)
+        assert.ok(s.state, `${s.address}: the kernel says why there is no evidence`);
+        assert.equal(row.chip, word(`me.state.${s.state}`), `${s.address}: the chip is the state in words`);
+      } else {
+        assert.ok(s.evidence?.human, `${s.address}: the kernel says the evidence in words`);
+        assert.equal(row.chip, s.evidence.human, `${s.address}: the chip is the evidence`);
+      }
       assert.notEqual(row.chip, word("chip.rom"), `${s.address}: not "Preset (ROM)" on the owner's profile`);
     }
     const slot = slots[0];
@@ -614,7 +620,7 @@ try {
     await page.getByTestId("node-card").waitFor();
     await page.getByTestId("card-loading").waitFor({ state: "detached" });
     assert.equal(await page.getByTestId("card-label").innerText(), slotCard.label);
-    assert.equal(await page.getByTestId("card-chip").innerText(), slotCard.evidence.human);
+    assert.equal(await page.getByTestId("card-chip").innerText(), slotCard.evidence ? slotCard.evidence.human : word(`me.state.${slotCard.state}`));
     assert.equal(await page.getByTestId("card-profile-interview").innerText(), words[slotCard.status === "known" ? "card.profile.answered_in_interview" : "card.profile.answer_in_interview"]);
     assert.equal(await page.getByTestId("card-chain").count(), 0, "no empty chain header");
     assert.equal(await page.getByTestId("card-no-chain").innerText(), words["card.no_value"]);

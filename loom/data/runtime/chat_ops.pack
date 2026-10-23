@@ -1190,6 +1190,7 @@
         "profile_state_declined": "not now",
         "profile_state_never": "never",
         "profile_prov_user_stated": "your own answer",
+        "profile_prov_user_corrected": "corrected by you",
         "profile_prov_form": "form",
         "profile_prov_model_inferred": "inferred by a model",
         "profile_prov_import": "import",
@@ -1235,7 +1236,7 @@
         "memory_line_prov": "{{content}} ({{id}}) - {{provenance}}",
         "memory_prov": "origin: {{source}}, {{time}}",
         "memory_prov_ref": "origin: {{source}}, {{time}} ({{ref}})",
-        "memory_prov_unknown": "origin unknown (saved before M1)",
+        "memory_prov_unknown": "origin not recorded - an older note",
         "memory_prov_user": "you wrote it",
         "memory_prov_import": "from an import",
         "memory_prov_folder": "from an attached folder",
@@ -1616,6 +1617,7 @@
         "profile_state_declined": "nie teraz",
         "profile_state_never": "nigdy",
         "profile_prov_user_stated": "Twoja odpowiedź",
+        "profile_prov_user_corrected": "poprawione przez Ciebie",
         "profile_prov_form": "formularz",
         "profile_prov_model_inferred": "wniosek modelu",
         "profile_prov_import": "import",
@@ -1661,7 +1663,7 @@
         "memory_line_prov": "{{content}} ({{id}}) - {{provenance}}",
         "memory_prov": "pochodzenie: {{source}}, {{time}}",
         "memory_prov_ref": "pochodzenie: {{source}}, {{time}} ({{ref}})",
-        "memory_prov_unknown": "pochodzenie nieznane (zapisane przed M1)",
+        "memory_prov_unknown": "pochodzenie niezapisane - starsza notatka",
         "memory_prov_user": "napisałeś to Ty",
         "memory_prov_import": "z importu",
         "memory_prov_folder": "z dołączonego folderu",
@@ -2084,8 +2086,8 @@
             "archive": false
           },
           "text": {
-            "pl": "plik .json bez archiwum: załączników nie ma w pliku, a ten czytnik nie odczytuje nawet ich nazw – nic o nich nie zapisano (wczytaj całe archiwum .zip z eksportu)",
-            "en": "a .json file without the archive: the attachments are not in the file, and this reader does not even read their names – nothing about them was saved (load the whole .zip archive of the export)"
+            "pl": "plik .json bez archiwum: załączników nie ma w pliku, a ten czytnik nie odczytuje jeszcze ich nazw – nic o nich nie zapisano (wczytaj całe archiwum .zip z eksportu)",
+            "en": "a .json file without the archive: the attachments are not in the file, and this reader does not yet read their names – nothing about them was saved (load the whole .zip archive of the export)"
           }
         },
         {

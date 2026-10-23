@@ -132,7 +132,7 @@ class Catalogue {
 };
 
 // The slots of the profile interview of Env::profile or of the stored onboarding profile (Env::user_id, or the only one): [{id, section,
-// category, state: known | unknown | declined | never, value, provenance, interviewed}]. No interview yet: every slot of the shipped
+// category, state: known | unknown | declined | never, value, provenance, time, setting_key, interviewed}]. No interview yet: every slot of the shipped
 // scenario, unknown. Error (the message is the reason): database_unavailable, several_profiles_name_one, onboarding_unavailable.
 Result<std::vector<Json>> profile_slots(const Env& env);
 

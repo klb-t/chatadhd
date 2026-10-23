@@ -14495,7 +14495,7 @@
         "kind": "atomic",
         "status": "implemented",
         "title": "Write a fact about you",
-        "description": "Writes one slot of your profile with the value you give, as your own statement (provenance user_stated), after you confirm. A slot you closed with 'never' is refused with the way to reopen it. The change is recorded in the history of the profile like any answer.",
+        "description": "Writes one slot of your profile with the value you give, as your own statement (provenance user_stated; a slot that already held a value is marked user_corrected, with the time), after you confirm. A slot you closed with 'never' is refused with the way to reopen it. The change is recorded in the history of the profile like any answer.",
         "why": {
           "pl": "Zapisuje jedno pole Twojego profilu tak, jak je podasz, jako Twoją własną odpowiedź - po Twoim potwierdzeniu. Pole zamknięte słowem „nigdy” jest odrzucane."
         },

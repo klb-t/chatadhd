@@ -56,13 +56,19 @@ const Json* child(const Json& nav, const std::string& address) {
   return nullptr;
 }
 
-const std::set<std::string> kEvidence = {"declared", "observed", "derived", "inferred", "extrapolated"};
+const std::set<std::string> kEvidence = {"declared", "observed", "said", "derived", "inferred", "extrapolated"};
 
 void check_node(const Json& n) {
   INFO(n.dump());
   CHECK_FALSE(n.at("address").get<std::string>().empty());
   CHECK(n.at("provenance").is_object());
   CHECK_FALSE(json::get_string(n.at("provenance"), "layer").empty());
+  if (n.at("evidence").is_null()) {
+    // an entry that holds no value (an unanswered, declined or never slot) has no evidence; its state says why
+    CHECK(n.at("kind") == "profile_slot");
+    CHECK(n.at("state").is_string());
+    return;
+  }
   CHECK(kEvidence.count(n.at("evidence").at("class").get<std::string>()));
   CHECK(n.at("evidence").at("provenance").contains("method"));
 }
@@ -313,9 +319,15 @@ TEST_SUITE("graph_projection") {
     std::size_t inferred = 0, observed = 0;
     for (const auto& c : you.at("children")) {
       const std::string address = c.at("address");
+      INFO(c.dump());
+      if (address == "party:self/knowledge.avoid") {  // a closed slot holds no value and so no evidence
+        CHECK(c.at("status") == "never");
+        CHECK(c.at("evidence").is_null());
+        CHECK(c.at("state") == "never");
+        continue;
+      }
       const std::string cls = c.at("evidence").at("class");
       const std::string method = c.at("evidence").at("provenance").at("method");
-      INFO(c.dump());
       if (method == "model_inferred") {
         CHECK(cls == "inferred");
         ++inferred;
@@ -740,7 +752,10 @@ TEST_SUITE("graph_projection") {
     const Json you = f.navigate(Json{{"focus", "party:self"}, {"lang", "pl"}, {"limit", 0}, {"hops", 2}});
     const Json* slot = child(you, "party:self/identity.description");
     REQUIRE(slot);
-    CHECK(slot->at("evidence").at("human") == "pytanie z wywiadu — bez odpowiedzi");
+    // an unanswered slot holds no value and so no evidence: evidence is null and the state says it is unanswered
+    CHECK(slot->at("evidence").is_null());
+    CHECK(slot->at("state") == "unanswered");
+    CHECK(slot->at("status") == "unknown");
     // the preferences are named apart from the interview's slots, their values in words
     const Json* language = child(you, "preference:language");
     REQUIRE(language);
