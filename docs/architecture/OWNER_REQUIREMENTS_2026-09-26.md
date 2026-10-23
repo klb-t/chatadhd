@@ -804,6 +804,12 @@ Dwie rzeczy (ASR, ok. 08:0x UTC, po pierwszym biegu bootstrapu na VM). (1) „te
 
 Trzy rzeczy (08:1x UTC). (1) Pytanie: czy testy w przeglądarce (ze zrzutami) robiła ta sesja, czy tylko GPT; skąd wezmę środowisko testowe po przeprowadzce. (2) Wymaganie: pokazywać mu ładnie, hierarchicznie wszystkie specyfikacje i ustalenia projektu — drzewo zwijane (rozwinięte do liści się nie ogarnie), żeby widział, co pamiętam, NA ŻYWO w trakcie zmian: gałązka, którą edytuję, rozwinięta. „Ten skrypcik” = tools/spec.py (SPEC1) do zuniwersalizowania. (3) Potwierdza rozumienie teleportu i kontekstu; właściwe pytanie: jakie mam możliwości testowania GUI.
 
+## R74 — 0 i −1 to współrzędne względne w perspektywie kolejnych wiadomości, nie etykiety; ten sam mechanizm w każdym wymiarze (np. wersje); składnia to tylko przykład (owner, 2026-10-23)
+> a jeszcze z tym numerowaniem 0 i -1 to nie są jakieś etykiety sztywne to jest tak jak już mówiłem współrzędna względna w perspektywie kolejnych wiadomości. zero czyli bieżąca czyli ta na której pracujemy czyli ta do której kontekst szukamy, minus jeden to poprzednia. to powinieneś ogarnąć tak samo jak w przyszłości na przykład wersje -1."00" to max.last 
+> przy czym to jest oczywiście tylko przykład syntaksu, niekoniecznie dobry
+
+Doprecyzowanie R70/R72 (08:2x UTC): 0 i −1 nie są sztywnymi etykietami ani presetem „która wiadomość jest ważna”, tylko współrzędną WZGLĘDNĄ w perspektywie kolejnych wiadomości: 0 = bieżąca (ta, nad którą pracujemy, dla której szukamy kontekstu), −1 = poprzednia. Ten sam mechanizm ma obsłużyć inne wymiary, np. wersje (jego przykład zapisu: -1."00" = max.last — ostatnia wersja poprzedniej wiadomości); zapis jest tylko przykładem składni, niekoniecznie dobrym.
+
 ## Decision — rebuild, don't recover
 > "nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane"
 

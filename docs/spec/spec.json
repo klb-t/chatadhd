@@ -5,8 +5,8 @@
  "sources": {
   "owner": {
    "path": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
-   "sha256": "914df81e34f069a87ca449d38d18301b3d59d802396287b7c5a0f91daca80885",
-   "lines": 821
+   "sha256": "60341af6d199c1893a7d5fbe25c626ff3a0348d009dd1633f1846e50be96339f",
+   "lines": 827
   },
   "slowa": {
    "path": "docs/architecture/SLOWA_WLASCICIELA_2026-10-16.md",
@@ -4096,18 +4096,25 @@
    "theme": "owner_requirements",
    "theme_inferred": false,
    "understanding": {
-    "state": "proposed",
+    "state": "corrected",
     "history": [
      {
       "state": "proposed",
       "by": "koordynator (Fable)",
       "date": "2026-10-23",
       "text": "Przeprowadzka = teleport: na VM mam mieć to, co tu — stan (kolejka, spec, briefy w repo), warsztat (bramka, e2e w Chromium, emulator gdy jest KVM) i narzędzia sesji; bootstrap jest tylko środkiem. Kontekst: 0 = generowana odpowiedź, −1 = prompt użytkownika jako preset w danych, zakres wnioskowany z ostatnich wiadomości i celu; żadnej stałej pozycji jako reguły."
+     },
+     {
+      "state": "corrected",
+      "by": "właściciel (R74, 2026-10-23)",
+      "date": "2026-10-23",
+      "text": "KOREKTA (R74): „0 = generowana odpowiedź, −1 = prompt użytkownika” to nie etykiety ani preset, tylko współrzędne WZGLĘDNE w perspektywie kolejnych wiadomości: 0 = bieżąca (ta, nad którą pracujemy / dla której szukamy kontekstu), −1 = poprzednia, −2… Ten sam adres względny ma działać w każdym wymiarze (wersje: ostatnia/max; gałęzie; perspektywy) i w złożeniu (poprzednia wiadomość, jej ostatnia wersja). Składnia do zaprojektowania; jego -1.\"00\" to przykład. Część o teleporcie bez zmian."
      }
     ],
     "text": "Przeprowadzka = teleport: na VM mam mieć to, co tu — stan (kolejka, spec, briefy w repo), warsztat (bramka, e2e w Chromium, emulator gdy jest KVM) i narzędzia sesji; bootstrap jest tylko środkiem. Kontekst: 0 = generowana odpowiedź, −1 = prompt użytkownika jako preset w danych, zakres wnioskowany z ostatnich wiadomości i celu; żadnej stałej pozycji jako reguły.",
-    "by": "koordynator (Fable)",
-    "date": "2026-10-23"
+    "by": "właściciel (R74, 2026-10-23)",
+    "date": "2026-10-23",
+    "corrected_text": "KOREKTA (R74): „0 = generowana odpowiedź, −1 = prompt użytkownika” to nie etykiety ani preset, tylko współrzędne WZGLĘDNE w perspektywie kolejnych wiadomości: 0 = bieżąca (ta, nad którą pracujemy / dla której szukamy kontekstu), −1 = poprzednia, −2… Ten sam adres względny ma działać w każdym wymiarze (wersje: ostatnia/max; gałęzie; perspektywy) i w złożeniu (poprzednia wiadomość, jej ostatnia wersja). Składnia do zaprojektowania; jego -1.\"00\" to przykład. Część o teleporcie bez zmian."
    },
    "quotes": [
     {
@@ -4214,6 +4221,72 @@
    ]
   },
   {
+   "id": "s_0f005a5e98e8",
+   "aliases": [
+    "R74"
+   ],
+   "kind": "requirement",
+   "title": "0 i −1 to współrzędne względne w perspektywie kolejnych wiadomości, nie etykiety; ten sam mechanizm w każdym wymiarze (np. wersje); składnia to tylko przykład",
+   "date": "2026-10-23",
+   "theme": "owner_requirements",
+   "theme_inferred": false,
+   "understanding": {
+    "state": "proposed",
+    "history": [
+     {
+      "state": "proposed",
+      "by": "koordynator (Fable)",
+      "date": "2026-10-23",
+      "text": "Adres względny w grafie: współrzędna liczona od węzła bieżącego wzdłuż wybranego wymiaru (perspektywy). W wymiarze kolejnych wiadomości 0 = bieżąca (dla której budujemy kontekst), −1 = poprzednia, −n = n wstecz; w wymiarze wersji: ostatnia/max, pierwsza, −1 od ostatniej; w innych wymiarach (gałąź, jednostka, perspektywa) tak samo; adresy składają się (wiadomość −1 → jej ostatnia wersja). Składnia i skróty to dane do zaprojektowania w K3 (jego zapis jest przykładem); silnik obsługuje każdy wymiar i każdą kombinację, także bezużyteczną (podpowiedź R58, nie odmowa). Selektor kontekstu używa tych adresów, a zakres wnioskuje z ostatnich wiadomości i celu (R72)."
+     }
+    ],
+    "text": "Adres względny w grafie: współrzędna liczona od węzła bieżącego wzdłuż wybranego wymiaru (perspektywy). W wymiarze kolejnych wiadomości 0 = bieżąca (dla której budujemy kontekst), −1 = poprzednia, −n = n wstecz; w wymiarze wersji: ostatnia/max, pierwsza, −1 od ostatniej; w innych wymiarach (gałąź, jednostka, perspektywa) tak samo; adresy składają się (wiadomość −1 → jej ostatnia wersja). Składnia i skróty to dane do zaprojektowania w K3 (jego zapis jest przykładem); silnik obsługuje każdy wymiar i każdą kombinację, także bezużyteczną (podpowiedź R58, nie odmowa). Selektor kontekstu używa tych adresów, a zakres wnioskuje z ostatnich wiadomości i celu (R72).",
+    "by": "koordynator (Fable)",
+    "date": "2026-10-23"
+   },
+   "quotes": [
+    {
+     "text": "a jeszcze z tym numerowaniem 0 i -1 to nie są jakieś etykiety sztywne to jest tak jak już mówiłem współrzędna względna w perspektywie kolejnych wiadomości. zero czyli bieżąca czyli ta na której pracujemy czyli ta do której kontekst szukamy, minus jeden to poprzednia. to powinieneś ogarnąć tak samo jak w przyszłości na przykład wersje -1.\"00\" to max.last \nprzy czym to jest oczywiście tylko przykład syntaksu, niekoniecznie dobry",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:808-809",
+     "ref": null,
+     "attr": [],
+     "lead": null,
+     "secondary": false
+    }
+   ],
+   "sense": null,
+   "summary": null,
+   "restatement": [
+    {
+     "text": "Doprecyzowanie R70/R72 (08:2x UTC): 0 i −1 nie są sztywnymi etykietami ani presetem „która wiadomość jest ważna”, tylko współrzędną WZGLĘDNĄ w perspektywie kolejnych wiadomości: 0 = bieżąca (ta, nad którą pracujemy, dla której szukamy kontekstu), −1 = poprzednia. Ten sam mechanizm ma obsłużyć inne wymiary, np. wersje (jego przykład zapisu: -1.\"00\" = max.last — ostatnia wersja poprzedniej wiadomości); zapis jest tylko przykładem składni, niekoniecznie dobrym.",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:811"
+    }
+   ],
+   "commentary": [],
+   "status": null,
+   "gap_text": null,
+   "evidence": [],
+   "next_step": null,
+   "refs": [
+    "s_13a549d5ba3f",
+    "s_20b2e5caeba0"
+   ],
+   "supersedes": [],
+   "superseded_by": [],
+   "supersession_notes": [],
+   "tags": [],
+   "heading_note": "owner, 2026-10-23",
+   "sources": [
+    {
+     "role": "owner",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:807-811"
+    }
+   ],
+   "files": [
+    "owner"
+   ]
+  },
+  {
    "id": "s_18ec73967a7b",
    "aliases": [
     "owner:decision-rebuild-don-t-recover"
@@ -4229,7 +4302,7 @@
    "quotes": [
     {
      "text": "\"nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane\"",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:808",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:814",
      "ref": null,
      "attr": [],
      "lead": null,
@@ -4241,7 +4314,7 @@
    "restatement": [
     {
      "text": "Recovered versions (`history/chatadhd_v0.8.3`, `history/chatadhd_v0.9.0`) and\nthe historical report are sources of requirements, ideas and data assets\n(e.g. `film_structure.json`), and real ground truth for self-discovery tests —\nnot code to merge. Everything is rebuilt in Loom with tests.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:810-813"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:816-819"
     }
    ],
    "commentary": [],
@@ -4258,7 +4331,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:807-813"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:813-819"
     }
    ],
    "files": [
@@ -4284,7 +4357,7 @@
    "restatement": [
     {
      "text": "`workbench_mockup_2026-09-26.webp`: dockable/floating panels (conversation\nlist, active conversation, knowledge graph with active context window, project\nstructure with dimmed high-confidence auto-completable nodes, artifact views\nfor music/video with timeline + storyboard, video player, execution\nenvironment with agent), multi-format ingestion, Loom SDK at the centre.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:816-820"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:822-826"
     }
    ],
    "commentary": [],
@@ -4301,7 +4374,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:815-820"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:821-826"
     }
    ],
    "files": [

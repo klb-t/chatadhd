@@ -1,6 +1,20 @@
 {
  "schema": "loom.spec.understanding/1",
  "items": {
+  "s_0f005a5e98e8": {
+   "state": "proposed",
+   "history": [
+    {
+     "state": "proposed",
+     "by": "koordynator (Fable)",
+     "date": "2026-10-23",
+     "text": "Adres względny w grafie: współrzędna liczona od węzła bieżącego wzdłuż wybranego wymiaru (perspektywy). W wymiarze kolejnych wiadomości 0 = bieżąca (dla której budujemy kontekst), −1 = poprzednia, −n = n wstecz; w wymiarze wersji: ostatnia/max, pierwsza, −1 od ostatniej; w innych wymiarach (gałąź, jednostka, perspektywa) tak samo; adresy składają się (wiadomość −1 → jej ostatnia wersja). Składnia i skróty to dane do zaprojektowania w K3 (jego zapis jest przykładem); silnik obsługuje każdy wymiar i każdą kombinację, także bezużyteczną (podpowiedź R58, nie odmowa). Selektor kontekstu używa tych adresów, a zakres wnioskuje z ostatnich wiadomości i celu (R72)."
+    }
+   ],
+   "text": "Adres względny w grafie: współrzędna liczona od węzła bieżącego wzdłuż wybranego wymiaru (perspektywy). W wymiarze kolejnych wiadomości 0 = bieżąca (dla której budujemy kontekst), −1 = poprzednia, −n = n wstecz; w wymiarze wersji: ostatnia/max, pierwsza, −1 od ostatniej; w innych wymiarach (gałąź, jednostka, perspektywa) tak samo; adresy składają się (wiadomość −1 → jej ostatnia wersja). Składnia i skróty to dane do zaprojektowania w K3 (jego zapis jest przykładem); silnik obsługuje każdy wymiar i każdą kombinację, także bezużyteczną (podpowiedź R58, nie odmowa). Selektor kontekstu używa tych adresów, a zakres wnioskuje z ostatnich wiadomości i celu (R72).",
+   "by": "koordynator (Fable)",
+   "date": "2026-10-23"
+  },
   "s_0f91742a0b1c": {
    "state": "proposed",
    "history": [
@@ -37,18 +51,25 @@
    "corrected_text": "KOREKTA właściciela (R72): nie „pozycja −1 względem ostatniego promptu”, tylko: 0 = generowana odpowiedź, −1 = prompt użytkownika (najczęściej; najważniejszy). Zapis liczbowy = podpowiedź, że przesunięcia są DANYMI (preset w kodzie/danych), nie regułą. Jeszcze lepiej: selektor z kilku ostatnich wiadomości sam ustala zakres kontekstu potrzebny do celu; właściciel wątpi, czy stałą pozycję w ogóle wyróżniać. Projekt K3: zakres wnioskowany z ostatnich wiadomości + celu, przesunięcia jako preset w danych (0, −1 jako przykład), nic na sztywno. Reszta parafrazy R70 (perspektywy, pamięć podręczna, od ogółu do szczegółu, wołanie przez użytkownika/agenta/eksperymentatora, ponowienie szerzej/głębiej, zawężenie przy zmianie tematu) bez zmian."
   },
   "s_20b2e5caeba0": {
-   "state": "proposed",
+   "state": "corrected",
    "history": [
     {
      "state": "proposed",
      "by": "koordynator (Fable)",
      "date": "2026-10-23",
      "text": "Przeprowadzka = teleport: na VM mam mieć to, co tu — stan (kolejka, spec, briefy w repo), warsztat (bramka, e2e w Chromium, emulator gdy jest KVM) i narzędzia sesji; bootstrap jest tylko środkiem. Kontekst: 0 = generowana odpowiedź, −1 = prompt użytkownika jako preset w danych, zakres wnioskowany z ostatnich wiadomości i celu; żadnej stałej pozycji jako reguły."
+    },
+    {
+     "state": "corrected",
+     "by": "właściciel (R74, 2026-10-23)",
+     "date": "2026-10-23",
+     "text": "KOREKTA (R74): „0 = generowana odpowiedź, −1 = prompt użytkownika” to nie etykiety ani preset, tylko współrzędne WZGLĘDNE w perspektywie kolejnych wiadomości: 0 = bieżąca (ta, nad którą pracujemy / dla której szukamy kontekstu), −1 = poprzednia, −2… Ten sam adres względny ma działać w każdym wymiarze (wersje: ostatnia/max; gałęzie; perspektywy) i w złożeniu (poprzednia wiadomość, jej ostatnia wersja). Składnia do zaprojektowania; jego -1.\"00\" to przykład. Część o teleporcie bez zmian."
     }
    ],
    "text": "Przeprowadzka = teleport: na VM mam mieć to, co tu — stan (kolejka, spec, briefy w repo), warsztat (bramka, e2e w Chromium, emulator gdy jest KVM) i narzędzia sesji; bootstrap jest tylko środkiem. Kontekst: 0 = generowana odpowiedź, −1 = prompt użytkownika jako preset w danych, zakres wnioskowany z ostatnich wiadomości i celu; żadnej stałej pozycji jako reguły.",
-   "by": "koordynator (Fable)",
-   "date": "2026-10-23"
+   "by": "właściciel (R74, 2026-10-23)",
+   "date": "2026-10-23",
+   "corrected_text": "KOREKTA (R74): „0 = generowana odpowiedź, −1 = prompt użytkownika” to nie etykiety ani preset, tylko współrzędne WZGLĘDNE w perspektywie kolejnych wiadomości: 0 = bieżąca (ta, nad którą pracujemy / dla której szukamy kontekstu), −1 = poprzednia, −2… Ten sam adres względny ma działać w każdym wymiarze (wersje: ostatnia/max; gałęzie; perspektywy) i w złożeniu (poprzednia wiadomość, jej ostatnia wersja). Składnia do zaprojektowania; jego -1.\"00\" to przykład. Część o teleporcie bez zmian."
   },
   "s_5a8666c3f7e4": {
    "state": "proposed",
