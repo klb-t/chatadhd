@@ -158,3 +158,11 @@ test('every combination of evidence and value shape gives a row in words', () =>
   }
   assert.ok(n > 3000);
 });
+
+test('the chain of a preference is read from the card of a setting (inheritance) or of a person\'s preference (attrs.resolved.inheritance)', () => {
+  const chain = [{ level: 'installation', label: 'Instalacja', role: 'overridden', active: true }, { level: 'person', label: 'Ty', role: 'supplied', active: true }];
+  assert.deepEqual(me.inheritanceOf({ inheritance: chain }), chain);
+  assert.deepEqual(me.inheritanceOf({ attrs: { resolved: { inheritance: chain } } }), chain);
+  assert.deepEqual(me.inheritanceOf({ inheritance: [], attrs: { resolved: { inheritance: chain } } }), chain);
+  for (const none of [null, undefined, {}, { attrs: {} }, { attrs: { resolved: {} } }, { attrs: { resolved: { inheritance: 'x' } } }]) assert.deepEqual(me.inheritanceOf(none), []);
+});

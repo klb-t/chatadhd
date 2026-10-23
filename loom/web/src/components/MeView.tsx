@@ -18,7 +18,7 @@ import ActionProposalBlock from "./ActionProposalBlock";
 import "./me-view.css";
 import { chainRows } from "./node-card-state";
 import {
-  INTERVIEW_ACTION, OPEN_SECTIONS_SETTING, actionButtons, detailLines, inferredOpacityOf, inputFields, interpretRun, looseRows, openSectionsOf, rowView, runArgs,
+  INTERVIEW_ACTION, OPEN_SECTIONS_SETTING, actionButtons, detailLines, inferredOpacityOf, inheritanceOf, inputFields, interpretRun, looseRows, openSectionsOf, rowView, runArgs,
   runRequest, sections, serializeSections, withSection, type ActionButton, type RowView,
 } from "./me-view-state";
 
@@ -173,7 +173,7 @@ function MeRow({ row, view, t, language, convId, proposalFeature, opacity, onCha
   }, [open, row.address, language, convId, reloadKey, t]);
   const loaded = card && !("error" in card) ? card : null;
   const lines = useMemo(() => loaded ? detailLines(loaded.attrs, t) : [], [loaded, t]);
-  const chain = useMemo(() => loaded?.inheritance && loaded.inheritance.length > 0 ? chainRows(loaded.inheritance, t, loaded.provenance) : [], [loaded, t]);
+  const chain = useMemo(() => { const levels = inheritanceOf(loaded); return levels.length > 0 && loaded ? chainRows(levels, t, loaded.provenance) : []; }, [loaded, t]);
   const style = view.inferred ? ({ "--me-inferred-opacity": String(opacity) } as CSSProperties) : undefined;
   return (
     <li className="me-row" data-testid={`me-row-${row.address}`} data-address={row.address} data-kind={row.kind} data-class={view.classId}

@@ -14,6 +14,7 @@ import NodeCard from "./NodeCard";
 import NavigatorMap from "./NavigatorMap";
 import MeView from "./MeView";
 import { isMeFocus } from "./me-view-state";
+import { featureInLanguage } from "../onboarding/presentation.mjs";
 import { api } from "../api";
 import type { GraphNavigateResult, GraphNodeRow } from "../api/graph-projection";
 import type { UserProfileHost } from "../api/onboarding-host";
@@ -82,6 +83,7 @@ export default function GraphNavigator({ profileHost, convId, language, initialF
   const [reloadTick, setReloadTick] = useState(0);   // a write on the screen "Ty" (a value corrected, a note forgotten): the counts are read again
   const [meOpen, setMeOpen] = useState({ rows: false, map: false });   // PRESET: under the page "Ty" the map and all the rows start closed
   const proposalWords = usePresentationFeature(profileHost, "action_proposal");
+  const proposalFeature = useMemo(() => proposalWords.feature ? featureInLanguage(proposalWords.feature, language, { partial: true }) : null, [proposalWords.feature, language]);   // the words of the proposal block in the language of the screen
   // The setting arrives after the config loads: follow it until the person chooses here.
   useEffect(() => { const next = layoutOf(layoutSetting); setLayout(next); setOpen(openByLayout(next)); }, [layoutSetting]);
 
@@ -159,7 +161,7 @@ export default function GraphNavigator({ profileHost, convId, language, initialF
   const focus = focusOf(state);
   const crumbs = [{ address: "", label: t("root") }, ...state.path];
   const lines = result ? [...honestyLines(result, t, language), ...receiptLines(result, t)] : [];
-  const meMode = !!result && isMeFocus(result.focus.address) && state.perspectives.length === 0;
+  const meMode = !!result && isMeFocus(result.focus.address) && isMeFocus(focus) && state.perspectives.length === 0;
   const perspectiveNames = state.perspectives.map(id => (perspList && "options" in perspList ? perspList.options.find(o => o.id === id)?.label : undefined) ?? id);
 
   return (
@@ -186,7 +188,7 @@ export default function GraphNavigator({ profileHost, convId, language, initialF
       <div className="gnav-body">
         {loading && <p className="gnav-note" data-testid="nav-loading">{t("loading")}</p>}
         {error && <p className="gnav-note gnav-error" data-testid="nav-error">{t("error", { reason: error })}</p>}
-        {result && meMode && <MeView result={result} t={t} language={language} convId={convId} proposalFeature={proposalWords.feature} openSetting={meOpenSetting}
+        {result && meMode && <MeView result={result} t={t} language={language} convId={convId} proposalFeature={proposalFeature} openSetting={meOpenSetting}
           inferredOpacity={meInferredOpacity} onSetting={onSetting} onChanged={() => setReloadTick(n => n + 1)} onOpenConversation={onOpenConversation} reloadKey={reloadTick} />}
         {result && <Disclosure testId="nav-list-disclosure" className="gnav-disclosure" labels={meMode ? { show: t("me.rows.show"), hide: t("me.rows.hide") } : { show: t("list.show"), hide: t("list.hide") }}
           open={meMode ? meOpen.rows : open.list} onToggle={v => meMode ? setMeOpen(o => ({ ...o, rows: v })) : setOpen(o => ({ ...o, list: v }))}>

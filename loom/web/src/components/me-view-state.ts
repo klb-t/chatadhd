@@ -3,7 +3,7 @@
 // counts, the evidence of a row, the actions of a row - all of it comes from the kernel's answer, nothing is a list of this file.
 // The only things written here are PRESETS, each labelled as one, and the argument names that a typed action takes, which are DATA in the pack
 // words (me.input.<action>) because the kernel does not yet list the parameters of an action on a node (gap, see the report).
-import type { GraphNavigateResult, GraphNodeRow } from "../api/graph-projection";
+import type { GraphNavigateResult, GraphNodeRow, InheritanceLevel } from "../api/graph-projection";
 import type { ActionRun } from "../api/types";
 import type { ShellT } from "../shell/text";
 import { pendingGate, runOutcome, type PendingGate } from "./node-card-state";
@@ -206,4 +206,13 @@ export function detailLines(attrs: Record<string, unknown> | undefined, t: Shell
   const prov = attrs.provenance as { words?: unknown } | undefined;
   if (prov && typeof prov.words === "string" && prov.words) out.push(t("me.details.provenance", { words: prov.words }));
   return out;
+}
+
+/** The chain of levels of a preference: a card of a setting carries it as `inheritance`, a preference of the person as attrs.resolved.inheritance
+ *  (the same chain, M1-K2c-2). Nothing for a node that has none. */
+export function inheritanceOf(card: { inheritance?: InheritanceLevel[]; attrs?: Record<string, unknown> } | null | undefined): InheritanceLevel[] {
+  if (!card) return [];
+  if (Array.isArray(card.inheritance) && card.inheritance.length > 0) return card.inheritance;
+  const resolved = card.attrs?.resolved as { inheritance?: unknown } | undefined;
+  return Array.isArray(resolved?.inheritance) ? resolved.inheritance as InheritanceLevel[] : [];
 }
