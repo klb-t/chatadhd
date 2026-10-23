@@ -609,14 +609,14 @@ const localChecks = [
 const resumed = () => new RegExp(`(mResumedActivity|topResumedActivity)[^\\n]*${PKG.replace(/\./g, "\\.")}/\\.MainActivity`).test(
   execFileSync("adb", ["shell", "dumpsys", "activity", "activities"], { encoding: "utf8", maxBuffer: 16 << 20 }));
 
-const serverChecks = [
-  // M1-W2a: an empty chat offers "Poznajmy się"; the interview is a form in a conversation, so the model sees no request
-  ["interview: Poznajmy się -> level (detailed) -> chip -> 'nie pytaj o zdrowie' -> Tak, no model request", async () => {
+// M1-W2a: the interview with a question waiting (level detailed): Poznajmy się -> level -> chip -> remark -> Tak, no model request
+async function interviewWithQuestion() {
     const before = providerCalls().length;
     await click("shell-drawer-toggle"); await waitTid("shell-new-chat", 10); await click("shell-new-chat");
     await waitTid("shell-empty", 15);
     const shown = await until("the empty chat knows whether to offer the interview", () => page.ev(`${q("shell-empty")}?.getAttribute('data-interview')`).then(v => v && v !== "checking" && v), 30, 300);
-    if (shown !== "shown") throw new Error(`the empty chat does not offer the interview (data-interview=${shown})`);
+    // the card is offered once per account (until the interview starts): a later step that finds it hidden is SKIPPED, not green
+    if (shown !== "shown") { const e = new Error(`the interview is not offered any more (data-interview=${shown})`); e.skip = true; throw e; }
     const card = (await textTid("interview-card-title")).trim();
     await clickSettled("interview-card-start");
     await waitTid("interview-levels", 30);
@@ -641,7 +641,10 @@ const serverChecks = [
     const calls = providerCalls().slice(before);
     if (calls.length) throw new Error(`the model got ${calls.length} request(s) during the interview: ${JSON.stringify(calls.map(c => c.model))}`);
     return `card "${card}"; levels ${levels}; chips ${chips}; info "${info}"; proposal "${proposal}"; Tak; 0 model requests`;
-  }],
+}
+const serverChecks = [
+  // M1-W2a: an empty chat offers "Poznajmy się"; the interview is a form in a conversation, so the model sees no request
+  ["interview: Poznajmy się -> level (detailed) -> chip -> 'nie pytaj o zdrowie' -> Tak, no model request", interviewWithQuestion],
   // M1-W2a (S1, 2026-10-22): "nie pytaj o zdrowie" must be understood at any moment, also with no question waiting
   // (level minimal + skip, the shape of the first emulator run); red until the kernel reads the remark first
   ["interview: a remark with no question waiting ('nie pytaj o zdrowie' after minimal + skip) gives Tak zrozumiałem", async () => {
@@ -649,7 +652,7 @@ const serverChecks = [
     await click("shell-drawer-toggle"); await waitTid("shell-new-chat", 10); await click("shell-new-chat");
     await waitTid("shell-empty", 15);
     const shown = await until("the empty chat knows whether to offer the interview", () => page.ev(`${q("shell-empty")}?.getAttribute('data-interview')`).then(v => v && v !== "checking" && v), 30, 300);
-    if (shown !== "shown") return `the interview is not offered here any more (data-interview=${shown}): nothing to check`;
+    if (shown !== "shown") { const e = new Error(`the interview is not offered any more (data-interview=${shown})`); e.skip = true; throw e; }
     await clickSettled("interview-card-start");
     await waitTid("interview-levels", 30);
     await page.ev(`(document.querySelector('[data-testid="interview-level"][data-level="minimal"]')||document.querySelector('[data-testid="interview-level"]')).click()`);
@@ -873,6 +876,20 @@ const serverChecks = [
   // R38: the fake provider (deploy/first-steps-provider.py) routes "agent" to agent.run and, offered tools, asks for one
   // irreversible tool (usage_compact): the policy local_reversible proposes it, the run stops, the chat shows the block;
   // Accept resumes the run with the transcript, and the provider then answers with text.
+  // the owner's phone runs the UI in Polish: the same interview with ui_language = pl (the emulator's locale is en)
+  ["interview in Polish (ui_language=pl): the same path, the remark understood", async () => {
+    const was = (await apiJson("GET", "/api/config")).body?.ui_language;
+    const set = async v => { const r = await apiJson("PATCH", "/api/config", { ui_language: v }); if (r.status >= 400) throw new Error("cannot set ui_language: " + JSON.stringify(r.body).slice(0, 200)); };
+    await set("pl");
+    try {
+      await page.ev("location.reload()").catch(() => {});
+      await waitTid("chat-input", 60); await backToChat();
+      return await interviewWithQuestion();
+    } finally {
+      await set(was ?? "");
+      await page.ev("location.reload()").catch(() => {}); await waitTid("chat-input", 60).catch(() => {});
+    }
+  }],
   ["agent proposals: the run stops on a proposal, Accept resumes it to the end", async () => {
     await send("poproś agenta żeby uporządkował moje notatki");   // the example phrase of agent.run: a rule routes it locally
     const proposed = await until("the action proposal or the agent block",
