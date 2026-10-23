@@ -163,6 +163,7 @@ try {
     assert.equal(await row(known.address).getByTestId("me-row-value").innerText(), known.value_human);
     assert.equal(await row(known.address).getByTestId("me-row-state").count(), 0);
     await fits(); await sizesOk(section(holder.address));
+    await sectionHead(holder.address).evaluate(el => el.scrollIntoView({ block: "start" }));   // the screenshot shows the head and the first entries, not the bottom bar over them
     await audit("02-me-identity-open"); await shot("02-me-identity-open");
     // remembered: the setting holds the address (PUT /api/config/<key>), a reload brings the page back with the section open
     await until("the setting me_open_sections", async () => (await api("GET", "/api/config")).me_open_sections?.includes(holder.address));
@@ -206,9 +207,10 @@ try {
     return { holder, slot, r, ask: (await page.getByTestId("me-proposal-ask").innerText()).replace(/\s+/g, " ") };
   };
   await step("4 Popraw → a field for the value → the question of the rules in the proposal block (Tak/Nie in plain words); Nie changes nothing", async () => {
-    const { slot, holder, ask, r } = await popraw("nie zapisane", "no");
+    const TRIED = "po imieniu";   // typed, asked about, then refused: nothing is written
+    const { slot, holder, ask, r } = await popraw(TRIED, "no");
     const title = slot.actions.find(a => a.id === "profile.set").label;
-    assert.ok(ask.includes(title) && ask.includes(slot.label) && ask.includes("nie zapisane"), `the question names the action, the entry and the value: ${ask}`);
+    assert.ok(ask.includes(title) && ask.includes(slot.label) && ask.includes(TRIED), `the question names the action, the entry and the value: ${ask}`);
     const block = page.getByTestId("me-proposal");
     const text = (await block.innerText()).replace(/\s+/g, " ").trim();
     assert.equal(text, `${say("me.confirm.yes")} ${say("me.confirm.no")}`, "the block holds nothing but the two answers");
@@ -255,6 +257,7 @@ try {
     const note = before.children.find(c => c.label.includes("Filemona"));
     const r = row(note.address);
     await r.scrollIntoViewIfNeeded();
+    await sectionHead(holder.address).evaluate(el => el.scrollIntoView({ block: "start" }));
     await audit("06-notes"); await shot("06-notes");
     await r.locator('[data-action="memory.forget"]').tap();
     await page.getByTestId("me-gate").waitFor();
@@ -271,6 +274,7 @@ try {
     assert.deepEqual(after.children.map(c => c.address), [legacy.address], "the kernel forgot the note");
     const head = await until("the count in the header", async () => { const h = (await sectionHead(holder.address).innerText()).replace(/\s+/g, " ").trim(); return h === say("me.section.head", { label: holder.label, count: "1" }) ? h : null; });
     assert.equal(holder.count, 2); console.log(`[m1-me] header of the memory part: ${holder.count} → ${head}`);
+    await sectionHead(holder.address).evaluate(el => el.scrollIntoView({ block: "start" }));
     await audit("08-zapomnij-done"); await shot("08-zapomnij-done");
   });
 
