@@ -748,7 +748,14 @@ const serverChecks = [
   // G1a: a chat sentence opens the navigator at the root of the graph
   ["graph: 'pokaż katalog główny grafu' in the chat opens the navigator root", async () => {
     await send("pokaż katalog główny grafu");
-    await until("the navigator", () => has("graph-navigator"), 60, 400);
+    // a chat command may come as a proposal first (as 'przetłumacz'): confirm it, then the navigator opens
+    await until("the navigator or a proposal", async () => (await has("graph-navigator")) || (await has("chat-action-proposal")), 60, 400)
+      .catch(async e => { throw new Error(`${e.message} || on screen: ${await m1Visible()}`); });
+    if (!(await has("graph-navigator"))) {
+      await click("chat-action-proposal-confirm");
+      await until("the navigator after Tak", () => has("graph-navigator"), 60, 400)
+        .catch(async e => { throw new Error(`${e.message} || on screen: ${await m1Visible()}`); });
+    }
     await waitTid("nav-rows", 30);
     const focus = await page.ev(`${q("graph-navigator")}.getAttribute('data-focus')||''`);
     const rows = await page.ev(`[...document.querySelectorAll('[data-testid="nav-rows"] .gnav-label')].slice(0,6).map(e=>e.innerText).join(' | ')`);
@@ -760,10 +767,11 @@ const serverChecks = [
   // K2c-2: ⋮ › Ty lists the parts of the person (subgraph:self/…) with counts; a part opens its slots
   ["Ty: ⋮ › Ty shows the parts with counts; the first part opens its rows", async () => {
     await openMenu("me");
-    await waitTid("nav-rows", 30);
+    await until("Ty's rows", () => page.ev(`document.querySelectorAll('[data-testid="nav-rows"] .gnav-row-main').length`), 30, 300)
+      .catch(async e => { throw new Error(`${e.message} || on screen: ${await m1Visible()}`); });
     const parts = await page.ev(`[...document.querySelectorAll('[data-testid="nav-rows"] .gnav-row-main')].map(b=>b.dataset.testid.replace('nav-row-','')+' '+(b.innerText||'').replace(/\\s+/g,' ').slice(0,40)).slice(0,6)`);
     const first = await page.ev(`(()=>{const b=[...document.querySelectorAll('[data-testid="nav-rows"] .gnav-row-main')].find(b=>/subgraph:self/.test(b.dataset.testid)&&b.dataset.hasChildren!=='false');return b?b.dataset.testid:''})()`);
-    if (!first) { await m1Reset(); throw new Error(`no part subgraph:self/… with children under Ty: ${parts.join(' | ')}`); }
+    if (!first) { const screen = await m1Visible(); await m1Reset(); throw new Error(`no part subgraph:self/… with children under Ty: ${parts.join(' | ')} || on screen: ${screen}`); }
     await clickSettled(first);
     await until("the part's rows", () => page.ev(`${q("graph-navigator")}?.getAttribute('data-focus')||''`).then(f => f && first.includes(f) && f), 30, 300);
     const slots = await page.ev(`[...document.querySelectorAll('[data-testid="nav-rows"] .gnav-label')].slice(0,6).map(e=>e.innerText).join(' | ')`);
@@ -819,7 +827,7 @@ const serverChecks = [
     const summary = (await textTid("import-summary")).replace(/\s+/g, " ").slice(0, 200);
     const table = await countTid("import-truth-table");
     await closePanel();
-    if (!/znaleziono|found/i.test(summary)) throw new Error(`the import summary does not say what was found: "${summary}"`);
+    if (!/znaleziono|found|Conversations: \d|Rozm[oó]w[^:]*: \d/i.test(summary)) throw new Error(`the import summary does not say what was found: "${summary}"`);
     if (table !== 1) throw new Error("no import-truth-table under the summary");
     return `4 messages through the API; summary "${summary}"; truth table shown`;
   }],
