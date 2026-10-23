@@ -1,8 +1,10 @@
-# Kolejka S1 — stan 2026-10-23 10:16 UTC
+# Kolejka S1 — stan 2026-10-23 10:46 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
 **Teleport (R72):** karta startowa nowej sesji S1 = `docs/ops/TELEPORT_S1.md` (aktualizowana tuż przed przełączeniem); zadania zaplanowane = `docs/ops/ZADANIA_ZAPLANOWANE_2026-10-23.md`; przeprowadzka = `docs/ops/PRZEPROWADZKA_GCP_2026-10-23.md`.
+
+## CI 9db553b2 ZIELONY (bieg 279, 08:35–10:21, 106 min) → **APK v4 zlecony z `main` 9db553b2** (10:46 UTC, package.yml: android+server+first_steps, arm64-v8a, Release; kontrola +22 min). Zawartość v4 względem v3 (270a065f): słowa grafu („pokaż katalog główny grafu”, „pokaż import w grafie”, aliasy obszarów), prawda importu (tabela per rodzaj, chipy załączników), „Ty” jako części (K2c-2) i ekran „Ty” (W2b-1: sekcje z licznikami, chipy dowodu, Skąd, Popraw/Zapomnij, Poznaj mnie), „Co tu widzę?”, poprawki testów. Dowód emulatorowy: S2 47/0/0 ×3 na tym sha. Sekretarz spec: pierwszy bieg 10:23 dostarczony (skrzynka pusta → wyjście). R89: wszystkie 5 torów badania zakończone (notatki `docs/research/TOKENY_2026-10-23/{prac,nauk,interf,role,nasze}.md`), ocena + synteza Fable w toku.
 
 ## Tempo (10:16 UTC): tydzień 57 % (nad punktem 56 %/20:00; następny 80 % sob 08:00), okno 5 h 24 % po 11 min (zryw 5 torów R89). Projekt K3 (Fable) przesunięty: start po torach badania R89, przy oknie 5 h < 60 % (kontrola 10:50). R89: tory `prac` i `nauk` zakończone (notatki w `docs/research/TOKENY_2026-10-23/`), 3 w toku.
 
