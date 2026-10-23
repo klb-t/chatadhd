@@ -1,8 +1,10 @@
-# Kolejka S1 — stan 2026-10-23 08:35 UTC
+# Kolejka S1 — stan 2026-10-23 08:37 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
 **Teleport (R72):** karta startowa nowej sesji S1 = `docs/ops/TELEPORT_S1.md` (aktualizowana tuż przed przełączeniem); zadania zaplanowane = `docs/ops/ZADANIA_ZAPLANOWANE_2026-10-23.md`; przeprowadzka = `docs/ops/PRZEPROWADZKA_GCP_2026-10-23.md`.
+
+## S2 smoke 39919587988 na 32c7a401 (08:37 UTC): 45/2/0 ×3 — import (UI) DZIAŁA (tabela prawdy widoczna); dwie porażki sterownika (słowa grafu w starej rozmowie z cudzą propozycją; „Ty” czytane z włączoną perspektywą). **Znalezisko produktowe S2 (przyjęte):** perspektywa „wysłane do modelu”, włączona przez „Pokaż w grafie” z paragonu, ZOSTAJE w nawigatorze; ⋮ > Ty otwiera się z nią i nie ma wierszy (tylko uczciwe zdanie „ta perspektywa potrzebuje wiadomości w centrum”). Decyzja (preset, odwracalna): wpis menu niesie własny preset perspektywy w danych (Ty → brak = MeView; „zachowaj ostatnią” jako ustawienie), a obok zdania jednym dotknięciem „Wyłącz perspektywę” (+ „Pokaż ostatnią wiadomość”, gdy jest). Wchodzi do W2b-2 jako pierwszy punkt (zadanie #40). S2 nie biega teraz (tempo); następny bieg na 9db553b2 z wariantem MeView.
 
 ## Bramka `w2b1` ZIELONA (08:35 UTC; m1d1 = 9db553b2): ctest 261/261, strażnik 0, skrypty 0, build webu 0, wszystkie testy webu PASSED → **`main` = `9db553b2` (FF 08:35 UTC)**: W2b-1 ekran „Ty” z części K2c-2 + raport M1_CHECKPOINT_3 + kroki CI test:me-view/test:m1-me. CI loom.yml rusza z pushem (kontrola: zadanie 08:55 sprawdza 94872898 i nowy bieg; APK v4 z 9db553b2 po zielonym CI, ≈ 10:40). S2 dostaje sha. Następny pakiet jądra w m1d1 (wolne po bramce): K2c-3 (dane, małe) — start wg `pace.py` (ostatni start 08:20 = badanie K3), potem R67-fix, W2b-2. Właściciel dyktował 08:0x–08:3x serię R72–R87 (adresy względne, pole widzenia, granice, listy otwarte, preferencja = węzeł z bogatymi krawędziami, kontrolka ↔ węzeł ↔ pole) — wszystko w spec, drzewo odświeżane po każdej pozycji; wszystkie weszły do briefu K3 (agent czyta `spec.py list` na końcu).
 
