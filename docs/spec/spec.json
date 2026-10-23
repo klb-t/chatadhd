@@ -5,8 +5,8 @@
  "sources": {
   "owner": {
    "path": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
-   "sha256": "846e2a608960a89934f5f9f15c5773809f68bb36acb5425f2fc3865084c8d940",
-   "lines": 863
+   "sha256": "f4599bee30481efecd1c19ac7b358908ce843861e9446baba8985305d99f83cd",
+   "lines": 868
   },
   "slowa": {
    "path": "docs/architecture/SLOWA_WLASCICIELA_2026-10-16.md",
@@ -4700,6 +4700,62 @@
    ]
   },
   {
+   "id": "s_4bbd386eaca6",
+   "aliases": [
+    "R82"
+   ],
+   "kind": "requirement",
+   "title": "Proste reprezentacje silnik ogarnia na bieżąco sam, o trudniejsze pyta — to standard; użytkownik może zażyczyć sobie, by pytać o wszystko albo o nic",
+   "date": "2026-10-23",
+   "theme": "owner_requirements",
+   "theme_inferred": false,
+   "understanding": {
+    "state": "none"
+   },
+   "quotes": [
+    {
+     "text": "właśnie bo proste reprezentacje w Engine musi na bieżąco musieć ogarniać, o trudniejsze pytać, standardowo, w użytkownik włożyć sobie zażyczyć żeby o wszystko pytać albo żeby o nic nie pytać",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:850",
+     "ref": null,
+     "attr": [],
+     "lead": null,
+     "secondary": false
+    }
+   ],
+   "sense": null,
+   "summary": null,
+   "restatement": [
+    {
+     "text": "Domknięcie R80/R81 (09:1x UTC): preset „pytaj” ma trzy położenia — (a) standard: proste reprezentacje/decyzje silnik wyprowadza na bieżąco bez pytania, o trudniejsze pyta (z gotowym zestawem kryteriów, R80 pkt 4); (b) pytaj o wszystko; (c) nie pytaj o nic (silnik decyduje sam w granicach swobody i budżetu z R81, a decyzje zostają w pochodzeniu do wglądu). Gdzie leży granica „proste/trudne” — to dane (ważone kryteria z profilu i zadania), konfigurowalne per węzeł, rodzaj zadania, jednostkę; ten sam mechanizm co propozycje Tak/Nie w akcjach i podpowiedzi R58 („nie pytaj następnym razem”).",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:852"
+    }
+   ],
+   "commentary": [],
+   "status": null,
+   "gap_text": null,
+   "evidence": [],
+   "next_step": null,
+   "refs": [
+    "s_bd1b2ff5b6ea",
+    "s_281f9b0d06cf",
+    "s_acee58464df3"
+   ],
+   "supersedes": [],
+   "superseded_by": [],
+   "supersession_notes": [],
+   "tags": [],
+   "heading_note": "owner, 2026-10-23",
+   "sources": [
+    {
+     "role": "owner",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:849-852"
+    }
+   ],
+   "files": [
+    "owner"
+   ]
+  },
+  {
    "id": "s_18ec73967a7b",
    "aliases": [
     "owner:decision-rebuild-don-t-recover"
@@ -4715,7 +4771,7 @@
    "quotes": [
     {
      "text": "\"nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane\"",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:850",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:855",
      "ref": null,
      "attr": [],
      "lead": null,
@@ -4727,7 +4783,7 @@
    "restatement": [
     {
      "text": "Recovered versions (`history/chatadhd_v0.8.3`, `history/chatadhd_v0.9.0`) and\nthe historical report are sources of requirements, ideas and data assets\n(e.g. `film_structure.json`), and real ground truth for self-discovery tests —\nnot code to merge. Everything is rebuilt in Loom with tests.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:852-855"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:857-860"
     }
    ],
    "commentary": [],
@@ -4744,7 +4800,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:849-855"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:854-860"
     }
    ],
    "files": [
@@ -4770,7 +4826,7 @@
    "restatement": [
     {
      "text": "`workbench_mockup_2026-09-26.webp`: dockable/floating panels (conversation\nlist, active conversation, knowledge graph with active context window, project\nstructure with dimmed high-confidence auto-completable nodes, artifact views\nfor music/video with timeline + storyboard, video player, execution\nenvironment with agent), multi-format ingestion, Loom SDK at the centre.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:858-862"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:863-867"
     }
    ],
    "commentary": [],
@@ -4787,7 +4843,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:857-862"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:862-867"
     }
    ],
    "files": [

@@ -846,6 +846,11 @@ Korekta mojego sensu R78 („zoom = ruch wzdłuż wymiaru skali” — źle). Dw
 
 Najprostsze rozwiązanie R78/R80 (09:0x UTC): użytkownik ustawia DWIE rzeczy — (a) ile inwencji twórczej wolno modelowi, gdy dane są niepewne (od „tylko to, co zmierzone” po „zmyślaj swobodnie”), (b) ile mocy obliczeniowej na to poświęcić — a reszta WYŁANIA SIĘ: z tych dwu ustawień i z samego faktu, że użytkownik zoomuje (pole widzenia maleje, R79), poniżej pikseli pojawia się nie powiększony piksel, lecz wygenerowana mikrostruktura: atomowa, subatomowa, kwantowa. Oba pokrętła to presety w danych, konfigurowalne per węzeł/zadanie/jednostkę; inwencja i jej koszt są widoczne w pochodzeniu reprezentacji (co zmierzone, co wyekstrapolowane, przy jakim ustawieniu). Wzorzec ogólny: zamiast pytać o każdą decyzję renderowania, użytkownik ustawia granice swobody i budżet, a silnik wyprowadza resztę (por. R80 pkt 4).
 
+## R82 — Proste reprezentacje silnik ogarnia na bieżąco sam, o trudniejsze pyta — to standard; użytkownik może zażyczyć sobie, by pytać o wszystko albo o nic (owner, 2026-10-23)
+> właśnie bo proste reprezentacje w Engine musi na bieżąco musieć ogarniać, o trudniejsze pytać, standardowo, w użytkownik włożyć sobie zażyczyć żeby o wszystko pytać albo żeby o nic nie pytać
+
+Domknięcie R80/R81 (09:1x UTC): preset „pytaj” ma trzy położenia — (a) standard: proste reprezentacje/decyzje silnik wyprowadza na bieżąco bez pytania, o trudniejsze pyta (z gotowym zestawem kryteriów, R80 pkt 4); (b) pytaj o wszystko; (c) nie pytaj o nic (silnik decyduje sam w granicach swobody i budżetu z R81, a decyzje zostają w pochodzeniu do wglądu). Gdzie leży granica „proste/trudne” — to dane (ważone kryteria z profilu i zadania), konfigurowalne per węzeł, rodzaj zadania, jednostkę; ten sam mechanizm co propozycje Tak/Nie w akcjach i podpowiedzi R58 („nie pytaj następnym razem”).
+
 ## Decision — rebuild, don't recover
 > "nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane"
 
