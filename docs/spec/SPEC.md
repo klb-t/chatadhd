@@ -5,13 +5,13 @@ Ten plik jest **wygenerowany** z `docs/spec/spec.json` poleceniem `python3 tools
 
 Status pochodzi z pliku luk i jest **obserwacją z podanej daty**, nie ograniczeniem.
 
-Pozycji razem: **517**.
+Pozycji razem: **518**.
 
 | Status (z LUKI) | liczba |
 |---|---|
 | częściowo | 210 |
 | jest | 151 |
-| bez statusu (nie ma w LUKI) | 134 |
+| bez statusu (nie ma w LUKI) | 135 |
 | brak | 16 |
 | nieaktualne | 5 |
 | sprzeczne | 1 |
@@ -19,7 +19,7 @@ Pozycji razem: **517**.
 | Rodzaj | liczba |
 |---|---|
 | remark | 367 |
-| requirement | 93 |
+| requirement | 94 |
 | philosophy | 36 |
 | statement | 10 |
 | decision | 4 |
@@ -28,14 +28,14 @@ Pozycji razem: **517**.
 
 | Rozumienie (R61) | liczba |
 |---|---|
-| none | 503 |
+| none | 504 |
 | proposed | 12 |
 | corrected | 2 |
 
 | W których plikach | liczba |
 |---|---|
 | LUKI + SLOWA | 379 |
-| rejestr R/D | 100 |
+| rejestr R/D | 101 |
 | SLOWA | 34 |
 | LUKI | 4 |
 
@@ -55,7 +55,7 @@ Pozycji razem: **517**.
 | Proces i współpraca | 67 |
 | Pozostałe | 33 |
 | Uzupełnienia (wypowiedzi bez numeru) | 10 |
-| Rejestr wymagań R/D | 100 |
+| Rejestr wymagań R/D | 101 |
 | bez tematu | 3 |
 
 ## Filozofia
@@ -614,8 +614,9 @@ Pozycji razem: **517**.
 - `s_e2115ad7f760` **R91** — Limity tygodnia: Fable do końca, reszta do 90 %; linie do wklejenia w Claude nie mogą wyglądać jak shell — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L896)
 - `s_bd6af871ef5f` **R92** — Sesja S1 wygaszana, wszystko na GCP; administrator VM jedynym punktem kontaktu; wdrażamy wszystko, dane i importy robi sam — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L902)
 - `s_a700030d69da` **R93** — Sprawozdania pełnymi zdaniami, po ludzku; skróty i slang tylko te, których sam używa — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L907)
-- `s_18ec73967a7b` **owner:decision-rebuild-don-t-recover** — Decision — rebuild, don't recover — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L912)
-- `s_223e1568b3b9` **owner:ui-reference** — UI reference — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L920)
+- `s_e438242fe59f` **R94** — Wywłaszczenie VM: mechanizm, brak zabezpieczenia, improwizowany przepływ (sygnał → zapis stanu → nowa VM Standard z obrazu → przepięcie usług); dysk dokłada administrator przez API; lag kart zgody — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L912)
+- `s_18ec73967a7b` **owner:decision-rebuild-don-t-recover** — Decision — rebuild, don't recover — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L919)
+- `s_223e1568b3b9` **owner:ui-reference** — UI reference — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L927)
 
 ## Bez tematu
 

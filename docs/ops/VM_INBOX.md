@@ -33,3 +33,27 @@ i pieniędzmi bez jego tak/nie; obserwacja środowiska = advisory, nie stop).
 7. (R92, decyzja techniczna S1, odwrót: `systemctl --user disable claude-rc`) Zainstaluj `claude-rc.service` z §6
    rekonesansu; jeśli klasyfikator uprawnień znów blokuje, poproś właściciela w sesji o jedno „tak” przy tej komendzie —
    on jest przy Tobie. Spot→Standard zostaje jego pytaniem tak/nie (pieniądze) — nie pytaj drugi raz, S1 już zapytał.
+
+8. (2026-10-23 19:3x UTC, **R94 — słowa właściciela w spec, przeczytaj je w całości**) **Poszukaj skryptów z 2024** od
+   wywłaszczenia: właściciel pamięta, że „w 2024 Claude albo GPT ogarniali preempting skryptami”. Sprawdź: metadane
+   PROJEKTU (nie tylko instancji) w `clever-stone-467803-g7` (startup/shutdown-script), Cloud Scheduler / Cloud Functions /
+   Cloud Run jobs w projekcie, stare instancje i obrazy, jego repozytoria na GitHubie (`gh repo list klb-t`, grep
+   preempt/shutdown/hibern), katalogi na maszynie (`~/devbox-agent`, `~/.handoff-stage-*`, `~/.resident-stage-*`).
+   Wynik (znalezione albo „nie ma”) jako sekcja w `VM_RECON` i jedna linia do S1.
+9. (R94) **Zabezpieczenie przed wywłaszczeniem — zaprojektuj i zbuduj wg jego przykładu, fakty z dokumentacji GCP
+   (z datą i linkiem, nie z pamięci):** ile uprzedzenia daje Google (ACPI + metadane `instance/preempted`), co zostaje
+   (dysk trwały: maszyna STOPPED, nie skasowana), co ginie (RAM, procesy, tmux), czy `suspend` jest możliwy przy
+   wywłaszczeniu Spot, czy model provisioningu zmienia się tylko na zatrzymanej maszynie, skąd może biec stróż po
+   zatrzymaniu (poza maszyną: Cloud Scheduler + Cloud Run job / Function, albo zadanie w chmurze Claude; ta maszyna nie
+   może sama siebie wystartować). Etapy: (a) skrypt wyłączenia w limicie uprzedzenia: commit+push WIP każdego
+   worktree, znacznik „praca w toku” poza maszyną, zapis wskaźnika sesji Claude (transkrypty są na dysku →
+   `claude --resume` po starcie — sprawdź, jak wznowić Remote Control nieinteraktywnie); (b) stróż poza maszyną:
+   po STOPPED uruchamia ją ponownie (jako Spot, gdy jest pojemność; z promocją na Standard tylko, gdy znacznik „praca
+   w toku” — to Twój spot-guard) i wraca do Spot w bezczynności; (c) jednostka auto-startu wznawia tmux + sesję;
+   (d) usługi (WatchDog, serwery) wstają z systemd — zmierz przerwę w sekundach i podaj ją właścicielowi uczciwie
+   (jedna maszyna = przerwa minutowa, nie sekundowa; „niezauważalne przepięcie” wymaga drugiej maszyny i load
+   balancera — policz koszt, nie buduj bez jego tak). Wdróż od razu to, co nie kosztuje (a, c, d, stróż bez promocji);
+   promocję na Standard WŁĄCZ dopiero po jego tak/nie z szacunkiem: cena Standard × godziny pracy/dobę.
+10. (R94, zgoda właściciela na pieniądze w tym zakresie) **Dysk:** gdy braknie miejsca, dokładasz sam przez API GCP
+   (`gcloud compute disks resize` + powiększenie systemu plików online), tyle, ile potrzeba; każde powiększenie zapisz
+   (GB, cena z datą) w `VM_RECON` i w jednej linii do S1. Przed buildem: ≥ 5 GB wolnego, inaczej dokładasz.

@@ -1,8 +1,10 @@
-# Kolejka S1 — stan 2026-10-23 19:15 UTC
+# Kolejka S1 — stan 2026-10-23 19:35 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
 **Teleport (R72):** karta startowa nowej sesji S1 = `docs/ops/TELEPORT_S1.md` (aktualizowana tuż przed przełączeniem); zadania zaplanowane = `docs/ops/ZADANIA_ZAPLANOWANE_2026-10-23.md`; przeprowadzka = `docs/ops/PRZEPROWADZKA_GCP_2026-10-23.md`.
+
+## R94 (właściciel ≈ 19:3x UTC, dosłownie w spec): pyta o mechanizm znikania VM i brak zabezpieczenia; obserwuje lag kart zgody (pytanie dociera po minutach, po kliknięciu już failed — nie priorytet); zgoda: administrator VM sam dokłada dysk przez API, gdy potrzebuje; przykład przepływu (sygnał wyłączenia → szybki zapis stanu → nowa VM Standard z obrazu → niezauważalne przepięcie usług); pamięta skrypty z 2024 od Claude/GPT. Zrobione: wpisy 8–10 w `VM_INBOX.md` (poszukiwanie skryptów 2024 w projekcie GCP, repozytoriach i na maszynie; projekt i budowa stróża wg faktów z dokumentacji GCP z datą — co zostaje (dysk), co ginie (RAM), skąd biegnie stróż, `claude --resume`; wdrożyć od razu części bez kosztu, promocję na Standard po jego tak/nie z szacunkiem; dysk dokładany samodzielnie z zapisem ceny). Odpowiedź w czacie: fakty z rekonesansu + ocena jego przepływu (dysk trwały zostaje, RAM nie; 30 s; jedna maszyna = przerwa minutowa; sekundowe przepięcie = druga maszyna + balanser = pieniądze). Lag kart zgody zapisany jako obserwacja platformy (23.10: karta w przeglądarce „Waiting for this request's details… can't be allowed”).
 
 ## R93 (właściciel ≈ 19:15 UTC, dosłownie w spec): sprawozdania pełnymi wypowiedziami, po ludzku, bez skrótów, których nie rozumie; slang tylko taki, jakiego sam używa. Zmienia R62/R63 „same linie statusu”: zapisane w CLAUDE.md (sekcja o stylu wątku). Obserwacja: moje ostatnie wiadomości (skróty FF, CI, r67c, R92, APK v5, S2, KVM) były dla niego nieczytelne — od teraz każda nazwa robocza słowami albo pominięta.
 
