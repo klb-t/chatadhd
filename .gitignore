@@ -67,3 +67,6 @@ tools/gate-*/
 
 # generowany widok spec (R73): python3 tools/spec.py html; publikowany jako artefakt, nie w git
 docs/spec/SPEC.html
+
+# local gate/run outputs of the coordinator session (logs, junit, screenshots); never repository content
+scratchpad/
