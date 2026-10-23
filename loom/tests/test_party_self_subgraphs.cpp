@@ -407,8 +407,14 @@ TEST_SUITE("party_self_subgraphs") {
         const std::string address = c.at("address");
         INFO(lang << " " << address);
         kinds.insert(c.at("kind").get<std::string>());
-        CHECK(c.at("evidence").at("class").is_string());
-        CHECK(c.at("evidence").at("provenance").contains("method"));
+        if (c.at("evidence").is_null()) {
+          // an entry that holds no value has no evidence: it says why in its state (unanswered | declined | never)
+          CHECK(c.at("kind") == "profile_slot");
+          CHECK(c.at("state").is_string());
+        } else {
+          CHECK(c.at("evidence").at("class").is_string());
+          CHECK(c.at("evidence").at("provenance").contains("method"));
+        }
         CHECK(c.at("actions").is_array());
         if (carded.insert(c.at("kind").get<std::string>()).second) to_card.push_back(address);
       }
@@ -416,7 +422,8 @@ TEST_SUITE("party_self_subgraphs") {
         INFO(lang << " " << address);
         const Json card = p.card(address, lang);
         std::vector<std::string> texts = {card.at("label").get<std::string>(), card.value("why", ""), card.value("value_human", "")};
-        texts.push_back(card.at("evidence").value("human", ""));
+        if (card.at("evidence").is_object()) texts.push_back(card.at("evidence").value("human", ""));
+        else texts.push_back(card.value("state", ""));  // no evidence: the state is its word
         for (const auto& a : card.at("actions")) texts.push_back(a.at("label").get<std::string>());
         for (const auto& b : card.at("breadcrumbs")) texts.push_back(b.at("label").get<std::string>());
         for (const auto& rel : card.at("relations")) {
