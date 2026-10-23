@@ -288,6 +288,39 @@
           "class": "observed",
           "confidence": null
         },
+        "self_why": {
+          "en": "Everything the app knows about you, in one place. Each part below says where its entries came from, and you can correct or delete them.",
+          "pl": "Wszystko, co aplikacja o Tobie wie, w jednym miejscu. Każda część poniżej mówi, skąd wzięły się jej wpisy, a Ty możesz je poprawić albo usunąć."
+        },
+        "self_actions": [
+          {
+            "action": "profile.interview",
+            "args": {
+              "op": {
+                "const": "start"
+              }
+            }
+          },
+          {
+            "action": "profile.show"
+          }
+        ],
+        "node_why": {
+          "en": "A field of the interview about you. Only a known field has a value; the others say why there is none.",
+          "pl": "Pole wywiadu o Tobie. Wartość ma tylko pole, które znam; pozostałe mówią, dlaczego jej nie ma."
+        },
+        "contacts": {
+          "node_kinds": [
+            "person",
+            "org",
+            "organization"
+          ],
+          "limit": 200,
+          "note": {
+            "en": "People and organisations the analysis found in your messages (nodes of these kinds): an inference, never something you said.",
+            "pl": "Osoby i organizacje, które analiza znalazła w Twoich wiadomościach (węzły tych rodzajów): wniosek, a nie coś, co powiedziałeś."
+          }
+        },
         "description": "You (party:self) and the slots of the profile interview (party:self/<slot>): a slot you answered is what you said (observed, with the interview's provenance); a slot a model proposed is inferred and never shown as said by you.",
         "evidence_by_method": {
           "model_inferred": {
@@ -355,6 +388,26 @@
         }
       },
       {
+        "id": "subgraph",
+        "prefix": "subgraph:",
+        "class": "person_subgraph",
+        "reader": "party.subgraphs",
+        "label": {
+          "en": "Parts of You",
+          "pl": "Części Ciebie"
+        },
+        "parent": {
+          "node": "party:self"
+        },
+        "contain_edge": "part_of",
+        "edges": [],
+        "epistemic_default": {
+          "class": "declared",
+          "confidence": 1.0
+        },
+        "description": "The parts of You (party:self): one node subgraph:self/<id> per entry of profile.subgraphs in profiles/user.pack (as the onboarding layers resolve it), each with the nodes of the sources it claims (members) and the number of them by state and by evidence class. Which source hangs under which part, and which actions each member offers, is that table, not code."
+      },
+      {
         "id": "preference",
         "prefix": "preference:",
         "class": "preference",
@@ -376,6 +429,10 @@
         "epistemic_default": {
           "class": "declared",
           "confidence": 1.0
+        },
+        "node_why": {
+          "en": "A preference of yours: how I should speak to you. The value is the one that wins through the levels; the chip says which level set it.",
+          "pl": "Twoja preferencja: jak mam do Ciebie mówić. Wartość to ta, która wygrywa przez poziomy; plakietka mówi, który poziom ją ustawił."
         },
         "description": "The preference.* defaults of the user profile pack (style, length, language, attention needs) as the onboarding layers resolve them: a preset is declared, your override is what you said.",
         "status": {
@@ -460,6 +517,10 @@
           "class": "declared",
           "confidence": 1.0
         },
+        "node_why": {
+          "en": "A rule about your data that the app obeys: what may be stored, inferred or sent, and for how long.",
+          "pl": "Zasada o Twoich danych, której aplikacja przestrzega: co wolno zapisać, wywnioskować albo wysłać i na jak długo."
+        },
         "description": "The rules of onboarding.privacy (what may be stored, inferred, sent to providers, how long it is kept), effective through the onboarding layers.",
         "labels": {
           "local-explicit-preset": {
@@ -491,6 +552,10 @@
           "class": "inferred",
           "confidence": null
         },
+        "node_why": {
+          "en": "A topic you write about. It is a conclusion of the analysis, not something you said.",
+          "pl": "Temat, o którym piszesz. To wniosek z analizy, a nie coś, co powiedziałeś."
+        },
         "description": "Topic nodes the analysis found in your messages (nodes of kind topic): an inference from the analysis, never something you said; the confidence is unknown until the analysis records one."
       },
       {
@@ -511,10 +576,22 @@
           "class": "observed",
           "confidence": null
         },
+        "node_why": {
+          "en": "A note I remember. The line under it says where it came from.",
+          "pl": "Notatka, którą pamiętam. Linijka pod nią mówi, skąd się wzięła."
+        },
         "description": "The notes of the memory tree (memory.json); top-level notes hang under You, children under their note. A note's evidence comes from its metadata.provenance (you, an import, a folder, the guardian); without one the method says not_recorded.",
         "evidence_by_method": {
           "model_inferred": {
             "class": "inferred",
+            "confidence": null
+          },
+          "note_guardian": {
+            "class": "inferred",
+            "confidence": null
+          },
+          "not_recorded_before_m1": {
+            "class": "declared",
             "confidence": null
           },
           "*": {
@@ -598,6 +675,10 @@
         "epistemic_default": {
           "class": "observed",
           "confidence": 1.0
+        },
+        "node_why": {
+          "en": "A project, team or organisation you belong to. Its settings and rules apply in the conversations that belong to it.",
+          "pl": "Projekt, zespół albo organizacja, do której należysz. Jej ustawienia i zasady działają w rozmowach, które do niej należą."
         },
         "description": "The organisational units the conversations name (conversations.metadata.units: unit:<kind>/<id>), with the conversations that are members of each."
       },
@@ -1182,6 +1263,30 @@
       "slot_never": {
         "en": "never",
         "pl": "nigdy"
+      },
+      "slot_above_level": {
+        "en": "not asked at your level",
+        "pl": "poza Twoim poziomem pytań"
+      },
+      "evidence.method.note_user": {
+        "en": "you wrote it",
+        "pl": "napisałeś to Ty"
+      },
+      "evidence.method.note_import": {
+        "en": "from an import",
+        "pl": "z importu"
+      },
+      "evidence.method.note_folder": {
+        "en": "from a folder you attached",
+        "pl": "z dołączonego folderu"
+      },
+      "evidence.method.note_guardian": {
+        "en": "remembered by the guardian from what you said",
+        "pl": "zapamiętane przez strażnika z tego, co powiedziałeś"
+      },
+      "evidence.method.not_recorded_before_m1": {
+        "en": "origin unknown (saved before M1)",
+        "pl": "pochodzenie nieznane (zapisane przed M1)"
       },
       "byte_units": [
         "B",

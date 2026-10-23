@@ -3588,10 +3588,10 @@ std::string_view(R"loom_onboard(                "order.stability": "stabilna (pr
       "id": "profile.subgraphs/v1",
       "key": "profile.subgraphs",
       "area": "profiles/subgraphs",
-      "revision": 1,
+      "revision": 2,
       "value": {
         "schema": "loom.profile_subgraphs/1",
-        "description": "The parts of the node You (party:self) and the order in which the stable ones are rendered into the profile prefix of a request: order_for_prefix (null = not part of the prefix) and stability_rank (1 = changes least). The kernel reads this table from work item M1-K2; today only the data exists.",
+        "description": "The parts of the node You (party:self): the order in which the stable ones are rendered into the profile prefix of a request (order_for_prefix, null = not part of the prefix; stability_rank, 1 = changes least) and what the graph shows under each (members: the projection sources whose nodes hang under that part, where = the node fields they must have, also = shown here too and still at their home; the first part in this table that claims a node keeps it; actions = the catalogue actions offered on each member, args = the node field each takes or a constant; actions_here = offered on the part itself; hidden: true = you hid the part). The projection of party:self (M1-K2c-2) reads this table; your table in the onboarding layers replaces the shipped one.",
         "subgraphs": [
           {
             "id": "identity",
@@ -3604,7 +3604,39 @@ std::string_view(R"loom_onboard(                "order.stability": "stabilna (pr
               "en": "Who you are: name, role, time zone. It changes least, so it goes first."
             },
             "order_for_prefix": 1,
-            "stability_rank": 1
+            "stability_rank": 1,
+            "members": [
+              {
+                "source": "party",
+                "where": {
+                  "kind": "profile_slot",
+                  "attrs.section": [
+                    "identity"
+                  ]
+                }
+              }
+            ],
+            "actions": [
+              {
+                "action": "profile.set",
+                "args": {
+                  "slot": "attrs.slot"
+                }
+              }
+            ],
+            "actions_here": [
+              {
+                "action": "profile.interview",
+                "args": {
+                  "op": {
+                    "const": "start"
+                  }
+                }
+              },
+              {
+                "action": "profile.show"
+              }
+            ]
           },
           {
             "id": "preferences",
@@ -3618,7 +3650,30 @@ std::string_view(R"loom_onboard(                "order.stability": "stabilna (pr
             },
             "order_for_prefix": 2,
             "stability_rank": 2,
-            "per_flow": true
+            "per_flow": true,
+            "members": [
+              {
+                "source": "preference"
+              }
+            ],
+            "actions": [
+              {
+                "action": "profile.set",
+                "args": {
+                  "slot": "attrs.slot"
+                }
+              }
+            ],
+            "actions_here": [
+              {
+                "action": "profile.interview",
+                "args": {
+                  "op": {
+                    "const": "start"
+                  }
+                }
+              }
+            ]
           },
           {
             "id": "policies",
@@ -3631,7 +3686,27 @@ std::string_view(R"loom_onboard(                "order.stability": "stabilna (pr
               "en": "What may be done with your data and what to ask about: privacy and what the guardian remembers."
             },
             "order_for_prefix": 3,
-            "stability_rank": 3
+            "stability_rank": 3,
+            "members": [
+              {
+                "source": "policy"
+              }
+            ],
+            "actions": [
+              {
+                "action": "profile.set",
+                "args": {
+                  "slot": {
+                    "const": "privacy.preferences"
+                  }
+                }
+              }
+            ],
+            "actions_here": [
+              {
+                "action": "profile.show"
+              }
+            ]
           },
           {
             "id": "units",
@@ -3644,7 +3719,37 @@ std::string_view(R"loom_onboard(                "order.stability": "stabilna (pr
               "en": "The projects, teams and organisations you belong to."
             },
             "order_for_prefix": 4,
-            "stability_rank": 4
+            "stability_rank": 4,
+            "members": [
+              {
+                "source": "unit",
+                "also": true
+              }
+            ],
+            "actions": [
+              {
+                "action": "units.forget",
+                "args": {
+                  "kind": "attrs.unit_kind",
+                  "id": "attrs.unit_id"
+                }
+              },
+              {
+                "action": "conversation.set_unit",
+                "args": {
+                  "kind": "attrs.unit_kind",
+                  "id": "attrs.unit_id"
+                }
+              }
+            ],
+            "actions_here": [
+              {
+                "action": "units.define"
+              },
+              {
+                "action": "units.list"
+              }
+            ]
           },
           {
             "id": "interests",
@@ -3657,7 +3762,14 @@ std::string_view(R"loom_onboard(                "order.stability": "stabilna (pr
               "en": "Topics you write about; these are conclusions of the analysis, not your words."
             },
             "order_for_prefix": 5,
-            "stability_rank": 5
+            "stability_rank": 5,
+            "members": [
+              {
+                "source": "interest"
+              }
+            ],
+            "actions": [],
+            "actions_here": []
           },
           {
             "id": "network",
@@ -3670,7 +3782,21 @@ std::string_view(R"loom_onboard(                "order.stability": "stabilna (pr
               "en": "The people and organisations you know."
             },
             "order_for_prefix": 6,
-            "stability_rank": 6
+            "stability_rank": 6,
+            "members": [
+              {
+                "source": "party",
+                "where": {
+                  "kind": [
+                    "person",
+                    "organization"
+                  ],
+                  "attrs.contact": true
+                }
+              }
+            ],
+            "actions": [],
+            "actions_here": []
           },
           {
             "id": "memory",
@@ -3683,7 +3809,70 @@ std::string_view(R"loom_onboard(                "order.stability": "stabilna (pr
               "en": "The entries of the memory tree. They go into the request as the part “Memory”, not as the profile."
             },
             "order_for_prefix": null,
-            "stability_rank": 7
+            "stability_rank": 7,
+            "members": [
+              {
+                "source": "memory"
+              }
+            ],
+            "actions": [
+              {
+                "action": "memory.forget",
+                "args": {
+                  "id": "attrs.note_id"
+                }
+              }
+            ],
+            "actions_here": [
+              {
+                "action": "memory.remember"
+              },
+              {
+                "action": "memory.recall"
+              }
+            ]
+          },
+          {
+            "id": "slots",
+            "label": {
+              "pl": "Pola wywiadu",
+              "en": "Interview fields"
+            },
+            "why": {
+              "pl": "Wszystko, o co pyta wywiad poza tożsamością: każde pole ze stanem (wiem, nieznane, pominięte, nigdy nie pytaj) i z powodem, jeśli o nie nie zapytam.",
+              "en": "Everything else the interview asks about: every field with its state (known, unknown, declined, never ask) and the reason when I will not ask."
+            },
+            "order_for_prefix": null,
+            "stability_rank": 8,
+            "members": [
+              {
+                "source": "party",
+                "where": {
+                  "kind": "profile_slot"
+                }
+              }
+            ],
+            "actions": [
+              {
+                "action": "profile.set",
+                "args": {
+                  "slot": "attrs.slot"
+                }
+              }
+            ],
+            "actions_here": [
+              {
+                "action": "profile.interview",
+                "args": {
+                  "op": {
+                    "const": "start"
+                  }
+                }
+              },
+              {
+                "action": "profile.show"
+              }
+            ]
           }
         ]
       }
@@ -3792,7 +3981,8 @@ std::string_view(R"loom_onboard(                "order.stability": "stabilna (pr
             "details": "Source versions, access results and read evidence",
             "unavailable": "The source view is unavailable. Stored messages and explicit source statuses remain visible.",
             "complete": "Source view complete",
-            "partial": "Source view partial",
+)loom_onboard", 59979),
+std::string_view(R"loom_onboard(            "partial": "Source view partial",
             "configuration": "Local read configuration",
             "projection_storage": "Derived projection retention",
             "content_index": "Source content index",
@@ -3866,8 +4056,7 @@ std::string_view(R"loom_onboard(                "order.stability": "stabilna (pr
         "feature": "chat_send",
         "locales": {
           "en": {
-)loom_onboard", 59942),
-std::string_view(R"loom_onboard(            "source_history_omitted": "Linked source history will not be included in this message. Only the messages stored in this conversation are sent.",
+            "source_history_omitted": "Linked source history will not be included in this message. Only the messages stored in this conversation are sent.",
             "reason": "Reason: {{explanation}} (code: {{reason}})",
             "reason.source_egress_not_bound": "there is no binding yet that allows source content to be sent to a model",
             "reason.unrecognized": "the conversation view reports that this history cannot be included",
@@ -4782,7 +4971,8 @@ std::string_view(R"loom_onboard(            "source_history_omitted": "Linked so
             "cm_issue_no_id": "an entry in “{{name}}” has no id",
             "cm_issue_unknown_kind": "“{{name}}” is of a kind this version does not know ({{kind}})",
             "cm_issue_toggle_target": "the switch “{{name}}” does not say what it turns on",
-            "cm_issue_no_panel": "“{{name}}” should open a panel but names none",
+)loom_onboard", 59957),
+std::string_view(R"loom_onboard(            "cm_issue_no_panel": "“{{name}}” should open a panel but names none",
             "cm_issue_unknown_panel": "“{{name}}” opens a panel this version does not know ({{panel}})",
             "cm_issue_ops_shape": "your changes to the menu are not in the expected shape",
             "cm_issue_op_shape": "change no. {{n}} is not a change",
@@ -4851,8 +5041,7 @@ std::string_view(R"loom_onboard(            "source_history_omitted": "Linked so
             "mp_change": "Change the model in the + menu, the entry “Choose model”.",
             "cm_issue_no_step": "“{{name}}” should be a context step but names none",
             "cm_issue_no_focus": "“{{name}}” should open a graph node but names none",
-)loom_onboard", 59994),
-std::string_view(R"loom_onboard(            "mp_set_by_window": "Picked in this window and sent with every request (it is not saved in the chain of settings).",
+            "mp_set_by_window": "Picked in this window and sent with every request (it is not saved in the chain of settings).",
             "mp_reason_other_model": "this class is that of the model {{model}} of the role “Answer to a message”, not the one picked here",
             "mp_reason_no_role": "the engine gave no role for answering a message",
             "mp_chain_rest": "The other levels have no value or do not apply to this conversation: {{levels}}.",
@@ -5738,7 +5927,8 @@ std::string_view(R"loom_onboard(            "mp_set_by_window": "Picked in this 
             "inheritance.no_unit.project": "bez projektu",
             "inheritance.no_unit.team": "bez zespołu",
             "inheritance.no_unit.organization": "bez organizacji",
-            "inheritance.no_unit.group_of_groups": "bez grupy grup",
+)loom_onboard", 59997),
+std::string_view(R"loom_onboard(            "inheritance.no_unit.group_of_groups": "bez grupy grup",
             "inheritance.no_unit.role_in_context": "bez roli w kontekście",
             "inheritance.role.supplied": "daje wartość",
             "inheritance.role.overridden": "przesłonięte",
@@ -5821,8 +6011,7 @@ std::string_view(R"loom_onboard(            "mp_set_by_window": "Picked in this 
             "count.name.tool_sources": "źródła narzędzi",
             "count.name.tool_source_kinds": "rodzaje źródeł narzędzi",
             "count.name.roles": "role modeli",
-)loom_onboard", 59986),
-std::string_view(R"loom_onboard(            "count.name.roles_settings": "ustawienia ról",
+            "count.name.roles_settings": "ustawienia ról",
             "count.name.connectors": "konektory",
             "count.name.environments": "środowiska",
             "count.name.messages_waiting": "wiadomości czekające na analizę",
@@ -6577,7 +6766,8 @@ std::string_view(R"loom_onboard(            "count.name.roles_settings": "ustawi
             "chip.status.label": "Ile zostało",
             "chip.status.say": "ile zostało",
             "chips.idle": "next review status",
-            "chip.next.label": "Dalej",
+)loom_onboard", 59983),
+std::string_view(R"loom_onboard(            "chip.next.label": "Dalej",
             "chip.next.say": "dalej",
             "proposal.yes": "Tak",
             "proposal.no": "Nie"
@@ -6748,7 +6938,7 @@ std::string_view(R"loom_onboard(            "count.name.roles_settings": "ustawi
   },
   "presentation_key": "presentation.onboarding"
 }
-)loom_onboard", 59095)};
+)loom_onboard", 4550)};
 static constexpr std::string_view kOnboardingScenario[] = {
 std::string_view(R"loom_onboard({
   "schema": "loom.onboarding.scenario/1",

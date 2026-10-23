@@ -143,10 +143,10 @@
       "id": "profile.subgraphs/v1",
       "key": "profile.subgraphs",
       "area": "profiles/subgraphs",
-      "revision": 1,
+      "revision": 2,
       "value": {
         "schema": "loom.profile_subgraphs/1",
-        "description": "The parts of the node You (party:self) and the order in which the stable ones are rendered into the profile prefix of a request: order_for_prefix (null = not part of the prefix) and stability_rank (1 = changes least). The kernel reads this table from work item M1-K2; today only the data exists.",
+        "description": "The parts of the node You (party:self): the order in which the stable ones are rendered into the profile prefix of a request (order_for_prefix, null = not part of the prefix; stability_rank, 1 = changes least) and what the graph shows under each (members: the projection sources whose nodes hang under that part, where = the node fields they must have, also = shown here too and still at their home; the first part in this table that claims a node keeps it; actions = the catalogue actions offered on each member, args = the node field each takes or a constant; actions_here = offered on the part itself; hidden: true = you hid the part). The projection of party:self (M1-K2c-2) reads this table; your table in the onboarding layers replaces the shipped one.",
         "subgraphs": [
           {
             "id": "identity",
@@ -159,7 +159,39 @@
               "en": "Who you are: name, role, time zone. It changes least, so it goes first."
             },
             "order_for_prefix": 1,
-            "stability_rank": 1
+            "stability_rank": 1,
+            "members": [
+              {
+                "source": "party",
+                "where": {
+                  "kind": "profile_slot",
+                  "attrs.section": [
+                    "identity"
+                  ]
+                }
+              }
+            ],
+            "actions": [
+              {
+                "action": "profile.set",
+                "args": {
+                  "slot": "attrs.slot"
+                }
+              }
+            ],
+            "actions_here": [
+              {
+                "action": "profile.interview",
+                "args": {
+                  "op": {
+                    "const": "start"
+                  }
+                }
+              },
+              {
+                "action": "profile.show"
+              }
+            ]
           },
           {
             "id": "preferences",
@@ -173,7 +205,30 @@
             },
             "order_for_prefix": 2,
             "stability_rank": 2,
-            "per_flow": true
+            "per_flow": true,
+            "members": [
+              {
+                "source": "preference"
+              }
+            ],
+            "actions": [
+              {
+                "action": "profile.set",
+                "args": {
+                  "slot": "attrs.slot"
+                }
+              }
+            ],
+            "actions_here": [
+              {
+                "action": "profile.interview",
+                "args": {
+                  "op": {
+                    "const": "start"
+                  }
+                }
+              }
+            ]
           },
           {
             "id": "policies",
@@ -186,7 +241,27 @@
               "en": "What may be done with your data and what to ask about: privacy and what the guardian remembers."
             },
             "order_for_prefix": 3,
-            "stability_rank": 3
+            "stability_rank": 3,
+            "members": [
+              {
+                "source": "policy"
+              }
+            ],
+            "actions": [
+              {
+                "action": "profile.set",
+                "args": {
+                  "slot": {
+                    "const": "privacy.preferences"
+                  }
+                }
+              }
+            ],
+            "actions_here": [
+              {
+                "action": "profile.show"
+              }
+            ]
           },
           {
             "id": "units",
@@ -199,7 +274,37 @@
               "en": "The projects, teams and organisations you belong to."
             },
             "order_for_prefix": 4,
-            "stability_rank": 4
+            "stability_rank": 4,
+            "members": [
+              {
+                "source": "unit",
+                "also": true
+              }
+            ],
+            "actions": [
+              {
+                "action": "units.forget",
+                "args": {
+                  "kind": "attrs.unit_kind",
+                  "id": "attrs.unit_id"
+                }
+              },
+              {
+                "action": "conversation.set_unit",
+                "args": {
+                  "kind": "attrs.unit_kind",
+                  "id": "attrs.unit_id"
+                }
+              }
+            ],
+            "actions_here": [
+              {
+                "action": "units.define"
+              },
+              {
+                "action": "units.list"
+              }
+            ]
           },
           {
             "id": "interests",
@@ -212,7 +317,14 @@
               "en": "Topics you write about; these are conclusions of the analysis, not your words."
             },
             "order_for_prefix": 5,
-            "stability_rank": 5
+            "stability_rank": 5,
+            "members": [
+              {
+                "source": "interest"
+              }
+            ],
+            "actions": [],
+            "actions_here": []
           },
           {
             "id": "network",
@@ -225,7 +337,21 @@
               "en": "The people and organisations you know."
             },
             "order_for_prefix": 6,
-            "stability_rank": 6
+            "stability_rank": 6,
+            "members": [
+              {
+                "source": "party",
+                "where": {
+                  "kind": [
+                    "person",
+                    "organization"
+                  ],
+                  "attrs.contact": true
+                }
+              }
+            ],
+            "actions": [],
+            "actions_here": []
           },
           {
             "id": "memory",
@@ -238,7 +364,70 @@
               "en": "The entries of the memory tree. They go into the request as the part “Memory”, not as the profile."
             },
             "order_for_prefix": null,
-            "stability_rank": 7
+            "stability_rank": 7,
+            "members": [
+              {
+                "source": "memory"
+              }
+            ],
+            "actions": [
+              {
+                "action": "memory.forget",
+                "args": {
+                  "id": "attrs.note_id"
+                }
+              }
+            ],
+            "actions_here": [
+              {
+                "action": "memory.remember"
+              },
+              {
+                "action": "memory.recall"
+              }
+            ]
+          },
+          {
+            "id": "slots",
+            "label": {
+              "pl": "Pola wywiadu",
+              "en": "Interview fields"
+            },
+            "why": {
+              "pl": "Wszystko, o co pyta wywiad poza tożsamością: każde pole ze stanem (wiem, nieznane, pominięte, nigdy nie pytaj) i z powodem, jeśli o nie nie zapytam.",
+              "en": "Everything else the interview asks about: every field with its state (known, unknown, declined, never ask) and the reason when I will not ask."
+            },
+            "order_for_prefix": null,
+            "stability_rank": 8,
+            "members": [
+              {
+                "source": "party",
+                "where": {
+                  "kind": "profile_slot"
+                }
+              }
+            ],
+            "actions": [
+              {
+                "action": "profile.set",
+                "args": {
+                  "slot": "attrs.slot"
+                }
+              }
+            ],
+            "actions_here": [
+              {
+                "action": "profile.interview",
+                "args": {
+                  "op": {
+                    "const": "start"
+                  }
+                }
+              },
+              {
+                "action": "profile.show"
+              }
+            ]
           }
         ]
       }

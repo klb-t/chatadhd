@@ -2040,6 +2040,12 @@
             "pl": "Jednostka organizacyjna"
           }
         },
+        "person_subgraph": {
+          "label": {
+            "en": "A part of You",
+            "pl": "Część Ciebie"
+          }
+        },
         "flow": {
           "label": {
             "en": "Flow (action of the catalogue)",

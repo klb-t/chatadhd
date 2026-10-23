@@ -28,7 +28,7 @@
       {"id": "projection_memory", "prefix": "memory:", "source": "projection", "class": "memory_note"},
       {"id": "projection_conv", "prefix": "conv:", "source": "projection", "class": "conversation", "same_as_prefix": "c_"},
       {"id": "projection_msg", "prefix": "msg:", "source": "projection", "class": "message", "same_as_prefix": "m_"},
-      {"id": "projection_unit", "prefix": "unit:", "source": "projection", "class": "unit"},
+      {"id": "projection_unit", "prefix": "unit:", "source": "projection", "class": "unit"}, {"id": "projection_subgraph", "prefix": "subgraph:", "source": "projection", "class": "person_subgraph"},
       {"id": "projection_selector_profile", "prefix": "selector_profile:", "source": "projection", "class": "selector_profile"},
       {"id": "projection_flow", "prefix": "flow:", "source": "projection", "class": "flow"},
       {"id": "projection_step", "prefix": "step:", "source": "projection", "class": "flow_step"},

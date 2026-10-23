@@ -121,6 +121,8 @@ class Catalogue {
   std::string source_label(const std::string& id);
   // How many times this render opened the scope-chain Resolver (0 or 1).
   std::size_t resolver_opens() const;
+  // True when the part of You at `parent` (subgraph:self/<id>) takes its members from the source (profile.subgraphs members).
+  bool subgraph_reads(const std::string& parent, const std::string& source_id);
 
   struct Impl;
 

@@ -91,6 +91,8 @@ Json evidence_by_method(const Json& source, const std::string& method, const Jso
 
 // The value of a setting node, resolved when it leaves the catalogue (defined with the settings reader).
 void resolve_setting_node(Catalogue::Impl& c, Json& n);
+// The nodes of the parts of You (M1-K2c-2): which part of party:self a node of a source hangs under, and the actions it offers (profile.subgraphs).
+void regroup_self(Catalogue::Impl& c, const Json& source, Read& r);
 
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -130,6 +132,11 @@ struct Catalogue::Impl {
   std::optional<Json> screen_cache;
   std::map<std::string, Json> receipt_cache;                 // receipt_of(): request or answer id -> the render of its record (M1-K1c3a)
   std::optional<std::set<std::string>> receipt_kinds_cache;  // the edge kinds of the perspective sent_to_model
+  std::string profile_user;                  // the stored onboarding profile that profile() read ("" = none)
+  std::optional<Json> self_table_cache;      // subgraph_table()
+  std::string self_table_layer;              // the layer that supplied it: builtin | user
+  std::optional<Json> slot_plan_cache;       // slot_plan()
+  std::optional<Json> action_table_cache;    // the actions of the class application: action id -> {label, decision, implementation}
 
   using Reader = std::function<Result<Read>(Impl&, const Json& source, const std::string& parent, const Json& paging)>;
   static const std::map<std::string, Reader>& readers();
@@ -247,7 +254,10 @@ struct Catalogue::Impl {
         if (profile_error.empty() && any && !user.empty()) {
           onboarding::OnboardingStore store(*env.db);
           auto snap = store.read(user);
-          if (snap) profile_snapshot = std::move(*snap);
+          if (snap) {
+            profile_snapshot = std::move(*snap);
+            profile_user = user;
+          }
           else if (snap.error().code != Errc::NotFound) profile_error = "onboarding_unavailable";
         }
       }
@@ -314,7 +324,11 @@ struct Catalogue::Impl {
   // One word of the screen ("" when the screen has none), with its {{variables}}.
   std::string word(const std::string& id, const Json& vars = Json::object()) {
     const Json* w = json::find(screen_words(), id);
-    if (!w || !w->is_string()) return std::string();
+    if (!w || !w->is_string()) {
+      // The words of the graph sources (value_words) are the fallback: a word the screen's pack does not have yet.
+      const Json* own = json::find(words, id);
+      return own && own->is_object() ? say(*own) : std::string();
+    }
     if (vars.empty()) return w->get<std::string>();
     auto text = render_profile_template(w->get<std::string>(), vars);
     return text ? *text : w->get<std::string>();
@@ -386,7 +400,7 @@ struct Catalogue::Impl {
     const bool yours = starts_with(layer, "overlay:");
     const Json cls = yours ? Json{{"class", "observed"}, {"confidence", 1.0}} : src.value("epistemic_default", Json::object());
     const std::string how = yours && method == "preset" ? std::string("override") : method;
-    return Json{{"address", address},
+    Json n{{"address", address},
                 {"label", label},
                 {"kind", json::get_string(src, "class")},
                 {"source", json::get_string(src, "id")},
@@ -395,6 +409,8 @@ struct Catalogue::Impl {
                 {"provenance", Json{{"layer", layer}, {"layers", layers}}},
                 {"has_children", false},
                 {"attrs", Json::object()}};
+    if (const Json* w = json::find(src, "node_why"); w && w->is_object()) n["why"] = say(*w);
+    return n;
   }
 
   // The parent of a source's nodes: {area: <id>} -> area:<id>, {node: <address>} -> that node ({of: <source>} is set per node by its reader).
@@ -644,6 +660,7 @@ struct Catalogue::Impl {
     if (r.unknown.empty())
       if (const Json st = src.value("status", Json::object()); st.is_object() && json::get_string(st, "state") == "planned" && r.nodes.empty())
         r.unknown = "planned";
+    if (r.unknown.empty()) regroup_self(*this, src, r);
     return &eager.emplace(id, std::move(r)).first->second;
   }
 
@@ -684,6 +701,84 @@ struct Catalogue::Impl {
       else log::write(log::Level::Debug, kLog, "unit kinds not readable: " + uk.error().message);
     }
     return *unit_levels_cache;
+  }
+
+  // ── the parts of You (profiles/user.pack profile.subgraphs, M1-K2c-2) ─────────────────────────────
+
+  static constexpr const char* kSelf = "party:self";
+  static constexpr const char* kPartPrefix = "subgraph:self/";
+
+  // The table as the onboarding layers resolve it (your table replaces the shipped one). A stored profile older than `members` (its pack has
+  // none) reads the shipped table, so a profile made before this change still shows its parts.
+  const Json& subgraph_table() {
+    if (self_table_cache) return *self_table_cache;
+    self_table_cache = Json::array();
+    self_table_layer = "builtin";
+    const auto take = [&](const onboarding::DefaultLayers& layers) {
+      auto r = layers.resolve("profile.subgraphs");
+      if (!r || json::get_string(*r, "status") != "effective") return false;
+      const Json table = r->value("value", Json::object()).value("subgraphs", Json());
+      bool has_members = false;
+      if (table.is_array())
+        for (const auto& e : table) has_members = has_members || (e.is_object() && e.contains("members"));
+      if (!has_members) return false;
+      self_table_cache = table;
+      self_table_layer = json::get_string(*r, "layer", "builtin");
+      return true;
+    };
+    bool got = false;
+    if (auto l = layers(); l) got = take(**l);
+    if (!got)
+      if (const auto& shipped = shipped_layers(); shipped) got = take(*shipped);
+    if (!got) log::write(log::Level::Debug, kLog, "the parts of You (profile.subgraphs) are not readable: You has no parts");
+    return *self_table_cache;
+  }
+
+  // True when the part at `parent` (subgraph:self/<id>) takes its members from the source: the sources to read for its children.
+  bool member_reads(const std::string& parent, const std::string& source_id) {
+    if (!starts_with(parent, kPartPrefix)) return false;
+    const std::string id = parent.substr(std::string(kPartPrefix).size());
+    for (const auto& sg : subgraph_table())
+      if (json::get_string(sg, "id") == id)
+        for (const auto& m : sg.value("members", Json::array()))
+          if (json::get_string(m, "source") == source_id) return true;
+    return false;
+  }
+
+  // Which slots the interview asks at the chosen level and why it will not ask the others (the same plan profile.show answers from):
+  // {level, asked[field], skipped{field: {reason, reason_text}}} or {unknown_reason}.
+  const Json& slot_plan() {
+    if (slot_plan_cache) return *slot_plan_cache;
+    slot_plan_cache = Json::object();
+    Json& out = *slot_plan_cache;
+    auto snap = profile();
+    if (!snap || !*snap || !env.db || profile_user.empty()) {
+      out["unknown_reason"] = "not_interviewed";
+      return out;
+    }
+    const Json level = setting("profile_detail_level");
+    if (!level.is_string() || level.get<std::string>().empty()) {
+      out["unknown_reason"] = "no_level_chosen";
+      return out;
+    }
+    Json request{{"what", "plan"}, {"level", level}, {"locale", lang()}};
+    if (const Json by = setting("profile_detail_by_category"); by.is_object() && !by.empty()) request["by_category"] = by;
+    auto view = onboarding::OnboardingStore(*env.db).interview_view(profile_user, request);
+    if (!view || !view->contains("view")) {
+      out["unknown_reason"] = view ? std::string("plan_unreadable") : view.error().message;
+      return out;
+    }
+    const Json plan = view->at("view");
+    out["level"] = level;
+    out["asked"] = Json::array();
+    for (const auto& a : plan.value("asks", Json::array())) out["asked"].push_back(json::get_string(a, "field"));
+    out["skipped"] = Json::object();
+    for (const auto& s : plan.value("skipped", Json::array())) {
+      const std::string raw = json::get_string(s, "reason");
+      const bool above = raw == "detail_above_level" || raw == "sensitivity_above_level";
+      out["skipped"][json::get_string(s, "field")] = Json{{"reason", above ? std::string("above_level") : raw}, {"reason_detail", raw}, {"reason_text", say(s.value("reason_text", Json()))}};
+    }
+    return out;
   }
 
   std::int64_t page_limit(const Json& src, const Json& paging) {
@@ -1134,11 +1229,113 @@ Result<std::vector<Json>> profile_slots(const Env& env) {
 
 namespace {
 
+Json catalogue_title(const Json& a, const std::string& lang);
+
+// The actions of the catalogue as the class application sees them (the class the person's own actions are for): id -> {label, decision,
+// implementation}, once per render. The label is the catalogue's title in the language asked; the decision is the rules' status for it.
+const Json& application_actions(Impl& c) {
+  if (c.action_table_cache) return *c.action_table_cache;
+  c.action_table_cache = Json::object();
+  Json& table = *c.action_table_cache;
+  auto catalogue = action_catalogue(c.env.root);
+  if (!catalogue) {
+    log::write(log::Level::Debug, kLog, "the parts of You: action catalogue not readable: " + catalogue.error().message);
+    return table;
+  }
+  Json decisions = Json::object();
+  const actions::ElementSources sources{c.env.db, nullptr, c.env.root};
+  if (auto fits = actions::invoke(c.env.root, "for", Json{{"element", "application"}}, &sources, c.env.cfg); fits) {
+    for (const auto& a : fits->value("actions", Json::array()))
+      decisions[json::get_string(a, "action", json::get_string(a, "id"))] = Json{{"decision", a.value("status", Json(nullptr))}, {"implementation", a.value("implementation", Json(nullptr))}};
+  } else {
+    log::write(log::Level::Debug, kLog, "the parts of You: decisions of the rules not readable: " + fits.error().message);
+  }
+  for (const auto& a : catalogue->value("actions", Json::array())) {
+    const std::string id = json::get_string(a, "id");
+    Json row{{"label", catalogue_title(a, c.lang())}, {"decision", nullptr}, {"implementation", a.value("status", Json(nullptr))}};
+    if (const Json* d = json::find(decisions, id)) {
+      row["decision"] = d->value("decision", Json(nullptr));
+      if (!d->value("implementation", Json(nullptr)).is_null()) row["implementation"] = (*d)["implementation"];
+    }
+    table[id] = std::move(row);
+  }
+  return table;
+}
+
+// A dotted path ("attrs.section") of a node; nullptr when a step is missing.
+const Json* path_in(const Json& n, const std::string& path) {
+  const Json* cur = &n;
+  std::size_t pos = 0;
+  while (cur) {
+    const std::size_t dot = path.find('.', pos);
+    cur = cur->is_object() ? json::find(*cur, path.substr(pos, dot == std::string::npos ? std::string::npos : dot - pos)) : nullptr;
+    if (dot == std::string::npos) break;
+    pos = dot + 1;
+  }
+  return cur;
+}
+
+// The fields a part's member must have (profile.subgraphs members[].where: a path -> a value, or a list of values one of which it has).
+bool fits_where(const Json& n, const Json& where) {
+  if (!where.is_object()) return true;
+  for (const auto& w : where.items()) {
+    const Json* v = path_in(n, w.key());
+    if (!v) return false;
+    if (w.value().is_array()) {
+      bool any = false;
+      for (const auto& x : w.value()) any = any || x == *v;
+      if (!any) return false;
+    } else if (!(w.value() == *v)) {
+      return false;
+    }
+  }
+  return true;
+}
+
+// The actions a part of You offers on a node (profile.subgraphs actions / actions_here): the catalogue's own rows (title, decision, implementation)
+// with the arguments filled from the node ("attrs.slot" = that field of the node, {"const": x} = x). An action the catalogue does not have is not
+// offered (and logged); one whose argument the node lacks is not offered on that node.
+Json self_actions(Impl& c, const Json& specs, const Json& node) {
+  Json out = Json::array();
+  if (!specs.is_array() || specs.empty()) return out;
+  const Json table = application_actions(c);
+  for (const auto& s : specs) {
+    const std::string id = json::get_string(s, "action");
+    const Json* known = json::find(table, id);
+    if (id.empty() || !known) {
+      log::write(log::Level::Debug, kLog, "the parts of You offer the action '" + id + "', which the catalogue does not have");
+      continue;
+    }
+    const Json arg_specs = s.value("args", Json::object());
+    Json args = Json::object();
+    bool complete = true;
+    for (const auto& a : arg_specs.items()) {
+      if (a.value().is_object() && a.value().contains("const")) {
+        args[a.key()] = a.value()["const"];
+      } else if (a.value().is_string()) {
+        const Json* v = path_in(node, a.value().get<std::string>());
+        if (v && !v->is_null()) args[a.key()] = *v;
+        else complete = false;
+      } else {
+        complete = false;
+      }
+    }
+    if (!complete) continue;
+    Json row = *known;
+    row["id"] = id;
+    row["args"] = args;
+    out.push_back(std::move(row));
+  }
+  return out;
+}
+
 Result<Read> read_party(Impl& c, const Json& src, const std::string&, const Json&) {
   Read r;
   Json self = c.make(src, "party:self", c.say(src.value("label", Json("You"))), c.parent_of(src), "rom", "graph/entry.pack#/seed/elements/party", "preset");
   self["kind"] = json::get_string(src, "class", "person");
   self["has_children"] = true;
+  if (const Json* w = json::find(src, "self_why"); w && w->is_object()) self["why"] = c.say(*w);
+  self["actions"] = self_actions(c, src.value("self_actions", Json::array()), self);
   Env pe = c.env;
   auto slots = profile_slots(pe);
   if (!slots) {
@@ -1148,6 +1345,10 @@ Result<Read> read_party(Impl& c, const Json& src, const std::string&, const Json
   }
   Json by = Json::object();
   const Json labels = src.value("slot_labels", Json::object());
+  const Json plan = c.slot_plan();  // a copy: nothing below may leave a reference into the cache
+  std::set<std::string> asked;
+  for (const auto& f : plan.value("asked", Json::array())) asked.insert(f.get<std::string>());
+  const Json skipped = plan.value("skipped", Json::object());
   for (const auto& s : *slots) {
     const std::string id = json::get_string(s, "id");
     const std::string state = json::get_string(s, "state", "unknown");
@@ -1161,20 +1362,116 @@ Result<Read> read_party(Impl& c, const Json& src, const std::string&, const Json
                     known ? method : "scenario", prov.is_object() ? prov.value("time", prov.value("created", Json(nullptr))) : Json(nullptr));
     n["kind"] = "profile_slot";
     n["status"] = state;
+    // Only a known slot has a value: unknown, declined and never say nothing about the person.
     n["value"] = known ? s.value("value", Json(nullptr)) : Json(nullptr);
     n["value_human"] = known ? c.human_value(s.value("value", Json(nullptr)), Json::object()) : c.say(c.words.value("slot_" + state, Json(state)));
     // A slot nobody answered carries the scenario's declaration; an answer is what you said, an inference is never shown as said.
     Json cls = known ? evidence_by_method(src, method, src.value("epistemic_default", Json::object())) : Json{{"class", "declared"}, {"confidence", nullptr}};
     n["evidence"] = evidence_of(cls, known ? "onboarding" : "rom", json::get_string(n["evidence"]["provenance"], "source_ref"), known ? method : "scenario",
                                 json::get_string(n["evidence"]["provenance"], "time").empty() ? Json(nullptr) : n["evidence"]["provenance"]["time"]);
-    n["attrs"] = Json{{"section", s.value("section", "")}, {"category", s.value("category", "")}};
+    n["attrs"] = Json{{"slot", id}, {"section", s.value("section", "")}, {"category", s.value("category", "")}};
+    // Whether the interview asks this slot at your level, and when it will not, why (profile.show says the same): null = no level or no interview yet.
+    if (plan.contains("asked")) {
+      const bool is_asked = asked.count(id) > 0;
+      n["attrs"]["asked_at_level"] = is_asked;
+      if (!is_asked)
+        if (const Json* why = json::find(skipped, id); why && why->is_object()) {
+          n["attrs"]["reason"] = why->value("reason", Json(nullptr));
+          n["attrs"]["reason_text"] = why->value("reason_text", "");
+          if (state == "unknown" && json::get_string(*why, "reason") == "above_level") {
+            n["value_human"] = c.say(c.words.value("slot_above_level", Json("not asked at your level")));
+            if (const std::string text = json::get_string(*why, "reason_text"); !text.empty()) n["why"] = text;
+          }
+        }
+    } else {
+      n["attrs"]["asked_at_level"] = nullptr;
+      n["attrs"]["asked_at_level_unknown_reason"] = plan.value("unknown_reason", "not_interviewed");
+    }
     r.nodes.push_back(std::move(n));
   }
-  self["attrs"] = Json{{"slots", by}};
+  // The people and organisations the analysis found (nodes of the kinds the source names): an inference, never something you said.
+  const Json contacts = src.value("contacts", Json::object());
+  if (c.env.db && contacts.is_object() && contacts.contains("node_kinds")) {
+    const std::int64_t limit = json::get_int(contacts, "limit", 200);
+    for (const auto& k : contacts["node_kinds"]) {
+      if (!k.is_string()) continue;
+      auto nodes = c.env.db->list_nodes(std::string_view(k.get<std::string>()), limit > 0 ? static_cast<int>(limit) : -1);
+      if (!nodes) {
+        self["attrs"]["contacts_unknown_reason"] = nodes.error().message;
+        log::write(log::Level::Debug, kLog, "contacts of kind " + k.get<std::string>() + " not readable: " + nodes.error().message);
+        continue;
+      }
+      for (const auto& t : *nodes) {
+        const std::string bare = starts_with(t.id, "n_") ? t.id.substr(2) : t.id;
+        Json n = c.make(src, "party:" + bare, t.label.empty() ? bare : t.label, "party:self", "db", t.id, "analysis", t.created);
+        n["kind"] = k.get<std::string>() == "person" ? "person" : "organization";
+        n["same_as"] = Json::array({t.id});
+        n["evidence"] = evidence_of(Json{{"class", "inferred"}, {"confidence", t.metadata.is_object() && t.metadata.contains("confidence") ? t.metadata["confidence"] : Json(nullptr)}},
+                                    "db", t.id, "analysis", t.created);
+        n["attrs"] = Json{{"contact", true}, {"node_kind", k.get<std::string>()}};
+        r.edges.push_back(Json{{"src", "party:self"}, {"dst", "party:" + bare}, {"kind", "knows"}});
+        r.nodes.push_back(std::move(n));
+      }
+    }
+  }
+  self["attrs"]["slots"] = by;
   r.nodes.insert(r.nodes.begin(), std::move(self));
   return r;
 }
 
+
+// The parts of You: one node per entry of profile.subgraphs, with how many members it has by state and by evidence class (an inference is counted
+// as an inference), and the actions offered on the part itself.
+Result<Read> read_subgraphs(Impl& c, const Json& src, const std::string&, const Json&) {
+  Read r;
+  const Json table = c.subgraph_table();
+  const std::string layer = c.self_table_layer == "user" ? "onboarding" : "rom";
+  std::int64_t order = 0;
+  for (const auto& sg : table) {
+    const std::string id = json::get_string(sg, "id");
+    if (id.empty()) continue;
+    const std::string address = std::string(Impl::kPartPrefix) + id;
+    if (json::get_bool(sg, "hidden", false)) {
+      r.hidden.push_back(Json{{"source", json::get_string(src, "id")}, {"id", address}, {"by", c.self_table_layer == "user" ? "overlay" : "rom"}});
+      continue;
+    }
+    Json n = c.make(src, address, c.say(sg.value("label", Json(id))), Impl::kSelf, layer, "profiles/user.pack#profile.subgraphs/" + id, "preset");
+    if (const Json w = sg.value("why", Json()); !w.is_null()) n["why"] = c.say(w);
+    n["order"] = ++order;
+    n["has_children"] = true;
+    Json states = Json::object(), classes = Json::object(), unknown = Json::array();
+    std::int64_t members = 0;
+    for (const auto& m : sg.value("members", Json::array())) {
+      const std::string sid = json::get_string(m, "source");
+      const Json* member_source = c.source(sid);
+      if (!member_source) {
+        unknown.push_back(Json{{"source", sid}, {"reason", "source_missing"}});
+        continue;
+      }
+      auto got = c.read_whole(*member_source);
+      if (!got) {
+        unknown.push_back(Json{{"source", sid}, {"reason", got.error().message}});
+        continue;
+      }
+      if (!(*got)->unknown.empty()) {
+        unknown.push_back(Json{{"source", sid}, {"reason", (*got)->unknown}});
+        continue;
+      }
+      for (const auto& nd : (*got)->nodes) {
+        if (json::get_string(nd, "parent") != address) continue;
+        ++members;
+        if (const std::string st = json::get_string(nd, "status"); !st.empty()) states[st] = states.value(st, static_cast<std::int64_t>(0)) + 1;
+        if (const std::string cls = json::get_string(nd.value("evidence", Json::object()), "class"); !cls.empty())
+          classes[cls] = classes.value(cls, static_cast<std::int64_t>(0)) + 1;
+      }
+    }
+    n["attrs"] = Json{{"id", id}, {"counts", states}, {"evidence_classes", classes}, {"members", members}, {"per_flow", json::get_bool(sg, "per_flow", false)}};
+    if (!unknown.empty()) n["attrs"]["members_unknown"] = unknown;
+    n["actions"] = self_actions(c, sg.value("actions_here", Json::array()), n);
+    r.nodes.push_back(std::move(n));
+  }
+  return r;
+}
 
 Json layer_evidence(const Json& src, const std::string& layer, const std::string& ref) {
   const bool yours = layer == "user";
@@ -1254,15 +1551,23 @@ Result<Read> read_memory(Impl& c, const Json& src, const std::string&, const Jso
     if (m.parent_id) kids[*m.parent_id] += 1;
   for (const auto& m : all) {
     const Json prov = m.metadata.is_object() ? m.metadata.value("provenance", Json(nullptr)) : Json(nullptr);
-    const std::string method = prov.is_object() ? json::get_string(prov, "method", "not_recorded") : std::string("not_recorded");
+    // The method is what the note says it is (provenance.method), else where it came from (provenance.source: user, import, folder, guardian, yours);
+    // a note written before the origin was recorded says that, in words, and is not claimed to be anything.
+    std::string method = prov.is_object() ? json::get_string(prov, "method") : std::string();
+    const std::string source_kind = prov.is_object() ? json::get_string(prov, "source") : std::string();
+    if (method.empty()) method = source_kind.empty() ? std::string("not_recorded_before_m1") : "note_" + source_kind;
     Json n = c.make(src, "memory:" + m.id, clip(m.content, 60), m.parent_id ? "memory:" + *m.parent_id : std::string("party:self"), "memory.json", "memory.json#" + m.id,
                     method, m.created);
     n["evidence"] = evidence_of(evidence_by_method(src, method, src.value("epistemic_default", Json::object())), "memory.json", "memory.json#" + m.id, method,
                                 prov.is_object() ? prov.value("time", Json(m.created)) : Json(m.created));
+    n["evidence"]["human"] = c.evidence_words(n["evidence"]);
     n["count"] = kids[m.id];
     n["has_children"] = kids[m.id] > 0;
     n["status"] = m.active ? "active" : "inactive";
-    n["attrs"] = Json{{"node_type", m.node_type}, {"tags", m.tags}};
+    n["attrs"] = Json{{"note_id", m.id}, {"node_type", m.node_type}, {"tags", m.tags},
+                      {"provenance", Json{{"known", !source_kind.empty() || !prov.is_null()}, {"source", source_kind.empty() ? Json(nullptr) : Json(source_kind)},
+                                          {"time", prov.is_object() ? prov.value("time", Json(nullptr)) : Json(nullptr)}, {"ref", prov.is_object() ? prov.value("ref", Json(nullptr)) : Json(nullptr)},
+                                          {"words", n["evidence"]["human"]}}}};
     r.nodes.push_back(std::move(n));
   }
   return r;
@@ -1431,7 +1736,7 @@ Result<Read> read_units(Impl& c, const Json& src, const std::string&, const Json
   for (const auto& [id, n_members] : members) {
     Json n = c.make(src, "unit:" + id, id.substr(id.find('/') + 1), c.parent_of(src), "db", "conversations.metadata.units", "conversation");
     n["count"] = n_members;
-    n["attrs"] = Json{{"unit_kind", id.substr(0, id.find('/'))}, {"conversations", n_members}};
+    n["attrs"] = Json{{"unit_kind", id.substr(0, id.find('/'))}, {"unit_id", id.substr(id.find('/') + 1)}, {"conversations", n_members}};
     r.nodes.push_back(std::move(n));
   }
   return r;
@@ -1730,8 +2035,51 @@ const std::map<std::string, Impl::Reader>& Impl::readers() {
       {"user.privacy", read_privacy},     {"db.topics", read_topics},       {"memory.notes", read_memory},     {"db.conversations", read_conversations},
       {"db.messages", read_messages},     {"db.units", read_units},         {"actions.catalogue", read_flows}, {"actions.steps", read_steps},
       {"static.nodes", read_static},      {"automations.declared", read_automations}, {"db.tasks", read_tasks}, {"calibration.items", read_calibration},
-      {"nodes.also", read_also}};
+      {"nodes.also", read_also}, {"party.subgraphs", read_subgraphs}};
   return r;
+}
+
+// What hangs under You moves into the part that claims it (profile.subgraphs members): a node of a source whose parent is You gets the part as its
+// parent; a member marked `also` keeps its home and is listed in the part too (shown_also_in). Every claimed node carries the actions of the part.
+void regroup_self(Catalogue::Impl& c, const Json& source, Read& r) {
+  const std::string sid = json::get_string(source, "id");
+  if (sid == "subgraph") return;
+  const Json table = c.subgraph_table();  // a copy: nothing below may leave a reference into the cache
+  if (!table.is_array() || table.empty()) return;
+  std::vector<Json> shown_too;
+  for (auto& n : r.nodes) {
+    const std::string was = json::get_string(n, "parent");
+    for (const auto& sg : table) {
+      bool claimed = false, also = false;
+      const Json members = sg.value("members", Json::array());
+      for (const auto& m : members) {
+        if (json::get_string(m, "source") != sid || !fits_where(n, m.value("where", Json::object()))) continue;
+        claimed = true;
+        also = json::get_bool(m, "also", false);
+        break;
+      }
+      if (!claimed || (!also && was != Impl::kSelf)) continue;
+      const std::string part = json::get_string(sg, "id");
+      const std::string address = std::string(Impl::kPartPrefix) + part;
+      const Json actions = sg.value("actions", Json::array());
+      if (also) {
+        Json copy = n;
+        copy["attrs"]["home"] = was;
+        copy["attrs"]["subgraph"] = part;
+        copy["parent"] = address;
+        copy["shown_also_in"] = address;
+        copy["actions"] = self_actions(c, actions, copy);
+        n["actions"] = self_actions(c, actions, n);
+        shown_too.push_back(std::move(copy));
+      } else {
+        n["parent"] = address;
+        n["attrs"]["subgraph"] = part;
+        n["actions"] = self_actions(c, actions, n);
+      }
+      break;
+    }
+  }
+  for (auto& n : shown_too) r.nodes.push_back(std::move(n));
 }
 
 // ── roles ─────────────────────────────────────────────────────────────────────────
@@ -2067,6 +2415,7 @@ const Env& Catalogue::env() const { return impl_->env; }
 const Json& Catalogue::sources() const { return impl_->sources; }
 const Json& Catalogue::hidden_sources() const { return impl_->hidden_sources; }
 std::size_t Catalogue::resolver_opens() const { return impl_->opens; }
+bool Catalogue::subgraph_reads(const std::string& parent, const std::string& source_id) { return impl_->member_reads(parent, source_id); }
 
 const Json* Catalogue::source_of(std::string_view address) const {
   const Json* best = nullptr;
@@ -2155,7 +2504,8 @@ Result<Catalogue::Children> Catalogue::children(const std::string& raw_parent, c
     // The sources parented to this area, to this node or to the focus's source, and the focus's own source (nodes nested in their own
     // kind: the slots of You, the notes under a note).
     const bool parented = parent.empty() ? json::get_bool(p, "root", false)
-                                         : (!area.empty() && parent == "area:" + area) || (!under.empty() && parent == under) || (!of.empty() && of == parent_source);
+                                         : (!area.empty() && parent == "area:" + area) || (!under.empty() && parent == under) || (!of.empty() && of == parent_source) ||
+                                               c.member_reads(parent, json::get_string(s, "id"));
     const bool own = !parent.empty() && !parent_source.empty() && json::get_string(s, "id") == parent_source && !Impl::paged(s);
     const bool here = parented || own;
     if (!here) continue;
@@ -2300,7 +2650,7 @@ namespace {
 
 const std::set<std::string> kRowKeys = {"address", "label", "kind", "value", "value_human", "count", "count_unknown_reason", "provenance", "evidence",
                                         "evidence_overrides", "has_children", "status", "why", "order", "same_as", "source", "empty_reason", "no_translation",
-                                        "shown_also_in", "count_unknown_human", "value_unknown_reason", "derived", "derived_note", "receipt"};
+                                        "shown_also_in", "count_unknown_human", "value_unknown_reason", "derived", "derived_note", "receipt", "actions"};
 
 Json row_of(const Json& n) {
   Json r = Json::object();
@@ -2396,7 +2746,7 @@ Result<void> fill_count(Catalogue& cat, Json& row, const Json& node) {
   for (const auto& s : cat.sources()) {
     const Json p = s.value("parent", Json::object());
     if ((starts_with(target, "area:") && "area:" + json::get_string(p, "area") == target) || (!ps_id.empty() && json::get_string(p, "of") == ps_id) ||
-        json::get_string(p, "node") == target)
+        json::get_string(p, "node") == target || cat.subgraph_reads(target, json::get_string(s, "id")))
       any_source = true;
   }
   if (!any_source && !ps_id.empty()) any_source = json::get_bool(node, "has_children", false);  // nested in its own source
@@ -2708,7 +3058,10 @@ Result<Json> navigate(const Env& env, const Json& request) {
   for (const auto& n : nodes) {
     Json row = row_of(n);
     row["depth"] = n.value("depth", 1);
-    if (const Json attrs = n.value("attrs", Json::object()); attrs.contains("counts")) row["counts"] = attrs["counts"];
+    if (const Json attrs = n.value("attrs", Json::object()); attrs.contains("counts")) {
+      row["counts"] = attrs["counts"];
+      if (attrs.contains("evidence_classes")) row["evidence_classes"] = attrs["evidence_classes"];
+    }
     LOOM_TRY(fill_count(cat, row, n));
     if (const std::string why = json::get_string(row, "count_unknown_reason"); !why.empty()) row["count_unknown_human"] = cat.reason_words(why);
     shown.insert(json::get_string(n, "address"));
@@ -2887,6 +3240,18 @@ Result<Json> card(const Env& env, const Json& request) {
       }
       acts.push_back(action_row("rom.override", decision, Json(nullptr)));
     }
+  }
+  // The actions the parts of You offer on this node (profile.subgraphs, with their arguments) come first; the class's own follow, none twice.
+  {
+    Json merged = Json::array();
+    std::set<std::string> listed;
+    for (const auto& a : node->value("actions", Json::array())) {
+      listed.insert(json::get_string(a, "id"));
+      merged.push_back(a);
+    }
+    for (const auto& a : acts)
+      if (listed.insert(json::get_string(a, "id")).second) merged.push_back(a);
+    acts = std::move(merged);
   }
   out["actions"] = acts;
   LOOM_TRY_ASSIGN(auto crumbs, breadcrumbs(cat, *node));
