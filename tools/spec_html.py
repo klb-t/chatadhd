@@ -155,6 +155,13 @@ blockquote { margin: .2rem 0; padding: .4rem .7rem; background: var(--card); bor
 .refs a { color: var(--accent); }
 .hidden { display: none !important; }
 .hit { background: var(--focus); }
+.decide { margin-top: .6rem; padding: .5rem .7rem; border: 1px solid var(--line); border-radius: .4rem; background: var(--card); }
+.decide .row { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; }
+.decide textarea { width: 100%; min-height: 4.5rem; font: inherit; padding: .4rem .5rem; border: 1px solid var(--line); border-radius: .3rem; background: var(--bg); color: var(--fg); margin-top: .4rem; }
+.decide .note { font-size: .8rem; color: var(--muted); margin-top: .3rem; }
+.inbox { font-size: .85rem; margin-top: .4rem; padding: .3rem .6rem; border-left: 3px solid var(--accent); background: var(--card); }
+.inbox b { color: var(--accent); }
+#inbox-banner { margin: .6rem 0; font-size: .9rem; padding: .5rem .8rem; border-radius: .4rem; background: var(--card); border: 1px solid var(--accent); }
 @media (prefers-reduced-motion: no-preference) { details.node { transition: background .2s; } }
 </style>
 <div class="wrap">
@@ -171,6 +178,7 @@ blockquote { margin: .2rem 0; padding: .4rem .7rem; background: var(--card); bor
   <div class="counts" id="counts"></div>
 </header>
 <section class="recent" id="recent"></section>
+<div id="inbox-banner" hidden></div>
 <main id="tree"></main>
 <footer class="meta" style="margin-top:2rem">Źródło: <code>docs/spec/spec.json</code> (<code>python3 tools/spec.py build</code>), strona: <code>python3 tools/spec.py html</code>. Status każdej pozycji to datowana obserwacja z pliku LUKI, nie ograniczenie (R60). Cytaty są dosłowne (strażnik <code>spec.py check</code>); parafrazy to słowa koordynatora i czekają na Twoje „zatwierdzam” albo poprawkę (R61).</footer>
 </div>
@@ -215,6 +223,8 @@ blockquote { margin: .2rem 0; padding: .4rem .7rem; background: var(--card); bor
       if (n.superseded_by && n.superseded_by.length) h += '· zastąpione przez: ' + n.superseded_by.map(link).join(', ');
       h += '</div>';
     }
+    h += `<div class="inbox" data-inbox-for="${esc(n.id)}" hidden></div>`;
+    h += `<div class="decide" data-decide-for="${esc(n.id)}" hidden></div>`;
     h += `<div class="id">${esc(n.id)}${n.aliases && n.aliases.length ? ' · ' + n.aliases.map(esc).join(', ') : ''}</div>`;
     return h;
   }
@@ -256,6 +266,67 @@ blockquote { margin: .2rem 0; padding: .4rem .7rem; background: var(--card); bor
   };
   function openHash() { const id = (location.hash || '').slice(1); if (!id) return; const d = document.getElementById(id); if (!d) return; d.open = true; const t = d.closest('details.theme'); if (t) t.open = true; d.scrollIntoView({ block: 'start' }); }
   window.addEventListener('hashchange', openHash); openHash();
+
+  // --- R88 v1: decisions written by the owner next to each item; a cheap "secretary" task applies them to the spec ---
+  const KIND_LABEL = { approve: 'Zatwierdzam', correct: 'Popraw', remark: 'Uwaga' };
+  const STATE_LABEL = { new: 'czeka na sekretarza', applied: 'zapisane w spec', escalated: 'przekazane koordynatorowi', rejected: 'odrzucone' };
+  function nodeOf(id) { return D.nodes.find(n => n.id === id); }
+  async function wireDb() {
+    if (!window.claude || typeof window.claude.use !== 'function') return;
+    const db = await window.claude.use('db');
+    if (!db) return;
+    const user = await window.claude.use('user');
+    let canWrite = true;
+    try { if (user && typeof user.can === 'function') { const c = await user.can('data.write'); if (c === false) canWrite = false; } } catch (e) { /* keep inputs */ }
+    const inbox = db.collection('spec_inbox');
+    // existing entries (one read, newest first), rendered per node + banner
+    const byNode = {};
+    let waiting = 0;
+    try {
+      const snap = await inbox.orderBy('at', 'desc').limit(500).get();
+      for (const d of snap.docs) { const x = d.data(); if (!x || !x.node) continue; (byNode[x.node] = byNode[x.node] || []).push({ id: d.id, ...x }); if (x.state === 'new') waiting++; }
+    } catch (e) { /* render without history */ }
+    for (const [nid, list] of Object.entries(byNode)) {
+      const el = document.querySelector(`[data-inbox-for="${CSS.escape(nid)}"]`); if (!el) continue;
+      el.hidden = false;
+      el.innerHTML = list.slice(0, 5).map(x => `<div><b>${esc(KIND_LABEL[x.kind] || x.kind)}</b> ${esc((x.at || '').slice(0, 16).replace('T', ' '))} — ${esc(STATE_LABEL[x.state] || x.state)}${x.text ? ': ' + esc(x.text) : ''}</div>`).join('');
+    }
+    const banner = document.getElementById('inbox-banner');
+    banner.hidden = false;
+    banner.textContent = waiting ? `Skrzynka: ${waiting} Twoich decyzji czeka na sekretarza (zapisuje je do spec co godzinę; nietypowe trafiają do koordynatora).` : 'Skrzynka pusta: przy każdej pozycji możesz zatwierdzić parafrazę, poprawić ją swoimi słowami albo dopisać uwagę — sekretarz zapisze to do spec.';
+    if (!canWrite) { banner.textContent += ' (To konto nie może zapisywać.)'; return; }
+    for (const box of document.querySelectorAll('[data-decide-for]')) {
+      const nid = box.dataset.decideFor; const n = nodeOf(nid); if (!n) continue;
+      const und = (n.understanding && n.understanding.state) || 'none';
+      box.hidden = false;
+      box.innerHTML = `<div class="row"><span class="note">Twoja decyzja:</span>` +
+        (und === 'proposed' || und === 'corrected' ? `<button type="button" data-k="approve">Zatwierdzam parafrazę</button>` : '') +
+        `<button type="button" data-k="correct">Popraw swoimi słowami</button><button type="button" data-k="remark">Uwaga / dopisek</button></div>` +
+        `<textarea hidden placeholder="Twoje słowa (zapisane dosłownie)"></textarea><div class="row" hidden><button type="button" class="primary" data-send>Wyślij</button><button type="button" data-cancel>Anuluj</button></div><div class="note" data-status></div>`;
+      const ta = box.querySelector('textarea'); const row2 = box.querySelectorAll('.row')[1]; const status = box.querySelector('[data-status]');
+      let kind = null;
+      box.querySelectorAll('button[data-k]').forEach(b => b.onclick = () => {
+        kind = b.dataset.k;
+        if (kind === 'approve') { send(); return; }
+        ta.hidden = false; row2.hidden = false; ta.focus();
+      });
+      box.querySelector('[data-cancel]').onclick = () => { ta.hidden = true; row2.hidden = true; kind = null; };
+      box.querySelector('[data-send]').onclick = () => send();
+      async function send() {
+        const text = (ta.value || '').trim();
+        if (kind !== 'approve' && !text) { status.textContent = 'Wpisz tekst.'; return; }
+        status.textContent = 'Wysyłam…';
+        try {
+          await inbox.add({ node: nid, alias: (n.aliases || [])[0] || nid, kind, text, at: new Date().toISOString(), state: 'new', page_generated: D.generated });
+          status.textContent = `Wysłane: ${KIND_LABEL[kind]} — czeka na sekretarza.`;
+          ta.value = ''; ta.hidden = true; row2.hidden = true; kind = null;
+        } catch (e) {
+          status.textContent = 'Nie udało się zapisać (' + (e && e.code ? e.code : 'błąd') + '). Spróbuj za chwilę albo napisz w czacie.';
+        }
+      }
+    }
+  }
+  wireDb();
 })();
 </script>
 """
