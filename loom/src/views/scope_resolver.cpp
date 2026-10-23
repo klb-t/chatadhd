@@ -148,7 +148,9 @@ Result<Resolution> Resolver::resolve(const Binding& b) const {
   if (!b.installation.is_null())
     baselines.emplace_back("installation", b.installation, b.installation_source.empty() ? "preset:" + b.key : b.installation_source);
   const std::string setting = b.person_setting.empty() ? b.key : b.person_setting;
-  if (cfg_) {
+  if (!unset(b.person_value)) {
+    baselines.emplace_back("person", b.person_value, b.person_source.empty() ? "profile:" + b.key : b.person_source);
+  } else if (cfg_) {
     const Json mine = cfg_->get(setting);
     if (!unset(mine)) baselines.emplace_back("person", mine, "setting:" + setting);
   }
@@ -250,7 +252,7 @@ Json value_or(const std::filesystem::path& data_root, const Config& cfg, Databas
     if (supplied_by) *supplied_by = "turn";
     return binding.turn;
   }
-  const Json mine = cfg.get(binding.person_setting.empty() ? binding.key : binding.person_setting);
+  const Json mine = !unset(binding.person_value) ? binding.person_value : cfg.get(binding.person_setting.empty() ? binding.key : binding.person_setting);
   if (!unset(mine) && supplied_by) *supplied_by = "person";
   return unset(mine) ? fallback : mine;
 }

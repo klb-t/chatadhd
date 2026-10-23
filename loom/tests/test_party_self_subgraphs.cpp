@@ -52,11 +52,16 @@ struct Person {
     more["op"] = op;
     return call("profile.interview", std::move(more));
   }
-  Json navigate(const std::string& focus, const std::string& lang = "pl", std::int64_t hops = 1) {
-    return unwrap(rt->actions().invoke("graph.navigate", Json{{"focus", focus}, {"lang", lang}, {"limit", 0}, {"hops", hops}}));
+  // `conv`: the conversation the screen is opened from (its own values and its units are levels of the scope chain); "" = none.
+  Json navigate(const std::string& focus, const std::string& lang = "pl", std::int64_t hops = 1, const std::string& conv = std::string()) {
+    Json request{{"focus", focus}, {"lang", lang}, {"limit", 0}, {"hops", hops}};
+    if (!conv.empty()) request["conv_id"] = conv;
+    return unwrap(rt->actions().invoke("graph.navigate", request));
   }
-  Json card(const std::string& address, const std::string& lang = "pl") {
-    return unwrap(rt->actions().invoke("graph.card", Json{{"address", address}, {"lang", lang}}));
+  Json card(const std::string& address, const std::string& lang = "pl", const std::string& conv = std::string()) {
+    Json request{{"address", address}, {"lang", lang}};
+    if (!conv.empty()) request["conv_id"] = conv;
+    return unwrap(rt->actions().invoke("graph.card", request));
   }
   // The synthetic person: level "minimal", two known slots, one declined, one never, one above the level; a unit with one conversation; two memory
   // notes (one with its origin, one from before it was recorded); one topic.
@@ -224,6 +229,64 @@ TEST_SUITE("party_self_subgraphs") {
     for (const auto& c : en.at("children"))
       if (c.at("evidence").at("human") == "origin unknown (saved before M1)") found = true;
     CHECK(found);
+  }
+
+  TEST_CASE("a preference goes through the scope chain: what ships is the installation level, your answer in the profile the person level, the chip says which") {
+    Person& p = shared_person();
+    const Json prefs = p.navigate("subgraph:self/preferences", "pl");
+    REQUIRE(child(prefs, "preference:style"));
+    REQUIRE(child(prefs, "preference:length"));
+    // answered in the interview (communication.style = direct): the person level supplies it, the shipped value is overridden, and it is what you said
+    const Json style = p.card("preference:style");
+    CHECK(style.at("value") == "direct");
+    CHECK(style.at("provenance").at("scope") == "person");
+    CHECK(style.at("provenance").at("layer") == "profiles/user.pack");
+    CHECK(style.at("evidence").at("class") == "observed");
+    const Json& chain = style.at("attrs").at("resolved").at("inheritance");
+    std::map<std::string, Json> level;
+    for (const auto& l : chain) level[l.at("level").get<std::string>()] = l;
+    REQUIRE(level.count("installation"));
+    REQUIRE(level.count("person"));
+    CHECK(level.at("installation").at("role") == "overridden");
+    CHECK(level.at("installation").at("value") == "neutral");
+    CHECK(level.at("person").at("role") == "supplied");
+    CHECK(level.at("person").at("value") == "direct");
+    CHECK(level.count("conversation"));  // the lower levels are in the chain even when nothing sets them
+    // never answered: the shipped value, a preset (declared, not "you said it"), the installation level supplies it
+    const Json length = p.card("preference:length");
+    CHECK(length.at("value") == "concise");
+    CHECK(length.at("provenance").at("scope") == "installation");
+    CHECK(length.at("evidence").at("class") == "declared");
+    for (const auto& l : length.at("attrs").at("resolved").at("inheritance"))
+      if (l.at("level") == "person") CHECK(l.at("role") == "none");
+  }
+
+  TEST_CASE("a conversation's own value and its unit are levels below the person: the value that wins says which level set it") {
+    Person q;  // no interview: every preference is the shipped one
+    const std::string conv = unwrap(q.rt->db().create_conv("Rozmowa o remoncie")).id;
+    ConvPatch patch;
+    patch.metadata = Json{{"units", Json{{"project", "remont"}}}, {"settings", Json{{"preference.length", "long"}}}};
+    LOOM_REQUIRE_OK(q.rt->db().update_conv(conv, patch));
+    // without the conversation the screen shows the person's value
+    CHECK(q.card("preference:length").at("value") == "concise");
+    CHECK(q.card("preference:length").at("provenance").at("scope") == "installation");
+    // from the conversation the conversation's own value wins; the shipped one is overridden; the project level is in the chain with its unit
+    const Json nav = q.navigate("subgraph:self/preferences", "pl", 1, conv);
+    REQUIRE(child(nav, "preference:length"));
+    const Json card = q.card("preference:length", "pl", conv);
+    CHECK(card.at("value") == "long");
+    CHECK(card.at("provenance").at("scope") == "conversation");
+    CHECK(card.at("evidence").at("class") == "observed");
+    std::map<std::string, Json> level;
+    for (const auto& l : card.at("attrs").at("resolved").at("inheritance")) level[l.at("level").get<std::string>()] = l;
+    CHECK(level.at("conversation").at("role") == "supplied");
+    CHECK(level.at("installation").at("role") == "overridden");
+    CHECK(level.at("installation").at("value") == "concise");
+    REQUIRE(level.count("project"));
+    CHECK(level.at("project").at("unit_level") == true);
+    CHECK(level.at("project").at("scope_id") == "remont");
+    // a preference the conversation does not set stays at the level that set it
+    CHECK(q.card("preference:style", "pl", conv).at("provenance").at("scope") == "installation");
   }
 
   TEST_CASE("the units and the interests hang under You with their evidence; a unit is still where it was (Kontekst i projekty)") {

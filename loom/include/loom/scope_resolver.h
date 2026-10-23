@@ -37,6 +37,10 @@ struct Binding {
   Json installation;                 // the shipped preset (null = none)
   std::string installation_source;   // "profile:..." (for provenance)
   std::string person_setting;        // config key of the user's value ("" = key); null and "" count as not set
+  // The user's value when it does not live in config.json but in another layer of the person (M1-K2c-2: a preference of the profile's user
+  // layer). It takes the place of the config value at the `person` level; null = read config. person_source: its provenance ("" = "profile:<key>").
+  Json person_value = nullptr;
+  std::string person_source;
   std::string conv_id;               // "" = no conversation
   Json units = nullptr;              // {unit kind|level: id}; null = read conversations.metadata.units of conv_id
   Json unit_values = nullptr;        // {level: value} baselines of unit levels (tools, tests); rules are the persistent way

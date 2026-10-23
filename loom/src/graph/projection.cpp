@@ -564,6 +564,13 @@ struct Catalogue::Impl {
       b.installation = preset;
       b.installation_source = preset_source;
     }
+    // A value of the person that lives in another layer than config.json (a preference of the profile's user layer): it is the `person` level.
+    const bool person_elsewhere = field.contains("person_value") && !field["person_value"].is_null();
+    if (person_elsewhere) {
+      b.person_value = field["person_value"];
+      b.person_source = json::get_string(field, "person_source", "profile:" + key);
+    }
+    const std::string person_layer = json::get_string(field, "person_layer", "config.json");
     std::optional<scopes::Resolution> res;
     if (r) {
       auto got = r->resolve(b);
@@ -573,23 +580,23 @@ struct Catalogue::Impl {
     const std::string preset_layer = starts_with(preset_source, "profile:") ? preset_source : std::string("rom");
     if (!res) {
       // No chain: what the settings say, else the preset - and the provenance says the chain could not be read.
-      const Json mine = env.cfg ? env.cfg->get(key) : Json(nullptr);
+      const Json mine = person_elsewhere ? field["person_value"] : env.cfg ? env.cfg->get(key) : Json(nullptr);
       const bool set = !mine.is_null();
       out["value"] = set ? mine : preset;
       out["value_human"] = human_value(out["value"], field);
       const std::string scope = set ? "person" : preset.is_null() ? "none" : "installation";
-      out["provenance"] = Json{{"scope", scope}, {"layer", set ? "config.json" : preset.is_null() ? "none" : preset_layer}, {"chip", chip_of(scope == "none" ? std::string() : scope, Json::array())},
+      out["provenance"] = Json{{"scope", scope}, {"layer", set ? person_layer : preset.is_null() ? "none" : preset_layer}, {"chip", chip_of(scope == "none" ? std::string() : scope, Json::array())},
                                {"chain_unavailable", resolver_error.empty() ? std::string("scope_chain_unavailable") : resolver_error}};
       out["inheritance"] = Json::array();
       out["evidence"] = evidence_of(set ? Json{{"class", "observed"}, {"confidence", 1.0}} : src.value("epistemic_default", Json::object()),
-                                    set ? "config.json" : preset_layer, key, set ? "setting" : "preset");
+                                    set ? person_layer : preset_layer, key, set ? "setting" : "preset");
       if (!set && preset.is_null()) unset_words(out, field, key);
       return out;
     }
     out["value"] = res->defined ? res->value : Json(nullptr);
     out["value_human"] = human_value(out["value"], field);
     std::string layer = preset_layer;
-    if (res->scope == "person") layer = "config.json";
+    if (res->scope == "person") layer = person_layer;
     else if (res->scope == "conversation") layer = "conversation.metadata";
     else if (starts_with(res->source, "rule:")) layer = "rules:" + res->source.substr(5);
     else if (res->scope != "installation" && !res->scope.empty()) layer = "unit:" + res->scope;
@@ -598,7 +605,7 @@ struct Catalogue::Impl {
     if (!res->scope_id.empty()) prov["scope_id"] = res->scope_id;
     // config.json holds the presets too (the auto-upgrade writes them): a person value equal to the preset may be the preset itself, so it is
     // said (chip: the preset kept in your settings), its evidence stays the preset's (never "you said"), and it is not counted as yours.
-    const bool preset_copy = res->defined && res->scope == "person" && !preset.is_null() && preset == res->value;
+    const bool preset_copy = res->defined && res->scope == "person" && !person_elsewhere && !preset.is_null() && preset == res->value;
     if (preset_copy) {
       prov["same_as_preset"] = true;
       if (const std::string w = word("chip.same_as_preset"); !w.empty()) prov["chip"]["label"] = w;
@@ -1019,6 +1026,24 @@ Result<Read> read_settings(Impl& c, const Json& src, const std::string&, const J
 
 }  // namespace
 
+namespace {
+
+// A resolved value (resolve_field / profile_value_row) on its node: value, value_human, evidence, provenance {layer, layers, scope, chip}
+// (layers = the levels of the chain that supplied the value or were overridden) and attrs.resolved (the whole resolution, with the inheritance).
+void apply_resolved(Json& n, const Json& resolved) {
+  const Json prov = resolved.value("provenance", Json::object());
+  n["value"] = resolved.value("value", Json(nullptr));
+  n["value_human"] = resolved.value("value_human", "");
+  n["evidence"] = resolved.value("evidence", n.value("evidence", Json::object()));
+  n["provenance"] = Json{{"layer", json::get_string(prov, "layer")}, {"layers", Json::array()}, {"scope", prov.value("scope", "")}, {"chip", prov.value("chip", Json::object())}};
+  for (const auto& l : resolved.value("inheritance", Json::array()))
+    if (json::get_string(l, "role") == "supplied" || json::get_string(l, "role") == "overridden") n["provenance"]["layers"].push_back(json::get_string(l, "level"));
+  if (!n.contains("attrs") || !n["attrs"].is_object()) n["attrs"] = Json::object();
+  n["attrs"]["resolved"] = resolved;
+}
+
+}  // namespace
+
 // The value of one setting node through the render's one Resolver: value, value_human, evidence, provenance {layer, layers, scope, chip},
 // the edit rule of a profile value, and attrs.resolved (the whole resolution, with the inheritance).
 void resolve_setting_node(Catalogue::Impl& c, Json& n) {
@@ -1032,15 +1057,8 @@ void resolve_setting_node(Catalogue::Impl& c, Json& n) {
   }
   const Json& field = *it->second.first;
   const Json resolved = it->second.second ? profile_value_row(c, field, *src) : c.resolve_field(field, *src);
-  const Json prov = resolved.value("provenance", Json::object());
-  n["value"] = resolved.value("value", Json(nullptr));
-  n["value_human"] = resolved.value("value_human", "");
-  n["evidence"] = resolved.value("evidence", n["evidence"]);
-  n["provenance"] = Json{{"layer", json::get_string(prov, "layer")}, {"layers", Json::array()}, {"scope", prov.value("scope", "")}, {"chip", prov.value("chip", Json::object())}};
-  for (const auto& l : resolved.value("inheritance", Json::array()))
-    if (json::get_string(l, "role") == "supplied" || json::get_string(l, "role") == "overridden") n["provenance"]["layers"].push_back(json::get_string(l, "level"));
+  apply_resolved(n, resolved);
   if (!field.contains("edit")) n["attrs"]["edit"] = resolved.value("edit_rule", Json(""));
-  n["attrs"]["resolved"] = resolved;
 }
 
 namespace {
@@ -1479,6 +1497,10 @@ Json layer_evidence(const Json& src, const std::string& layer, const std::string
                      yours ? "override" : "preset");
 }
 
+// A preference of the user profile pack through the one scope chain (M1-K2c-2): the pack's value is the installation level, your override in the
+// profile is the person level, a rule or the conversation's own value (settings[preference.<name>]) or a unit's rule are the levels below; the
+// answer says which level set the value (provenance.scope, the chip) and carries the whole chain (attrs.resolved.inheritance). A preference
+// that is disabled, excluded, only proposed or missing is not resolved at all: it has no value and says its status.
 Result<Read> read_preferences(Impl& c, const Json& src, const std::string&, const Json&) {
   LOOM_TRY_ASSIGN(const onboarding::DefaultLayers* layers, c.layers());
   Read r;
@@ -1487,22 +1509,35 @@ Result<Read> read_preferences(Impl& c, const Json& src, const std::string&, cons
     if (!starts_with(key, "preference.")) continue;
     LOOM_TRY_ASSIGN(auto res, layers->resolve(key));
     const std::string layer = json::get_string(res, "layer");
+    const std::string status = json::get_string(res, "status");
     const std::string name = key.substr(std::string("preference.").size());
     std::string label = c.say(src.value("labels", Json::object()).value(name, Json()));
     Json n = c.make(src, "preference:" + name, label.empty() ? name : label, "party:self", layer == "user" ? "onboarding" : "rom", "profiles/user.pack#" + key, "preset");
-    n["value"] = res.value("value", Json(nullptr));
     // The value in words (value_meanings of the source); a value no meaning names is shown as it is.
     Json meanings = Json::array();
     const Json named = src.value("value_meanings", Json::object()).value(name, Json::object());
     if (named.is_object())
       for (const auto& m : named.items()) meanings.push_back(Json{{"value", m.key()}, {"meaning", m.value()}});
-    n["value_human"] = c.human_value(n["value"], Json{{"values", meanings}});
     // The interview's slot that asks about the same thing is the same preference seen from the interview (same_as).
     if (const std::string slot = json::get_string(src.value("slot_of", Json::object()), name); !slot.empty())
       r.edges.push_back(Json{{"src", "preference:" + name}, {"dst", "party:self/" + slot}, {"kind", "same_as"}});
-    n["status"] = json::get_string(res, "status");
-    n["evidence"] = layer_evidence(src, layer, "profiles/user.pack#" + key);
     n["attrs"] = Json{{"key", key}, {"layer", layer}};
+    if (status != "effective") {
+      n["value"] = res.value("value", Json(nullptr));
+      n["value_human"] = c.human_value(n["value"], Json{{"values", meanings}});
+      n["status"] = status;
+      n["evidence"] = layer_evidence(src, layer, "profiles/user.pack#" + key);
+      r.nodes.push_back(std::move(n));
+      continue;
+    }
+    // The pack entry is what ships; a "user" layer is the person's override of it.
+    Json field{{"key", key}, {"values", meanings}, {"preset_value", e.value("value", Json(nullptr))}, {"preset_source", "profile:profiles/user.pack"},
+               {"person_layer", "profiles/user.pack"}, {"person_source", "profile:profiles/user.pack#" + key}};
+    if (layer == "user") field["person_value"] = res.value("value", Json(nullptr));
+    const Json resolved = c.resolve_field(field, src);
+    apply_resolved(n, resolved);
+    n["status"] = status;
+    n["attrs"]["scope"] = resolved.value("provenance", Json::object()).value("scope", "");
     r.nodes.push_back(std::move(n));
   }
   return r;

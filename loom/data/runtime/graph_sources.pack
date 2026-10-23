@@ -434,7 +434,17 @@
           "en": "A preference of yours: how I should speak to you. The value is the one that wins through the levels; the chip says which level set it.",
           "pl": "Twoja preferencja: jak mam do Ciebie mówić. Wartość to ta, która wygrywa przez poziomy; plakietka mówi, który poziom ją ustawił."
         },
-        "description": "The preference.* defaults of the user profile pack (style, length, language, attention needs) as the onboarding layers resolve them: a preset is declared, your override is what you said.",
+        "description": "The preference.* defaults of the user profile pack (style, length, language, attention needs) through the one scope chain (scope_resolver): the pack's value is the installation level, your override in the profile is the person level, a rule, a unit or the conversation set below it. The evidence follows the level that supplied the value: a preset is declared, a level you set is what you said (observed). attrs.resolved.inheritance carries the whole chain, provenance.scope and its chip say which level set the value.",
+        "evidence_by_scope": {
+          "installation": {
+            "class": "declared",
+            "confidence": 1.0
+          },
+          "*": {
+            "class": "observed",
+            "confidence": 1.0
+          }
+        },
         "status": {
           "state": "partial",
           "today": {
