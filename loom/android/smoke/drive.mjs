@@ -895,6 +895,10 @@ const serverChecks = [
     }
   }],
   ["agent proposals: the run stops on a proposal, Accept resumes it to the end", async () => {
+    // a fresh conversation: the step before may leave the interview conversation open, which is a form (no router, no agent)
+    await backToChat();
+    await click("shell-drawer-toggle"); await waitTid("shell-new-chat", 10); await click("shell-new-chat");
+    await waitTid("shell-empty", 15);
     await send("poproś agenta żeby uporządkował moje notatki");   // the example phrase of agent.run: a rule routes it locally
     const proposed = await until("the action proposal or the agent block",
       async () => (await has("chat-agent-proposal")) ? "agent" : (await has("chat-action-proposal")) ? "action" : false, 90, 300);
