@@ -2209,7 +2209,28 @@ StepOutcome graph_navigate(Ctx& x) {
     lines.push_back(x.say("nav_unknown", Json{{"source", json::get_string(u, "source_label", json::get_string(u, "source"))},
                                               {"reason", json::get_string(u, "reason_human", json::get_string(u, "reason"))}}));
   const std::string label = json::get_string(r->value("focus", Json::object()), "label");
-  if (lines.empty()) return answer(x.say("nav_empty", Json{{"label", label}}), *r);
+  if (lines.empty()) {
+    // G1a: "nothing here" would be false for an area that shows its counters only (nothing lists its contents as nodes yet): say the counters
+    const Json focus_node = r->value("focus", Json::object());
+    const std::string address = json::get_string(focus_node, "address");
+    if (address.rfind("area:", 0) == 0) {
+      // the counters of an area are what the root lists for it
+      auto root = projection::navigate(env, Json{{"limit", 0}});
+      if (root) {
+        const Json root_rows = root->value("children", Json::array());
+        for (const auto& row : root_rows) {
+          if (json::get_string(row, "address") != address) continue;
+          const std::string counters = nav_suffix(x, row);
+          if (counters.empty()) break;
+          const std::string why = json::get_string(focus_node, "why");
+          return answer(x.say("nav_area_counters", Json{{"label", label}, {"counters", counters}, {"why", why.empty() ? std::string() : " " + why}}), *r);
+        }
+      } else {
+        log::write(log::Level::Debug, "loom.actions.ops", "graph.navigate: the root could not be read for the counters: " + root.error().message);
+      }
+    }
+    return answer(x.say("nav_empty", Json{{"label", label}}), *r);
+  }
   return answer(x.say("nav_head", Json{{"label", label}, {"shown", counts.value("shown", 0)}, {"total", counts.value("total", 0)}}) + "\n" + join_lines(lines), *r);
 }
 

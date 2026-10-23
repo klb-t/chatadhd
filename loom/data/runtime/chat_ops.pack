@@ -1240,7 +1240,8 @@
         "memory_prov_import": "from an import",
         "memory_prov_folder": "from an attached folder",
         "memory_prov_guardian": "added by the context guardian",
-        "memory_prov_other": "{{source}}"
+        "memory_prov_other": "{{source}}",
+        "nav_area_counters": "{{label}}{{counters}}.{{why}} This area shows only counters today: its contents are not yet listed as separate nodes."
       },
       "pl": {
         "unknown": "nieznane",
@@ -1665,7 +1666,8 @@
         "memory_prov_import": "z importu",
         "memory_prov_folder": "z dołączonego folderu",
         "memory_prov_guardian": "dopisał strażnik kontekstu",
-        "memory_prov_other": "{{source}}"
+        "memory_prov_other": "{{source}}",
+        "nav_area_counters": "{{label}}{{counters}}.{{why}} Ten obszar pokazuje dziś tylko liczniki: jego zawartość nie jest jeszcze rozpisana na osobne węzły."
       }
     },
     "pipelines": {
