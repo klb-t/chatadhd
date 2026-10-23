@@ -322,10 +322,14 @@ try {
     const cleared = page.waitForResponse(r => /\/api\/conversations\//.test(r.url()) && r.request().method() !== "GET");
     await picker.selectOption("");
     await cleared;
-    assert.equal(await picker.evaluate(el => el.selectedOptions[0].textContent), ui.cm_model_default);
     await page.getByTestId("model-provenance-open").tap();
     await sheet.and(page.locator('[data-state="ready"]')).waitFor();
     assert.equal(await page.getByTestId("model-provenance-model").innerText(), "Model: mock/e2e-model", "the default model is the one the chain gives");
+    // R67-fix: the empty option names the model the next request WILL use (the chain's answer, short name) plus the pack's default marker (tb_model_default) - not the old words (cm_model_default).
+    const resolvedModel = (await page.getByTestId("model-provenance-model").innerText()).replace(/^Model: /, "");
+    const defaultLabel = ui.tb_model_default.replace("{{model}}", resolvedModel.slice(resolvedModel.lastIndexOf("/") + 1));
+    assert.notEqual(defaultLabel, ui.cm_model_default, "the truthful label is not the placeholder");
+    assert.equal(await picker.evaluate(el => el.selectedOptions[0].textContent), defaultLabel, "the empty option reads: resolved model + the pack's default marker");
     assert.match(await page.getByTestId("model-provenance-set-by").innerText(), /^Ustawiony na poziomie: |^Żaden poziom/);
     await page.getByTestId("model-provenance-close").tap();
     await sheet.waitFor({ state: "detached" });

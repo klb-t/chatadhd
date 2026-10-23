@@ -344,12 +344,18 @@ async function main() {
 
     await step("change a setting (theme) and confirm it persists across reload", async () => {
       const before = await page.getAttribute("html", "data-theme");
+      // R67-fix: the toggle also writes config.theme (the value that decides the palette on load); reload only after that write has finished.
+      const configWritten = page.waitForResponse((r) => /\/api\/config(\/|$|\?)/.test(r.url()) && r.request().method() !== "GET");
       await page.click('[data-testid="toggle-theme"]');
       await page.waitForFunction(
         (prev) => document.documentElement.getAttribute("data-theme") !== prev,
         before,
       );
       const afterToggle = await page.getAttribute("html", "data-theme");
+      const written = await configWritten;
+      assert(written.ok(), `the theme write to the config answered ${written.status()}`);
+      const configTheme = (await fetch(`${serverBase}/api/config`).then((r) => r.json())).theme;
+      assert(configTheme === afterToggle, `config theme ${configTheme} equals the toggled theme ${afterToggle}`);
       await page.reload({ waitUntil: "domcontentloaded" });
       await page.waitForSelector('[data-testid="chat-view"]');
       const afterReload = await page.getAttribute("html", "data-theme");
