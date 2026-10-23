@@ -11,3 +11,6 @@
 .import-absent { font-size: 13px; margin: 8px 0 0; opacity: 0.85; }
 .import-details { margin-top: 8px; }
 .import-raw { white-space: pre-wrap; font-size: 11px; background: var(--input-bg); padding: 8px; border-radius: 8px; margin: 0; max-height: 260px; overflow-y: auto; }
+
+/* the sentence of the kernel is a paragraph, not a one-line pill: it must be readable in full on a phone (the first screenshot cut it at the edge) */
+.import-summary.pill { display: block; white-space: normal; border-radius: 12px; padding: 8px 12px; font-size: 14px; line-height: 1.45; overflow-wrap: anywhere; }

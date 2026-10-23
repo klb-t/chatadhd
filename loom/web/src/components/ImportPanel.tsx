@@ -133,7 +133,7 @@ export default function ImportPanel({ onImported }: Props) {
         const absent = absentLine(view, t);
         return (
           <div style={{ marginTop: 12 }} data-testid="import-result" data-truth={view.hasTruth}>
-            <div className={`pill ${view.allSaved ? "ok" : "warn"}`} data-testid="import-summary" role="status">{view.summary ?? view.legacyLine}</div>
+            <div className={`pill import-summary ${view.allSaved ? "ok" : "warn"}`} data-testid="import-summary" role="status">{view.summary ?? view.legacyLine}</div>
             {view.rows.length > 0 && (
               <table className="import-truth" data-testid="import-truth-table" aria-label={t("import_table")}>
                 <thead><tr><th scope="col">{t("import_col_kind")}</th><th scope="col">{t("import_col_found")}</th><th scope="col">{t("import_col_saved")}</th></tr></thead>

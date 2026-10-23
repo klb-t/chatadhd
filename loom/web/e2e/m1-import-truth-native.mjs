@@ -125,6 +125,11 @@ try {
     assert.ok(!/Imported \d+ messages/.test(await page.getByTestId("import-result").innerText()), "the English line is gone");
     assert.equal(await page.getByTestId("import-summary").getAttribute("class").then(c => /\bwarn\b/.test(c)), true, "not everything was saved: the summary is not green");
     REPORT.summary = summary;
+    // read in full on the phone: the sentence is not clipped at the edge of the screen (the first version was a one-line pill that cut it)
+    const fit = await page.getByTestId("import-summary").evaluate(el => ({ clipped: el.scrollWidth > el.clientWidth + 1, right: el.getBoundingClientRect().right, lines: Math.round(el.getBoundingClientRect().height / parseFloat(getComputedStyle(el).lineHeight)) }));
+    assert.equal(fit.clipped, false, "the summary is not clipped");
+    assert.ok(fit.right <= 390, `the summary ends inside the phone (${fit.right})`);
+    assert.ok(fit.lines >= 3, `the long sentence wraps over several lines (${fit.lines})`);
 
     // the table: one row per kind the kernel showed, the numbers and the status are the kernel's
     const shown = wire.truth.elements.filter(e => e.shown !== false), absent = wire.truth.elements.filter(e => e.shown === false);
