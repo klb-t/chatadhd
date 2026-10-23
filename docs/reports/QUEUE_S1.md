@@ -1,5 +1,7 @@
 # Kolejka S1 — stan 2026-10-23 20:05 UTC
 
+## S2 2026-10-23 20:17 UTC: android-smoke on main f025ed34 (R67-fix), run 40011129193 — success, 47 works, 0 don't, 0 skipped on pixel_5 1.0, pixel_6 1.0, pixel_6 1.3; https://github.com/klb-t/chatadhd/actions/runs/40011129193
+
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
 **Teleport (R72):** karta startowa nowej sesji S1 = `docs/ops/TELEPORT_S1.md` (aktualizowana tuż przed przełączeniem); zadania zaplanowane = `docs/ops/ZADANIA_ZAPLANOWANE_2026-10-23.md`; przeprowadzka = `docs/ops/PRZEPROWADZKA_GCP_2026-10-23.md`.
