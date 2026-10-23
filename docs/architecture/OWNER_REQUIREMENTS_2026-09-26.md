@@ -747,6 +747,22 @@ Chat output is read by him and costs his time more than tokens; every status lin
 
 When he switches the coordinator to a stronger model, the procedural requirements he set for the weaker one (approval gates, pacing checks, spacing rules) may be loosened a little by default; the coordinator's judgement gets more room. Does not touch the philosophy itself (R58–R60, configurability, privacy, his money). Stated by him directly, because an agent could not grant this. (paraphrase; the quoted words are verbatim)
 
+## R64 — Windows (panels): dockable, floating, maximizable; the standard interface is one maximized window; the union of functionality and the style alternatives of popular apps (owner, 2026-10-22)
+> Ja mówiłem o panelach czy oknach Jak zwał tak zwał, dokowalnych, pływających, maksymalizowalnych, standardowy interfejs to zmaksymalizowany, inspirowany i zawierającymi sumę funkcjonalności oraz alternatywy stylistyczne popularnych apek
+
+Okno jest jednostką interfejsu: każdy widok można zadokować, odpiąć i zmaksymalizować; interfejs standardowy to jedno zmaksymalizowane okno czatu, nie osobny tryb; okno czatu ma sumę funkcji popularnych aplikacji i wybór ich stylów. Dziś: layout_mode=windows oznaczone planned; „Warsztat” = stara siatka paneli (kolizja nazw).
+
+## R65 — Graph screens after an import: attachments missing, chat sentences about the graph not understood, a moving cobweb of three nodes, no 3D/alpha/dimensions, texts that say nothing; are the guidelines collected? (owner, 2026-10-22)
+> czyli onboarding głównie? przypomniała mi się uwaga: import nie pokazywał załączników w którejś rozmowy nie wiem skąd. próbowałem np. pokaż katalog główny grafu, pokaż import w grafie - nie kuma. widok grafu też bezużyteczny: ruszająca się pajęczyna. pokazuje na przykład trzy węzły, po imporcie tysięcy konwersacji. chociaż jakiś tam sens zaczyna się wyłaniać. nie za duży bo jak koło grupę na przykład pokazuje chyba wszystkie kwoty wymienione w imporcie. A gdzie 3+D, kanały alfa, wielowymiarowość...? co w ogóle ten interfejs grafu robi? w ogóle wszystkie teksty to nic nie mówią, mi - autorowi niby. masz zebrane wytyczne co do interfejsu i funkcjonalności?
+
+Zgłoszenia z telefonu po APK v2: import bez załączników w jednej rozmowie; „pokaż katalog główny grafu” i „pokaż import w grafie” nierozumiane; stary widok grafu (pajęczyna) pokazuje 3 węzły po imporcie tysięcy rozmów, koło z kwotami; brak 3D/alfa/wielowymiarowości w głównym grafie; teksty nic nie mówią autorowi; pytanie o zebrane wytyczne. Audyt 22.10: przyczyny w QUEUE_S1 i zadaniach G1–G4.
+
+## R66 — Was the workbench only for tests? Present a plan with perspectives: when the functionality, when the interface (owner, 2026-10-22)
+> o ile dobrze pamiętam work band to był dla ciebie do testów tak? przedstaw plan z perspektywami, kiedy będą funkcjonalności, kiedy interfejs
+> work bench
+
+„Warsztat” (workbench) był w jego pamięci narzędziem testowym; prosi o plan z perspektywami i o rozdzielenie: kiedy funkcje, kiedy interfejs. Plan G1–G4 z 23.10 (daty ze zmierzonego tempa).
+
 ## Decision — rebuild, don't recover
 > "nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane"
 

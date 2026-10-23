@@ -1,0 +1,33 @@
+{
+ "schema": "loom.spec.understanding/1",
+ "items": {
+  "s_0f91742a0b1c": {
+   "state": "proposed",
+   "history": [
+    {
+     "state": "proposed",
+     "by": "S1",
+     "date": "2026-10-23",
+     "text": "Pierwszy ekran po uruchomieniu: ostatni zapisany widok, ostatnia rozmowa albo nowa (kolejność konfigurowalna); domyślnie pełnoekranowy czat jak w standardowej aplikacji. Okna i warsztat to konfigurowalne widoki tego samego systemu, także na Androidzie."
+    }
+   ],
+   "text": "Pierwszy ekran po uruchomieniu: ostatni zapisany widok, ostatnia rozmowa albo nowa (kolejność konfigurowalna); domyślnie pełnoekranowy czat jak w standardowej aplikacji. Okna i warsztat to konfigurowalne widoki tego samego systemu, także na Androidzie.",
+   "by": "S1",
+   "date": "2026-10-23"
+  },
+  "s_64e0a794ea00": {
+   "state": "proposed",
+   "history": [
+    {
+     "state": "proposed",
+     "by": "S1",
+     "date": "2026-10-23",
+     "text": "Okno to jednostka interfejsu: każdy widok (czat, graf, lista rozmów, pamięć, import, ustawienia…) jest oknem, które można zadokować, odpiąć jako pływające i zmaksymalizować. Interfejs standardowy to jedno zmaksymalizowane okno czatu — szczególny przypadek tego samego mechanizmu, nie osobny tryb. Okno czatu zawiera sumę funkcji kilku–kilkunastu popularnych aplikacji i daje wybór ich stylów (profile jako dane). Na telefonie preset: stos zmaksymalizowanych okien z przełącznikiem; pływanie i dokowanie dostępne także tam (opcja, nie usunięcie)."
+    }
+   ],
+   "text": "Okno to jednostka interfejsu: każdy widok (czat, graf, lista rozmów, pamięć, import, ustawienia…) jest oknem, które można zadokować, odpiąć jako pływające i zmaksymalizować. Interfejs standardowy to jedno zmaksymalizowane okno czatu — szczególny przypadek tego samego mechanizmu, nie osobny tryb. Okno czatu zawiera sumę funkcji kilku–kilkunastu popularnych aplikacji i daje wybór ich stylów (profile jako dane). Na telefonie preset: stos zmaksymalizowanych okien z przełącznikiem; pływanie i dokowanie dostępne także tam (opcja, nie usunięcie).",
+   "by": "S1",
+   "date": "2026-10-23"
+  }
+ }
+}

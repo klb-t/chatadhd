@@ -5,8 +5,8 @@
  "sources": {
   "owner": {
    "path": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
-   "sha256": "5b620760137eaac922b087f1e1ef4548359c0f2d024fc42f31f54e5f331cedf1",
-   "lines": 764
+   "sha256": "5bc867ec75c750c7b5bc04325a86aa7c620d2b6c5ae52fc4ace01aaea6f63f27",
+   "lines": 780
   },
   "slowa": {
    "path": "docs/architecture/SLOWA_WLASCICIELA_2026-10-16.md",
@@ -3160,7 +3160,18 @@
    "theme": "owner_requirements",
    "theme_inferred": false,
    "understanding": {
-    "state": "none"
+    "state": "proposed",
+    "history": [
+     {
+      "state": "proposed",
+      "by": "S1",
+      "date": "2026-10-23",
+      "text": "Pierwszy ekran po uruchomieniu: ostatni zapisany widok, ostatnia rozmowa albo nowa (kolejność konfigurowalna); domyślnie pełnoekranowy czat jak w standardowej aplikacji. Okna i warsztat to konfigurowalne widoki tego samego systemu, także na Androidzie."
+     }
+    ],
+    "text": "Pierwszy ekran po uruchomieniu: ostatni zapisany widok, ostatnia rozmowa albo nowa (kolejność konfigurowalna); domyślnie pełnoekranowy czat jak w standardowej aplikacji. Okna i warsztat to konfigurowalne widoki tego samego systemu, także na Androidzie.",
+    "by": "S1",
+    "date": "2026-10-23"
    },
    "quotes": [
     {
@@ -3580,6 +3591,173 @@
    ]
   },
   {
+   "id": "s_64e0a794ea00",
+   "aliases": [
+    "R64"
+   ],
+   "kind": "requirement",
+   "title": "Windows (panels): dockable, floating, maximizable; the standard interface is one maximized window; the union of functionality and the style alternatives of popular apps",
+   "date": "2026-10-22",
+   "theme": "owner_requirements",
+   "theme_inferred": false,
+   "understanding": {
+    "state": "proposed",
+    "history": [
+     {
+      "state": "proposed",
+      "by": "S1",
+      "date": "2026-10-23",
+      "text": "Okno to jednostka interfejsu: każdy widok (czat, graf, lista rozmów, pamięć, import, ustawienia…) jest oknem, które można zadokować, odpiąć jako pływające i zmaksymalizować. Interfejs standardowy to jedno zmaksymalizowane okno czatu — szczególny przypadek tego samego mechanizmu, nie osobny tryb. Okno czatu zawiera sumę funkcji kilku–kilkunastu popularnych aplikacji i daje wybór ich stylów (profile jako dane). Na telefonie preset: stos zmaksymalizowanych okien z przełącznikiem; pływanie i dokowanie dostępne także tam (opcja, nie usunięcie)."
+     }
+    ],
+    "text": "Okno to jednostka interfejsu: każdy widok (czat, graf, lista rozmów, pamięć, import, ustawienia…) jest oknem, które można zadokować, odpiąć jako pływające i zmaksymalizować. Interfejs standardowy to jedno zmaksymalizowane okno czatu — szczególny przypadek tego samego mechanizmu, nie osobny tryb. Okno czatu zawiera sumę funkcji kilku–kilkunastu popularnych aplikacji i daje wybór ich stylów (profile jako dane). Na telefonie preset: stos zmaksymalizowanych okien z przełącznikiem; pływanie i dokowanie dostępne także tam (opcja, nie usunięcie).",
+    "by": "S1",
+    "date": "2026-10-23"
+   },
+   "quotes": [
+    {
+     "text": "Ja mówiłem o panelach czy oknach Jak zwał tak zwał, dokowalnych, pływających, maksymalizowalnych, standardowy interfejs to zmaksymalizowany, inspirowany i zawierającymi sumę funkcjonalności oraz alternatywy stylistyczne popularnych apek",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:751",
+     "ref": null,
+     "attr": [],
+     "lead": null,
+     "secondary": false
+    }
+   ],
+   "sense": null,
+   "summary": null,
+   "restatement": [
+    {
+     "text": "Okno jest jednostką interfejsu: każdy widok można zadokować, odpiąć i zmaksymalizować; interfejs standardowy to jedno zmaksymalizowane okno czatu, nie osobny tryb; okno czatu ma sumę funkcji popularnych aplikacji i wybór ich stylów. Dziś: layout_mode=windows oznaczone planned; „Warsztat” = stara siatka paneli (kolizja nazw).",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:753"
+    }
+   ],
+   "commentary": [],
+   "status": null,
+   "gap_text": null,
+   "evidence": [],
+   "next_step": null,
+   "refs": [],
+   "supersedes": [],
+   "superseded_by": [],
+   "supersession_notes": [],
+   "tags": [],
+   "heading_note": "owner, 2026-10-22",
+   "sources": [
+    {
+     "role": "owner",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:750-753"
+    }
+   ],
+   "files": [
+    "owner"
+   ]
+  },
+  {
+   "id": "s_432987447e8c",
+   "aliases": [
+    "R65"
+   ],
+   "kind": "requirement",
+   "title": "Graph screens after an import: attachments missing, chat sentences about the graph not understood, a moving cobweb of three nodes, no 3D/alpha/dimensions, texts that say nothing; are the guidelines collected?",
+   "date": "2026-10-22",
+   "theme": "owner_requirements",
+   "theme_inferred": false,
+   "understanding": {
+    "state": "none"
+   },
+   "quotes": [
+    {
+     "text": "czyli onboarding głównie? przypomniała mi się uwaga: import nie pokazywał załączników w którejś rozmowy nie wiem skąd. próbowałem np. pokaż katalog główny grafu, pokaż import w grafie - nie kuma. widok grafu też bezużyteczny: ruszająca się pajęczyna. pokazuje na przykład trzy węzły, po imporcie tysięcy konwersacji. chociaż jakiś tam sens zaczyna się wyłaniać. nie za duży bo jak koło grupę na przykład pokazuje chyba wszystkie kwoty wymienione w imporcie. A gdzie 3+D, kanały alfa, wielowymiarowość...? co w ogóle ten interfejs grafu robi? w ogóle wszystkie teksty to nic nie mówią, mi - autorowi niby. masz zebrane wytyczne co do interfejsu i funkcjonalności?",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:756",
+     "ref": null,
+     "attr": [],
+     "lead": null,
+     "secondary": false
+    }
+   ],
+   "sense": null,
+   "summary": null,
+   "restatement": [
+    {
+     "text": "Zgłoszenia z telefonu po APK v2: import bez załączników w jednej rozmowie; „pokaż katalog główny grafu” i „pokaż import w grafie” nierozumiane; stary widok grafu (pajęczyna) pokazuje 3 węzły po imporcie tysięcy rozmów, koło z kwotami; brak 3D/alfa/wielowymiarowości w głównym grafie; teksty nic nie mówią autorowi; pytanie o zebrane wytyczne. Audyt 22.10: przyczyny w QUEUE_S1 i zadaniach G1–G4.",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:758"
+    }
+   ],
+   "commentary": [],
+   "status": null,
+   "gap_text": null,
+   "evidence": [],
+   "next_step": null,
+   "refs": [],
+   "supersedes": [],
+   "superseded_by": [],
+   "supersession_notes": [],
+   "tags": [],
+   "heading_note": "owner, 2026-10-22",
+   "sources": [
+    {
+     "role": "owner",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:755-758"
+    }
+   ],
+   "files": [
+    "owner"
+   ]
+  },
+  {
+   "id": "s_b554d8b8de19",
+   "aliases": [
+    "R66"
+   ],
+   "kind": "requirement",
+   "title": "Was the workbench only for tests? Present a plan with perspectives: when the functionality, when the interface",
+   "date": "2026-10-22",
+   "theme": "owner_requirements",
+   "theme_inferred": false,
+   "understanding": {
+    "state": "none"
+   },
+   "quotes": [
+    {
+     "text": "o ile dobrze pamiętam work band to był dla ciebie do testów tak? przedstaw plan z perspektywami, kiedy będą funkcjonalności, kiedy interfejs\nwork bench",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:761-762",
+     "ref": null,
+     "attr": [],
+     "lead": null,
+     "secondary": false
+    }
+   ],
+   "sense": null,
+   "summary": null,
+   "restatement": [
+    {
+     "text": "„Warsztat” (workbench) był w jego pamięci narzędziem testowym; prosi o plan z perspektywami i o rozdzielenie: kiedy funkcje, kiedy interfejs. Plan G1–G4 z 23.10 (daty ze zmierzonego tempa).",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:764"
+    }
+   ],
+   "commentary": [],
+   "status": null,
+   "gap_text": null,
+   "evidence": [],
+   "next_step": null,
+   "refs": [],
+   "supersedes": [],
+   "superseded_by": [],
+   "supersession_notes": [],
+   "tags": [],
+   "heading_note": "owner, 2026-10-22",
+   "sources": [
+    {
+     "role": "owner",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:760-764"
+    }
+   ],
+   "files": [
+    "owner"
+   ]
+  },
+  {
    "id": "s_18ec73967a7b",
    "aliases": [
     "owner:decision-rebuild-don-t-recover"
@@ -3595,7 +3773,7 @@
    "quotes": [
     {
      "text": "\"nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane\"",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:751",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:767",
      "ref": null,
      "attr": [],
      "lead": null,
@@ -3607,7 +3785,7 @@
    "restatement": [
     {
      "text": "Recovered versions (`history/chatadhd_v0.8.3`, `history/chatadhd_v0.9.0`) and\nthe historical report are sources of requirements, ideas and data assets\n(e.g. `film_structure.json`), and real ground truth for self-discovery tests —\nnot code to merge. Everything is rebuilt in Loom with tests.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:753-756"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:769-772"
     }
    ],
    "commentary": [],
@@ -3624,7 +3802,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:750-756"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:766-772"
     }
    ],
    "files": [
@@ -3650,7 +3828,7 @@
    "restatement": [
     {
      "text": "`workbench_mockup_2026-09-26.webp`: dockable/floating panels (conversation\nlist, active conversation, knowledge graph with active context window, project\nstructure with dimmed high-confidence auto-completable nodes, artifact views\nfor music/video with timeline + storyboard, video player, execution\nenvironment with agent), multi-format ingestion, Loom SDK at the centre.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:759-763"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:775-779"
     }
    ],
    "commentary": [],
@@ -3667,7 +3845,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:758-763"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:774-779"
     }
    ],
    "files": [

@@ -5,13 +5,13 @@ Ten plik jest **wygenerowany** z `docs/spec/spec.json` poleceniem `python3 tools
 
 Status pochodzi z pliku luk i jest **obserwacją z podanej daty**, nie ograniczeniem.
 
-Pozycji razem: **487**.
+Pozycji razem: **490**.
 
 | Status (z LUKI) | liczba |
 |---|---|
 | częściowo | 210 |
 | jest | 151 |
-| bez statusu (nie ma w LUKI) | 104 |
+| bez statusu (nie ma w LUKI) | 107 |
 | brak | 16 |
 | nieaktualne | 5 |
 | sprzeczne | 1 |
@@ -19,7 +19,7 @@ Pozycji razem: **487**.
 | Rodzaj | liczba |
 |---|---|
 | remark | 367 |
-| requirement | 63 |
+| requirement | 66 |
 | philosophy | 36 |
 | statement | 10 |
 | decision | 4 |
@@ -28,12 +28,13 @@ Pozycji razem: **487**.
 
 | Rozumienie (R61) | liczba |
 |---|---|
-| none | 487 |
+| none | 488 |
+| proposed | 2 |
 
 | W których plikach | liczba |
 |---|---|
 | LUKI + SLOWA | 379 |
-| rejestr R/D | 70 |
+| rejestr R/D | 73 |
 | SLOWA | 34 |
 | LUKI | 4 |
 
@@ -53,7 +54,7 @@ Pozycji razem: **487**.
 | Proces i współpraca | 67 |
 | Pozostałe | 33 |
 | Uzupełnienia (wypowiedzi bez numeru) | 10 |
-| Rejestr wymagań R/D | 70 |
+| Rejestr wymagań R/D | 73 |
 | bez tematu | 3 |
 
 ## Filozofia
@@ -574,7 +575,7 @@ Pozycji razem: **487**.
 - `s_f3e02687bf4f` **R53** — The engine generates the space; the owner's examples are calibration points — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L666)
 - `s_c10407e5078c` **R54** — Everything from the conversation window, at any level of abstraction and competence — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L683)
 - `s_856ff6931bb6` **R55** — Content vs its forms; groups of actions; the list is open and grows from conversations — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L691)
-- `s_0f91742a0b1c` **R56** — The first screen is a standard chat app; windows and the workbench are configurable views of it — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L705)
+- `s_0f91742a0b1c` **R56** — The first screen is a standard chat app; windows and the workbench are configurable views of it — _bez statusu_ · rozumienie: proposed · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L705)
 - `s_e4da98df7aa7` **R57** — Imports as linked files in the graph (class lineage), a working cache node, format-preserving edits on request, replication of vendor workflows — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L715)
 - `s_acee58464df3` **R58** — Examples are examples; the engine handles every configuration; little usefulness is an advisory, not a refusal — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L720)
 - `s_c461e9ba42ec` **R59** — A brief is a list of examples; examples are necessary, only the exhaustion of the possibilities is sufficient; how lists are filled; reliability of web sources — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L725)
@@ -582,8 +583,11 @@ Pozycji razem: **487**.
 - `s_daef127d5ef9` **R61** — Expensive work starts after a paraphrase is approved; before asking, check the understanding against the philosophy — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L735)
 - `s_2d3cdd28adb2` **R62** — Output tokens cost the owner's time; raise the weekly pace; act boldly while he is away — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L740)
 - `s_67f863afdb8c` **R63** — A better coordinator model may loosen the rules a little; the Sonnet rules were for Sonnet — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L745)
-- `s_18ec73967a7b` **owner:decision-rebuild-don-t-recover** — Decision — rebuild, don't recover — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L750)
-- `s_223e1568b3b9` **owner:ui-reference** — UI reference — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L758)
+- `s_64e0a794ea00` **R64** — Windows (panels): dockable, floating, maximizable; the standard interface is one maximized window; the union of functionality and the style alternatives of popular apps — _bez statusu_ · rozumienie: proposed · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L750)
+- `s_432987447e8c` **R65** — Graph screens after an import: attachments missing, chat sentences about the graph not understood, a moving cobweb of three nodes, no 3D/alpha/dimensions, texts that say nothing; are the guidelines collected? — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L755)
+- `s_b554d8b8de19` **R66** — Was the workbench only for tests? Present a plan with perspectives: when the functionality, when the interface — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L760)
+- `s_18ec73967a7b` **owner:decision-rebuild-don-t-recover** — Decision — rebuild, don't recover — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L766)
+- `s_223e1568b3b9` **owner:ui-reference** — UI reference — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L774)
 
 ## Bez tematu
 
