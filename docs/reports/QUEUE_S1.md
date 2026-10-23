@@ -1,7 +1,9 @@
-# Kolejka S1 — stan 2026-10-23 07:55 UTC
+# Kolejka S1 — stan 2026-10-23 07:57 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
+
+## S2 smoke 39913958478 na 5a14c15b (= main 94872898 + 4 nowe kroki), 07:42 UTC: 44/3/0 ×3 — wszystkie trzy po stronie sterownika: (1) regex importu oczekiwał „znaleziono”, a zdanie jądra dla gołego .json jest inne i uczciwe; (2) „pokaż katalog główny grafu” = propozycja + „tak” (sterownik nie potwierdzał) — odpowiedziałem: tak idzie dziś przez propozycję, e2e webu robi to samo, czy nawigacja tylko do odczytu ma wymagać potwierdzenia to pytanie o preset, nie o sterownik; (3) „Ty” czytane za wcześnie (wiersze ogólne za zwiniętym „Wszystkie wiersze”). Działa: „Co tu widzę?” z ⋮ > Graf. Poprawki sterownika 32c7a401, wynik za ~50 min. Uwaga S2 o tonie zdania „ten czytnik nie odczytuje nawet ich nazw” → złagodzić na „jeszcze” w K2c-3 (treść zostaje uczciwa: JSON ChatGPT może nieść nazwy, więc „format ich nie niesie” byłoby fałszem).
 
 ## Właściciel 08:0x UTC (R72, dosłownie w spec): „teleporta bardziej niż buttstrapa” + korekta R70: 0 = generowana odpowiedź, −1 = prompt użytkownika (najczęściej, najważniejszy), zapis liczbowy = „ta dana może być w kodzie” (przesunięcia jako dane), lepiej wnioskować zakres z kilku ostatnich wiadomości i celu, „nie wiem czy jest sens to w ogóle definiować… moja filozofia sama mnie dopadła”; „testy w przeglądarce robisz na przykład” (czytam: po teleporcie ma działać wszystko, co robię tu). Zapisane: R72 dodane, R70 `corrected` (jego słowami), R72 parafraza `proposed`. Dla K3: żadnej stałej pozycji jako reguły — preset w danych, zakres wnioskowany. Dla przeprowadzki: cel = ciągłość stanu i warsztatu (Chromium/e2e, bramka, emulator przy KVM), nie sama instalacja. Bootstrap po poprawce czeka na jego drugi bieg.
 
