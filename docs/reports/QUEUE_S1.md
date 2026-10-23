@@ -1,10 +1,13 @@
-# Kolejka S1 — stan 2026-10-23 00:37 UTC
+# Kolejka S1 — stan 2026-10-23 01:37 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
 
 ## Reguła właściciela R58 (22.10 ≈ 23:40 UTC; wcześniejsze znaczniki „23.10 00:00/00:20” w tym pliku to pomyłka zegara, prawdziwa godzina to 23:3x–23:4x): przykłady są przykładami, silnik obsługuje każdą konfigurację, mała użyteczność = niewiążąca podpowiedź „czy celowe? nie pytać następnym razem”
 Powód: w tabeli planu napisałem „kolor = rodzaj, przezroczystość = pewność, głębia = czas, jak mówiłeś” — to były moje konkretne przypisania podane jak wymaganie i fałszywie przypisane jemu (jego własne słowa: „to jest tylko jedna z konfiguracji, a zakodować trzeba silnik”). Zapisane: `CLAUDE.md` (sekcja „Examples are examples…”), `OWNER_REQUIREMENTS` R58 (cytat dosłowny), `tools/workflows/single-package.js` (reguła w każdym briefie). Zadanie G3 (#30) ma teraz warunki wstępne: (a) skala: punkt odniesienia + odległość ze znakiem, kierunek zależny od drugiej miary, kilka kodowań jednej miary (dziś `view_engine.cpp` ~595–622: tylko `range`/`domain`/`type` i statyczne `invert`); (b) podpowiedź niewiążąca + zapamiętane „celowe, nie pytaj” + wykrycie wyniku zdegenerowanego (nic nie widać). Silnik już nigdy nie odrzuca kodowania (`promoted`/`allowed` z powodami), brakuje pytania i pamięci odpowiedzi.
+
+## K2b-4 GOTOWE (01:37 UTC, `bb548a02`): uwagi i słowa sterujące czytane w każdym języku paczki (preset `chat_ops profile.match_languages = all | conversation | lista`, nadpisanie przez overlay), wyświetlanie w języku rozmowy, negatory w języku wzorca, zdanie „Zapisałem… potwierdzisz razem z całą sekcją” uczciwe; nowy `test_profile_words` (macierz słów × języków, 3. język syntetyczny)
+Agent Sonnet `wf_a578c761-63d`: 126 wywołań (≈4× planu — czekał na bramkę i ciął koszt testów), 285 tys. tokenów, 82 min. Testy czerwone na starym kodzie (880 asercji), 61/61 zielone na nowym. Worktree: fixture webu `graph-card-temperature.json` (odświeżone przez e2e po K2c-1) zatwierdzone `56d19946`; merge `origin/main` (fb32e0f4 = sterownik S2) `270a065f`; wypchnięte na `claude/m1-w0`. **Bramka `k2b4`** (jedna, na całym drzewie K2c-1 + K2b-3 + K2b-4 + main; nikt nie edytuje worktree) start 01:37. Po zielonej: FF `main` = `270a065f`, sha do S2, CI, potem smoke S2 → APK v3.
 
 ## R57-fix GOTOWE (00:37 UTC, `6a792580`): 34 znaleziska zastosowane, nowy §5.1 „Własny eksport Loom jako format do czytania przez innych” (D5-5…D5-8), zakaz wycieków przeetykietowany jako moja decyzja prawna, wszystkie decyzje z odwrotem; wpis INDEX `S1 / R57-fix`. Agent Sonnet 52 wywołania, 205 tys. tokenów, 8 min. Dokumenty = szkice do przeglądu właściciela (`understanding` w spec: do zapisania jako `proposed`).
 
