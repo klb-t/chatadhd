@@ -1,8 +1,10 @@
-# Kolejka S1 — stan 2026-10-23 15:22 UTC
+# Kolejka S1 — stan 2026-10-23 15:48 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
 **Teleport (R72):** karta startowa nowej sesji S1 = `docs/ops/TELEPORT_S1.md` (aktualizowana tuż przed przełączeniem); zadania zaplanowane = `docs/ops/ZADANIA_ZAPLANOWANE_2026-10-23.md`; przeprowadzka = `docs/ops/PRZEPROWADZKA_GCP_2026-10-23.md`.
+
+## CI 281 na 5090ab2c = „cancelled” (15:48 UTC): NIE test — job `dev (g++)` przekroczył `timeout-minutes: 45` w kroku „Build and test web workbench” (start 13:47, ucięty 13:59 = 45 min od startu jobu); asan/vendored/libcxx zielone. GitHub pokazuje timeout jobu jako „cancelled” (lekcja). Krok webu rośnie z każdym pakietem M1 (ponad 60 skryptów e2e). Poprawka: `.github/workflows/loom.yml` dev 45 → 100 min (preset), commit prosto na main (tylko CI, bez bramki) po FF dbbc42be: **`main` = `06119372`** (= K3-1 + poprawka CI). Kontrola CI ≈ 18:15. S2 dostaje sha.
 
 ## 15:22 UTC: CI 281 na 5090ab2c wciąż w toku (2 h 9 min; asan) → FF dbbc42be czeka (kontrola 15:45). Sekretarz: biegi 12:23/13:23/14:23 dostarczone (skrzynka pusta). R67-fix w toku: 2 commity (jądro: `secrets_in_chat` ma czytelnika — filtr przed routingiem, zapisem i wysyłką, przepis w `runtime/chat_secrets.pack`, domyślnie pyta; web: blok `secret_pending` „wyślij mimo to / nie wysyłaj”, chip modelu pokazuje model rozwiązany i stan ostatniego żądania); kontynuacja agenta biegnie.
 
