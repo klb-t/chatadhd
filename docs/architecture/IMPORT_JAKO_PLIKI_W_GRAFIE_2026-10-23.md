@@ -35,8 +35,10 @@ przypadki) i to, co **pozostaje niepokryte**.
    faseta dziedziczy metody i łącza szerszej. Dodanie nowego dostawcy albo nowej wersji = nowy plik
    danych, bez kodu (chyba że struktura jest zupełnie nowego rodzaju — wtedy jeden czytnik).
 3. **Trzy tryby importu** (i ich złożenia): kopia (dziś), **link w miejscu** po jednorazowym
-   rozpakowaniu (Pana domyślny), odczyt wprost z ZIP-a bez rozpakowania. Preset globalny i per
-   dostawca; zmiana rozmową („importuj bez kopiowania”) i z menu. Nic nie znika: tryb kopii zostaje.
+   rozpakowaniu (preset tego projektu, **decyzja projektu** na podstawie odczytu R57: „nie kopiujemy,
+   rozpakowujemy” — to preset, nie reguła), odczyt wprost z ZIP-a bez rozpakowania. Preset globalny i per
+   dostawca; zmiana rozmową („importuj bez kopiowania”) i z menu. Nic nie znika: tryb kopii zostaje;
+   odwrót: zmiana presetu na inny tryb, bez zmiany kodu.
 4. **Pamięć podręczna** to węzeł główny, pod którym widać, które elementy eksportu są teraz
    zmaterializowane (otwarte, edytowane). Jej trwałą postacią jest **dziennik łat** (JSON Patch) nad
    nietkniętym źródłem — dzięki temu zwolnienie pamięci podręcznej nie traci edycji.
@@ -45,20 +47,25 @@ przypadki) i to, co **pozostaje niepokryte**.
    rozpakowanego drzewa z zachowaniem formatu (także bliźniaka HTML), przepakowanie do ZIP na
    życzenie, a zapis w formacie dostawcy jako pełnoprawna konfiguracja. Mechanizm jest łatwy;
    trudne są **niewiadome formatu** (reguła podziału na pliki, tożsamość `chat.html` z JSON-em,
-   znaczenie kluczy `assetsJson`) — i to są rzeczy, które tylko Pan może zmierzyć na własnym
-   eksporcie, bo nikt publicznie tego nie zrobił.
+   znaczenie kluczy `assetsJson`) — i to są rzeczy, które dziś rozstrzyga dopiero pomiar na prawdziwym
+   eksporcie (Pana albo każdego innego); w [A]–[D] nie znalazłem publicznego pomiaru (obserwacja
+   z 2026-10-23, niezweryfikowane — ślad w §1.5 i §13).
 6. **Czy ZIP jest za drogi?** Częściowo ma Pan rację. Odczyt jednego wpisu jest tani (ZIP ma spis
    i każdy wpis jest skompresowany osobno). Drogie jest przepisywanie całego archiwum z
    rekompresją — ale biblioteka, którą już mamy (miniz 11.0.2), umie **kopiować nietknięte wpisy bez
    rekompresji** i zapisywać bez kompresji. Prawdziwym kosztem jest `chat.html` (druga kopia
    wszystkich rozmów w jednym pliku, w jednym zgłoszonym eksporcie ~600 MB [B, wnioskowanie]), nie
-   sam ZIP. Liczby trzeba zmierzyć, nie zakładać (§6).
-7. **Ważna poprawka do Pana założeń** (§13): `chat.html` **nie jest podzielony** jak JSON — to
-   jedna tablica w jednym pliku [B, 7 niezależnych parserów]; reguły podziału JSON nikt nie zna
-   [A/B milczą]; „nie kopiujemy, rozpakowujemy” to jednak kopia (rozpakowana); a dla ChatGPT istnieje
-   prawdopodobnie **konsument własnego eksportu** (oficjalny artykuł o przenoszeniu rozmów między
-   kontami, widziany tylko w streszczeniu wyszukiwarki [A, niepobrany]) — więc zapis w formacie
-   dostawcy jest bardziej użyteczny, niż Pan zakładał.
+   sam ZIP. Liczby trzeba zmierzyć, nie zakładać (§6). Koszt jest **ostrzeżeniem bez blokady**
+   (reguła ×10 tam, gdzie dotyczy), nie powodem usunięcia opcji: praca wprost na ZIP-ie zostaje
+   dostępna (patrz W9 w §1.1).
+7. **Ważna poprawka do odczytu wypowiedzi** (§13): `chat.html` **nie jest podzielony** jak JSON — to
+   jedna tablica w jednym pliku [B, 7 niezależnych parserów]; reguły podziału JSON: brak w [A]/[B]
+   (obserwacja z 2026-10-23, niezweryfikowane); „nie kopiujemy, rozpakowujemy” to jednak kopia
+   (rozpakowana); a dla ChatGPT istnieje prawdopodobnie **konsument własnego eksportu** (oficjalny
+   artykuł o przenoszeniu rozmów między kontami, widziany tylko w streszczeniu wyszukiwarki
+   [A, niepobrany]) — jeśli to się potwierdzi, zapis w formacie dostawcy może być bardziej użyteczny,
+   niż zakładano (wniosek warunkowy, poziom [A] niepobrany). Opcja zostaje bez względu na to, czy
+   konsument istnieje dziś (R60).
 8. **Pytanie o klony** (czy reprodukują przepływy ChatGPT/Codex itd.) należy do części B tego
    zadania; tu tylko zaznaczam błąd w pytaniu (§13 p. 5).
 
@@ -66,7 +73,10 @@ przypadki) i to, co **pozostaje niepokryte**.
 
 ## 1. Wymaganie jako twierdzenia, co już zapisane, co sprzeczne z importerem
 
-### 1.1 Twierdzenia właściciela (W1–W11), wiernie z wypowiedzi 2026-10-23
+### 1.1 Odczyt koordynatora (parafrazy; cytat dosłowny w R57), W1–W11, z wypowiedzi 2026-10-23
+
+Poniższe punkty to **odczyt koordynatora** wypowiedzi właściciela, nie jego słowa; dosłowny tekst jest
+w `OWNER_REQUIREMENTS_2026-09-26.md`, sekcja R57. Tam, gdzie punkt zawiera cudzysłów, jest on dosłowny.
 
 - **W1** Ustalenie trybu importu ma być możliwe **rozmową i w menu**.
 - **W2** Import **nie kopiuje**: ZIP jest rozpakowany, w grafie **linkowany** i **opisany
@@ -82,8 +92,12 @@ przypadki) i to, co **pozostaje niepokryte**.
   `.html`; zachować **zasady podziału** i **drugą kopię w HTML**, jeśli to to samo.
 - **W8** Potwierdzenie **w sieci**: najlepiej dokumentacja, źródła fachowe; dopiero z braku
   wiarygodnych — określenie z danych i źródeł mniej wiarygodnych, „wszystko ważone z głową”.
-- **W9** Praca **wyłącznie na ZIP-ie** to za dużo obliczeń (kompresja, rekompresja) — tylko na
-  wyraźne życzenie.
+- **W9** Praca **wyłącznie na ZIP-ie**. Dosłownie (R57): „praca wyłącznie na zippie to za dużo
+  obliczeń, kompresji, rekompresji będzie ciągnąć, to tylko na wyraźne życzenie użytkownika”.
+  Mechanizm (odczyt koordynatora, **decyzja projektu**): to **preset dostępności** — domyślnie
+  wyłączony, o jedno ustawienie od włączenia (rozmową albo z menu); koszt jest **nieblokującym
+  ostrzeżeniem** (z regułą ×10 tam, gdzie dotyczy); opcja nigdy nie jest usuwana ani zdegradowana
+  z powodu kosztu. Odwrót: zmiana presetu.
 - **W10** Standardowo: **węzeł główny typu pamięć podręczna**, gdzie są aktualnie przetwarzane
   i edytowane elementy eksportu.
 - **W11** Klony aplikacji na GitHubie: czy reprodukują oryginalne przepływy (Claude, Codex…);
@@ -136,10 +150,12 @@ przypadki) i to, co **pozostaje niepokryte**.
    **niezweryfikowana** (§1.5). Gdyby HTML zawierał rozmowy nieobecne w JSON, nie zostałyby
    zaimportowane bez ostrzeżenia.
 5. **Claude.ai**: załączniki tylko jako metadane (`export_anthropic.cpp:305-329`, `resolved=false`),
-   bez ostrzeżenia dla osoby; to **ograniczenie eksportu** (brak bajtów, [B] + [A] dla
-   Team/Enterprise), nie importera — ale powinno być powiedziane.
-6. **Wynik importu**: angielska linia + surowy JSON (audyt). W3/W2 wymagają opisu metadanych
-   w grafie i po polsku.
+   bez ostrzeżenia dla osoby; to **dzisiejsze ograniczenie eksportu** (obserwacja z 2026-10-23: brak
+   bajtów w znanych próbkach, [B] + [A] dla Team/Enterprise; inna wersja eksportu może je nieść) —
+   nie importera, ale powinno być powiedziane.
+6. **Wynik importu**: angielska linia + surowy JSON (audyt). W2 mówi o opisie metadanymi w grafie;
+   **język opisu po polsku** to **decyzja projektu / preset** (etykiety dla właściciela po polsku,
+   język jest daną i da się go zmienić), nie treść W2/W3. Odwrót: zmiana presetu języka opisu.
 7. **Predykat shardów** `is_conversation_file` (`export_internal.h:326-328`) akceptuje
    `conversations-.json` (zero cyfr; `> 18` zamiast `> 19`) i ścieżki zagnieżdżone po nazwie
    bazowej; convoviz dopasowuje tylko katalog główny [B]. Drobne, nie grozi utratą danych.
@@ -160,11 +176,17 @@ przypadki) i to, co **pozostaje niepokryte**.
 | `export_manifest.json`, `conversation_asset_file_names.json`, `library_files.json`, `user_settings.json`, `file_<id>.dat` w eksportach 2026 | [B] Nexus, ChatGPT-Wrapped, datamoat; **żadne źródło OpenAI**; dwa narzędzia same **generują** plik o tej nazwie (możliwa pętla naśladowcza) | średnia/niska | `unzip -l`; porównać `export_files` z listą wpisów |
 | Wariant „Privacy portal”: ZIP w ZIP, media `.dat` bez rozszerzenia | [D]/[B−] jedno źródło (temnoon) | niska | `unzip -l` zewnętrznego; `file` na `.dat` |
 | Drzewo wiadomości OpenAI: `mapping`, korzeń `parent=null`, gałęzie = wiele `children`, `current_node` | [B] convoviz + oa-chat; [C] `export_openai.cpp:451-540` | wysoka | symetria parent/children, jeden korzeń |
-| Claude.ai: `conversations.json`, `users.json`, `projects.json`, opc. `memories.json`, **`design_chats/<uuid>.json`** (nowe), bez HTML, bez bajtów załączników | [B] osteele, lordjabez; **[B] jedno pierwszorzędne sprawdzenie prawdziwego eksportu 2026-04-22 (waggle-os)**; [A] „doesn't include the contents of files you uploaded” (tylko Team/Enterprise) | średnia | `unzip -l`; liczba `attachments` z/bez `extracted_content` |
+| Claude.ai: `conversations.json`, `users.json`, `projects.json`, opc. `memories.json`, **`design_chats/<uuid>.json`** (nowe; **niezweryfikowane** — Aneks B p. 5), bez HTML, bez bajtów załączników (obserwacja z datą, nie ograniczenie) | [B] osteele, lordjabez; **[B] jedno pierwszorzędne sprawdzenie prawdziwego eksportu 2026-04-22 (waggle-os)**; [A] „doesn't include the contents of files you uploaded” (tylko Team/Enterprise) | średnia | `unzip -l`; liczba `attachments` z/bez `extracted_content` |
 | Gałęzie w ZIP-ie Claude (`parent_message_uuid`, `current_leaf_message_uuid`) | [D] „eksport liniowy”; schematy: pola opcjonalne | niska | liczyć wiadomości, których rodzic ≠ poprzednik |
 | Gemini: nie produkt „Gemini” w Takeout, lecz My Activity → Gemini Apps (`MyActivity.html`/`.json`), płaski dziennik bez id rozmowy | [B] 4 parsery; [A] generyczny schemat My Activity (streszczenie) | średnia | klucze wpisów, liczba z/bez `safeHtmlItem` |
 | **Konsument eksportu ChatGPT**: oficjalny artykuł „Transfer exported conversations between ChatGPT accounts” (9106926): po rozpakowaniu szukać `conversations.json`, większe eksporty mają numerowane pliki, za duże wgrywać osobno | [A] **tylko streszczenie wyszukiwarki, strona niepobierana (DNS)** | średnia | przeczytać artykuł w przeglądarce |
 | Claude.ai / Gemini: brak znanego importu własnego eksportu | tylko brak dowodu (negatyw niezweryfikowany) | — | — |
+
+Wiersze tej tabeli to **obserwacje z datą 2026-10-23** (okno ważności: do następnego pomiaru albo
+nowej wersji eksportu; poziomy w kolumnie 2), nie ograniczenia: żadna z nich nie zawęża trybów
+ani opcji tego projektu, a zmiana stanu rzeczy (np. nowa wersja eksportu z bajtami załączników,
+z nowym katalogiem, z innym podziałem) ma się obejść **bez zmiany kodu** — nowy wiersz danych
+w profilu dostawcy.
 
 ---
 
@@ -182,7 +204,7 @@ przypadki) i to, co **pozostaje niepokryte**.
 Przypadki, w których się **nie** pokrywają, istnieją dziś: goły `conversations.json` bez ZIP-a
 (eksport, nie archiwum); eksport rozpakowany do katalogu; wariant „Privacy portal” ZIP w ZIP [D];
 `MyActivity.html` Gemini (HTML, nie JSON, w ZIP-ie Takeout obok innych produktów); `design_chats/`
-jako katalog w ZIP-ie Claude [B]. Pojedyncze dziedziczenie `file > archive > export` złamałoby się
+jako katalog w ZIP-ie Claude [B, niezweryfikowane — Aneks B p. 5]. Pojedyncze dziedziczenie `file > archive > export` złamałoby się
 na każdym z nich.
 
 **Decyzja D2-1:** dziedziczenie **wewnątrz każdej osi** (drzewo klas z `parent`, cechy `traits`
@@ -193,8 +215,10 @@ klasą z innej osi. Akcje pasują po cechach (`requires` w `data/runtime/actions
 „przepakuj ZIP” wymaga cechy `zip_archive`, „zapisz shard” — `export.openai.chatgpt`, a „otwórz
 w widoku dostawcy” — `export` + istnienie profilu dla `vendor/product`. Węższa faseta dziedziczy
 metody szerszej **bez** wpisywania ich ponownie, a jedna rzecz może być naraz ZIP-em, eksportem
-i plikiem — co jest literalnie Pańskim zdaniem („plik … do tego charakterystyczne dla ZIP, jeszcze
-węższe…”), tylko bez wymuszania, by eksport zawsze leżał pod archiwum.
+i plikiem — co jest zgodne z fragmentem R57 (dosłownie: „jak każdy inny plik kropka do tego
+charakterystyczne dla archiwum ZIP, jeszcze węższe: dla eksportu, jeszcze węższe: eksport danego
+dostawcy dana wersja”; odczyt koordynatora: to rodowód klas), tylko bez wymuszania, by eksport
+zawsze leżał pod archiwum.
 
 Odwrót: gdyby kompozycja okazała się zbędna (wszystkie realne eksporty pod ZIP-em), fasety
 spłaszcza się do jednego drzewa jedną migracją danych (`facets[0]` → `parent`), kod akcji nie zmienia
@@ -225,7 +249,7 @@ Oś treści (nowe drzewo):
 | `export.openai.chatgpt/single-2025` | j.w. | `layout` | + `shared_conversations.json`, `textdocs/`, `user-{id}/`, `sediment://` [B, średnia] |
 | `export.openai.chatgpt/sharded-2026` | j.w. | `layout` | `conversations-NNN.json`, `chat.html`, manifest? `.dat`? [B/D] |
 | `export.openai.chatgpt/privacy-portal-2026` | j.w. | `layout` | ZIP w ZIP, `.dat` [D] |
-| `export.anthropic.claude/2024-text`, `/2026-full` | `export.anthropic.claude` | `layout` | `memories.json`, `design_chats/` [B] |
+| `export.anthropic.claude/2024-text`, `/2026-full` | `export.anthropic.claude` | `layout` | `memories.json`, `design_chats/` [B, niezweryfikowane — Aneks B p. 5] |
 | `export.google.gemini/takeout-myactivity` | `export.google.gemini` | `layout`, `activity_log` | grupowanie wpisów w rozmowy (hipoteza, [B] parsery grupują po dniu/URL) |
 | `export.xai.grok`, `export.anthropic.claude_code`, `export.loom` | `export` | … | z `formats/*.json` X-Port |
 
@@ -299,9 +323,9 @@ remisowy jest raportowany, nie rozstrzygany).
 1. Nowy plik `formats/<id>.json` (X-Port, już tak działa) **albo** nowy plik układu w istniejącym
    formacie — oba to dane. 2. Klasa w `classes.pack` (lub w nakładce użytkownika `graph_entry`):
    `parent`, `traits`, `label.pl/en`. 3. Profil interfejsu w `web/src/profiles/data/` (opcjonalnie).
-   4. Kod jest potrzebny **tylko** gdy struktura jest nowego rodzaju (dziś: drzewo `mapping`,
-   lista `chat_messages`, dziennik aktywności, wiersze SQLite, JSONL sesji) — wtedy jeden czytnik
-   z kontraktem `iter_units`. Agent z §11 produkuje punkty 1–2 jako **propozycję danych**.
+   4. Kod jest **dziś** potrzebny wtedy, gdy struktura jest nowego rodzaju (znane rodzaje na
+   2026-10-23: drzewo `mapping`, lista `chat_messages`, dziennik aktywności, wiersze SQLite, JSONL
+   sesji; to obserwacja z datą, nie lista zamknięta) — wtedy jeden czytnik z kontraktem `iter_units`. Agent z §11 produkuje punkty 1–2 jako **propozycję danych**.
 
 ---
 
@@ -320,21 +344,27 @@ Tryb nie jest jedną wartością. Jest **iloczynem**: *element* × *co z nim zro
   `unpack:<user path>` | `none` (odczyt przez ZIP, W9) | `keep_zip_blob` (dziś: `put_file` całego
   ZIP-a).
 
-Trzy nazwane tryby właściciela są **punktami** tej przestrzeni (presety):
+Trzy nazwane tryby (presety tego projektu; odczyt W1/W2/W9 z R57) są **punktami** tej przestrzeni:
 
 | Preset | kontener | wpisy | rozmowy | załączniki | `chat.html` |
 |---|---|---|---|---|---|
 | `copy` (dzisiejszy) | `keep_zip_blob` | copy | copy → `messages` | copy → blob | skip_recorded |
 | `link` (W2, **domyślny globalny — preset**) | `unpack:<data>/imports/…` | link | link (materializacja na żądanie, §4) | link | link + poradnik „porównaj/importuj też HTML” |
-| `read_through_zip` (W9, **na wyraźne życzenie — preset dostępności**) | `none` | link(zip) | link(zip) | link(zip) | link(zip) |
+| `read_through_zip` (W9, **preset dostępności: domyślnie wyłączony** — R57: „to tylko na wyraźne życzenie użytkownika”; zawsze dostępny, koszt = ostrzeżenie) | `none` | link(zip) | link(zip) | link(zip) | link(zip) |
 | `index_only` (dodane: „co mam w eksportach”, bez treści) | dowolny | index_only | index_only | index_only | index_only |
 | `both` (dodane: kopia **i** link, DIP13 „kopia, link, oba”) | unpack | both | both | both | link |
 
-Per dostawca/układ presety różnią się tam, gdzie format wymusza: eksport Claude.ai **nie ma bajtów
-załączników** [B], więc dla niego `attachments` ma tylko `index_only` i opcję `fetch_remote_assets`
-(pobranie z `preview_url`/`thumbnail_url` — to wywołanie sieciowe do serwera Anthropic z Pana
-sesji; zasada projektu: wywołania sieciowe tylko gdy osoba włączy, z szacunkiem kosztu; preset
-`ask`). Gemini: brak załączników w dzienniku [B] → `index_only`.
+Per dostawca/układ presety różnią się tam, gdzie format **dziś** to wymusza, ale **pełny zestaw
+trybów obowiązuje dla każdego rodzaju elementu**, także załączników. Gdy eksport nie niesie
+bajtów (obserwacja z datą 2026-10-23: eksport Claude.ai, 1 próbka [B]; Gemini: dziennik bez
+załączników [B]), tryby `copy` i `link` są dla niego **„nie do zastosowania w tym eksporcie”**
+(obserwacja z datą, 1 próbka [B]) i silnik wydaje **nieblokujące ostrzeżenie** („ten eksport nie
+ma bajtów załączników; zostają metadane”, z „nie pytaj następnym razem”) — nie usuwa trybów.
+Preset załączników dla takiego układu to `index_only` plus opcja `fetch_remote_assets` (pobranie
+z `preview_url`/`thumbnail_url` — to wywołanie sieciowe do serwera Anthropic z Pana sesji; zasada
+projektu: wywołania sieciowe tylko gdy osoba włączy, z szacunkiem kosztu; preset `ask`). Przyszła
+wersja eksportu z bajtami nie wymaga zmiany kodu: wiersz danych w profilu układu i `copy`/`link`
+stają się stosowalne. Odwrót: preset załączników zmienia się jednym ustawieniem.
 
 Pełna przestrzeń = wszystkie przypisania; wyliczanie: test generatywny bierze losowe przypisanie
 i syntetyczny eksport, importuje i sprawdza własności niezależne od trybu (liczniki rozmów,
@@ -451,18 +481,40 @@ syntetycznych fixture'ach + własności generatywne). Wszystkie opcje są **konf
 | **a** | **Kontynuacja w Loom** z `derived_from` do wiadomości źródłowej | Nowa gałąź/rozmowa w Loom; pierwsza nowa wiadomość ma `derived_from` → wiadomość z eksportu (lokalizator), rozmowa ma `continues` → rozmowa źródłowa; model dostaje historię z eksportu jako kontekst | 1 | żadne dla źródła (nietknięte); ryzyko tylko w kontekście: czego eksport **nie ma** (`known_absent`: pełne rozumowanie, prompt systemowy, bajty plików Claude) — poradnik przy pierwszej kontynuacji | fixture → kontynuuj → łącza istnieją, źródło hash-identyczne |
 | **b** | **Edycja jako nakładka/łata** nad nietkniętym źródłem | §4.3 p. 2; widok = źródło + łaty; cofnięcie = odwrotność | 1–2 | konflikt, gdy źródło się zmieni pod spodem (nowy eksport) — wykrywany hashem (`before`), rozwiązywany jak X-Port `diff`: nowy, zmieniony, usunięty | własność: `apply(invert(apply(p)))` = identyczność; losowe sekwencje łat |
 | **c** | **Zapis zwrotny do rozpakowanego drzewa z zachowaniem formatu** | Łaty → obiekt rozmowy w **tym samym shardzie**, re-serializacja deterministyczna (porządek kluczy i spacje jak w źródle — wykryte z próbki, nie założone), `update_time`, `current_node`, symetria `parent/children`; rekordy w `shared_conversations.json`, `message_feedback.json`, `textdocs/*.json` z `conversation_id`; aktywa po wskaźniku; `user.json` nietknięty. **Bliźniak HTML**: opcja `html_twin: skip | rewrite | advise` — przy `rewrite` ta sama rozmowa w `jsonData` (jedna tablica, ucieczka `</script>`, U+2028/2029, zachowane znaczniki `var jsonData = ` / `var assetsJson`, wpisy `assetsJson` dla dodanych/usuniętych wskaźników). **Reguła podziału**: nieznana [A–D], więc zachowujemy **obserwowaną przynależność** (rozmowa zostaje w swoim shardzie); nowa rozmowa: preset `last_shard` \| `new_shard` \| `by_observed_count` (gdy pomiar lokalny wykaże stałą liczbę) \| `by_observed_bytes` | shard: 2; HTML: 2–3; rekordy towarzyszące: 1 | HTML: plik setek MB, ekstrakcja po nawiasach, brak schematu; semantyka kluczy `assetsJson` sporna (id wiadomości vs wskaźnik) → obie hipotezy jako dane, wybór po lokalnym teście; JSON: byte-identity nietkniętych rozmów trzeba **pilnować testem**, nie zakładać | **obieg**: fixture → import link → edycja → zapis → ponowny import obiema ścieżkami (loom, `engine/importer.py`) → liczniki = `EXPECTED.json`; nietknięte rozmowy bajt w bajt; tknięte równe po `json.dumps(sort_keys=True)`; HTML: zbiór id `jsonData` = zbiór id shardów. **Naprawa fixture `chat.html`** (tablica + `assetsJson` + zaślepka JS) jest warunkiem — dziś test nie ćwiczy prawdziwego kształtu |
-| **d** | **Przepakowanie do ZIP na wyraźne życzenie** | Nowy ZIP: nietknięte wpisy **kopiowane surowo** (`mz_zip_writer_add_from_zip_reader`, `miniz.h:1384`: „fully clones the source file's compressed data (no recompression)”), tknięte deflate albo store (`MZ_NO_COMPRESSION`, :270), **deterministyczny porządek** = porządek źródła (`MZ_ZIP_FLAG_DO_NOT_SORT_CENTRAL_DIRECTORY` :1069), zip64 gdy trzeba (`mz_zip_is_zip64` :1253, `MZ_ZIP_FLAG_WRITE_ZIP64` :1072); alternatywa `append` (`mz_zip_writer_init_from_reader` :1347 — dopisanie wpisu, stary zostaje jako martwe bajty) | 1–2 | rozmiar dysku ×2 w czasie przepakowania; `append` rośnie bez kompaktowania; mtime/atrybuty wpisów — kopiowane przez miniz razem z nagłówkiem [C, komentarz w nagłówku, zachowanie na realnym ZIP-ie **niezweryfikowane**] | hash każdego nietkniętego wpisu po rozpakowaniu równy; CRC z centralnego katalogu równe; `unzip -t`; ponowny import |
-| **e** | **Zapis w formacie dostawcy jako pełnoprawna konfiguracja** (nie „eksport na życzenie”) | c+d dostępne jako stały tryb pracy: każda edycja/kontynuacja od razu trafia do drzewa (i opcjonalnie ZIP-a) w formacie dostawcy; Loom jest wtedy edytorem eksportu | 1 (nad c, d) | **R58**: użyteczność nie jest powodem do degradacji. Konsument: ChatGPT — **prawdopodobnie istnieje** (artykuł 9106926 o przenoszeniu rozmów między kontami [A, tylko streszczenie, niepobrany]; jakie pola wymaga — nieznane); Claude.ai, Gemini — **nie znaleziono** (negatyw niezweryfikowany). Poradnik nieblokujący „nie znamy odbiorcy tego formatu poza ChatGPT (niepotwierdzone) — tak miało być?” z „nie pytaj więcej” | jak c+d, w pętli: N losowych edycji → N zapisów → import końcowy = stan końcowy pamięci podręcznej |
+| **d** | **Przepakowanie do ZIP** — **preset dostępności: domyślnie wyłączony, o jedno ustawienie od włączenia** (R57: „to tylko na wyraźne życzenie użytkownika”); opcja zawsze dostępna, koszt = nieblokujące ostrzeżenie | Nowy ZIP: nietknięte wpisy **kopiowane surowo** (`mz_zip_writer_add_from_zip_reader`, `miniz.h:1384`: „fully clones the source file's compressed data (no recompression)”), tknięte deflate albo store (`MZ_NO_COMPRESSION`, :270), **deterministyczny porządek** = porządek źródła (`MZ_ZIP_FLAG_DO_NOT_SORT_CENTRAL_DIRECTORY` :1069), zip64 gdy trzeba (`mz_zip_is_zip64` :1253, `MZ_ZIP_FLAG_WRITE_ZIP64` :1072); alternatywa `append` (`mz_zip_writer_init_from_reader` :1347 — dopisanie wpisu, stary zostaje jako martwe bajty) | 1–2 | rozmiar dysku ×2 w czasie przepakowania; `append` rośnie bez kompaktowania; mtime/atrybuty wpisów — kopiowane przez miniz razem z nagłówkiem [C, komentarz w nagłówku, zachowanie na realnym ZIP-ie **niezweryfikowane**] | hash każdego nietkniętego wpisu po rozpakowaniu równy; CRC z centralnego katalogu równe; `unzip -t`; ponowny import |
+| **e** | **Zapis w formacie dostawcy jako pełnoprawna konfiguracja** (nie „eksport na życzenie”) | c+d dostępne jako stały tryb pracy: każda edycja/kontynuacja od razu trafia do drzewa (i opcjonalnie ZIP-a) w formacie dostawcy; Loom jest wtedy edytorem eksportu | 1 (nad c, d) | **R58**: użyteczność nie jest powodem do degradacji. Konsument: ChatGPT — **prawdopodobnie istnieje** (artykuł 9106926 o przenoszeniu rozmów między kontami [A, tylko streszczenie, niepobrany]; jakie pola wymaga — nieznane); Claude.ai, Gemini — **nie znaleziono** (obserwacja z 2026-10-23, [A]–[D]; negatyw niezweryfikowany). Poradnik nieblokujący „nie znamy odbiorcy tego formatu poza ChatGPT (niepotwierdzone) — tak miało być?” z „nie pytaj więcej” | jak c+d, w pętli: N losowych edycji → N zapisów → import końcowy = stan końcowy pamięci podręcznej |
 | **f** (dodane) | **Lustrzana gałąź** | a + c: kontynuacja w Loom **i** zapis jako nowa gałąź drzewa dostawcy (OpenAI: `mapping` ma gałęzie natywnie [B]; Claude: gałęzie w ZIP-ie **niezweryfikowane** [D] → zapis jako nowa rozmowa z `parent_message_uuid`, jeśli lokalny pomiar wykaże, że eksport je nosi) | 1 (nad a, c) | jak c | jak c, plus: liczba gałęzi +1 |
 | **g** (dodane) | **Scalenie między dostawcami** | Kontynuacja rozmowy ChatGPT w Claude (X-Port `merge_conversations` z zachowaniem źródła każdej wiadomości, §5.12) | 1 (jest w X-Port; dołączyć do akcji) | utrata pól nieprzekładalnych — raport | obieg przez `handoff/` |
 | **h** (dodane) | **Kontynuacja u dostawcy przez API** | Historia z eksportu jako kontekst wywołania modelu u tego dostawcy (OpenRouter/API) — to **nie** zapis do jego aplikacji | 1 | koszt tokenów (szacunek przed, rzeczywiste po; reguła ×10) | istniejące testy `use_model` |
-| **i** | **Zapis do aplikacji dostawcy po stronie serwera** (edycja istniejącej rozmowy na jego koncie) | — | — | **NOT POSSIBLE** udokumentowanymi środkami dla Claude.ai i Gemini (brak punktu wejścia w [A]–[D]; negatyw niezweryfikowany); dla ChatGPT jedyna znana droga to **import całego zestawu** do konta (9106926, [A] streszczenie), nie edycja per wiadomość | — |
+| **i** | **Zapis do aplikacji dostawcy po stronie serwera** (edycja istniejącej rozmowy na jego koncie) | — | — | **niedostępne, dopóki droga nie jest znana** dla Claude.ai i Gemini: *brak znanej drogi* (obserwacja z 2026-10-23, [A]–[D] bez punktu wejścia; negatyw niezweryfikowany) — opcja zostaje w tabeli i w silniku, nieblokujące ostrzeżenie z „nie pytaj więcej”; nowa droga (np. API dostawcy) = nowy wiersz danych, bez zmiany kodu. Dla ChatGPT jedyna znana droga to **import całego zestawu** do konta (9106926, [A] streszczenie), nie edycja per wiadomość | — |
 
 Pełna przestrzeń opcji = {cel: Loom, drzewo, ZIP, inny dostawca, API dostawcy, aplikacja
 dostawcy} × {operacja: dopisz, zmień, usuń, rozgałęź, scal} × {zakres: wiadomość, rozmowa, zbiór}.
-Tabela wylicza punkty, które właściciel nazwał, i te, które z iloczynu wynikają; test generatywny
-losuje trójkę i sprawdza, że akcja albo istnieje, albo jest jawnie oznaczona jako NOT POSSIBLE
-z powodem. Niepokryte: dostawcy nieobecni w danych.
+Tabela wylicza punkty wynikające z odczytu R57 i te, które wynikają z iloczynu; test generatywny
+losuje trójkę i sprawdza, że akcja albo istnieje, albo jest jawnie oznaczona jako „niedostępne,
+dopóki droga nie jest znana” (albo — tylko przy niemożliwości technicznej — NOT POSSIBLE) z powodem,
+datą i poziomem źródła. Niepokryte: dostawcy nieobecni w danych.
+
+### 5.1 Własny eksport Loom jako format do czytania przez innych
+
+Reguła „brak dziś nie znaczy brak na zawsze” (R60, `CLAUDE.md`): nie wiadomo, kto i kiedy będzie czytał
+format, który produkujemy, więc **własny eksport Loom (klasa `export.loom`, pakiet `handoff/` z X-Port)
+jest projektowany jako czytelny, opisany i wersjonowany format**, nie jako wewnętrzny zrzut. To
+**decyzje projektu** (nie słowa właściciela), każda z odwrotem:
+
+1. **D5-5 Identyfikator schematu i wersji** w manifeście (dziś w X-Port `loom.extract.handoff/1`;
+   nazwa jest przykładem), a w obrębie wersji znaczenie pól się nie zmienia. Odwrót: nowa wersja
+   obok starej (czytnik zna obie), nigdy nadpisanie.
+2. **D5-6 Własny odcisk układu** (§2.3) i ten sam rodowód klas: `export` → `export.loom` → układ/wersja —
+   tą samą mechaniką rozpoznajemy cudze i własne eksporty, więc obcy czytnik dostaje to samo
+   „skąd to wiesz” co my. Odwrót: odcisk zostaje danymi, można go pominąć w manifeście presetem.
+3. **D5-7 Manifest czytelny bez Loom**: lista plików, liczniki, hashe, proweniencja każdego elementu,
+   `known_absent`. Odwrót: pola opcjonalne, okrojenie jednym presetem (z ostrzeżeniem, nie blokadą).
+4. **D5-8 Opis formatu** (pola, wersje, syntetyczne przykłady) generowany z tych samych danych
+   (`formats/*.json`) i wersjonowany z kodem; wysłanie go na zewnątrz tylko gdy osoba zdecyduje
+   (zero wywołań sieciowych). Odwrót: opis zostaje lokalnym plikiem.
+5. Wiersz rejestru §12 dla własnego formatu startuje z poziomem [C] (nasz kod); „nikt poza nami go dziś
+   nie czyta” to obserwacja z datą 2026-10-23, nie argument za mniej czytelnym formatem.
 
 ---
 
@@ -492,22 +544,28 @@ Fakty o formacie i o miniz 11.0.2 ([C], `third_party/miniz/miniz.h`):
    bliźniaka przy zmianie jednej rozmowy = przepisanie jednej tablicy w jednym pliku ≈ rozmiar
    `jsonData`. Nie da się tego zmniejszyć bez porzucenia tożsamości bajtowej HTML (opcja
    `html_twin: skip` z poradnikiem).
-7. **Na telefonie** wszystko powyżej jest wolniejsze o rząd; ale rząd **zmierzony**, nie założony.
+7. **Na telefonie** wszystko powyżej jest wolniejsze, prawdopodobnie o rząd; rząd jest **do zmierzenia
+   w P5** (§10), dziś nie jest zmierzony ani założony.
 
 Werdykt: obawa jest **słuszna dla przepakowania z rekompresją całości** i dla bliźniaka HTML,
 **niesłuszna dla odczytu** i dla zmiany pojedynczego wpisu z kopią surową. Dlatego presety:
-`read_through_zip` dostępny bez ostrzeżeń dla odczytu; `repack` na życzenie (jak chciał
-właściciel) z wyświetlonym szacunkiem (I/O = rozmiar archiwum, CPU = suma zmienionych wpisów,
+`read_through_zip` dostępny bez ostrzeżeń dla odczytu; `repack` jako **preset dostępności**
+(R57, dosłownie: „to tylko na wyraźne życzenie użytkownika”; domyślnie wyłączony, o jedno
+ustawienie od włączenia, **opcja zawsze dostępna** — koszt jest nieblokującym ostrzeżeniem, nie
+powodem usunięcia) z wyświetlonym szacunkiem (I/O = rozmiar archiwum, CPU = suma zmienionych wpisów,
 HTML = rozmiar `jsonData`) **przed** wykonaniem i pomiarem **po**; reguła ×10 dotyczy pomiaru.
 Pakiet pomiarowy (§10 P5) mierzy na syntetycznym eksporcie o rozmiarze zbliżonym do Pana
 prawdziwego (rozmiary Pan podaje, dane są syntetyczne).
 
 ---
 
-## 7. Tabela EASY / MEDIUM / HARD / NOT POSSIBLE (nakład i ryzyko, nie pozwolenie)
+## 7. Tabela EASY / MEDIUM / HARD / NIEDOSTĘPNE (nakład i ryzyko, nie pozwolenie)
 
 Każda opcja pozostaje konfiguracją; „domyślnie wył.” to preset dostępności; poradnik nieblokujący
-tam, gdzie użyteczność wątpliwa (R58).
+tam, gdzie użyteczność wątpliwa (R58). „NOT POSSIBLE” jest zarezerwowane dla niemożliwości
+**technicznej** (np. kod po stronie serwera dostawcy, którego nie mamy i nie możemy uruchomić);
+w tej tabeli nie występuje żaden taki wiersz. „Niedostępne, dopóki droga nie jest znana” to
+obserwacja z datą i poziomem źródła (R60), nie zakaz.
 
 | Opcja | Nakład | Ryzyko | Preset | Poradnik |
 |---|---|---|---|---|
@@ -523,7 +581,7 @@ tam, gdzie użyteczność wątpliwa (R58).
 | (c) zapis zwrotny do shardu JSON z zachowaniem przynależności | MEDIUM | średnie (determinizm serializacji) | dostępny, pyta przez bramkę (zmienia dane osoby) | — |
 | (c) bliźniak HTML `rewrite` | MEDIUM–HARD | wysokie (setki MB, brak schematu, sporna semantyka `assetsJson`) | dostępny; preset `advise` | „HTML nie porównany z JSON; przepisać, pominąć, porównać?” |
 | (c) rekordy towarzyszące (`shared_conversations`, `feedback`, `textdocs`) | EASY–MEDIUM | średnie (listy pól z [B]) | wł. przy (c) | — |
-| (d) przepakowanie z kopią surową, zip64, store/deflate | MEDIUM | średnie (dysk ×2) | **na życzenie** (preset właściciela) | szacunek kosztu przed |
+| (d) przepakowanie z kopią surową, zip64, store/deflate | MEDIUM | średnie (dysk ×2) | **domyślnie wył. — preset dostępności** (R57: „to tylko na wyraźne życzenie użytkownika”), zawsze dostępny | szacunek kosztu przed (ostrzeżenie, nie blokada) |
 | (d) `append` zamiast przepakowania | EASY | średnie (wzrost pliku) | dostępny | „plik urósł o X, skompaktować?” |
 | (e) zapis w formacie dostawcy jako stały tryb | EASY nad c+d | jak c+d | dostępny | „znany odbiorca: ChatGPT (niepotwierdzone); inni nieznani — tak miało być?” |
 | (f) lustrzana gałąź | EASY nad a+c | jak c; Claude: gałęzie niezweryfikowane | dostępny | przy Claude: „eksport może nie nosić gałęzi” |
@@ -531,7 +589,7 @@ tam, gdzie użyteczność wątpliwa (R58).
 | (h) kontynuacja u dostawcy przez API | EASY | koszt tokenów | dostępny | szacunek kosztu |
 | Pobranie aktywów Claude z `preview_url` | EASY | prywatność (wywołanie do serwera Anthropic) | preset `ask` | koszt i adresat |
 | Użycie `assetsJson` do rozwiązywania wskaźników | EASY | sporna semantyka | drugi resolver po wzorcu nazw; który zadziałał — zapisane | — |
-| (i) edycja rozmowy w aplikacji dostawcy po stronie serwera | **NOT POSSIBLE** udokumentowanymi środkami (Claude.ai, Gemini; negatyw niezweryfikowany) | — | — | ChatGPT: tylko import całości do konta [A, streszczenie] |
+| (i) edycja rozmowy w aplikacji dostawcy po stronie serwera | **niedostępne, dopóki droga nie jest znana** (Claude.ai, Gemini: brak znanej drogi — obserwacja z 2026-10-23, [A]–[D]; negatyw niezweryfikowany) | — | dostępne jako opcja w silniku, bez wykonania, gdy brak drogi | ostrzeżenie „brak znanej drogi” z „nie pytaj więcej”; ChatGPT: tylko import całości do konta [A, streszczenie] |
 | Agent nieobsługiwanych formatów (§11) | HARD | koszt, prywatność, jakość | preset `ask` | zawsze przed wyjściem w sieć |
 | Rejestr wiarygodności (§12) | MEDIUM | — | wł. (bez wywołań) | — |
 
@@ -561,7 +619,7 @@ braki opcjonalne widoczne. To jest wycinek **web**.
    `observed.from/until`, więc profil interfejsu może deklarować, do jakiego **okresu** eksportu
    pasuje; bez dowodu — `evidence.status: "inspired"`, jak dziś. Zbieranie dowodów: osoba może
    nagrać zachowanie oryginału (RE31). Nakład zależny od dowodów, nie od kodu.
-4. **Wierność jest ograniczona przez eksport**, nie przez profil: Claude bez bajtów plików,
+4. **Wierność jest ograniczona przez eksport**, nie przez profil (obserwacja z 2026-10-23, [B]): dziś Claude bez bajtów plików,
    Gemini bez id rozmów i często bez odpowiedzi [B]; profil ma pokazywać **puste miejsce
    z powodem** (`known_absent`), nie udawać.
 5. Android: profile są dziś w `loom/web`; ścieżka na telefon przez istniejący serwer/webview
@@ -638,7 +696,10 @@ wysłaniem** (preset `ask`) i może je zredagować.
    **niedostępne** z naszego środowiska (DNS/proxy) — agent zapisuje „niepobrane, tylko
    streszczenie” jako poziom A−.
 2. **Źródła fachowe i utrzymywane parsery** (repozytoria z testami, changelogi z datami).
-3. **Źródła słabsze** (notatki, fora) — tylko gdy 1–2 milczą; zawsze oznaczone [D].
+3. **Źródła słabsze** (notatki, fora) — **preset kaskady** (przykład, w danych, do zmiany): sięgamy
+   po nie, gdy kroki 1–2 milczą; sam próg „milczą” (ile i jakich wyników) jest presetem tego
+   projektu, nie słowami właściciela (W8 mówi: „dopiero z braku wiarygodnych”; odwrót: zmiana presetu
+   albo ręczne włączenie kroku 3 wprost); zawsze oznaczone [D].
 4. **Hipoteza jako DANE**: profil układu (§2.3) z `descriptors[]`, każdy z `claim` i `source`;
    plus hipotezy czytnika (mapowanie pól do `formats/*.json`: `conversation.ext_id`, `tree`,
    `message.role`…) — kilka konkurencyjnych, jeśli źródła się różnią (np. dwie semantyki
@@ -724,49 +785,58 @@ exists”, jak w precedensie). Reguły:
 
 ---
 
-## 13. Błędy w rozumowaniu właściciela (uprzejmie i konkretnie)
+## 13. Rozbieżności między odczytem wypowiedzi a stanem wiedzy (uprzejmie i konkretnie)
 
-1. **„Zachować zasady podziału … i drugą kopię w HTML, jeśli to to samo.”** Dwie rzeczy nie
+Nagłówki punktów w cudzysłowie są **dosłownymi fragmentami R57** (ASR, bez poprawek), chyba że punkt
+mówi „odczyt koordynatora” — wtedy to parafraza, nie słowa właściciela. Fakty o świecie w tej
+sekcji są **obserwacjami z datą 2026-10-23** z poziomem źródła, nie ograniczeniami.
+
+1. **„to zachowanie zasad podziału, jeśli dobrze mówię że to samo, to też druga kopia w html”** (dosł. R57). Dwie rzeczy nie
    trzymają się: (i) `chat.html` **nie jest podzielony** — to jedna tablica `jsonData` w jednym
    pliku [B, 7 parserów], więc „ten sam podział w HTML” nie istnieje i nie ma czego zachowywać;
-   (ii) **reguły podziału JSON nikt nie zna** (żadne źródło A–D nie podaje liczby rozmów ani
-   rozmiaru na plik; oficjalny tekst mówi tylko „dla większych eksportów”). Można zachować
-   **obserwowaną przynależność** rozmów do plików, nie regułę. Regułę może Pan **zmierzyć** na
-   własnym eksporcie (§1.5) — nikt inny tych danych nie ma.
-2. **„Praca wyłącznie na ZIP-ie to za dużo obliczeń.”** Słuszne dla rekompresji całości i dla
+   (ii) **reguły podziału JSON: brak w [A]–[D]** (niezweryfikowane; żadne źródło A–D nie podaje liczby
+   rozmów ani rozmiaru na plik; oficjalny tekst mówi tylko „dla większych eksportów”). Można zachować
+   **obserwowaną przynależność** rozmów do plików, nie regułę. Regułę da się **zmierzyć** na
+   prawdziwym eksporcie (§1.5) — Pana albo każdego innego posiadacza takiego eksportu; dziś żadnego
+   publicznego pomiaru nie znalazłem (obserwacja z datą, niezweryfikowane).
+2. **„praca wyłącznie na zippie to za dużo obliczeń, kompresji, rekompresji będzie ciągnąć”** (dosł. R57). Słuszne dla rekompresji całości i dla
    bliźniaka HTML; **niesłuszne dla odczytu** (spis + inflate jednego wpisu) i dla zmiany jednego
    wpisu z surową kopią pozostałych (§6). Obawa bez pomiaru jest założeniem; projekt dokłada
-   pomiar i pokazuje szacunek przed wykonaniem.
+   pomiar i pokazuje szacunek przed wykonaniem. Zgodnie z W9 to preset dostępności (domyślnie
+   wyłączony), a koszt — ostrzeżenie; opcja nie znika.
 3. **„Nie kopiujemy, rozpakowujemy.”** Rozpakowanie **jest** kopią — nieskompresowaną, zwykle
    większą od ZIP-a. To, co tryb `link` naprawdę oszczędza, to **drugą** kopię (wiersze w bazie
    i bloby) i jej niespójność ze źródłem. Uczciwe zdanie: „jedna kopia (drzewo) zamiast dwóch;
    zero kopii tylko przy odczycie przez ZIP, za cenę CPU”.
-4. **„Wyświetlamy jak w aplikacji dostawcy.”** Aplikacja dostawcy pokazuje **żywe konto**, eksport
-   pokazuje **to, co dostawca zechciał wyeksportować**: Claude bez bajtów plików [B]/[A dla
+4. **„wyświetlamy w interfejsie wzorującym się na apce dostawców danego exportu”** (dosł. R57). Aplikacja dostawcy pokazuje **żywe konto**, eksport
+   pokazuje **to, co dostawca zechciał wyeksportować** (dziś, wg [B]): Claude bez bajtów plików [B]/[A dla
    Team/Enterprise], Gemini bez id rozmów i często bez odpowiedzi [B], ChatGPT bez pełnego
    rozumowania. Widok może być wierny **danym**, nie aplikacji; profil musi pokazywać braki
    z powodem (`known_absent`), inaczej odwzorowanie będzie kłamać.
-5. **„Klony na GitHubie reprodukują oryginalne przepływy?”** (część B) — tu tylko o pytaniu: klon
+5. **Odczyt koordynatora: „czy klony na GitHubie reprodukują oryginalne przepływy”** (R57 pyta o
+   „work flows” Claude, Codexa i in.; część B) — tu tylko o pytaniu: klon
    **interfejsu** (LibreChat, NextChat — już są jako profile) nie jest klonem **przepływu**
    (prompty systemowe, narzędzia, pamięć, tryby agentowe). Pytanie trzeba rozdzielić na trzy:
    interfejs, przepływ, zachowanie modelu; nasze profile już rozróżniają `evidence.status`
    („inspired”) od zweryfikowanej wersji. Odpowiedź „tak/nie” na jedno pytanie będzie fałszywa.
-6. **„Potwierdzone w sieci, najlepiej w dokumentacji.”** Dla OpenAI dokumentacja **milczy**
-   o formacie [A]; dla Claude oficjalna strona nie wymienia **żadnego** pliku [A, pobrane]. Pańska
-   własna hierarchia zmusza więc do poziomu B plus **pomiar lokalny** — i to jest dobra wiadomość:
+6. **„potwierdzone w sieci najlepiej w dokumentacji, fachowych źródłach”** (dosł. R57). Dla OpenAI
+   dokumentacja **milczy** o formacie [A] (obserwacja z 2026-10-23, część stron niepobrana — DNS);
+   dla Claude oficjalna strona nie wymienia **żadnego** pliku [A, pobrane]. Hierarchia z W8 prowadzi
+   więc do poziomu B plus **pomiar lokalny** — i to jest dobra wiadomość:
    pomiar na własnym eksporcie jest jedynym źródłem poziomu „pewne” dla pytań z §1.5. Przy okazji
    ważna poprawka: dla ChatGPT istnieje prawdopodobnie **oficjalny konsument** własnego eksportu
    (przenoszenie rozmów między kontami, artykuł 9106926 — tylko streszczenie, do przeczytania
-   w przeglądarce), co podnosi użyteczność opcji (e) ponad to, co Pan zakładał.
-7. **„Węzeł główny typu pamięć podręczna, gdzie są edytowane elementy.”** Jeśli pamięć podręczna
+   w przeglądarce) — jeśli się potwierdzi, przemawia to za opcją (e); opcja (e) zostaje niezależnie
+   od tego (R60).
+7. **„węzeł główny typu pamięć podręczna, gdzie byłyby aktualnie przetwarzane i edytowane elementy z eksportu”** (dosł. R57). Jeśli pamięć podręczna
    byłaby **jedynym** miejscem edycji, to jej zwolnienie traciłoby edycje, a zapis zwrotny
    stawałby się przymusem. Dlatego trwałą postacią edycji jest dziennik łat nad źródłem (§4),
    a pamięć podręczna jest **widokiem** stanu — węzeł główny zostaje, ale nie jako magazyn.
-8. **„Czy wszystkie możliwości są łatwe?”** Pytanie zakłada binarność. Mechanizmy są łatwe
+8. **„czy wszystkie możliwości są łatwe w realizacji”** (dosł. R57). Pytanie zakłada binarność. Mechanizmy są łatwe
    do średnich; **trudne są niewiadome formatu** (tożsamość HTML, semantyka `assetsJson`, reguła
    podziału, gałęzie w eksporcie Claude), których nie rozwiąże kod, tylko pomiar na danych
    i rejestr §12. Tabela §7 odpowiada nakładem i ryzykiem, nie „tak/nie”.
-9. **„Chyba te same w jednym .html.”** Intuicja trafna co do **istnienia** drugiej kopii [B];
+9. **„chyba te same w jednym .html”** (dosł. R57). Intuicja trafna co do **istnienia** drugiej kopii [B];
    **tożsamość** niezweryfikowana — jeden parser odkodowuje encje HTML w `jsonData`, co sugeruje,
    że kopia może nie być bajtowo identyczna. Do pomiaru lokalnego (skrypt w §1.5), wynik tylko
    jako liczby.
@@ -785,7 +855,7 @@ exists”, jak w precedensie). Reguły:
 | D2-1 | Dziedziczenie wewnątrz osi (kontener, treść), kompozycja między osiami przez `facets[]`; akcje pasują po cechach | realne eksporty nie zawsze są ZIP-ami; akcje już pasują po cechach (`actions.pack`) | spłaszczyć fasety do `parent` jedną migracją danych |
 | D2-2 | Identyfikator układu = hash odcisku; etykieta osobno | nazwy „2026” są osądem; hash jest stabilny | zmienić `id` na slug, etykiety zostają |
 | D2-3 | Bliźniak HTML modelowany jako druga **forma** tej samej treści (`expresses`, waga = wierność) | odpowiada §6 GRAF_HUB; tożsamość staje się pomiarem, nie założeniem | zwinąć do flagi `html_twin_identical` na węźle eksportu |
-| D3-1 | Preset globalny `link` (W2); `copy`, `read_through_zip`, `both`, `index_only` dostępne; `repack` na życzenie | słowa właściciela; R58 | zmienić preset w `import.pack`/nakładce — jedno pole |
+| D3-1 | Preset globalny `link` (W2, odczyt R57); `copy`, `read_through_zip`, `both`, `index_only` dostępne; `repack` i `read_through_zip` = **preset dostępności** (domyślnie wył., R57 dosł.: „to tylko na wyraźne życzenie użytkownika”), opcja zawsze dostępna, koszt = ostrzeżenie | R57; R58 (preset, nie reguła; koszt nie usuwa opcji) | zmienić preset w `import.pack`/nakładce — jedno pole |
 | D3-2 | Węzły grafu powstają dla **każdego** trybu, także `copy` | graf jako hub; G2 | nie ma powodu cofać; można wyłączyć obszar w `entry.pack` |
 | D3-3 | `chat.html` w trybie `link`: podlinkowany + poradnik „porównaj/importuj też”; `copy` zachowuje dzisiejsze pominięcie z wpisem | R58 (preset, nie usunięcie); niezweryfikowana tożsamość | zmienić preset `html_twin` |
 | D3-4 | Pobieranie aktywów Claude z `preview_url`: opcja z presetem `ask` | wywołanie sieciowe do serwera dostawcy | preset `never`/`auto` w danych |
@@ -794,7 +864,8 @@ exists”, jak w precedensie). Reguły:
 | D5-1 | Zapis zwrotny zachowuje **obserwowaną przynależność** do shardu; nowa rozmowa wg presetu `last_shard` | reguła podziału nieznana [A–D] | gdy pomiar da regułę: preset `by_observed_count/bytes` |
 | D5-2 | Dwie semantyki `assetsJson` jako konkurencyjne hipotezy w danych, wybór po lokalnym teście | źródła B się różnią | usunąć przegraną po pomiarach |
 | D5-3 | Przepakowanie: surowa kopia nietkniętych wpisów, porządek źródła, poziom kompresji ze źródła, zip64 automatycznie | miniz to umie (`miniz.h:1384,1069,1253`) | presety w akcji `repack` |
-| D5-4 | (e) jako pełnoprawny tryb z poradnikiem o odbiorcach, nie „eksport na życzenie” | R58; dla ChatGPT odbiorca prawdopodobnie istnieje [A, streszczenie] | — (R58 zabrania degradacji) |
+| D5-4 | (e) jako pełnoprawny tryb z poradnikiem o odbiorcach, nie „eksport na życzenie” | R58, R60; dla ChatGPT odbiorca prawdopodobnie istnieje [A, streszczenie]; dla innych brak znanego (obserwacja z datą) | osoba ustawia preset (e) jednym polem w `import.pack` (np. na „tylko na żądanie”); projekt sam go nie degraduje (R58) |
+| D5-5..8 | Własny eksport Loom (`export.loom`) jako czytelny, opisany, wersjonowany format: schemat+wersja, własny odcisk i rodowód klas, manifest, opis z danych (§5.1) | R60: nie wiadomo, kto będzie czytał; ten sam mechanizm co dla cudzych eksportów | nowa wersja schematu obok starej; okrojenie manifestu presetem z ostrzeżeniem; opis zostaje lokalny |
 | D9-1 | Migracja tworzy węzły z `SourceRecord`, nie rusza wierszy; podniesienie do `link` przez bramkę | „nic po cichu” | usunąć węzły migracji (są oznaczone `derived_from: migration`) |
 | D11-1 | Agent formatów: preset `ask`; sanitizer deskryptorów z testem własności; adopcja do nakładki danych, nie do packów | prywatność; ROM nietykalny | preset `auto`/`never`; włączenie propozycji PR z danymi |
 | D12-1 | Rejestr = rozszerzenie `calibration.json` (klucze `source.*`, `author:*`, `claim:*`, `validity`, `decay`, `update`), ta sama matematyka Beta/noisy-OR | „extend, do not reinvent” | osobny plik `calibration.d/*.json` ładowany tym samym kodem |
