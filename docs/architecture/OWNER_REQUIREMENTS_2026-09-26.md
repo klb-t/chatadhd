@@ -899,6 +899,11 @@ Uogólnienie R88 (09:5x UTC; właściciel zmęczony, „wolna ręka”, „to ni
 
 Zrzut Usage 20:44: sesja 11 %, tydzień wszystkie modele 70 %, Fable 93 % (reset wt 08:59), kredyty uzycia WLACZONE z limitem miesiecznym 40 EUR i saldem 0 EUR (obserwacja datowana: po wyczerpaniu limitu Fable platforma zacznie zuzywac kredyty do 40 EUR/mies. - to jego wlasne ustawienie). Regula: Fable wolno wyjechac do 100 % limitu tygodnia; pozostale modele do 90 % paska 'All models' (preset w tools/pace_plan.json). Uwaga robocza: linia do wklejenia w prompt Claude nie moze zaczynac sie od polecenia shella (git pull && ...), bo wtedy wpisuje ja w bashu - pisac zdaniem.
 
+## R92 — Sesja S1 wygaszana, wszystko na GCP; administrator VM jedynym punktem kontaktu; wdrażamy wszystko, dane i importy robi sam (owner, 2026-10-23)
+> w ogóle tą sesję powoli by trzeba było zakończyć i wszystko przenieść na gcp, nie? bo myślałem żeby administrator maszyny był standardowym punktem kontaktowym ze mną, jedyny w przypadku braku powodu, żeby inaczej było. wszystko co mamy wdrażamy ale dane, importy, to sam będę robił, najprędzej Zobaczę jak coś będzie nie tak.
+
+Koordynacja przenosi sie do sesji na VM (gcp): ona jest standardowym i jedynym punktem kontaktu z nim, chyba ze jest powod, zeby bylo inaczej (powody dzisiaj, obserwacje datowane: zadania zaplanowane i strona spec zyja w chmurze; emulator Androida nie dziala na VM - brak KVM; sesja chmurowa nie moze pisac do sesji VM). Wdrazamy na VM wszystko, co mamy (serwer chatadhd + web, AGEDS, WatchDog juz chodzi) - bez jego danych: importy i dane wprowadza sam i sam najszybciej zobaczy, co nie tak. Pytanie o Spot->Standard (pieniadze) pozostaje otwarte; auto-start Remote Control po starcie maszyny to decyzja techniczna koordynatora (tak, odwracalna).
+
 ## Decision — rebuild, don't recover
 > "nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane"
 

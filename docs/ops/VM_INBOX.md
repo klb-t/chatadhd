@@ -18,3 +18,18 @@ i pieniędzmi bez jego tak/nie; obserwacja środowiska = advisory, nie stop).
 3. Do czasu jego odpowiedzi: bez wdrożeń z danymi, bez zmian instancji, bez jednostki systemd. Wolno: porządki,
    które sam uznałeś za bezpieczne i odwracalne (zapisz, co i dlaczego), doctor narzędzi, build.
 4. Raportuj do S1 przez `send_message` (działa) jedną linią po każdym zadaniu: sha + wynik.
+
+5. (2026-10-23 19:0x UTC, **R92 — słowa właściciela w spec**) Przejmujesz rolę koordynatora: od teraz sesja VM jest
+   standardowym i jedynym punktem kontaktu z właścicielem (chyba że jest powód, by było inaczej), a sesja chmurowa S1
+   (Fable, 93 % limitu tygodnia) dokańcza tylko to, co ma w biegu (bramka `r67c` → FF main → CI → APK v5 przez S2,
+   kontrola Haiku syntezy panelu) i przechodzi w czuwanie. Przeczytaj `docs/ops/TELEPORT_S1.md` (karta przejęcia,
+   sekcja „Przejęcie przez S1-VM”), `docs/reports/QUEUE_S1.md` (stan), `CLAUDE.md` (zasady). Zadania zaplanowane w
+   chmurze (sekretarz spec co godzinę, kontrole CI) biegną dalej same; nie dublować.
+6. (R92) **Wdrożenia bez danych właściciela:** zainstaluj serwer chatadhd (`deploy/install.sh`, systemd, port 8787, pusty
+   katalog danych) i AGEDS (port 8090, bez nagrań, `.env` z pustymi kluczami i notatką, co uzupełnić) — oba tak, żeby on
+   sam wprowadził dane i importy („dane, importy, to sam będę robił”). Napisz `docs/ops/VM_DEPLOY_2026-10-23.md`:
+   co chodzi, na jakim porcie, jak wejść (tunel ssh / noVNC), gdzie wrzuca dane, jak cofnąć. Pamiętaj o jednym katalogu
+   budowy na raz i ≥ 5 GB wolnego (16 GB wolnego to mało: zgłoś, ile zostaje po buildzie, jako advisory).
+7. (R92, decyzja techniczna S1, odwrót: `systemctl --user disable claude-rc`) Zainstaluj `claude-rc.service` z §6
+   rekonesansu; jeśli klasyfikator uprawnień znów blokuje, poproś właściciela w sesji o jedno „tak” przy tej komendzie —
+   on jest przy Tobie. Spot→Standard zostaje jego pytaniem tak/nie (pieniądze) — nie pytaj drugi raz, S1 już zapytał.

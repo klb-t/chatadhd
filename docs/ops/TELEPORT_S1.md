@@ -60,3 +60,41 @@ Nic z tego nie było sprawdzone na VM (stan 2026-10-23).
 Źródłem prawdy jest git: wszystko wypchnięte. Przy każdej niespodziance praca wraca do sesji w chmurze
 (`session_015yMVYJqXDd8sNSZdYq3gu5`), nic tam nie zostało usunięte. Przełączenie tylko między pakietami, bez agenta i bez
 bramki w toku (`PRZEPROWADZKA_GCP_2026-10-23.md` §5).
+
+## 7. Przejęcie przez S1-VM (R92, właściciel 2026-10-23 ≈ 19:00 UTC)
+
+> „w ogóle tą sesję powoli by trzeba było zakończyć i wszystko przenieść na gcp, nie? bo myślałem żeby administrator
+> maszyny był standardowym punktem kontaktowym ze mną, jedyny w przypadku braku powodu, żeby inaczej było. wszystko co
+> mamy wdrażamy ale dane, importy, to sam będę robił, najprędzej Zobaczę jak coś będzie nie tak.”
+
+**Kto przejmuje:** sesja Remote Control na VM `devbox-20260923` (w aplikacji „gcp”, `session_01G2FdF1sSV9SQ9kbRg7tTdx`,
+Opus 5.5, tmux `rc`). Od R92 to standardowy i jedyny punkt kontaktu z właścicielem; S1 chmurowa (ta sesja, Fable, 93 %
+limitu tygodnia 23.10 20:44) dokańcza, co ma w biegu, i przechodzi w czuwanie (zadania zaplanowane budzą ją tylko do
+kontroli CI i sekretarza).
+
+**Co S1 chmurowa dokańcza sama (nie dublować):** bramka `r67c` na `/home/user/wt/m1d1` (`f025ed34`: R67-fix + naprawa
+asan) → FF `main` → kontrola CI (+2 h 20 min) → sha do S2 (`session_01Armc9PkDiTDzjFBgXAMCjR`) → APK v5 (workflow
+`package.yml`, ref main, android/server/first_steps, arm64-v8a, Release) → kontrola Haiku syntezy panelu
+(`trig_01L8AQxYyXTq4PdKWUWrK9u7`, 20:02 UTC).
+
+**Co zostaje w chmurze (obserwacja 23.10; VM nie ma tych narzędzi albo nie sprawdzono):**
+- zadania zaplanowane: sekretarz spec `trig_01VyHbcN2o8DQhwKq6D9iNaU` (`23 * * * *`, Sonnet, świeża sesja, pisze na
+  gałąź dokumentów i publikuje stronę spec `https://claude.ai/artifact/MfbrGaubViGGhsp2Z4ZEm7`); przegląd gałęzi GPT
+  `trig_01QjSRmsb9M7eo8NP6r31d75` (`6 */6 * * *`, budzi S1 chmurową); kontrole CI jako `send_later` (S1 chmurowa);
+- strona spec (Artifact) i jej baza (`spec_inbox`, `spec_runs`) — publikacja z VM niesprawdzona (narzędzie Artifact w CLI?
+  sprawdź `/help`); do czasu sprawdzenia publikuje sekretarz;
+- S2 (chmura) i emulator Androida (VM bez /dev/kvm — dowody z emulatora zostają w chmurze);
+- wiadomości chmura → VM NIE działają (platforma); VM → chmura `send_message` działa. Kanał S1 → VM: `docs/ops/VM_INBOX.md`.
+
+**Protokół na VM (to samo co tu, inne ścieżki):** jeden katalog budowy, ≥ 5 GB wolnego (VM: 16 GB wolnego 23.10 — po
+buildzie zgłoś resztę); bramka `tools/gate.sh <root> <etykieta>` przed każdym FF main (OPS2: skrypt ma na sztywno
+`/home/user` — na VM link `/home/user` → `$HOME` robi bootstrap, albo zrób OPS2); CI po każdym pushu na main (2,5 h;
+nie pushować main, gdy bieg trwa — anuluje go); `python3 tools/pace.py --used <tydzień %>` przed każdym agentem
+(R91: Fable do 100 %, reszta do 90 %); stan zawsze w `docs/reports/QUEUE_S1.md` (jeden wpis na zdarzenie, na górze).
+
+**Wdrożenia (R92):** wszystko, co mamy, bez danych właściciela — serwer chatadhd + web (8787), AGEDS (8090; 8080 ma
+WatchDog), WatchDog chodzi; dane i importy wprowadza sam. Opis dla niego: `docs/ops/VM_DEPLOY_2026-10-23.md`.
+Otwarte pytania tak/nie (jego pieniądze): Spot → Standard. Decyzja techniczna S1: `claude-rc.service` tak (odwrót:
+`systemctl --user disable claude-rc`).
+
+**Odwrót z R92:** S1 chmurowa wraca do roli koordynatora jednym zdaniem właściciela; nic nie jest skasowane.

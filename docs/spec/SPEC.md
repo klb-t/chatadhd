@@ -5,13 +5,13 @@ Ten plik jest **wygenerowany** z `docs/spec/spec.json` poleceniem `python3 tools
 
 Status pochodzi z pliku luk i jest **obserwacją z podanej daty**, nie ograniczeniem.
 
-Pozycji razem: **515**.
+Pozycji razem: **516**.
 
 | Status (z LUKI) | liczba |
 |---|---|
 | częściowo | 210 |
 | jest | 151 |
-| bez statusu (nie ma w LUKI) | 132 |
+| bez statusu (nie ma w LUKI) | 133 |
 | brak | 16 |
 | nieaktualne | 5 |
 | sprzeczne | 1 |
@@ -19,7 +19,7 @@ Pozycji razem: **515**.
 | Rodzaj | liczba |
 |---|---|
 | remark | 367 |
-| requirement | 91 |
+| requirement | 92 |
 | philosophy | 36 |
 | statement | 10 |
 | decision | 4 |
@@ -28,14 +28,14 @@ Pozycji razem: **515**.
 
 | Rozumienie (R61) | liczba |
 |---|---|
-| none | 501 |
+| none | 502 |
 | proposed | 12 |
 | corrected | 2 |
 
 | W których plikach | liczba |
 |---|---|
 | LUKI + SLOWA | 379 |
-| rejestr R/D | 98 |
+| rejestr R/D | 99 |
 | SLOWA | 34 |
 | LUKI | 4 |
 
@@ -55,7 +55,7 @@ Pozycji razem: **515**.
 | Proces i współpraca | 67 |
 | Pozostałe | 33 |
 | Uzupełnienia (wypowiedzi bez numeru) | 10 |
-| Rejestr wymagań R/D | 98 |
+| Rejestr wymagań R/D | 99 |
 | bez tematu | 3 |
 
 ## Filozofia
@@ -612,8 +612,9 @@ Pozycji razem: **515**.
 - `s_160738d2ad00` **R89** — Dedykowany interfejs do naszej wspólnej pracy (poza CLI/web/Android): wspólny dostęp do dokumentów i schematów, Fable kieruje, Sonnet rozmawia; research w sieci o oszczędzaniu tokenów przez kilku agentów, relewantność, synteza Fable przez pryzmat filozofii; wolna ręka — _bez statusu_ · rozumienie: proposed · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L884)
 - `s_e4ab827703b7` **R90** — VM na GCP: Claude Code uruchomiony (Remote Control); maszyna ma gościć wszystkie projekty (nie tylko ChatADHD: watchdog, ageds?); koordynator administruje maszyną; najpierw rekonesans; interfejs współpracy „na bogato” (narzędzia, rutyny/makra/szablony) — kilku mocnych agentów ma to przemyśleć analizując jego styl; prompt-wprowadzenie dla sesji na GCP; auto-wyłączanie po 30 min bezczynności — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L890)
 - `s_e2115ad7f760` **R91** — Limity tygodnia: Fable do końca, reszta do 90 %; linie do wklejenia w Claude nie mogą wyglądać jak shell — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L896)
-- `s_18ec73967a7b` **owner:decision-rebuild-don-t-recover** — Decision — rebuild, don't recover — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L902)
-- `s_223e1568b3b9` **owner:ui-reference** — UI reference — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L910)
+- `s_bd6af871ef5f` **R92** — Sesja S1 wygaszana, wszystko na GCP; administrator VM jedynym punktem kontaktu; wdrażamy wszystko, dane i importy robi sam — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L902)
+- `s_18ec73967a7b` **owner:decision-rebuild-don-t-recover** — Decision — rebuild, don't recover — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L907)
+- `s_223e1568b3b9` **owner:ui-reference** — UI reference — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L915)
 
 ## Bez tematu
 

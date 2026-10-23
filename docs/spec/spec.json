@@ -5,8 +5,8 @@
  "sources": {
   "owner": {
    "path": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
-   "sha256": "01487a0c38b2cc6a643bac3d54ddb7ea6db418fe538eea88ab79ba7ef36083ac",
-   "lines": 916
+   "sha256": "a34b4e7bf8694c04d7f3bbbb163ce28cd1a02483edcd3aba726ee6121b6b0603",
+   "lines": 921
   },
   "slowa": {
    "path": "docs/architecture/SLOWA_WLASCICIELA_2026-10-16.md",
@@ -5294,6 +5294,58 @@
    ]
   },
   {
+   "id": "s_bd6af871ef5f",
+   "aliases": [
+    "R92"
+   ],
+   "kind": "requirement",
+   "title": "Sesja S1 wygaszana, wszystko na GCP; administrator VM jedynym punktem kontaktu; wdrażamy wszystko, dane i importy robi sam",
+   "date": "2026-10-23",
+   "theme": "owner_requirements",
+   "theme_inferred": false,
+   "understanding": {
+    "state": "none"
+   },
+   "quotes": [
+    {
+     "text": "w ogóle tą sesję powoli by trzeba było zakończyć i wszystko przenieść na gcp, nie? bo myślałem żeby administrator maszyny był standardowym punktem kontaktowym ze mną, jedyny w przypadku braku powodu, żeby inaczej było. wszystko co mamy wdrażamy ale dane, importy, to sam będę robił, najprędzej Zobaczę jak coś będzie nie tak.",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:903",
+     "ref": null,
+     "attr": [],
+     "lead": null,
+     "secondary": false
+    }
+   ],
+   "sense": null,
+   "summary": null,
+   "restatement": [
+    {
+     "text": "Koordynacja przenosi sie do sesji na VM (gcp): ona jest standardowym i jedynym punktem kontaktu z nim, chyba ze jest powod, zeby bylo inaczej (powody dzisiaj, obserwacje datowane: zadania zaplanowane i strona spec zyja w chmurze; emulator Androida nie dziala na VM - brak KVM; sesja chmurowa nie moze pisac do sesji VM). Wdrazamy na VM wszystko, co mamy (serwer chatadhd + web, AGEDS, WatchDog juz chodzi) - bez jego danych: importy i dane wprowadza sam i sam najszybciej zobaczy, co nie tak. Pytanie o Spot->Standard (pieniadze) pozostaje otwarte; auto-start Remote Control po starcie maszyny to decyzja techniczna koordynatora (tak, odwracalna).",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:905"
+    }
+   ],
+   "commentary": [],
+   "status": null,
+   "gap_text": null,
+   "evidence": [],
+   "next_step": null,
+   "refs": [],
+   "supersedes": [],
+   "superseded_by": [],
+   "supersession_notes": [],
+   "tags": [],
+   "heading_note": "owner, 2026-10-23",
+   "sources": [
+    {
+     "role": "owner",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:902-905"
+    }
+   ],
+   "files": [
+    "owner"
+   ]
+  },
+  {
    "id": "s_18ec73967a7b",
    "aliases": [
     "owner:decision-rebuild-don-t-recover"
@@ -5309,7 +5361,7 @@
    "quotes": [
     {
      "text": "\"nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane\"",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:903",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:908",
      "ref": null,
      "attr": [],
      "lead": null,
@@ -5321,7 +5373,7 @@
    "restatement": [
     {
      "text": "Recovered versions (`history/chatadhd_v0.8.3`, `history/chatadhd_v0.9.0`) and\nthe historical report are sources of requirements, ideas and data assets\n(e.g. `film_structure.json`), and real ground truth for self-discovery tests —\nnot code to merge. Everything is rebuilt in Loom with tests.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:905-908"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:910-913"
     }
    ],
    "commentary": [],
@@ -5338,7 +5390,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:902-908"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:907-913"
     }
    ],
    "files": [
@@ -5364,7 +5416,7 @@
    "restatement": [
     {
      "text": "`workbench_mockup_2026-09-26.webp`: dockable/floating panels (conversation\nlist, active conversation, knowledge graph with active context window, project\nstructure with dimmed high-confidence auto-completable nodes, artifact views\nfor music/video with timeline + storyboard, video player, execution\nenvironment with agent), multi-format ingestion, Loom SDK at the centre.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:911-915"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:916-920"
     }
    ],
    "commentary": [],
@@ -5381,7 +5433,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:910-915"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:915-920"
     }
    ],
    "files": [
