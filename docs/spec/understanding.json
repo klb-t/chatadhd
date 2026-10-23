@@ -56,6 +56,20 @@
    "date": "2026-10-23",
    "corrected_text": "KOREKTA właściciela (R72): nie „pozycja −1 względem ostatniego promptu”, tylko: 0 = generowana odpowiedź, −1 = prompt użytkownika (najczęściej; najważniejszy). Zapis liczbowy = podpowiedź, że przesunięcia są DANYMI (preset w kodzie/danych), nie regułą. Jeszcze lepiej: selektor z kilku ostatnich wiadomości sam ustala zakres kontekstu potrzebny do celu; właściciel wątpi, czy stałą pozycję w ogóle wyróżniać. Projekt K3: zakres wnioskowany z ostatnich wiadomości + celu, przesunięcia jako preset w danych (0, −1 jako przykład), nic na sztywno. Reszta parafrazy R70 (perspektywy, pamięć podręczna, od ogółu do szczegółu, wołanie przez użytkownika/agenta/eksperymentatora, ponowienie szerzej/głębiej, zawężenie przy zmianie tematu) bez zmian."
   },
+  "s_160738d2ad00": {
+   "state": "proposed",
+   "history": [
+    {
+     "state": "proposed",
+     "by": "koordynator (Fable)",
+     "date": "2026-10-23",
+     "text": "Uruchamiam badanie w kilku torach (praktycy: pamięć podręczna promptów, kompaktowanie kontekstu, subagenci; nauka: kompresja kontekstu, pamięć agentów, routing i kaskady modeli; interfejsy współpracy człowiek–AI nad specyfikacją; role i żonglerka modelami w frameworkach; nasze własne pomiary i możliwości platformy), każdy wynik z oceną wiarygodności źródła i datą (R59), potem ocena relewantności przez pryzmat filozofii, a na końcu synteza Fable: co użyć wprost, co usprawnić, co oryginalnego — i projekt dedykowanego interfejsu współpracy (wspólne dokumenty/schematy, tania rozmowa, drogi koordynator tylko tam, gdzie trzeba) z pakietami. Dokument: docs/architecture/INTERFEJS_WSPOLPRACY_2026-10-23.md. Podział ról Fable/Sonnet to preset."
+    }
+   ],
+   "text": "Uruchamiam badanie w kilku torach (praktycy: pamięć podręczna promptów, kompaktowanie kontekstu, subagenci; nauka: kompresja kontekstu, pamięć agentów, routing i kaskady modeli; interfejsy współpracy człowiek–AI nad specyfikacją; role i żonglerka modelami w frameworkach; nasze własne pomiary i możliwości platformy), każdy wynik z oceną wiarygodności źródła i datą (R59), potem ocena relewantności przez pryzmat filozofii, a na końcu synteza Fable: co użyć wprost, co usprawnić, co oryginalnego — i projekt dedykowanego interfejsu współpracy (wspólne dokumenty/schematy, tania rozmowa, drogi koordynator tylko tam, gdzie trzeba) z pakietami. Dokument: docs/architecture/INTERFEJS_WSPOLPRACY_2026-10-23.md. Podział ról Fable/Sonnet to preset.",
+   "by": "koordynator (Fable)",
+   "date": "2026-10-23"
+  },
   "s_20b2e5caeba0": {
    "state": "corrected",
    "history": [

@@ -5,8 +5,8 @@
  "sources": {
   "owner": {
    "path": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
-   "sha256": "adbc7c62c49312fca867cc0b9d6c550ceb786e721dd9a585743b2f748d8ab561",
-   "lines": 898
+   "sha256": "c62c41f8643cb5d0214135b0a78253f52629a78fa977d3ef4e36a8de20fe32d4",
+   "lines": 904
   },
   "slowa": {
    "path": "docs/architecture/SLOWA_WLASCICIELA_2026-10-16.md",
@@ -5107,6 +5107,71 @@
    ]
   },
   {
+   "id": "s_160738d2ad00",
+   "aliases": [
+    "R89"
+   ],
+   "kind": "requirement",
+   "title": "Dedykowany interfejs do naszej wspólnej pracy (poza CLI/web/Android): wspólny dostęp do dokumentów i schematów, Fable kieruje, Sonnet rozmawia; research w sieci o oszczędzaniu tokenów przez kilku agentów, relewantność, synteza Fable przez pryzmat filozofii; wolna ręka",
+   "date": "2026-10-23",
+   "theme": "owner_requirements",
+   "theme_inferred": false,
+   "understanding": {
+    "state": "proposed",
+    "history": [
+     {
+      "state": "proposed",
+      "by": "koordynator (Fable)",
+      "date": "2026-10-23",
+      "text": "Uruchamiam badanie w kilku torach (praktycy: pamięć podręczna promptów, kompaktowanie kontekstu, subagenci; nauka: kompresja kontekstu, pamięć agentów, routing i kaskady modeli; interfejsy współpracy człowiek–AI nad specyfikacją; role i żonglerka modelami w frameworkach; nasze własne pomiary i możliwości platformy), każdy wynik z oceną wiarygodności źródła i datą (R59), potem ocena relewantności przez pryzmat filozofii, a na końcu synteza Fable: co użyć wprost, co usprawnić, co oryginalnego — i projekt dedykowanego interfejsu współpracy (wspólne dokumenty/schematy, tania rozmowa, drogi koordynator tylko tam, gdzie trzeba) z pakietami. Dokument: docs/architecture/INTERFEJS_WSPOLPRACY_2026-10-23.md. Podział ról Fable/Sonnet to preset."
+     }
+    ],
+    "text": "Uruchamiam badanie w kilku torach (praktycy: pamięć podręczna promptów, kompaktowanie kontekstu, subagenci; nauka: kompresja kontekstu, pamięć agentów, routing i kaskady modeli; interfejsy współpracy człowiek–AI nad specyfikacją; role i żonglerka modelami w frameworkach; nasze własne pomiary i możliwości platformy), każdy wynik z oceną wiarygodności źródła i datą (R59), potem ocena relewantności przez pryzmat filozofii, a na końcu synteza Fable: co użyć wprost, co usprawnić, co oryginalnego — i projekt dedykowanego interfejsu współpracy (wspólne dokumenty/schematy, tania rozmowa, drogi koordynator tylko tam, gdzie trzeba) z pakietami. Dokument: docs/architecture/INTERFEJS_WSPOLPRACY_2026-10-23.md. Podział ról Fable/Sonnet to preset.",
+    "by": "koordynator (Fable)",
+    "date": "2026-10-23"
+   },
+   "quotes": [
+    {
+     "text": "zadanie jest ogólniejsze Przemyśl jak poza standardowym interfejsem cli oraz apki webowej czy androidowej zrobić jeszcze dedykowany do naszej pracy przystosowany do mnie interfejs na przykład webowy gdzie niektóre rzeczy do niektórych dokumentów na przykład czy schematów mielibyśmy dostęp wspólny ty jako fejby być zażądał pracą Sonet byłby do konwersacji na przykład, a że ja jestem bardzo zmęczony to liczę że ty coś mądrzejszego wymyślisz, możesz zrobić mały research choćby na necie popatrzeć jak ludzie oszczędzają tokeny, pomyśleć co warto wprost wykorzystać, co można jeszcze lepiej usprawnić, co oryginalnego ci przychodzi do głowy patrząc co piszą w sieci przez pryzmat mojej filozofii – To by było ciekawe. ja to widzę, żebyś kilku agentów ta niech odpalił żeby zebrać i usystematyzować rozwiązania różnego kalibru małe duże naukowe eksperymentalne, do tego relewatność określił a na koniec ze wszystkich danych fable właśnie przez ten pryzmat spojrzał i osadził\nodruchowo stop nacisnąłem i nie wiem czy ci wszystkiego nie zatrzymałem a potem że osadził, to miałem przypomnieć że to jak ja to widzę to nie jest specyfikacja bo ty lepiej zna swój flow A ja jestem zmęczony więctutaj masz wolną rękę",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:885-886",
+     "ref": null,
+     "attr": [],
+     "lead": null,
+     "secondary": false
+    }
+   ],
+   "sense": null,
+   "summary": null,
+   "restatement": [
+    {
+     "text": "Uogólnienie R88 (09:5x UTC; właściciel zmęczony, „wolna ręka”, „to nie jest specyfikacja”). (1) Zadanie: obok standardowych interfejsów (CLI, web, Android) — interfejs dedykowany naszej pracy, dopasowany do niego (np. webowy), ze wspólnym dostępem do wybranych dokumentów/schematów; podział ról jako przykład: Fable kieruje pracą, Sonnet prowadzi rozmowę. (2) Metoda, jak on ją widzi (przykład, nie wymóg): kilku agentów zbiera i systematyzuje rozwiązania różnego kalibru (małe, duże, naukowe, eksperymentalne) z sieci o oszczędzaniu tokenów; ocena relewantności; na końcu Fable patrzy na całość przez pryzmat filozofii i „osadza” — co użyć wprost, co usprawnić, co oryginalnego z tego wynika. (3) Stop naciśnięty odruchowo — nic nie zatrzymał. Decyzja koordynatora: jedna praca badawcza (równoległe badanie w sieci + własne pomiary z repo → ocena → synteza Fable → kontrola Haiku), wynik jako dokument projektowy interfejsu współpracy z pakietami; R88 v1 (skrzynka + sekretarz) to już pierwszy krok.",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:888"
+    }
+   ],
+   "commentary": [],
+   "status": null,
+   "gap_text": null,
+   "evidence": [],
+   "next_step": null,
+   "refs": [
+    "s_f375473e2c9d"
+   ],
+   "supersedes": [],
+   "superseded_by": [],
+   "supersession_notes": [],
+   "tags": [],
+   "heading_note": "owner, 2026-10-23",
+   "sources": [
+    {
+     "role": "owner",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:884-888"
+    }
+   ],
+   "files": [
+    "owner"
+   ]
+  },
+  {
    "id": "s_18ec73967a7b",
    "aliases": [
     "owner:decision-rebuild-don-t-recover"
@@ -5122,7 +5187,7 @@
    "quotes": [
     {
      "text": "\"nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane\"",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:885",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:891",
      "ref": null,
      "attr": [],
      "lead": null,
@@ -5134,7 +5199,7 @@
    "restatement": [
     {
      "text": "Recovered versions (`history/chatadhd_v0.8.3`, `history/chatadhd_v0.9.0`) and\nthe historical report are sources of requirements, ideas and data assets\n(e.g. `film_structure.json`), and real ground truth for self-discovery tests —\nnot code to merge. Everything is rebuilt in Loom with tests.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:887-890"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:893-896"
     }
    ],
    "commentary": [],
@@ -5151,7 +5216,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:884-890"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:890-896"
     }
    ],
    "files": [
@@ -5177,7 +5242,7 @@
    "restatement": [
     {
      "text": "`workbench_mockup_2026-09-26.webp`: dockable/floating panels (conversation\nlist, active conversation, knowledge graph with active context window, project\nstructure with dimmed high-confidence auto-completable nodes, artifact views\nfor music/video with timeline + storyboard, video player, execution\nenvironment with agent), multi-format ingestion, Loom SDK at the centre.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:893-897"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:899-903"
     }
    ],
    "commentary": [],
@@ -5194,7 +5259,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:892-897"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:898-903"
     }
    ],
    "files": [
