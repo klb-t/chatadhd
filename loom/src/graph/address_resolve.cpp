@@ -1,6 +1,7 @@
 // Resolving an address against a port graph (K3-1). See include/loom/address.h.
 // Every step is a flat-map over the nodes of the previous one; what points outside the graph gives an empty set and an advisory.
 #include <algorithm>
+#include <limits>
 #include <cmath>
 #include <optional>
 
@@ -70,6 +71,27 @@ void between_check(Run& r, const Dimension& d) {
   if (mode != "nearest" && !r.reg.between_available(mode)) r.adv.add("between_unavailable", Json{{"dimension", d.id}, {"mode", mode}});
 }
 
+// Coordinates are open values (R83): any int64 or any double is accepted. Arithmetic on them saturates instead of
+// overflowing (UBSan in CI 283, 2026-10-23: INT64_MAX + offset); a saturated index lies outside the sequence and
+// yields the same `address_outside` advisory as any other far position. NaN points nowhere (outside too).
+long sat_add(long a, long b) {
+  long out = 0;
+  if (__builtin_add_overflow(a, b, &out)) return b > 0 ? std::numeric_limits<long>::max() : std::numeric_limits<long>::min();
+  return out;
+}
+long long_of(std::int64_t v) {
+  if (v > static_cast<std::int64_t>(std::numeric_limits<long>::max())) return std::numeric_limits<long>::max();
+  if (v < static_cast<std::int64_t>(std::numeric_limits<long>::min())) return std::numeric_limits<long>::min();
+  return static_cast<long>(v);
+}
+long long_of(double x) {
+  if (std::isnan(x)) return std::numeric_limits<long>::max();
+  const double hi = static_cast<double>(std::numeric_limits<long>::max());  // 2^63 as a double; anything at or past it saturates
+  if (x >= hi) return std::numeric_limits<long>::max();
+  if (x <= -hi) return std::numeric_limits<long>::min();
+  return static_cast<long>(x);
+}
+
 // The index a coordinate means in `seq` (not bounds-checked), or nullopt with an advisory.
 std::optional<long> index_of(Run& r, const Dimension& d, const Json& coord, const std::vector<NodeId>& seq, long anchor) {
   const std::string kind = kind_of(coord);
@@ -81,9 +103,9 @@ std::optional<long> index_of(Run& r, const Dimension& d, const Json& coord, cons
       r.outside(coord, "the current node is not in this sequence");
       return std::nullopt;
     }
-    return *o + off;
+    return sat_add(*o, off);
   };
-  if (kind == "int") return offset_from_origin(v.get<std::int64_t>());
+  if (kind == "int") return offset_from_origin(long_of(v.get<std::int64_t>()));
   if (kind == "double") {
     const double x = v.get<double>();
     if (d.effective_codec == "double") {
@@ -93,14 +115,14 @@ std::optional<long> index_of(Run& r, const Dimension& d, const Json& coord, cons
       return at;
     }
     if (d.effective_codec == "integer" || d.effective_codec == "levels") {
-      if (x == std::floor(x)) return offset_from_origin(static_cast<long>(x));
+      if (x == std::floor(x)) return offset_from_origin(long_of(x));
       between_check(r, d);
       const auto o = origin_index(r, d, anchor, seq.size());
       if (!o) {
         r.outside(coord, "the current node is not in this sequence");
         return std::nullopt;
       }
-      return static_cast<long>(std::ceil(static_cast<double>(*o) + x - 0.5));
+      return long_of(std::ceil(static_cast<double>(*o) + x - 0.5));
     }
     r.mismatch(d, kind);
     return std::nullopt;

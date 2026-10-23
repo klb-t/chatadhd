@@ -256,6 +256,52 @@ TEST_CASE("an address that cannot be read is an error; one that is only useless 
   CHECK_FALSE(Address::from_json(Json{{"steps", "no"}}).has_value());
 }
 
+// ── T6: extreme coordinates saturate (CI 283, 2026-10-23, UBSan: INT64_MAX + offset in index_of) ────────────
+TEST_CASE("T6 extreme int and double coordinates resolve without undefined arithmetic") {
+  const auto& r = reg();
+  const k3mock::Mock mock = k3mock::Mock::build(r, 8);
+  const Graph g = mock.ports();
+  const std::string x = k3mock::Mock::uid(3);
+  auto parsed = [&](const std::string& dim, const Json& c) {
+    const auto a = Address::from_json(Json{{"steps", Json::array({Json{{"dim", dim}, {"coord", c}}})}});
+    REQUIRE(a.has_value());  // every int64 and every finite double is a valid coordinate (R83: open values)
+    return *a;
+  };
+  auto raw = [&](const std::string& dim, const Json& c) {  // built without the parser, as kernel code may do
+    Address a;
+    a.steps.emplace_back();
+    a.steps.back().dim = dim;
+    a.steps.back().coord = c;
+    return a;
+  };
+  const std::vector<Json> ints = {coord("int", std::numeric_limits<std::int64_t>::max()), coord("int", std::numeric_limits<std::int64_t>::min()),
+                                  coord("int", std::numeric_limits<std::int64_t>::max() - 1), coord("int", std::numeric_limits<std::int64_t>::min() + 1)};
+  const std::vector<Json> doubles = {coord("double", 1e300), coord("double", -1e300), coord("double", 9.3e18), coord("double", -9.3e18),
+                                     coord("double", 9223372036854775807.0), coord("double", 4.5e15 + 0.5)};
+  // JSON has no NaN or infinity, so the parser refuses them ("double needs a finite number"); the resolver still
+  // saturates for an Address built in C++ without the parser.
+  const std::vector<Json> nonfinite = {coord("double", std::numeric_limits<double>::quiet_NaN()), coord("double", std::numeric_limits<double>::infinity()),
+                                       coord("double", -std::numeric_limits<double>::infinity())};
+  for (const auto& dim : r.ids()) {
+    for (const auto& c : ints) {
+      // a whole offset that far from any origin selects nothing on a mock of 8 nodes (position outside the sequence)
+      const auto res = unwrap(resolve(parsed(dim, c), x, g, r));
+      CHECK(res.nodes.empty());
+      const auto rng = unwrap(resolve(parsed(dim, coord("range", Json::array({ints[1], ints[0]}))), x, g, r));
+      CHECK(rng.nodes.size() <= 8);  // a range cut to the existing nodes, never more than exist
+    }
+    for (const auto& c : doubles) {
+      const auto res = unwrap(resolve(parsed(dim, c), x, g, r));  // nearest-by-key codecs may pick a node; integer codecs select nothing
+      CHECK(res.nodes.size() <= 1);
+    }
+    for (const auto& c : nonfinite) {
+      CHECK_FALSE(Address::from_json(Json{{"steps", Json::array({Json{{"dim", dim}, {"coord", c}}})}}).has_value());
+      const auto res = unwrap(resolve(raw(dim, c), x, g, r));
+      CHECK(res.nodes.size() <= 1);
+    }
+  }
+}
+
 // ── T2: composition ─────────────────────────────────────────────────────────
 TEST_CASE("T2 composition is associative as flat-map and not commutative") {
   const auto& r = reg();

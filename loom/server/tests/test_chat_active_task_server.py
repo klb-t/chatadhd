@@ -84,7 +84,9 @@ class ActiveTaskServerTest(unittest.TestCase):
         self.process = subprocess.Popen([self.binary, "--host", "127.0.0.1", "--port", str(port),
                                          "--data-dir", str(self.directory), "--token", "local-test-token"],
                                         stdout=self.server_log, stderr=subprocess.STDOUT)
-        deadline = time.monotonic() + 15
+        # Preset 60 s (configurable): a healthy server answers in well under a second; CI 283 (asan, 2026-10-23) saw the
+        # third start of this fixture take over 15 s on a loaded runner, so 15 was a limit, not a measure.
+        deadline = time.monotonic() + float(os.environ.get("LOOM_TEST_SERVER_START_SECONDS", "60"))
         while time.monotonic() < deadline:
             if self.process.poll() is not None:
                 self.fail(f"server exited; logs preserved at {self.directory}")
