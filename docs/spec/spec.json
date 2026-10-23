@@ -5,8 +5,8 @@
  "sources": {
   "owner": {
    "path": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
-   "sha256": "6031a0d6e05d2787c0138b2080d25521a7e16137b92acf730bae09e069354de2",
-   "lines": 814
+   "sha256": "914df81e34f069a87ca449d38d18301b3d59d802396287b7c5a0f91daca80885",
+   "lines": 821
   },
   "slowa": {
    "path": "docs/architecture/SLOWA_WLASCICIELA_2026-10-16.md",
@@ -4151,6 +4151,69 @@
    ]
   },
   {
+   "id": "s_cbb8ed66f13d",
+   "aliases": [
+    "R73"
+   ],
+   "kind": "requirement",
+   "title": "Żywy, hierarchiczny widok specyfikacji i ustaleń (zwijany; edytowana gałązka rozwinięta); pytanie o środowisko testowe GUI",
+   "date": "2026-10-23",
+   "theme": "owner_requirements",
+   "theme_inferred": false,
+   "understanding": {
+    "state": "proposed",
+    "history": [
+     {
+      "state": "proposed",
+      "by": "koordynator (Fable)",
+      "date": "2026-10-23",
+      "text": "Widok specyfikacji = drzewo z docs/spec/spec.json (tematy → pozycje → cytat, sens, status z datą, parafraza i jej stan), zwijane, z wyszukiwaniem i licznikami; generowane przez tools/spec.py (html) po każdej zmianie spec i publikowane jako strona (artefakt w aplikacji Claude), a docelowo jako perspektywa grafu w aplikacji (spec to węzły). „Na żywo”: po każdej zmianie strona odświeżona; pozycje zmienione w ostatnich godzinach i ta, którą właśnie edytuję, rozwinięte i podświetlone, reszta zwinięta. Wszystko (głębokość, co rozwinięte, kolejność) to presety."
+     }
+    ],
+    "text": "Widok specyfikacji = drzewo z docs/spec/spec.json (tematy → pozycje → cytat, sens, status z datą, parafraza i jej stan), zwijane, z wyszukiwaniem i licznikami; generowane przez tools/spec.py (html) po każdej zmianie spec i publikowane jako strona (artefakt w aplikacji Claude), a docelowo jako perspektywa grafu w aplikacji (spec to węzły). „Na żywo”: po każdej zmianie strona odświeżona; pozycje zmienione w ostatnich godzinach i ta, którą właśnie edytuję, rozwinięte i podświetlone, reszta zwinięta. Wszystko (głębokość, co rozwinięte, kolejność) to presety.",
+    "by": "koordynator (Fable)",
+    "date": "2026-10-23"
+   },
+   "quotes": [
+    {
+     "text": "No ale robiłeś tutaj w tej sesji czy to tylko GPT testy w przeglądarce i nawet screeny mi któryś dawał, to mi o to chodzi, środowisko testowe skąd weźmiesz? \njak już z uniwersalizujesz ten skrypcik,  to przemyśl Jak mi ładnie Możesz pokazywać hierarchicznie wszystkie specyfikacje i ustalenia Co do projektu, pewnie będą musiały być rozwijane, bo średni projekt rozwinięty do liści drzewo to się nie ogarnie, żebym widział co pamiętasz, na żywo jak je zmiany wprowadzasz bo to możesz rozwinąć gałązkę którą edytujesz żebym widział\ndobrze rozumiesz od teleporty i kontekście alejeśli chodzi o testy w przeglądarce to ciebie pytałem Tak dookoła może za bardzo jakie ty masz możliwości choćby testowania gui?",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:801-803",
+     "ref": null,
+     "attr": [],
+     "lead": null,
+     "secondary": false
+    }
+   ],
+   "sense": null,
+   "summary": null,
+   "restatement": [
+    {
+     "text": "Trzy rzeczy (08:1x UTC). (1) Pytanie: czy testy w przeglądarce (ze zrzutami) robiła ta sesja, czy tylko GPT; skąd wezmę środowisko testowe po przeprowadzce. (2) Wymaganie: pokazywać mu ładnie, hierarchicznie wszystkie specyfikacje i ustalenia projektu — drzewo zwijane (rozwinięte do liści się nie ogarnie), żeby widział, co pamiętam, NA ŻYWO w trakcie zmian: gałązka, którą edytuję, rozwinięta. „Ten skrypcik” = tools/spec.py (SPEC1) do zuniwersalizowania. (3) Potwierdza rozumienie teleportu i kontekstu; właściwe pytanie: jakie mam możliwości testowania GUI.",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:805"
+    }
+   ],
+   "commentary": [],
+   "status": null,
+   "gap_text": null,
+   "evidence": [],
+   "next_step": null,
+   "refs": [],
+   "supersedes": [],
+   "superseded_by": [],
+   "supersession_notes": [],
+   "tags": [],
+   "heading_note": "owner, 2026-10-23",
+   "sources": [
+    {
+     "role": "owner",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:800-805"
+    }
+   ],
+   "files": [
+    "owner"
+   ]
+  },
+  {
    "id": "s_18ec73967a7b",
    "aliases": [
     "owner:decision-rebuild-don-t-recover"
@@ -4166,7 +4229,7 @@
    "quotes": [
     {
      "text": "\"nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane\"",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:801",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:808",
      "ref": null,
      "attr": [],
      "lead": null,
@@ -4178,7 +4241,7 @@
    "restatement": [
     {
      "text": "Recovered versions (`history/chatadhd_v0.8.3`, `history/chatadhd_v0.9.0`) and\nthe historical report are sources of requirements, ideas and data assets\n(e.g. `film_structure.json`), and real ground truth for self-discovery tests —\nnot code to merge. Everything is rebuilt in Loom with tests.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:803-806"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:810-813"
     }
    ],
    "commentary": [],
@@ -4195,7 +4258,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:800-806"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:807-813"
     }
    ],
    "files": [
@@ -4221,7 +4284,7 @@
    "restatement": [
     {
      "text": "`workbench_mockup_2026-09-26.webp`: dockable/floating panels (conversation\nlist, active conversation, knowledge graph with active context window, project\nstructure with dimmed high-confidence auto-completable nodes, artifact views\nfor music/video with timeline + storyboard, video player, execution\nenvironment with agent), multi-format ingestion, Loom SDK at the centre.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:809-813"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:816-820"
     }
    ],
    "commentary": [],
@@ -4238,7 +4301,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:808-813"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:815-820"
     }
    ],
    "files": [

@@ -64,3 +64,6 @@ loom/web/node_modules/
 komander.autosave*.json
 serve.token
 tools/gate-*/
+
+# generowany widok spec (R73): python3 tools/spec.py html; publikowany jako artefakt, nie w git
+docs/spec/SPEC.html

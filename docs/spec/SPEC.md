@@ -5,13 +5,13 @@ Ten plik jest **wygenerowany** z `docs/spec/spec.json` poleceniem `python3 tools
 
 Status pochodzi z pliku luk i jest **obserwacją z podanej daty**, nie ograniczeniem.
 
-Pozycji razem: **496**.
+Pozycji razem: **497**.
 
 | Status (z LUKI) | liczba |
 |---|---|
 | częściowo | 210 |
 | jest | 151 |
-| bez statusu (nie ma w LUKI) | 113 |
+| bez statusu (nie ma w LUKI) | 114 |
 | brak | 16 |
 | nieaktualne | 5 |
 | sprzeczne | 1 |
@@ -19,7 +19,7 @@ Pozycji razem: **496**.
 | Rodzaj | liczba |
 |---|---|
 | remark | 367 |
-| requirement | 72 |
+| requirement | 73 |
 | philosophy | 36 |
 | statement | 10 |
 | decision | 4 |
@@ -29,13 +29,13 @@ Pozycji razem: **496**.
 | Rozumienie (R61) | liczba |
 |---|---|
 | none | 487 |
-| proposed | 8 |
+| proposed | 9 |
 | corrected | 1 |
 
 | W których plikach | liczba |
 |---|---|
 | LUKI + SLOWA | 379 |
-| rejestr R/D | 79 |
+| rejestr R/D | 80 |
 | SLOWA | 34 |
 | LUKI | 4 |
 
@@ -55,7 +55,7 @@ Pozycji razem: **496**.
 | Proces i współpraca | 67 |
 | Pozostałe | 33 |
 | Uzupełnienia (wypowiedzi bez numeru) | 10 |
-| Rejestr wymagań R/D | 79 |
+| Rejestr wymagań R/D | 80 |
 | bez tematu | 3 |
 
 ## Filozofia
@@ -593,8 +593,9 @@ Pozycji razem: **496**.
 - `s_13a549d5ba3f` **R70** — The context selector takes the node of the reply being generated (message dimension, position -1 to the last user prompt), sees what converges in all perspectives, minds the cache, appends modifications at the end, builds from the most general to the most specific (project > branch > module > function); the flow is called by the user, the agent or the experimenter (retry with wider/deeper context), and narrows on a topic change when no return is expected within the cache lifetime — _bez statusu_ · rozumienie: corrected · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L783)
 - `s_728a73b626a0` **R71** — Write the bootstrap: one command to paste over ssh (kept in the repo for now), so he does not have to look up all the names again — _bez statusu_ · rozumienie: proposed · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L788)
 - `s_20b2e5caeba0` **R72** — Teleport, nie bootstrap; pozycje w selektorze kontekstu to dane, nie reguła — _bez statusu_ · rozumienie: proposed · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L793)
-- `s_18ec73967a7b` **owner:decision-rebuild-don-t-recover** — Decision — rebuild, don't recover — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L800)
-- `s_223e1568b3b9` **owner:ui-reference** — UI reference — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L808)
+- `s_cbb8ed66f13d` **R73** — Żywy, hierarchiczny widok specyfikacji i ustaleń (zwijany; edytowana gałązka rozwinięta); pytanie o środowisko testowe GUI — _bez statusu_ · rozumienie: proposed · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L800)
+- `s_18ec73967a7b` **owner:decision-rebuild-don-t-recover** — Decision — rebuild, don't recover — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L807)
+- `s_223e1568b3b9` **owner:ui-reference** — UI reference — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L815)
 
 ## Bez tematu
 

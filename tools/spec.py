@@ -1443,6 +1443,10 @@ def main(argv=None) -> int:
     p.add_argument("--by", default="owner")
     p.add_argument("--date")
     p.set_defaults(text=None)
+    h = sub.add_parser("html", help="żywy, zwijany widok drzewa (R73) -> docs/spec/SPEC.html; publikowany jako artefakt")
+    h.add_argument("--focus", nargs="*", default=[], help="pozycje w edycji (id/alias): rozwinięte i podświetlone")
+    h.add_argument("--recent-hours", type=int, default=48)
+    h.add_argument("--out")
     args = ap.parse_args(argv)
     root = Path(args.root).resolve()
     cfg = load_config(root)
@@ -1458,6 +1462,15 @@ def main(argv=None) -> int:
         return cmd_cite(root, cfg, args)
     if args.cmd == "add":
         return cmd_add(root, cfg, args)
+    if args.cmd == "html":
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
+        import spec_html
+        argv2 = ["--spec", str(root / "docs/spec/spec.json"), "--recent-hours", str(args.recent_hours)]
+        if args.out:
+            argv2 += ["--out", args.out]
+        if args.focus:
+            argv2 += ["--focus", *args.focus]
+        return spec_html.main(argv2)
     return _und_cmd(root, cfg, args, args.cmd)
 
 

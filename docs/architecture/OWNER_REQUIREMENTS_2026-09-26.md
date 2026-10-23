@@ -797,6 +797,13 @@ Przeprowadzka (R68): właściciel chce JEDNĄ komendę do wklejenia przez ssh na
 
 Dwie rzeczy (ASR, ok. 08:0x UTC, po pierwszym biegu bootstrapu na VM). (1) „teleporta bardziej niż buttstrapa”: przeprowadzka ma być teleportem — koordynator przybywa z całym stanem i warsztatem (kolejka, spec, briefy, to, co robi tu, np. testy w przeglądarce), nie świeżą maszyną z pakietami; ostatnie zdanie czytam jako przykład tego, co ma działać po przeprowadzce. (2) Korekta do R70: pozycja 0 = generowana odpowiedź, −1 = prompt użytkownika („prąd” = ASR), najczęściej i najważniejszy; zapis liczbowy sugeruje, że ta dana może być w kodzie/danych (przesunięcia jako dane). Lepiej: z kilku ostatnich wiadomości selektor sam ustala zakres kontekstu potrzebny do celu; sam wątpi, czy warto w ogóle wyróżniać stałą pozycję — „moja filozofia sama mnie dopadła”. Czyli: żadnych stałych pozycji jako reguły; preset w danych + wnioskowanie zakresu z ostatnich wiadomości i celu.
 
+## R73 — Żywy, hierarchiczny widok specyfikacji i ustaleń (zwijany; edytowana gałązka rozwinięta); pytanie o środowisko testowe GUI (owner, 2026-10-23)
+> No ale robiłeś tutaj w tej sesji czy to tylko GPT testy w przeglądarce i nawet screeny mi któryś dawał, to mi o to chodzi, środowisko testowe skąd weźmiesz? 
+> jak już z uniwersalizujesz ten skrypcik,  to przemyśl Jak mi ładnie Możesz pokazywać hierarchicznie wszystkie specyfikacje i ustalenia Co do projektu, pewnie będą musiały być rozwijane, bo średni projekt rozwinięty do liści drzewo to się nie ogarnie, żebym widział co pamiętasz, na żywo jak je zmiany wprowadzasz bo to możesz rozwinąć gałązkę którą edytujesz żebym widział
+> dobrze rozumiesz od teleporty i kontekście alejeśli chodzi o testy w przeglądarce to ciebie pytałem Tak dookoła może za bardzo jakie ty masz możliwości choćby testowania gui?
+
+Trzy rzeczy (08:1x UTC). (1) Pytanie: czy testy w przeglądarce (ze zrzutami) robiła ta sesja, czy tylko GPT; skąd wezmę środowisko testowe po przeprowadzce. (2) Wymaganie: pokazywać mu ładnie, hierarchicznie wszystkie specyfikacje i ustalenia projektu — drzewo zwijane (rozwinięte do liści się nie ogarnie), żeby widział, co pamiętam, NA ŻYWO w trakcie zmian: gałązka, którą edytuję, rozwinięta. „Ten skrypcik” = tools/spec.py (SPEC1) do zuniwersalizowania. (3) Potwierdza rozumienie teleportu i kontekstu; właściwe pytanie: jakie mam możliwości testowania GUI.
+
 ## Decision — rebuild, don't recover
 > "nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane"
 

@@ -120,6 +120,20 @@
    "by": "koordynator (Fable)",
    "date": "2026-10-23"
   },
+  "s_cbb8ed66f13d": {
+   "state": "proposed",
+   "history": [
+    {
+     "state": "proposed",
+     "by": "koordynator (Fable)",
+     "date": "2026-10-23",
+     "text": "Widok specyfikacji = drzewo z docs/spec/spec.json (tematy → pozycje → cytat, sens, status z datą, parafraza i jej stan), zwijane, z wyszukiwaniem i licznikami; generowane przez tools/spec.py (html) po każdej zmianie spec i publikowane jako strona (artefakt w aplikacji Claude), a docelowo jako perspektywa grafu w aplikacji (spec to węzły). „Na żywo”: po każdej zmianie strona odświeżona; pozycje zmienione w ostatnich godzinach i ta, którą właśnie edytuję, rozwinięte i podświetlone, reszta zwinięta. Wszystko (głębokość, co rozwinięte, kolejność) to presety."
+    }
+   ],
+   "text": "Widok specyfikacji = drzewo z docs/spec/spec.json (tematy → pozycje → cytat, sens, status z datą, parafraza i jej stan), zwijane, z wyszukiwaniem i licznikami; generowane przez tools/spec.py (html) po każdej zmianie spec i publikowane jako strona (artefakt w aplikacji Claude), a docelowo jako perspektywa grafu w aplikacji (spec to węzły). „Na żywo”: po każdej zmianie strona odświeżona; pozycje zmienione w ostatnich godzinach i ta, którą właśnie edytuję, rozwinięte i podświetlone, reszta zwinięta. Wszystko (głębokość, co rozwinięte, kolejność) to presety.",
+   "by": "koordynator (Fable)",
+   "date": "2026-10-23"
+  },
   "s_d70418b3948e": {
    "state": "proposed",
    "history": [
