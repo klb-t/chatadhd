@@ -57,3 +57,8 @@ i pieniędzmi bez jego tak/nie; obserwacja środowiska = advisory, nie stop).
 10. (R94, zgoda właściciela na pieniądze w tym zakresie) **Dysk:** gdy braknie miejsca, dokładasz sam przez API GCP
    (`gcloud compute disks resize` + powiększenie systemu plików online), tyle, ile potrzeba; każde powiększenie zapisz
    (GB, cena z datą) w `VM_RECON` i w jednej linii do S1. Przed buildem: ≥ 5 GB wolnego, inaczej dokładasz.
+11. (R94, uzupełnienie do wpisu 9, z Twojego własnego rekonesansu) Dziennik pokazał `Refusing poweroff operation, shutdown
+   is inhibited by … unattended-upgr` — przy wywłaszczeniu 23.10 maszyna ODMÓWIŁA czystego zamknięcia, bo aktualizacje
+   pakietów trzymały blokadę, i po 120 s uprzedzenia dostała twarde zatrzymanie. Skrypt wyłączenia musi zdążyć mimo
+   tego: albo aktualizacje bez blokady zamknięcia (konfiguracja unattended-upgrades / `InhibitShutdown`), albo
+   aktualizacje tylko w oknie, gdy nic nie biegnie — zdecyduj, zapisz powód, zmierz czas od sygnału do commit+push.
