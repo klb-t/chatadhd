@@ -221,6 +221,9 @@ try {
   assert.ok(!JSON.stringify(trace.messages).includes("HISTORY_SENTINEL_9831"));
   assert.equal(trace.messages.filter((m) => m.role === "user" && m.content === "CURRENT_TURN_5128").length, 1);
   await page.getByTestId("context-trace").locator("summary").first().click();
+  // R67: the record is read as rows of words; the raw JSON sits behind "Szczegóły techniczne" and is not visible by default
+  assert.equal(await page.getByTestId("context-trace-json").first().isVisible(), false, "no raw JSON visible by default");
+  assert.ok((await page.getByTestId("context-trace-rows").first().locator("li").count()) >= 1, "the record is shown as rows of words");
   assert.deepEqual(JSON.parse(await page.getByTestId("context-trace-json").first().innerText()), trace, "inspector displays actual recorded trace");
 
   // Independent controls restore legacy sources without retaining the enabled

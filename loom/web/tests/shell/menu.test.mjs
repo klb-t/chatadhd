@@ -14,8 +14,8 @@ const { en, pl } = pack.entries.find(r => r.key === 'presentation.ui_shell').val
 const appSource = await readFile(new URL('../../src/App.tsx', import.meta.url), 'utf8');
 const panelsSource = await readFile(new URL('../../src/shell/panels.ts', import.meta.url), 'utf8');   // PANEL_LABELS and PANEL_TEXT_IDS live here (M1-G1b: a unit test walks them)
 
-test('the menu is the eight entries of the spec, in this order, and nothing else', () => {
-  assert.deepEqual(menu.CHAT_MENU.map(e => e.id), ['graph', 'settings', 'me', 'this_conversation', 'views', 'semantic', 'connection', 'workshop']);
+test('the menu is the entries of the data, in this order (R67: Diagnostyka added for the developer details that left the chat screen), and nothing else', () => {
+  assert.deepEqual(menu.CHAT_MENU.map(e => e.id), ['graph', 'settings', 'me', 'this_conversation', 'views', 'semantic', 'diagnostics', 'connection', 'workshop']);
   assert.deepEqual(menu.CHAT_MENU, layouts.layouts.czat.menu);   // menu.ts adds nothing of its own
 });
 
@@ -46,6 +46,7 @@ test('every action of the data means something the shell can do; a panel is one 
   }
   assert.deepEqual(menu.parseMenuAction('panel:graph-entry'), { kind: 'panel', panel: 'graph-entry' });
   assert.deepEqual(menu.parseMenuAction('sheet:semantic'), { kind: 'sheet', sheet: 'semantic' });
+  assert.deepEqual(menu.parseMenuAction('sheet:diagnostics'), { kind: 'sheet', sheet: 'diagnostics' });
   assert.equal(menu.parseMenuAction('sheet:nothing').kind, 'unknown');
   assert.equal(menu.parseMenuAction('layout:workshop').kind, 'workshop');
   assert.equal(menu.parseMenuAction('whatever').kind, 'unknown');
@@ -54,8 +55,8 @@ test('every action of the data means something the shell can do; a panel is one 
 test('Połączenie only inside the Android shell; the other rows everywhere', () => {
   const web = menu.menuEntries(menu.CHAT_MENU, { androidShell: false }).map(e => e.id);
   const android = menu.menuEntries(menu.CHAT_MENU, { androidShell: true }).map(e => e.id);
-  assert.deepEqual(web, ['graph', 'settings', 'me', 'this_conversation', 'views', 'semantic', 'workshop']);
-  assert.deepEqual(android, ['graph', 'settings', 'me', 'this_conversation', 'views', 'semantic', 'connection', 'workshop']);
+  assert.deepEqual(web, ['graph', 'settings', 'me', 'this_conversation', 'views', 'semantic', 'diagnostics', 'workshop']);
+  assert.deepEqual(android, ['graph', 'settings', 'me', 'this_conversation', 'views', 'semantic', 'diagnostics', 'connection', 'workshop']);
 });
 
 test('the old Memory and Knowledge panels stay reachable in the Workshop', () => {

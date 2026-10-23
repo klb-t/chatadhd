@@ -41,13 +41,14 @@ import GraphChatSettings from "../graph/GraphChatSettings";
 import ScopeExplain from "./ScopeExplain";
 import MicButton from "../shell/MicButton";
 import Disclosure from "../shell/Disclosure";
-import { needsProviderKey, useShellLanguage, useShellText } from "../shell/text";
+import { needsProviderKey, useShellLanguage, useShellText, type ShellT } from "../shell/text";
 import { sourceHistoryUnavailable } from "../shell/source-notice";
 import { requestOpenPanel as requestPanel } from "../context/open-settings";
 import { createPortal } from "react-dom";
 import ComposerMenu from "../shell/ComposerMenu";
 import ContextReceipt from "./ContextReceipt";
 import { useReceiptWords } from "./use-receipt-words";
+import { contextTraceRows } from "./context-trace-rows";
 import { loadSelectorProfiles, useContextModify } from "./use-context-modify";
 import { modifySentence, profileChoices, type ProfileChoice } from "./context-receipt-state";
 import { InterviewCardDecision, InterviewChips, InterviewInfoLine, InterviewLevelCards, InterviewStartCard, useInterviewCard, useInterviewWords } from "./InterviewCards";
@@ -122,12 +123,17 @@ function recordedContext(value: unknown): ChatContextTrace | null {
     ? record as ChatContextTrace : null;
 }
 
-function ContextTrace({ trace }: { trace: ChatContextTrace }) {
+function ContextTrace({ trace, t }: { trace: ChatContextTrace; t: ShellT }) {
+  const rows = contextTraceRows(trace, t);
   return (
     <details className="chat-context-trace" data-testid="context-trace">
-      <summary>Recorded context · {trace.messages.length} assembled messages</summary>
-      <p>Exact assembled messages and knowledge selection recorded for this turn. Provider settings and delivery status are separate.</p>
-      <pre data-testid="context-trace-json">{JSON.stringify(trace, null, 2)}</pre>
+      <summary>{t("ctx_title", { count: String(trace.messages.length) })}</summary>
+      <p>{t("ctx_why")}</p>
+      <ul data-testid="context-trace-rows">{rows.map(r => <li key={r.id} data-testid={`context-trace-row-${r.id}`}>{r.text}</li>)}</ul>
+      <details data-testid="context-trace-technical">
+        <summary>{t("diag_details")}</summary>
+        <pre data-testid="context-trace-json">{JSON.stringify(trace, null, 2)}</pre>
+      </details>
     </details>
   );
 }
@@ -1243,9 +1249,9 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
                   <textarea value={editText} onChange={(e) => setEditText(e.target.value)} rows={3} />
                   <div className="actions">
                     <button className="primary" onClick={() => saveEdit(m.id)} data-testid="save-edit" disabled={!supports("message.edit") || !messageCan(m, "edit")}>
-                      Save (new version)
+                      {t("ed_save")}
                     </button>
-                    <button onClick={() => setEditingId(null)}>Cancel</button>
+                    <button onClick={() => setEditingId(null)}>{t("ed_cancel")}</button>
                   </div>
                 </div>
               ) : projectImportedMessage(m) ? (
@@ -1313,7 +1319,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
                   const endedLabel = ended ? offerTexts(proposalFeature).state(ended) : null;
                   return (<>
                     {label && <span className="pill" data-testid="chat-action-state" data-state={state}>{label}</span>}
-                    {m.metadata?.route_trace != null && <details data-testid="chat-route-trace"><summary>route_trace</summary><pre>{JSON.stringify(m.metadata.route_trace, null, 2)}</pre></details>}
+                    {!chat && m.metadata?.route_trace != null && <details data-testid="chat-route-trace"><summary>{t("diag_route_trace")}</summary><pre>{JSON.stringify(m.metadata.route_trace, null, 2)}</pre></details>}
                     {written && <ProposalWritten testId="chat-action-written" feature={proposalFeature} written={written} busy={undoing === written.id}
                       failure={undoFailure && undoFailure.id === written.id ? undoFailure.reason : null} onUndo={() => void undoWritten(written)} />}
                     {offer && <ProposalOffer testId="chat-action-offer" feature={proposalFeature} offer={offer} busy={Boolean(stream)}
@@ -1372,7 +1378,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
                   </button>
                 )}
                 <button onClick={() => toggleExclude(m)} data-testid="toggle-exclude" disabled={!supports("message.exclude") || !messageCan(m, "set_status") || m.status === "version" || m.status === "deleted"}>
-                  {m.status === "excluded" ? "Restore" : "Exclude"}
+                  {m.status === "excluded" ? t("msg_restore") : t("msg_exclude")}
                 </button>
               </div>}
               {m.storage === "reference" && sourceCatalog.feature && <details data-testid="source-message-reference">
@@ -1380,7 +1386,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
                 <p>{featureMessage(sourceCatalog.feature, "readonly")}</p>
                 <pre>{JSON.stringify({ source_ref: m.source_ref, capabilities: m.capabilities }, null, sourceCatalog.base?.defaults.json_indent)}</pre>
               </details>}
-              {!chat && trace && <ContextTrace trace={trace} />}
+              {!chat && trace && <ContextTrace trace={trace} t={t} />}
               {!chat && m.storage !== "reference" && (m.role === "assistant" || graphReply) && <details className="chat-context-controls"><summary>Graph reply · inspect and address fragments</summary>
                 <GraphReplyWorkbench packet={api.packet?.bind(api)} usagePolicy={api.usagePolicy?.bind(api)}
                   responseText={m.role === "assistant" ? m.text : typeof graphReply?.retained_text === "string" ? graphReply.retained_text : ""} recordedReply={graphReply} graphReply={api.graphReply?.bind(api)}
@@ -1393,7 +1399,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
         })}
         {!chat && lastTrace && lastTrace.convId === convId && !visibleMessages.some((m) =>
           m.id === lastTrace.userId && recordedContext(m.metadata?.context_trace)) && (
-          <ContextTrace trace={lastTrace.trace} />
+          <ContextTrace trace={lastTrace.trace} t={t} />
         )}
         {chat && receiptFor && <ContextReceipt profileHost={profileHost} language={shellLanguage} convId={convId ?? null} msgId={receiptFor}
           onClose={() => setReceiptFor(null)} onShowInGraph={onShowInGraph} />}
@@ -1419,7 +1425,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
         )}
       </div>
 
-      {stream && !displayedStream && <p className="empty-state" role="status">A request continues in another conversation. Stop remains available.</p>}
+      {stream && !displayedStream && <p className="empty-state" role="status">{t("stream_elsewhere")}</p>}
 
       {error && (
         <div className="empty-state" style={{ color: "var(--err)" }} data-testid="chat-error">
@@ -1430,64 +1436,64 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
       {!chat && <GraphChatSettings transport={api} disabled={!!stream} />}
       {!chat && <ScopeExplain convId={convId} />}
       {!chat && <details className="chat-context-controls" data-testid="chat-context-controls">
-        <summary>Context for next message{useKnowledge ? " · knowledge enabled" : ""}</summary>
+        <summary>{t("wk_summary")}{useKnowledge ? " · " + t("wk_knowledge_on") : ""}</summary>
         <fieldset disabled={!!stream}>
-          <legend>Sources included in the request</legend>
+          <legend>{t("wk_sources")}</legend>
           <div className="chat-context-toggles">
-            <label><input type="checkbox" checked={includeMemory} onChange={(e) => setIncludeMemory(e.target.checked)} data-testid="include-memory" />Active memory</label>
-            <label><input type="checkbox" checked={includeGraphMemory} onChange={(e) => setIncludeGraphMemory(e.target.checked)} data-testid="include-graph-memory" />Legacy graph memory</label>
-            <label><input type="checkbox" checked={includeHistory} onChange={(e) => setIncludeHistory(e.target.checked)} data-testid="include-history" />Conversation history</label>
-            <label><input type="checkbox" checked={useKnowledge} onChange={(e) => setUseKnowledge(e.target.checked)} data-testid="use-knowledge-context" />Knowledge selection</label>
+            <label><input type="checkbox" checked={includeMemory} onChange={(e) => setIncludeMemory(e.target.checked)} data-testid="include-memory" />{t("wk_memory")}</label>
+            <label><input type="checkbox" checked={includeGraphMemory} onChange={(e) => setIncludeGraphMemory(e.target.checked)} data-testid="include-graph-memory" />{t("wk_graph_memory")}</label>
+            <label><input type="checkbox" checked={includeHistory} onChange={(e) => setIncludeHistory(e.target.checked)} data-testid="include-history" />{t("wk_history")}</label>
+            <label><input type="checkbox" checked={useKnowledge} onChange={(e) => setUseKnowledge(e.target.checked)} data-testid="use-knowledge-context" />{t("wk_knowledge")}</label>
           </div>
-          <p>These choices affect the next request. Saved messages and memory remain available.</p>
+          <p>{t("wk_note")}</p>
           <label><input type="checkbox" checked={blockWithoutSourceHistory} onChange={(e) => setBlockChoice(e.target.checked)}
             data-testid="block-send-without-source-history" />{gateTexts.setting ?? blockPreset.label ?? SEND_BLOCK_DEFAULT_KEY}</label>
           {gateTexts.settingHelp !== null && <p>{gateTexts.settingHelp}</p>}
           {useKnowledge && (
             <div className="chat-context-fields">
-              <label>Selection query<input type="text" value={contextQuery} onChange={(e) => setContextQuery(e.target.value)} placeholder="Use the message being sent" data-testid="context-query" /></label>
-              <label>Project ID<input type="text" value={contextProject} onChange={(e) => setContextProject(e.target.value)} placeholder="Optional project entity" data-testid="context-project" /></label>
-              <label>Target entity IDs<input type="text" value={contextTargets} onChange={(e) => setContextTargets(e.target.value)} placeholder="Separate IDs with commas or spaces" data-testid="context-targets" /></label>
-              <label>Knowledge token budget<input type="number" min="1" max="2147483647" step="1" value={contextBudget} onChange={(e) => setContextBudget(e.target.value)} data-testid="context-budget" /></label>
-              <label>Graph reach (relationship hops)<input type="number" min="0" max="2147483647" step="1" value={contextHops} onChange={(e) => setContextHops(e.target.value)} data-testid="context-hops" /></label>
-              <label>Item detail<select value={contextDetail} onChange={(e) => setContextDetail(e.target.value as typeof contextDetail)} data-testid="context-detail">
-                <option value="auto">Use goal settings</option>
-                <option value="label">Label</option>
-                <option value="summary">Summary</option>
-                <option value="full">Full</option>
-                <option value="raw">Raw</option>
+              <label>{t("wk_query")}<input type="text" value={contextQuery} onChange={(e) => setContextQuery(e.target.value)} placeholder={t("wk_query_ph")} data-testid="context-query" /></label>
+              <label>{t("wk_project")}<input type="text" value={contextProject} onChange={(e) => setContextProject(e.target.value)} placeholder={t("wk_project_ph")} data-testid="context-project" /></label>
+              <label>{t("wk_targets")}<input type="text" value={contextTargets} onChange={(e) => setContextTargets(e.target.value)} placeholder={t("wk_targets_ph")} data-testid="context-targets" /></label>
+              <label>{t("wk_budget")}<input type="number" min="1" max="2147483647" step="1" value={contextBudget} onChange={(e) => setContextBudget(e.target.value)} data-testid="context-budget" /></label>
+              <label>{t("wk_hops")}<input type="number" min="0" max="2147483647" step="1" value={contextHops} onChange={(e) => setContextHops(e.target.value)} data-testid="context-hops" /></label>
+              <label>{t("wk_detail")}<select value={contextDetail} onChange={(e) => setContextDetail(e.target.value as typeof contextDetail)} data-testid="context-detail">
+                <option value="auto">{t("wk_detail_auto")}</option>
+                <option value="label">{t("wk_detail_label")}</option>
+                <option value="summary">{t("wk_detail_summary")}</option>
+                <option value="full">{t("wk_detail_full")}</option>
+                <option value="raw">{t("wk_detail_raw")}</option>
               </select></label>
-              <label>Knowledge run ID<input type="text" value={contextRun} onChange={(e) => setContextRun(e.target.value)} placeholder="Latest completed run" data-testid="context-run" /></label>
-              <label>Rendering language<input type="text" value={contextLanguage} onChange={(e) => setContextLanguage(e.target.value)} placeholder="Use message language" data-testid="context-language" /></label>
+              <label>{t("wk_run")}<input type="text" value={contextRun} onChange={(e) => setContextRun(e.target.value)} placeholder={t("wk_run_ph")} data-testid="context-run" /></label>
+              <label>{t("wk_language")}<input type="text" value={contextLanguage} onChange={(e) => setContextLanguage(e.target.value)} placeholder={t("wk_language_ph")} data-testid="context-language" /></label>
             </div>
           )}
-          {useKnowledge && <div className="chat-context-fields">
-            <label>Candidate channels JSON<textarea data-testid="context-channels" value={channels} onChange={e => setChannels(e.target.value)} placeholder='[{"id":"tfidf","limit":50,"min_score":0}]' /></label>
-            <label>Candidate scan limit<input type="number" value={scanLimit} onChange={e => setScanLimit(e.target.value)} data-testid="context-scan-limit" /></label>
-            <label><input type="checkbox" checked={counterEvidence} onChange={e => setCounterEvidence(e.target.checked)} data-testid="context-counter-evidence" />Follow recorded counter-evidence links</label>
-            <label><input type="checkbox" checked={lexicalShadow} onChange={e => setLexicalShadow(e.target.checked)} data-testid="context-lexical-shadow" />Lexical shadow diagnostic</label>
-            <p>Channel hits combine before selection. Local TF-IDF and lexical instruments work offline; other IDs report installed capability in the trace. Method weights require the method registry API.</p>
-          </div>}
+          {useKnowledge && <details open className="chat-context-fields" data-testid="context-diagnostics"><summary>{t("wk_diag")}</summary>
+            <label>{t("wk_channels")}<textarea data-testid="context-channels" value={channels} onChange={e => setChannels(e.target.value)} placeholder='[{"id":"tfidf","limit":50,"min_score":0}]' /></label>
+            <label>{t("wk_scan")}<input type="number" value={scanLimit} onChange={e => setScanLimit(e.target.value)} data-testid="context-scan-limit" /></label>
+            <label><input type="checkbox" checked={counterEvidence} onChange={e => setCounterEvidence(e.target.checked)} data-testid="context-counter-evidence" />{t("wk_counter")}</label>
+            <label><input type="checkbox" checked={lexicalShadow} onChange={e => setLexicalShadow(e.target.checked)} data-testid="context-lexical-shadow" />{t("wk_lexical")}</label>
+            <p>{t("wk_diag_note")}</p>
+          </details>}
           {useKnowledge && <ContextPlanEditor enabled={usePlan} onEnabled={setUsePlan} draft={planDraft} onChange={setPlanDraft} />}
-          <label className="chat-context-record">Context recording
+          <label className="chat-context-record">{t("wk_record")}
             <select value={traceContext} onChange={(e) => setTraceContext(e.target.value as "auto" | "on" | "off")} data-testid="record-context">
-              <option value="auto">Auto · record custom context</option>
-              <option value="on">On · record every request</option>
-              <option value="off">Off</option>
+              <option value="auto">{t("wk_record_auto")}</option>
+              <option value="on">{t("wk_record_on")}</option>
+              <option value="off">{t("wk_record_off")}</option>
             </select>
           </label>
-          <p>Recording saves the exact assembled messages and selection with the turn for later inspection.</p>
+          <p>{t("wk_record_note")}</p>
         </fieldset>
       </details>}
 
-      {!chat && <details className="chat-context-controls" data-testid="expert-chat-request"><summary>Expert · inspect or edit one request</summary>
-        <p>This is the client request sent to Loom. Compiled provider messages are inspected in the recorded context after execution.</p>
+      {!chat && <details className="chat-context-controls" data-testid="expert-chat-request"><summary>{t("wk_expert")}</summary>
+        <p>{t("wk_expert_note")}</p>
         <button onClick={() => send("preview")} disabled={!!stream || !!branchLeaf || Boolean(gate.blocked) || !input.trim()} data-testid="preview-chat-request"
-          title={gateTexts.blocked ?? undefined} aria-describedby={gate.blocked ? gateDescriptionId : undefined}>Prepare client request</button>
+          title={gateTexts.blocked ?? undefined} aria-describedby={gate.blocked ? gateDescriptionId : undefined}>{t("wk_expert_prepare")}</button>
         {requestOverride !== null && <>
-          <textarea aria-label="One-call client request JSON" data-testid="one-call-request" rows={9} value={requestOverride} onChange={event => setRequestOverride(event.target.value)} disabled={!!stream} />
-          <p>The next Send uses this exact JSON once. Profile, saved context and later calls keep their settings.</p>
-          <button onClick={() => setRequestOverride(null)} data-testid="discard-one-call-request">Discard override</button>
+          <textarea aria-label={t("wk_expert_aria")} data-testid="one-call-request" rows={9} value={requestOverride} onChange={event => setRequestOverride(event.target.value)} disabled={!!stream} />
+          <p>{t("wk_expert_once")}</p>
+          <button onClick={() => setRequestOverride(null)} data-testid="discard-one-call-request">{t("wk_expert_discard")}</button>
         </>}
       </details>}
 

@@ -29,6 +29,7 @@ import ChatShell from "./shell/ChatShell";
 import PerspectivesPanel from "./components/PerspectivesPanel";
 import ViewEnginePanel from "./components/ViewEnginePanel";
 import { ShellLanguage, ShellText, shellTranslator } from "./shell/text";
+import { themeFromConfig } from "./shell/theme";
 import { START_VIEW_PRESET, layoutOfMode, parseShellHash, readSaved, resolveStartView, startViewOrder, writeSaved, type Layout } from "./shell/start-view";
 import { shellLanguage } from "./shell/language";
 import { cssVariables, mergeData } from "./shell/animation";
@@ -132,10 +133,22 @@ export default function App() {
     document.documentElement.setAttribute("data-theme", theme);
     writeStored("loom.theme", theme);
   }, [theme]);
+  // R67-fix: the setting `theme` (config.json) is read here: its value decides the palette once the config is known (a name without palette tokens leaves the default ones).
+  useEffect(() => { const named = themeFromConfig(config.theme); if (named !== null) setTheme(named as Theme); }, [config.theme]);
+  // A change made in Settings reaches the screen when Settings closes: the config is read again.
+  const lastPanel = useRef<PanelId | null>(null);
+  useEffect(() => {
+    const closed = lastPanel.current !== null && activePanel === null;
+    lastPanel.current = activePanel;
+    if (closed) api.getConfig().then(cfg => setConfig(cfg as Record<string, unknown>), () => { /* the screen keeps what it has */ });
+  }, [activePanel]);
 
   const toggleTheme = useCallback(() => {
-    setTheme((t) => (t === "dark" ? "amoled" : "dark"));
-  }, []);
+    const next: Theme = theme === "dark" ? "amoled" : "dark";
+    setTheme(next);
+    setConfig(current => ({ ...current, theme: next }));
+    api.setConfigKey("theme", next).catch(err => console.debug("theme: the choice is not saved", err));
+  }, [theme]);
 
   // A setting a screen saved (the help "Co tu widzę?"): the app keeps the value, so the screen opened again starts as the person left it.
   const rememberSetting = useCallback((key: string, value: boolean | string) => setConfig(current => ({ ...current, [key]: value })), []);
@@ -313,7 +326,7 @@ export default function App() {
   if (layout === "chat") return (
     <ShellText.Provider value={t}><ShellLanguage.Provider value={uiLanguage}>
       <ChatShell profileHost={userProfileHost} convId={activeConvId} onSelect={setActiveConvId} onCreated={onConversationCreated} onShowInGraph={openNavigator}
-        refreshKey={convRefreshKey} onMessagesChanged={onMessagesChanged} planned={{ windows: true }} behindOverlay={activePanel !== null || knowledgeOpen}
+        refreshKey={convRefreshKey} onMessagesChanged={onMessagesChanged} behindOverlay={activePanel !== null || knowledgeOpen}
         actions={{ panel: (id) => { if (id === "settings") setSettingsView(""); setActivePanel(id as PanelId); }, navigator: (focus) => { setNavigatorFocus(focus); setActivePanel("navigator"); }, knowledge: () => setKnowledgeOpen(true), workshop: () => setLayout("workshop") }} />
       {panels}
       {knowledgeOpen && <>

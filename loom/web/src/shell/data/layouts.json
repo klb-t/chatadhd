@@ -13,6 +13,7 @@
         { "id": "this_conversation", "label": "menu_this_conversation", "action": "navigator:conv:current" },
         { "id": "views", "label": "menu_views", "action": "sheet:views" },
         { "id": "semantic", "label": "menu_semantic", "action": "sheet:semantic" },
+        { "id": "diagnostics", "label": "menu_diagnostics", "action": "sheet:diagnostics" },
         { "id": "connection", "label": "menu_connection", "action": "connection", "when": "android_shell" },
         { "id": "workshop", "label": "menu_workshop", "action": "layout:workshop" }
       ],

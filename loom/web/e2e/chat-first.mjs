@@ -79,6 +79,36 @@ try {
       await png("02-conversation");
     });
 
+    // R67: nothing on the chat screen pretends. The model line is the model the kernel used, the connection dot is the real state of the last request,
+    // no element carries the planned status, and the developer details (ids, checksums, raw traces) are not on the screen but in Diagnostyka.
+    await step(`${name}: R67 - no planned element, the model line equals the kernel's model, no raw JSON on the chat screen`, async () => {
+      assert.equal(await page.locator("[data-status='planned'], [data-planned], [data-testid$='-planned'], [data-testid*='planned']").count(), 0, "no element on the chat screen carries the planned status");
+      const text = await page.locator("body").innerText();
+      assert.ok(!/\bplanowane\b|\bplanned\b/i.test(text), "the chat screen does not list planned things");
+      assert.ok(!/[{]\s*"[a-z_]+"\s*:/.test(text), "no raw JSON visible on the chat screen");
+      assert.ok(!/\b(m|c)_[0-9a-f]{12}\b|\bsha256\b/i.test(text), "no developer ids or checksums on the chat screen");
+      assert.equal(await page.getByTestId("chat-route-trace").count(), 0, "the route trace is not on the chat screen");
+      const convs = await (await api("GET", "/api/conversations?limit=5")).json();
+      const msgs = await (await api("GET", `/api/conversations/${convs[0].id}/messages`)).json();
+      const used = msgs.filter(m => m.role === "assistant").at(-1)?.model;
+      assert.equal(used, "mock/e2e-model", "the kernel used the model of the setting");
+      const chip = page.getByTestId("model-chip");
+      await chip.waitFor();
+      assert.equal(await chip.getAttribute("data-model"), used, "the model line shows the model the kernel used");
+      assert.equal(await page.getByTestId("model-chip-status").getAttribute("data-state"), "ok", "the connection dot shows the real state of the last request");
+    });
+
+    await step(`${name}: R67 - Diagnostyka (menu) holds the developer details, in Polish, off the chat screen`, async () => {
+      await page.getByTestId("shell-menu-toggle").click();
+      await page.getByTestId("shell-menu-diagnostics").click();
+      await page.getByTestId("sheet-diagnostics").waitFor();
+      assert.match(await page.getByTestId("sheet-diagnostics").locator("h2").innerText(), /Diagnostyka|Diagnostics/);
+      await page.locator("[data-testid=diagnostics], [data-testid=diag-no-conv], [data-testid=diag-failed]").first().waitFor();
+      assert.equal(await page.getByTestId("diag-failed").count(), 0, "the conversation is readable");
+      await page.getByRole("button", { name: /×|Zamknij|Close/ }).first().click();
+      await page.getByTestId("sheet-diagnostics").waitFor({ state: "detached" });
+    });
+
     await step(`${name}: reload returns to the last conversation`, async () => {
       const before = await page.locator('[data-testid="message"]').count();
       await page.reload({ waitUntil: "domcontentloaded" });
@@ -194,7 +224,7 @@ try {
       await page.reload({ waitUntil: "domcontentloaded" });
       await page.getByTestId("shell-menu-toggle").click();
       assert.match(await page.getByTestId("shell-menu-workshop").innerText(), /Warsztat/);
-      assert.deepEqual(await page.getByRole("menuitem").allInnerTexts(), ["Graf", "Ustawienia", "Ty", "Ta rozmowa w grafie", "Widoki i okna", "Analiza w tle", "Warsztat (narzędzia zaawansowane)"]);
+      assert.deepEqual(await page.getByRole("menuitem").allInnerTexts(), ["Graf", "Ustawienia", "Ty", "Ta rozmowa w grafie", "Widoki i okna", "Analiza w tle", "Diagnostyka", "Warsztat (narzędzia zaawansowane)"]);
       await api("PUT", "/api/config/ui_language", { value: "auto" });
     });
     await context.close();

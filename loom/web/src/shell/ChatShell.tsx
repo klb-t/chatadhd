@@ -5,8 +5,8 @@ import type { Conversation } from "../api/types";
 import type { UserProfileHost } from "../api/onboarding-host";
 import ChatView from "../components/ChatView";
 import SemanticStatus from "../components/SemanticStatus";
+import DiagnosticsSheet from "../components/DiagnosticsSheet";
 import SemanticDot from "./SemanticDot";
-import Disclosure from "./Disclosure";
 import { useShellText } from "./text";
 import { CHAT_MENU, menuEntries, parseMenuAction, resolveNavigatorFocus } from "./menu";
 import { useLayer } from "./use-layer";
@@ -29,18 +29,17 @@ interface Props {
   refreshKey: number;
   onMessagesChanged: () => void;
   actions: ShellActions;
-  planned: { windows: boolean };
   /** A panel or the knowledge sheet of the app lies over the shell: the whole shell is `inert` (no focus, no taps, hidden from a reader). */
   behindOverlay?: boolean;
 }
-type Sheet = "views" | "semantic" | null;
+type Sheet = "views" | "semantic" | "diagnostics" | null;
 
 function bridge(): { openConnection?: () => void } | undefined {
   return (window as unknown as { LoomBridge?: { openConnection?: () => void } }).LoomBridge;
 }
 
 /** The default view (R56): the full-screen standard chat app. Menu entries come from data (shell/data/layouts.json, profile Czat). */
-export default function ChatShell({ profileHost, convId, onSelect, onCreated, refreshKey, onMessagesChanged, actions, planned, behindOverlay = false, onShowInGraph }: Props) {
+export default function ChatShell({ profileHost, convId, onSelect, onCreated, refreshKey, onMessagesChanged, actions, behindOverlay = false, onShowInGraph }: Props) {
   const t = useShellText();
   const [drawer, setDrawer] = useState(false);
   const [menu, setMenu] = useState(false);
@@ -77,10 +76,10 @@ export default function ChatShell({ profileHost, convId, onSelect, onCreated, re
   if (sheet === "views") sheetBody = <>
     <button className="shell-row" data-testid="layout-chat" aria-pressed onClick={() => setSheet(null)}>{t("layout_chat")}</button>
     <button className="shell-row" data-testid="layout-grid" onClick={() => { setSheet(null); actions.workshop(); }}>{t("layout_grid")}</button>
-    <Disclosure testId="layout-windows" labels={{ show: `${t("layout_windows")} · ${t("planned")}`, hide: `${t("layout_windows")} · ${t("planned")}` }}>
-      <p>{planned.windows ? t("planned_reason") : ""}</p></Disclosure>
   </>;
   if (sheet === "semantic") sheetBody = <SemanticStatus profileHost={profileHost} />;
+  if (sheet === "diagnostics") sheetBody = <DiagnosticsSheet convId={convId} />;
+  const sheetTitle = sheet === "views" ? t("views_title") : sheet === "diagnostics" ? t("menu_diagnostics") : t("menu_semantic");
 
   return (
     <div className="shell-root" data-testid="chat-shell" {...inertAttr(behindOverlay)}>
@@ -116,9 +115,9 @@ export default function ChatShell({ profileHost, convId, onSelect, onCreated, re
         {sheet && <>
           <div className="drawer-backdrop" onClick={() => setSheet(null)} />
           <div className="drawer" data-testid={`sheet-${sheet}`} ref={sheetRef} role="dialog" aria-modal="true" tabIndex={-1}
-            aria-label={t(sheet === "views" ? "views_title" : "menu_semantic")}>
-            <div className="drawer-header"><h2>{t(sheet === "views" ? "views_title" : "menu_semantic")}</h2>
-              <button className="icon-btn" aria-label={t("panel_close", { screen: t(sheet === "views" ? "views_title" : "menu_semantic") })} onClick={() => setSheet(null)}>×</button></div>
+            aria-label={sheetTitle}>
+            <div className="drawer-header"><h2>{sheetTitle}</h2>
+              <button className="icon-btn" aria-label={t("panel_close", { screen: sheetTitle })} onClick={() => setSheet(null)}>×</button></div>
             <div className="drawer-body">{sheetBody}</div>
           </div>
         </>}
