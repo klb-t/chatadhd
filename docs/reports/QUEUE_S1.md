@@ -1,10 +1,12 @@
-# Kolejka S1 — stan 2026-10-23 06:50 UTC
+# Kolejka S1 — stan 2026-10-23 07:24 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
 
 ## Reguła właściciela R58 (22.10 ≈ 23:40 UTC; wcześniejsze znaczniki „23.10 00:00/00:20” w tym pliku to pomyłka zegara, prawdziwa godzina to 23:3x–23:4x): przykłady są przykładami, silnik obsługuje każdą konfigurację, mała użyteczność = niewiążąca podpowiedź „czy celowe? nie pytać następnym razem”
 Powód: w tabeli planu napisałem „kolor = rodzaj, przezroczystość = pewność, głębia = czas, jak mówiłeś” — to były moje konkretne przypisania podane jak wymaganie i fałszywie przypisane jemu (jego własne słowa: „to jest tylko jedna z konfiguracji, a zakodować trzeba silnik”). Zapisane: `CLAUDE.md` (sekcja „Examples are examples…”), `OWNER_REQUIREMENTS` R58 (cytat dosłowny), `tools/workflows/single-package.js` (reguła w każdym briefie). Zadanie G3 (#30) ma teraz warunki wstępne: (a) skala: punkt odniesienia + odległość ze znakiem, kierunek zależny od drugiej miary, kilka kodowań jednej miary (dziś `view_engine.cpp` ~595–622: tylko `range`/`domain`/`type` i statyczne `invert`); (b) podpowiedź niewiążąca + zapamiętane „celowe, nie pytaj” + wykrycie wyniku zdegenerowanego (nic nie widać). Silnik już nigdy nie odrzuca kodowania (`promoted`/`allowed` z powodami), brakuje pytania i pamięci odpowiedzi.
+
+## DRUGI RESTART KONTENERA (≈ 07:19 UTC) — agent W2b-1 (sam, jeden build) stracony w fazie e2e; dysk 95 % (build m1d1 6,4 GB + build m1d0 4,4 GB + ccache 5 GB). Przyczyna obu restartów = DYSK, nie równoległość. Reguła poprawiona w `CLAUDE.md`: jeden katalog buildu naraz, ≥ 5 GB wolne przed buildem/bramką. Usunięty build m1d0 (odbuduje się z ccache, gdy jądro znów będzie potrzebne), ccache 4 GB. W2b-1 zdążyło zatwierdzić 3 commity (MeView, testy jednostkowe, e2e `m1-me-native`) — wypchnięte na `claude/m1-w1` (693a8d4f); kontynuacja (07:24): e2e ×2 + sąsiedzi, raport `M1_CHECKPOINT_3`, INDEX, push. CI 94872898 kontrola 08:55 ocalała.
 
 ## W2b-1 START (06:50 UTC, Sonnet, m1d1 na 94872898): ekran „Ty” z części K2c-2 — sekcje (Disclosure) z licznikami jądra, wiersze z chipem dowodu (powiedziane/zaobserwowane/wywnioskowane; wniosek wizualnie inaczej jako preset, UI11) i linią pochodzenia, akcje z `actions[]` węzła (Popraw/Zapomnij przez istniejące propozycje Tak/Nie), „Poznaj mnie”, „Wszystkie wiersze” (nic nie znika); e2e `m1-me-native`; raport `M1_CHECKPOINT_3.md`. Parafraza R61 zapisana jako `proposed` na ON05 (właściciel nieobecny — R62). W2b-2 później: jednostki w UI, „Poznaj mnie od nowa” (K2b-5), potwierdzenie zainteresowania (brak akcji w katalogu).
 

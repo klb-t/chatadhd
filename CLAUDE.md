@@ -595,6 +595,13 @@ there — the gate's result is otherwise a measurement of a moving target, and t
 builds plus two web e2e suites — ended in a container restart; both gates were lost, the second build dir had grown to
 6.4 GB and the disk was at 93 %). Gates run one after another; a second worktree is for an agent writing while a gate
 runs elsewhere, not for a second gate. Before a gate: at least ~5 GB free (the web build, screenshots and junit need it).
+**Correction after a second restart (2026-10-23 ≈ 07:19, one agent building alone): the trigger is the DISK, not
+parallelism.** A dev (debug, -O0 -g) build dir is 4.4–6.4 GB (CMakeFiles 3.0 GB, libloom_core.a 1.6 GB, binaries
+1.9 GB); two of them plus ccache (5 GB) exceed the session's writable allowance and the container restarts at ~95 %,
+killing every background task. Rule: ONE native build dir on the machine at a time (a second worktree builds only
+after the first build dir is deleted; `ccache` makes the rebuild ~15 min); ≥ 5 GB free before any build or gate;
+`du -sh /home/user/wt/*/loom/build /home/user/.ccache` is the first command after a restart. Open improvement:
+`-gz` (compressed debug sections) or `-g1` on the dev preset would shrink a build dir several times.
 
 **C++ pitfall that only AddressSanitizer catches** (CI found it after the asan preset had been broken for
 days): never range-for over `.at()` / `.value()` / `operator[]` of a by-value temporary, e.g.
