@@ -801,8 +801,8 @@
             "en": "The app's look: dark or AMOLED (black, saves battery on OLED screens)."
           },
           "effect": {
-            "pl": "Dziś działa tylko w starej aplikacji okienkowej; w przeglądarce i na telefonie motyw zmienia przycisk w aplikacji, a odczyt tego pola jest planowany.",
-            "en": "Today it works only in the old desktop app; in the browser and on the phone the theme is changed by a button in the app, and reading this field is planned."
+            "pl": "Aplikacja w przeglądarce i na telefonie czyta to pole przy starcie i po zamknięciu Ustawień; przycisk motywu w Warsztacie zapisuje wybór z powrotem do tego pola.",
+            "en": "The browser and phone app read this field at start and after Settings closes; the theme button in the workshop writes the choice back to this field."
           },
           "levels": [
             "person"
@@ -812,16 +812,16 @@
           "flows": []
         },
         "status": {
-          "state": "planned",
-          "by": "M1-W0",
-          "reader": "loom/web App.tsx (also the Android WebView) keeps its own theme in localStorage loom.theme with a toggle; only the Kivy app (main.py, gui/dialogs.py) reads config theme",
+          "state": "implemented",
+          "by": "R67-fix",
+          "reader": "loom/web App.tsx (also the Android WebView): themeFromConfig(config.theme) sets data-theme once the config is read and again after Settings closes; the Warsztat theme button writes config theme (settings.set); the Kivy app (main.py, gui/dialogs.py) reads it too",
           "reason": {
-            "pl": "Przeglądarka i telefon przełączają motyw własnym przyciskiem i pamiętają wybór na urządzeniu; to pole czyta dziś tylko stara aplikacja okienkowa.",
-            "en": "The browser and the phone switch the theme with their own button and remember the choice on the device; today only the old desktop app reads this field."
+            "pl": "Aplikacja w przeglądarce i na telefonie czyta to pole i ustawia paletę; przycisk motywu w Warsztacie zapisuje wybór do tego pola.",
+            "en": "The browser and phone app read this field and set the palette; the theme button in the workshop writes the choice to this field."
           },
           "today": {
-            "pl": "Dziś zmiana tego pola nie zmienia wyglądu w przeglądarce ani na telefonie.",
-            "en": "Today changing this field does not change the look in the browser or on the phone."
+            "pl": "Dziś zmiana tego pola zmienia paletę w przeglądarce i na telefonie po zamknięciu Ustawień. Paleta jest zdefiniowana dla nazw dark i amoled; inna nazwa zostawia paletę domyślną.",
+            "en": "Today changing this field changes the palette in the browser and on the phone once Settings closes. Palettes exist for the names dark and amoled; any other name leaves the default palette."
           }
         }
       },
