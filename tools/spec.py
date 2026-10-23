@@ -12,6 +12,7 @@ Podkomendy:
   check      spojnosc: unikalne numery, cytaty dosłowne, luki miedzy plikami, liczniki
   show ID    jedna pozycja: cytat dosłowny, sens, status, dowody, plik:linia
   list       lista pozycji (--status, --theme, --understanding, --kind, --file)
+  cite FILE  sprawdza, czy brief cytuje istniejace numery (spec:<numer>); --full wypisuje je z cytatami
   add        dopisuje NOWA wypowiedz wlasciciela (sekcja R/D w rejestrze + wezel)
   propose / approve / correct   rozumienie pozycji (regula R61) - nigdy automatycznie
 
@@ -907,6 +908,11 @@ def status_of(n: dict) -> str:
     return n["status"]["value"] if n.get("status") else "—"
 
 
+def status_text(n: dict, cfg: dict) -> str:
+    v = status_of(n)
+    return "bez statusu" if v == "—" else cfg["status_labels_pl"].get(v, v)
+
+
 def count_table(title: str, counts: dict) -> list[str]:
     rows = [f"| {title} | liczba |", "|---|---|"]
     for k, v in counts.items():
@@ -989,7 +995,7 @@ def render_md(spec: dict, cfg: dict) -> str:
                 link = f" · [źródło]({os.path.relpath(p, out_dir)}#L{a})"
             und = n["understanding"].get("state", "none")
             und_s = "" if und == "none" else f" · rozumienie: {und}"
-            L.append(f"- `{n['id']}` **{alias}** — {title or '(bez tytułu)'} — _{labels.get(st, st)}_{und_s}{link}")
+            L.append(f"- `{n['id']}` **{alias}** — {title or '(bez tytułu)'} — _{status_text(n, cfg)}_{und_s}{link}")
         L.append("")
     return "\n".join(L).rstrip("\n") + "\n"
 
@@ -1272,12 +1278,37 @@ def cmd_list(root, cfg, args):
         if args.file and args.file not in n["files"]:
             continue
         sel.append(n)
-    labels = cfg["status_labels_pl"]
     for n in sel:
         title = n["title"] or (n["summary"] or n["gap_text"] or {"text": ""})["text"].replace("\n", " ")[:80]
-        print(f"{n['id']}  {n['aliases'][0]:<10} {labels.get(status_of(n), status_of(n)):<12} {n['kind']:<12} {title}")
+        print(f"{n['id']}  {n['aliases'][0]:<10} {status_text(n, cfg):<12} {n['kind']:<12} {title}")
     print(f"-- {len(sel)} pozycji", file=sys.stderr)
     return 0
+
+
+CITE_RE = re.compile(r"spec:(s_[0-9a-f]{12}|[A-Za-z][A-Za-z0-9_:\-–]*[A-Za-z0-9])")
+
+
+def cmd_cite(root, cfg, args):
+    """Brief cytuje numery jako spec:<numer> (kanoniczny s_... albo dawny kod, np. spec:UI12)."""
+    spec = load_spec(root, cfg)
+    text = sys.stdin.read() if args.file == "-" else Path(args.file).read_text(encoding="utf-8")
+    seen, bad = [], 0
+    for tok in CITE_RE.findall(text):
+        if tok in seen:
+            continue
+        seen.append(tok)
+        n = resolve(spec, tok)
+        if n is None:
+            print(f"BRAK  spec:{tok} - nie ma takiej pozycji")
+            bad += 1
+            continue
+        if args.full:
+            print(show_node(n, spec, cfg))
+            print()
+        else:
+            print(f"OK    spec:{tok} -> {n['id']} {n['aliases'][0]} [{status_text(n, cfg)}] {n['title'] or ''}")
+    print(f"-- {len(seen)} cytowanych numerów, {bad} nieznanych", file=sys.stderr)
+    return 1 if bad else 0
 
 
 def next_owner_section_end(lines: list[str]) -> int:
@@ -1390,6 +1421,9 @@ def main(argv=None) -> int:
     l.add_argument("--understanding", choices=DEFAULT_CONFIG["understanding_states"])
     l.add_argument("--kind")
     l.add_argument("--file", choices=["owner", "slowa", "luki"])
+    ci = sub.add_parser("cite")
+    ci.add_argument("file", help="plik briefu albo - dla stdin")
+    ci.add_argument("--full", action="store_true", help="wypisz pozycje z cytatami dosłownymi")
     a = sub.add_parser("add")
     a.add_argument("--id", required=True)
     a.add_argument("--date", required=True)
@@ -1420,6 +1454,8 @@ def main(argv=None) -> int:
         return cmd_show(root, cfg, args)
     if args.cmd == "list":
         return cmd_list(root, cfg, args)
+    if args.cmd == "cite":
+        return cmd_cite(root, cfg, args)
     if args.cmd == "add":
         return cmd_add(root, cfg, args)
     return _und_cmd(root, cfg, args, args.cmd)

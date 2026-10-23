@@ -355,6 +355,24 @@ class Determinism(Base):
         self.assertEqual(load(self.root)["nodes"][0]["id"], "s_000000000001")
 
 
+class CiteCommand(Base):
+    def test_cite_resolves_alias_and_canonical_and_flags_unknown(self):
+        run(self.root, "build")
+        nid = node(load(self.root), "PH01")["id"]
+        brief = self.root / "brief.md"
+        brief.write_text(f"Zrób to wg spec:{nid} oraz spec:R1, a także (spec:PH02).\n", encoding="utf-8")
+        rc, out = run(self.root, "cite", str(brief))
+        self.assertEqual(rc, 0, out)
+        self.assertIn("OK    spec:R1", out)
+        self.assertIn("PH02", out)
+        rc, out = run(self.root, "cite", str(brief), "--full")
+        self.assertIn("Pierwszy cytat PH01", out)
+        brief.write_text("spec:XX99 i spec:R1\n", encoding="utf-8")
+        rc, out = run(self.root, "cite", str(brief))
+        self.assertEqual(rc, 1)
+        self.assertIn("BRAK  spec:XX99", out)
+
+
 class AddCommand(Base):
     def setUp(self):
         super().setUp()

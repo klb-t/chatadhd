@@ -1775,3 +1775,21 @@ Spec: `docs/architecture/P39_INTERAKCJA_MULTIMODALNA_2026-10-21.md`; pozycje mas
 - Odrzucone z projektów: progi strażnika jako bramka hipotez (B), Q jako suma ważona (B), `learned_small` uczony na symulatorze (B), `uint64` (B), osobna tabela zdarzeń dupleksu i drugi komplet kontraktów (B), osobny ekran laboratorium (B), czarna lista słów i „nigdy” dla stresu (C), „nieznana, nigdy 0” dla kosztu bez wywołań (C), zamknięta maszyna stanów w TS (C), zmiana presetu po A/B n=1 i wynik wstrzymany za licznikiem (C), S3 otwierane przez agenta (C), twardy blok sieci (C), poszerzenie `Observation.ordinal` (A), „1,5 dnia do ekranu” (A: uczciwie 4 pozycje do rozmowy, +2 do ekranu), „agenci nie czytają eksportów” (A/B/C: D3 pozwala lokalnie).
 - Pytania do właściciela (spec §9): wgląd w eksporty lokalnie (tak/nie), S3 (tak/nie), plik `face_embedding_research_master_prompt_2026-10-19.md`, model estymatora.
 - Nie zrobione tu: kod (żadna pozycja nie ruszyła), zmiany `docs/STATE.md` i `LUKI` (T-D1), `M1-W0` (osobna gałąź).
+
+### S1 / SPEC1 (wymagania właściciela jako dane: `docs/spec`, `tools/spec.py`) (2026-10-23, branch `claude/chataddhd-cpp-loom-core-IRGRN`)
+
+- Co jest: trzy pliki prozy (`SLOWA_WLASCICIELA_2026-10-16.md`, `LUKI_2026-10-16.md`, `OWNER_REQUIREMENTS_2026-09-26.md`) są parsowane do `docs/spec/spec.json` (schemat `loom.spec/1`, 487 pozycji:
+  403 z kodem ze SLOWA, 10 dodatków bez numeru, 70 z rejestru R/D, 4 tylko z LUKI). Narzędzie `tools/spec.py`: `build`, `check`, `show`, `list`, `cite`, `add`, `propose`, `approve`, `correct`.
+  `docs/spec/SPEC.md` jest widokiem WYGENEROWANYM; instrukcja po polsku w `docs/spec/README.md`. Bez sieci i bez wywołań modelu.
+- Decyzje (R1–R53; każda odwracalna): (1) Numer kanoniczny jest nieprzezroczysty, `s_` + 12 znaków hex z uuid4, przydzielany RAZ i zapisany w `docs/spec/ids.json`; dawne kody (UI12, R56 …) to aliasy, `show`/`list`/`cite`
+  rozumieją oba. Odwrót: usunąć `ids.json` (numery przydzielą się od nowa, aliasy zostają) — nie zalecane, bo briefy cytujące stare numery przestaną się zgadzać. (2) Źródłem prawdy zostają trzy pliki `.md` plus
+  `ids.json` i `understanding.json`; `spec.json` i `SPEC.md` są wyliczane i `check` zgłasza błąd, gdy nie nadążają. Odwrót: skasować `docs/spec` (nic poza tym narzędziem z niego nie korzysta). (3) Status z LUKI jest
+  kopiowany jako DATOWANA OBSERWACJA (`checked_on` = data z tytułu pliku, 2026-10-16), nie jako ograniczenie (R60). (4) `kind` wynika z przedrostka kodu i pliku (preset `kind_by_prefix`, nadpisywalny w
+  `docs/spec/config.json`); nic nie jest zgadywane, więc „rule” i „question” nie mają dziś żadnej pozycji. (5) Wypowiedzi bez kodu (dodatki do SLOWA, sekcje rejestru bez numeru R) dostają pozycje z aliasem z nagłówka,
+  zamiast zostać w prozie; zmiana takiego nagłówka da nowy alias (stary numer zostaje zarezerwowany). (6) Rozumienie (R61) leży w osobnym `understanding.json`, żeby `build` go nie gubił; `approve` i `correct` tylko na
+  słowo właściciela, nigdy automatycznie, `approve` odmawia bez propozycji. (7) Cytaty „relacja:” (agent opisuje słowa właściciela) są zachowane jako cytaty z flagą `secondary`, nie odrzucone. (8) Dodane ponad brief:
+  `cite` (sprawdza, czy brief cytuje istniejące numery `spec:<numer>`; `--full` wypisuje cytaty do wklejenia agentowi).
+- Testy (fakty): `python3 -m unittest discover -s tools/tests` — 28 testów zielonych (formaty trzech plików, strażnik cytatu dosłownego, determinizm `build`, `add` nie zmienia istniejącego tekstu i odmawia duplikatu,
+  rozumienie, 40 losowych korpusów, kopia prawdziwych plików). `python3 tools/spec.py build && check` na prawdziwych plikach: czysto, 1 ostrzeżenie (nagłówek LUKI mówi „BRAK 12”, pozycji jest 16).
+- Nie zrobione tu: briefy nadal pisane ręcznie (koordynator ma zacząć cytować `spec:<numer>` i sprawdzać `cite`); żadna parafraza nie została napisana ani zatwierdzona (wszystkie pozycje `none`); `check` nie jest
+  podpięty do `tools/gate.sh`; 117 wierszy prozy w 43 fragmentach (wstępy, listy „Pominięte”, krytyk kompletności) jest w `gaps`, nie w pozycjach; przeglądu transkryptów po 2026-10-16 nie robiono.
