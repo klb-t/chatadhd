@@ -28,6 +28,20 @@
    "text": "Okno to jednostka interfejsu: każdy widok (czat, graf, lista rozmów, pamięć, import, ustawienia…) jest oknem, które można zadokować, odpiąć jako pływające i zmaksymalizować. Interfejs standardowy to jedno zmaksymalizowane okno czatu — szczególny przypadek tego samego mechanizmu, nie osobny tryb. Okno czatu zawiera sumę funkcji kilku–kilkunastu popularnych aplikacji i daje wybór ich stylów (profile jako dane). Na telefonie preset: stos zmaksymalizowanych okien z przełącznikiem; pływanie i dokowanie dostępne także tam (opcja, nie usunięcie).",
    "by": "S1",
    "date": "2026-10-23"
+  },
+  "s_8d5c047ecfb2": {
+   "state": "proposed",
+   "history": [
+    {
+     "state": "proposed",
+     "by": "S1",
+     "date": "2026-10-23",
+     "text": "Ekran „Ty” pokazuje wszystko, co aplikacja o Tobie wie, jako części grafu (tożsamość, pola wywiadu, preferencje po poziomach, polityki, jednostki, zainteresowania, sieć, „Co pamiętam”) — każda pozycja z pochodzeniem (skąd, kiedy, jaką metodą) i z klasą dowodu (powiedziane / zaobserwowane / wywnioskowane; wniosek nigdy nie udaje obserwacji). Przy każdej pozycji akcje z katalogu: Popraw, Zapomnij (na zawsze, z potwierdzeniem i historią), Potwierdź (dla wniosku). Lista części i akcje są danymi, nie kodem; „Poznaj mnie” uruchamia wywiad."
+    }
+   ],
+   "text": "Ekran „Ty” pokazuje wszystko, co aplikacja o Tobie wie, jako części grafu (tożsamość, pola wywiadu, preferencje po poziomach, polityki, jednostki, zainteresowania, sieć, „Co pamiętam”) — każda pozycja z pochodzeniem (skąd, kiedy, jaką metodą) i z klasą dowodu (powiedziane / zaobserwowane / wywnioskowane; wniosek nigdy nie udaje obserwacji). Przy każdej pozycji akcje z katalogu: Popraw, Zapomnij (na zawsze, z potwierdzeniem i historią), Potwierdź (dla wniosku). Lista części i akcje są danymi, nie kodem; „Poznaj mnie” uruchamia wywiad.",
+   "by": "S1",
+   "date": "2026-10-23"
   }
  }
 }

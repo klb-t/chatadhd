@@ -28,8 +28,8 @@ Pozycji razem: **490**.
 
 | Rozumienie (R61) | liczba |
 |---|---|
-| none | 488 |
-| proposed | 2 |
+| none | 487 |
+| proposed | 3 |
 
 | W których plikach | liczba |
 |---|---|
@@ -352,7 +352,7 @@ Pozycji razem: **490**.
 - `s_aee0e3b6aa26` **ON02** — Cel profilu: z samej rozmowy mają powstawać produkty zgodne ze wszystkimi preferencjami użytkownika — _częściowo_ · [źródło](../architecture/SLOWA_WLASCICIELA_2026-10-16.md#L1869)
 - `s_6b4686dd9df2` **ON03** — Onboarding to rozmowa: użytkownik się przedstawia i wykłada preferencje, a model aktywnie dopytuje — _częściowo_ · [źródło](../architecture/SLOWA_WLASCICIELA_2026-10-16.md#L1873)
 - `s_cd56317656c8` **ON04** — Graf nowego użytkownika jest zasiany; profil startuje jako „unknown”; opcje domyślne są w grafie i można je trwale usunąć — _częściowo_ · [źródło](../architecture/SLOWA_WLASCICIELA_2026-10-16.md#L1878)
-- `s_8d5c047ecfb2` **ON05** — Widok „co aplikacja o mnie wie”: pochodzenie każdej informacji, poprawianie i usuwanie z historią; propozycje modelu przyjmowane według ustawienia — _częściowo_ · [źródło](../architecture/SLOWA_WLASCICIELA_2026-10-16.md#L1884)
+- `s_8d5c047ecfb2` **ON05** — Widok „co aplikacja o mnie wie”: pochodzenie każdej informacji, poprawianie i usuwanie z historią; propozycje modelu przyjmowane według ustawienia — _częściowo_ · rozumienie: proposed · [źródło](../architecture/SLOWA_WLASCICIELA_2026-10-16.md#L1884)
 - `s_93c733707248` **ON06** — Wybory prywatności są częścią onboardingu i żyją w grafie jako reguły, których słucha selektor i zapis wiedzy — _częściowo_ · [źródło](../architecture/SLOWA_WLASCICIELA_2026-10-16.md#L1889)
 - `s_86a2479be2d2` **ON07** — „Użytkownik” to podmiot wielu poziomów: węzeł sieci, nie centrum; jego cechy to pakiet właściwości klasy „człowiek” — _częściowo_ · [źródło](../architecture/SLOWA_WLASCICIELA_2026-10-16.md#L1893)
 - `s_43c2129e9f86` **ON08** — Każde ustawienie i preferencja ma poziomy (aplikacja, użytkownik, rozmowa…) i jawną regułę rozstrzygania konfliktów — _częściowo_ · [źródło](../architecture/SLOWA_WLASCICIELA_2026-10-16.md#L1901)

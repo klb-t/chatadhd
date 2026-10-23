@@ -29912,7 +29912,18 @@
    "theme": "onboarding_profile",
    "theme_inferred": false,
    "understanding": {
-    "state": "none"
+    "state": "proposed",
+    "history": [
+     {
+      "state": "proposed",
+      "by": "S1",
+      "date": "2026-10-23",
+      "text": "Ekran „Ty” pokazuje wszystko, co aplikacja o Tobie wie, jako części grafu (tożsamość, pola wywiadu, preferencje po poziomach, polityki, jednostki, zainteresowania, sieć, „Co pamiętam”) — każda pozycja z pochodzeniem (skąd, kiedy, jaką metodą) i z klasą dowodu (powiedziane / zaobserwowane / wywnioskowane; wniosek nigdy nie udaje obserwacji). Przy każdej pozycji akcje z katalogu: Popraw, Zapomnij (na zawsze, z potwierdzeniem i historią), Potwierdź (dla wniosku). Lista części i akcje są danymi, nie kodem; „Poznaj mnie” uruchamia wywiad."
+     }
+    ],
+    "text": "Ekran „Ty” pokazuje wszystko, co aplikacja o Tobie wie, jako części grafu (tożsamość, pola wywiadu, preferencje po poziomach, polityki, jednostki, zainteresowania, sieć, „Co pamiętam”) — każda pozycja z pochodzeniem (skąd, kiedy, jaką metodą) i z klasą dowodu (powiedziane / zaobserwowane / wywnioskowane; wniosek nigdy nie udaje obserwacji). Przy każdej pozycji akcje z katalogu: Popraw, Zapomnij (na zawsze, z potwierdzeniem i historią), Potwierdź (dla wniosku). Lista części i akcje są danymi, nie kodem; „Poznaj mnie” uruchamia wywiad.",
+    "by": "S1",
+    "date": "2026-10-23"
    },
    "quotes": [
     {
