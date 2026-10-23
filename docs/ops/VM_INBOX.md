@@ -94,3 +94,13 @@ i pieniędzmi bez jego tak/nie; obserwacja środowiska = advisory, nie stop).
    w §7. Od R92 kolejność i start pakietów to Twoja decyzja (przed każdym agentem `python3 tools/pace.py --used <tydzień %>`;
    R91: Fable do 100 %, reszta do 90 %). Przykład, nie polecenie: IW-8 „VM jako miejsce w danych + trwałość biegu” leży
    najbliżej Twojej pracy i rekonesansu. S1 chmurowa nie startuje już pakietów z tej listy.
+16. (2026-10-23 22:35 UTC, pakiet CI, R92 — Twoja kolej, po pomiarach z 12 albo równolegle agentem Sonnet) **Job asan
+   w CI jest za długi:** 23.10 krok testów = 140 min (kolejka 514 min testów przez 4 sloty), limit podniesiony 150 → 240
+   (`51315dd6`) — to podpórka, nie naprawa. Zaprojektuj i zrób: podział jobu asan na shardy macierzy (np. shard A =
+   `unit.test_chat_ops`, `unit.test_profile_chat`, `unit.test_chat_route`, `unit.test_graph_projection`,
+   `unit.test_profile_ops`, `unit.test_onboarding_store`; shard B = reszta; podział jako dane w `.github/` z pomiarem
+   czasu per test z logu 284 — plik `scratchpad/asan_job_log.txt` S1 nie jest w repo, więc odczytaj czasy z logu CI
+   sam: job 120610852512) tak, żeby każdy shard mieścił się w ~90 min; `verify_ctest.py` i „Require actual case
+   execution” muszą rozumieć shardy (suma shardów = cały manifest). Alternatywa do zmierzenia: większy runner albo
+   `ctest -j` ponad liczbę rdzeni dla testów czekających na I/O. Zmiana CI idzie przez gałąź `claude/m1-w1` i bramkę
+   (tylko `.github/` i ewentualnie `tools/`), potem FF main; zapisz czasy przed/po w QUEUE.
