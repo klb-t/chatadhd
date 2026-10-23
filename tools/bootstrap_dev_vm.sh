@@ -14,10 +14,9 @@
 # zwykłej VM (np. w GCP) to samo środowisko, które instaluje CI (.github/workflows/loom.yml), tak żeby
 # `tools/gate.sh` mógł tam przejść. Opis całej przeprowadzki: docs/ops/PRZEPROWADZKA_GCP_2026-10-23.md.
 #
-# JEDNA KOMENDA DO WKLEJENIA PRZEZ SSH na świeżej VM (słowa właściciela R71; skrypt leży tymczasowo w repo, na tej gałęzi):
-#   curl -fsSL https://raw.githubusercontent.com/klb-t/chatadhd/claude/chataddhd-cpp-loom-core-IRGRN/tools/bootstrap_dev_vm.sh | bash -s -- --clone --claude --home-link
-# To uruchamia kod z internetu bez czytania. Ostrożniejsza wersja (to samo, w trzech krokach):
-#   curl -fsSL <ten sam adres> -o bootstrap.sh && less bootstrap.sh && bash bootstrap.sh --dry-run --clone --claude --home-link
+# JEDNA KOMENDA DO WKLEJENIA PRZEZ SSH na świeżej VM (R71) to osobny skrypt tools/vm_oneliner.sh: klonuje repozytorium,
+# uruchamia TEN skrypt (przekazuje mu swoje flagi), instaluje Claude Code i wypisuje kroki dla człowieka.
+# Ten skrypt zakłada, że repozytorium już jest (albo podasz --repo DIR).
 #
 # Uruchamianie z klona (jako ZWYKŁY użytkownik z sudo, nie jako root):
 #   tools/bootstrap_dev_vm.sh --dry-run                    # tylko pokaż, co zostałoby zrobione
@@ -33,15 +32,11 @@
 #   --no-web      pomiń `npm ci` i instalację Chromium dla Playwright
 #   --bashrc      dopisz do ~/.bashrc jedną linię `source ~/.config/chatadhd-dev-env.sh` (domyślnie tylko wypisuje)
 #   --any-os      nie zatrzymuj się, gdy to nie jest Ubuntu 24.04 (wtedy nazwy pakietów mogą się nie zgadzać)
-#   --clone       sklonuj repozytorium (CHATADHD_BRANCH, domyślnie ta gałąź; po scaleniu do main ustaw main), jeśli go jeszcze nie ma
-#   --claude      zainstaluj Claude Code (`npm install -g @anthropic-ai/claude-code`, nazwa pakietu z pamięci, niezweryfikowana);
-#                 logowanie i `claude remote-control` są interaktywne, skrypt tylko wypisuje kolejne kroki
 #   --home-link   gdy HOME to nie /home/user: utwórz dowiązanie /home/user -> $HOME (tools/gate.sh i briefy mają /home/user na sztywno;
 #                 niesprawdzone, ccache może trafiać gorzej, bo kompilator widzi ścieżkę rzeczywistą)
-#   --repo DIR    katalog repozytorium (domyślnie: katalog nad tym skryptem, a gdy go nie ma: ~/chatadhd)
+#   --repo DIR    katalog repozytorium (domyślnie: katalog nad tym skryptem, a gdy go tam nie widać: ~/chatadhd)
 # Zmienne środowiska (presety): CHATADHD_CCACHE_MAXSIZE (12G), CHATADHD_NODE_MAJOR (22), CHATADHD_VENV (~/.venvs/loom311),
-#   CHATADHD_ANDROID_HOME (~/android-sdk), CHATADHD_ANDROID_CMDLINE_URL, CHATADHD_ANDROID_CMDLINE_SHA256,
-#   CHATADHD_REPO, CHATADHD_BRANCH, CHATADHD_REPO_URL.
+#   CHATADHD_ANDROID_HOME (~/android-sdk), CHATADHD_ANDROID_CMDLINE_URL, CHATADHD_ANDROID_CMDLINE_SHA256, CHATADHD_REPO.
 #
 # Skąd wersje (jedno źródło prawdy: CI, nie kopia):
 #   Python 3.11 - loom.yml `setup-python` 3.11 (tablice Unicode są generowane z CPython 3.11, testy zgodności porównują z tym samym)
@@ -51,12 +46,13 @@
 #   apt         - loom.yml "Install toolchain": ninja-build ccache libsqlite3-dev libssl-dev clang (+ libc++ dla `libcxx`);
 #                 kompilator, cmake i git ma w obrazie runnera GitHub, na zwykłej VM dodajemy je sami.
 #
-# Czego skrypt NIE robi: nie buduje (komenda jest wypisana na końcu), nie loguje do GitHub ani do Claude, nie uruchamia
-# Remote Control, nie otwiera portów, nie rusza danych (/var/lib/chatadhd). Klonuje i instaluje Claude Code tylko na życzenie.
+# Czego skrypt NIE robi: nie buduje (komenda jest wypisana na końcu), nie klonuje repozytorium, nie instaluje Claude Code,
+# nie loguje do GitHub ani do Claude, nie uruchamia Remote Control (to robi vm_oneliner.sh albo Ty), nie otwiera portów,
+# nie rusza danych (/var/lib/chatadhd).
 # =============================================================================
 set -euo pipefail
 
-# Gdy skrypt idzie przez `curl | bash`, nie ma pliku źródłowego: wtedy repozytorium to ~/chatadhd (z --clone).
+# Gdy nie da się ustalić położenia skryptu (np. uruchomiony z potoku), repozytorium to ~/chatadhd.
 SELF="${BASH_SOURCE[0]:-}"
 REPO_GUESS="$HOME/chatadhd"
 if [ -n "$SELF" ] && [ -f "$SELF" ]; then
@@ -64,8 +60,6 @@ if [ -n "$SELF" ] && [ -f "$SELF" ]; then
   [ -d "$_up/loom" ] && REPO_GUESS="$_up"
 fi
 REPO="${CHATADHD_REPO:-$REPO_GUESS}"
-REPO_URL="${CHATADHD_REPO_URL:-https://github.com/klb-t/chatadhd.git}"
-REPO_BRANCH="${CHATADHD_BRANCH:-claude/chataddhd-cpp-loom-core-IRGRN}"   # tymczasowo: tu leży skrypt; po scaleniu: main
 CCACHE_SIZE="${CHATADHD_CCACHE_MAXSIZE:-12G}"      # preset: tyle ma tools/gate.sh (CI ma 3G)
 NODE_MAJOR="${CHATADHD_NODE_MAJOR:-22}"            # jak w CI
 PY_MM="3.11"                                       # jak w CI
@@ -77,7 +71,7 @@ ANDROID_CMDLINE_URL="${CHATADHD_ANDROID_CMDLINE_URL:-https://dl.google.com/andro
 ANDROID_CMDLINE_SHA256="${CHATADHD_ANDROID_CMDLINE_SHA256:-}"   # puste = bez sprawdzania sumy (ostrzeżenie)
 ENV_FILE="$HOME/.config/chatadhd-dev-env.sh"
 
-DRY=0 DO_ANDROID=0 DO_EMULATOR=0 DO_LIBCXX=0 DO_CADDY=0 DO_WEB=1 DO_BASHRC=0 ANY_OS=0 DO_CLONE=0 DO_CLAUDE=0 DO_HOMELINK=0
+DRY=0 DO_ANDROID=0 DO_EMULATOR=0 DO_LIBCXX=0 DO_CADDY=0 DO_WEB=1 DO_BASHRC=0 ANY_OS=0 DO_HOMELINK=0
 
 log()  { printf '\n== %s\n' "$*"; }
 warn() { printf 'UWAGA: %s\n' "$*" >&2; }
@@ -95,8 +89,6 @@ while [ $# -gt 0 ]; do
     --no-web)   DO_WEB=0; shift;;
     --bashrc)   DO_BASHRC=1; shift;;
     --any-os)   ANY_OS=1; shift;;
-    --clone)    DO_CLONE=1; shift;;
-    --claude)   DO_CLAUDE=1; shift;;
     --home-link) DO_HOMELINK=1; shift;;
     --repo)     [ $# -ge 2 ] || die "brak wartości dla --repo"; REPO="$2"; shift 2;;
     -h|--help)  if [ -n "$SELF" ] && [ -f "$SELF" ]; then sed -n '2,/^set -euo pipefail/p' "$SELF" | sed '$d'; else echo "pomoc jest w nagłówku pliku: pobierz go (curl -o) i uruchom z --help"; fi; exit 0;;
@@ -156,17 +148,8 @@ fi
 run $SUDO apt-get update -y
 run $SUDO apt-get install -y --no-install-recommends "${APT_PKGS[@]}"
 
-# --- 1b. klon repozytorium (opcja --clone) -------------------------------------------------
-if [ "$DO_CLONE" = 1 ]; then
-  log "1b. klon repozytorium (--clone)"
-  if [ -d "$REPO/.git" ]; then
-    echo "repozytorium już jest: $REPO (nic nie zmieniam; aktualizacja: git -C '$REPO' pull)"
-  else
-    run git clone --branch "$REPO_BRANCH" "$REPO_URL" "$REPO"
-  fi
-fi
-if [ ! -d "$REPO/loom" ] && ! { [ "$DRY" = 1 ] && [ "$DO_CLONE" = 1 ]; }; then
-  warn "nie widzę $REPO/loom - kroki z requirements i 'web' zostaną pominięte (użyj --clone albo --repo DIR)"
+if [ ! -d "$REPO/loom" ]; then
+  warn "nie widzę $REPO/loom - kroki z requirements i 'web' zostaną pominięte (sklonuj repozytorium albo użyj --repo DIR)"
 fi
 
 # --- 2. Python 3.11 + venv ------------------------------------------------------
@@ -219,21 +202,6 @@ if [ "$node_ok" = 0 ]; then
     $SUDO tar -xJf "$NTMP/$NFILE" -C "/opt/node$NODE_MAJOR" --strip-components=1
     for b in node npm npx; do $SUDO ln -sf "/opt/node$NODE_MAJOR/bin/$b" "/usr/local/bin/$b"; done
     echo "node: $(node --version)"
-  fi
-fi
-
-# --- 3b. Claude Code (opcja --claude) -------------------------------------------------------------
-if [ "$DO_CLAUDE" = 1 ]; then
-  log "3b. Claude Code (--claude)"
-  if command -v claude >/dev/null 2>&1; then
-    echo "claude już jest: $(command -v claude)"
-  else
-    # nazwa pakietu z pamięci, niezweryfikowana; instalator natywny od Anthropic to alternatywa (patrz dokumentacja Claude Code)
-    run $SUDO npm install -g @anthropic-ai/claude-code
-    if [ "$DRY" = 0 ]; then
-      CL_BIN="$(npm prefix -g)/bin/claude"
-      [ -x "$CL_BIN" ] && $SUDO ln -sf "$CL_BIN" /usr/local/bin/claude
-    fi
   fi
 fi
 
@@ -393,15 +361,5 @@ Skrypt NIE uruchomił builda. Następny krok (ręcznie, po '. $ENV_FILE'):
   cmake --build --preset dev --parallel "\$(nproc)"
   # pełna bramka (40-90 min na maszynie 4-rdzeniowej; uruchom w tle z limitem 2 h, np. w tmux):
   #   tools/gate.sh "$REPO" vm1
-NEXT
-if [ "$DO_CLAUDE" = 1 ]; then
-cat <<NEXT2
-Claude Code (kroki interaktywne - skrypt ich nie wykona):
-  1) uruchom: claude          # zaloguj się kontem claude.ai (adres do otwarcia pokaże program)
-  2) tmux new -s claude -c "$REPO"     # potem w środku: claude remote-control
-     (nazwa polecenia i wymagania: strona o Remote Control w dokumentacji Claude Code - NIEZWERYFIKOWANE; sprawdź: claude --help)
-NEXT2
-fi
-cat <<NEXT3
 Zmierz i zapisz: ile trwa zimny build, ile ciepły (ccache), ile bramka. Bez tych liczb żadna z wartości w dokumencie przeprowadzki nie jest pomiarem.
-NEXT3
+NEXT

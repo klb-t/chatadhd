@@ -262,24 +262,18 @@ Wirtualizacja zagnieżdżona (potrzebna tylko do emulatora w C): **[do sprawdzen
 dopisuję opcji z pamięci. Użytkownik `user` (decyzja D1): **[do sprawdzenia]** jak go dostać na VM
 (OS Login albo klucz w metadanych); zwykłe `sudo adduser user && sudo usermod -aG sudo user` też działa.
 
-**Jedna komenda do wklejenia przez ssh** (Twoje słowa, R71: „chodzi o to żebyś mi dał jedną komendę do
-wklejenia przez ssh, żebym znów nie musiał szukać tych nazw wszystkich”). Skrypt leży tymczasowo w repozytorium,
-na tej gałęzi. Na świeżej VM, jako zwykły użytkownik z sudo:
+**Jedna komenda (R71)** jest na samej górze tego dokumentu (`tools/vm_oneliner.sh` klonuje repozytorium i woła
+`tools/bootstrap_dev_vm.sh`). Trzy uwagi do niej, z pakietu OPS1 (sprawdzone w repozytorium, nie na VM):
+1. **Dopóki skrypty nie są na `main`, komenda z domyślną gałęzią `main` się wywróci:** `vm_oneliner.sh` klonuje i
+   przełącza na `CHATADHD_BRANCH` (domyślnie `main`), a `tools/vm_oneliner.sh` i `tools/bootstrap_dev_vm.sh`
+   leżą (2026-10-23) tylko na gałęzi `claude/chataddhd-cpp-loom-core-IRGRN` (sprawdzone `git cat-file` na
+   `origin/main`). Obejście do czasu scalenia: `… | CHATADHD_BRANCH=claude/chataddhd-cpp-loom-core-IRGRN bash -s -- …`.
+2. Gdy użytkownik na VM nie nazywa się `user`, dopisz do flag `--home-link` (dowiązanie `/home/user` -> katalog
+   domowy; dlaczego: D1). Niesprawdzone.
+3. Ostrożniejsza wersja: pobierz `vm_oneliner.sh` do pliku, przeczytaj (`less`), uruchom z `--dry-run`.
+Dodaj `--caddy` dla B. Ani `vm_oneliner.sh`, ani `bootstrap_dev_vm.sh` nie były uruchomione na prawdziwej VM.
 
-```
-curl -fsSL https://raw.githubusercontent.com/klb-t/chatadhd/claude/chataddhd-cpp-loom-core-IRGRN/tools/bootstrap_dev_vm.sh | bash -s -- --clone --claude --home-link
-```
-Co robi: pakiety apt jak w CI, Python 3.11, Node 22, ccache, klon repozytorium do `~/chatadhd`, `npm ci` +
-Chromium, Claude Code (`--claude`), dowiązanie `/home/user` (`--home-link`, patrz D1). Czego **nie** robi:
-nie loguje do Claude ani GitHuba, nie włącza Remote Control (to kroki interaktywne; skrypt wypisuje je na
-końcu), nie buduje. **To uruchamia kod z internetu bez czytania**; ostrożniej:
-`curl -fsSL <ten adres> -o bootstrap.sh && less bootstrap.sh && bash bootstrap.sh --dry-run --clone --claude --home-link`.
-Dodaj `--android --emulator`, jeśli VM ma budować APK i sprawdzić KVM, `--caddy` dla B. Skrypt **nie był
-przetestowany na prawdziwej VM** (tylko `bash -n`, `shellcheck` i `--dry-run`, także w trybie `curl | bash`).
-Adres `raw.githubusercontent.com` działa bez logowania, bo repozytorium jest publiczne; po scaleniu skryptu do
-`main` zamień w adresie nazwę gałęzi na `main` (i `CHATADHD_BRANCH=main` przed `bash`).
-
-Kolejność (kroki 2–3 robi komenda powyżej):
+Kolejność (kroki 2–3 robi komenda z góry dokumentu):
 1. Zaloguj się i zapisz `df -h`, `nproc`, `free -g` (porównanie z §2).
 2. Klon: `git clone https://github.com/klb-t/chatadhd ~/chatadhd` (robi to `--clone`).
 3. Bootstrap (komenda powyżej albo `tools/bootstrap_dev_vm.sh --dry-run`, potem bez `--dry-run`).
@@ -287,9 +281,10 @@ Kolejność (kroki 2–3 robi komenda powyżej):
 4. Zimny build: komenda wypisana na końcu skryptu, z `time`. Potem ciepły (po usunięciu `loom/build/dev`).
    **Ile minut: nieznane, zmierzyć i wpisać do `INDEX.md`.**
 5. Bramka: `tools/gate.sh /home/user/chatadhd vm1` w `tmux`, limit 2 h. Porównaj z 40–90 min tutaj.
-6. Claude Code na VM (zainstalowany przez `--claude`): `claude`, zaloguj się kontem claude.ai; potem
-   `tmux new -s claude -c ~/chatadhd` i w środku `claude remote-control` (**[do sprawdzenia]** nazwa i
-   wymagania); sprawdź, że sesja widnieje w aplikacji, i sprawdź narzędzia z §5, punkty 7 i 10.
+6. Claude Code na VM (zainstalowany przez `vm_oneliner.sh`): trzy kroki dla człowieka wypisane na końcu
+   komendy (logowanie Claude, logowanie GitHub, `claude remote-control` w `tmux`). Komendy w tym skrypcie są
+   z dokumentacji Claude Code odczytanej przez koordynatora 2026-10-23 (komentarz w `vm_oneliner.sh`); ja ich nie
+   weryfikowałem. Sprawdź, że sesja widnieje w aplikacji, i sprawdź narzędzia z §5, punkty 7 i 10.
 7. (B, po odpowiedzi „Tak” na pytanie 2) `sudo deploy/install.sh --no-deps --domain … --admin-login …`.
 8. (C, jeśli wybrany) rejestracja runnera wg strony GitHub o self-hosted runners, z zastrzeżeniami z §1.
 9. **Pytanie S2: czy `android-smoke` może biec na tej VM?** Warunki: `/dev/kvm` (§1 C), SDK z `--android`,
@@ -309,17 +304,17 @@ Kolejność (kroki 2–3 robi komenda powyżej):
 | D4 | Node 22 z oficjalnego archiwum nodejs.org z sumą SHA-256 (nie apt: Ubuntu ma starszy) | `CHATADHD_NODE_MAJOR` albo apt/`nvm` ręcznie |
 | D5 | Skrypt ma `--dry-run`, bo nie mógł być przetestowany | opcja nic nie kosztuje; można nie używać |
 | D6 | Dokument nie wybiera między A/B/C ani nie podaje cen jako faktów | wybierasz Ty |
-| D7 | Jedna komenda (R71) pobiera skrypt z `raw.githubusercontent.com` z tej gałęzi, tymczasowo | po scaleniu: gałąź `main`; albo wersja dwukrokowa z `less` (podana wyżej) |
+| D7 | R71: jedna komenda to `tools/vm_oneliner.sh` (koordynator); bootstrap zostaje osobnym skryptem do uruchomienia z klona (powtórzonych opcji `--clone`/`--claude` nie ma, by nie dublować) | scalić oba w jeden plik, jeśli wolisz; flagi bootstrapu są te same |
 
 ## Czego nie sprawdziłem (nic z tego nie jest faktem)
 - Żadna strona GCP, GitHub ani Claude Code nie była czytana; ceny, nazwy typów maszyn i obrazu, zachowanie
   dysków i adresów IP, szyfrowanie, budżety, OS Login/IAP, wirtualizacja zagnieżdżona.
 - Polecenia `claude remote-control`, logowanie na VM bez przeglądarki, dostępność `Workflow`, zadań
   zaplanowanych i GitHub MCP w sesji na VM.
-- `tools/bootstrap_dev_vm.sh`: tylko `bash -n`, `shellcheck` i `--dry-run` (także `curl | bash`); PPA
-  `deadsnakes` dla 24.04, adres `cmdline-tools` Androida (z pamięci), nazwa pakietu npm `@anthropic-ai/claude-code`
-  (z pamięci), `--home-link`, pakiety apt na świeżej VM, `install-deps` Playwright, pobieranie z
-  `raw.githubusercontent.com`.
+- `tools/bootstrap_dev_vm.sh`: tylko `bash -n`, `shellcheck` i `--dry-run`; PPA `deadsnakes` dla 24.04, adres
+  `cmdline-tools` Androida (z pamięci), `--home-link`, pakiety apt na świeżej VM, `install-deps` Playwright.
+- `tools/vm_oneliner.sh` (nie mój): przeczytany, nie uruchamiany; wada z punktu 1 pod komendą w §6 znaleziona
+  czytaniem.
 - Czas zimnego i ciepłego buildu na VM, rozmiary buildów `asan`/`vendored`/`libcxx`, rozmiar SDK i obrazów
   emulatora, czas bramki na 8 rdzeniach.
 - Czy `android-smoke.yml` działa na własnym runnerze.
