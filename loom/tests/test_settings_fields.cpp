@@ -498,7 +498,7 @@ TEST_SUITE("settings_fields") {
     // M1-K0 gave navigator_children_limit its reader (graph.navigate takes its children budget from it): it is no longer planned.
     // M1-K1a gave profile_detail_level (a reader of the prefix), context_receipt_store and context_receipt_max_bytes (build_messages) their readers.
     // M1-W1 gave composer_context_strip (web ContextStrip) and receipt_link (the line under a reply) their readers: 6 are planned now.
-    CHECK(planned >= 4);    // 11 before M1-K1a, 12 before navigator_layout got its reader (M1-W0 P4), 8 before the two readers of M1-W1
+    CHECK(planned >= 2);    // R67-fix gave secrets_in_chat and topbar_model_line their readers (theme, perspective_composition, android_back_exit_confirm stay planned and are listed under 'Planowane'); 4 before that, 11 before M1-K1a, 12 before navigator_layout got its reader (M1-W0 P4), 8 before the two readers of M1-W1
     for (const auto& f : doc["fields"])
       if (f["key"] == "navigator_children_limit") CHECK_FALSE(f.contains("status"));
     Json nostatus = doc;

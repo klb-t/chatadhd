@@ -1,5 +1,6 @@
 // OWNER: wave 2 net/chat/worker. Port of engine/chat_engine.py.
 #include "loom/chat_engine.h"
+#include "secret_filter.h"
 
 #include <algorithm>
 #include <cctype>
@@ -670,6 +671,9 @@ Result<ChatOptions> ChatOptions::from_json(const Json& j) {
     } else if (k == "intent_routing_method" || k == "lang" || k == "route_usage_confirmation" || k == "client_id") {
       // Read by the conversation window (chat_route.h) from the request itself; not a chat option.
       // client_id: the client that declared its devices (client_devices.h).
+    } else if (k == "secret_confirmation") {
+      if (!v.is_object() || !v.contains("approved") || !v["approved"].is_boolean()) return bad();
+      o.secret_confirmation = v;
     } else if (k == "usage_confirmation") {
       if (!v.is_object() || !v.contains("approved") || !v["approved"].is_boolean()) return bad();
       o.usage_confirmation = v;
@@ -708,6 +712,7 @@ Json ChatResult::to_json() const {
               {"cancelled", cancelled}};
   if (!context_trace.is_null()) out["context_trace"] = context_trace;
   if (usage_pending) out["usage_pending"] = *usage_pending;
+  if (secret_pending) out["secret_pending"] = *secret_pending;
   if (usage_notices.is_array() && !usage_notices.empty()) out["usage_notices"] = usage_notices;
   return out;
 }
@@ -1668,10 +1673,43 @@ std::optional<std::string> ChatEngine::last_reasoning() const {
   return last_reasoning_;
 }
 
+Result<std::optional<Json>> ChatEngine::secret_gate(std::string_view text, const ChatOptions& opts) const {
+  LOOM_TRY_ASSIGN(auto recipe, RuntimeProfile::load("chat_secrets", cfg_.path().parent_path()));
+  const Json mode_value = cfg_.get("secrets_in_chat", Json("ask"));
+  const std::string mode = mode_value.is_string() ? mode_value.get<std::string>() : std::string("ask");
+  std::vector<chat::secrets::Source> sources;
+  sources.push_back({"text", "", std::string(text)});
+  if (recipe.values().at("attachments").value("scan_text_files", true)) {
+    for (const auto& ref : opts.attachments) {
+      const auto located = locate_attachment(ref);
+      if (!located || !contains(text_exts(), lower_ext(located->second))) continue;
+      auto data = fsutil::read_file(located->first);
+      if (!data) continue;  // an unreadable file is said by the send itself (check_attachments / build_content)
+      sources.push_back({"file", located->second.filename().string(), utf8::repair(*data)});
+    }
+  }
+  Json store_values = Json::object();
+  for (const auto& key : secrets_.keys()) store_values[key] = secrets_.get(key, Json(nullptr));
+  const bool confirmed = opts.secret_confirmation && json::get_bool(*opts.secret_confirmation, "approved", false);
+  LOOM_TRY_ASSIGN(Json pending, chat::secrets::gate(recipe.values(), mode, sources, store_values, confirmed));
+  if (pending.is_null()) return std::optional<Json>();
+  return std::optional<Json>(std::move(pending));
+}
+
 Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& opts_in, const ChatCallbacks& cb,
                                     const CancelToken* cancel) {
   // A file that cannot go to the model (not found, a kind that is not read) is said before anything is stored or sent (P33).
   LOOM_TRY(check_attachments(opts_in.attachments));
+  // R67: a message that carries a secret is held or refused before anything is stored, routed or sent (the capi checks first, so the routing
+  // model does not read it either; this is the same check for the callers that reach send() directly).
+  {
+    LOOM_TRY_ASSIGN(auto held, secret_gate(text, opts_in));
+    if (held) {
+      ChatResult paused;
+      paused.secret_pending = *held;
+      return paused;
+    }
+  }
   std::string selector_conv;
   {
     std::lock_guard lk(mu_);

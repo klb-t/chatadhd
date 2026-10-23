@@ -98,6 +98,9 @@ struct ChatOptions {
   // {approved:bool, receipt_id, ref, operation_id} (all copied from the pending
   // result); approved:false cancels. Absent: first/ordinary admission.
   std::optional<Json> usage_confirmation;
+  // R67: the person's answer to the secret check (setting secrets_in_chat = ask): {approved: true} sends a message the check held. Without it
+  // a held message is neither stored nor sent (chat/secret_filter.h).
+  std::optional<Json> secret_confirmation;
   // Independent composition controls. Existing callers keep the legacy recipe.
   bool include_memory = true;
   bool include_graph_memory = true;
@@ -176,6 +179,9 @@ struct ChatResult {
   // Set when the shared usage guard paused the send (requires_confirmation or
   // an answered rejection). Nothing was sent; no assistant message exists.
   std::optional<Json> usage_pending;
+  // R67: the secret check held or refused the message (loom.chat_secret_pending/1). Nothing was stored or sent; the document names the rules and
+  // places that matched, never the values.
+  std::optional<Json> secret_pending;
   // P18: what the usage ledger only told while admitting the send (a spending limit with on_exceed notify): [{code, period, text: {lang: text}}].
   // Also kept in the assistant message's metadata (usage_notices). Null when there was nothing to tell.
   Json usage_notices = nullptr;
@@ -242,6 +248,8 @@ class ChatEngine {
   // would compile it (turn values of the carrier plus `extra_turn`, which is what is about to be added), its size is put to the shared usage guard
   // read only. {resource, bytes, baseline, ratio, growth_factor, asked, status, baseline_key, baseline_samples, decision} - `asked` is true when the
   // guard would ask the person (a jump of ten times or more over the baseline, or a spending limit); unknown numbers are null with a reason.
+  // R67: the check of an outgoing message (text and attached text files) for secrets, before anything is stored, routed or sent. nullopt: it may go on.
+  Result<std::optional<Json>> secret_gate(std::string_view text, const ChatOptions& opts = {}) const;
   Result<Json> context_guard(std::string_view conv_id, std::string_view text, const ChatOptions& opts = {}, const Json& extra_turn = Json::object());
 
  private:

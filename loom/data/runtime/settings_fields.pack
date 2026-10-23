@@ -4082,7 +4082,7 @@
         "group": "ui",
         "type": "string",
         "has_default": true,
-        "description": "How the top bar of the chat shows the conversation model: chip (preset: a chip beside the title) or second_line (a separate second line). Default: chip.",
+        "description": "How the top bar of the chat shows the conversation model: chip (preset: a chip beside the title) or second_line (a separate second line). The chip shows the model the next request will use (the scope chain's answer, the same call the request makes) and, beside it, the state of the last request sent from the window (answered / failed / none yet). Default: chip.",
         "values": [
           {
             "value": "chip",
@@ -4100,16 +4100,16 @@
           }
         ],
         "status": {
-          "state": "planned",
-          "by": "M1-W0",
-          "reader": "web top bar model chip",
+          "state": "implemented",
+          "by": "R67-fix",
+          "reader": "web ChatView model chip (resolved default model + connection state of the last request)",
           "reason": {
-            "pl": "Część aplikacji, która czyta to pole — chip modelu w górnym pasku — jeszcze nie powstała; do tego czasu wartość jest zapisywana, ale nic jej nie czyta.",
-            "en": "The part of the app that reads this field — the model chip of the top bar — is not built yet; until then the value is stored but nothing reads it."
+            "pl": "Chip modelu w górnym pasku istnieje (web ChatView): pokazuje model, którego użyje następne zapytanie, i stan ostatniego zapytania z tego okna.",
+            "en": "The model chip of the top bar exists (web ChatView): it shows the model the next request will use and the state of the last request sent from this window."
           },
           "today": {
-            "pl": "Dziś tej części ekranu jeszcze nie ma, więc wartość niczego nie zmienia.",
-            "en": "Today this part of the screen does not exist yet, so the value changes nothing."
+            "pl": "Dziś chip pokazuje model z tego samego rozstrzygnięcia, którego używa zapytanie, a obok punkt: ostatnie zapytanie udane, nieudane albo jeszcze żadnego. Wartość „druga linia” nie ma jeszcze osobnego układu: chip jest rysowany zawsze.",
+            "en": "Today the chip shows the model from the same resolution the request uses, with a dot beside it: the last request answered, failed or none yet. The value second_line has no separate layout yet: the chip is always drawn."
           }
         },
         "human": {
@@ -4270,7 +4270,7 @@
         "group": "safety",
         "type": "string",
         "has_default": true,
-        "description": "What happens to a credential (API key, token, password) typed into the conversation: never (preset: it is neither stored in the history nor sent to the model provider, the reply points to Settings; the model does not need your keys), ask (a confirmation each time) or allow (the sentence goes through as typed, with exactly the request bytes of an ordinary message). A setting, not a rule: you may change it. Default: never.",
+        "description": "What happens to a credential (API key, token, password) typed into the conversation or inside an attached text file, or equal to a value of your secrets store: ask (preset: the message is held, nothing is stored or sent until you answer 'send anyway'), never (it is neither stored in the history nor sent to the model provider, the reply points to Settings; the model does not need your keys) or allow (the message goes through as typed, with exactly the request bytes of an ordinary message). A setting, not a rule: you may change it. What counts as a secret and the words are data: runtime/chat_secrets.pack. Default: ask.",
         "values": [
           {
             "value": "never",
@@ -4295,16 +4295,16 @@
           }
         ],
         "status": {
-          "state": "planned",
-          "by": "M1-K1",
-          "reader": "kernel chat.send and input.route_intent secret filter",
+          "state": "implemented",
+          "by": "R67-fix",
+          "reader": "kernel chat.send (capi_chat) secret check: ChatEngine::secret_gate, recipe runtime/chat_secrets.pack",
           "reason": {
-            "pl": "Część aplikacji, która czyta to pole — filtr kluczy i haseł w wiadomościach i poleceniach — jeszcze nie powstała; do tego czasu wartość jest zapisywana, ale nic jej nie czyta.",
-            "en": "The part of the app that reads this field — the key-and-password filter of messages and commands — is not built yet; until then the value is stored but nothing reads it."
+            "pl": "Filtr w jądrze (ChatEngine::secret_gate) czyta to pole przed trasowaniem i wysyłką; wzorce, akcje i teksty są w paczce chat_secrets.",
+            "en": "The kernel filter (ChatEngine::secret_gate) reads this field before routing and sending; the patterns, the actions and the words are in the pack chat_secrets."
           },
           "today": {
-            "pl": "Dziś klucz lub hasło wpisane w rozmowie jest zapisywane w historii i wysyłane dostawcy modelu jak każda wiadomość.",
-            "en": "Today a key or password typed in a conversation is stored in the history and sent to the model provider like any message."
+            "pl": "Dziś wiadomość z kluczem lub hasłem (w treści, w załączonym pliku tekstowym albo równym zapisanemu sekretowi) jest wstrzymana: nic nie jest zapisane ani wysłane, dopóki nie odpowiesz „Wyślij mimo to” (ustawienie „pytaj”); przy „nigdy” zostaje odrzucona, przy „przepuszczaj” idzie jak każda.",
+            "en": "Today a message with a key or password (in the text, in an attached text file or equal to a saved secret) is held: nothing is stored or sent until you answer 'Send anyway' (setting ask); with never it is refused, with allow it goes like any message."
           }
         },
         "human": {
@@ -4313,12 +4313,12 @@
             "en": "Keys and passwords in the chat"
           },
           "why": {
-            "pl": "Co robić z kluczem lub hasłem wpisanym w rozmowie: nigdy nie zapisywać ani nie wysyłać (preset — model nie potrzebuje Twoich kluczy; ustawiasz je w Ustawieniach), pytać za każdym razem albo przepuszczać.",
-            "en": "What to do with a key or password typed into the chat: never store or send it (preset — the model does not need your keys; you set them in Settings), ask every time, or let it through."
+            "pl": "Co robić z kluczem lub hasłem wpisanym w rozmowie albo ukrytym w załączonym pliku: pytać za każdym razem (preset — nic nie wychodzi bez Twojego „tak”), nigdy nie zapisywać ani nie wysyłać (model nie potrzebuje Twoich kluczy; ustawiasz je w Ustawieniach) albo przepuszczać.",
+            "en": "What to do with a key or password typed into the chat or hidden in an attached file: ask every time (preset — nothing leaves without your yes), never store or send it (the model does not need your keys; you set them in Settings), or let it through."
           },
           "effect": {
-            "pl": "„Przepuszczaj” zapisuje wpis w historii i wysyła go dostawcy modelu jak każdą wiadomość.",
-            "en": "“Let through” stores the entry in the history and sends it to the model provider like any message."
+            "pl": "„Pytaj” wstrzymuje wiadomość i pyta „W wiadomości jest sekret — wysłać mimo to?”; „Przepuszczaj” zapisuje wpis w historii i wysyła go dostawcy modelu jak każdą wiadomość.",
+            "en": "“Ask” holds the message and asks “The message contains a secret — send it anyway?”; “Let through” stores the entry in the history and sends it to the model provider like any message."
           },
           "levels": [
             "person"

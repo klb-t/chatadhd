@@ -94,6 +94,23 @@ Json run_chat(LoomContext* ctx, const std::string& message_in, ChatOptions opts,
   // the chat path below with the very same request; a command is answered in the conversation instead.
   Json routed_issues = Json::array();
   {
+    // R67: the secret check comes first - before the routing model reads the sentence and before anything is stored. A held message is a state
+    // (the person answers it), a refused one is an answer; neither is an error and neither leaves a trace in the history.
+    auto held = ctx->rt->chat().secret_gate(message, opts);
+    if (!held) {
+      emit_chunk(cb, ud, Json{{"type", "error"}, {"request_id", request_id}, {"code", std::string(errc_name(held.error().code))}, {"message", held.error().message}}, 1);
+      return error_json(held.error());
+    }
+    if (*held) {
+      ChatResult paused;
+      paused.secret_pending = **held;
+      Json result = paused.to_json();
+      result["request_id"] = request_id;
+      emit_chunk(cb, ud, Json{{"type", "secret_pending"}, {"request_id", request_id}, {"secret_pending", **held}}, 1);
+      return result;
+    }
+  }
+  {
     auto routed = chat_route::handle(*ctx->rt, message, opts, request, [&](const std::string& conv_id, const std::string& user_message_id) {
       emit_chunk(cb, ud, Json{{"type", "start"}, {"request_id", request_id}, {"conv_id", conv_id}, {"user_message_id", user_message_id}}, 0);
     });
