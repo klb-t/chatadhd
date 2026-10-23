@@ -137,3 +137,24 @@ spec”** (świeża sesja na Sonnecie, co godzinę o :23; preset) czyta wpisy `n
 correct / add` (tekst właściciela dosłownie), odświeża stronę, robi commit i push na gałąź dokumentów; wpis dostaje
 `state` = applied (z komendą) albo escalated (z powodem) — nietypowe trafiają wiadomością do koordynatora. Czat zostaje
 do dyskusji. Odwrót: wyłączyć zadanie i opublikować stronę bez `capabilities`.
+
+### Kolejka „Czeka na Ciebie” na górze strony (R89 P2, 2026-10-23)
+
+Na górze strony, nad „W edycji i ostatnio zmienione”, jest sekcja **Czeka na Ciebie (N)**: każda pozycja, której parafraza jest
+w stanie `proposed`, a po połączeniu z bazą strony także każdy wpis `spec_inbox` w stanie `escalated` (wpis przekazany przez
+sekretarza koordynatorowi; pozycja i wpis są w jednym wierszu). Wiersz ma alias i tytuł, parafrazę zwiniętą do dwóch wierszy
+(„więcej”), **te same trzy przyciski co blok pozycji** (Zatwierdzam parafrazę / Popraw swoimi słowami / Uwaga; jeden kod
+zapisu, jedno kliknięcie to jeden dokument `spec_inbox` o tym samym kształcie) i linię **„Bez Twojej odpowiedzi: …”**.
+Tekst tej linii bierze się z pola `understanding.if_silent`, a gdy go nie ma, z presetu w generatorze (`QUEUE_PRESET`: „przyjmuję
+wstępnie i jadę dalej; odwrót tani (R75)”; dla kosztu odwrotu `high` bez własnego tekstu: wariant bez słów „odwrót tani”).
+Kolejność to preset w danych: najpierw pozycje z `understanding.cost_to_reverse` = `high` (brak pola = zwykły koszt), potem data
+parafrazy malejąco, przy tej samej dacie wyższy numer pierwszy; notka o tym stoi w nagłówku sekcji. Pola ustawia
+`spec.py propose|correct --if-silent TEKST --cost-to-reverse NAPIS` (wartości otwarte, dowolny napis; brak flagi zostawia
+poprzednią wartość, pusty napis usuwa pole), a pierwszeństwo kosztu zmienia `spec.py html --queue-first high ...` (bez
+wartości = bez pierwszeństwa). **Zmienione od ostatniej wizyty:** strona zapamiętuje czas wizyty w `localStorage` tej
+przeglądarki (wygoda; bez pamięci przeglądarki działa tak samo, tylko nic nie oznacza), pozycje z dowolną datą późniejszą
+dostają znacznik „nowe”, a liczba jest w nagłówku (data bez godziny liczy się jako koniec dnia, więc zmiana z dnia wizyty też
+jest oznaczona). Wyszukiwarka przeszukuje także kolejkę; sekcja znika, gdy nic nie czeka. Testy: `tools/tests/test_spec_html.py`
+(w tym strona narysowana w Chromium na 400 px, pomijana, gdy Playwrighta nie ma). Odwrót: usunąć sekcję z `spec_html.py`
+(pola `if_silent` i `cost_to_reverse` są opcjonalne i nic poza stroną ich nie czyta).
+
