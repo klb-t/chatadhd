@@ -5,8 +5,8 @@
  "sources": {
   "owner": {
    "path": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
-   "sha256": "c62c41f8643cb5d0214135b0a78253f52629a78fa977d3ef4e36a8de20fe32d4",
-   "lines": 904
+   "sha256": "70e1b4243eba6107b5e0ddea2b4b1657a2d32cb6fa7c39511f30a4fee70cfae0",
+   "lines": 910
   },
   "slowa": {
    "path": "docs/architecture/SLOWA_WLASCICIELA_2026-10-16.md",
@@ -5190,6 +5190,58 @@
    ]
   },
   {
+   "id": "s_e4ab827703b7",
+   "aliases": [
+    "R90"
+   ],
+   "kind": "requirement",
+   "title": "VM na GCP: Claude Code uruchomiony (Remote Control); maszyna ma gościć wszystkie projekty (nie tylko ChatADHD: watchdog, ageds?); koordynator administruje maszyną; najpierw rekonesans; interfejs współpracy „na bogato” (narzędzia, rutyny/makra/szablony) — kilku mocnych agentów ma to przemyśleć analizując jego styl; prompt-wprowadzenie dla sesji na GCP; auto-wyłączanie po 30 min bezczynności",
+   "date": "2026-10-23",
+   "theme": "owner_requirements",
+   "theme_inferred": false,
+   "understanding": {
+    "state": "none"
+   },
+   "quotes": [
+    {
+     "text": "za pierwszym razem coś przypadkiem nacisnąłem i mi wyszło to za drugim razem, co teraz widzisz. ale ogarnąłem chyba,  sesja widoczna przez apkę tylko tak sobie teraz myślę bo tam miałeś deployment wszystkich projektów przeprowadzić A chyba tylko pod Czata ADHD masz środowisko skonfigurowane,czy ogarniesz stamtąd wszystko? Masz podgląd na wszystkie sesje, nie? go oprócz czarta trzeba by jeszcze watch doga postawić w końcu. nie pamiętam czy ageds też ma serwer? A w ogóle przed tym wszystkim, to tam trzeba na tej instancji rekonesans zrobić, sprawdzić jakie śmieci zostały z niedokończonych instalacji, i tak jak mówiłem - administrujesz tamtą maszyną. ten nasz Interfejs do komunikacji to przeglądarkowy, nie? to go trzeba na bogato zrobić, wyeksponować wszystkie narzędzia, może jakieś rutyny makra szablony czy jak to zwał wprowadzić dla określonych czynności, przykład: przy starcie nowego podwykonawcy całą filozofię mu zapodać do kontekstu. przypominam przykład to jest Pierwsze co mi przyszło do głowy ty jesteś mądrzejszy , Ty Wymyśl lepiej. na samo przekminienie tego interfejsu odpal mocnego agenta. kilku, niech dyskutują, analizując mój styl pracy Niech pomyślą co mi się przyda.\nWrzuć prompt - wprowadzenie do tej sesji na gcp, ogarnij wszystko, jak uznasz że trzeba to odpal równoległe. i pamiętaj że tam jest ustawione że po pół godzinie bezczynności się zamyka i nie wiem czy chodzący Code to blokuje, Zadbaj o te wszystkie rzeczy",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:891-892",
+     "ref": null,
+     "attr": [],
+     "lead": null,
+     "secondary": false
+    }
+   ],
+   "sense": null,
+   "summary": null,
+   "restatement": [
+    {
+     "text": "(17:3x UTC, zrzut: Claude Code v2.1.309 na VM, Opus 5.5, Claude Max, ~/chatadhd, tryb auto; sesja widoczna w aplikacji po .) Seria: (1) VM miała gościć WSZYSTKIE jego projekty, nie tylko ChatADHD — czy ogarnę stamtąd wszystko; czy widzę wszystkie sesje; poza ChatADHD postawić „watchdoga”; czy „ageds” ma serwer (do sprawdzenia w repozytoriach). (2) Najpierw rekonesans instancji: śmieci po niedokończonych instalacjach; koordynator administruje tą maszyną. (3) Interfejs współpracy (przeglądarkowy) „na bogato”: wyeksponować wszystkie narzędzia, rutyny/makra/szablony dla czynności (jego przykład: start nowego podwykonawcy = cała filozofia do kontekstu) — przykład, nie wymóg; przemyśleć to ma kilku mocnych agentów w dyskusji, analizując jego styl pracy. (4) Prompt-wprowadzenie dla sesji na GCP; ogarnąć wszystko, równolegle gdy trzeba. (5) VM wyłącza się po 30 min bezczynności — sprawdzić, czy działający Claude Code to blokuje; zadbać.",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:894"
+    }
+   ],
+   "commentary": [],
+   "status": null,
+   "gap_text": null,
+   "evidence": [],
+   "next_step": null,
+   "refs": [],
+   "supersedes": [],
+   "superseded_by": [],
+   "supersession_notes": [],
+   "tags": [],
+   "heading_note": "owner, 2026-10-23",
+   "sources": [
+    {
+     "role": "owner",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:890-894"
+    }
+   ],
+   "files": [
+    "owner"
+   ]
+  },
+  {
    "id": "s_18ec73967a7b",
    "aliases": [
     "owner:decision-rebuild-don-t-recover"
@@ -5205,7 +5257,7 @@
    "quotes": [
     {
      "text": "\"nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane\"",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:891",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:897",
      "ref": null,
      "attr": [],
      "lead": null,
@@ -5217,7 +5269,7 @@
    "restatement": [
     {
      "text": "Recovered versions (`history/chatadhd_v0.8.3`, `history/chatadhd_v0.9.0`) and\nthe historical report are sources of requirements, ideas and data assets\n(e.g. `film_structure.json`), and real ground truth for self-discovery tests —\nnot code to merge. Everything is rebuilt in Loom with tests.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:893-896"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:899-902"
     }
    ],
    "commentary": [],
@@ -5234,7 +5286,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:890-896"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:896-902"
     }
    ],
    "files": [
@@ -5260,7 +5312,7 @@
    "restatement": [
     {
      "text": "`workbench_mockup_2026-09-26.webp`: dockable/floating panels (conversation\nlist, active conversation, knowledge graph with active context window, project\nstructure with dimmed high-confidence auto-completable nodes, artifact views\nfor music/video with timeline + storyboard, video player, execution\nenvironment with agent), multi-format ingestion, Loom SDK at the centre.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:899-903"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:905-909"
     }
    ],
    "commentary": [],
@@ -5277,7 +5329,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:898-903"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:904-909"
     }
    ],
    "files": [
