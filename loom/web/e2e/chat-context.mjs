@@ -224,7 +224,7 @@ try {
   // R67: the record is read as rows of words; the raw JSON sits behind "Szczegóły techniczne" and is not visible by default
   assert.equal(await page.getByTestId("context-trace-json").first().isVisible(), false, "no raw JSON visible by default");
   assert.ok((await page.getByTestId("context-trace-rows").first().locator("li").count()) >= 1, "the record is shown as rows of words");
-  assert.deepEqual(JSON.parse(await page.getByTestId("context-trace-json").first().innerText()), trace, "inspector displays actual recorded trace");
+  assert.deepEqual(JSON.parse(await page.getByTestId("context-trace-json").first().textContent()), trace, "inspector displays actual recorded trace");
 
   // Independent controls restore legacy sources without retaining the enabled
   // knowledge query; explicit recording still works for that legacy request.

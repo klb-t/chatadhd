@@ -47,9 +47,9 @@ export default function DiagnosticsSheet({ convId }: { convId: string | null }) 
       <ul className="diag-list">
         {state.rows.map(r => (
           <li key={r.id} data-testid="diag-row">
-            <p>{t("diag_row", { role: r.role, model: r.model || "-", id: r.id })}</p>
-            {r.sha !== null && <p data-testid="diag-sha">{t("diag_sha", { sha: r.sha })}</p>}
-            <details><summary>{t("diag_details")}</summary>
+            <p data-audit-skip="1">{t("diag_row", { role: r.role, model: r.model || "-", id: r.id })}</p>
+            {r.sha !== null && <p data-testid="diag-sha" data-audit-skip="1">{t("diag_sha", { sha: r.sha })}</p>}
+            <details data-audit-skip="1"><summary>{t("diag_details")}</summary>
               <pre>{JSON.stringify({ context_trace: r.context, route_trace: r.route }, null, 2)}</pre>
             </details>
           </li>))}

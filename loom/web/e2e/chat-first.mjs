@@ -7,6 +7,7 @@ import path from "node:path";
 import net from "node:net";
 import assert from "node:assert/strict";
 import { fileURLToPath } from "node:url";
+import { auditPage } from "./m1-audit.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const LOOM = path.resolve(here, "../..");
@@ -225,6 +226,12 @@ try {
       await page.getByTestId("shell-menu-toggle").click();
       assert.match(await page.getByTestId("shell-menu-workshop").innerText(), /Warsztat/);
       assert.deepEqual(await page.getByRole("menuitem").allInnerTexts(), ["Graf", "Ustawienia", "Ty", "Ta rozmowa w grafie", "Widoki i okna", "Analiza w tle", "Diagnostyka", "Warsztat (narzędzia zaawansowane)"]);
+      // R67: the text audit of Diagnostyka (the explanatory words are Polish; its ids, checksums and raw traces are marked as technical detail)
+      await page.getByTestId("shell-menu-diagnostics").click();
+      await page.locator("[data-testid=diagnostics]").waitFor();
+      assert.match(await page.getByTestId("sheet-diagnostics").locator("h2").innerText(), /Diagnostyka/);
+      const bad = (await auditPage(page)).filter(b => !String(b.where).includes("shell-title"));   // the title of the conversation is the person's own first sentence, content and not words of the app
+      assert.deepEqual(bad, [], "the Polish Diagnostyka sheet shows no developer text: " + JSON.stringify(bad));
       await api("PUT", "/api/config/ui_language", { value: "auto" });
     });
     await context.close();
