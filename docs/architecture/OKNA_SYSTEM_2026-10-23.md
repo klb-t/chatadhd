@@ -7,16 +7,20 @@ Pakiet G4-windows-system-design (Fable, tylko projekt; żadnego kodu produktu). 
 oznaczone jako takie. Każda konkretna wartość, lista, nazwa i kolejność w tym dokumencie jest **przykładem** mechanizmu albo
 presetem w danych (R58/R59), nigdy regułą.
 
-Kod czytany tylko-do-odczytu w `/home/user/wt/m1d0` (stan gałęzi `claude/m1-w0`); odwołania plik:linia odnoszą się do niego.
+Kod czytany tylko-do-odczytu w `/home/user/wt/m1d0` (stan gałęzi `claude/m1-w0` z 2026-10-23; zliczenia plików e2e sprawdzone
+ponownie 2026-10-23 na commicie `270a065f`); odwołania plik:linia odnoszą się do niego. Każde „dziś” w tym dokumencie jest
+**obserwacją z tej daty** (z plikiem:linią albo oznaczone „niezweryfikowane”), nigdy ograniczeniem.
 
 ---
 
 ## 0. Streszczenie dla właściciela (prostymi słowami)
 
-1. Okno to jednostka interfejsu: czat, graf, lista rozmów, pamięć, import, ustawienia, „Ty”, artefakt — każde jest oknem.
+1. Okno to jednostka interfejsu: czat, graf, lista rozmów, pamięć, import, ustawienia, „Ty”, artefakt — każde jest oknem
+   (decyzja projektu, §12 D1 i D4; wymienione rodzaje to przykłady, lista jest otwarta).
 2. Okno można zadokować przy krawędzi, odpiąć jako pływające, zmaksymalizować, zwinąć albo włożyć do grupy zakładek.
 3. „Zwykła aplikacja czatu” to **nie** osobny tryb: to zapisany układ „Czat” = jedno zmaksymalizowane okno czatu (lista rozmów
-   jako zwinięta szuflada). Dzisiejszy „Warsztat” to drugi zapisany układ tego samego systemu.
+   jako zwinięta szuflada). Dzisiejszy „Warsztat” to drugi zapisany układ tego samego systemu (decyzja projektu, §12 D3, D5 i D9;
+   „Czat” i „Warsztat” są presetami w danych, nie niezmiennikami).
 4. Na telefonie preset to stos zmaksymalizowanych okien z przełącznikiem; Wstecz wraca do poprzedniego okna, na końcu do czatu.
    Pływanie i dokowanie są dostępne także na telefonie — jeśli mają mało sensu (np. dwa okna po 180 px), aplikacja tylko
    zapyta „czy celowo?” i pozwoli odpowiedzieć „nie pytaj więcej”.
@@ -188,7 +192,11 @@ z proporcją, liść = grupa 1..n okien). Uzasadnienie: (a) obejmuje jedno zmaks
 ```
 
 Degeneracje obsługiwane, nie odrzucane (R58): `ratio` 0 lub 1 (jedna strona niewidoczna → podpowiedź „okno X ma 0 px, czy celowo?”),
-liść bez okien (drzewo się zwija przy zapisie, w pamięci może trwać), 40 liści na telefonie (działa; podpowiedź).
+liść bez okien (zwijanie pustego liścia to preset `collapse_empty_leaves` ∈ {`emptied` — [preset] przy zapisie znika liść, który
+opustoszał po zamknięciu ostatniego okna; pusty liść utworzony jawnie przez osobę (pole liścia `born: explicit`, np. „nowa grupa
+zakładek”) zostaje | `all` | `none`}; zwinięcie nie jest ciche — niewiążąca podpowiedź `empty_leaf_collapsed` [przykład tekstu]:
+„Pusty panel został usunięty przy zapisie. [Przywróć] [Zostaw] [Nie pytaj więcej]”; w pamięci pusty liść może trwać),
+40 liści na telefonie (silnik ma je przyjąć bez odrzucania — sprawdzi to P1 od W0, dziś niezbudowane; podpowiedź `dock_narrow`).
 
 ### 2.3 Rejestr rodzajów okien — dane
 
@@ -224,18 +232,19 @@ Dziś lista paneli to kod (`shell/panels.ts:3-4`, 15 id), menu to dane (`layouts
   { "id": "perspectives",      "label": {"pl": "Perspektywy"},           "component": "PerspectivesPanel", "params": ["perspective"],             "status": "present" },
   { "id": "view_engine",       "label": {"pl": "Silnik widoku"},         "component": "ViewEnginePanel",   "params": ["view"],                    "status": "present" },
   { "id": "project_structure", "label": {"pl": "Struktura projektu"},    "component": null,                "params": ["root"],                    "status": "planned", "reason": {"pl": "z makiety UI12: drzewo z przyciemnionymi węzłami do uzupełnienia (UI11)"} },
-  { "id": "execution_env",     "label": {"pl": "Środowisko wykonania"},  "component": null,                "params": ["environment"],             "status": "planned", "reason": {"pl": "z makiety UI12; środowiska są węzłami (environments.h), terminal w oknie nie istnieje"} },
+  { "id": "execution_env",     "label": {"pl": "Środowisko wykonania"},  "component": null,                "params": ["environment"],             "status": "planned", "reason": {"pl": "z makiety UI12; środowiska są węzłami (environments.h); obserwacja 2026-10-23: w `loom/web/src` nie ma okna terminala (grep `terminal|xterm` — tylko zmienna logiczna w `ChatView.tsx:681-756`)"} },
   { "id": "media_player",      "label": {"pl": "Odtwarzacz"},            "component": null,                "params": ["artifact", "position"],    "status": "planned", "reason": {"pl": "z makiety UI12 (wideo/muzyka); P39 multimodal to projekt"} },
-  { "id": "external",          "label": {"pl": "Strona zewnętrzna"},     "component": "ExternalFrame",     "params": ["url", "sandbox"],          "status": "planned", "reason": {"pl": "R60: inni odbiorcy; iframe z polityką — decyzja bezpieczeństwa osobno"} }
+  { "id": "external",          "label": {"pl": "Strona zewnętrzna"},     "component": "ExternalFrame",     "params": ["url", "sandbox"],          "status": "planned", "reason": {"pl": "R60: inni odbiorcy; iframe z polityką — decyzja bezpieczeństwa osobno"} },
+  { "id": "connection",        "label": {"pl": "Połączenie"},           "component": null,                "params": [],                          "status": "planned", "reason": {"pl": "dostępne, gdy istnieje odpowiednik na stronie; obserwacja 2026-10-23: ekran jest natywną aktywnością Androida (ConnectionActivity.kt, MainActivity.kt:105,190, AndroidManifest.xml:47), nie stroną; z menu ⋮ przez LoomBridge.openConnection"} }
 ],
   "not_window": [
-  { "id": "connection", "label": {"pl": "Połączenie"}, "reason": {"pl": "natywny ekran Androida (ConnectionActivity), nie strona; z menu ⋮ przez LoomBridge.openConnection"} },
-  { "id": "composer_menu", "reason": {"pl": "menu „+” jest częścią okna czatu (composer-menu.ts), nie oknem"} }
+  { "id": "composer_menu", "reason": {"pl": "obserwacja 2026-10-23: menu „+” jest częścią okna czatu (composer-menu.ts), nie osobnym oknem; nakładka może zarejestrować je jako rodzaj"} }
 ]}
 ```
 
 Zasady rejestru [decyzja]: (1) każdy komponent montowany dziś przez `App.tsx` lub `ChatShell.tsx` występuje w rejestrze dokładnie
-raz — test danych w stylu `test_chat_coverage` (wszystko na liście albo w `not_window` z powodem, nic pominięte po cichu);
+raz — test danych w stylu `test_chat_coverage` (wszystko na liście albo w `not_window` z powodem, nic pominięte po cichu); `not_window` jest dla części innych okien —
+brak odpowiednika na stronie dziś to `planned` z powodem „dostępne, gdy istnieje odpowiednik na stronie”, nie `not_window`;
 (2) `status: planned` z `reason` jest widoczny w przełączniku i menu jako pozycja wyszarzona z powodem (tak jak dziś
 `layout_mode=windows` w arkuszu „Widoki”, `ChatShell.tsx:74-76`), nigdy ukryty (R60); (3) nakładka (overlay pack) może dodać rodzaj.
 
@@ -272,8 +281,8 @@ rozwinięcie uchwytu na telefonie to dzisiejsza szuflada (`.shell-drawer`, `shel
 | nazwane układy (`origin: saved`) | ustawienie poziomu `person` (`window_layouts`, lista dokumentów `loom.window_layout/2`) — synchronizuje się z osobą między urządzeniami | brak |
 | presety | dane w repo (`layouts.json` v2), nadpisywalne nakładką | `layouts.json` v1 (2 układy) |
 | ostatni układ („ostatni własny”, `origin: derived`) | ustawienie poziomu `installation` (`window_layout_last`) + kopia w `localStorage` `loom.shell.last.v2` jako szybki start/offline | `loom.shell.last.v1` tylko w `localStorage` (`start-view.ts:44-55`) |
-| aktywny układ per klasa urządzenia | `window_layout_active` z kluczem klasy: `{ "phone": "czat", "desktop": "warsztat" }` (poziom `person`), nadpisanie per urządzenie na poziomie `installation` | brak (jeden `layout_mode`) |
-| dziennik zmian układu (cofnij/ponów) | `window_layout_journal`: pierścień operacji odwracalnych (preset długości 50 — liczba w danych), poziom `installation`; „cofnij układ” = odwrócenie ostatniej | brak |
+| aktywny układ per klasa urządzenia | `window_layout_active` z kluczem klasy: `{ "phone": "czat", "desktop": "warsztat" }` [przykład wartości] (poziom `person`), nadpisanie per urządzenie na poziomie `installation` (decyzja projektu, §12 D19) | brak (jeden `layout_mode`) |
+| dziennik zmian układu (cofnij/ponów) | `window_layout_journal`: pierścień operacji odwracalnych (preset długości 50 — liczba w danych), poziom `installation` (decyzja projektu, §12 D19); „cofnij układ” = odwrócenie ostatniej | brak |
 | potwierdzenia podpowiedzi R58 („nie pytaj następnym razem”) | `advisory_ack` (poziom `person`), klucz = id podpowiedzi; mechanizm wspólny z G3 (silnik widoku) — dziś nie istnieje (spec R58: „no remembered acknowledgement … exists”) | brak |
 
 Jednostki prostokątów: `fraction` obszaru roboczego (preset) albo `px`; zapis w `fraction` przenosi układ między ekranami,
@@ -342,7 +351,8 @@ Odwrót: §12 D6.
 ### 4.1 Preset telefonu: stos zmaksymalizowanych okien z przełącznikiem
 
 [decyzja] `device_class = phone` → układ aktywny `czat`; każde otwarcie okna (`window.open` bez `placement`) domyślnie
-`placement: "maximize"` → okno ląduje na stosie jako kolejne zmaksymalizowane; **przełącznik** (`switcher.style`) to dane:
+`placement: "maximize"` → okno ląduje na stosie jako kolejne zmaksymalizowane (preset klasy `phone` w danych; odwrót: §12 D18);
+**przełącznik** (`switcher.style`) to dane:
 
 | styl | wygląd [przykłady] |
 |---|---|
@@ -356,9 +366,10 @@ Wszystkie style są dostępne na każdej klasie; preset per klasa w danych (`dev
 
 ### 4.2 Wstecz na Androidzie i w przeglądarce
 
-Dziś: `LayerStack` (`history.ts`) trzyma jeden wpis historii na warstwę; `window.__loomBack()` (`MainActivity.kt:198-218`,
-`BACK_JS` :366) zamyka wierzchnią warstwę, a u korzenia pyta wg `android_back_exit_confirm`. Okna muszą się w to wpiąć bez
-drugiego mechanizmu.
+Dziś (obserwacja 2026-10-23): `LayerStack` (`history.ts`) trzyma jeden wpis historii na warstwę; `window.__loomBack()`
+(`MainActivity.kt:198-218`, `BACK_JS` :366) zamyka wierzchnią warstwę, a u korzenia pyta wg `android_back_exit_confirm`.
+[decyzja] Okna wpinają się w ten sam `LayerStack`, bez drugiego mechanizmu historii i Wstecz (jeden mechanizm do testowania;
+odwrót: §12 D20).
 
 [decyzja] Przełącznik prowadzi **dziennik odwiedzin** (`visits: ["w_chat","w_nav","w_settings"]`). Aktywacja okna B z A pcha na
 `LayerStack` wpis `visit:<n>` z `close = aktywuj poprzednie`. Wstecz: najpierw warstwy (menu, karta), potem odwiedziny okien
@@ -380,7 +391,8 @@ generatywnie (§10 P10). Escape na klawiaturze = Wstecz (bez zmian). Odwrót: §
 
 Desktop preset `czat`: to samo co telefon, lecz `w_list` `collapsed: false` (kolumna) — czyli wygląd ChatGPT/Claude web.
 Układ „warsztat” (makieta) jako preset desktopu/tabletu: lista 0.22 | [czat 0.7 / struktura projektu + środowisko] |
-artefakt 0.3, graf pływający 0.46×0.40 nad czatem. Osoba może na telefonie wybrać `warsztat` — działa.
+artefakt 0.3, graf pływający 0.46×0.40 nad czatem. Osoba może na telefonie wybrać `warsztat` — układ jest zaprojektowany tak, by otwierał się na każdej klasie urządzenia (nic go nie
+wyłącza); zacznie działać po W3/W4, dziś (2026-10-23) nie jest zbudowany, a jego użyteczność na 390 px jest niezmierzona.
 
 ### 4.4 Pływanie i dokowanie na telefonie: dostępne, z podpowiedzią
 
@@ -395,7 +407,8 @@ razem” zapisanym w `advisory_ack`) — rodzaje [przykłady, każdy z id i teks
 | `many_windows` | liczba zamontowanych okien > `mounted_soft` (preset telefonu 6, w danych; §8.3) | „8 okien naraz na telefonie zużywa pamięć. [Odstaw niewidoczne] [Zostaw]” |
 | `coupling_cycle` | pętla zależności nie zbiega (§5) | „Zależności okien tworzą pętlę. [Rozłącz ostatnią] [Zostaw]” |
 
-Zasada: podpowiedź **nigdy nie cofa** operacji sama; przyciski są akcjami, „Zostaw” to zawsze pierwsza.
+Zasada: podpowiedź **nigdy nie cofa** operacji sama; przyciski są akcjami; kolejność przycisków to [preset w danych `advisory_button_order`]: „Zostaw” jest domyślnie pierwszy,
+każdą inną kolejność można ustawić.
 
 ---
 
@@ -435,8 +448,10 @@ poprawna (dwa okna wzajemnie równe) — R58: obsłużone, nie zabronione.
 
 ### 5.3 Interfejs sprzężenia
 
-Przy parametrze w pasku okna ikona łańcucha (🔗 wspólny / ⛓ niezależny / ↔ powiązany) — gest: stuknięcie zmienia tryb w kółko,
-długie naciśnięcie otwiera wybór zależności; zdanie: „połącz zakres czasu tego grafu z tamtym, przesunięty o dzień” (§6).
+[przykład, w danych] Przy parametrze w pasku okna ikona łańcucha (przykładowy zestaw: 🔗 wspólny / ⛓ niezależny / ↔ powiązany) —
+przykładowy gest: stuknięcie zmienia tryb w kółko (kolejność jest przykładem), długie naciśnięcie otwiera wybór zależności;
+przykładowe zdanie: „połącz zakres czasu tego grafu z tamtym, przesunięty o dzień” (§6). Ikony, kolejność, gest i zdanie to
+dane (`keymap`, `gestures`, `chat_coverage.pack`), nie reguła; ta sama akcja ma wiele dróg (§6).
 Migracja `view-state.ts`: `coupled` → `shared/conversation`, `independent` → `independent/value` (test migracji w §10 P12).
 
 ---
@@ -484,9 +499,9 @@ przykładowe zdanie trafia do akcji przez router). Zalążek [przykłady PL; EN 
 
 ### 6.3 Menu, gesty, klawiatura — dane (`keymap`), nie kod
 
-- **Menu ⋮** (`layouts.json` → `menu`): pozycja „Okna” (arkusz przełącznika) i „Układ ▾” (zapisane, zapisz, cofnij, reset).
-  Pasek tytułowy okna: ⤢ (maksymalizuj/przywróć), ⊟ (zwiń), × (zamknij), … (menu okna: dokuj do…, odepnij, zakładka, sprzężenia,
-  styl, nazwij).
+- **Menu ⋮** [przykład, zalążek w danych] (`layouts.json` → `menu`): pozycja „Okna” (arkusz przełącznika) i „Układ ▾” (zapisane,
+  zapisz, cofnij, reset). Pasek tytułowy okna [przykład ikon i pozycji]: ⤢ (maksymalizuj/przywróć), ⊟ (zwiń), × (zamknij),
+  … (menu okna: dokuj do…, odepnij, zakładka, sprzężenia, styl, nazwij). Zestaw ikon i pozycji to dane, lista jest otwarta.
 - **Gesty** [przykłady, w danych `gestures`]: przeciągnięcie paska tytułowego → odpięcie (`float`) i strefy upuszczenia przy
   krawędziach (`dock side`) i nad zakładkami innego liścia (`tab`); długie naciśnięcie paska → menu okna; podwójne stuknięcie
   paska → maksymalizuj/przywróć; przeciągnięcie krawędzi podziału → `ratio`; uchwyt w rogu → `resize`; szczypnięcie w oknie
@@ -499,10 +514,11 @@ przykładowe zdanie trafia do akcji przez router). Zalążek [przykłady PL; EN 
 
 - Każde okno: `role="region"` z `aria-label` = tytuł z węzła; okno zmaksymalizowane nad układem: `role="dialog"` + `aria-modal`
   i `inert` na reszcie (jak dziś `.drawer`, `App.tsx:223`, `inertAttr`).
-- Kolejność fokusu: drzewo doków w porządku czytania (a przed b), potem pływające po `z` rosnąco, potem uchwyty półki;
-  `Ctrl+Tab` idzie po tej kolejności. Przełącznik = `role="tablist"`, okna = `tabpanel`.
-- Cele dotyku ≥ 44×44 px dla przycisków paska i uchwytów (jak `Disclosure`, 44 px); krawędź podziału ma 24 px strefę chwytu
-  (niewidoczną), cel 44 px na uchwycie.
+- Kolejność fokusu [preset w danych `focus_order`]: drzewo doków w porządku czytania (a przed b), potem pływające po `z` rosnąco,
+  potem uchwyty półki; `Ctrl+Tab` idzie po tej kolejności. Inną kolejność (np. pływające najpierw) ustawia się w danych. Przełącznik = `role="tablist"`, okna = `tabpanel`.
+- Cele dotyku [preset w danych `touch_target_px`]: ≥ 44×44 px dla przycisków paska i uchwytów (wartość jak dziś w
+  `shell.css:5,32` — obserwacja 2026-10-23); krawędź podziału ma [preset `split_grip_px`] 24 px strefę chwytu (niewidoczną), cel
+  44 px na uchwycie. Mniejsze wartości działają i wywołują tylko niewiążącą podpowiedź („cel dotyku poniżej 44 px — czy celowo?”).
 - Czytnik ekranu: zmiana aktywnego okna ogłaszana (`aria-live="polite"`: „Okno: Graf”); podpowiedzi R58 w `role="status"`.
 
 ---
@@ -532,8 +548,12 @@ r1/r2, librechat-0.8.8, nextchat-2.16.1, loom-default r1/r2); jeden renderer.
 [decyzja] Dziedziczenie: `window.profile` → `layout.profile` → profil osoby → `loom-default`. Profil działa przez zmienne CSS
 na korzeniu okna (dziś `profileStyle(primaryProfile)` na `.app-root`, `App.tsx:264`), więc dwa okna czatu mogą mieć dwa style
 naraz (porównanie „jak w ChatGPT” / „jak w Claude” obok siebie — przykład użycia, nie wymóg). Pola profilu, które dotyczą
-układu (`sidebar.side/width`), stają się **sugestią** dla układu: zastosowanie profilu per układ może przestawić dok listy
-rozmów (`layout.apply` wie o tym i zapisuje odwrotność); per okno ich nie czyta.
+układu (`sidebar.side/width`), są **sugestią**, a to, gdzie się je stosuje, ustawia `profile_layout_fields` [przykłady wartości]:
+`layout` ([preset] stosuje je zastosowanie profilu do układu; może to przestawić dok listy rozmów — `layout.apply` wie o tym
+i zapisuje odwrotność) | `window` (stosuje je także profil przypisany do okna: dotyczą podziału, w którym okno siedzi) | `off`
+(nikt ich nie czyta). Gdy zastosowanie — w trybie `layout` albo `window` — przestawiłoby dok, czyli zmieniło `side` lub
+`ratio` podziału ustawionego ręcznie, pokazuje się niewiążąca podpowiedź `profile_moves_dock` [przykład tekstu]: „Styl «jak w
+ChatGPT» chce listy rozmów po lewej, a jest po prawej. [Przestaw] [Zostaw] [Nie pytaj więcej]”; wybór ląduje w `advisory_ack`.
 
 UI17: profil nie zawiera i nie dotyka `model`, uprawnień, prywatności ani doboru kontekstu — test (W9): zmiana profilu na oknie
 i na układzie nie zmienia żadnego pola żądania (`workflow-snapshot.ts:22` już mówi: „no request/model settings are captured implicitly”).
@@ -577,9 +597,12 @@ UI14: profile „archiwalne” (wersja z datą) to kolejne dokumenty tego samego
 
 ### 8.3 Wydajność na WebView: wiele okien, pamięć
 
-[odczyt] Każde okno to zamontowane poddrzewo React; `GraphNavigator` z mapą (silnik widoku, canvas) jest najcięższy;
-WebView na telefonie ma mniej pamięci niż desktop, a `performance.memory` jest tylko w Chrome (obserwacja z datą, nie reguła).
-[decyzja] Polityka montowania to ustawienie `window_keep_mounted` [przykłady]: `visible` (preset telefonu: okna niewidoczne —
+[odczyt] Każde okno to zamontowane poddrzewo React; `GraphNavigator` z mapą (silnik widoku, canvas) wydaje mi się najcięższy
+(odczyt kodu, niezmierzony). Ile pamięci zajmuje wiele okien w WebView telefonu i czy `performance.memory` zwraca tam użyteczne
+liczby — **niezweryfikowane (stan 2026-10-23, brak pomiaru), do pomiaru w W10**; z pamięci: pole jest niestandardowe i znane
+z przeglądarek na Chromium, ale strona MDN nie dała się pobrać 2026-10-23 (odmowa proxy 403), więc to nie jest źródło.
+[decyzja] Polityka montowania to ustawienie `window_keep_mounted` [przykłady]: `visible` (preset telefonu, wybrany z ostrożności,
+a nie ze zmierzonego faktu: okna niewidoczne —
 odstawione, zwinięte, nieaktywne zakładki — są odmontowane, ich stan serializowany w układzie; powrót = ponowne zamontowanie z
 tego stanu) | `all` (preset desktopu) | `recent:<n>`. Nie ma górnej liczby okien; `many_windows` to podpowiedź (§4.4).
 Pomiar w pakiecie W10 na emulatorze S2: czas przełączenia okna i RSS WebView dla 1/4/8/16 okien, wynik do `INDEX.md` jako
@@ -588,12 +611,12 @@ odmontowaniu — każdy rodzaj deklaruje w rejestrze `state_keys`, które pola t
 
 ### 8.4 Ryzyka (trzy największe najpierw)
 
-1. **Przebudowa `App.tsx` bez regresji na telefonie**: 30 plików e2e zakłada dwa układy. Osłona: W1 ma zero widocznych zmian
+1. **Przebudowa `App.tsx` bez regresji na telefonie**: 32 pliki e2e (z 61 w `loom/web/e2e/`; `grep -l '#warsztat'`, 2026-10-23) zakładają dwa układy. Osłona: W1 ma zero widocznych zmian
    (zrzut 390×844 identyczny co do piksela z dzisiejszym, próg w danych), W3 trzyma aliasy testid i `#warsztat`.
 2. **Wstecz**: odwiedziny okien wplecione w `LayerStack` mogą wejść w kolizję z M1-FLAKE1 (późne `popstate`). Osłona: ten sam
    model „wpis = warstwa”, test generatywny P10 na czystej logice i `m1-history-native.mjs` rozszerzony o okna.
-3. **Pamięć WebView** przy wielu oknach grafu. Osłona: `window_keep_mounted=visible` jako preset telefonu, pomiar W10,
-   podpowiedź `many_windows`.
+3. **Pamięć WebView** przy wielu oknach grafu (ryzyko niezmierzone, 2026-10-23). Osłona: `window_keep_mounted=visible` jako
+   preset telefonu (ostrożność), pomiar W10, podpowiedź `many_windows`.
 4. Rozjazd danych: układ zapisany na desktopie (px) przywracany na telefonie — dociskanie prostokątów + podpowiedzi (P11).
 5. Kolizja nazwy „Warsztat” (§11 pkt 3) — decyzja odwracalna jedną zmianą etykiet.
 6. Mechanizm `advisory_ack` nie istnieje i jest potrzebny także G3 — kto pierwszy go zbuduje, ten ustala schemat; propozycja
@@ -614,7 +637,7 @@ odmontowaniu — każdy rodzaj deklaruje w rejestrze `state_keys`, które pola t
 | **W6** | sprzężenia | wiązania per parametr, kanały, zależności `same/offset/scale/parent_of/perspective_of_node/expression`, migracja `view-state.ts`, ikona łańcucha | e2e: dwa okna grafu, zoom powiązany ×2, pętla → podpowiedź `coupling_cycle` | tak (dwa grafy) |
 | **W7** | katalog akcji + zdania + klawiatura/gesty jako dane | pełna lista §6.1 w katalogu, `chat_coverage.pack` z frazami PL/EN, `keymap.json`, `gestures.json`; `test_chat_coverage` zielony | każde zdanie z §6.2 trafia do akcji przez router (test C++); e2e: „zmaksymalizuj ustawienia” | tak |
 | **W8** | artefakt jako okno (UI08) | detekcja bloków (kod/HTML/markdown) w odpowiedziach, rodzaj `artifact` z przyciskami, otwarcie `float` (preset) lub `beside`; `request_inspector` jako okno z czatu | e2e: odpowiedź z blokiem kodu → ramka z „Kopiuj/Otwórz w oknie/Zapisz” → okno pływające | tak |
-| **W9** | style per okno/układ + test UI17 | `window.profile`, `layout.profile`, dziedziczenie, `sidebar` jako sugestia; e2e: zmiana profilu nie zmienia żadnego pola żądania | e2e UI17 (brakujący wg spec: „no test asserting a profile switch leaves model/privacy/context untouched”) | tak |
+| **W9** | style per okno/układ + test UI17 | `window.profile`, `layout.profile`, dziedziczenie, `sidebar` jako sugestia (`profile_layout_fields`: `layout` preset | `window` | `off`; podpowiedź `profile_moves_dock`); e2e: zmiana profilu nie zmienia żadnego pola żądania | e2e UI17 (brakujący wg spec: „no test asserting a profile switch leaves model/privacy/context untouched”) | tak |
 | **W10** | wydajność WebView | `window_keep_mounted`, `state_keys` w rejestrze, pomiar 1/4/8/16 okien na emulatorze S2 → `INDEX.md` | liczby w raporcie; podpowiedź `many_windows` | pośrednio |
 | **W11** | rodzaje z makiety | `project_structure`, `execution_env`, `media_player`, `external` — każdy osobny pakiet po projekcie swojego obszaru (UI11, P39); do tego czasu `planned` z powodem widoczne w przełączniku | — | później |
 
@@ -629,9 +652,11 @@ rozwidlenie `if (layout === "chat")` zanim W4–W6 dodadzą stany; W7 domyka R54
 [decyzja] Czysta logika (`shell/windows/model.ts`) testowana `node:test` + generator własności. Biblioteka: `fast-check`
 (MIT) jako devDependency z wersją przypiętą przy dodaniu (dziś brak w `package.json`); zamiennik bez zależności: własny
 generator z ziarnem (`seed` w danych testu, wypisywany przy porażce). Generatory: rodzaj ∈ rejestr; `mode` ∈ 5; drzewo
-binarne losowej głębokości (0–6) z `ratio` ∈ [0,1] **włącznie z 0 i 1**; prostokąty z ujemnymi, zerowymi i większymi od
-obszaru; obszar ∈ {390×844, 360×640, 768×1024, 1440×900, 1×1}; sekwencje 0–40 operacji z §6.1 z losowymi argumentami (także
-nieistniejące id); grafy wiązań z pętlami; zapisy v1 (`"chat"|"workshop"`) × `layout_mode` (4 wartości + śmieci) × hash.
+binarne losowej głębokości (preset 0–6) z `ratio` ∈ [0,1] **włącznie z 0 i 1**; prostokąty z ujemnymi, zerowymi i większymi od
+obszaru; obszar ∈ {390×844, 360×640, 768×1024, 1440×900, 1×1} (preset zbioru); sekwencje (preset 0–40) operacji z §6.1 z losowymi
+argumentami (także nieistniejące id); grafy wiązań z pętlami; zapisy v1 (`"chat"|"workshop"`) × `layout_mode` (4 wartości +
+śmieci) × hash. Głębokość 0–6, 0–40 operacji i pięć obszarów to **presety w danych testu** (`max_depth`, `max_ops`, `areas`),
+przykłady z przestrzeni możliwości, nie jej granice; reszta jest wypisana w „Lukach” poniżej.
 
 Własności (każda z nazwą testu):
 
@@ -652,7 +677,9 @@ Własności (każda z nazwą testu):
 | P13 | **Rejestr**: dla każdego rodzaju `present` istnieje komponent; dla `planned` istnieje `reason.pl`; każdy komponent montowany w `App.tsx`/`ChatShell.tsx` (lista przez grep w teście) jest w rejestrze lub w `not_window` |
 | P14 | **Profil (UI17)**: zastosowanie dowolnego profilu per okno/układ nie zmienia żadnego pola poza `profile` (porównanie strukturalne) |
 
-**Luki (uczciwie, nie „poza zakresem”)**: gesty, strefy upuszczenia i rzeczywiste rozmiary zależą od przeglądarki — tylko e2e
+**Luki (uczciwie, nie „poza zakresem”)**: przestrzeń poza presetami generatora (drzewa głębsze niż 6, sekwencje dłuższe niż 40
+operacji, obszary spoza pięciu — np. okna składane, skalowanie systemowe, 0×0, dwa okna przeglądarki) jest niepokryta; zmniejsza
+ją podniesienie presetów w dłuższym przebiegu (parametr, nie zmiana kodu); gesty, strefy upuszczenia i rzeczywiste rozmiary zależą od przeglądarki — tylko e2e
 przykładowe (Playwright, 390×844); pamięć WebView — tylko pomiar (W10); zachowanie `popstate` prawdziwego Androida — tylko smoke
 S2; czytniki ekranu — brak automatycznego testu (ręcznie TalkBack w smoke, jedna lista kontrolna w danych).
 
@@ -668,20 +695,22 @@ S2; czytniki ekranu — brak automatycznego testu (ręcznie TalkBack w smoke, je
    odwrót w D5.
 2. **„suma funkcjonalności” w jednym oknie a „niezależne elementy” (UI16/UI17).** Unia wszystkiego w jednym oknie czatu
    kłóci się ze składalnością, jeśli jest sztywna. Rozstrzygnięcie: funkcje to zdolności włączane per układ (§7.1); preset `czat`
-   włącza unię, nic nie wymusza unii. Właściciel mówił o presecie, nie o niezmienniku — tak to czytam.
+   włącza unię, nic nie wymusza unii. Zdanie o „standardowym interfejsie” odczytuję jako opis presetu, nie niezmiennika — to mój odczyt, nie jego słowa.
 3. **„Warsztat” znaczy dwie rzeczy** (R66: „work band to był dla ciebie do testów tak?”). Dziś `Warsztat` = siatka wszystkich
    paneli z etykietą „Warsztat (narzędzia zaawansowane)”; w makiecie i w R64 warsztat = składany obszar roboczy. Decyzja D9:
    id `siatka` (etykieta „Wszystkie panele”) dla dzisiejszej siatki; id `warsztat` (etykieta „Warsztat”) dla układu wg makiety
    (§4.3). `#warsztat` do końca W3 otwiera siatkę (testy), od W4 otwiera warsztat z makiety, a `#siatka` siatkę; e2e podmieniają
    hash jednym `sed` w W4. Jeśli właściciel woli, by „Warsztat” nadal znaczyło siatkę — zamiana dwóch etykiet w `layouts.json`.
 4. **„na Androidzie … tak jak na desktopie”** — prawdziwe co do dostępności operacji, nieprawdziwe co do użyteczności: klawiatura
-   ekranowa (`adjustResize`) zmniejsza obszar o ~40 %, pływające okno nad composerem jest wtedy zakryte. Nie wyłączam — podpowiedź
+   ekranowa (`adjustResize`, `AndroidManifest.xml:61` — obserwacja 2026-10-23) zmniejsza obszar; o ile — niezweryfikowane,
+   do pomiaru na emulatorze S2 (moja ocena „~40 %” nie ma źródła); pływające okno nad composerem może być wtedy zakryte. Nie wyłączam — podpowiedź
    `float_under_keyboard` z „Przesuń nad”. Koszt nazwany, nie ukryty.
 5. **„fuzją wszystkich apek od kilku (5-10)”** — „wszystkich” i „5–10” naraz; czytam jako listę otwartą (R59): macierz §5 rośnie,
    a „fuzja” mierzy się odsetkiem komórek `unknown`, nie liczbą aplikacji.
-6. **„obsługujące wszystko”** — ekran „Połączenie” jest natywny (`ConnectionActivity`) i nie może być oknem strony; rejestr ma
-   `not_window` z powodem (jak `not_from_chat` w `chat_coverage`). Jeśli to ma być okno, trzeba przenieść ekran do strony — osobna
-   decyzja S2.
+6. **„obsługujące wszystko”** — dziś (obserwacja 2026-10-23: `ConnectionActivity.kt`, `AndroidManifest.xml:47`) ekran „Połączenie” jest natywną aktywnością
+   Androida, a nie stroną — to stan dzisiejszy, nie niemożność. Rejestr trzyma go jako rodzaj `connection` ze `status: planned`
+   i powodem „dostępne, gdy istnieje odpowiednik na stronie” (widoczny jako pozycja wyszarzona, nie ukryty; jak wpisy z powodem w
+   `chat_coverage`); do tego czasu menu ⋮ otwiera ekran natywny jak dziś. Odpowiednik na stronie to osobna decyzja S2.
 7. **„widok ostatni zapisany”** przywraca na starcie to, co było widoczne — na wspólnym urządzeniu pokazuje cudze rozmowy przy
    uruchomieniu. To nie błąd wymagania, ale kolejność `start_view` jest już konfigurowalna, a układ nigdy nie niesie sekretów (§2.5).
 8. **Gdzie mój odczyt może być błędny**: (a) UI12 i większość UI16 to cytaty **wtórne** (relacja agenta) — model „drzewo doków”
@@ -708,10 +737,13 @@ S2; czytniki ekranu — brak automatycznego testu (ręcznie TalkBack w smoke, je
 | D11 | Sprzężenie per parametr: `shared/independent/linked` + kanały + zależności jako dane; pętle obsługiwane limitem iteracji i podpowiedzią | tylko `shared/independent` (jak dziś) — `linked` oznaczone `planned` z powodem, zależności nie ładowane |
 | D12 | Operacje okien = akcje katalogu z krokiem klienta `{"client":"window"}`; zdania w `chat_coverage.pack` | operacje lokalne bez katalogu: wpis `not_from_chat` z powodem dla każdej (łamie R54 — tylko jako tymczasowy odwrót) |
 | D13 | Polityka montowania `window_keep_mounted` (preset telefonu `visible`, desktopu `all`), bez górnego limitu okien | `all` wszędzie: jedno pole w `device_classes.json` |
-| D14 | Styl per okno/układ przez zmienne CSS na korzeniu okna; `sidebar` profilu jako sugestia układu | tylko per układ: `window.profile` ignorowane z podpowiedzią „styl per okno wyłączony” |
+| D14 | Styl per okno/układ przez zmienne CSS na korzeniu okna; pola układowe profilu (`sidebar.side/width`) jako sugestia stosowana wg `profile_layout_fields`: per układ (preset), per okno (opcja) albo wcale; gdy przestawiłaby dok — niewiążąca podpowiedź `profile_moves_dock` | `profile_layout_fields=layout` na stałe (pola układowe profilu okna nieczytane); najdalej: `window.profile` ignorowane z podpowiedzią „styl per okno wyłączony” |
 | D15 | Testy generatywne na `fast-check` (devDependency, wersja przypięta) | własny generator z ziarnem w `tests/shell/windows/gen.mjs`, bez zależności |
 | D16 | `#okno/<kind>[/<node>]` otwiera jedno okno `maximized` nad aktualnym układem | usunąć: linki tylko do układów (`#uklad/...`), okno z zewnątrz przez zdanie w czacie |
 | D17 | Prostokąty w `fraction` jako preset, `px` dostępne; dociskanie do obszaru, nigdy gubienie | tylko `px` + przewijany obszar roboczy (okna poza ekranem osiągalne przewinięciem) |
+| D18 | Telefon: `window.open` bez `placement` domyślnie `maximize` (preset `open_placement` klasy `phone`, §4.1, §4.3) | `open_placement: "beside"` (albo `float`/`tab`) dla klasy `phone` w `device_classes.json`; jedno pole, bez zmiany kodu |
+| D19 | Aktywny układ per klasa urządzenia: `window_layout_active` na poziomie `person` z nadpisaniem `installation`; dziennik `window_layout_journal` (pierścień, preset 50) na poziomie `installation` (§2.5) | zmiana poziomu pola w `settings_fields.pack`: `window_layout_active` w całości na `installation` (każde urządzenie osobno) i/lub `window_layout_journal` na `person` (cofanie wspólne między urządzeniami) |
+| D20 | Okna wpinają się w istniejący `LayerStack` (`history.ts`), bez drugiego mechanizmu historii i Wstecz (§4.2) | osobny stos odwiedzin okien obok `LayerStack`, z własnym wpisem historii; `window_back` wybiera, który stos obsługuje Wstecz (ryzyko podwójnego `popstate`, M1-FLAKE1 — do zmierzenia) |
 
 ---
 
