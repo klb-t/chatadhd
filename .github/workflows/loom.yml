@@ -248,6 +248,7 @@ jobs:
           npm run test:context-receipt
           npm run test:context-strip
           npm run test:interview
+          npm run test:me-view
           npm run test:label-guard
           npm run test:import-truth-state
           npm run test:attachment-chips
@@ -262,6 +263,7 @@ jobs:
           npm run test:m1-context-menu
           npm run test:m1-history
           npm run test:m1-profile
+          npm run test:m1-me
           npm run test:m1-import-truth
           npm run test:chat-first
           npm run test:composer-menu-browser

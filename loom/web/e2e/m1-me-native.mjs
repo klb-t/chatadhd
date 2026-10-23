@@ -9,13 +9,14 @@
 // "Poznaj mnie" opens the interview conversation; Back closes the layers in order. Every word is taken from presentation.graph_screen of the pack or
 // from the kernel's own answer to the same question. With M1_SHOTS_DIR=<dir> the screenshots go there, otherwise to a fresh temp dir.
 import assert from "node:assert/strict";
-import { execFileSync, spawn } from "node:child_process";
+import { spawn } from "node:child_process";
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import net from "node:net";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { auditPage } from "./m1-audit.mjs";
+import { request, runChild } from "./harness-lifecycle.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const LOOM = path.resolve(here, "../..");
@@ -31,7 +32,7 @@ const say = (id, params = {}) => { assert.ok(typeof words[id] === "string", `the
 const INFERRED_PRESET = 0.72;   // me-view-state.ts INFERRED_OPACITY_PRESET (the preset; the setting me_inferred_opacity changes it)
 
 const freePort = () => new Promise((res, rej) => { const s = net.createServer(); s.listen(0, "127.0.0.1", () => { const { port } = s.address(); s.close(() => res(port)); }); s.on("error", rej); });
-async function waitUp(url) { for (const end = Date.now() + 20000; Date.now() < end;) { try { if ((await fetch(url)).ok) return; } catch {} await new Promise(r => setTimeout(r, 150)); } throw new Error(`timed out waiting for ${url}`); }
+async function waitUp(url) { for (const end = Date.now() + 20000; Date.now() < end;) { try { if ((await request(url, { timeoutMs: 3000 })).ok) return; } catch {} await new Promise(r => setTimeout(r, 150)); } throw new Error(`timed out waiting for ${url}`); }
 async function chromium() { try { return (await import("playwright")).chromium; } catch { return (await import("/opt/node22/lib/node_modules/playwright/index.mjs")).chromium; } }
 /** Polls until the check returns a truthy value (a condition, never a fixed time). */
 async function until(what, check, ms = 15000) { for (const end = Date.now() + ms; Date.now() < end;) { const v = await check(); if (v) return v; await new Promise(r => setTimeout(r, 120)); } throw new Error(`timed out waiting for ${what}`); }
@@ -46,8 +47,8 @@ const base = `http://127.0.0.1:${port}`;
 const AUDIT = [];
 let browser, failed = false;
 const step = async (name, fn) => { try { await fn(); console.log(`[m1-me] PASS ${name}`); } catch (e) { failed = true; console.error(`[m1-me] FAIL ${name}\n${e.stack}`); } };
-const api = async (m, p, b) => { const r = await fetch(base + p, { method: m, headers: { "content-type": "application/json" }, body: b ? JSON.stringify(b) : undefined }); assert.ok(r.ok, `${m} ${p}: ${r.status} ${r.ok ? "" : await r.text()}`); return r.json(); };
-const mockCount = async () => (await (await fetch(`http://127.0.0.1:${mockPort}/__count`)).json());
+const api = async (m, p, b) => { const r = await request(base + p, { method: m, headers: { "content-type": "application/json" }, body: b ? JSON.stringify(b) : undefined }); assert.ok(r.ok, `${m} ${p}: ${r.status} ${r.ok ? "" : r.text}`); return r.json(); };
+const mockCount = async () => (await request(`http://127.0.0.1:${mockPort}/__count`)).json();
 const APP = { class: "application" };
 /** An action on the application; a run that waits for the person's yes is answered with yes (the seed is the person's own act). */
 async function runApp(action, args) {
@@ -81,7 +82,8 @@ try {
   const talk = await api("POST", "/api/conversations", { title: "Rozmowa o remoncie" });
   await runApp("conversation.set_unit", { conv_id: talk.id, kind: "project", id: "remont" });
   // an analysis found a person and a topic (nodes of the graph): the kernel shows them as conclusions
-  execFileSync("python3", ["-c", "import sqlite3,sys; c=sqlite3.connect(sys.argv[1]); [c.execute('insert into nodes(id,kind,label,content,tags,metadata,created) values (?,?,?,?,?,?,?)',r) for r in [('n_e2eanna0001','person','Anna Testowa','','[]','{}','2026-10-22T10:00:00Z'),('n_e2etopic001','topic','kuchnia','','[]','{}','2026-10-22T10:00:00Z')]]; c.commit()", path.join(dataDir, "chatadhd.db")]);
+  const seeded = await runChild("python3", ["-c", "import sqlite3,sys; c=sqlite3.connect(sys.argv[1]); [c.execute('insert into nodes(id,kind,label,content,tags,metadata,created) values (?,?,?,?,?,?,?)',r) for r in [('n_e2eanna0001','person','Anna Testowa','','[]','{}','2026-10-22T10:00:00Z'),('n_e2etopic001','topic','kuchnia','','[]','{}','2026-10-22T10:00:00Z')]]; c.commit()", path.join(dataDir, "chatadhd.db")]);
+  assert.equal(seeded.status, 0, `seeding nodes: ${seeded.stderr}`);
 
   const launch = await chromium();
   browser = await launch.launch({ headless: true }).catch(() => launch.launch({ headless: true, executablePath: CHROMIUM }));
