@@ -5,8 +5,8 @@
  "sources": {
   "owner": {
    "path": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
-   "sha256": "5e15cdbb204748027b0c4ae9f796ce7711c2273ff55bfbb36683338ab14dffbe",
-   "lines": 838
+   "sha256": "1ebde2397c6ebec72d71514dffeb5b8e9c040829eae8c9146aed4aa84a9c3204",
+   "lines": 843
   },
   "slowa": {
    "path": "docs/architecture/SLOWA_WLASCICIELA_2026-10-16.md",
@@ -4420,6 +4420,61 @@
    ]
   },
   {
+   "id": "s_aeb05ddf56b2",
+   "aliases": [
+    "R77"
+   ],
+   "kind": "requirement",
+   "title": "Współrzędne grafowe zmiennoprzecinkowe (double): zastosowanie tam, gdzie da się ekstrapolować/interpolować w dużej rozdzielczości",
+   "date": "2026-10-23",
+   "theme": "owner_requirements",
+   "theme_inferred": false,
+   "understanding": {
+    "state": "none"
+   },
+   "quotes": [
+    {
+     "text": "podejrzewam znajdzie się porządne zastosowanie do zmiennoprzecinkowych Double współrzędnych grafowych, jeśli coś można ładnie wyekstrapolować w dużej rozdzielczości",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:825",
+     "ref": null,
+     "attr": [],
+     "lead": null,
+     "secondary": false
+    }
+   ],
+   "sense": null,
+   "summary": null,
+   "restatement": [
+    {
+     "text": "Uzupełnienie R74/R76 (08:4x UTC): przypuszczenie, że współrzędne grafowe typu double znajdą porządne zastosowanie — gdy wzdłuż wymiaru da się coś ładnie ekstrapolować (albo interpolować) w dużej rozdzielczości, np. między dwiema wiadomościami/wersjami, w czasie, w ciągłych miarach. Wniosek do K3: typ współrzędnej to cecha wymiaru (liczba całkowita, double, nazwa, data…), a adres może wskazać punkt między węzłami; co to znaczy (interpolacja, najbliższy węzeł, węzeł wyłaniający się), definiuje wymiar jako dane. To przypuszczenie, nie wymaganie o konkretnym zastosowaniu.",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:827"
+    }
+   ],
+   "commentary": [],
+   "status": null,
+   "gap_text": null,
+   "evidence": [],
+   "next_step": null,
+   "refs": [
+    "s_0f005a5e98e8",
+    "s_90982d5337ef"
+   ],
+   "supersedes": [],
+   "superseded_by": [],
+   "supersession_notes": [],
+   "tags": [],
+   "heading_note": "owner, 2026-10-23",
+   "sources": [
+    {
+     "role": "owner",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:824-827"
+    }
+   ],
+   "files": [
+    "owner"
+   ]
+  },
+  {
    "id": "s_18ec73967a7b",
    "aliases": [
     "owner:decision-rebuild-don-t-recover"
@@ -4435,7 +4490,7 @@
    "quotes": [
     {
      "text": "\"nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane\"",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:825",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:830",
      "ref": null,
      "attr": [],
      "lead": null,
@@ -4447,7 +4502,7 @@
    "restatement": [
     {
      "text": "Recovered versions (`history/chatadhd_v0.8.3`, `history/chatadhd_v0.9.0`) and\nthe historical report are sources of requirements, ideas and data assets\n(e.g. `film_structure.json`), and real ground truth for self-discovery tests —\nnot code to merge. Everything is rebuilt in Loom with tests.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:827-830"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:832-835"
     }
    ],
    "commentary": [],
@@ -4464,7 +4519,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:824-830"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:829-835"
     }
    ],
    "files": [
@@ -4490,7 +4545,7 @@
    "restatement": [
     {
      "text": "`workbench_mockup_2026-09-26.webp`: dockable/floating panels (conversation\nlist, active conversation, knowledge graph with active context window, project\nstructure with dimmed high-confidence auto-completable nodes, artifact views\nfor music/video with timeline + storyboard, video player, execution\nenvironment with agent), multi-format ingestion, Loom SDK at the centre.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:833-837"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:838-842"
     }
    ],
    "commentary": [],
@@ -4507,7 +4562,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:832-837"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:837-842"
     }
    ],
    "files": [

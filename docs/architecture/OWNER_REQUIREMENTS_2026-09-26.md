@@ -821,6 +821,11 @@ Po obejrzeniu żywego widoku specyfikacji (R73) właściciel idzie spać i zosta
 
 Uzupełnienie R74 (08:3x UTC). Przykład wersji programu jest dobry, bo pokazuje adres względny po HIERARCHII: „z poprzedniej dużej wersji wszystkie ostatnie poprawki / ostatnia mała wersja” (duża.mała.poprawka — jego -1."00" czytam jako: poprzednia duża, w niej ostatnia). I zastrzeżenie: to tylko przykłady, których dobór NIE ogranicza adresowania w grafie do liczb całkowitych — współrzędne mogą być nazwami, datami, ułamkami, zakresami, czymkolwiek, co wymiar niesie.
 
+## R77 — Współrzędne grafowe zmiennoprzecinkowe (double): zastosowanie tam, gdzie da się ekstrapolować/interpolować w dużej rozdzielczości (owner, 2026-10-23)
+> podejrzewam znajdzie się porządne zastosowanie do zmiennoprzecinkowych Double współrzędnych grafowych, jeśli coś można ładnie wyekstrapolować w dużej rozdzielczości
+
+Uzupełnienie R74/R76 (08:4x UTC): przypuszczenie, że współrzędne grafowe typu double znajdą porządne zastosowanie — gdy wzdłuż wymiaru da się coś ładnie ekstrapolować (albo interpolować) w dużej rozdzielczości, np. między dwiema wiadomościami/wersjami, w czasie, w ciągłych miarach. Wniosek do K3: typ współrzędnej to cecha wymiaru (liczba całkowita, double, nazwa, data…), a adres może wskazać punkt między węzłami; co to znaczy (interpolacja, najbliższy węzeł, węzeł wyłaniający się), definiuje wymiar jako dane. To przypuszczenie, nie wymaganie o konkretnym zastosowaniu.
+
 ## Decision — rebuild, don't recover
 > "nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane"
 
