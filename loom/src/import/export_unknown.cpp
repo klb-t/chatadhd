@@ -166,6 +166,7 @@ void infer_generic(Env& env, const Json& doc, const std::string& member, const s
             }
             atts.push_back(rec);
             counts.attachment += 1;
+            if (rec.value("resolved", false)) counts.attachment_linked += 1;
           }
         }
       }

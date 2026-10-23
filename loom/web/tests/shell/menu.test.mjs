@@ -12,6 +12,7 @@ const resolution = JSON.parse(await readFile(new URL('../../../data/runtime/elem
 const pack = JSON.parse(await readFile(new URL('../../../data/profiles/conversation_view.pack', import.meta.url), 'utf8'));
 const { en, pl } = pack.entries.find(r => r.key === 'presentation.ui_shell').value.locales;
 const appSource = await readFile(new URL('../../src/App.tsx', import.meta.url), 'utf8');
+const panelsSource = await readFile(new URL('../../src/shell/panels.ts', import.meta.url), 'utf8');   // PANEL_LABELS and PANEL_TEXT_IDS live here (M1-G1b: a unit test walks them)
 
 test('the menu is the eight entries of the spec, in this order, and nothing else', () => {
   assert.deepEqual(menu.CHAT_MENU.map(e => e.id), ['graph', 'settings', 'me', 'this_conversation', 'views', 'semantic', 'connection', 'workshop']);
@@ -61,14 +62,15 @@ test('the old Memory and Knowledge panels stay reachable in the Workshop', () =>
   assert.ok(panels.SHELL_PANELS.includes('memory'));
   assert.match(appSource, /data-testid="nav-knowledge"/);
   assert.match(appSource, /Object\.keys\(PANEL_LABELS\)[\s\S]{0,200}data-testid=\{`nav-\$\{p\}`\}/);   // one nav button per panel, memory included
-  assert.match(appSource, /memory: "Memory"/);
+  assert.match(panelsSource, /memory: "Memory"/);
 });
 
 test('the drawer of a panel opened from the menu carries the menu\'s word, not an English label', () => {
-  const ids = /const PANEL_TEXT_IDS[^=]*= (\{[^}]*\})/.exec(appSource)[1];
+  const ids = /export const PANEL_TEXT_IDS[^=]*= (\{[^}]*\})/.exec(panelsSource)[1];
   // r1:b5: the old graph entry lives in the Workshop as "Wejście do grafu (stare)"; the navigator carries the menu's "Graf".
   assert.match(ids, /navigator: "menu_graph"/); assert.match(ids, /"graph-entry": "workshop_graph_entry"/);
-  assert.match(ids, /"user-knowledge": "menu_me"/); assert.match(ids, /graph: "menu_this_conversation"/);
+  // M1-G1b: the old map and the old "what the app knows" are NOT named like the menu entries that open the navigator (label-guard.test.mjs walks all labels).
+  assert.match(ids, /"user-knowledge": "workshop_me_old"/); assert.match(ids, /graph: "workshop_graph_old"/);
 });
 
 test('Graf, Ty and Ta rozmowa open the same navigator at three foci (spec 3.1); conv:current becomes the open conversation, else the root', () => {

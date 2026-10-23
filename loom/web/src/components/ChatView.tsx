@@ -12,6 +12,8 @@ import UsagePendingBlock from "./UsagePendingBlock";
 import AgentProposalBlock from "./AgentProposalBlock";
 import { agentLoopOf, agentLoopView, resumeRequest } from "../context/agent-proposal";
 import ActionProposalBlock, { ProposalOffer, ProposalWritten } from "./ActionProposalBlock";
+import { attachmentChips, chipStateText } from "../content/attachment-chips";
+import { graphTargetOfRun } from "../context/chat-graph-focus";
 import ClientStepBlock from "./ClientStepBlock";
 import { CLIENT_STEP_FEATURE, type BlobLoader, type BlobUploader } from "../context/client-device";
 import { browserHost } from "../context/browser-host";
@@ -771,6 +773,13 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
             if (chunk.conv_id && requestConvId && chunk.conv_id !== requestConvId) onConversationCreated(chunk.conv_id);
             requestConvId = chunk.conv_id;
             refreshShared();
+            // "pokaż katalog główny grafu" / "pokaż import w grafie": the answer stays in the conversation and the navigator opens where the kernel's run stood.
+            const finished = chunk.type === "action_result" ? chunk.run : undefined;
+            if (onShowInGraph && api.actions && finished && finished.status === "completed" && typeof finished.run_id === "string") {
+              api.actions.status({ run_id: finished.run_id }).then(
+                record => { const target = graphTargetOfRun(record); if (target) onShowInGraph(target.focus, target.perspectives); },
+                failure => console.debug("graph.navigate run could not be read, the navigator stays closed", failure));
+            }
           } else if (chunk.type === "usage_pending") {
             // A state, not a failure: nothing was sent. Keep the text and ask.
             terminal = true;
@@ -1161,7 +1170,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
             {!interviewCard.visible && interviewCard.note && <InterviewCardDecision t={interviewT} note={interviewCard.note} />}
             <h2>{t("empty_title")}</h2>
             <div className="shell-starters">{[1, 2, 3, 4].map(n => <button key={n} data-testid="shell-starter" onClick={() => setInput(t("starter_" + n))}>{t("starter_" + n)}</button>)}</div>
-          </div> : <div className="empty-state">Say something to start the conversation.</div>
+          </div> : <div className="empty-state">{t("chat_empty_hint") === "chat_empty_hint" ? "Say something to start the conversation." : t("chat_empty_hint")}</div>
         )}
         {visibleMessages.map((m) => {
           const versions = m.version_group_id ? versionsById[m.version_group_id] : undefined;
@@ -1283,8 +1292,13 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
                 }
                 return null;
               })()}
-              {m.role === "user" && Array.isArray(m.attachments) && m.attachments.length > 0 && <p className="composer-chips" data-testid="message-attachments">
-                {m.attachments.filter((x): x is string => typeof x === "string").map((ref, i) => <span key={i} className="composer-chip" data-testid="message-attachment"><span className="chip-name">{attachmentName(ref)}</span></span>)}</p>}
+              {(() => {
+                const chips = attachmentChips(m);
+                if (chips.length === 0) return null;
+                return <p className="composer-chips" data-testid="message-attachments" data-count={chips.length}>
+                  {chips.map((chip, i) => { const state = chipStateText(chip, t); return <span key={i} className="composer-chip" data-testid="message-attachment" data-state={chip.state}>
+                    <span className="chip-name">{chip.name}</span>{state && <span className="chip-state" data-testid="message-attachment-state"> · {state}</span>}</span>; })}</p>;
+              })()}
               {m.role === "assistant" && (() => {
                 const made = producedView(m.metadata, m.id);
                 const label = made ? producedText(featureInLanguage(proposalCatalog.feature, messageLanguage(m.metadata)), made) : null;

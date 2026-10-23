@@ -53,13 +53,16 @@ inline constexpr std::string_view kSchema = "loom.export.v1";
 
 // ── counters (the shape of tests/fixtures/exports/EXPECTED.json "counts") ──
 struct Counts {
-  std::int64_t conversation = 0, message = 0, block = 0, attachment = 0, citation = 0, citation_group = 0, branch = 0,
+  // attachment_linked: attachment records whose file was found in the archive and kept (G1a); the other attachments are names and metadata only
+  std::int64_t conversation = 0, message = 0, block = 0, attachment = 0, attachment_linked = 0, citation = 0, citation_group = 0, branch = 0,
                fork_points = 0, custom_instruction = 0, memory = 0, artifact = 0, current_path_messages = 0, account = 0,
                feedback = 0, shared_link = 0, project = 0, project_doc = 0, record = 0;
   std::map<std::string, std::int64_t> block_kind;
   void add(const Counts& o);
   static Counts from_json(const Json& value);
-  Json to_json() const;
+  // with_extras false: exactly the keys of the oracle tests/fixtures/exports/EXPECTED.json (the report's "counts"); attachment_linked is then
+  // reported beside it (Report::to_json "attachment_linked"). The checkpoint keeps it (with_extras true) so a resumed import does not lose it.
+  Json to_json(bool with_extras = true) const;
 };
 
 // ── report ──

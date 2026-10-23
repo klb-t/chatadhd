@@ -14,6 +14,7 @@ import { api } from "../api";
 import type { GraphNavigateResult, GraphNodeRow } from "../api/graph-projection";
 import type { UserProfileHost } from "../api/onboarding-host";
 import Disclosure from "../shell/Disclosure";
+import GraphHelp from "./GraphHelp";
 import { shellTranslator } from "../shell/text";
 import { useLayer } from "../shell/use-layer";
 import { usePresentationFeature } from "./ConversationSourceView";
@@ -37,6 +38,10 @@ interface Props {
   initialPerspectives?: string[];
   /** The setting navigator_layout as loaded (both | list | map); anything else is the preset both. */
   layout?: unknown;
+  /** The setting navigator_help_open as loaded: whether the help "Co tu widzę?" starts open (preset closed). */
+  helpSetting?: unknown;
+  /** The app learns a setting this screen saved (so the next opening starts as the person left it). */
+  onSetting?: (key: string, value: boolean) => void;
 }
 
 /** One step of the path as one history layer: Back closes the topmost step (the last one). */
@@ -45,7 +50,7 @@ function StepLayer({ index, onClose }: { index: number; onClose: (index: number)
   return null;
 }
 
-export default function GraphNavigator({ profileHost, convId, language, initialFocus = "", initialPerspectives, layout: layoutSetting }: Props) {
+export default function GraphNavigator({ profileHost, convId, language, initialFocus = "", initialPerspectives, layout: layoutSetting, helpSetting, onSetting }: Props) {
   const words = usePresentationFeature(profileHost, "graph_screen");
   const t = useMemo(() => shellTranslator(words.feature, language), [words.feature, language]);
   const receiptT = useReceiptWords(profileHost, language);   // the words of "Co wysłaliśmy": the reason of a sent element is said in them (K1c-4)
@@ -162,6 +167,7 @@ export default function GraphNavigator({ profileHost, convId, language, initialF
       </div>
       {searchOpen && <input className="gnav-search" data-testid="nav-search-input" type="search" autoFocus value={draft} aria-label={t("search")}
         placeholder={t("query.placeholder")} onChange={e => setDraft(e.target.value)} />}
+      <GraphHelp screen="navigator" t={t} setting={helpSetting} onSetting={onSetting} testId="nav-help" />
       {result && focus && result.focus.why && <p className="gnav-why gnav-focus-why" data-testid="nav-focus-why">{result.focus.why}</p>}
 
       <div className="gnav-body">

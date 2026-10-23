@@ -1,7 +1,10 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { api } from "../api";
 import { readWebPageSizes } from "../settings/page-sizes";
-import { useShellLanguage, useShellText } from "../shell/text";
+import { shellTranslator, useShellLanguage, useShellText } from "../shell/text";
+import type { UserProfileHost } from "../api/onboarding-host";
+import { usePresentationFeature } from "./ConversationSourceView";
+import GraphHelp from "./GraphHelp";
 import { graphText } from "../graph/graph-text";
 import { degreeMap, graphLabelOptions, planLabels, type PlacedLabel } from "../graph/graph-labels";
 import type { GraphEdge, GraphNode } from "../api/types";
@@ -9,6 +12,10 @@ import { colorFor } from "./kind-colors";
 
 interface Props {
   convId: string | null;
+  profileHost?: UserProfileHost;
+  /** The setting graph_view_help_open as loaded (whether "Co tu widzę?" starts open; preset closed). */
+  helpSetting?: unknown;
+  onSetting?: (key: string, value: boolean) => void;
 }
 
 interface SimNode extends GraphNode {
@@ -68,9 +75,11 @@ function filterGraphNoise<N extends GraphNode>(nodes: N[], edges: GraphEdge[]): 
 
 // Message nodes per page: the setting loom_web_graph_page (preset 2000, 0 = no cut); older pages stay reachable with "Load older".
 
-export default function GraphView({ convId }: Props) {
+export default function GraphView({ convId, profileHost, helpSetting, onSetting }: Props) {
   const t = useShellText();
   const language = useShellLanguage();
+  const graphWords = usePresentationFeature(profileHost, "graph_screen");
+  const helpT = useMemo(() => shellTranslator(graphWords.feature, language), [graphWords.feature, language]);
   const g = useCallback((id: Parameters<typeof graphText>[1], params?: Record<string, string | number>) => graphText(language, id, params), [language]);
   const hoverRef = useRef<string | null>(null);
   const selectedRef = useRef<string | null>(null);
@@ -407,6 +416,7 @@ export default function GraphView({ convId }: Props) {
 
   return (
     <div data-testid="graph-view" style={{ display: "flex", flexDirection: "column", height: "100%", minHeight: 0 }}>
+      <GraphHelp screen="old_graph" t={helpT} setting={helpSetting} onSetting={onSetting} testId="graph-help" />
       <div className="form-row" style={{ display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
         <input
           type="text"

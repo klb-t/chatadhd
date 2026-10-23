@@ -33,7 +33,7 @@ import { START_VIEW_PRESET, layoutOfMode, parseShellHash, readSaved, resolveStar
 import { shellLanguage } from "./shell/language";
 import { cssVariables, mergeData } from "./shell/animation";
 import { glyphVariables } from "./shell/disclosure-glyphs";
-import type { PanelId } from "./shell/panels";
+import { PANEL_LABELS, PANEL_TEXT_IDS, type PanelId } from "./shell/panels";
 import { useLayer } from "./shell/use-layer";
 
 type Theme = "dark" | "amoled";
@@ -54,29 +54,6 @@ function writeStored(key: string, value: string): void {
     // ignore (private mode / storage disabled)
   }
 }
-
-const PANEL_LABELS: Record<PanelId, string> = {
-  graph: "Graph",
-  memory: "Memory",
-  import: "Import",
-  context: "Context",
-  settings: "Settings",
-  logs: "Logs",
-  operations: "Operations",
-  methods: "Methods",
-  analysis: "Analysis",
-  onboarding: "Onboarding",
-  "user-knowledge": "What app knows",
-  "graph-entry": "Entry",
-  perspectives: "Perspectives",
-  "view-engine": "View engine",
-  navigator: "Navigator",
-};
-
-// Panels whose name comes from the shell words (data, PL/EN by ui_language); the others keep their English label.
-// The titles match the labels of the ⋮ menu (menu_graph opens the navigator, menu_this_conversation the graph of this conversation, menu_me what the app knows about you);
-// the old entry to the graph and the old memory panel live in the Workshop under their own words (r1:b5: two buttons named "Graf" were one too many).
-const PANEL_TEXT_IDS: Partial<Record<PanelId, string>> = { settings: "menu_settings", navigator: "menu_graph", "graph-entry": "workshop_graph_entry", memory: "menu_memory", graph: "menu_this_conversation", "user-knowledge": "menu_me", perspectives: "perspectives_title", "view-engine": "view_engine_title" };
 
 export default function App() {
   const account = useAccountSession();
@@ -160,6 +137,8 @@ export default function App() {
     setTheme((t) => (t === "dark" ? "amoled" : "dark"));
   }, []);
 
+  // A setting a screen saved (the help "Co tu widzę?"): the app keeps the value, so the screen opened again starts as the person left it.
+  const rememberSetting = useCallback((key: string, value: boolean) => setConfig(current => ({ ...current, [key]: value })), []);
   const openPanel = useCallback((p: PanelId) => { setActivePanel((cur) => (cur === p ? null : p)); setNavOpen(false); }, []);
   const closePanel = useCallback(() => { setActivePanel(null); setSettingsView(""); }, []);
 
@@ -228,9 +207,9 @@ export default function App() {
                 </button>
               </div>
               <div className="drawer-body">
-                {activePanel === "graph" && <GraphView convId={activeConvId} />}
+                {activePanel === "graph" && <GraphView convId={activeConvId} profileHost={userProfileHost} helpSetting={config.graph_view_help_open} onSetting={rememberSetting} />}
                 {activePanel === "graph-entry" && <GraphEntryPanel profileHost={userProfileHost} openers={entryOpeners} />}
-                {activePanel === "navigator" && <GraphNavigator profileHost={userProfileHost} convId={activeConvId} language={uiLanguage} initialFocus={navigatorFocus} initialPerspectives={navigatorPerspectives} layout={config.navigator_layout} />}
+                {activePanel === "navigator" && <GraphNavigator profileHost={userProfileHost} convId={activeConvId} language={uiLanguage} initialFocus={navigatorFocus} initialPerspectives={navigatorPerspectives} layout={config.navigator_layout} helpSetting={config.navigator_help_open} onSetting={rememberSetting} />}
                 {activePanel === "perspectives" && <PerspectivesPanel convId={activeConvId} />}
                 {activePanel === "view-engine" && <ViewEnginePanel />}
                 {activePanel === "memory" && <MemoryPanel />}

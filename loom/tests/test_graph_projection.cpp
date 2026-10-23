@@ -863,3 +863,72 @@ TEST_SUITE("graph_projection") {
     CHECK(unwrap(projection::find_address(f.env("pl"), "przeczyta")).empty() == false);  // the word itself still finds its node
   }
 }
+
+// G1a: the words a person uses for the places of the graph are data (graph_sources aliases); a name the graph does not know is answered with
+// the names it does know. Properties over ALL the data (every alias, every area), not over one example.
+TEST_SUITE("graph_projection") {
+  TEST_CASE("G1a: every alias word names exactly its own area, in its language, and no two areas share a word") {
+    Fixture f;
+    const Json sources = unwrap(RuntimeProfile::load("graph_sources", f.td.path())).values();
+    const Json entry = unwrap(RuntimeProfile::load("graph_entry", f.td.path())).values();
+    std::set<std::string> areas;
+    for (const auto& a : entry.at("areas").items()) areas.insert("area:" + a.key());
+    std::map<std::string, std::string> owner_of;  // "lang/word" -> address
+    for (const auto& a : sources.at("aliases")) {
+      const std::string address = a.at("address").get<std::string>();
+      CHECK_MESSAGE((areas.count(address) > 0 || address == "levels:scope_chain"), address << " is neither an area of the root nor the levels node");
+      for (const char* lang : {"pl", "en"}) {
+        const Json in_lang = a.at("words").value(lang, Json::array());
+        for (const auto& w : in_lang) {
+          const std::string word = w.get<std::string>();
+          INFO(lang << " / " << word << " -> " << address);
+          CHECK(unwrap(projection::find_address(f.env(lang), word)) == address);
+          // as a sentence says it: with a trailing dot
+          CHECK(unwrap(projection::find_address(f.env(lang), word + ".")) == address);
+          const std::string key = std::string(lang) + "/" + word;
+          CHECK_MESSAGE(!owner_of.count(key), key << " names two areas");
+          owner_of[key] = address;
+        }
+      }
+    }
+    // the owner's own word for what he imported (2026-10-22): it opens the area that holds imported data today
+    CHECK(unwrap(projection::find_address(f.env("pl"), "import")) == "area:data_corpora");
+    CHECK(unwrap(projection::find_address(f.env("pl"), "zaimportowane")) == "area:data_corpora");
+    CHECK(unwrap(projection::find_address(f.env("en"), "imports")) == "area:data_corpora");
+    // an area is also found by its own label, whatever the language of the alias table
+    for (const auto& a : entry.at("areas").items()) {
+      const std::string label = a.value().at("label").at("pl").get<std::string>();
+      CHECK_MESSAGE(unwrap(projection::find_address(f.env("pl"), label)) == "area:" + a.key(), label);
+    }
+  }
+
+  TEST_CASE("G1a: a name the graph does not know is answered with the names it knows, the nearest first, nothing dropped silently") {
+    Fixture f;
+    const Json entry = unwrap(RuntimeProfile::load("graph_entry", f.td.path())).values();
+    const std::size_t areas = entry.at("areas").size();
+    // a word that shares a start with one area: that area first, and the answer says it is the nearest
+    const Json near = unwrap(projection::known_names(f.env("pl"), "rozmaitości"));
+    REQUIRE(near.at("names").size() >= 1);
+    CHECK(near.at("names").at(0).at("address") == "area:context_projects");
+    CHECK(near.at("nearest") == true);
+    // a word that shares nothing: the names that exist, in the order of the root, and the answer does not claim "nearest"
+    const Json none = unwrap(projection::known_names(f.env("pl"), "qwxz"));
+    CHECK(none.at("nearest") == false);
+    CHECK(none.at("total") == areas);
+    CHECK(none.at("shown").get<std::size_t>() <= areas);
+    // shown + the rest = total: the rest is counted, so the answer can say it
+    CHECK(none.at("names").size() == none.at("shown").get<std::size_t>());
+    // the number to show is data: 0 = all of them
+    std::filesystem::create_directories(f.td.path() / "profiles");
+    std::ofstream(f.td.path() / "profiles" / "graph_sources.pack")
+        << Json{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", "graph_sources"}, {"overrides", Json{{"unknown_names", Json{{"show", 0}}}}}}.dump();
+    const Json all = unwrap(projection::known_names(f.env("en"), "qwxz"));
+    CHECK(all.at("shown").get<std::size_t>() == areas);
+    CHECK(all.at("names").size() == areas);
+    // every name carries a label and, in this language, its words; none is an internal address in the label
+    for (const auto& n : all.at("names")) {
+      CHECK_FALSE(n.at("label").get<std::string>().empty());
+      CHECK(n.at("label").get<std::string>().find("area:") == std::string::npos);
+    }
+  }
+}

@@ -1,7 +1,10 @@
-import { useCallback, useRef, useState } from "react";
+import { Fragment, useCallback, useRef, useState } from "react";
 import { api } from "../api";
 import type { ImportChunk } from "../api/types";
-import { dataLabel, useShellLanguage } from "../shell/text";
+import { dataLabel, useShellLanguage, useShellText } from "../shell/text";
+import Disclosure from "../shell/Disclosure";
+import { absentLine, importView } from "./import-truth-state";
+import "./import-truth.css";
 
 const WORDS = {
   pickFile: { en: "Choose a file…", pl: "Wybierz plik…" },
@@ -12,6 +15,8 @@ const WORDS = {
   },
   title: { en: "Title override (optional)", pl: "Własny tytuł (opcjonalnie)" },
   importing: { en: "Importing…", pl: "Importuję…" },
+  fileLabel: { en: "File (ZIP, JSON, JSONL, HTML, MHT, SQLite, Markdown, text, screenshot)", pl: "Plik (ZIP, JSON, JSONL, HTML, MHT, SQLite, Markdown, tekst, zrzut ekranu)" },
+  start: { en: "Import", pl: "Importuj" },
 } as const;
 
 interface Props {
@@ -28,6 +33,7 @@ export default function ImportPanel({ onImported }: Props) {
   const unsubRef = useRef<(() => void) | null>(null);
 
   const language = useShellLanguage();
+  const t = useShellText();
   const w = (k: keyof typeof WORDS) => dataLabel(WORDS[k], language, WORDS[k].en);
   const native = typeof api.pickImport === "function";
 
@@ -78,7 +84,7 @@ export default function ImportPanel({ onImported }: Props) {
       ) : (
       <div className="form-row">
         <label htmlFor="import-file">
-          File (ZIP, JSON, JSONL, HTML, MHT, SQLite, Markdown, text, screenshot)
+          {w("fileLabel")}
         </label>
         <input
           id="import-file"
@@ -94,14 +100,14 @@ export default function ImportPanel({ onImported }: Props) {
       </div>
       {!native && (
       <button className="primary" onClick={start} disabled={!file || busy} data-testid="start-import">
-        {busy ? "Importing…" : "Import"}
+        {busy ? w("importing") : w("start")}
       </button>
       )}
 
-      {progress && (
-        <div style={{ marginTop: 12 }} data-testid="import-progress">
+      {busy && progress && (
+        <div style={{ marginTop: 12 }} data-testid="import-progress" data-status={progress.status}>
           <div className="empty-state" style={{ textAlign: "left", padding: 0 }}>
-            {progress.status} {pct !== null ? `(${pct}%)` : `(${progress.current}/${progress.total || "?"})`}
+            {w("importing")} {pct !== null ? `(${pct}%)` : `(${progress.current}/${progress.total || "?"})`}
           </div>
           <div style={{ height: 6, background: "var(--input-bg)", borderRadius: 4, overflow: "hidden", marginTop: 4 }}>
             <div
@@ -122,25 +128,40 @@ export default function ImportPanel({ onImported }: Props) {
         </div>
       )}
 
-      {result && (
-        <div style={{ marginTop: 12 }} data-testid="import-result">
-          <div className="pill ok">Imported {String(result.messages ?? 0)} messages</div>
-          <pre
-            style={{
-              whiteSpace: "pre-wrap",
-              fontSize: 11,
-              background: "var(--input-bg)",
-              padding: 8,
-              borderRadius: 8,
-              marginTop: 8,
-              maxHeight: 200,
-              overflowY: "auto",
-            }}
-          >
-            {JSON.stringify(result, null, 2)}
-          </pre>
-        </div>
-      )}
+      {result && (() => {
+        const view = importView(result, language, t);
+        const absent = absentLine(view, t);
+        return (
+          <div style={{ marginTop: 12 }} data-testid="import-result" data-truth={view.hasTruth}>
+            <div className={`pill import-summary ${view.allSaved ? "ok" : "warn"}`} data-testid="import-summary" role="status">{view.summary ?? view.legacyLine}</div>
+            {view.rows.length > 0 && (
+              <table className="import-truth" data-testid="import-truth-table" aria-label={t("import_table")}>
+                <thead><tr><th scope="col">{t("import_col_kind")}</th><th scope="col">{t("import_col_found")}</th><th scope="col">{t("import_col_saved")}</th></tr></thead>
+                <tbody>
+                  {view.rows.map(row => (
+                    <Fragment key={row.kind}>
+                      <tr data-testid={`import-row-${row.kind}`} data-status={row.status} data-found={row.found ?? "null"} data-saved={row.saved}>
+                        <th scope="row">{row.label}</th>
+                        <td>{row.foundText}</td>
+                        <td>{row.savedText}<span className="import-status">{row.statusText}</span></td>
+                      </tr>
+                      {(row.reason || row.notes.length > 0) && (
+                        <tr className="import-reason" data-testid={`import-row-reason-${row.kind}`}>
+                          <td colSpan={3}>{row.reason}{row.notes.map((note, i) => <span key={i} className="import-note">{note}</span>)}</td>
+                        </tr>
+                      )}
+                    </Fragment>
+                  ))}
+                </tbody>
+              </table>
+            )}
+            {absent && <p className="import-absent" data-testid="import-absent">{absent}</p>}
+            <Disclosure testId="import-details" className="import-details" labels={{ show: t("import_details_show"), hide: t("import_details_hide") }}>
+              <pre data-testid="import-raw" className="import-raw" data-audit-skip>{JSON.stringify(result, null, 2)}</pre>
+            </Disclosure>
+          </div>
+        );
+      })()}
     </div>
   );
 }

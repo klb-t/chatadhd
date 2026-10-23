@@ -5,6 +5,7 @@
 
 #include "chat/context_format.h"
 #include "graph/projection.h"
+#include "import/import_truth.h"
 #include "loom/action_spend.h"
 #include "loom/client_blobs.h"
 #include "loom/archive.h"
@@ -740,9 +741,13 @@ StepOutcome import_run(Ctx& x) {
   }
   const std::size_t shown = std::min<std::size_t>(lines.size(), static_cast<std::size_t>(x.limit("list", 20)));
   lines.resize(shown);
+  // G1a: what was found and what was saved per kind of element, the reason when not all of it, in one sentence (the language of the run)
+  const Json truth = import_truth::for_runtime(*done, x.rt.paths().root);
+  const Json summary = truth.value("summary", Json::object());
+  const std::string truth_said = json::get_string(summary, x.lang, json::get_string(summary, "en"));
   return answer(x.say("imported", Json{{"format", done->format.empty() ? format : done->format}, {"conversations", convs.size()}, {"messages", done->messages}}) +
-                    (lines.empty() ? "" : "\n" + join_lines(lines)),
-                Json{{"format", done->format}, {"conversations", convs}, {"messages", done->messages}, {"source", source}});
+                    (lines.empty() ? "" : "\n" + join_lines(lines)) + (truth_said.empty() ? "" : "\n" + truth_said),
+                Json{{"format", done->format}, {"conversations", convs}, {"messages", done->messages}, {"source", source}, {"truth", truth}});
 }
 
 // ── storage ─────────────────────────────────────────────────────────
@@ -2136,6 +2141,29 @@ std::string nav_suffix(const Ctx& x, const Json& row) {
   return out;
 }
 
+// G1a: what the graph does have, when a sentence named nothing: the areas with the words the data gives them, the nearest to the words
+// said first (projection::known_names); "" when the names cannot be read (the refusal then stands alone, as it did).
+std::string names_known(const Ctx& x, const projection::Env& env, const std::string& said) {
+  auto known = projection::known_names(env, said);
+  if (!known) {
+    log::write(log::Level::Debug, "loom.actions.ops", "known_names: " + known.error().message);
+    return std::string();
+  }
+  const Json names = known->value("names", Json::array());
+  if (names.empty()) return std::string();
+  std::string joined;
+  for (const auto& n : names) {
+    const Json words = n.value("words", Json::array());
+    std::string spoken;
+    for (const auto& w : words) spoken += (spoken.empty() ? "" : ", ") + w.get<std::string>();
+    const std::string label = n.value("label", "");
+    joined += (joined.empty() ? "" : "; ") + (spoken.empty() ? label : x.say("nav_name_words", Json{{"label", label}, {"words", spoken}}));
+  }
+  const std::int64_t rest = json::get_int(*known, "total", 0) - json::get_int(*known, "shown", 0);
+  const std::string more = rest > 0 ? x.say("nav_names_more", Json{{"count", rest}}) : std::string();
+  return " " + x.say(known->value("nearest", false) ? "nav_names_near" : "nav_names_all", Json{{"names", joined}, {"more", more}});
+}
+
 // The focus the sentence names: an address, or the name of an area or of a node (projection::find_address).
 bool focus_of(const Ctx& x, const projection::Env& env, const char* arg, std::string& out, StepOutcome& failure) {
   const std::string said = trim_quotes(x.str(arg));
@@ -2147,7 +2175,7 @@ bool focus_of(const Ctx& x, const projection::Env& env, const char* arg, std::st
     return false;
   }
   if (found->empty()) {
-    failure = fail(Errc::NotFound, x.say("nav_no_focus", Json{{"focus", said}}));
+    failure = fail(Errc::NotFound, x.say("nav_no_focus", Json{{"focus", said}}) + names_known(x, env, said));
     return false;
   }
   out = *found;
@@ -2181,7 +2209,28 @@ StepOutcome graph_navigate(Ctx& x) {
     lines.push_back(x.say("nav_unknown", Json{{"source", json::get_string(u, "source_label", json::get_string(u, "source"))},
                                               {"reason", json::get_string(u, "reason_human", json::get_string(u, "reason"))}}));
   const std::string label = json::get_string(r->value("focus", Json::object()), "label");
-  if (lines.empty()) return answer(x.say("nav_empty", Json{{"label", label}}), *r);
+  if (lines.empty()) {
+    // G1a: "nothing here" would be false for an area that shows its counters only (nothing lists its contents as nodes yet): say the counters
+    const Json focus_node = r->value("focus", Json::object());
+    const std::string address = json::get_string(focus_node, "address");
+    if (address.rfind("area:", 0) == 0) {
+      // the counters of an area are what the root lists for it
+      auto root = projection::navigate(env, Json{{"limit", 0}});
+      if (root) {
+        const Json root_rows = root->value("children", Json::array());
+        for (const auto& row : root_rows) {
+          if (json::get_string(row, "address") != address) continue;
+          const std::string counters = nav_suffix(x, row);
+          if (counters.empty()) break;
+          const std::string why = json::get_string(focus_node, "why");
+          return answer(x.say("nav_area_counters", Json{{"label", label}, {"counters", counters}, {"why", why.empty() ? std::string() : " " + why}}), *r);
+        }
+      } else {
+        log::write(log::Level::Debug, "loom.actions.ops", "graph.navigate: the root could not be read for the counters: " + root.error().message);
+      }
+    }
+    return answer(x.say("nav_empty", Json{{"label", label}}), *r);
+  }
   return answer(x.say("nav_head", Json{{"label", label}, {"shown", counts.value("shown", 0)}, {"total", counts.value("total", 0)}}) + "\n" + join_lines(lines), *r);
 }
 

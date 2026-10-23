@@ -103,3 +103,8 @@
 .gnav-chip-derived { border-style: dotted; font-style: italic; }
 .gnav-chip-left-out { border-style: dashed; font-style: italic; }
 .ncard-derived { overflow-wrap: anywhere; }
+
+/* M1-G1b: the help "Co tu widzę?" under the path row (closed by default) */
+.gnav-help { border-bottom: 1px solid var(--border); }
+.gnav-help > .disclosure-head { color: inherit; font-weight: 500; }
+.gnav-help-line { margin: 6px 0; font-size: 14px; line-height: 1.4; overflow-wrap: anywhere; }

@@ -27,6 +27,7 @@ void Counts::add(const Counts& o) {
   message += o.message;
   block += o.block;
   attachment += o.attachment;
+  attachment_linked += o.attachment_linked;
   citation += o.citation;
   citation_group += o.citation_group;
   branch += o.branch;
@@ -50,6 +51,7 @@ Counts Counts::from_json(const Json& value) {
   result.message = json::get_int(value, "message");
   result.block = json::get_int(value, "block");
   result.attachment = json::get_int(value, "attachment");
+  result.attachment_linked = json::get_int(value, "attachment_linked");
   result.citation = json::get_int(value, "citation");
   result.citation_group = json::get_int(value, "citation_group");
   result.branch = json::get_int(value, "branch");
@@ -69,13 +71,14 @@ Counts Counts::from_json(const Json& value) {
   return result;
 }
 
-Json Counts::to_json() const {
+Json Counts::to_json(bool with_extras) const {
   Json bk = Json::object();
   for (const auto& [k, v] : block_kind) bk[k] = v;
   Json j = Json::object();
   j["account"] = account;
   j["artifact"] = artifact;
   j["attachment"] = attachment;
+  if (with_extras) j["attachment_linked"] = attachment_linked;
   j["block"] = block;
   j["block_kind"] = bk;
   j["branch"] = branch;
@@ -99,7 +102,8 @@ Json Report::to_json() const {
   Json j = Json::object();
   j["schema"] = "loom.export_report.v1";
   j["provider"] = provider;
-  j["counts"] = counts.to_json();
+  j["counts"] = counts.to_json(false);
+  j["attachment_linked"] = counts.attachment_linked;  // G1a: attachments whose file was found in the archive and kept
   j["members"] = Json(members);
   j["member_count"] = static_cast<std::int64_t>(members.size());
   j["errors"] = Json(errors);
