@@ -137,6 +137,8 @@ export default function App() {
     setTheme((t) => (t === "dark" ? "amoled" : "dark"));
   }, []);
 
+  // A setting a screen saved (the help "Co tu widzę?"): the app keeps the value, so the screen opened again starts as the person left it.
+  const rememberSetting = useCallback((key: string, value: boolean) => setConfig(current => ({ ...current, [key]: value })), []);
   const openPanel = useCallback((p: PanelId) => { setActivePanel((cur) => (cur === p ? null : p)); setNavOpen(false); }, []);
   const closePanel = useCallback(() => { setActivePanel(null); setSettingsView(""); }, []);
 
@@ -205,9 +207,9 @@ export default function App() {
                 </button>
               </div>
               <div className="drawer-body">
-                {activePanel === "graph" && <GraphView convId={activeConvId} />}
+                {activePanel === "graph" && <GraphView convId={activeConvId} profileHost={userProfileHost} helpSetting={config.graph_view_help_open} onSetting={rememberSetting} />}
                 {activePanel === "graph-entry" && <GraphEntryPanel profileHost={userProfileHost} openers={entryOpeners} />}
-                {activePanel === "navigator" && <GraphNavigator profileHost={userProfileHost} convId={activeConvId} language={uiLanguage} initialFocus={navigatorFocus} initialPerspectives={navigatorPerspectives} layout={config.navigator_layout} />}
+                {activePanel === "navigator" && <GraphNavigator profileHost={userProfileHost} convId={activeConvId} language={uiLanguage} initialFocus={navigatorFocus} initialPerspectives={navigatorPerspectives} layout={config.navigator_layout} helpSetting={config.navigator_help_open} onSetting={rememberSetting} />}
                 {activePanel === "perspectives" && <PerspectivesPanel convId={activeConvId} />}
                 {activePanel === "view-engine" && <ViewEnginePanel />}
                 {activePanel === "memory" && <MemoryPanel />}
