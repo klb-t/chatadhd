@@ -774,6 +774,12 @@ Na Androidzie zobaczył w „Kontekście” wybór z pól wyboru (checkboxy) —
 
 Właściciel przypomina, że miał przenieść sesję koordynatora na GCP (kodowanie i natychmiastowy deploy w jednym miejscu) i pyta, czy to konieczne i czy przygotować przeprowadzkę na jutro. Kontekst: dwa restarty kontenera przez dysk (23.10), CI 2 h, emulator w GH Actions.
 
+## R69 — Depth and width as arguments of a function: a context selector that takes a graph node corresponding to ... (continuation of R67; the sentence breaks off) (owner, 2026-10-23)
+> ja akurat o szerokości głębokości myślałem w kontekście argumentów  funkcji może jak dziadek gadam nie wiem tak to się Kiedyś mówiło ;)
+> wiesz po staremu architektonicznie tak to widzę że jest funkcja kontekst selektor która bierze węzeł w grafie odpowiadający
+
+Doprecyzowanie R67: głębokość i szerokość to argumenty funkcji. Architektonicznie: jest funkcja „kontekst selektor”, która bierze węzeł w grafie odpowiadający … (wypowiedź urwana — ciąg dalszy w następnej wiadomości).
+
 ## Decision — rebuild, don't recover
 > "nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane"
 

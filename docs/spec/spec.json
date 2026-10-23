@@ -5,8 +5,8 @@
  "sources": {
   "owner": {
    "path": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
-   "sha256": "97fbf490dad3e77ccf907891fa25cfcc3c61360d2ab96dc57c9e8b61ae1020c6",
-   "lines": 791
+   "sha256": "55b6162a7fec3a9656b641a78f0588945c33890e8b8bc09aecdeff3682fae08c",
+   "lines": 797
   },
   "slowa": {
    "path": "docs/architecture/SLOWA_WLASCICIELA_2026-10-16.md",
@@ -3862,6 +3862,60 @@
    ]
   },
   {
+   "id": "s_9d68f9c43c49",
+   "aliases": [
+    "R69"
+   ],
+   "kind": "requirement",
+   "title": "Depth and width as arguments of a function: a context selector that takes a graph node corresponding to ... (continuation of R67; the sentence breaks off)",
+   "date": "2026-10-23",
+   "theme": "owner_requirements",
+   "theme_inferred": false,
+   "understanding": {
+    "state": "none"
+   },
+   "quotes": [
+    {
+     "text": "ja akurat o szerokości głębokości myślałem w kontekście argumentów  funkcji może jak dziadek gadam nie wiem tak to się Kiedyś mówiło ;)\nwiesz po staremu architektonicznie tak to widzę że jest funkcja kontekst selektor która bierze węzeł w grafie odpowiadający",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:778-779",
+     "ref": null,
+     "attr": [],
+     "lead": null,
+     "secondary": false
+    }
+   ],
+   "sense": null,
+   "summary": null,
+   "restatement": [
+    {
+     "text": "Doprecyzowanie R67: głębokość i szerokość to argumenty funkcji. Architektonicznie: jest funkcja „kontekst selektor”, która bierze węzeł w grafie odpowiadający … (wypowiedź urwana — ciąg dalszy w następnej wiadomości).",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:781"
+    }
+   ],
+   "commentary": [],
+   "status": null,
+   "gap_text": null,
+   "evidence": [],
+   "next_step": null,
+   "refs": [
+    "s_d70418b3948e"
+   ],
+   "supersedes": [],
+   "superseded_by": [],
+   "supersession_notes": [],
+   "tags": [],
+   "heading_note": "owner, 2026-10-23",
+   "sources": [
+    {
+     "role": "owner",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:777-781"
+    }
+   ],
+   "files": [
+    "owner"
+   ]
+  },
+  {
    "id": "s_18ec73967a7b",
    "aliases": [
     "owner:decision-rebuild-don-t-recover"
@@ -3877,7 +3931,7 @@
    "quotes": [
     {
      "text": "\"nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane\"",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:778",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:784",
      "ref": null,
      "attr": [],
      "lead": null,
@@ -3889,7 +3943,7 @@
    "restatement": [
     {
      "text": "Recovered versions (`history/chatadhd_v0.8.3`, `history/chatadhd_v0.9.0`) and\nthe historical report are sources of requirements, ideas and data assets\n(e.g. `film_structure.json`), and real ground truth for self-discovery tests —\nnot code to merge. Everything is rebuilt in Loom with tests.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:780-783"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:786-789"
     }
    ],
    "commentary": [],
@@ -3906,7 +3960,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:777-783"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:783-789"
     }
    ],
    "files": [
@@ -3932,7 +3986,7 @@
    "restatement": [
     {
      "text": "`workbench_mockup_2026-09-26.webp`: dockable/floating panels (conversation\nlist, active conversation, knowledge graph with active context window, project\nstructure with dimmed high-confidence auto-completable nodes, artifact views\nfor music/video with timeline + storyboard, video player, execution\nenvironment with agent), multi-format ingestion, Loom SDK at the centre.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:786-790"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:792-796"
     }
    ],
    "commentary": [],
@@ -3949,7 +4003,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:785-790"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:791-796"
     }
    ],
    "files": [
