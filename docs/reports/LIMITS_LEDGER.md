@@ -146,3 +146,6 @@ czy trzymać linię tygodniową.
 
 
 **Próbka 2026-10-23 10:46 UTC:** tydzień **60 %** (+3 pkt od 10:11: 5 torów R89 ≈ 2,5 pkt + mój kontekst), okno 5 h 34 %; ostrzeżenie platformy: próg 0,75 z nadwyżką (nadwyżka wyłączona, liczy się 100 % tygodnia). Linia: 56 % o 20:00 przekroczona o 4 pkt; do 80 % w sob 08:00 zostaje ≈ 20 pkt / 21 h. Start projektu K3 (Fable) o 10:52 (zryw R89 skończony: 5 torów gotowe, ocena w toku). Plan reszty doby: synteza R89 (Fable ≈ 1,5), K3 projekt (≈ 1,5), K2c-3 (0,5), R67-fix (0,7), W2b-2 (0,7), bramki (0) → ≈ 65 % o 16:00, potem pakiety K3-1/G2 wg tempa.
+
+
+**2026-10-23 11:23 UTC — koszt kontroli przed użyciem i błąd modelu:** workflow `check-before-use` (2 × Haiku kontrola + 2 × poprawki) = 626 tys. tokenów, 37 wywołań, 14 min; poprawki POSZŁY NA FABLE (skrypt nie ustawiał `model` dla etapu poprawek → dziedziczył model sesji) — naprawione w skrypcie (`model: 'sonnet'`). R89 cały: 1,53 mln tokenów / 299 wywołań / 80 min (5 torów + ocena + synteza Fable). K3 projekt (Fable): 161 tys. / 13 wywołań / 13 min. Start K2c-3 (Sonnet, m1d1) o 11:23 — odstępstwo od presetu odstępu 1,9 h (ostatni start 10:52): linia budżetu (≈ 1 pkt/h do 80 % sob 08:00) i okno 5 h (34 % o 10:46, od tego czasu tylko kontrola i mały projekt) pozwalają; pakiet mały (≈ 0,5 pkt).
