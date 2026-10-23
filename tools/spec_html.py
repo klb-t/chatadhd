@@ -402,7 +402,7 @@ blockquote { margin: .2rem 0; padding: .4rem .7rem; background: var(--card); bor
     h += '</div>';
     if (para) h += `<div class="qtext" data-qtext>${esc(para)}</div><button type="button" class="link" data-more hidden>więcej</button>`;
     h += `<div class="silent"><b>Bez Twojej odpowiedzi:</b> ${esc(silent)}${preset ? ' <span class="src">(ustawienie domyślne)</span>' : ''}</div>`;
-    for (const x of r.esc) h += `<div class="esc"><b>Przekazane koordynatorowi</b> · ${esc(KIND_LABEL[x.kind] || x.kind)} ${esc((x.at || '').slice(0, 16).replace('T', ' '))}${x.text ? ': ' + esc(x.text) : ''}${x.reason ? ' — powód: ' + esc(x.reason) : ''}</div>`;
+    for (const x of r.esc) h += `<div class="esc"><b>Przekazane koordynatorowi</b> · ${esc(KIND_LABEL[x.kind] || x.kind)} ${esc((x.at || '').slice(0, 16).replace('T', ' '))}${x.text ? ': ' + esc(x.text) : ''}${(x.why || x.reason) ? ' — powód: ' + esc(x.why || x.reason) : ''}</div>`;
     h += `<div class="inbox" data-inbox-for="${esc(n.id)}" hidden></div><div class="decide" data-decide-for="${esc(n.id)}" hidden></div></article>`;
     return h;
   }
