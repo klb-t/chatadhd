@@ -745,6 +745,42 @@ const serverChecks = [
     if (await has("chat-error")) throw new Error("chat-error: " + await page.ev(`${q("chat-error")}.innerText`));
     return shown.replace(/\s+/g, " ").slice(0, 80);
   }],
+  // G1a: a chat sentence opens the navigator at the root of the graph
+  ["graph: 'pokaż katalog główny grafu' in the chat opens the navigator root", async () => {
+    await send("pokaż katalog główny grafu");
+    await until("the navigator", () => has("graph-navigator"), 60, 400);
+    await waitTid("nav-rows", 30);
+    const focus = await page.ev(`${q("graph-navigator")}.getAttribute('data-focus')||''`);
+    const rows = await page.ev(`[...document.querySelectorAll('[data-testid="nav-rows"] .gnav-label')].slice(0,6).map(e=>e.innerText).join(' | ')`);
+    shot("graph-root-from-chat");
+    await m1Reset();
+    if (focus) throw new Error(`the navigator opened on "${focus}", not at the root; rows: ${rows}`);
+    return `root rows: ${rows}`;
+  }],
+  // K2c-2: ⋮ › Ty lists the parts of the person (subgraph:self/…) with counts; a part opens its slots
+  ["Ty: ⋮ › Ty shows the parts with counts; the first part opens its rows", async () => {
+    await openMenu("me");
+    await waitTid("nav-rows", 30);
+    const parts = await page.ev(`[...document.querySelectorAll('[data-testid="nav-rows"] .gnav-row-main')].map(b=>b.dataset.testid.replace('nav-row-','')+' '+(b.innerText||'').replace(/\\s+/g,' ').slice(0,40)).slice(0,6)`);
+    const first = await page.ev(`(()=>{const b=[...document.querySelectorAll('[data-testid="nav-rows"] .gnav-row-main')].find(b=>/subgraph:self/.test(b.dataset.testid)&&b.dataset.hasChildren!=='false');return b?b.dataset.testid:''})()`);
+    if (!first) { await m1Reset(); throw new Error(`no part subgraph:self/… with children under Ty: ${parts.join(' | ')}`); }
+    await clickSettled(first);
+    await until("the part's rows", () => page.ev(`${q("graph-navigator")}?.getAttribute('data-focus')||''`).then(f => f && first.includes(f) && f), 30, 300);
+    const slots = await page.ev(`[...document.querySelectorAll('[data-testid="nav-rows"] .gnav-label')].slice(0,6).map(e=>e.innerText).join(' | ')`);
+    shot("ty-part");
+    await m1Reset();
+    return `parts: ${parts.join(' | ')}; ${first.replace('nav-row-','')} -> ${slots}`;
+  }],
+  // G1: "Co tu widzę?" on the navigator opens a help text
+  ["graph: ⋮ › Graf › 'Co tu widzę?' opens the help", async () => {
+    await openMenu("graph");
+    await waitTid("nav-help", 30);
+    await page.ev(`${q("nav-help")}.querySelector('button').click()`);
+    await waitTid("nav-help-line-1", 10);
+    const help = (await textTid("nav-help-line-1")).replace(/\s+/g, " ").slice(0, 200);
+    await m1Reset();
+    return `help: "${help}"`;
+  }],
   ["model: the picker and the default-model setting reach the provider", async () => {
     const options = await page.ev(`[...document.querySelectorAll('[data-testid="model-picker"] option')].map(o=>o.value)`);
     await setConfigViaUi("cfg-default-model", "default_model", "smoke/model-b");
@@ -779,8 +815,13 @@ const serverChecks = [
     const c = await until("the conversation on the server", () => convTitled("Smoke ChatGPT JSON"), 20, 500);
     const n = (await messagesOf(c.id)).length;
     if (n !== 4) throw new Error(`expected 4 messages through the API, found ${n}`);
+    // G1b: the kernel's summary sentence and the per-kind table with reasons
+    const summary = (await textTid("import-summary")).replace(/\s+/g, " ").slice(0, 200);
+    const table = await countTid("import-truth-table");
     await closePanel();
-    return "4 messages through the API";
+    if (!/znaleziono|found/i.test(summary)) throw new Error(`the import summary does not say what was found: "${summary}"`);
+    if (table !== 1) throw new Error("no import-truth-table under the summary");
+    return `4 messages through the API; summary "${summary}"; truth table shown`;
   }],
   ["import (UI): Claude.ai ZIP from a picked file", async () => {
     await openImportPanel(); await waitTid("import-file-input");
