@@ -275,7 +275,7 @@ Dodaj `--caddy` dla B. Ani `vm_oneliner.sh`, ani `bootstrap_dev_vm.sh` nie były
 
 Kolejność (kroki 2–3 robi komenda z góry dokumentu):
 1. Zaloguj się i zapisz `df -h`, `nproc`, `free -g` (porównanie z §2).
-2. Klon: `git clone https://github.com/klb-t/chatadhd ~/chatadhd` (robi to `--clone`).
+2. Klon: `git clone https://github.com/klb-t/chatadhd ~/chatadhd` (robi to `vm_oneliner.sh`).
 3. Bootstrap (komenda powyżej albo `tools/bootstrap_dev_vm.sh --dry-run`, potem bez `--dry-run`).
    Wyloguj się i zaloguj ponownie (grupy, PATH).
 4. Zimny build: komenda wypisana na końcu skryptu, z `time`. Potem ciepły (po usunięciu `loom/build/dev`).
