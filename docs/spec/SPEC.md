@@ -5,13 +5,13 @@ Ten plik jest **wygenerowany** z `docs/spec/spec.json` poleceniem `python3 tools
 
 Status pochodzi z pliku luk i jest **obserwacją z podanej daty**, nie ograniczeniem.
 
-Pozycji razem: **498**.
+Pozycji razem: **499**.
 
 | Status (z LUKI) | liczba |
 |---|---|
 | częściowo | 210 |
 | jest | 151 |
-| bez statusu (nie ma w LUKI) | 115 |
+| bez statusu (nie ma w LUKI) | 116 |
 | brak | 16 |
 | nieaktualne | 5 |
 | sprzeczne | 1 |
@@ -19,7 +19,7 @@ Pozycji razem: **498**.
 | Rodzaj | liczba |
 |---|---|
 | remark | 367 |
-| requirement | 74 |
+| requirement | 75 |
 | philosophy | 36 |
 | statement | 10 |
 | decision | 4 |
@@ -29,13 +29,13 @@ Pozycji razem: **498**.
 | Rozumienie (R61) | liczba |
 |---|---|
 | none | 487 |
-| proposed | 9 |
+| proposed | 10 |
 | corrected | 2 |
 
 | W których plikach | liczba |
 |---|---|
 | LUKI + SLOWA | 379 |
-| rejestr R/D | 81 |
+| rejestr R/D | 82 |
 | SLOWA | 34 |
 | LUKI | 4 |
 
@@ -55,7 +55,7 @@ Pozycji razem: **498**.
 | Proces i współpraca | 67 |
 | Pozostałe | 33 |
 | Uzupełnienia (wypowiedzi bez numeru) | 10 |
-| Rejestr wymagań R/D | 81 |
+| Rejestr wymagań R/D | 82 |
 | bez tematu | 3 |
 
 ## Filozofia
@@ -595,8 +595,9 @@ Pozycji razem: **498**.
 - `s_20b2e5caeba0` **R72** — Teleport, nie bootstrap; pozycje w selektorze kontekstu to dane, nie reguła — _bez statusu_ · rozumienie: corrected · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L793)
 - `s_cbb8ed66f13d` **R73** — Żywy, hierarchiczny widok specyfikacji i ustaleń (zwijany; edytowana gałązka rozwinięta); pytanie o środowisko testowe GUI — _bez statusu_ · rozumienie: proposed · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L800)
 - `s_0f005a5e98e8` **R74** — 0 i −1 to współrzędne względne w perspektywie kolejnych wiadomości, nie etykiety; ten sam mechanizm w każdym wymiarze (np. wersje); składnia to tylko przykład — _bez statusu_ · rozumienie: proposed · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L807)
-- `s_18ec73967a7b` **owner:decision-rebuild-don-t-recover** — Decision — rebuild, don't recover — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L813)
-- `s_223e1568b3b9` **owner:ui-reference** — UI reference — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L821)
+- `s_c3819e63f872` **R75** — Gdy brak decyzji właściciela blokuje: ostrożna decyzja wstępna, tania do wycofania; jechać do przodu z pomyślunkiem — _bez statusu_ · rozumienie: proposed · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L813)
+- `s_18ec73967a7b` **owner:decision-rebuild-don-t-recover** — Decision — rebuild, don't recover — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L818)
+- `s_223e1568b3b9` **owner:ui-reference** — UI reference — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L826)
 
 ## Bez tematu
 

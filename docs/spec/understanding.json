@@ -141,6 +141,26 @@
    "by": "koordynator (Fable)",
    "date": "2026-10-23"
   },
+  "s_c3819e63f872": {
+   "state": "proposed",
+   "history": [
+    {
+     "state": "proposed",
+     "by": "koordynator (Fable)",
+     "date": "2026-10-23",
+     "text": "Brak Twojej odpowiedzi nie zatrzymuje pracy: biorę decyzję wstępną (najtańszą do odwrócenia: dokument zamiast kodu, preset w danych zamiast zmiany silnika, gałąź zamiast main), zapisuję ją w INDEX/QUEUE z odwrotem i jadę dalej; parafrazy zostają  do Twojego przeglądu. Wyjątki bez zmian: Twoje pieniądze poza budżetem, Twoje dane u nowego dostawcy, wzrost zużycia ×10."
+    },
+    {
+     "state": "proposed",
+     "by": "koordynator (Fable)",
+     "date": "2026-10-23",
+     "text": "Brak Twojej odpowiedzi nie zatrzymuje pracy: biorę decyzję wstępną (najtańszą do odwrócenia: dokument zamiast kodu, preset w danych zamiast zmiany silnika, gałąź zamiast main), zapisuję ją w INDEX/QUEUE z odwrotem i jadę dalej; parafrazy zostają w stanie proposed do Twojego przeglądu. Wyjątki bez zmian: Twoje pieniądze poza budżetem, Twoje dane u nowego dostawcy, wzrost zużycia x10."
+    }
+   ],
+   "text": "Brak Twojej odpowiedzi nie zatrzymuje pracy: biorę decyzję wstępną (najtańszą do odwrócenia: dokument zamiast kodu, preset w danych zamiast zmiany silnika, gałąź zamiast main), zapisuję ją w INDEX/QUEUE z odwrotem i jadę dalej; parafrazy zostają w stanie proposed do Twojego przeglądu. Wyjątki bez zmian: Twoje pieniądze poza budżetem, Twoje dane u nowego dostawcy, wzrost zużycia x10.",
+   "by": "koordynator (Fable)",
+   "date": "2026-10-23"
+  },
   "s_cbb8ed66f13d": {
    "state": "proposed",
    "history": [

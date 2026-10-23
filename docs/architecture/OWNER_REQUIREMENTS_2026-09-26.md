@@ -810,6 +810,11 @@ Trzy rzeczy (08:1x UTC). (1) Pytanie: czy testy w przeglądarce (ze zrzutami) ro
 
 Doprecyzowanie R70/R72 (08:2x UTC): 0 i −1 nie są sztywnymi etykietami ani presetem „która wiadomość jest ważna”, tylko współrzędną WZGLĘDNĄ w perspektywie kolejnych wiadomości: 0 = bieżąca (ta, nad którą pracujemy, dla której szukamy kontekstu), −1 = poprzednia. Ten sam mechanizm ma obsłużyć inne wymiary, np. wersje (jego przykład zapisu: -1."00" = max.last — ostatnia wersja poprzedniej wiadomości); zapis jest tylko przykładem składni, niekoniecznie dobrym.
 
+## R75 — Gdy brak decyzji właściciela blokuje: ostrożna decyzja wstępna, tania do wycofania; jechać do przodu z pomyślunkiem (owner, 2026-10-23)
+> o ładnie to wygląda to ja mogę iść spać wreszcie może a ty rób to co wiesz, jeśli brak mojej decyzji cię blokuje to ostrożnie podejmij wstępną taką żeby się dało z małymi kosztami w razie w wycofać i z pomyślunkiem jedź do przodu
+
+Po obejrzeniu żywego widoku specyfikacji (R73) właściciel idzie spać i zostawia zasadę pracy: rób to, co wiesz; brak jego decyzji nie blokuje — podejmij decyzję wstępną, ostrożną, taką, którą da się wycofać małym kosztem, i jedź dalej z namysłem. Uzupełnia R62 (działaj śmiało, gdy wiesz) i R61 (parafraza przed drogą pracą): parafraza zostaje w stanie proposed, praca rusza, decyzja wstępna zapisana z odwrotem.
+
 ## Decision — rebuild, don't recover
 > "nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane"
 

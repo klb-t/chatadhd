@@ -5,8 +5,8 @@
  "sources": {
   "owner": {
    "path": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
-   "sha256": "60341af6d199c1893a7d5fbe25c626ff3a0348d009dd1633f1846e50be96339f",
-   "lines": 827
+   "sha256": "15d4bbbb9f461ddf8e16f627abb5d6df6765599311860a34242bf0767b4dce7c",
+   "lines": 832
   },
   "slowa": {
    "path": "docs/architecture/SLOWA_WLASCICIELA_2026-10-16.md",
@@ -4287,6 +4287,79 @@
    ]
   },
   {
+   "id": "s_c3819e63f872",
+   "aliases": [
+    "R75"
+   ],
+   "kind": "requirement",
+   "title": "Gdy brak decyzji właściciela blokuje: ostrożna decyzja wstępna, tania do wycofania; jechać do przodu z pomyślunkiem",
+   "date": "2026-10-23",
+   "theme": "owner_requirements",
+   "theme_inferred": false,
+   "understanding": {
+    "state": "proposed",
+    "history": [
+     {
+      "state": "proposed",
+      "by": "koordynator (Fable)",
+      "date": "2026-10-23",
+      "text": "Brak Twojej odpowiedzi nie zatrzymuje pracy: biorę decyzję wstępną (najtańszą do odwrócenia: dokument zamiast kodu, preset w danych zamiast zmiany silnika, gałąź zamiast main), zapisuję ją w INDEX/QUEUE z odwrotem i jadę dalej; parafrazy zostają  do Twojego przeglądu. Wyjątki bez zmian: Twoje pieniądze poza budżetem, Twoje dane u nowego dostawcy, wzrost zużycia ×10."
+     },
+     {
+      "state": "proposed",
+      "by": "koordynator (Fable)",
+      "date": "2026-10-23",
+      "text": "Brak Twojej odpowiedzi nie zatrzymuje pracy: biorę decyzję wstępną (najtańszą do odwrócenia: dokument zamiast kodu, preset w danych zamiast zmiany silnika, gałąź zamiast main), zapisuję ją w INDEX/QUEUE z odwrotem i jadę dalej; parafrazy zostają w stanie proposed do Twojego przeglądu. Wyjątki bez zmian: Twoje pieniądze poza budżetem, Twoje dane u nowego dostawcy, wzrost zużycia x10."
+     }
+    ],
+    "text": "Brak Twojej odpowiedzi nie zatrzymuje pracy: biorę decyzję wstępną (najtańszą do odwrócenia: dokument zamiast kodu, preset w danych zamiast zmiany silnika, gałąź zamiast main), zapisuję ją w INDEX/QUEUE z odwrotem i jadę dalej; parafrazy zostają w stanie proposed do Twojego przeglądu. Wyjątki bez zmian: Twoje pieniądze poza budżetem, Twoje dane u nowego dostawcy, wzrost zużycia x10.",
+    "by": "koordynator (Fable)",
+    "date": "2026-10-23"
+   },
+   "quotes": [
+    {
+     "text": "o ładnie to wygląda to ja mogę iść spać wreszcie może a ty rób to co wiesz, jeśli brak mojej decyzji cię blokuje to ostrożnie podejmij wstępną taką żeby się dało z małymi kosztami w razie w wycofać i z pomyślunkiem jedź do przodu",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:814",
+     "ref": null,
+     "attr": [],
+     "lead": null,
+     "secondary": false
+    }
+   ],
+   "sense": null,
+   "summary": null,
+   "restatement": [
+    {
+     "text": "Po obejrzeniu żywego widoku specyfikacji (R73) właściciel idzie spać i zostawia zasadę pracy: rób to, co wiesz; brak jego decyzji nie blokuje — podejmij decyzję wstępną, ostrożną, taką, którą da się wycofać małym kosztem, i jedź dalej z namysłem. Uzupełnia R62 (działaj śmiało, gdy wiesz) i R61 (parafraza przed drogą pracą): parafraza zostaje w stanie proposed, praca rusza, decyzja wstępna zapisana z odwrotem.",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:816"
+    }
+   ],
+   "commentary": [],
+   "status": null,
+   "gap_text": null,
+   "evidence": [],
+   "next_step": null,
+   "refs": [
+    "s_cbb8ed66f13d",
+    "s_2d3cdd28adb2",
+    "s_daef127d5ef9"
+   ],
+   "supersedes": [],
+   "superseded_by": [],
+   "supersession_notes": [],
+   "tags": [],
+   "heading_note": "owner, 2026-10-23",
+   "sources": [
+    {
+     "role": "owner",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:813-816"
+    }
+   ],
+   "files": [
+    "owner"
+   ]
+  },
+  {
    "id": "s_18ec73967a7b",
    "aliases": [
     "owner:decision-rebuild-don-t-recover"
@@ -4302,7 +4375,7 @@
    "quotes": [
     {
      "text": "\"nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane\"",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:814",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:819",
      "ref": null,
      "attr": [],
      "lead": null,
@@ -4314,7 +4387,7 @@
    "restatement": [
     {
      "text": "Recovered versions (`history/chatadhd_v0.8.3`, `history/chatadhd_v0.9.0`) and\nthe historical report are sources of requirements, ideas and data assets\n(e.g. `film_structure.json`), and real ground truth for self-discovery tests —\nnot code to merge. Everything is rebuilt in Loom with tests.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:816-819"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:821-824"
     }
    ],
    "commentary": [],
@@ -4331,7 +4404,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:813-819"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:818-824"
     }
    ],
    "files": [
@@ -4357,7 +4430,7 @@
    "restatement": [
     {
      "text": "`workbench_mockup_2026-09-26.webp`: dockable/floating panels (conversation\nlist, active conversation, knowledge graph with active context window, project\nstructure with dimmed high-confidence auto-completable nodes, artifact views\nfor music/video with timeline + storyboard, video player, execution\nenvironment with agent), multi-format ingestion, Loom SDK at the centre.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:822-826"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:827-831"
     }
    ],
    "commentary": [],
@@ -4374,7 +4447,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:821-826"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:826-831"
     }
    ],
    "files": [
