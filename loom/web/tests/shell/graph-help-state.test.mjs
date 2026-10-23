@@ -51,7 +51,7 @@ test('each screen has its own setting and its own words; the title and both disc
 test('the old map has its own help: it does not describe rows and cards it does not have', () => {
   for (const language of Object.keys(locales)) {
     const old = help.helpLines(translator(language), 'help_old').join(' ');
-    assert.ok(!/wiersz|row/i.test(old), `${language}: the old view has no rows`);
+    assert.ok(!/wiersz|\brows?\b/i.test(old), `${language}: the old view has no rows`);
     assert.ok(/⋮ › Graf|⋮ › Graph/.test(old), `${language}: it points to the navigator`);
   }
 });
