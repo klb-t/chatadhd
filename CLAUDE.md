@@ -106,6 +106,13 @@ philosophy implies, and say what was added. Unless he says a list is closed, it 
   asks whether it is intended, and offers "don't ask next time" (remembered like `declined`, reversible in
   settings; how often to ask, up to never, is a configurable preset).
 - Every agent brief carries this rule (`tools/workflows/single-package.js`).
+- **Scripts and tools too (owner, 2026-10-23 07:5x, first run of the VM bootstrap: it stopped on „skrypt jest pisany pod
+  Ubuntu 24.04” while his VM runs 26.04 — „A słyszałeś kiedyś o mojej tzw. filozofii?”).** An observation about the
+  environment (OS release, user name, a package missing in that release, a tool version) is never a stop: the script
+  says what it was checked on and continues, skips what it cannot do with an advisory, and repeats all advisories in
+  its summary; a stop is reserved for a real impossibility (no package manager at all, no permission) and is opt-in
+  otherwise (`--strict-os`). The same holds for defaults: what the script can do for the person it does by default
+  (e.g. the `/home/user` link) with an opt-out, instead of a flag he has to discover after a failure.
 - **A brief is a list of examples too (owner, 2026-10-23, second message).** When the coordinator hands an
   agent choices phrased as requirements, the agent reads them as examples of the functionality of the
   engine and its abstractions: it builds the general mechanism; the brief's case is one instance and one

@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # =============================================================================
-# bootstrap_dev_vm.sh - przygotowanie maszyny deweloperskiej (Ubuntu 24.04) pod ChatADHD / Loom
+# bootstrap_dev_vm.sh - przygotowanie maszyny deweloperskiej pod ChatADHD / Loom (sprawdzony pod Ubuntu 24.04 = runner CI;
+#   inne wydania: jedzie dalej, czego nie da się zainstalować, zgłasza jako uwagę - nic nie zatrzymuje się na nazwie systemu)
 # =============================================================================
 #
 # !!! UWAGA: TEN SKRYPT NIE BYŁ URUCHOMIONY ANI PRZETESTOWANY (stan: 2026-10-23, pakiet OPS1). !!!
@@ -31,9 +32,13 @@
 #   --caddy       dodaj pakiet apt `caddy` (serwer HTTPS dla deploy/install.sh; sama instalacja serwera to osobny krok)
 #   --no-web      pomiń `npm ci` i instalację Chromium dla Playwright
 #   --bashrc      dopisz do ~/.bashrc jedną linię `source ~/.config/chatadhd-dev-env.sh` (domyślnie tylko wypisuje)
-#   --any-os      nie zatrzymuj się, gdy to nie jest Ubuntu 24.04 (wtedy nazwy pakietów mogą się nie zgadzać)
-#   --home-link   gdy HOME to nie /home/user: utwórz dowiązanie /home/user -> $HOME (tools/gate.sh i briefy mają /home/user na sztywno;
-#                 niesprawdzone, ccache może trafiać gorzej, bo kompilator widzi ścieżkę rzeczywistą)
+#   --strict-os   ZATRZYMAJ się, gdy to nie jest Ubuntu 24.04 (domyślnie skrypt tylko mówi, że sprawdzono go pod 24.04,
+#                 i jedzie dalej; pakiet, którego nie ma w danym wydaniu, jest pomijany z uwagą, nie zatrzymuje reszty)
+#   --any-os      (dawna opcja, dziś to zachowanie domyślne; przyjmowana dla zgodności)
+#   --no-home-link gdy HOME to nie /home/user, skrypt DOMYŚLNIE tworzy dowiązanie /home/user -> $HOME (tools/gate.sh i briefy
+#                 mają /home/user na sztywno; OPS2 to odpina); ta opcja to wyłącza. --home-link = jawnie włącz (domyślne)
+#   --no-py311    nie próbuj instalować Pythona 3.11 (CI używa 3.11); domyślnie: próba z PPA deadsnakes, a gdy się nie uda
+#                 (np. wydanie Ubuntu, dla którego PPA nie ma paczek) - uwaga i systemowy python3
 #   --repo DIR    katalog repozytorium (domyślnie: katalog nad tym skryptem, a gdy go tam nie widać: ~/chatadhd)
 # Zmienne środowiska (presety): CHATADHD_CCACHE_MAXSIZE (12G), CHATADHD_NODE_MAJOR (22), CHATADHD_VENV (~/.venvs/loom311),
 #   CHATADHD_ANDROID_HOME (~/android-sdk), CHATADHD_ANDROID_CMDLINE_URL, CHATADHD_ANDROID_CMDLINE_SHA256, CHATADHD_REPO.
@@ -71,10 +76,11 @@ ANDROID_CMDLINE_URL="${CHATADHD_ANDROID_CMDLINE_URL:-https://dl.google.com/andro
 ANDROID_CMDLINE_SHA256="${CHATADHD_ANDROID_CMDLINE_SHA256:-}"   # puste = bez sprawdzania sumy (ostrzeżenie)
 ENV_FILE="$HOME/.config/chatadhd-dev-env.sh"
 
-DRY=0 DO_ANDROID=0 DO_EMULATOR=0 DO_LIBCXX=0 DO_CADDY=0 DO_WEB=1 DO_BASHRC=0 ANY_OS=0 DO_HOMELINK=0
+DRY=0 DO_ANDROID=0 DO_EMULATOR=0 DO_LIBCXX=0 DO_CADDY=0 DO_WEB=1 DO_BASHRC=0 STRICT_OS=0 DO_HOMELINK=1 DO_PY311=1
+ADVISORIES=()   # uwagi niewiążące zebrane po drodze, powtórzone w podsumowaniu (żeby nic nie zginęło w przewijaniu)
 
 log()  { printf '\n== %s\n' "$*"; }
-warn() { printf 'UWAGA: %s\n' "$*" >&2; }
+warn() { printf 'UWAGA: %s\n' "$*" >&2; ADVISORIES+=("$*"); }
 die()  { printf 'BŁĄD: %s\n' "$*" >&2; exit 1; }
 # run: wypisz polecenie i (poza --dry-run) wykonaj je
 run()  { printf '+ %s\n' "$*"; [ "$DRY" = 1 ] || "$@"; }
@@ -88,8 +94,11 @@ while [ $# -gt 0 ]; do
     --caddy)    DO_CADDY=1; shift;;
     --no-web)   DO_WEB=0; shift;;
     --bashrc)   DO_BASHRC=1; shift;;
-    --any-os)   ANY_OS=1; shift;;
+    --strict-os) STRICT_OS=1; shift;;
+    --any-os)   shift;;   # dawna opcja: dziś domyślne
     --home-link) DO_HOMELINK=1; shift;;
+    --no-home-link) DO_HOMELINK=0; shift;;
+    --no-py311) DO_PY311=0; shift;;
     --repo)     [ $# -ge 2 ] || die "brak wartości dla --repo"; REPO="$2"; shift 2;;
     -h|--help)  if [ -n "$SELF" ] && [ -f "$SELF" ]; then sed -n '2,/^set -euo pipefail/p' "$SELF" | sed '$d'; else echo "pomoc jest w nagłówku pliku: pobierz go (curl -o) i uruchom z --help"; fi; exit 0;;
     *) die "nieznana opcja: $1 (spróbuj --help)";;
@@ -108,8 +117,10 @@ if [ -r /etc/os-release ]; then
   . /etc/os-release
   echo "system: ${PRETTY_NAME:-nieznany}"
   if [ "${ID:-}" != "ubuntu" ] || [ "${VERSION_ID:-}" != "24.04" ]; then
-    [ "$ANY_OS" = 1 ] || die "skrypt jest pisany pod Ubuntu 24.04 (to samo co runner CI); inny system: --any-os na własną odpowiedzialność"
-    warn "to nie jest Ubuntu 24.04 - nazwy pakietów mogą się różnić"
+    # Obserwacja z datą, nie ograniczenie (CLAUDE.md: zasada właściciela, R58-R60): skrypt SPRAWDZONO pod Ubuntu 24.04
+    # (runner CI, 2026-10-23); na innym wydaniu jedzie dalej, a to, czego nie da się zainstalować, zgłasza jako uwagę.
+    warn "sprawdzono pod Ubuntu 24.04 (runner CI); tu jest ${PRETTY_NAME:-inny system} - jadę dalej, brakujące pakiety zgłoszę w podsumowaniu (zatrzymanie: --strict-os)"
+    [ "$STRICT_OS" = 1 ] && die "--strict-os: to nie jest Ubuntu 24.04"
   fi
 fi
 command -v apt-get >/dev/null || die "brak apt-get"
@@ -146,7 +157,14 @@ if [ "$DO_CADDY" = 1 ]; then
   )
 fi
 run $SUDO apt-get update -y
-run $SUDO apt-get install -y --no-install-recommends "${APT_PKGS[@]}"
+# Najpierw cała lista naraz (szybko); gdy w tym wydaniu brakuje którejś paczki, apt odrzuca CAŁĄ listę,
+# więc wtedy pojedynczo: to, co jest, się instaluje, brak idzie do uwag (nie zatrzymuje reszty skryptu).
+if ! run $SUDO apt-get install -y --no-install-recommends "${APT_PKGS[@]}"; then
+  warn "instalacja całej listy apt nie powiodła się - próbuję paczka po paczce"
+  for pkg in "${APT_PKGS[@]}"; do
+    run $SUDO apt-get install -y --no-install-recommends "$pkg" || warn "pakietu '$pkg' nie udało się zainstalować w tym wydaniu (zobacz powód wyżej)"
+  done
+fi
 
 if [ ! -d "$REPO/loom" ]; then
   warn "nie widzę $REPO/loom - kroki z requirements i 'web' zostaną pominięte (sklonuj repozytorium albo użyj --repo DIR)"
@@ -156,19 +174,29 @@ fi
 # Ubuntu 24.04 ma domyślnie Pythona 3.12, a CI używa 3.11 (actions/setup-python). 3.11 bierzemy z PPA deadsnakes
 # (zewnętrzne repozytorium - to Twoja decyzja zaufania; inne drogi: pyenv albo uv, ręcznie).
 log "2. Python $PY_MM"
+PY_BIN="python$PY_MM"
 if command -v "python$PY_MM" >/dev/null 2>&1; then
   echo "python$PY_MM już jest: $(command -v "python$PY_MM")"
+elif [ "$DO_PY311" = 0 ]; then
+  PY_BIN=python3
+  warn "--no-py311: używam systemowego $(python3 --version 2>&1); CI używa $PY_MM (testy zgodności mogą się różnić)"
 else
   warn "dodaję zewnętrzne repozytorium ppa:deadsnakes/ppa (python$PY_MM nie ma w archiwum Ubuntu 24.04)"
-  run $SUDO add-apt-repository -y ppa:deadsnakes/ppa
-  run $SUDO apt-get update -y
-  run $SUDO apt-get install -y --no-install-recommends "python$PY_MM" "python$PY_MM-venv" "python$PY_MM-dev"
+  if run $SUDO add-apt-repository -y ppa:deadsnakes/ppa && run $SUDO apt-get update -y \
+     && run $SUDO apt-get install -y --no-install-recommends "python$PY_MM" "python$PY_MM-venv" "python$PY_MM-dev"; then
+    :
+  else
+    PY_BIN=python3
+    warn "python$PY_MM z PPA deadsnakes nie zainstalował się (PPA może nie mieć paczek dla tego wydania) - używam systemowego $(python3 --version 2>&1); CI używa $PY_MM, testy zgodności (loom/tests/compat) mogą się różnić. Inne drogi: pyenv, uv."
+    $SUDO apt-get update -y >/dev/null 2>&1 || true   # po nieudanym PPA lista źródeł może zgłaszać błąd; nie zatrzymuje nas
+  fi
 fi
 if [ -x "$VENV/bin/python" ]; then
-  echo "venv już jest: $VENV"
+  echo "venv już jest: $VENV ($("$VENV/bin/python" --version 2>&1))"
 else
   run mkdir -p "$(dirname "$VENV")"
-  run "python$PY_MM" -m venv "$VENV"
+  run "$PY_BIN" -m venv "$VENV"
+  [ "$DRY" = 1 ] || [ -x "$VENV/bin/python" ] || die "venv nie powstał ($PY_BIN -m venv $VENV); czy jest pakiet python3-venv? ($SUDO apt-get install -y python3-venv)"
 fi
 PIP_ARGS=(requests cryptography)
 for req in loom/tools/contracts/requirements.txt loom/tools/resource_graph/requirements.txt; do
@@ -289,15 +317,22 @@ if [ "$DO_EMULATOR" = 1 ]; then
   echo "(jeśli /dev/kvm jest, a emulator mówi 'permission denied': $SUDO usermod -aG kvm \"\$USER\" i zaloguj się ponownie)"
 fi
 
-# --- 7b. dowiązanie /home/user (opcja --home-link) -------------------------------------------------
+# --- 7b. dowiązanie /home/user (domyślnie; --no-home-link wyłącza) ----------------------------------
+# tools/gate.sh i briefy w tools/workflows mają /home/user na sztywno (OPS2 to odpina); do tego czasu dowiązanie
+# sprawia, że te same ścieżki działają na każdym koncie. Preset, nie reguła: --no-home-link.
 if [ "$DO_HOMELINK" = 1 ]; then
-  log "7b. dowiązanie /home/user -> \$HOME (--home-link)"
+  log "7b. dowiązanie /home/user -> \$HOME"
   if [ "$HOME" = "/home/user" ]; then
     echo "HOME to już /home/user - nic do zrobienia"
   elif [ -e /home/user ]; then
-    warn "/home/user już istnieje - nie ruszam (sprawdź: ls -ld /home/user)"
+    if [ "$(readlink -f /home/user 2>/dev/null)" = "$(readlink -f "$HOME")" ]; then
+      echo "/home/user już wskazuje na $HOME"
+    else
+      warn "/home/user już istnieje i nie jest Twoim katalogiem - nie ruszam (sprawdź: ls -ld /home/user); gate.sh będzie pisał ccache tam"
+    fi
   else
-    run $SUDO ln -s "$HOME" /home/user
+    echo "(dlaczego: tools/gate.sh i briefy mają /home/user na sztywno; wyłączenie: --no-home-link)"
+    run $SUDO ln -s "$HOME" /home/user || warn "dowiązanie /home/user -> $HOME nie powstało (brak sudo?); zrób ręcznie: sudo ln -s $HOME /home/user"
   fi
 fi
 
@@ -342,8 +377,12 @@ if [ "${free_kb:-0}" -lt $((20 * 1024 * 1024)) ]; then
   warn "mniej niż 20 GB wolnego: jeden katalog buildu dev to 4-6 GB, ccache do $CCACHE_SIZE, Android SDK kilkanaście GB (patrz docs/ops/PRZEPROWADZKA_GCP_2026-10-23.md, §2)"
 fi
 if [ "$HOME" != "/home/user" ] && [ ! -e /home/user ]; then
-  warn "tools/gate.sh ma na sztywno /home/user (CCACHE_BASEDIR, CCACHE_DIR) - przy HOME=$HOME ccache pisze poza Twoim katalogiem."
-  warn "Rozwiązanie na dziś: pracuj jako użytkownik 'user' z katalogiem domowym /home/user, albo uruchom skrypt z --home-link, albo zmień te dwie linie w gate.sh (osobny, mały pakiet)."
+  warn "tools/gate.sh ma na sztywno /home/user (CCACHE_BASEDIR, CCACHE_DIR) - przy HOME=$HOME ccache pisze poza Twoim katalogiem; uruchom bez --no-home-link albo: sudo ln -s $HOME /home/user (OPS2 odepnie ścieżkę)."
+fi
+if [ "${#ADVISORIES[@]}" -gt 0 ]; then
+  echo
+  echo "Uwagi z tego biegu (${#ADVISORIES[@]}; żadna nie zatrzymała skryptu):"
+  for a in "${ADVISORIES[@]}"; do echo "  - $a"; done
 fi
 if [ "$DRY" = 1 ]; then
   echo "(tryb --dry-run: wersje narzędzi nie są wypisywane; procesory, pamięć i dysk powyżej dotyczą tej maszyny)"

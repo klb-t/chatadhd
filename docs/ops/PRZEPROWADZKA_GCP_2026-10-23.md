@@ -269,8 +269,14 @@ dopisuję opcji z pamięci. Użytkownik `user` (decyzja D1): **[do sprawdzenia]*
    `claude/chataddhd-cpp-loom-core-IRGRN` (sprawdzone `git cat-file` na `origin/main`), dlatego `vm_oneliner.sh`
    domyślnie klonuje i przełącza na TĘ gałąź (koordynator, 2026-10-23 07:5x, po uwadze OPS1: wcześniejsze domyślne
    `main` by się wywróciło). Inną gałąź: `… | CHATADHD_BRANCH=main bash -s -- …`.
-2. Gdy użytkownik na VM nie nazywa się `user`, dopisz do flag `--home-link` (dowiązanie `/home/user` -> katalog
-   domowy; dlaczego: D1). Niesprawdzone.
+2. Gdy użytkownik na VM nie nazywa się `user`, skrypt DOMYŚLNIE robi dowiązanie `/home/user` -> katalog domowy
+   (dlaczego: D1; wyłączenie: `--no-home-link`). Niesprawdzone. **Pierwszy bieg właściciela (2026-10-23 07:5x UTC,
+   VM `devbox-20260923`, Ubuntu 26.04.1 LTS, użytkownik nie `user`):** kroki 1/5 i 2/5 przeszły, bootstrap ZATRZYMAŁ
+   się na „skrypt jest pisany pod Ubuntu 24.04” — wymyślone ograniczenie, sprzeczne z zasadą właściciela (obserwacja
+   z datą ≠ reguła). Poprawione (koordynator, `tools/bootstrap_dev_vm.sh`): wydanie systemu = uwaga, nie stop
+   (`--strict-os` zatrzymuje na życzenie); paczka, której nie ma w wydaniu, pomijana z uwagą; Python 3.11 z PPA, a gdy
+   PPA nie ma paczek — systemowy python3 z uwagą; wszystkie uwagi powtórzone w podsumowaniu. Ta sama komenda
+   uruchomiona ponownie kontynuuje (klon już jest, robi `git fetch`).
 3. Ostrożniejsza wersja: pobierz `vm_oneliner.sh` do pliku, przeczytaj (`less`), uruchom z `--dry-run`.
 Dodaj `--caddy` dla B. Ani `vm_oneliner.sh`, ani `bootstrap_dev_vm.sh` nie były uruchomione na prawdziwej VM.
 
