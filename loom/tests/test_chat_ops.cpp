@@ -679,3 +679,111 @@ TEST_SUITE("chat_ops") {
     CHECK(f.text_of(conversations).find("Kontekst i projekty") != std::string::npos);
   }
 }
+
+TEST_SUITE("chat_ops") {
+  // G1a (owner, 2026-10-22: "pokaż katalog główny grafu, pokaż import w grafie - nie kuma"): the two sentences verbatim, then the possibility space of
+  // how a person says the start of the graph and "X in the graph", as properties over the data, not over these two examples.
+  TEST_CASE("G1a: the owner's two sentences reach graph.navigate - the root, and the area that holds the import - not the model") {
+    Fixture f;
+    const Json root = f.route("pokaż katalog główny grafu");
+    REQUIRE(root.at("kind") == "command");
+    CHECK(root.at("command").at("action") == "graph.navigate");
+    CHECK_FALSE(root.at("command").at("args").contains("focus"));  // the root: no focus
+    const auto root_run = f.say_and_confirm("pokaż katalog główny grafu", "graph.navigate", "tak");
+    const std::string root_text = f.text_of(root_run);
+    INFO(root_text);
+    CHECK(root_text.rfind("Graf: ", 0) == 0);  // the head of the root level, not a refusal and not the model's guess
+    CHECK(root_text.find("nie ma nic o nazwie") == std::string::npos);
+
+    const Json imp = f.route("pokaż import w grafie");
+    REQUIRE(imp.at("kind") == "command");
+    CHECK(imp.at("command").at("action") == "graph.navigate");
+    CHECK(imp.at("command").at("args").at("focus") == "import");
+    const auto imp_run = f.say_and_confirm("pokaż import w grafie", "graph.navigate", "tak");
+    const std::string imp_text = f.text_of(imp_run);
+    INFO(imp_text);
+    CHECK(imp_text.find("Dane i korpusy") != std::string::npos);  // the area that holds imported data today
+    CHECK(imp_text.find("nie ma nic o nazwie") == std::string::npos);
+  }
+
+  TEST_CASE("G1a: a name the graph does not know is answered with the names it knows (the nearest first), in both languages") {
+    Fixture f;
+    const std::string unknown = f.text_of(f.say_and_confirm("pokaż qwxz w grafie", "graph.navigate", "tak"));
+    INFO(unknown);
+    CHECK(unknown.find("nie ma nic o nazwie „qwxz”") != std::string::npos);
+    CHECK(unknown.find("Nazwy, które znam: ") != std::string::npos);
+    CHECK(unknown.find("Dane i korpusy (mówisz też: ") != std::string::npos);  // the words the data gives the area
+    CHECK(unknown.find("i jeszcze ") != std::string::npos);                     // not all fit: the rest is counted, not dropped
+    const std::string near = f.text_of(f.say_and_confirm("pokaż rozmaitości w grafie", "graph.navigate", "tak"));
+    INFO(near);
+    CHECK(near.find("Najbliżej tego, co powiedziałeś, jest: Kontekst i projekty") != std::string::npos);
+    const std::string en = f.text_of(f.say_and_confirm("show qwxz in the graph", "graph.navigate", "yes"));
+    INFO(en);
+    CHECK(en.find("Nothing in the graph is called “qwxz”.") != std::string::npos);
+    CHECK(en.find("Names I know: ") != std::string::npos);
+    CHECK(en.find("you can also say: ") != std::string::npos);
+    // nothing internal in what the person reads
+    for (const std::string* text : {&unknown, &near, &en}) {
+      CHECK(text->find("area:") == std::string::npos);
+      CHECK(text->find("_") == std::string::npos);
+    }
+  }
+
+  TEST_CASE("G1a: the possibility space - many ways to say the start of the graph and 'X in the graph' reach graph.navigate; look-alikes keep their meaning") {
+    Fixture f;
+    const auto goes_to_root = [&](const std::string& sentence) {
+      const Json r = f.route(sentence);
+      return r.value("kind", "") == "command" && r.at("command").value("action", "") == "graph.navigate" && !r.at("command").at("args").contains("focus");
+    };
+    // pl: opener x way of naming the start x ending (all combinations; none is the owner's exact sentence except one of them)
+    std::size_t tried = 0;
+    for (const char* opener : {"pokaż ", "pokaż mi ", "otwórz ", "wyświetl ", "zobacz ", "proszę pokaż ", "Pokaż "})
+      for (const char* what : {"katalog główny grafu", "główny widok grafu", "widok główny grafu", "korzeń grafu", "cały graf", "wejście do grafu", "początek grafu",
+                               "strona główna grafu", "katalog główny w grafie", "najwyższy poziom grafu"})
+        for (const char* ending : {"", ".", "!", " "}) {
+          const std::string sentence = std::string(opener) + what + ending;
+          CHECK_MESSAGE(goes_to_root(sentence), sentence);
+          ++tried;
+        }
+    for (const char* sentence : {"otwórz graf", "zobacz graf", "wejdź do grafu", "przejdź do grafu", "otwórz mi graf."}) CHECK_MESSAGE(goes_to_root(sentence), sentence);
+    for (const char* opener : {"show ", "show me ", "open ", "display ", "please show ", "Show "})
+      for (const char* what : {"the graph root", "the whole graph", "the entire graph", "the root of the graph", "the top level of the graph", "the main view of the graph",
+                               "the graph entry", "the graph home"})
+        for (const char* ending : {"", ".", "!"}) {
+          const std::string sentence = std::string(opener) + what + ending;
+          CHECK_MESSAGE(goes_to_root(sentence), sentence);
+          ++tried;
+        }
+    for (const char* sentence : {"open the graph", "go to the graph", "take me to the graph"}) CHECK_MESSAGE(goes_to_root(sentence), sentence);
+    CHECK(tried > 400);
+    // the sentences that already meant something else keep it: "show the graph" is the overview at a glance, "graph of X" is a graph around X
+    for (const char* sentence : {"pokaż graf", "wyświetl graf", "show the graph", "display the graph"}) {
+      const Json r = f.route(sentence);
+      INFO(sentence);
+      CHECK(r.at("command").at("action") == "graph.overview");
+    }
+    for (const char* sentence : {"pokaż graf wokół Marka", "show the graph around Mark", "pokaż katalog", "pokaż wykres sprzedaży"}) {
+      INFO(sentence);
+      CHECK_FALSE(goes_to_root(sentence));
+    }
+    // "X in the graph": any ending of "graf", any opener; the focus is what was said (letter case kept for the lookup)
+    for (const char* opener : {"pokaż ", "otwórz ", "wyświetl ", "zobacz ", "pokaż mi "})
+      for (const char* tail : {" w grafie", " w grafu", " na grafie", " z grafu", " w graf"}) {
+        const std::string sentence = std::string(opener) + "import" + tail;
+        const Json r = f.route(sentence);
+        INFO(sentence);
+        REQUIRE(r.at("kind") == "command");
+        CHECK(r.at("command").at("action") == "graph.navigate");
+        CHECK(r.at("command").at("args").at("focus") == "import");
+      }
+    for (const char* opener : {"show ", "open ", "display ", "show me "})
+      for (const char* tail : {" in the graph", " on the graph", " from the graph"}) {
+        const std::string sentence = std::string(opener) + "the imports" + tail;
+        const Json r = f.route(sentence);
+        INFO(sentence);
+        REQUIRE(r.at("kind") == "command");
+        CHECK(r.at("command").at("action") == "graph.navigate");
+        CHECK(r.at("command").at("args").at("focus") == "imports");
+      }
+  }
+}
