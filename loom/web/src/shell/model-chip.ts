@@ -17,6 +17,23 @@ export function shortModelName(id: string): string {
   return tail || id;
 }
 
+/** The outcome of the last request sent from this window (not a constant): when it ended and whether it reached an answer. */
+export interface LastRequest { ok: boolean; at: number }
+export interface ConnectionView { state: "none" | "ok" | "failed"; text: string }
+
+/** R67 (topbar_model_line): the real connection state of the top bar - nothing sent yet, the last request answered, or the last request failed. */
+export function connectionView(last: LastRequest | null, t: ShellT, locale?: string): ConnectionView {
+  if (!last) return { state: "none", text: t("tb_conn_none") };
+  const time = new Date(last.at).toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit" });
+  return last.ok ? { state: "ok", text: t("tb_conn_ok", { time }) } : { state: "failed", text: t("tb_conn_failed", { time }) };
+}
+
+/** The text of the "no model of my own" option: the model the next request WILL use (the scope chain's answer, the same call the request makes),
+ * not the words "default model"; the old words stay only while the chain has not answered. */
+export function defaultOptionLabel(resolved: string | null, t: ShellT): string {
+  return resolved ? t("tb_model_default", { model: shortModelName(resolved) }) : t("cm_model_default");
+}
+
 /** Where the shown model comes from: the conversation's own (chain), this window's pick (sent with each request, not in the chain), or the chain's answer. */
 export type ModelSource = "conversation" | "window" | "chain";
 

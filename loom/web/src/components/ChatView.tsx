@@ -9,6 +9,7 @@ import ConversationSourceView, { useConversationSourcePresentation, useLayeredDe
 import { chatSendGate, SEND_BLOCK_DEFAULT_KEY, SEND_GATE_FEATURE, sendGateTexts, type ViewFailure } from "../context/send-gate";
 import { queueReason, queueStep, useCreationInFlight, VIEW_LOADING_REASON, type QueuedSend } from "../context/send-queue";
 import UsagePendingBlock from "./UsagePendingBlock";
+import SecretPendingBlock from "./SecretPendingBlock";
 import AgentProposalBlock from "./AgentProposalBlock";
 import { agentLoopOf, agentLoopView, resumeRequest } from "../context/agent-proposal";
 import ActionProposalBlock, { ProposalOffer, ProposalWritten } from "./ActionProposalBlock";
@@ -25,7 +26,7 @@ import { OPEN_SETTINGS_FEATURE, SETTINGS_PANEL, openSettingsHint, openSettingsTe
 import { watchClientSteps } from "../context/client-step-events";
 import { SEMANTIC_ANSWER_REF, SEMANTIC_QUESTION_FEATURE, semanticAnsweredText, semanticFailedText, semanticQuestion, semanticQuestionOpen, type SemanticQuestion } from "../context/semantic-question";
 import { featureInLanguage, featureMessage } from "../onboarding/presentation.mjs";
-import type { ChatChunk, ChatContextTrace, ChatKnowledgeContextRequest, ChatRequest, Conversation, Message, ModelInfo } from "../api/types";
+import type { ChatChunk, ChatContextTrace, ChatKnowledgeContextRequest, ChatRequest, Conversation, Message, ModelInfo, SecretPending } from "../api/types";
 import type { ClientResult } from "../api/loom-api";
 import "./chat-context.css";
 import ContextPlanEditor from "./ContextPlanEditor";
@@ -54,7 +55,7 @@ import { isInterviewMessages, levelCards, repliesTarget, waitingQuestion } from 
 import ContextStrip from "../shell/ContextStrip";
 import ModelProvenance from "../shell/ModelProvenance";
 import { lastReceiptProfile, pendingParts } from "../shell/context-strip";
-import { shortModelName, type ModelSource } from "../shell/model-chip";
+import { connectionView, defaultOptionLabel, shortModelName, type LastRequest, type ModelSource } from "../shell/model-chip";
 import { clearPendingTurn, pendingTurn, subscribePendingTurn } from "../shell/turn-pending";
 import { lineText, recordedReceipt, requestOf } from "./context-receipt-state";
 import { useLayer } from "../shell/use-layer";
@@ -205,6 +206,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
   // A definition the user accepted can be taken back from the proposal that wrote it: the one being removed, and why it could not be.
   const [undoing, setUndoing] = useState<string | null>(null);
   const [undoFailure, setUndoFailure] = useState<{ id: string; reason: string } | null>(null);
+  const [secretPending, setSecretPending] = useState<{ request: ChatRequest; doc: SecretPending } | null>(null);
   const [usagePending, setUsagePending] = useState<{ request: ChatRequest; receipt: UsagePendingReceipt; convId: string } | null>(null);
   const [usageNotice, setUsageNotice] = useState<string | null>(null);
   // Routing the last input had a problem it worked around (the model route failed, the local rules decided): a quiet note, nothing was lost.
@@ -265,8 +267,18 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
   const [model, setModel] = useState<string>(() => storedString("model", ""));  // the person's pick (saved with the view's settings)
   // P33: the model the open conversation has of its own (scope chain, P24). Kept apart from the person's pick: shown and sent only while
   // that conversation is open, never saved as the person's choice.
+  // R67 (topbar_model_line): what the next request will use when this window has no pick (the scope chain's answer), and how the last request ended.
+  const [resolvedDefault, setResolvedDefault] = useState<string | null>(null);
+  const [lastRequest, setLastRequest] = useState<LastRequest | null>(null);
   const [ownModel, setOwnModel] = useState<{ convId: string; model: string } | null>(null);
   const shownModel = chat && convId !== null && ownModel?.convId === convId ? ownModel.model : model;
+  useEffect(() => {
+    if (!chat) return;
+    let live = true;
+    api.resolveScope({ key: MODEL_SETTING, ...(convId ? { conversation_id: convId } : {}) })
+      .then(r => { if (live) setResolvedDefault(typeof r.value === "string" && r.value ? r.value : null); }, () => { if (live) setResolvedDefault(null); });
+    return () => { live = false; };
+  }, [chat, convId, ownModel]);
   const [pendingUserText, setPendingUserText] = useState<{ text: string; convId: string | null } | null>(null);
   const [stream, setStream] = useState<StreamState | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -693,6 +705,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
     const finishError = (raw: string | null, code?: string) => {
       if (!isCurrent() || terminal) return;
       terminal = true;
+      setLastRequest({ ok: false, at: Date.now() });
       setStream(null);
       setPendingUserText(null);
       let message = raw;
@@ -756,6 +769,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
             setStream((s) => (s ? { ...s, text: s.text + chunk.text } : s));
           } else if (chunk.type === "done") {
             terminal = true;
+            setLastRequest({ ok: true, at: Date.now() });
 
             if (chunk.context_trace) setLastTrace({ convId: chunk.conv_id, userId: currentUserIdRef.current, trace: chunk.context_trace });
             setStream(null);
@@ -780,6 +794,15 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
                 record => { const target = graphTargetOfRun(record); if (target) onShowInGraph(target.focus, target.perspectives); },
                 failure => console.debug("graph.navigate run could not be read, the navigator stays closed", failure));
             }
+          } else if (chunk.type === "secret_pending") {
+            // R67: the kernel's secret check held (or refused) the message before anything was stored or sent. The words wait in the composer.
+            terminal = true;
+            setStream(null);
+            setPendingUserText(null);
+            setInput((current) => current || request.message);
+            const heldFiles = request.attachments ?? [];
+            if (heldFiles.length) setAttachments((list) => list.length ? list : restoredChips(heldFiles, null));
+            setSecretPending({ request, doc: chunk.secret_pending });
           } else if (chunk.type === "usage_pending") {
             // A state, not a failure: nothing was sent. Keep the text and ask.
             terminal = true;
@@ -843,6 +866,14 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
     setQueuedNote(step === "failed" ? "failed" : null);
   }, [convId, creating, gate, send, queuedNote, attachments]);
 
+  const confirmSecret = useCallback(() => {
+    if (!secretPending) return;
+    const { request } = secretPending;
+    setSecretPending(null);
+    const carried = request.attachments ?? [];
+    if (carried.length) setAttachments((list) => list.filter(a => !(a.ref && carried.includes(a.ref))));
+    send("send", { ...request, secret_confirmation: { approved: true } } as ChatRequest);
+  }, [secretPending, send]);
   const confirmUsage = useCallback(() => {
     if (!usagePending) return;
     const { request, receipt } = usagePending;
@@ -1518,7 +1549,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
           aria-label={t("model_label")}
           data-testid="model-picker"
         >
-          <option value="">{chat ? t("cm_model_default") : "default model"}</option>
+          <option value="">{chat ? defaultOptionLabel(resolvedDefault, t) : "default model"}</option>
           {models.map((m) => (
             <option key={m.id} value={m.id} title={m.id}>
               {chat ? shortModelName(m.id) : m.name ?? m.id}
@@ -1530,7 +1561,9 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
           if (interviewConv) return null;   // a form without a model: no model to choose, no price to show
           if (!chat) return picker;
           // The chip: the short name (the select shows it) and an info button that opens the sheet of where the model comes from.
-          const chip = <span className="model-chip-wrap" data-testid="model-chip" data-model={shownModel || undefined}>{picker}
+          const conn = connectionView(lastRequest, t);
+          const chip = <span className="model-chip-wrap" data-testid="model-chip" data-model={shownModel || resolvedDefault || undefined} data-resolved-default={resolvedDefault || undefined}>{picker}
+            <span className="model-chip-conn" data-testid="model-chip-status" data-state={conn.state} role="img" aria-label={conn.text} title={conn.text}>{conn.state === "failed" ? "▲" : "●"}</span>
             <button type="button" className="model-chip-info" data-testid="model-provenance-open" aria-label={t("mp_open")} title={t("mp_open")} aria-haspopup="dialog" onClick={() => setModelSheet(true)}>ⓘ</button></span>;
           const slot = document.getElementById("shell-model-slot");
           return slot ? createPortal(chip, slot) : null; })()}
@@ -1539,6 +1572,9 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
         {modelNote && <div className="pill composer-note" role="status" data-testid="composer-model-note" style={{ width: "100%" }}>{modelNote}</div>}
         {routeNotes.length > 0 && <div className="composer-note" style={{ width: "100%" }}>
           {routeNotes.map((note, i) => <div className="pill" role="status" key={i} data-testid="chat-route-note">{note}</div>)}
+        </div>}
+        {secretPending && <div className="composer-note" style={{ width: "100%" }}>
+          <SecretPendingBlock testId="chat-secret-pending" pending={secretPending.doc} onConfirm={confirmSecret} onDismiss={() => setSecretPending(null)} />
         </div>}
         {(usagePending || usageNotice) && <div className="composer-note" style={{ width: "100%" }}>
           {usagePending && <UsagePendingBlock testId="chat-usage-pending" feature={usageCatalog.feature} receipt={usagePending.receipt}

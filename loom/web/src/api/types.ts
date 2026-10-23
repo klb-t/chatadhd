@@ -52,9 +52,21 @@ export interface Message {
   semantic_status?: "pending" | "executing" | "failed" | "done";
 }
 
+/** R67: loom.chat_secret_pending/1 - the kernel held or refused a message that carries a secret. Names rules and places, never values. */
+export interface SecretPending {
+  schema?: string;
+  status: "needs_confirmation" | "refused";
+  mode?: string;
+  hits: Array<{ rule: string; label?: Record<string, string>; where?: string; place?: Record<string, string>; file?: string; key?: string }>;
+  text: Record<string, string>;
+  actions?: { send_anyway?: Record<string, string>; dont_send?: Record<string, string> };
+}
+
 export interface ChatRequest {
   message: string;
   usage_confirmation?: { approved: boolean; receipt_id: string; operation_id: string; ref: string };
+  /** R67: the answer to the kernel's secret check (setting secrets_in_chat = ask): {approved: true} sends a message the check held. */
+  secret_confirmation?: { approved: boolean };
   /** Answer to the model router's own usage hold (stage route_intent); the chat itself is not confirmed by it. */
   route_usage_confirmation?: { approved: boolean; receipt_id: string; operation_id: string; ref: string };
   request_id?: string;
@@ -161,6 +173,7 @@ export type ChatChunk =
       usage_pending: { status?: string; operation_id?: string | null; receipt_id?: string | null; stage?: string;
         baseline_key?: string | null; projected?: Record<string, Record<string, unknown>>;
         limits?: Array<{ period?: string; on_exceed?: string; code?: string; reason?: Record<string, unknown> }>; reason_codes?: string[] } }
+  | { type: "secret_pending"; request_id: string; secret_pending: SecretPending }
   | { type: "usage_notice"; request_id?: string; conv_id?: string; notices: Array<{ code?: string; period?: string; text?: Record<string, unknown> }> }
   | { type: "action_proposal" | "action_result"; request_id: string; conv_id: string; user_message_id: string;
       message_id: string; text: string; proposal?: Record<string, unknown>; run?: Record<string, unknown>;

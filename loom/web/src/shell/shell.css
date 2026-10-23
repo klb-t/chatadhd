@@ -104,3 +104,8 @@ details[open] > summary::before { content: var(--disclosure-glyph-expanded); ani
 .mp-lines { list-style: none; margin: 0; padding: 0 0 8px; }
 .mp-lines li { padding: 4px 0; white-space: pre-wrap; }
 .mp-chain { margin: 0; padding: 0 0 8px 18px; }
+
+/* R67: the real connection state beside the model chip (last request answered / failed / none yet) */
+.model-chip-conn { margin-left: 6px; font-size: 12px; color: var(--dim); }
+.model-chip-conn[data-state="ok"] { color: var(--ok, #3a9a5b); }
+.model-chip-conn[data-state="failed"] { color: var(--danger, #c0392b); }
