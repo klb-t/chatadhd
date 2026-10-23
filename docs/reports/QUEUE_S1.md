@@ -1,10 +1,12 @@
-# Kolejka S1 — stan 2026-10-23 05:01 UTC
+# Kolejka S1 — stan 2026-10-23 05:13 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
 
 ## Reguła właściciela R58 (22.10 ≈ 23:40 UTC; wcześniejsze znaczniki „23.10 00:00/00:20” w tym pliku to pomyłka zegara, prawdziwa godzina to 23:3x–23:4x): przykłady są przykładami, silnik obsługuje każdą konfigurację, mała użyteczność = niewiążąca podpowiedź „czy celowe? nie pytać następnym razem”
 Powód: w tabeli planu napisałem „kolor = rodzaj, przezroczystość = pewność, głębia = czas, jak mówiłeś” — to były moje konkretne przypisania podane jak wymaganie i fałszywie przypisane jemu (jego własne słowa: „to jest tylko jedna z konfiguracji, a zakodować trzeba silnik”). Zapisane: `CLAUDE.md` (sekcja „Examples are examples…”), `OWNER_REQUIREMENTS` R58 (cytat dosłowny), `tools/workflows/single-package.js` (reguła w każdym briefie). Zadanie G3 (#30) ma teraz warunki wstępne: (a) skala: punkt odniesienia + odległość ze znakiem, kierunek zależny od drugiej miary, kilka kodowań jednej miary (dziś `view_engine.cpp` ~595–622: tylko `range`/`domain`/`type` i statyczne `invert`); (b) podpowiedź niewiążąca + zapamiętane „celowe, nie pytaj” + wykrycie wyniku zdegenerowanego (nic nie widać). Silnik już nigdy nie odrzuca kodowania (`promoted`/`allowed` z powodami), brakuje pytania i pamięci odpowiedzi.
+
+## APK v3 GOTOWY (05:13 UTC): `package.yml` run 39902598600 = success (05:07, 16 min), sha `270a065f` (CI 276 zielony; smoke S2 43/1/0 + 42/2/0, obie porażki w sterowniku) — https://github.com/klb-t/chatadhd/actions/runs/39902598600 (artefakty: APK arm64 Release TEST-KEY, serwer, first_steps). Nowe względem v2: wywiad w rozmowie z obiema poprawkami (uwaga bez pytania; uwaga w innym języku niż UI), jednostki w jądrze, pochodzenie notatek. NIE w v3: słowa grafu i prawda importu (G1, po bramce), podgraf i ekran „Ty”. Właściciel dostał jedną linię.
 
 ## RESTART KONTENERA (≈ 04:55 UTC): obie równoległe bramki (`g1` w m1d1 — w ctest, `k2c2` w m1d0 — w buildzie) STRACONE; dysk 93 % (build m1d1 urósł do 6,4 GB). Hipoteza: dwa buildy natywne + dwa zestawy e2e naraz przerosły maszynę. Reguła w `CLAUDE.md`: jedna bramka naraz; przed bramką ≥ 5 GB wolne. Naprawa: usunięty build m1d1 (odbuduje go bramka `g1` z ccache), **bramka `k2c2` ponownie, sama** (start 05:01, m1d0 = c5998126 = K2c-2 + main a6516c5c); po niej `g1` w m1d1. Worktree czyste, gałęzie wypchnięte wcześniej — nic z kodu nie przepadło. Kontrola APK v3 (05:12) ocalała (zadania zaplanowane przeżywają restart).
 
