@@ -112,6 +112,9 @@ if [ "$(id -u)" -eq 0 ] && [ "$DRY" = 0 ]; then
   die "uruchom jako zwykły użytkownik z sudo (Chromium i venv mają należeć do niego, nie do roota)"
 fi
 SUDO="sudo"   # (jako root bez --dry-run skrypt zatrzymał się wyżej)
+# apt czeka na blokadę dpkg zamiast się wywracać (unattended-upgrades po pierwszym starcie VM; zmierzone 2026-10-23)
+APT_LOCK_WAIT="${CHATADHD_APT_LOCK_WAIT:-900}"
+APT_GET="apt-get -o DPkg::Lock::Timeout=$APT_LOCK_WAIT"
 if [ -r /etc/os-release ]; then
   # shellcheck disable=SC1091
   . /etc/os-release
@@ -156,13 +159,13 @@ if [ "$DO_CADDY" = 1 ]; then
     caddy                # HTTPS + reverse proxy dla deploy/install.sh (tak samo jak instaluje go sam install.sh)
   )
 fi
-run $SUDO apt-get update -y
+run $SUDO $APT_GET update -y
 # Najpierw cała lista naraz (szybko); gdy w tym wydaniu brakuje którejś paczki, apt odrzuca CAŁĄ listę,
 # więc wtedy pojedynczo: to, co jest, się instaluje, brak idzie do uwag (nie zatrzymuje reszty skryptu).
-if ! run $SUDO apt-get install -y --no-install-recommends "${APT_PKGS[@]}"; then
+if ! run $SUDO $APT_GET install -y --no-install-recommends "${APT_PKGS[@]}"; then
   warn "instalacja całej listy apt nie powiodła się - próbuję paczka po paczce"
   for pkg in "${APT_PKGS[@]}"; do
-    run $SUDO apt-get install -y --no-install-recommends "$pkg" || warn "pakietu '$pkg' nie udało się zainstalować w tym wydaniu (zobacz powód wyżej)"
+    run $SUDO $APT_GET install -y --no-install-recommends "$pkg" || warn "pakietu '$pkg' nie udało się zainstalować w tym wydaniu (zobacz powód wyżej)"
   done
 fi
 
@@ -182,13 +185,13 @@ elif [ "$DO_PY311" = 0 ]; then
   warn "--no-py311: używam systemowego $(python3 --version 2>&1); CI używa $PY_MM (testy zgodności mogą się różnić)"
 else
   warn "dodaję zewnętrzne repozytorium ppa:deadsnakes/ppa (python$PY_MM nie ma w archiwum Ubuntu 24.04)"
-  if run $SUDO add-apt-repository -y ppa:deadsnakes/ppa && run $SUDO apt-get update -y \
-     && run $SUDO apt-get install -y --no-install-recommends "python$PY_MM" "python$PY_MM-venv" "python$PY_MM-dev"; then
+  if run $SUDO add-apt-repository -y ppa:deadsnakes/ppa && run $SUDO $APT_GET update -y \
+     && run $SUDO $APT_GET install -y --no-install-recommends "python$PY_MM" "python$PY_MM-venv" "python$PY_MM-dev"; then
     :
   else
     PY_BIN=python3
     warn "python$PY_MM z PPA deadsnakes nie zainstalował się (PPA może nie mieć paczek dla tego wydania) - używam systemowego $(python3 --version 2>&1); CI używa $PY_MM, testy zgodności (loom/tests/compat) mogą się różnić. Inne drogi: pyenv, uv."
-    $SUDO apt-get update -y >/dev/null 2>&1 || true   # po nieudanym PPA lista źródeł może zgłaszać błąd; nie zatrzymuje nas
+    $SUDO $APT_GET update -y >/dev/null 2>&1 || true   # po nieudanym PPA lista źródeł może zgłaszać błąd; nie zatrzymuje nas
   fi
 fi
 if [ -x "$VENV/bin/python" ]; then
@@ -196,7 +199,7 @@ if [ -x "$VENV/bin/python" ]; then
 else
   run mkdir -p "$(dirname "$VENV")"
   run "$PY_BIN" -m venv "$VENV"
-  [ "$DRY" = 1 ] || [ -x "$VENV/bin/python" ] || die "venv nie powstał ($PY_BIN -m venv $VENV); czy jest pakiet python3-venv? ($SUDO apt-get install -y python3-venv)"
+  [ "$DRY" = 1 ] || [ -x "$VENV/bin/python" ] || die "venv nie powstał ($PY_BIN -m venv $VENV); czy jest pakiet python3-venv? ($SUDO $APT_GET install -y python3-venv)"
 fi
 PIP_ARGS=(requests cryptography)
 for req in loom/tools/contracts/requirements.txt loom/tools/resource_graph/requirements.txt; do
@@ -258,7 +261,7 @@ fi
 if [ "$DO_ANDROID" = 1 ]; then
   log "6. Java 17 + Android SDK (--android)"
   # CI używa Temurin 17; tu OpenJDK 17 z archiwum Ubuntu (różnice nieistotne dla Gradle/JNI, ale niesprawdzone)
-  run $SUDO apt-get install -y --no-install-recommends openjdk-17-jdk-headless
+  run $SUDO $APT_GET install -y --no-install-recommends openjdk-17-jdk-headless
   SDKMGR="$ANDROID_HOME_DIR/cmdline-tools/latest/bin/sdkmanager"
   if [ -x "$SDKMGR" ]; then
     echo "cmdline-tools już są: $SDKMGR"

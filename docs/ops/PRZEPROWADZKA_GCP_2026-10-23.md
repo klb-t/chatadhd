@@ -276,7 +276,9 @@ dopisuję opcji z pamięci. Użytkownik `user` (decyzja D1): **[do sprawdzenia]*
    z datą ≠ reguła). Poprawione (koordynator, `tools/bootstrap_dev_vm.sh`): wydanie systemu = uwaga, nie stop
    (`--strict-os` zatrzymuje na życzenie); paczka, której nie ma w wydaniu, pomijana z uwagą; Python 3.11 z PPA, a gdy
    PPA nie ma paczek — systemowy python3 z uwagą; wszystkie uwagi powtórzone w podsumowaniu. Ta sama komenda
-   uruchomiona ponownie kontynuuje (klon już jest, robi `git fetch`).
+   uruchomiona ponownie kontynuuje (klon już jest, robi `git fetch`). **Drugi i trzeci bieg (09:23 UTC):** apt padł na
+   blokadzie dpkg trzymanej przez `unattended-upgrades` (automatyczne aktualizacje po pierwszym starcie VM). Poprawione:
+   skrypty czekają na blokadę (do `CHATADHD_APT_LOCK_WAIT`, preset 900 s) zamiast się wywracać.
 3. Ostrożniejsza wersja: pobierz `vm_oneliner.sh` do pliku, przeczytaj (`less`), uruchom z `--dry-run`.
 Dodaj `--caddy` dla B. Ani `vm_oneliner.sh`, ani `bootstrap_dev_vm.sh` nie były uruchomione na prawdziwej VM.
 

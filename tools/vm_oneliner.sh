@@ -43,8 +43,23 @@ if [ "$(id -u)" = 0 ]; then
 fi
 
 say "1/5 pakiety podstawowe (git, curl, tmux, gh)"
-sudo apt-get update -qq
-sudo apt-get install -y -qq --no-install-recommends git curl ca-certificates tmux gh
+# Świeża VM po pierwszym starcie zwykle robi automatyczne aktualizacje (unattended-upgrades) i trzyma blokadę dpkg
+# przez kilka minut (zmierzone 2026-10-23 na VM właściciela: dwa biegi padły na "Could not get lock"). Czekamy,
+# zamiast się wywracać; apt dostaje też własny limit czekania na blokadę (DPkg::Lock::Timeout).
+APT_LOCK_WAIT="${CHATADHD_APT_LOCK_WAIT:-900}"   # sekund; preset
+wait_for_apt() {
+  local t=0
+  while sudo fuser /var/lib/dpkg/lock-frontend /var/lib/dpkg/lock /var/lib/apt/lists/lock >/dev/null 2>&1; do
+    [ "$t" = 0 ] && echo "   czekam na blokadę apt/dpkg (najpewniej unattended-upgrades po pierwszym starcie VM; zwykle 1-5 min, limit ${APT_LOCK_WAIT}s): $(pgrep -af 'unattended-upgr|apt|dpkg' | head -3 | tr '\n' ';')"
+    sleep 5; t=$((t+5))
+    [ "$t" -ge "$APT_LOCK_WAIT" ] && { echo "   blokada apt trzymana ponad ${APT_LOCK_WAIT}s - próbuję mimo to (apt sam poczeka do limitu)"; break; }
+  done
+}
+command -v fuser >/dev/null 2>&1 || true   # bez psmisc pętla wyżej nic nie widzi; wtedy ratuje limit apt poniżej
+wait_for_apt
+APT="sudo apt-get -o DPkg::Lock::Timeout=$APT_LOCK_WAIT"
+$APT update -qq
+$APT install -y -qq --no-install-recommends git curl ca-certificates tmux gh psmisc
 
 say "2/5 repozytorium -> $REPO_DIR (gałąź $BRANCH)"
 if [ -d "$REPO_DIR/.git" ]; then

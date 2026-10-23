@@ -1,8 +1,10 @@
-# Kolejka S1 — stan 2026-10-23 08:56 UTC
+# Kolejka S1 — stan 2026-10-23 09:24 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
 **Teleport (R72):** karta startowa nowej sesji S1 = `docs/ops/TELEPORT_S1.md` (aktualizowana tuż przed przełączeniem); zadania zaplanowane = `docs/ops/ZADANIA_ZAPLANOWANE_2026-10-23.md`; przeprowadzka = `docs/ops/PRZEPROWADZKA_GCP_2026-10-23.md`.
+
+## VM właściciela, drugi i trzeci bieg komendy (09:23 UTC, zrzut): krok 1/5 (apt) padł dwa razy na „Could not get lock /var/lib/dpkg/lock-frontend. It is held by process 552449 (unattended-upgr)” — świeża VM robi automatyczne aktualizacje po pierwszym starcie i trzyma blokadę dpkg kilka minut; mój skrypt pod `set -e` się wywracał zamiast czekać. Poprawka (09:24, wypchnięta): `vm_oneliner.sh` czeka na blokadę (pętla z `fuser`, komunikat kto ją trzyma, limit preset `CHATADHD_APT_LOCK_WAIT=900 s`) i każde `apt-get` w obu skryptach dostaje `-o DPkg::Lock::Timeout=900`; `psmisc` w pakietach podstawowych. Ta sama komenda uruchomiona ponownie kontynuuje. Doc PRZEPROWADZKA §6 pkt 1 uzupełniony.
 
 ## CI (08:56 UTC): bieg 278 na 94872898 ANULOWANY o 08:36 przez push 9db553b2 (concurrency loom.yml) — bez wyniku; bieg 279 (39925761316) na 9db553b2 w toku od 08:35, dowód dla obu sha (zawiera 94872898). Kontrola 10:45 → APK v4 po zielonym. Lekcja: FF na main w trakcie biegu CI anuluje poprzedni bieg — przy dwóch FF w odstępie < 2 h liczy się tylko ostatni.
 
