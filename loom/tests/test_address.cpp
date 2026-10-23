@@ -130,6 +130,8 @@ struct Gen {
   }
 };
 
+bool kind_is_levels(const Json& c) { return c.begin().key() == "levels"; }
+
 constexpr int kStartDepth = 4;  // a preset of the generator, not a limit of the engine (the long-chain case below goes far beyond it)
 
 }  // namespace
@@ -278,6 +280,10 @@ TEST_CASE("T2 composition is associative as flat-map and not commutative") {
       else if (k == 1) st.coord = coord("word", std::vector<std::string>{"last", "first", "all", "prev", "next", "max", "min"}[static_cast<std::size_t>(gen.pick(7))]);
       else if (k == 2) st.coord = coord("range", Json::array({coord("int", gen.pick(5) - 4), coord("int", gen.pick(5) - 1)}));
       else if (k == 3) st.coord = coord("levels", Json::array({coord("int", gen.pick(5) - 2), coord("word", "last")}));
+      // a dimension that suits the coordinate, so that most addresses select something (the property must not hold only for empty sets)
+      static const std::vector<std::string> flat = {"message", "branch", "time", "weight", "perspective", "scope", "representation_level", "scale"};
+      static const std::vector<std::string> deep = {"version", "program_version"};
+      st.dim = kind_is_levels(st.coord) ? deep[static_cast<std::size_t>(gen.pick(2))] : flat[static_cast<std::size_t>(gen.pick(8))];
     }
     return a;
   };

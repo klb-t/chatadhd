@@ -169,11 +169,11 @@ TEST_CASE("T4 hierarchical steps: previous major -> its last minor -> its last p
   CHECK(nodes("program_version:-1.-1.last") == V{"2.1.2"});                  // off the current lineage a relative number counts from the last
   CHECK(nodes("program_version:first.first.first") == V{"1.0.0"});
   CHECK(nodes("program_version:all.last.last") == V{"1.1.2", "2.2.2", "3.1.2"});
-  CHECK(nodes("program_version:-2..0.last.last") == V{"1.1.2", "2.2.2", "3.1.2"});
+  CHECK(nodes("program_version:-1.last.all") == V{"2.2.0", "2.2.1", "2.2.2"});   // all the patches of the last minor of the previous major
   CHECK(nodes("program_version:2.last") == V{});                              // no major two ahead
   CHECK(nodes("program_version:-1.last") == V{"2.2"});                       // fewer levels than the dimension has
   CHECK(nodes("program_version:-1") == V{"2"});
-  CHECK(nodes("program_version:last.1.all") == V{"3.1.0", "3.1.1", "3.1.2"});
+  CHECK(nodes("program_version:last.0.all") == V{"3.1.0", "3.1.1", "3.1.2"});    // 0 on a finer level is the current minor when the major is the current one
   // a coordinate longer than the dimension declares goes as deep as the graph reaches, with an advisory
   const Resolution deep = run("program_version:-1.last.last.last", anchor, g);
   CHECK(deep.nodes.empty());
@@ -209,7 +209,7 @@ TEST_CASE("an address that does not fit is accepted and answered with an advisor
   CHECK(codes("branch:\"k03\"").empty());
   CHECK(run("branch:\"k03\"", "u5", g).nodes.size() == 1);
   CHECK(codes("") == C{"address_empty"});
-  CHECK(run("", "u5", g).nodes == std::vector<std::string>{});            // an empty address names no step: the current node is the start, nothing was selected
+  CHECK(run("", "u5", g).nodes == std::vector<std::string>{"u5"});        // an empty address means the current node
   // a node that is not on the dimension at all
   k3mock::Mock small;
   small.add_root("message", "only", 0);
@@ -249,7 +249,7 @@ TEST_CASE("a point between nodes (R77): nearest today; interpolate and derive ar
   CHECK(run("scale:0.1", mock.forests.at("scale").roots[3], g).advisories.at(0)["code"] == "between_unavailable");
 }
 
-TEST_CASE("T5 the codec registry rejects nothing silently: an unknown codec behaves like a name and says so") {
+TEST_CASE("the codec registry rejects nothing silently: an unknown codec behaves like a name and says so") {
   Json pack = reg().pack();
   pack["dimensions"].push_back(Json{{"id", "mood"}, {"codec", "quantum"}, {"label", Json{{"pl", "Nastrój"}, {"en", "Mood"}}}, {"why", Json{{"pl", "przykład"}, {"en", "example"}}}});
   auto r = dimensions::Registry::from_json(pack);
@@ -308,7 +308,7 @@ TEST_CASE("words, origin and keys are data of a dimension") {
   CHECK(nokey.advisories.at(0)["code"] == "key_missing");
   // the default dimension of a step without a name is a port of the graph, else the registry's
   Graph named = m.ports();
-  CHECK(run("1", "r1", named, r).advisories.at(0)["code"] == "dimension_unknown");   // registry default `message` is not on this mock
+  CHECK(run("1", "r1", named, r).advisories.at(0)["code"] == "anchor_off_dimension");   // the registry default `message` is not on this mock
   named.default_dimension = [](const std::string&) { return std::string("ring"); };
   CHECK(unwrap(resolve(unwrap(parse("1", Syntaxes::builtin().default_syntax())), "r1", named, r)).nodes == std::vector<std::string>{"r1"});  // origin first: 1 is r1
 }
