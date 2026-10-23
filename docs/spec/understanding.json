@@ -194,6 +194,20 @@
    "text": "Bez atrap w apce: każdy element na ekranie działa naprawdę albo go nie ma (ukryty, dopóki nie ma czytelnika). Kontekst wysyłany do modelu nie jest wybierany ręcznie checkboxami, tylko wnioskowany z szerokiego, wielowymiarowego kontekstu (historia, cel/teleologia, perspektywa). Głębokość i szerokość to opcjonalne argumenty: domyślnie wnioskowane, przekazywalne jako wartości bezwzględne albo modyfikatory (szerzej/głębiej). Ręczny wybór zostaje jako jedna z konfiguracji, nie jedyny mechanizm.",
    "by": "koordynator (Fable)",
    "date": "2026-10-23"
+  },
+  "s_f375473e2c9d": {
+   "state": "proposed",
+   "history": [
+    {
+     "state": "proposed",
+     "by": "koordynator (Fable)",
+     "date": "2026-10-23",
+     "text": "Wersja 1 (tania, odwracalna, R75): strona drzewa spec (R73) dostaje przy każdej pozycji przyciski „Zatwierdzam”, „Popraw” (z tekstem) i „Uwaga” (nowa wypowiedź), zapisywane w bazie strony; osobne, tanie zadanie „sekretarz” (Sonnet/Haiku, co godzinę albo na żądanie) czyta te wpisy, zapisuje je do spec (approve/correct/add), robi commit i odświeża stronę, a do mnie (drogiego) trafia tylko to, co nietypowe lub złożone — reszta czeka na mnie w spec, nie w czacie. Format = węzły spec (id, cytat, parafraza, stan). Czat zostaje do dyskusji. Wszystko (które przyciski, kto sekretarzem, co „nietypowe”) to presety."
+    }
+   ],
+   "text": "Wersja 1 (tania, odwracalna, R75): strona drzewa spec (R73) dostaje przy każdej pozycji przyciski „Zatwierdzam”, „Popraw” (z tekstem) i „Uwaga” (nowa wypowiedź), zapisywane w bazie strony; osobne, tanie zadanie „sekretarz” (Sonnet/Haiku, co godzinę albo na żądanie) czyta te wpisy, zapisuje je do spec (approve/correct/add), robi commit i odświeża stronę, a do mnie (drogiego) trafia tylko to, co nietypowe lub złożone — reszta czeka na mnie w spec, nie w czacie. Format = węzły spec (id, cytat, parafraza, stan). Czat zostaje do dyskusji. Wszystko (które przyciski, kto sekretarzem, co „nietypowe”) to presety.",
+   "by": "koordynator (Fable)",
+   "date": "2026-10-23"
   }
  }
 }

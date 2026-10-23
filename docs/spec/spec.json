@@ -5,8 +5,8 @@
  "sources": {
   "owner": {
    "path": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
-   "sha256": "ae55ca156e1a65caf13c8de46ab19c861dc1f395a237c52aad80e6041d4ce47e",
-   "lines": 893
+   "sha256": "adbc7c62c49312fca867cc0b9d6c550ceb786e721dd9a585743b2f748d8ab561",
+   "lines": 898
   },
   "slowa": {
    "path": "docs/architecture/SLOWA_WLASCICIELA_2026-10-16.md",
@@ -5042,6 +5042,71 @@
    ]
   },
   {
+   "id": "s_f375473e2c9d",
+   "aliases": [
+    "R88"
+   ],
+   "kind": "requirement",
+   "title": "Praca na jednej specyfikacji w ustalonym formacie zamiast długich tekstów w czacie; tani interfejs konwersacyjny, żonglerka modelami wg złożoności korekty, rola „sekretarza” ustalającego, co faktycznie ustalono — idea, nie schemat",
+   "date": "2026-10-23",
+   "theme": "owner_requirements",
+   "theme_inferred": false,
+   "understanding": {
+    "state": "proposed",
+    "history": [
+     {
+      "state": "proposed",
+      "by": "koordynator (Fable)",
+      "date": "2026-10-23",
+      "text": "Wersja 1 (tania, odwracalna, R75): strona drzewa spec (R73) dostaje przy każdej pozycji przyciski „Zatwierdzam”, „Popraw” (z tekstem) i „Uwaga” (nowa wypowiedź), zapisywane w bazie strony; osobne, tanie zadanie „sekretarz” (Sonnet/Haiku, co godzinę albo na żądanie) czyta te wpisy, zapisuje je do spec (approve/correct/add), robi commit i odświeża stronę, a do mnie (drogiego) trafia tylko to, co nietypowe lub złożone — reszta czeka na mnie w spec, nie w czacie. Format = węzły spec (id, cytat, parafraza, stan). Czat zostaje do dyskusji. Wszystko (które przyciski, kto sekretarzem, co „nietypowe”) to presety."
+     }
+    ],
+    "text": "Wersja 1 (tania, odwracalna, R75): strona drzewa spec (R73) dostaje przy każdej pozycji przyciski „Zatwierdzam”, „Popraw” (z tekstem) i „Uwaga” (nowa wypowiedź), zapisywane w bazie strony; osobne, tanie zadanie „sekretarz” (Sonnet/Haiku, co godzinę albo na żądanie) czyta te wpisy, zapisuje je do spec (approve/correct/add), robi commit i odświeża stronę, a do mnie (drogiego) trafia tylko to, co nietypowe lub złożone — reszta czeka na mnie w spec, nie w czacie. Format = węzły spec (id, cytat, parafraza, stan). Czat zostaje do dyskusji. Wszystko (które przyciski, kto sekretarzem, co „nietypowe”) to presety.",
+    "by": "koordynator (Fable)",
+    "date": "2026-10-23"
+   },
+   "quotes": [
+    {
+     "text": "idzie A ja teraz tak sobie myślę najpierw Myślałem że przekombinowałem za wygodny jestem ale teraz tak właśnie kombinuje że to może by były poza wygodą jeszcze oszczędność tokenów jakby zrealizować na przykład interfejs na przykład webowy do ciebie i żebyśmy Zamiast gadać i wymieniać się długimi tekstami pracowali po prostu na jednej specyfikacji w ustalonym formacie, interfejs konwersacyjny na jakimś sonecie, albo jeszcze jak się ekonomicznie da to żonglerka modelami w zależności od stopnia złożonościi nietypowości mojej korekty, sekretarz ustala co zostało faktycznie ustalone, gdzie był sekretarz? w 2024 gdzieś projektowaliśmy jakiegoś agenta i właśnie sekretarz był jedną z  ról do której był osobny wybór modelu. ale to mnie poniosło w dygresję. nie bierz tego schematu dosłownie chodzi mi po prostu o ideę że to jakoś zorganizować żeby zaoszczędzić i usystematyzować usprawnić",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:880",
+     "ref": null,
+     "attr": [],
+     "lead": null,
+     "secondary": false
+    }
+   ],
+   "sense": null,
+   "summary": null,
+   "restatement": [
+    {
+     "text": "(„idzie” = komenda na VM biegnie.) Idea organizacyjna (09:4x UTC), wyraźnie: nie brać schematu dosłownie — chodzi o oszczędność tokenów i usystematyzowanie: zamiast wymiany długich tekstów z drogim koordynatorem, wspólna praca na JEDNEJ specyfikacji w ustalonym formacie (R73 już ją pokazuje), przez interfejs (np. webowy) z tanim modelem konwersacyjnym (np. Sonnet); dobór modelu do stopnia złożoności i nietypowości korekty (jak router w apce); rola „sekretarza” (z własnym wyborem modelu, jak w projekcie agenta z 2024), który ustala, co zostało faktycznie ustalone (stany understanding w spec). Wniosek koordynatora: żywe drzewo (R73) staje się dwukierunkowe — on zatwierdza/poprawia/dopisuje przy pozycji; tani sekretarz zapisuje to do spec i odświeża stronę; do drogiego koordynatora trafiają tylko korekty nietypowe/złożone; czat zostaje do dyskusji.",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:882"
+    }
+   ],
+   "commentary": [],
+   "status": null,
+   "gap_text": null,
+   "evidence": [],
+   "next_step": null,
+   "refs": [
+    "s_cbb8ed66f13d"
+   ],
+   "supersedes": [],
+   "superseded_by": [],
+   "supersession_notes": [],
+   "tags": [],
+   "heading_note": "owner, 2026-10-23",
+   "sources": [
+    {
+     "role": "owner",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:879-882"
+    }
+   ],
+   "files": [
+    "owner"
+   ]
+  },
+  {
    "id": "s_18ec73967a7b",
    "aliases": [
     "owner:decision-rebuild-don-t-recover"
@@ -5057,7 +5122,7 @@
    "quotes": [
     {
      "text": "\"nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane\"",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:880",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:885",
      "ref": null,
      "attr": [],
      "lead": null,
@@ -5069,7 +5134,7 @@
    "restatement": [
     {
      "text": "Recovered versions (`history/chatadhd_v0.8.3`, `history/chatadhd_v0.9.0`) and\nthe historical report are sources of requirements, ideas and data assets\n(e.g. `film_structure.json`), and real ground truth for self-discovery tests —\nnot code to merge. Everything is rebuilt in Loom with tests.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:882-885"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:887-890"
     }
    ],
    "commentary": [],
@@ -5086,7 +5151,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:879-885"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:884-890"
     }
    ],
    "files": [
@@ -5112,7 +5177,7 @@
    "restatement": [
     {
      "text": "`workbench_mockup_2026-09-26.webp`: dockable/floating panels (conversation\nlist, active conversation, knowledge graph with active context window, project\nstructure with dimmed high-confidence auto-completable nodes, artifact views\nfor music/video with timeline + storyboard, video player, execution\nenvironment with agent), multi-format ingestion, Loom SDK at the centre.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:888-892"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:893-897"
     }
    ],
    "commentary": [],
@@ -5129,7 +5194,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:887-892"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:892-897"
     }
    ],
    "files": [

@@ -5,13 +5,13 @@ Ten plik jest **wygenerowany** z `docs/spec/spec.json` poleceniem `python3 tools
 
 Status pochodzi z pliku luk i jest **obserwacją z podanej daty**, nie ograniczeniem.
 
-Pozycji razem: **511**.
+Pozycji razem: **512**.
 
 | Status (z LUKI) | liczba |
 |---|---|
 | częściowo | 210 |
 | jest | 151 |
-| bez statusu (nie ma w LUKI) | 128 |
+| bez statusu (nie ma w LUKI) | 129 |
 | brak | 16 |
 | nieaktualne | 5 |
 | sprzeczne | 1 |
@@ -19,7 +19,7 @@ Pozycji razem: **511**.
 | Rodzaj | liczba |
 |---|---|
 | remark | 367 |
-| requirement | 87 |
+| requirement | 88 |
 | philosophy | 36 |
 | statement | 10 |
 | decision | 4 |
@@ -29,13 +29,13 @@ Pozycji razem: **511**.
 | Rozumienie (R61) | liczba |
 |---|---|
 | none | 499 |
-| proposed | 10 |
+| proposed | 11 |
 | corrected | 2 |
 
 | W których plikach | liczba |
 |---|---|
 | LUKI + SLOWA | 379 |
-| rejestr R/D | 94 |
+| rejestr R/D | 95 |
 | SLOWA | 34 |
 | LUKI | 4 |
 
@@ -55,7 +55,7 @@ Pozycji razem: **511**.
 | Proces i współpraca | 67 |
 | Pozostałe | 33 |
 | Uzupełnienia (wypowiedzi bez numeru) | 10 |
-| Rejestr wymagań R/D | 94 |
+| Rejestr wymagań R/D | 95 |
 | bez tematu | 3 |
 
 ## Filozofia
@@ -608,8 +608,9 @@ Pozycji razem: **511**.
 - `s_52ddb515794e` **R85** — „Pokrętło” to wielowymiarowa dana, mapowana z coraz większą rozdzielczością na podstawie interakcji z użytkownikiem — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L864)
 - `s_b0cd2d2de684` **R86** — Ustawienie/preferencja = po prostu węzeł w grafie powiązany z innymi bogatymi krawędziami — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L869)
 - `s_f707c2995a3d` **R87** — Pokrętło jako kontrolka: można je zdefiniować i wyrenderować, przypisać mu węzeł grafu, a ten węzeł — polu jakiejś konfiguracji — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L874)
-- `s_18ec73967a7b` **owner:decision-rebuild-don-t-recover** — Decision — rebuild, don't recover — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L879)
-- `s_223e1568b3b9` **owner:ui-reference** — UI reference — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L887)
+- `s_f375473e2c9d` **R88** — Praca na jednej specyfikacji w ustalonym formacie zamiast długich tekstów w czacie; tani interfejs konwersacyjny, żonglerka modelami wg złożoności korekty, rola „sekretarza” ustalającego, co faktycznie ustalono — idea, nie schemat — _bez statusu_ · rozumienie: proposed · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L879)
+- `s_18ec73967a7b` **owner:decision-rebuild-don-t-recover** — Decision — rebuild, don't recover — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L884)
+- `s_223e1568b3b9` **owner:ui-reference** — UI reference — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L892)
 
 ## Bez tematu
 
