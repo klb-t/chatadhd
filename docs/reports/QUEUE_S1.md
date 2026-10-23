@@ -1,8 +1,10 @@
-# Kolejka S1 — stan 2026-10-23 09:46 UTC
+# Kolejka S1 — stan 2026-10-23 10:16 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
 **Teleport (R72):** karta startowa nowej sesji S1 = `docs/ops/TELEPORT_S1.md` (aktualizowana tuż przed przełączeniem); zadania zaplanowane = `docs/ops/ZADANIA_ZAPLANOWANE_2026-10-23.md`; przeprowadzka = `docs/ops/PRZEPROWADZKA_GCP_2026-10-23.md`.
+
+## Tempo (10:16 UTC): tydzień 57 % (nad punktem 56 %/20:00; następny 80 % sob 08:00), okno 5 h 24 % po 11 min (zryw 5 torów R89). Projekt K3 (Fable) przesunięty: start po torach badania R89, przy oknie 5 h < 60 % (kontrola 10:50). R89: tory `prac` i `nauk` zakończone (notatki w `docs/research/TOKENY_2026-10-23/`), 3 w toku.
 
 ## R89 START (09:46 UTC, `wf_e74785e0-7f0`, skrypt `tools/workflows/research-synthesis.js`): właściciel (zmęczony, „wolna ręka”, „to nie jest specyfikacja”) — dedykowany interfejs do naszej pracy (wspólne dokumenty/schematy; przykład ról: Fable kieruje, Sonnet rozmawia) + research w sieci, jak ludzie oszczędzają tokeny, przez pryzmat filozofii. Przebieg: 5 równoległych torów badania (Sonnet; jego wyraźna prośba o kilku agentów): praktycy (prompt caching, Claude Code, inne agenty), nauka (kompresja kontekstu, pamięć agentów, KV-cache, routing/kaskady, koszt wieloagentowy), interfejsy współpracy nad specyfikacją (spec-driven, approve/correct UI, żywe dokumenty), role i żonglerka modelami + telemetria kosztów, nasze pomiary i możliwości platformy (tylko repo) → notatki `docs/research/TOKENY_2026-10-23/<tor>.md` (commit per tor) → ocena relewantności i zgodności z filozofią (Sonnet, kubełki use_now / improve_on / idea_seed / not_for_us) → synteza Fable: `docs/architecture/INTERFEJS_WSPOLPRACY_2026-10-23.md` (§0 streszczenie, co użyć wprost, co usprawnić po naszemu, ≥5 oryginalnych pomysłów z tanim eksperymentem i pomiarem, projekt interfejsu jako abstrakcje — role jako presety, routing wg złożoności korekty jako dane, interfejs jako widok grafu apki — pakiety, decyzje z odwrotem, ledger źródeł R59, luki). Potem kontrola Haiku + poprawki Sonnet. Koszt szacowany ≈ 3–4 pkt (5×Sonnet + ocena + Fable). R88 v1 (skrzynka + sekretarz) = pierwszy krok tej linii.
 
