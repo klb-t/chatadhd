@@ -201,7 +201,8 @@ w profilu dostawcy.
 - oś **treści**: `export` → `export.<vendor>` → `export.<vendor>.<product>` →
   `export.<vendor>.<product>/<layout>`.
 
-Przypadki, w których się **nie** pokrywają, istnieją dziś: goły `conversations.json` bez ZIP-a
+Przypadki, w których się **nie** pokrywają, istnieją wg obserwacji z 2026-10-23 (poziomy w §1.5; wiersz [D]
+nie jest dowodem, a decyzja niżej nie zależy od ich liczby — kompozycja osi jest ogólna): goły `conversations.json` bez ZIP-a
 (eksport, nie archiwum); eksport rozpakowany do katalogu; wariant „Privacy portal” ZIP w ZIP [D];
 `MyActivity.html` Gemini (HTML, nie JSON, w ZIP-ie Takeout obok innych produktów); `design_chats/`
 jako katalog w ZIP-ie Claude [B, niezweryfikowane — Aneks B p. 5]. Pojedyncze dziedziczenie `file > archive > export` złamałoby się
@@ -609,7 +610,7 @@ braki opcjonalne widoczne. To jest wycinek **web**.
 
 1. Brak renderera **przeglądarki eksportu**: lista wpisów, boczny panel w kształcie aplikacji
    dostawcy zasilany **z eksportu** (ChatGPT: rozmowy, udostępnione, canvas z `textdocs/`; Claude:
-   projekty z `projects.json`, wspomnienia z `memories.json`, `design_chats/`; Gemini: dni/wątki
+   projekty z `projects.json`, wspomnienia z `memories.json`, `design_chats/` (niezweryfikowane — Aneks B p. 5); Gemini: dni/wątki
    z dziennika). Nowy renderer `export_browser` + dane w profilu (`sidebar.sources` = klasy
    z §2.2). 2 pakiety.
 2. Brak **przypisania profilu wg źródła importu** (UI18): reguła w danych
@@ -852,7 +853,8 @@ sekcji są **obserwacjami z datą 2026-10-23** z poziomem źródła, nie ogranic
 
 | # | Decyzja | Dlaczego | Odwrót |
 |---|---|---|---|
-| D2-1 | Dziedziczenie wewnątrz osi (kontener, treść), kompozycja między osiami przez `facets[]`; akcje pasują po cechach | realne eksporty nie zawsze są ZIP-ami; akcje już pasują po cechach (`actions.pack`) | spłaszczyć fasety do `parent` jedną migracją danych |
+| D1-1 | Język opisu metadanych w grafie: polski jako **preset** (etykiety dla właściciela po polsku) | decyzja projektu, nie treść W2/W3 (§1.4 p. 6) | zmiana presetu języka opisu (dane, bez kodu) |
+| D2-1 | Dziedziczenie wewnątrz osi (kontener, treść), kompozycja między osiami przez `facets[]`; akcje pasują po cechach | realne eksporty nie zawsze są ZIP-ami (obserwacja z 2026-10-23, §1.5); akcje już pasują po cechach (`actions.pack`) | spłaszczyć fasety do `parent` jedną migracją danych |
 | D2-2 | Identyfikator układu = hash odcisku; etykieta osobno | nazwy „2026” są osądem; hash jest stabilny | zmienić `id` na slug, etykiety zostają |
 | D2-3 | Bliźniak HTML modelowany jako druga **forma** tej samej treści (`expresses`, waga = wierność) | odpowiada §6 GRAF_HUB; tożsamość staje się pomiarem, nie założeniem | zwinąć do flagi `html_twin_identical` na węźle eksportu |
 | D3-1 | Preset globalny `link` (W2, odczyt R57); `copy`, `read_through_zip`, `both`, `index_only` dostępne; `repack` i `read_through_zip` = **preset dostępności** (domyślnie wył., R57 dosł.: „to tylko na wyraźne życzenie użytkownika”), opcja zawsze dostępna, koszt = ostrzeżenie | R57; R58 (preset, nie reguła; koszt nie usuwa opcji) | zmienić preset w `import.pack`/nakładce — jedno pole |
@@ -867,11 +869,12 @@ sekcji są **obserwacjami z datą 2026-10-23** z poziomem źródła, nie ogranic
 | D5-4 | (e) jako pełnoprawny tryb z poradnikiem o odbiorcach, nie „eksport na życzenie” | R58, R60; dla ChatGPT odbiorca prawdopodobnie istnieje [A, streszczenie]; dla innych brak znanego (obserwacja z datą) | osoba ustawia preset (e) jednym polem w `import.pack` (np. na „tylko na żądanie”); projekt sam go nie degraduje (R58) |
 | D5-5..8 | Własny eksport Loom (`export.loom`) jako czytelny, opisany, wersjonowany format: schemat+wersja, własny odcisk i rodowód klas, manifest, opis z danych (§5.1) | R60: nie wiadomo, kto będzie czytał; ten sam mechanizm co dla cudzych eksportów | nowa wersja schematu obok starej; okrojenie manifestu presetem z ostrzeżeniem; opis zostaje lokalny |
 | D9-1 | Migracja tworzy węzły z `SourceRecord`, nie rusza wierszy; podniesienie do `link` przez bramkę | „nic po cichu” | usunąć węzły migracji (są oznaczone `derived_from: migration`) |
+| D11-2 | Kaskada źródeł: sięgnięcie po słabsze [D], gdy kroki 1–2 milczą, to **preset** (§11 p. 3), nie reguła właściciela | W8: „dopiero z braku wiarygodnych”; próg „milczą” jest naszym osądem | zmiana presetu albo ręczne włączenie kroku 3 wprost |
 | D11-1 | Agent formatów: preset `ask`; sanitizer deskryptorów z testem własności; adopcja do nakładki danych, nie do packów | prywatność; ROM nietykalny | preset `auto`/`never`; włączenie propozycji PR z danymi |
 | D12-1 | Rejestr = rozszerzenie `calibration.json` (klucze `source.*`, `author:*`, `claim:*`, `validity`, `decay`, `update`), ta sama matematyka Beta/noisy-OR | „extend, do not reinvent” | osobny plik `calibration.d/*.json` ładowany tym samym kodem |
 | D12-2 | Zanik wyprowadzony z obserwowanych zmian układu (od `min_changes`), wcześniej brak | żadnej wymyślonej stałej czasu | ustawić `decay.rule: fixed_half_life` z wartością osoby |
 | D12-3 | Samo twierdzenie źródła nie zmienia wiarygodności; zmienia ją tylko test | precedens `assess.cpp` | `update.assert_only.alpha > 0` w danych |
-| D10-1 | Kolejność pakietów P1→P10; P1–P3 dają rzeczy do dotknięcia | właściciel sprawdza na telefonie | koordynator przestawia |
+| D10-1 | Kolejność pakietów P1→P10; P1–P3 dają rzeczy do dotknięcia | właściciel sprawdza na telefonie | koordynator przestawia kolejność (preset koordynatora, bez zmiany kodu) |
 
 Pytania do właściciela (tylko tak/nie, zgodnie z zasadą): **żadnych** na tym etapie. Pieniądze
 poza budżetem nie występują (agent §11 ma preset `ask` z szacunkiem), nowy dostawca prywatnych

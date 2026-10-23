@@ -12,7 +12,8 @@ action_run,actions,import_formats,guardian}.pack`, `loom/data/policy/calibration
 `loom/src/resolve/assess.cpp`, `docs/architecture/GRAF_HUB_KOD_SILNIK_2026-10-13.md`, `docs/STATE.md`,
 `docs/reports/INDEX.md`. Badanie sieci (28 stron pobranych 2026-10-22 przez agenta badawczego) przyjmuję
 jako dane wejściowe z podanymi tierami; niczego z sieci nie dopisałem od siebie. Nie czytałem żadnego
-promptu z zbiorów „leaks” ani kodu `claw-code` (UI14 + prywatność).
+promptu z zbiorów „leaks” ani kodu `claw-code` (decyzja koordynatora: ryzyko prawne i prywatność —
+nie tekst UI14; reguła konfigurowalna, odwrót w §9 D2).
 
 Zasady obowiązujące w całym tekście: R58 (użyteczność nigdy nie jest powodem usunięcia opcji; „trudne”
 i „niemożliwe” opisują pracę i granice techniczne, nie zakazy) i R59 (każdy konkret poniżej to przykład
@@ -28,16 +29,19 @@ Gemini miał po części rację. Repozytoria istnieją — żadnej zmyślonej na
 „odtwarzają oryginalny przepływ” zlewa pięć różnych rzeczy: wygląd (L1), zestaw funkcji (L2), składanie
 promptu i kontekstu (L3), protokół narzędzi i pętlę agenta (L4), dokładną kopię (L5).
 
-1. **Codex i Gemini CLI to nie klony, to oryginały na Apache-2.0.** Kod, dokumentacja (sandbox,
+1. **Codex i Gemini CLI to nie klony, to oryginały na Apache-2.0** (wg README/odznaki, pliki LICENSE
+   nieczytane). Kod, dokumentacja (sandbox,
    execpolicy, AGENTS.md, config, skills; GEMINI.md, MCP) leżą otwarte. Tu nie trzeba klonów — można
    czytać wprost i odtwarzać logikę z poszanowaniem licencji. Zastrzeżenie: Google od czerwca 2026
    kieruje użytkowników bezpłatnych do zamkniętego Antigravity CLI (baner w README; reszta ze źródeł wtórnych).
-2. **Claude Code ma kod zamknięty** („All rights reserved”). Oficjalnie dostępne są formaty i protokoły
+2. **Claude Code: brak publicznego kodu agenta** (wniosek z niepełnej listy katalogów repozytorium,
+   niezweryfikowane; licencja własnościowa wg `LICENSE.md`, „All rights reserved”). Oficjalnie dostępne są formaty i protokoły
    (hooks, skills, wtyczki, subagenci, Agent SDK, ustawienia, uprawnienia, piaskownica, CLAUDE.md) oraz
    prompty systemowe claude.ai/iOS/Android (ale nie API i nie Claude Code). Otwarte „odpowiedniki”
    (opencode, Cline, Kilo, goose, Aider, OpenHands) to własne silniki na poziomie L2, nie kopie.
    `claude-code-router` to proxy do prawdziwego Claude Code. Jedyne, co twierdzi parytet (`claw-code`),
-   wiąże się z wyciekiem z marca 2026 — nie otwieramy tego i nie używamy.
+   wiąże się z wyciekiem z marca 2026 (tier B/C) — **decyzja koordynatora** (ryzyko prawne, nie tekst UI14):
+   domyślnie tego nie otwieramy i nie używamy; reguła jest konfigurowalna, odwrót w §9 D2.
 3. **Klony aplikacji webowych** (LibreChat, Open WebUI, LobeHub, NextChat, Chatbot UI) odtwarzają funkcje
    ChatGPT/claude.ai (L1–L2), nie prompty i nie pętle dostawców. Dwa z nich mamy już przypięte do konkretnych
    commitów jako profile interfejsu (`librechat-0.8.8`, `nextchat-2.16.1`).
@@ -46,11 +50,14 @@ promptu i kontekstu (L3), protokół narzędzi i pętlę agenta (L4), dokładną
    `like_claude`/`like_chatgpt`/`like_gemini` ze statusem „kalibracja”, `agent.run` z pętlą narzędzi
    i propozycjami, źródła narzędzi MCP, środowiska („co mogę zrobić na telefonie”). To są fundamenty L2–L4
    po naszej stronie, bez żadnego testu porównawczego z oryginałem.
-5. **Na ile możemy replikować:** L1–L2 wszystko, bez ograniczeń prawnych. L3–L4 dla Codexa i Gemini CLI —
+5. **Na ile możemy replikować:** L1–L2 wszystko, bez znanych ograniczeń prawnych (ocena inżynierska, nie
+   porada prawna; §3). L3–L4 dla Codexa i Gemini CLI —
    z ich otwartego kodu. Dla Claude Code — formaty i protokoły z oficjalnej dokumentacji; sama pętla
    i prompty tylko jako nasza własna rekonstrukcja. L5 dla Claude Code, claude.ai, ChatGPT i aplikacji
-   Gemini jest niemożliwe technicznie w częściach serwerowych (ukryte klasyfikatory, narzędzia po stronie
-   usługi, zachowanie modelu) i prawnie zablokowane tam, gdzie jedynym źródłem jest wyciek. Zgodnie z R58
+   Gemini jest dziś niemożliwe technicznie w częściach serwerowych — kod po stronie usługi, którego nie
+   mamy (ukryte klasyfikatory, narzędzia po stronie usługi, zachowanie modelu; obserwacja z 2026-10-22,
+   tier A–B) — a tam, gdzie jedynym źródłem jest wyciek, domyślnie zablokowane **decyzją koordynatora**
+   (ryzyko prawne; stan `blocked:legal`, konfigurowalne, odwrót w §9 D2). Zgodnie z R58
    opcja „replikuj L5” zostaje w konfiguracji — z uczciwą etykietą stanu i doradczym ostrzeżeniem, nie znika.
 6. **Jak to sprawdzimy (RE31):** test różnicowy — to samo zadanie na danych syntetycznych przez oryginał
    (Ty nagrywasz) i przez nas; porównujemy ślady narzędzi, strukturę kontekstu i wynik, z tolerancją na
@@ -70,10 +77,13 @@ Tiery wiarygodności: **A** = strona repozytorium / plik / oficjalna dokumentacj
 wyszukiwania lub źródło bez podanego pochodzenia. „Deklaracja README” = funkcja opisana przez autora,
 nietestowana. Daty ostatnich commitów są w większości **niezweryfikowane** (GitHub API było w sesji
 badawczej niedostępne); gwiazdki ze stron, nie z API.
+Kolumny „Licencja” i „Aktywność” to **obserwacje z datą 2026-10-22** (okno ważności: do następnego
+sprawdzenia), nie ograniczenia: etykiety licencji są **wg README/odznaki/strony repozytorium, pliki
+LICENSE nieczytane** (chyba że wiersz mówi inaczej), a rytm wydań i liczba gwiazdek zmieniają się.
 
 | # | Projekt (URL) | Czego dotyczy | Warstwa | Licencja | Aktywność | Tier / uwagi |
 |---|---|---|---|---|---|---|
-| 1 | Claude Code — `github.com/anthropics/claude-code` | oryginał | n/d (kod agenta zamknięty) | **własnościowa** (`LICENSE.md`: „All rights reserved”, Commercial ToS) | v2.1.309 z 2026-10-22 (feed wydań) | A; repo to tracker zgłoszeń, changelog, wtyczki, przykłady; „brak kodu agenta” wywnioskowany z niepełnej listy katalogów |
+| 1 | Claude Code — `github.com/anthropics/claude-code` | oryginał | n/d (brak publicznego kodu agenta — wniosek z niepełnej listy katalogów, niezweryfikowane) | **własnościowa** (`LICENSE.md`: „All rights reserved”, Commercial ToS) | v2.1.309 z 2026-10-22 (feed wydań) | A; repo to tracker zgłoszeń, changelog, wtyczki, przykłady; „brak kodu agenta” wywnioskowany z niepełnej listy katalogów |
 | 2 | Dokumentacja Claude Code — `code.claude.com/docs/llms.txt` | formaty i protokoły | źródło L2–L4 | dokumentacja Anthropic | 228 stron/język | A (indeks tytułów; treść stron nieczytana): hooks, skills, plugins, subagents, Agent SDK, settings, permissions, MCP, memory, sandboxing |
 | 3 | System prompts claude.ai — `platform.claude.com/docs/en/release-notes/system-prompts` | claude.ai, iOS, Android | L3 | oficjalna publikacja | od Haiku 3 do Fable 5.1 | A; strona: „do not apply to the Claude API”; nie sprawdzono, czy zawiera definicje narzędzi/artefaktów |
 | 4 | OpenAI Codex — `github.com/openai/codex` | oryginał | źródło L3–L4 | Apache-2.0 | rust-v0.164.0-alpha.11.1 z 2026-10-22 | A; crate'y: core, exec, execpolicy, linux-sandbox, apply-patch, protocol, hooks, prompts, mcp, memories, plugin; docs/: agents_md, config, sandbox, execpolicy, exec, skills, slash_commands; „Codex Web” osobny, zamknięty |
@@ -84,20 +94,20 @@ badawczej niedostępne); gwiazdki ze stron, nie z API.
 | 9 | Roo Code — `github.com/RooCodeInc/Roo-Code` | agent IDE | L2 | Apache-2.0 | **zarchiwizowane 2026-05-15** | A; tylko wiedza historyczna |
 | 10 | Kilo Code — `github.com/Kilo-Org/kilocode` | agent IDE/CLI | L2 | MIT | ~27.7k★ | A; FAQ: fork OpenCode (niesprawdzone w gicie); `--auto` zatwierdza uprawnienia |
 | 11 | goose — `github.com/block/goose` | agent ogólny | L2 | Apache-2.0 | ~55.5k★ | A; Agentic AI Foundation; Rust; ACP |
-| 12 | Crush — `github.com/charmbracelet/crush` | agent terminalowy | L2 | **FSL-1.1-MIT (source-available, nie OSI)** | ~28.8k★ | A; telemetria z opt-outem — sprzeczne z naszą zasadą „bez telemetrii” |
+| 12 | Crush — `github.com/charmbracelet/crush` | agent terminalowy | L2 | **FSL-1.1-MIT (source-available, nie OSI)** (wg README/odznaki; LICENSE nieczytany) | ~28.8k★ | A; telemetria z opt-outem — sprzeczne z naszą zasadą „bez telemetrii” |
 | 13 | Aider — `github.com/Aider-AI/aider` | para-programista | L2 (inny przepływ) | Apache-2.0 | ~49.7k★ | A; wzór mapy repo i auto-commitów |
 | 14 | OpenHands — `github.com/All-Hands-AI/OpenHands` | agent w piaskownicy | L2 | MIT (enterprise nieznane) | ~91.6k★ | A; nie klon Claude Code ani Codexa |
 | 15 | claude-code-router — `github.com/musistudio/claude-code-router` | **proxy** do prawdziwego Claude Code/Codex | n/d | MIT | ~37.8k★ | A; nie klon — bramka trasująca (wzór dla naszej bramki do modeli) |
-| 16 | claw-code — `github.com/ultraworkers/claw-code` | deklarowany port Claude Code | deklarowane L3–L4, **niezweryfikowane** | MIT (repo; nie nadaje praw do cudzego kodu) | ~195k★ (niezależnie niesprawdzalne) | A dla README („not affiliated… does not claim ownership”); pochodzenie z wycieku 2026-03-31 — tier B/C; **nie otwierać** |
+| 16 | claw-code — `github.com/ultraworkers/claw-code` | deklarowany port Claude Code | deklarowane L3–L4, **niezweryfikowane** | MIT (repo; nie nadaje praw do cudzego kodu) | ~195k★ (niezależnie niesprawdzalne) | A dla README („not affiliated… does not claim ownership”); pochodzenie z wycieku 2026-03-31 — tier B/C; **domyślnie nie otwierać** (decyzja koordynatora: ryzyko prawne; klasa `extraction_leak`, §3) |
 | 17 | LibreChat — `github.com/danny-avila/LibreChat` | klon ChatGPT | L2 | MIT | ~46.2k★, v0.8.8 | A; artefakty, code interpreter, agenci+subagenci+skills, MCP, rozgałęzianie, web search, STT/TTS (deklaracje README) |
-| 18 | Open WebUI — `github.com/open-webui/open-webui` | UI ChatGPT-podobny | L2 | **„Open WebUI License” z klauzulą brandingu (nie OSI)** | ~156.5k★ | A dla licencji; RAG, web search, głos, pamięć, MCP/OpenAPI; „artifacts” tylko KV |
-| 19 | LobeHub — `github.com/lobehub/lobe-chat` | czat/agenci wielomodelowy | L2 | **nierozstrzygnięta** (README: Community License; plakietka: Apache-2.0) | ~83.4k★ | A dla istnienia; licencja do sprawdzenia przed jakimkolwiek użyciem |
+| 18 | Open WebUI — `github.com/open-webui/open-webui` | UI ChatGPT-podobny | L2 | **„Open WebUI License” z klauzulą brandingu (nie OSI)** (wg README/odznaki; LICENSE nieczytany) | ~156.5k★ | A dla licencji; RAG, web search, głos, pamięć, MCP/OpenAPI; „artifacts” tylko KV |
+| 19 | LobeHub — `github.com/lobehub/lobe-chat` | czat/agenci wielomodelowy | L2 | **nierozstrzygnięta** (README: Community License; plakietka: Apache-2.0; LICENSE nieczytany) | ~83.4k★ | A dla istnienia; licencja do sprawdzenia przed jakimkolwiek użyciem |
 | 20 | NextChat — `github.com/ChatGPTNextWeb/NextChat` | UI wielomodelowy | L1–L2 | MIT | ~88.9k★ | A; maski, wtyczki, Artifacts (v2.14.0), Realtime Chat (v2.15.8); mamy profil `nextchat-2.16.1` |
 | 21 | Chatbot UI — `github.com/mckaywrigley/chatbot-ui` | UI ChatGPT-podobny | L1 | MIT | ~33.3k★, „major update in progress” | A; stan utrzymania niejasny |
-| 22 | system_prompts_leaks — `github.com/asgeirtj/system_prompts_leaks` | zbiór promptów wielu dostawców | deklarowane L3 | CC0 (repo; nie przenosi praw do cudzego tekstu) | ~70.1k★ | **C**: brak pochodzenia; nazwa mówi „leaks”; nie czytać, nie kopiować |
-| 23 | CL4R1T4S — `github.com/elder-plinius/CL4R1T4S` | zbiór „wycieków” | deklarowane L3 | AGPL-3.0 (repo) | ~51.5k★ | **C**: README zachęca do „leak, extract”; strona zawierała polecenie do modelu czytającego (zignorowane) — najwyższe ryzyko ToS |
-| 24 | system-prompts-and-models-of-ai-tools — `github.com/x1xhlol/system-prompts-and-models-of-ai-tools` | Cursor, Devin, Windsurf, v0… | deklarowane L3 | GPL-3.0 (repo) | ~144k★ | **C**: brak pochodzenia; reklama usługi |
-| 25 | claude-code-system-prompts — `github.com/Piebald-AI/claude-code-system-prompts` | prompty Claude Code wyciągnięte z paczki npm | deklarowane L3 | MIT (repo) | do v2.1.308; dwie niespójne daty na stronie | **B/C**: metoda opisana i odtwarzalna, ale to ekstrakcja z własnościowego pakietu, nie publikacja — nie używać jako wejścia (UI14) |
+| 22 | system_prompts_leaks — `github.com/asgeirtj/system_prompts_leaks` | zbiór promptów wielu dostawców | deklarowane L3 | CC0 (repo; nie przenosi praw do cudzego tekstu) | ~70.1k★ | **C**: brak pochodzenia; nazwa mówi „leaks”; **domyślnie nie czytać, nie kopiować** (decyzja koordynatora, klasa `extraction_leak`, §3) |
+| 23 | CL4R1T4S — `github.com/elder-plinius/CL4R1T4S` | zbiór „wycieków” | deklarowane L3 | AGPL-3.0 (repo) | ~51.5k★ | **C**: README zachęca do „leak, extract”; strona zawierała polecenie do modelu czytającego (zignorowane) — najwyższe ryzyko ToS (ocena koordynatora, ToS nieczytane); **domyślnie nie czytać** (klasa `extraction_leak`, §3) |
+| 24 | system-prompts-and-models-of-ai-tools — `github.com/x1xhlol/system-prompts-and-models-of-ai-tools` | Cursor, Devin, Windsurf, v0… | deklarowane L3 | GPL-3.0 (repo) | ~144k★ | **C**: brak pochodzenia; reklama usługi; w klasie `extraction_leak` (decyzja koordynatora, §3) |
+| 25 | claude-code-system-prompts — `github.com/Piebald-AI/claude-code-system-prompts` | prompty Claude Code wyciągnięte z paczki npm | deklarowane L3 | MIT (repo) | do v2.1.308; dwie niespójne daty na stronie | **B/C**: metoda opisana i odtwarzalna, ale to ekstrakcja z własnościowego pakietu, nie publikacja — **domyślnie nie używać jako wejścia** (decyzja koordynatora, klasa `extraction_leak`, §3; nie tekst UI14) |
 
 Poza tabelą (nie spełniają warunku „zweryfikowane istnienie”): GeminiProChat, Gemini Next Chat,
 Gemini-Clone i podobne demonstracje — tylko wyniki wyszukiwania, tier C. Niesprawdzeni kandydaci:
@@ -140,7 +150,7 @@ Oceny (słowa `łatwe/średnie/trudne` = wysiłek; `niemożliwe` = granica techn
 | L2 | lista funkcji z indeksu dokumentacji (hooks, skills, plugins, subagents, permissions, memory, MCP, sandboxing, Agent SDK) | `agent.run`, propozycje, reguły, MCP, pamięć | skills jako pliki, hooks jako zdarzenia przed/po akcji (mamy `action_rules` — analog), subagenci jako osobne pętle z własnym budżetem, piaskownica | **średnie** dla skills/hooks/subagentów (mapują się na akcje i reguły jako dane); **trudne** dla piaskownicy (natywny kod per platforma; na Androidzie ograniczona) |
 | L3 | **nie** (oficjalne prompty obejmują claude.ai, nie Claude Code — tier A) | `like_claude` (status kalibracja) | brak legalnego źródła tekstu | **trudne i tylko jako rekonstrukcja**: z zachowania nagranego przez właściciela (RE31) i z dokumentacji; nigdy z Piebald-AI/leaks |
 | L4 | formaty plików i zdarzeń z dokumentacji (`CLAUDE.md`, settings, hooks JSON, SKILL.md, manifest wtyczek, tryby uprawnień, Agent SDK Py/TS) | pętla narzędzi z regułami | czytniki tych formatów jako profile importu; pętla zgodna co do kolejności zdarzeń | **średnie** — formaty są opublikowane; zgodność pętli mierzy test różnicowy |
-| L5 | nie | — | kod zamknięty | **niemożliwe** w częściach: zachowanie modelu z promptem, którego legalnie nie mamy; klasyfikatory bezpieczeństwa; telemetria/serwer. Prawnie: UI14 |
+| L5 | nie | — | brak publicznego kodu agenta i usługi (wniosek z niepełnej listy katalogów, niezweryfikowane) | **dziś niemożliwe** w częściach serwerowych (kod po stronie usługi, którego nie mamy: klasyfikatory bezpieczeństwa, telemetria/serwer, zachowanie modelu; obserwacja 2026-10-22, tier A–B); część oparta na wycieku promptu — domyślnie `blocked:legal` (decyzja koordynatora, ryzyko prawne; nie tekst UI14), konfigurowalne |
 
 ### 2.2 OpenAI Codex (CLI/IDE; „Codex Web” osobno)
 
@@ -150,7 +160,7 @@ Oceny (słowa `łatwe/średnie/trudne` = wysiłek; `niemożliwe` = granica techn
 | L2 | docs: `exec`, `execpolicy`, `sandbox`, `agents_md`, `config`, `skills`, `slash_commands`; crate'y `memories`, `plugin`, `hooks`, `mcp` | odpowiedniki częściowe (reguły, MCP, pamięć) | execpolicy jako polityka wykonania poleceń = dane; slash commands | **łatwe–średnie** (dokumentacja + kod czytelne wprost) |
 | L3 | katalog `prompts` w repo (treść **nieczytana**; `core/prompt.md` dał 404 — lokalizacja się zmieniła) | `like_chatgpt` (kalibracja; to profil aplikacji ChatGPT, nie Codexa — do rozdzielenia) | profil selektora `like_codex` zbudowany z kodu `codex-rs/core` | **łatwe–średnie**, legalne (Apache-2.0: logika + atrybucja/NOTICE) |
 | L4 | `protocol`, `apply-patch`, `linux-sandbox`, `execpolicy`, `hooks`, `mcp` — kod | pętla narzędzi | piaskownica Linux/macOS, patch-apply jako akcja | **średnie** (logika), **trudne** piaskownica na Androidzie |
-| L5 | kod CLI tak; **Codex Web (chmura) nie** | — | — | CLI: **trudne, osiągalne lokalnie** (ten sam model przez OpenRouter nie gwarantuje identycznego zachowania — inne nagłówki/parametry usługi); Codex Web: **niemożliwe** (serwer OpenAI) |
+| L5 | kod CLI tak; **Codex Web (chmura) nie** | — | — | CLI: **trudne, osiągalne lokalnie** (ten sam model przez OpenRouter nie gwarantuje identycznego zachowania — inne nagłówki/parametry usługi; niezweryfikowane); Codex Web: **dziś niemożliwe** (serwer OpenAI, kod niedostępny — tier A: „Codex Web osobny, zamknięty”) |
 
 ### 2.3 ChatGPT (aplikacja)
 
@@ -158,9 +168,9 @@ Oceny (słowa `łatwe/średnie/trudne` = wysiłek; `niemożliwe` = granica techn
 |---|---|---|---|---|
 | L1 | obserwacja; klony LibreChat/NextChat/Open WebUI (L1–L2, licencje różne) | `chatgpt-inspired` (skórka), `librechat-0.8.8`, `nextchat-2.16.1` przypięte do commitów | układy (canvas, projekty, pamięć w ustawieniach) jako kolejne renderery | **łatwe** skórka, **średnie** nowe renderery |
 | L2 | deklaracje README klonów; dokumentacja OpenAI (**nieosiągnięta** w badaniu — błąd DNS) | rozgałęzianie (mamy natywnie), web search (plugin `web` w OpenRouter), pamięć, import eksportów ChatGPT (`mapping`) | canvas/artefakty, projekty, deep research, głos realtime, GPTs/„custom instructions” jako profil | **średnie** |
-| L3 | **nie** (OpenAI nie publikuje promptów ChatGPT; zbiory „leaks” — tier C, nie używamy) | `like_chatgpt` (kalibracja) | tylko rekonstrukcja z nagrań | **trudne**, rekonstrukcja behawioralna |
-| L4 | nie (narzędzia serwerowe) | pętla narzędzi | — | **niemożliwe** co do oryginalnych narzędzi serwerowych; **średnie** jako nasze odpowiedniki |
-| L5 | nie | — | — | **niemożliwe** (serwer, model, klasyfikatory, pamięć serwerowa) |
+| L3 | **nie znaleziono** (publikacji promptów ChatGPT nie znaleziono; dokumentacja OpenAI nieosiągnięta w badaniu — DNS, obserwacja 2026-10-22, niezweryfikowane; zbiory „leaks” — tier C, domyślnie nie używamy: decyzja koordynatora) | `like_chatgpt` (kalibracja) | tylko rekonstrukcja z nagrań | **trudne**, rekonstrukcja behawioralna |
+| L4 | nie (narzędzia serwerowe) | pętla narzędzi | — | **dziś niemożliwe** co do oryginalnych narzędzi serwerowych (kod po stronie usługi, którego nie mamy); **średnie** jako nasze odpowiedniki |
+| L5 | nie | — | — | **dziś niemożliwe** (serwer, model, klasyfikatory, pamięć serwerowa — kod po stronie usługi, którego nie mamy) |
 
 ### 2.4 claude.ai (web/iOS/Android)
 
@@ -169,8 +179,8 @@ Oceny (słowa `łatwe/średnie/trudne` = wysiłek; `niemożliwe` = granica techn
 | L1 | obserwacja | `claude-inspired` (skórka; `composer.submit: mod-enter` jako wybór demonstracyjny, nie pomiar) | artefakty, projekty, panel pamięci | **łatwe** skórka, **średnie** renderery |
 | L2 | lista funkcji obserwowalna; eksport claude.ai (`chat_messages`) importujemy | import, rozgałęzianie, pamięć | artefakty, projekty jako kontener kontekstu (mamy `project` w selektorze), „styles” | **średnie** |
 | L3 | **tak, oficjalnie**: prompty systemowe claude.ai/iOS/Android na `platform.claude.com` (tier A; „nie dotyczą API”) | `like_claude` (kalibracja) | profil `claude_ai_<data wpisu>` zbudowany z oficjalnego tekstu, wersjonowany datą wpisu | **łatwe–średnie**, legalne (oficjalna publikacja; nie sprawdzono, czy wpisy zawierają definicje narzędzi/artefaktów — do sprawdzenia w pakiecie) |
-| L4 | nie (narzędzia serwerowe: artefakty, wyszukiwanie, pamięć) | nasze odpowiedniki | — | **niemożliwe** oryginalne; **średnie** odpowiedniki |
-| L5 | nie | — | — | **niemożliwe** (serwer, model; sam prompt nie czyni aplikacji) |
+| L4 | nie (narzędzia serwerowe: artefakty, wyszukiwanie, pamięć) | nasze odpowiedniki | — | **dziś niemożliwe** oryginalne (kod po stronie usługi, którego nie mamy); **średnie** odpowiedniki |
+| L5 | nie | — | — | **dziś niemożliwe** (serwer, model — kod po stronie usługi, którego nie mamy; sam prompt nie czyni aplikacji) |
 
 ### 2.5 Gemini (aplikacja i CLI)
 
@@ -180,16 +190,20 @@ Oceny (słowa `łatwe/średnie/trudne` = wysiłek; `niemożliwe` = granica techn
 | L2 | CLI README: `GEMINI.md`, MCP (`~/.gemini/settings.json`), narzędzia (system plików, powłoka, web fetch/search), piaskownica, checkpointing, rozszerzenia | MCP, pamięć, reguły | checkpointing jako akcja na `run_store`; `GEMINI.md` jako format importu profilu | **łatwe–średnie** (CLI); aplikacja: **średnie** (generacja muzyki → RE31 wymaga dostawcy Lyria przez nasz `use_model`) |
 | L3 | CLI: kod; aplikacja: nie | `like_gemini` (kalibracja; „kanał kontekst osobisty”) | `like_gemini_cli` z kodu | CLI **łatwe–średnie**; aplikacja **trudne** (rekonstrukcja) |
 | L4 | CLI: kod | pętla narzędzi | piaskownica | **średnie**; piaskownica na Androidzie **trudne** |
-| L5 | CLI tak (lokalnie, jak Codex CLI); aplikacja nie; **Antigravity CLI zamknięty** | — | — | CLI **trudne, osiągalne**; aplikacja/Antigravity **niemożliwe** |
+| L5 | CLI tak (lokalnie, jak Codex CLI); aplikacja nie; **Antigravity CLI zamknięty** | — | — | CLI **trudne, osiągalne**; aplikacja/Antigravity **dziś niemożliwe** (kod zamknięty — tier B: baner README, reszta ze źródeł wtórnych) |
 
-### 2.6 Czego nie da się zreplikować w żadnym wypadku (granica techniczna)
+### 2.6 Czego dziś nie da się zreplikować (granica techniczna; obserwacja z datą 2026-10-22)
 
 - Zachowanie **po stronie serwera dostawcy**: ukryte klasyfikatory, moderacja, narzędzia serwerowe
   (artefakty claude.ai, canvas ChatGPT, deep research, pamięć serwerowa), limity i trasowanie wewnątrz usługi.
+  Podstawa: brak publicznego kodu tych usług (tier A–B, obserwacja 2026-10-22); wniosek o tym, co
+  dokładnie robią, jest **niezweryfikowany**.
 - Zachowanie **po stronie modelu**, które zależy od nagłówków/parametrów dostępnych tylko aplikacji
-  dostawcy (nie przez OpenRouter), od wersji modelu niewidocznej w API i od niedeterminizmu.
-- **Dryf**: wszystko powyżej zmienia się z wydaniami (Claude Code: wydania co dzień; Codex: co kilka
-  godzin). „Replika” jest zawsze repliką *wersji z datą*; profil bez `target.version` i daty to przybliżenie.
+  dostawcy (nie przez OpenRouter), od wersji modelu niewidocznej w API i od niedeterminizmu
+  (**niezweryfikowane**: hipoteza inżynierska, bez źródła A–B; do sprawdzenia testem różnicowym RE31).
+- **Dryf**: wszystko powyżej zmienia się z wydaniami (rytm wydań to obserwacja z feedów 2026-10-22,
+  tier A–B, niezmierzony: Claude Code v2.1.309 z 2026-10-22, Codex rust-v0.164.0-alpha.11.1 z 2026-10-22;
+  nie ograniczenie). „Replika” jest zawsze repliką *wersji z datą*; profil bez `target.version` i daty to przybliżenie.
 
 Zgodnie z R58: opcja „poziom replikacji: L5” zostaje w ustawieniach dla każdego celu; silnik odpowiada
 stanem (`achievable | approximation | blocked:legal | blocked:server_side`) i doradczym, nienatrętnym
@@ -197,17 +211,20 @@ ostrzeżeniem z „nie pytaj ponownie”. Nie usuwa, nie degraduje.
 
 ---
 
-## 3. Granice prawne i ToS (UI14)
+## 3. Granice prawne i ToS (UI14 jako cytat; reszta to decyzje koordynatora)
 
-Nie jestem prawnikiem; poniżej wnioski inżynierskie, nie porada prawna. UI14 (właściciel): „odwzorowanie
-logiki i funkcji na tyle, na ile prawa autorskie pozwalają, nie klonowanie grafiki”.
+Nie jestem prawnikiem; poniżej wnioski inżynierskie, nie porada prawna. UI14 (właściciel, dosłownie,
+`SLOWA_WLASCICIELA_2026-10-16.md:1488`): „docelowo [...] opcja przeszukiwania wszystkich apek i nie tyle
+klonowania ale odwzorowywania interfejsów na tyle na ile prawa autorskie pozwalają.” To jedyne dosłowne
+zdanie właściciela w tej sekcji; klasy i reguły w tabeli niżej to **decyzje koordynatora** (domyślne
+presety w danych, konfigurowalne, z odwrotem w §9), nie tekst UI14.
 
 | Klasa źródła | Przykłady | Użycie u nas | Warunki |
 |---|---|---|---|
 | **official** — oficjalna publikacja dostawcy | prompty claude.ai (`platform.claude.com`), dokumentacja Claude Code, docs Codexa/Gemini CLI | L2–L4: formaty, protokoły; L3: tekst promptów claude.ai może być **cytowany jako dane wejściowe profilu** z odnośnikiem i datą wpisu | zapisać URL, datę pobrania, wersję; obserwować warunki użycia strony (nie sprawdzone) |
 | **open_license** — kod na licencji permisywnej | Codex (Apache-2.0), Gemini CLI (Apache-2.0), LibreChat (MIT), NextChat (MIT), Cline, goose, Aider, OpenHands, opencode | odtwarzanie logiki, czytanie struktur, a przy kopiowaniu fragmentów — zachowanie licencji i NOTICE | Apache-2.0: NOTICE i oznaczenie zmian; MIT: nota licencyjna. Projekt dotąd **nie kopiował kodu** (APPLICATION_PROFILE_SOURCES: „did not copy third-party implementation code”) — zostajemy przy tym jako preset |
-| **restricted_license** — source-available / klauzule | Crush (FSL-1.1-MIT), Open WebUI (klauzula brandingu), LobeHub (nierozstrzygnięte) | tylko obserwacja zachowania i czytanie dokumentacji; **zero kodu** do czasu przeczytania LICENSE | zadanie: przeczytać licencje (pakiet 7) |
-| **extraction_leak** — wyciek lub ekstrakcja z własnościowego pakietu | claw-code, Piebald-AI, asgeirtj, CL4R1T4S, x1xhlol | **nie czytać, nie kopiować, nie używać jako wejścia** (UI14; ryzyko ToS, praw autorskich, złośliwego kodu w „lustrach”) | profil w grafie może *odnotować istnienie* takiego źródła z tagiem, bez treści |
+| **restricted_license** — source-available / klauzule | Crush (FSL-1.1-MIT), Open WebUI (klauzula brandingu), LobeHub (nierozstrzygnięte) | tylko obserwacja zachowania i czytanie dokumentacji; **zero kodu do czasu przeczytania LICENSE** (decyzja koordynatora o kolejności prac, nie zakaz: po przeczytaniu licencji reguła zmienia się w danych) | zadanie: przeczytać licencje (pakiet 7) |
+| **extraction_leak** — wyciek lub ekstrakcja z własnościowego pakietu | claw-code, Piebald-AI, asgeirtj, CL4R1T4S, x1xhlol | **domyślna reguła odmowy: nie czytać, nie kopiować, nie używać jako wejścia** — decyzja koordynatora (ryzyko prawne: ToS, prawa autorskie, złośliwy kod w „lustrach” — ocena, ToS nieczytane), nie tekst UI14; stan źródła `blocked:legal`; konfigurowalna przez osobę, odwrót w §9 D2 | profil w grafie może *odnotować istnienie* takiego źródła z tagiem, bez treści |
 | **observation** — nagranie zachowania oryginału przez właściciela na jego koncie | zrzuty, zapisy sesji, eksporty (RE31) | wzorzec do testów różnicowych; **tylko logika**, nie grafika | ToS dostawcy co do automatyzacji — nagranie ręczne, nie scraping; dane prywatne właściciela nie opuszczają urządzenia |
 
 Tag pochodzenia (`provenance.class`) jest polem każdego źródła w grafie (sekcja 7); zbiór wartości powyżej
@@ -219,7 +236,7 @@ to preset otwarty (dodanie nowej klasy = dane).
 
 **Mechanizm ogólny: test różnicowy sparametryzowany trójką (cel, wersja/data, scenariusz).**
 
-1. **Wzorzec** = nagranie zachowania oryginału na *danych syntetycznych* przez właściciela (RE31: „może nagrać
+1. **Wzorzec** = nagranie zachowania oryginału na *danych syntetycznych* przez właściciela (RE31, zapis w rejestrze SLOWA — streszczenie, nie dosłowne słowa: „może nagrać
    dokładne zachowanie oryginalnej aplikacji jako wzorzec”). Nagranie importujemy jak każdy eksport
    (część A: plik → archiwum → eksport → dostawca → wersja) i oznaczamy jako węzeł `reference_recording`
    z `provenance.class = observation`, datą i wersją aplikacji (jeśli widoczna; inaczej `null`).
@@ -405,9 +422,11 @@ Rozszerzenie (dane, ten sam plik lub `calibration.json` + `calibration_sources.j
 
 ---
 
-## 8. Błędy w rozumowaniu właściciela
+## 8. Rozbieżności między odczytem pytania a stanem wiedzy (uprzejmie i konkretnie)
 
-Pisane wprost, bo właściciel ceni krytykę.
+Pisane wprost, bo właściciel ceni krytykę. Punkty to **odczyt koordynatora** (parafrazy, nie słowa
+właściciela; jego dosłowne pytanie jest na początku dokumentu). Fakty o świecie są obserwacjami z datą
+2026-10-22 z podanym tierem, nie ograniczeniami.
 
 1. **Zaufanie do twierdzenia asystenta o repozytoriach bez weryfikacji.** Gemini powiedział prawdę
    o istnieniu repo, ale „są klony odtwarzające workflow” to teza, której sam nie sprawdził i której
@@ -420,7 +439,8 @@ Pisane wprost, bo właściciel ceni krytykę.
 3. **Dla Codexa i Gemini CLI pytanie o klony jest źle postawione** — oryginały są otwarte. Pytać trzeba
    „co z Apache-2.0 możemy odtworzyć i z jakimi obowiązkami”, nie „kto to sklonował”.
 4. **„Na ile możemy zreplikować” nie jest jedną liczbą.** To funkcja (warstwa, cel, *wersja*) i dryfuje:
-   Codex wydaje co kilka godzin, Claude Code co dzień. Replika bez daty i wersji jest fikcją. Dlatego profil
+   wg feedów wydań z 2026-10-22 (tier A–B, rytm niezmierzony) Codex i Claude Code wydają bardzo często.
+   Replika bez daty i wersji jest fikcją. Dlatego profil
    ma `target.version` (dziś `null` wszędzie w profilach dostawców — to uczciwe, ale znaczy „przybliżenie”).
 5. **Opublikowany prompt systemowy ≠ zachowanie aplikacji.** Anthropic publikuje prompty claude.ai i pisze
    wprost, że nie dotyczą API. Aplikacja to prompt + narzędzia serwerowe + klasyfikatory + model z parametrami,
@@ -428,21 +448,23 @@ Pisane wprost, bo właściciel ceni krytykę.
 6. **Nagranie oryginału przez właściciela daje wzorzec czarnej skrzynki, nie specyfikację.** Model jest
    niedeterministyczny; jedno nagranie to jedna próbka z rozkładu. Test porównawczy wymaga N powtórzeń,
    tolerancji i porównania struktury (co trafiło do kontekstu, które narzędzia), nie tekstu. Właściciel
-   powinien liczyć się z tym, że nagrywanie jest kosztowne ręcznie i że ToS dostawców ograniczają automatyzację
-   nagrywania na jego koncie.
-7. **„Na tyle, na ile prawa autorskie pozwalają” to za wąska granica.** Praktyczną granicą są też ToS dostawcy,
-   licencje source-available (Crush, Open WebUI) i pochodzenie z wycieku (`claw-code`, zbiory „leaks”),
-   gdzie licencja repozytorium nie daje praw do cudzego tekstu. Trzeba tagować pochodzenie, nie tylko licencję.
+   powinien liczyć się z tym, że nagrywanie jest kosztowne ręcznie; czy ToS dostawców ograniczają
+   automatyzację nagrywania na jego koncie — **nie sprawdzone** (ToS nieczytane).
+7. **„Na tyle, na ile prawa autorskie pozwalają” to za wąska granica.** Prawdopodobnie praktyczną granicą są
+   też ToS dostawcy (**nie sprawdzone**, ToS nieczytane), licencje source-available (Crush, Open WebUI; wg
+   README/odznaki, LICENSE nieczytany) i pochodzenie z wycieku (`claw-code`, zbiory „leaks”), gdzie licencja
+   repozytorium nie daje praw do cudzego tekstu (ocena inżynierska, nie porada prawna). Trzeba tagować
+   pochodzenie, nie tylko licencję.
 8. **Konfigurowalność nie tworzy zdolności.** R58 słusznie zabrania usuwać opcji, ale opcja „replikuj L5
    claude.ai” nie zacznie działać dlatego, że jest w menu. Uczciwe rozwiązanie: opcja zostaje, silnik
    zwraca stan `blocked:server_side`/`blocked:legal` i doradcze ostrzeżenie. Udawanie, że działa, byłoby
    gorsze niż brak opcji.
-9. **Gwiazdki i README jako miara.** Właściciel (za Gemini) traktuje istnienie i popularność repo jako
-   dowód wierności. Wierność mierzy wyłącznie test różnicowy; README to deklaracja; „nie pokazano na
+9. **Gwiazdki i README jako miara.** Z relacji właściciela (brak dosłownego tekstu Gemini) wynika, że istnienie
+   i popularność repo bywają brane za dowód wierności — to odczyt koordynatora, nie jego słowa. Wierność mierzy wyłącznie test różnicowy; README to deklaracja; „nie pokazano na
    stronie” to często skrypt, nie brak.
 10. **Przeniesienie wniosków z klonów na oryginały.** Nasze profile `claude-inspired`/`chatgpt-inspired`
     cytują jako źródło LibreChat (klon), nie oryginał — dziedziczą więc wierność klonu, nie aplikacji
-    (APPLICATION_PROFILE_SOURCES mówi to wprost). Jeśli właściciel chce „jak w aplikacji Claude”, źródłem musi
+    (APPLICATION_PROFILE_SOURCES mówi to wprost). Jeśli ma powstać profil „jak w aplikacji Claude” (przykładowe sformułowanie), źródłem musi
     być nagranie aplikacji Claude albo oficjalny prompt, nie LibreChat.
 11. **Założenie, że wizualny profil już „wygląda jak” dostawca.** Sprawdziłem: wszystkie 10 profili używa
     jednego renderera `chat`; różnią się 6 kolorami, szerokością paska i stylem dymków. To skórka. Odtworzenie
@@ -457,7 +479,7 @@ Decyzje techniczne są moje (R1–R53). Każda ma odwrót.
 | # | Decyzja | Uzasadnienie | Odwrót |
 |---|---|---|---|
 | D1 | Pięć warstw L1–L5 jako oś opisu wierności; każdy profil ma status per warstwa | pytanie właściciela nie ma odpowiedzi skalarnej | skala to dane w schemacie `replication_profile.layers[]`; inna liczba/nazwy warstw = edycja schematu, bez kodu |
-| D2 | Źródła klasy `extraction_leak` nie są czytane ani używane jako wejście; istnienie można odnotować | UI14, ToS, ryzyko złośliwych luster | klasa to tag; reguła „nie czytaj” jest regułą w `action_rules` (`deny:source.extraction_leak`), którą właściciel może zmienić — na własną odpowiedzialność prawną, z doradczym ostrzeżeniem |
+| D2 | Źródła klasy `extraction_leak` domyślnie nie są czytane ani używane jako wejście (stan `blocked:legal`); istnienie można odnotować | **decyzja koordynatora** (ryzyko prawne: ToS — nieczytane, prawa autorskie, złośliwe lustra — ocena); nie tekst UI14 | klasa to tag; reguła „nie czytaj” jest regułą w `action_rules` (`deny:source.extraction_leak`), którą właściciel może zmienić — na własną odpowiedzialność prawną, z doradczym ostrzeżeniem |
 | D3 | Opcja „poziom replikacji L5” zostaje dla każdego celu; silnik zwraca stan `blocked:*` i ostrzeżenie doradcze z „nie pytaj ponownie” | R58 | ostrzeżenie wyłączalne; stany to dane |
 | D4 | Dalej **nie kopiujemy kodu** klonów ani oryginałów; odtwarzamy logikę, przypinamy commity, zapisujemy NOTICE przy ewentualnym cytowaniu | ciągłość z APPLICATION_PROFILE_SOURCES; prostsza zgodność licencyjna | preset `replication.copy_code: false`; przy `true` wymagane pola `license`, `notice`, `commit` w źródle |
 | D5 | Wzorzec RE31 = import nagrania jak eksport (część A), węzeł `reference_recording`; porównanie struktur, nie tekstu, z N powtórzeniami | niedeterminizm; jedna ścieżka importu | tryb porównania (`structure|text|both`) i N to ustawienia |
@@ -467,8 +489,9 @@ Decyzje techniczne są moje (R1–R53). Każda ma odwrót.
 | D9 | Nadpisanie przez osobę jako osobne pole `overrides`, nigdy w miejsce wartości wyuczonej | odwracalność, widoczność | usunięcie wpisu `overrides` przywraca wyuczoną |
 | D10 | Profile `like_chatgpt` (aplikacja) i przyszły `like_codex` rozdzielone; `like_gemini` (aplikacja) i `like_gemini_cli` osobno | różne produkty, różne źródła (serwer vs kod Apache-2.0) | scalenie = usunięcie profilu z `selector_profiles`; nic w kodzie |
 | D11 | Drugi renderer (`transcript`/TUI) jako kod rejestrowany przez `createProfileRegistry`; profile tylko go wskazują | rejestr już przewiduje listę rendererów | nieużywany renderer usuwa się z rejestru; profile z nim stają się odrzucane jak dziś |
-| D12 | Kolejność pakietów R1→R13 z R1–R3 na telefonie najpierw | właściciel ma dotknąć czegoś; R1–R3 nie wymagają sieci | kolejność to preset koordynatora |
+| D12 | Kolejność pakietów R1→R13 z R1–R3 na telefonie najpierw | właściciel ma dotknąć czegoś; R1–R3 nie wymagają sieci | kolejność to preset koordynatora; zmiana bez zmiany kodu |
 | D13 | Agent czasu działania (R11) niczego nie zapisuje bez potwierdzenia; produkt to propozycja-dane | R59 pkt 3c; ochrona danych | ustawienie `replication.autoaccept_profiles` (preset `false`); przy `true` doradcze ostrzeżenie o ryzyku |
+| D14 | Źródła klasy `restricted_license`: zero kodu do czasu przeczytania LICENSE (pakiet 7) | kolejność prac, nie zakaz; licencje nieczytane | po przeczytaniu licencji zmiana reguły w danych (`action_rules`); osoba może zmienić wcześniej, z doradczym ostrzeżeniem |
 
 ### Czego nie zweryfikowałem (uczciwie)
 
