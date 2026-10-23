@@ -5,8 +5,8 @@
  "sources": {
   "owner": {
    "path": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
-   "sha256": "0c28938d554fb6ce103f8b11fe138dc49fa676c36b366879c3d72902160b093f",
-   "lines": 943
+   "sha256": "aaa4adc2098a22690ff207d41648360673a59ab8c83180b6afdb30df8f9ed469",
+   "lines": 948
   },
   "slowa": {
    "path": "docs/architecture/SLOWA_WLASCICIELA_2026-10-16.md",
@@ -5561,6 +5561,58 @@
    ]
   },
   {
+   "id": "s_c7bb946dd993",
+   "aliases": [
+    "R97"
+   ],
+   "kind": "requirement",
+   "title": "Spot-guard: na życzenie automatyczny awans Spot→Standard, gdy przy wywłaszczeniu zostały zadania; szybki powrót na Spot",
+   "date": "2026-10-23",
+   "theme": "owner_requirements",
+   "theme_inferred": false,
+   "understanding": {
+    "state": "none"
+   },
+   "quotes": [
+    {
+     "text": "Ustaw możliwość na życzenie automatycznego awansu ze spot do standard, w przypadku zadań pozostałych do wykonania podczas preemptingu. No i na logikę w miarę szybko żeby z powrotem na spot",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:930",
+     "ref": null,
+     "attr": [],
+     "lead": null,
+     "secondary": false
+    }
+   ],
+   "sense": null,
+   "summary": null,
+   "restatement": [
+    {
+     "text": "Slowa wlasciciela wypowiedziane w sesji VM (gcp) ok. 19:10 UTC, zapisane przez te sesje w docs/ops/VM_RECON_2026-10-23.md par. 8 (zrodlo: zapis sesji VM, nie czat S1). Odpowiada na pytanie o pieniadze z rekonesansu: TAK dla awansu na Standard tylko na czas pozostalych zadan, z szybkim powrotem na Spot; pytanie o stale przejscie na Standard pozostaje otwarte, ale traci wage. Wdrozenie spot-guard (tools/gcp/) z promocja jest wiec zgodne z jego decyzja; instalator uruchamia on sam (klasyfikator uprawnien blokowal sesje VM).",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:932"
+    }
+   ],
+   "commentary": [],
+   "status": null,
+   "gap_text": null,
+   "evidence": [],
+   "next_step": null,
+   "refs": [],
+   "supersedes": [],
+   "superseded_by": [],
+   "supersession_notes": [],
+   "tags": [],
+   "heading_note": "owner, 2026-10-23",
+   "sources": [
+    {
+     "role": "owner",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:929-932"
+    }
+   ],
+   "files": [
+    "owner"
+   ]
+  },
+  {
    "id": "s_18ec73967a7b",
    "aliases": [
     "owner:decision-rebuild-don-t-recover"
@@ -5576,7 +5628,7 @@
    "quotes": [
     {
      "text": "\"nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane\"",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:930",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:935",
      "ref": null,
      "attr": [],
      "lead": null,
@@ -5588,7 +5640,7 @@
    "restatement": [
     {
      "text": "Recovered versions (`history/chatadhd_v0.8.3`, `history/chatadhd_v0.9.0`) and\nthe historical report are sources of requirements, ideas and data assets\n(e.g. `film_structure.json`), and real ground truth for self-discovery tests —\nnot code to merge. Everything is rebuilt in Loom with tests.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:932-935"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:937-940"
     }
    ],
    "commentary": [],
@@ -5605,7 +5657,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:929-935"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:934-940"
     }
    ],
    "files": [
@@ -5631,7 +5683,7 @@
    "restatement": [
     {
      "text": "`workbench_mockup_2026-09-26.webp`: dockable/floating panels (conversation\nlist, active conversation, knowledge graph with active context window, project\nstructure with dimmed high-confidence auto-completable nodes, artifact views\nfor music/video with timeline + storyboard, video player, execution\nenvironment with agent), multi-format ingestion, Loom SDK at the centre.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:938-942"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:943-947"
     }
    ],
    "commentary": [],
@@ -5648,7 +5700,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:937-942"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:942-947"
     }
    ],
    "files": [

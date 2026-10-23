@@ -1,4 +1,6 @@
-# Kolejka S1 — stan 2026-10-23 20:05 UTC
+# Kolejka S1 — stan 2026-10-23 20:20 UTC
+
+## Kontrola syntezy panelu GOTOWA (20:20 UTC, `wf_04712c04-50f`, Haiku + Sonnet, 397 tys. tokenów, 16 min): 29 znalezisk (7 blokujących, 22 słowne), wszystkie zastosowane (`b49782e3`): reguły uniwersalne → presety i listy otwarte; „nie powstaną” → „wracają, gdy L1 da bazę”; wymyślona bramka zgody na pomiar wizyt → wartość domyślna; cytaty poprawione do dosłownych (R90, R75, R89); nieaktualne fakty o VM (npm, build, „jedyna maszyna zajęta”) → obserwacje z datą wg `VM_RECON`. Werdykt: zdatna do użycia. **R97** (słowa właściciela w sesji VM ≈ 19:10, zapisane przez nią w `VM_RECON` §8): awans Spot→Standard na życzenie przy pozostałych zadaniach, szybki powrót — jego TAK na promocję; `VM_INBOX` 14 (wdrażaj, pomiary z 12 zostają) i 15 (pakiety IW-1…IW-11 do decyzji sesji VM, R92). Od tej chwili S1 chmurowa ma w biegu tylko kontrolę CI (21:50) i APK v5 przez S2.
 
 ## S2 2026-10-23 20:17 UTC: android-smoke on main f025ed34 (R67-fix), run 40011129193 — success, 47 works, 0 don't, 0 skipped on pixel_5 1.0, pixel_6 1.0, pixel_6 1.3; https://github.com/klb-t/chatadhd/actions/runs/40011129193
 

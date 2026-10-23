@@ -5,13 +5,13 @@ Ten plik jest **wygenerowany** z `docs/spec/spec.json` poleceniem `python3 tools
 
 Status pochodzi z pliku luk i jest **obserwacją z podanej daty**, nie ograniczeniem.
 
-Pozycji razem: **520**.
+Pozycji razem: **521**.
 
 | Status (z LUKI) | liczba |
 |---|---|
 | częściowo | 210 |
 | jest | 151 |
-| bez statusu (nie ma w LUKI) | 137 |
+| bez statusu (nie ma w LUKI) | 138 |
 | brak | 16 |
 | nieaktualne | 5 |
 | sprzeczne | 1 |
@@ -19,7 +19,7 @@ Pozycji razem: **520**.
 | Rodzaj | liczba |
 |---|---|
 | remark | 367 |
-| requirement | 96 |
+| requirement | 97 |
 | philosophy | 36 |
 | statement | 10 |
 | decision | 4 |
@@ -28,14 +28,14 @@ Pozycji razem: **520**.
 
 | Rozumienie (R61) | liczba |
 |---|---|
-| none | 506 |
+| none | 507 |
 | proposed | 12 |
 | corrected | 2 |
 
 | W których plikach | liczba |
 |---|---|
 | LUKI + SLOWA | 379 |
-| rejestr R/D | 103 |
+| rejestr R/D | 104 |
 | SLOWA | 34 |
 | LUKI | 4 |
 
@@ -55,7 +55,7 @@ Pozycji razem: **520**.
 | Proces i współpraca | 67 |
 | Pozostałe | 33 |
 | Uzupełnienia (wypowiedzi bez numeru) | 10 |
-| Rejestr wymagań R/D | 103 |
+| Rejestr wymagań R/D | 104 |
 | bez tematu | 3 |
 
 ## Filozofia
@@ -617,8 +617,9 @@ Pozycji razem: **520**.
 - `s_e438242fe59f` **R94** — Wywłaszczenie VM: mechanizm, brak zabezpieczenia, improwizowany przepływ (sygnał → zapis stanu → nowa VM Standard z obrazu → przepięcie usług); dysk dokłada administrator przez API; lag kart zgody — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L912)
 - `s_0c5f6fb89c05` **R95** — Doprecyzowanie R93: chodzi tylko o słownictwo, nie o tłumaczenie oczywistości — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L919)
 - `s_474247e42847` **R96** — Cel: przepięcie maszyny w ok. 20 s (zrzut RAM na SSD + power down) — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L924)
-- `s_18ec73967a7b` **owner:decision-rebuild-don-t-recover** — Decision — rebuild, don't recover — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L929)
-- `s_223e1568b3b9` **owner:ui-reference** — UI reference — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L937)
+- `s_c7bb946dd993` **R97** — Spot-guard: na życzenie automatyczny awans Spot→Standard, gdy przy wywłaszczeniu zostały zadania; szybki powrót na Spot — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L929)
+- `s_18ec73967a7b` **owner:decision-rebuild-don-t-recover** — Decision — rebuild, don't recover — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L934)
+- `s_223e1568b3b9` **owner:ui-reference** — UI reference — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L942)
 
 ## Bez tematu
 

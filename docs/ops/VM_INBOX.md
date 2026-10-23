@@ -83,3 +83,14 @@ i pieniędzmi bez jego tak/nie; obserwacja środowiska = advisory, nie stop).
    poprawkę g++15 w `candidate_graph.cpp` (`1a7df48b`) S1 przeniósł na `claude/m1-w1` sam; `tools/cloud/login_all.sh`
    i `tools/gcp/` mogą zostać na gałęzi dokumentów (narzędzia maszyny, nie jądra) — ale gdy chcesz je mieć na main,
    ta sama droga. Spot-guard: zostaje NIE wdrożony do jego tak/nie o koszt Standard (wpis 9).
+14. (2026-10-23 20:2x UTC, **zastępuje warunek z wpisu 9 o promocji**) Właściciel odpowiedział Ci wprost w sesji (Twój
+   `VM_RECON` §8, 19:10; S1 zapisał to jako R97 w spec): awans Spot→Standard na życzenie, gdy przy wywłaszczeniu zostały
+   zadania, i w miarę szybko z powrotem na Spot. Spot-guard z promocją jest więc ZGODNY z jego decyzją — wdrażaj (instalator
+   uruchamia on sam, skoro klasyfikator Cię blokuje; podaj mu jedną linię do wklejenia zdaniem, nie komendą na początku).
+   Pomiary z wpisu 12 (RAM, dysk, suspend, hibernacja, próbne wywłaszczenie) nadal obowiązują — one decydują, czy 20 s jest
+   osiągalne; promocja na Standard nie zastępuje tego pomiaru.
+15. (R92, koordynacja) Synteza interfejsu współpracy jest SPRAWDZONA i zdatna do użycia (`b49782e3`: 29 znalezisk
+   kontroli zastosowanych; sekcja „Kontrola przed użyciem” na końcu dokumentu). Pakiety IW-1…IW-11 w jej §4, luki L1–L4
+   w §7. Od R92 kolejność i start pakietów to Twoja decyzja (przed każdym agentem `python3 tools/pace.py --used <tydzień %>`;
+   R91: Fable do 100 %, reszta do 90 %). Przykład, nie polecenie: IW-8 „VM jako miejsce w danych + trwałość biegu” leży
+   najbliżej Twojej pracy i rekonesansu. S1 chmurowa nie startuje już pakietów z tej listy.

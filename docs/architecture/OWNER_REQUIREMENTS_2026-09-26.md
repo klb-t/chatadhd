@@ -926,6 +926,11 @@ R93 dotyczy wylacznie slow: nie uzywac slow i nazw, co do ktorych nie mam pewnos
 
 Cel do zmierzenia, nie zalozenie: hibernacja Linuksa (zrzut uzywanego RAM do swapu na dysku trwalym w oknie 120 s uprzedzenia, resume= przy nastepnym starcie) albo natywny suspend GCE (do sprawdzenia, czy dostepny dla Spot i w trakcie wywlaszczenia). Czas zrzutu = uzywany RAM / przepustowosc zapisu dysku (pd-ssd rosnie z rozmiarem, hyperdisk z provisioningiem; e2 ma limit ok. 240 MB/s) - 20 s realne tylko przy kilku GB uzywanych i szybkim dysku; dysk to pieniadze, na ktore zgodzil sie w R94. Test: gcloud compute instances simulate-maintenance-event wywoluje prawdziwe wywlaszczenie Spot - mierzyc, nie zgadywac.
 
+## R97 — Spot-guard: na życzenie automatyczny awans Spot→Standard, gdy przy wywłaszczeniu zostały zadania; szybki powrót na Spot (owner, 2026-10-23)
+> Ustaw możliwość na życzenie automatycznego awansu ze spot do standard, w przypadku zadań pozostałych do wykonania podczas preemptingu. No i na logikę w miarę szybko żeby z powrotem na spot
+
+Slowa wlasciciela wypowiedziane w sesji VM (gcp) ok. 19:10 UTC, zapisane przez te sesje w docs/ops/VM_RECON_2026-10-23.md par. 8 (zrodlo: zapis sesji VM, nie czat S1). Odpowiada na pytanie o pieniadze z rekonesansu: TAK dla awansu na Standard tylko na czas pozostalych zadan, z szybkim powrotem na Spot; pytanie o stale przejscie na Standard pozostaje otwarte, ale traci wage. Wdrozenie spot-guard (tools/gcp/) z promocja jest wiec zgodne z jego decyzja; instalator uruchamia on sam (klasyfikator uprawnien blokowal sesje VM).
+
 ## Decision — rebuild, don't recover
 > "nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane"
 
