@@ -143,3 +143,6 @@ czy trzymać linię tygodniową.
 
 
 **Próbka 2026-10-23 10:11 UTC (rate_limit_event S1):** tydzień **57 %** (07:50 → 10:11: +5 pkt w 2,3 h: badanie K3 0,8, R88 v1 i spec/strona z mojego kontekstu, R89 — 5 torów równolegle od 09:56), okno 5 h **24 % po 11 minutach nowego okna** (reset 10:00; 5 równoległych agentów Sonnet = zryw jak 10.10). Linia planu: 56 % na 20:00 — jesteśmy już NAD punktem; następny 80 % sob 08:00 (≈ 1 pkt/h do dyspozycji). Decyzja: projekt K3 (Fable) NIE startuje w trakcie zrywu R89 — po zakończeniu torów badania (ocena + synteza to 2 agenty), gdy okno 5 h < 60 %; kontrola 10:50. R89 start 09:56 dopisany do pace_state.
+
+
+**Próbka 2026-10-23 10:46 UTC:** tydzień **60 %** (+3 pkt od 10:11: 5 torów R89 ≈ 2,5 pkt + mój kontekst), okno 5 h 34 %; ostrzeżenie platformy: próg 0,75 z nadwyżką (nadwyżka wyłączona, liczy się 100 % tygodnia). Linia: 56 % o 20:00 przekroczona o 4 pkt; do 80 % w sob 08:00 zostaje ≈ 20 pkt / 21 h. Start projektu K3 (Fable) o 10:52 (zryw R89 skończony: 5 torów gotowe, ocena w toku). Plan reszty doby: synteza R89 (Fable ≈ 1,5), K3 projekt (≈ 1,5), K2c-3 (0,5), R67-fix (0,7), W2b-2 (0,7), bramki (0) → ≈ 65 % o 16:00, potem pakiety K3-1/G2 wg tempa.
