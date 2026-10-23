@@ -1,0 +1,280 @@
+# spot-guard — GCP Workflow (owner, 2026-10-23): "możliwość na życzenie automatycznego awansu ze spot do standard,
+# w przypadku zadań pozostałych do wykonania podczas preemptingu ... w miarę szybko z powrotem na spot".
+#
+# Runs outside the VM (Cloud Scheduler tick), so it also acts while the VM is stopped. Everything it reads is
+# instance metadata, written from the VM by tools/gcp/work.sh or by hand in the console; all values are presets:
+#   spot-guard                   on | off            master switch (installed: on)
+#   work-pending                 true | false        "tasks remain"; set by work.sh / by the preemption hook
+#   work-pending-since           epoch seconds       when work-pending became true
+#   work-idle-since              epoch seconds       when work-pending became false
+#   spot-guard-return-idle-min   number              minutes of work-pending=false before going back to Spot (preset 10)
+#   spot-guard-pending-ttl-hours number | empty      work-pending older than this counts as forgotten (preset 8; empty = never)
+#   spot-guard-try-spot-first    true | false        after preemption first try to start on Spot again (preset false)
+#   spot-guard-restart-idle      true | false        restart on Spot after a preemption with no pending work (preset false)
+# State written by this workflow: spot-guard-state (promoted | empty), spot-guard-since, spot-guard-spot-scheduling,
+# spot-guard-log (last action, human readable).
+main:
+  params: [args]
+  steps:
+    - init:
+        assign:
+          - project: ${args.project}
+          - zone: ${args.zone}
+          - instance: ${args.instance}
+          - now: ${sys.now()}
+    - load:
+        call: load_instance
+        args: {project: '${project}', zone: '${zone}', instance: '${instance}'}
+        result: s
+    - switch_off:
+        switch:
+          - condition: ${default(map.get(s.cfg, "spot-guard"), "off") != "on"}
+            return: "spot-guard off"
+    - derive:
+        assign:
+          - pending: ${default(map.get(s.cfg, "work-pending"), "false") == "true"}
+          - ttl: ${default(map.get(s.cfg, "spot-guard-pending-ttl-hours"), "")}
+          - since_pending: ${double(default(map.get(s.cfg, "work-pending-since"), "0"))}
+          - promoted: ${default(map.get(s.cfg, "spot-guard-state"), "") == "promoted"}
+          - model: ${default(map.get(s.inst, ["scheduling", "provisioningModel"]), "STANDARD")}
+    - stale_pending:
+        switch:
+          - condition: ${pending and ttl != "" and since_pending > 0 and now - since_pending > double(ttl) * 3600}
+            assign:
+              - pending: false
+    - route:
+        switch:
+          - condition: ${s.inst.status == "TERMINATED" and model == "SPOT"}
+            next: on_stopped_spot
+          - condition: ${s.inst.status == "RUNNING" and promoted}
+            next: on_running_promoted
+        next: nothing
+    - on_stopped_spot:
+        call: preempted_since_start
+        args: {project: '${project}', zone: '${zone}', inst: '${s.inst}'}
+        result: was_preempted
+    - stopped_decide:
+        switch:
+          - condition: ${not was_preempted}
+            return: "stopped, not by preemption: left alone"
+          - condition: ${not pending and default(map.get(s.cfg, "spot-guard-restart-idle"), "false") == "true"}
+            steps:
+              - restart_spot:
+                  call: googleapis.compute.v1.instances.start
+                  args: {project: '${project}', zone: '${zone}', instance: '${instance}'}
+              - log_restart:
+                  call: set_meta
+                  args: {project: '${project}', zone: '${zone}', instance: '${instance}', kv: {"spot-guard-log": '${"restarted on Spot after preemption (no pending work) " + time.format(now)}'}}
+              - ret_restart:
+                  return: "restarted on spot"
+          - condition: ${not pending}
+            return: "preempted, no pending work: left stopped"
+    - try_spot:
+        switch:
+          - condition: ${default(map.get(s.cfg, "spot-guard-try-spot-first"), "false") == "true"}
+            try:
+              steps:
+                - start_spot:
+                    call: googleapis.compute.v1.instances.start
+                    args: {project: '${project}', zone: '${zone}', instance: '${instance}'}
+                - log_spot:
+                    call: set_meta
+                    args: {project: '${project}', zone: '${zone}', instance: '${instance}', kv: {"spot-guard-log": '${"restarted on Spot (try-spot-first) " + time.format(now)}'}}
+                - ret_spot:
+                    return: "restarted on spot"
+            except:
+              as: e
+              steps:
+                - spot_failed:
+                    assign:
+                      - spot_error: ${json.encode_to_string(e)}
+    - promote_save:
+        call: set_meta
+        args:
+          project: ${project}
+          zone: ${zone}
+          instance: ${instance}
+          kv:
+            spot-guard-state: "promoted"
+            spot-guard-since: ${string(int(now))}
+            spot-guard-spot-scheduling: ${json.encode_to_string(s.inst.scheduling)}
+            spot-guard-log: ${"promoted to Standard after preemption with pending work " + time.format(now)}
+    - promote_schedule:
+        call: googleapis.compute.v1.instances.setScheduling
+        args:
+          project: ${project}
+          zone: ${zone}
+          instance: ${instance}
+          body:
+            provisioningModel: "STANDARD"
+            preemptible: false
+            automaticRestart: true
+            onHostMaintenance: "MIGRATE"
+    - promote_start:
+        call: googleapis.compute.v1.instances.start
+        args: {project: '${project}', zone: '${zone}', instance: '${instance}'}
+    - promoted_ret:
+        return: "promoted to standard and started"
+    - on_running_promoted:
+        assign:
+          - idle_since: ${double(default(map.get(s.cfg, "work-idle-since"), "0"))}
+          - idle_min: ${double(default(map.get(s.cfg, "spot-guard-return-idle-min"), "10"))}
+    - running_decide:
+        switch:
+          - condition: ${pending}
+            return: "standard, work pending"
+          - condition: ${idle_since > 0 and now - idle_since < idle_min * 60}
+            return: "standard, idle for less than the return threshold"
+    - demote_stop:
+        call: googleapis.compute.v1.instances.stop
+        args: {project: '${project}', zone: '${zone}', instance: '${instance}'}
+    - demote_schedule:
+        try:
+          call: googleapis.compute.v1.instances.setScheduling
+          args:
+            project: ${project}
+            zone: ${zone}
+            instance: ${instance}
+            body: ${json.decode(s.cfg["spot-guard-spot-scheduling"])}
+        except:
+          as: e
+          call: googleapis.compute.v1.instances.setScheduling
+          args:
+            project: ${project}
+            zone: ${zone}
+            instance: ${instance}
+            body:
+              provisioningModel: "SPOT"
+              preemptible: true
+              automaticRestart: false
+              onHostMaintenance: "TERMINATE"
+              instanceTerminationAction: "STOP"
+    - demote_start:
+        call: googleapis.compute.v1.instances.start
+        args: {project: '${project}', zone: '${zone}', instance: '${instance}'}
+    - demote_mark:
+        call: set_meta
+        args:
+          project: ${project}
+          zone: ${zone}
+          instance: ${instance}
+          kv:
+            spot-guard-state: ""
+            work-pending: "false"
+            spot-guard-log: ${"back on Spot (idle) " + time.format(now)}
+    - demoted_ret:
+        return: "back on spot"
+    - nothing:
+        return: ${"nothing to do (" + s.inst.status + ", " + model + ")"}
+
+load_instance:
+  params: [project, zone, instance]
+  steps:
+    - get:
+        call: googleapis.compute.v1.instances.get
+        args: {project: '${project}', zone: '${zone}', instance: '${instance}'}
+        result: inst
+    - init:
+        assign:
+          - cfg: {}
+          - items: ${default(map.get(inst, ["metadata", "items"]), [])}
+    - fold:
+        for:
+          value: it
+          in: ${items}
+          steps:
+            - put:
+                assign:
+                  - cfg[it.key]: ${default(map.get(it, "value"), "")}
+    - done:
+        return: {inst: '${inst}', cfg: '${cfg}'}
+
+preempted_since_start:
+  params: [project, zone, inst]
+  steps:
+    - list:
+        call: googleapis.compute.v1.zoneOperations.list
+        args:
+          project: ${project}
+          zone: ${zone}
+          filter: ${"(operationType = \"compute.instances.preempted\") AND (targetId = \"" + inst.id + "\")"}
+        result: ops
+    - init:
+        assign:
+          - started: ${time.parse(default(map.get(inst, "lastStartTimestamp"), "1970-01-01T00:00:00Z"))}
+          - found: false
+    - scan:
+        for:
+          value: op
+          in: ${default(map.get(ops, "items"), [])}
+          steps:
+            - cmp:
+                switch:
+                  - condition: ${time.parse(op.insertTime) > started}
+                    assign:
+                      - found: true
+    - done:
+        return: ${found}
+
+# Sets metadata keys (empty value removes the key), keeping every other item. Retries once on a fingerprint race
+# (the owner's browser SSH writes ssh-keys often).
+set_meta:
+  params: [project, zone, instance, kv]
+  steps:
+    - attempt:
+        try:
+          steps:
+            - get:
+                call: googleapis.compute.v1.instances.get
+                args: {project: '${project}', zone: '${zone}', instance: '${instance}'}
+                result: inst
+            - init:
+                assign:
+                  - out: []
+                  - items: ${default(map.get(inst, ["metadata", "items"]), [])}
+            - keep:
+                for:
+                  value: it
+                  in: ${items}
+                  steps:
+                    - k:
+                        switch:
+                          - condition: ${not (it.key in keys(kv))}
+                            assign:
+                              - out: ${list.concat(out, it)}
+            - add:
+                for:
+                  value: k
+                  in: ${keys(kv)}
+                  steps:
+                    - a:
+                        switch:
+                          - condition: ${kv[k] != ""}
+                            assign:
+                              - item:
+                                  key: ${k}
+                                  value: ${kv[k]}
+                              - out: ${list.concat(out, item)}
+            - put:
+                call: googleapis.compute.v1.instances.setMetadata
+                args:
+                  project: ${project}
+                  zone: ${zone}
+                  instance: ${instance}
+                  body:
+                    fingerprint: ${inst.metadata.fingerprint}
+                    items: ${out}
+        retry:
+          predicate: ${meta_race}
+          max_retries: 3
+          backoff: {initial_delay: 2, max_delay: 10, multiplier: 2}
+
+meta_race:
+  params: [e]
+  steps:
+    - check:
+        switch:
+          - condition: ${"code" in e and (e.code == 412 or e.code == 429 or e.code == 503)}
+            return: true
+    - no:
+        return: false
