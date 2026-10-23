@@ -26,6 +26,12 @@
 # NIEPRZETESTOWANE na prawdziwej VM (stan 2026-10-23): sprawdzona tylko składnia. Zacznij od `--dry-run`.
 # =============================================================================
 set -euo pipefail
+LOG="${CHATADHD_BOOTSTRAP_LOG:-$HOME/chatadhd-bootstrap.log}"
+if [ -z "${CHATADHD_ONELINER_LOGGING:-}" ]; then
+  # cały przebieg także do pliku (do wklejenia, gdy coś nie wyjdzie): tail -60 ~/chatadhd-bootstrap.log
+  export CHATADHD_ONELINER_LOGGING=1
+  exec > >(tee -a "$LOG") 2>&1
+fi
 
 REPO_URL="${CHATADHD_REPO_URL:-https://github.com/klb-t/chatadhd.git}"
 REPO_DIR="${CHATADHD_REPO_DIR:-$HOME/chatadhd}"
@@ -70,8 +76,9 @@ fi
 git -C "$REPO_DIR" checkout -q "$BRANCH" 2>/dev/null || git -C "$REPO_DIR" checkout -q -b "$BRANCH" "origin/$BRANCH"
 git -C "$REPO_DIR" pull -q --ff-only origin "$BRANCH" || echo "(pull --ff-only nie przeszedł - gałąź lokalna ma własne commity; zostawiam)"
 
-say "3/5 środowisko deweloperskie: tools/bootstrap_dev_vm.sh $*"
-bash "$REPO_DIR/tools/bootstrap_dev_vm.sh" "$@"
+say "3/5 środowisko deweloperskie: tools/bootstrap_dev_vm.sh $*   (pełny zapis: $LOG)"
+# Bootstrap nie zatrzymuje całości: gdy padnie, dalej instalujemy Claude Code i wypisujemy kroki; na końcu „lekarz”.
+bash "$REPO_DIR/tools/bootstrap_dev_vm.sh" "$@" || echo "!! bootstrap zakończył się błędem (szczegóły wyżej i w $LOG) — reszta kroków idzie dalej, lekarz na końcu pokaże, czego brakuje"
 
 say "4/5 Claude Code"
 if ! need claude && [ ! -x "$HOME/.local/bin/claude" ]; then
@@ -84,6 +91,22 @@ case ":$PATH:" in *":$HOME/.local/bin:"*) ;; *)
   export PATH="$HOME/.local/bin:$PATH";;
 esac
 "$HOME/.local/bin/claude" --version 2>/dev/null || claude --version || echo "(claude nie odpowiada - otwórz nową powłokę albo sprawdź ~/.local/bin)"
+
+say "lekarz: co jest, czego brakuje (BRAK = uruchom komendę z prawej)"
+doctor() { local name="$1" cmd="$2" fix="$3"; if command -v "$cmd" >/dev/null 2>&1; then printf '  %-10s %s\n' "$name" "$("$cmd" --version 2>&1 | head -1)"; else printf '  %-10s BRAK -> %s\n' "$name" "$fix"; fi; }
+doctor node node "sudo apt-get install -y nodejs npm   (albo ponowny bieg tej komendy, gdy nodejs.org było niedostępne)"
+doctor npm node "jw."
+doctor cmake cmake "sudo apt-get install -y cmake ninja-build ccache build-essential"
+doctor ninja ninja "sudo apt-get install -y ninja-build"
+doctor ccache ccache "sudo apt-get install -y ccache"
+doctor g++ g++ "sudo apt-get install -y build-essential"
+doctor clang++ clang++ "sudo apt-get install -y clang"
+doctor python3 python3 "sudo apt-get install -y python3 python3-venv"
+doctor tmux tmux "sudo apt-get install -y tmux"
+doctor gh gh "sudo apt-get install -y gh"
+doctor claude claude "curl -fsSL https://claude.ai/install.sh | bash ; export PATH=\$HOME/.local/bin:\$PATH"
+[ -f "$HOME/.config/chatadhd-dev-env.sh" ] && echo "  środowisko: . $HOME/.config/chatadhd-dev-env.sh   (nowa powłoka wczytuje je sama przy --bashrc)"
+[ -d "$REPO_DIR/loom/web/node_modules" ] && echo "  web: node_modules są" || echo "  web: node_modules BRAK -> cd $REPO_DIR/loom/web && npm ci && npx playwright install --with-deps chromium"
 
 say "5/5 to zostaje dla Ciebie (trzy kroki wymagają wklejenia kodu z przeglądarki telefonu/laptopa):"
 cat <<MSG

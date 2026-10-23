@@ -224,15 +224,29 @@ if [ "$node_ok" = 0 ]; then
     echo "+ [dry-run] zlinkuję node/npm/npx do /usr/local/bin"
   else
     NTMP="$(mktemp -d)"; trap 'rm -rf "$NTMP"' EXIT
-    curl -fsSL "$NODE_BASE/SHASUMS256.txt" -o "$NTMP/SHASUMS256.txt"
-    NFILE="$(awk -v a="linux-$NARCH.tar.xz" '$2 ~ a"$" {print $2; exit}' "$NTMP/SHASUMS256.txt")"
-    [ -n "$NFILE" ] || die "w SHASUMS256.txt nie ma linux-$NARCH.tar.xz"
-    curl -fsSL "$NODE_BASE/$NFILE" -o "$NTMP/$NFILE"
-    (cd "$NTMP" && grep " $NFILE\$" SHASUMS256.txt | sha256sum -c -)
-    $SUDO mkdir -p "/opt/node$NODE_MAJOR"
-    $SUDO tar -xJf "$NTMP/$NFILE" -C "/opt/node$NODE_MAJOR" --strip-components=1
-    for b in node npm npx; do $SUDO ln -sf "/opt/node$NODE_MAJOR/bin/$b" "/usr/local/bin/$b"; done
-    echo "node: $(node --version)"
+    # Instalacja z nodejs.org w podpowłoce: gdy cokolwiek padnie (sieć, suma, tar), nie zatrzymujemy skryptu —
+    # uwaga + próba z archiwum Ubuntu (wersja może być inna niż 22 w CI: obserwacja, nie błąd).
+    install_node_from_nodejs_org() (
+      set -e
+      curl -fsSL "$NODE_BASE/SHASUMS256.txt" -o "$NTMP/SHASUMS256.txt"
+      NFILE="$(awk -v a="linux-$NARCH.tar.xz" '$2 ~ a"$" {print $2; exit}' "$NTMP/SHASUMS256.txt")"
+      [ -n "$NFILE" ] || { echo "w SHASUMS256.txt nie ma linux-$NARCH.tar.xz" >&2; exit 1; }
+      curl -fsSL "$NODE_BASE/$NFILE" -o "$NTMP/$NFILE"
+      (cd "$NTMP" && grep " $NFILE\$" SHASUMS256.txt | sha256sum -c -)
+      $SUDO mkdir -p "/opt/node$NODE_MAJOR"
+      $SUDO tar -xJf "$NTMP/$NFILE" -C "/opt/node$NODE_MAJOR" --strip-components=1
+      for b in node npm npx; do $SUDO ln -sf "/opt/node$NODE_MAJOR/bin/$b" "/usr/local/bin/$b"; done
+    )
+    if install_node_from_nodejs_org; then
+      echo "node: $(node --version) npm: $(npm --version)"
+    else
+      warn "Node $NODE_MAJOR z nodejs.org nie zainstalował się (zobacz powód wyżej) — próbuję z archiwum Ubuntu: apt nodejs npm"
+      if run $SUDO $APT_GET install -y --no-install-recommends nodejs npm && command -v npm >/dev/null 2>&1; then
+        warn "Node z archiwum Ubuntu: $(node --version 2>&1), npm $(npm --version 2>&1); CI używa Node $NODE_MAJOR — różnica to obserwacja do sprawdzenia przy pierwszym 'npm ci'"
+      else
+        warn "Node/npm NIE ma: zainstaluj ręcznie (np. ponowny bieg skryptu, gdy sieć wróci) — kroki webu poniżej zostaną pominięte"
+      fi
+    fi
   fi
 fi
 
@@ -250,7 +264,11 @@ elif [ ! -f "$REPO/loom/web/package.json" ]; then
   warn "brak $REPO/loom/web/package.json - pomijam (sklonuj repozytorium i uruchom skrypt jeszcze raz)"
 else
   # Node z kroku 3 musi być w PATH także dla sudo (sudo resetuje PATH, więc przekazujemy go jawnie).
+  if command -v npm >/dev/null 2>&1; then
   run bash -c "cd '$REPO/loom/web' && npm ci --no-audit --no-fund"
+  else
+    warn "brak npm — pomijam npm ci i Chromium (krok 5); po doinstalowaniu Node uruchom skrypt ponownie"
+  fi
   # biblioteki systemowe Chromium (apt, wymaga roota) - ten sam efekt co `--with-deps` w loom.yml, rozbity na dwa kroki,
   # żeby sama przeglądarka trafiła do katalogu użytkownika, a nie roota
   run bash -c "cd '$REPO/loom/web' && $SUDO env \"PATH=\$PATH\" npx playwright install-deps chromium"
