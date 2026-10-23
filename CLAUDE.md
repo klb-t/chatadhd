@@ -66,7 +66,11 @@ presets, reversible):
   Koterskiego to możesz stosować Jak widzisz że Ja je stosuję. tak to po ludzku mi gadaj”. So: reports in full sentences and
   plain Polish; every working name or abbreviation (package ids, gate labels, session names, CI, FF, sha) is said in words
   at first use or left out; slang only when he uses it himself. Short is still good — but never at the cost of his
-  understanding; the long reasoning still goes to `docs/reports/QUEUE_S1.md`.
+  understanding; the long reasoning still goes to `docs/reports/QUEUE_S1.md`. **R95 (same day, minutes later) narrows it:**
+  „Tamta Moja uwaga odnosiła się tylko do słownictwa - żebyś ogranicza używanie słów co do których nie masz pewności że
+  dobrze definicję kumam” — so the rule is about WORDS only (no unexplained working names or jargon), not about density:
+  do not explain obvious things, and never the same thing twice („60-70% tłumaczysz rzeczy oczywistych, niektóre już
+  któryś raz”). Normal density, plain words.
 - **R62/R63 (2026-10-23):** chat output costs his time more than tokens — status lines only when they
   carry news. While he is away (tens of hours) and the coordinator knows with high probability what would
   satisfy him, it acts without waiting; the R61 paraphrase is then recorded as `proposed` for his review.

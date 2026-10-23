@@ -916,6 +916,11 @@ Zmienia styl watku z R62/R63 (same linie statusu): sprawozdanie dla wlasciciela 
 
 Trzy rzeczy: (1) pytanie o mechanizm znikania VM i brak zabezpieczenia - odpowiedz faktami z rekonesansu; (2) obserwacja: karty zgody docieraja do niego z opoznieniem i po kliknieciu sa juz failed - nie priorytet, do rozwiazania pozniej (zapis jako obserwacja platformy); (3) zgoda na pieniadze w waskim zakresie: gdy braknie dysku, administrator VM sam dokupuje przez API GCP, ile potrzebuje; (4) PRZYKLAD przeplywu do zbadania i zbudowania przez sesje VM: sygnal wylaczenia -> szybki zapis stanu (hibernacja) -> nowa maszyna Standard o identycznych parametrach budzona z obrazu -> przepiecie uslug i portow mozliwie niezauwazalne dla uzytkownika (kilka sekund wolniej). Fakty do sprawdzenia w dokumentacji GCP (obserwacje datowane): 30 s uprzedzenia, dysk trwaly zostaje po wywlaszczeniu (STOPPED, nie usunieta), RAM ginie, suspend niedostepny przy wywlaszczeniu Spot, zmiana modelu provisioningu tylko na zatrzymanej maszynie, watcher musi biec poza ta maszyna. Jego wspomnienie: w 2024 skrypty od Claude/GPT ogarnialy preempting - poszukac w jego repozytoriach i projekcie GCP.
 
+## R95 — Doprecyzowanie R93: chodzi tylko o słownictwo, nie o tłumaczenie oczywistości (owner, 2026-10-23)
+> Troszkę możesz ograniczyć dumbing down, bo teraz 60-70% tłumaczysz rzeczy oczywistych, niektóre już któryś raz. Tamta Moja uwaga odnosiła się tylko do słownictwa - żebyś ogranicza używanie słów co do których nie masz pewności że dobrze definicję kumam
+
+R93 dotyczy wylacznie slow: nie uzywac slow i nazw, co do ktorych nie mam pewnosci, ze zna ich definicje (skroty robocze, zargon). Nie tlumaczyc rzeczy oczywistych ani po raz kolejny tych samych; gestosc tresci normalna, bez dumbing down. Miara jego: 60-70 % ostatnich wiadomosci to bylo tlumaczenie oczywistosci.
+
 ## Decision — rebuild, don't recover
 > "nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane"
 
