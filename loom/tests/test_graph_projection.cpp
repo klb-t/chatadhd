@@ -309,7 +309,7 @@ TEST_SUITE("graph_projection") {
     unwrap(f.rt->memory().add_node("Call me Marcin"));
     NodeOptions topic;
     unwrap(f.rt->db().create_node("rust", "topic", topic));
-    const Json you = unwrap(projection::navigate(env, Json{{"focus", "party:self"}, {"limit", 0}}));
+    const Json you = unwrap(projection::navigate(env, Json{{"focus", "party:self"}, {"limit", 0}, {"hops", 2}}));
     std::size_t inferred = 0, observed = 0;
     for (const auto& c : you.at("children")) {
       const std::string address = c.at("address");
@@ -338,7 +338,7 @@ TEST_SUITE("graph_projection") {
     Fixture f;
     for (const char* lang : {"pl", "en"}) {
       projection::Env env = f.env(lang);  // no interview yet: every slot of the scenario is listed as unknown
-      const Json you = unwrap(projection::navigate(env, Json{{"focus", "party:self"}, {"limit", 0}}));
+      const Json you = unwrap(projection::navigate(env, Json{{"focus", "party:self"}, {"limit", 0}, {"hops", 2}}));
       std::size_t slots = 0;
       for (const auto& c : you.at("children")) {
         const std::string address = c.at("address");
@@ -737,7 +737,7 @@ TEST_SUITE("graph_projection") {
     const Json in = f.navigate(Json{{"focus", "conv:" + imported.substr(2)}, {"lang", "pl"}});
     REQUIRE(in.at("children").size() == 1);
     CHECK(in.at("children").at(0).at("evidence").at("human").get<std::string>().rfind("import (claude", 0) == 0);
-    const Json you = f.navigate(Json{{"focus", "party:self"}, {"lang", "pl"}});
+    const Json you = f.navigate(Json{{"focus", "party:self"}, {"lang", "pl"}, {"limit", 0}, {"hops", 2}});
     const Json* slot = child(you, "party:self/identity.description");
     REQUIRE(slot);
     CHECK(slot->at("evidence").at("human") == "pytanie z wywiadu — bez odpowiedzi");

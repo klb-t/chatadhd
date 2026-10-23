@@ -3,6 +3,8 @@
 // No network, no model; synthetic data only.
 #include <doctest/doctest.h>
 
+#include <cstdlib>
+#include <fstream>
 #include <map>
 #include <regex>
 #include <set>
@@ -322,5 +324,25 @@ TEST_SUITE("party_self_subgraphs") {
     const Json you = unwrap(projection::navigate(env, Json{{"focus", "party:self"}, {"limit", 0}}));
     CHECK(child(you, "subgraph:self/memory"));
     CHECK(child(you, "subgraph:self/slots"));
+  }
+
+  // A developer aid, not a check: with LOOM_PARTY_DUMP=<file> the answers of the screen Ty (the parts, one of each kind, three cards) are written there as
+  // JSON, so that the web work (W2b) and the report show real shapes. Without the variable it does nothing.
+  TEST_CASE("dump of the answers for the screen Ty (only with LOOM_PARTY_DUMP)") {
+    const char* file = std::getenv("LOOM_PARTY_DUMP");
+    if (!file) return;
+    Person& p = shared_person();
+    Json out = Json::object();
+    out["you"] = p.navigate("party:self", "pl");
+    for (const char* part : {"slots", "identity", "preferences", "policies", "units", "interests", "network", "memory"})
+      out[std::string("part_") + part] = p.navigate(std::string("subgraph:self/") + part, "pl");
+    out["card_you"] = p.card("party:self", "pl");
+    out["card_slot"] = p.card("party:self/communication.style", "pl");
+    out["card_above"] = p.card("party:self/identity.description", "pl");
+    out["card_memory"] = p.card(out["part_memory"].at("children").at(0).at("address"), "pl");
+    out["card_memory_old"] = p.card(out["part_memory"].at("children").at(1).at("address"), "pl");
+    out["card_part"] = p.card("subgraph:self/memory", "pl");
+    out["you_en"] = p.navigate("party:self", "en");
+    std::ofstream(file) << out.dump(1);
   }
 }

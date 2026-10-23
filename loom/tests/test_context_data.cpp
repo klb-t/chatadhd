@@ -132,7 +132,7 @@ TEST_SUITE("context_data") {
     CHECK(pl.at("guard.ok").get<std::string>().find("strażnik ×10") != std::string::npos);
   }
 
-  TEST_CASE("the subgraphs of You: every one has labels, an order for the prefix (memory has none: it is its own class) and a distinct stability rank") {
+  TEST_CASE("the subgraphs of You: every one has labels, an order for the prefix (memory and the interview's other fields have none: they are not the profile prefix) and a distinct stability rank") {
     const Json pack = data_file("profiles/user.pack");
     Json entry;
     for (const auto& e : pack.at("entries")) if (e.at("key") == "profile.subgraphs") entry = e;
@@ -145,10 +145,10 @@ TEST_SUITE("context_data") {
       CHECK(both(s.at("label")));
       CHECK(both(s.at("why")));
       CHECK(ranks.insert(s.at("stability_rank").get<int>()).second);
-      if (s.at("id") == "memory") CHECK(s.at("order_for_prefix").is_null());
+      if (s.at("id") == "memory" || s.at("id") == "slots") CHECK(s.at("order_for_prefix").is_null());  // not part of the profile prefix
       else CHECK(s.at("order_for_prefix").is_number());
       if (s.at("id") == "preferences") CHECK(s.at("per_flow") == true);
     }
-    CHECK(ids == std::set<std::string>{"identity", "preferences", "policies", "interests", "network", "units", "memory"});
+    CHECK(ids == std::set<std::string>{"identity", "preferences", "policies", "interests", "network", "units", "memory", "slots"});  // slots: added in M1-K2c-2
   }
 }
