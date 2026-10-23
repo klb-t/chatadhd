@@ -149,3 +149,5 @@ czy trzymać linię tygodniową.
 
 
 **2026-10-23 11:23 UTC — koszt kontroli przed użyciem i błąd modelu:** workflow `check-before-use` (2 × Haiku kontrola + 2 × poprawki) = 626 tys. tokenów, 37 wywołań, 14 min; poprawki POSZŁY NA FABLE (skrypt nie ustawiał `model` dla etapu poprawek → dziedziczył model sesji) — naprawione w skrypcie (`model: 'sonnet'`). R89 cały: 1,53 mln tokenów / 299 wywołań / 80 min (5 torów + ocena + synteza Fable). K3 projekt (Fable): 161 tys. / 13 wywołań / 13 min. Start K2c-3 (Sonnet, m1d1) o 11:23 — odstępstwo od presetu odstępu 1,9 h (ostatni start 10:52): linia budżetu (≈ 1 pkt/h do 80 % sob 08:00) i okno 5 h (34 % o 10:46, od tego czasu tylko kontrola i mały projekt) pozwalają; pakiet mały (≈ 0,5 pkt).
+
+**Próbka 2026-10-23 17:30 UTC:** tydzień **66 %** (+3 pkt od 11:19: K2c-3 0,6, P2 0,3, K3-1 0,7, R67-fix 1,0 (dwóch agentów), kontrole i mój kontekst), okno 5 h 8 % (nowe od 15:30). Linia: 80 % sob 08:00 → ≈ 14 pkt / 14,5 h; plan nocy: naprawa 2 testów (0,2), bramka+FF+CI (0), APK v5 (0), W2b-2 (0,8), potem K3-2 (0,8) wg tempa; żadnych etapów Fable.
