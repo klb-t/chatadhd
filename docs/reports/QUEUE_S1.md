@@ -1,10 +1,13 @@
-# Kolejka S1 — stan 2026-10-23 00:05 UTC
+# Kolejka S1 — stan 2026-10-23 00:12 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
 
 ## Reguła właściciela R58 (22.10 ≈ 23:40 UTC; wcześniejsze znaczniki „23.10 00:00/00:20” w tym pliku to pomyłka zegara, prawdziwa godzina to 23:3x–23:4x): przykłady są przykładami, silnik obsługuje każdą konfigurację, mała użyteczność = niewiążąca podpowiedź „czy celowe? nie pytać następnym razem”
 Powód: w tabeli planu napisałem „kolor = rodzaj, przezroczystość = pewność, głębia = czas, jak mówiłeś” — to były moje konkretne przypisania podane jak wymaganie i fałszywie przypisane jemu (jego własne słowa: „to jest tylko jedna z konfiguracji, a zakodować trzeba silnik”). Zapisane: `CLAUDE.md` (sekcja „Examples are examples…”), `OWNER_REQUIREMENTS` R58 (cytat dosłowny), `tools/workflows/single-package.js` (reguła w każdym briefie). Zadanie G3 (#30) ma teraz warunki wstępne: (a) skala: punkt odniesienia + odległość ze znakiem, kierunek zależny od drugiej miary, kilka kodowań jednej miary (dziś `view_engine.cpp` ~595–622: tylko `range`/`domain`/`type` i statyczne `invert`); (b) podpowiedź niewiążąca + zapamiętane „celowe, nie pytaj” + wykrycie wyniku zdegenerowanego (nic nie widać). Silnik już nigdy nie odrzuca kodowania (`promoted`/`allowed` z powodami), brakuje pytania i pamięci odpowiedzi.
+
+## 00:12 UTC: koordynator = Fable (właściciel, `/model`); styl wątku = tylko statusy; tydzień 46 %
+Właściciel: „nie gadaj tyle…”, tylko: co zaczynam / kończę / buduję / co nie wyszło / co agenci wymyślili oryginalnego; dyskusja tylko gdy on ją otwiera; parafraza R61 ≤ 5 linii. Zapisane w `CLAUDE.md`. Pace: `--used 46`. W toku: bramka `k2c1b3`, CI 274 asan (kontrola 00:31), Fable D1 (import jako pliki). Czeka: zatwierdzenie SPEC1 (jedna linia pytania).
 
 ## R61 (00:05 UTC): droga praca startuje po zatwierdzonej parafrazie; przed pytaniem analiza rozumienia względem filozofii
 Zapisane: `CLAUDE.md` (sekcja „How the owner works” — zastępuje mój 15-minutowy timer; sekcja „Decisions” — „Before a question”), `OWNER_REQUIREMENTS` R61 (cytat dosłowny). Preset „droga praca”: etap Fable, workflow wieloagentowe, pakiet większy niż drobna poprawka; bez zatwierdzenia: odczyty, bramki, czytniki logów, zapisywanie jego słów, drobne poprawki. SPEC1 dostał pole `understanding` (parafraza + stan proposed/approved/corrected; `spec.py approve/correct`). Wycofane moje pytania do właściciela o rodzaj eksportu i ekran (wybór jednego przypadku z wielu — projekt ma pokryć wszystkie).

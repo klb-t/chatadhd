@@ -131,3 +131,6 @@ agenci ≈ 85 % zużycia S1. Konto jest wspólne z S2 (od 12.10: S1 ≈ 1934 USD
 „Prompt review i optymalizacja” ≈ 397 USD), więc nie rozdzielę udziału w oknie, tylko w tokenach.
 **(Zamknięte 17:50: właściciel wybrał plan tempa, patrz niżej.)** Pytanie było: zostawić X % tygodnia na jego czaty i resztę spalić (preset 5 %),
 czy trzymać linię tygodniową.
+
+
+**Próbka właściciela 2026-10-23 00:12 UTC:** tydzień 46 % („dopiero 46% tygodniowego poszło, za to mniejsze pół tygodnia zostało do resetu”); linia planu na tę godzinę ≈ 38 %, punkt 50 % o 20:00; do 90 % (pon. 08:00) zostaje 44 pkt na 80 h = 0,55 pkt/h ≈ 1,1 pakietu/h przy 0,5 pkt/pakiet. Koordynator od tej chwili = Fable (decyzja właściciela), koszt do zmierzenia osobno.

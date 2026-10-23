@@ -54,6 +54,13 @@ presets, reversible):
 - Replies inside a series are short: what was understood, what was recorded, what changed. The deep dive
   (reminder of the base, then the details, the non-intuitive ones) belongs to a question and to the end of
   a series, as one consolidated answer with the list of what the series changed.
+- **Thread style (owner, 2026-10-23 00:1x, after switching the coordinator to Fable):** „nie gadaj tyle bo ja i tak
+  tego nie czytam; oprócz konwersacji gdzie dyskutujemy to w tym wątku wpisz tylko co zaczynasz implementować,
+  co kończysz, co budujesz, co nie wyszło, co agenci wymyślili oryginalnego”. So: status lines only (started /
+  finished / building / failed / original ideas from agents), one line each; discussion only when he opens
+  it; a paraphrase for approval (R61) is at most five lines. Long reasoning goes to `docs/reports/QUEUE_S1.md`,
+  not to the chat. He also set the coordinator model to Fable himself („jesteś Fable, baw się dobrze, korzystaj
+  z Ultra koda z rozsądkiem, tym większym im droższe zadanie”) — workflows scaled to the cost of the task.
 - His silence is not agreement and not a pause in the work: the queue (`docs/reports/QUEUE_S1.md`) must
   hold the whole state, because he reads it in bursts.
 
