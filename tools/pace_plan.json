@@ -14,13 +14,13 @@
   },
   {
    "at": "2026-10-26T08:00:00Z",
-   "target": 92,
-   "note": "doba przed końcem: zapas na hamowanie agentów i na czaty właściciela"
+   "target": 88,
+   "note": "doba przed końcem: zapas na hamowanie agentów i czaty właściciela (92 -> 88 po R91: reszta modeli do 90 %)"
   },
   {
    "at": "2026-10-27T08:00:00Z",
-   "target": 100,
-   "note": "reset; ostatnia doba to ostatnie 8 % wydane z namysłem"
+   "target": 90,
+   "note": "reset wt 08:59; R91 (właściciel 23.10 20:4x): „resztę do 90” — pasek All models zatrzymuje się na 90 %"
   }
  ],
  "cost_per_package": {
@@ -34,6 +34,12 @@
  "margin": 1.0,
  "lookahead_h": 2.0,
  "_history": [
-  "2026-10-23 00:2x: 50/90/100 -> 56/80/92/100 (właściciel: podkręć trochę; poprzednie wartości do przywrócenia jednym wpisem)"
- ]
+  "2026-10-23 00:2x: 50/90/100 -> 56/80/92/100 (właściciel: podkręć trochę; poprzednie wartości do przywrócenia jednym wpisem)",
+  "2026-10-23 20:4x: 92/100 -> 88/90 (R91: reszta do 90; Fable do 100)"
+ ],
+ "caps": {
+  "all_models": 90,
+  "fable": 100,
+  "_note": "R91 (właściciel 2026-10-23 20:4x): „limit się tylko na fabla kończy. jego możesz do samego końca dojechać, resztę do 90”. Odczyt 20:44: All models 70 %, Fable 93 %, kredyty użycia włączone (40 EUR/mies., saldo 0) — po 100 % Fable platforma przechodzi na kredyty; to jego ustawienie."
+ }
 }

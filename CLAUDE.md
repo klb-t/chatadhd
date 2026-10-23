@@ -66,6 +66,12 @@ presets, reversible):
   satisfy him, it acts without waiting; the R61 paraphrase is then recorded as `proposed` for his review.
   A stronger coordinator model may loosen the procedural rules a little (they were written for Sonnet);
   the philosophy itself stays.
+- **A line for him to paste into a Claude prompt must read as a sentence, never as a shell command (owner, 2026-10-23 20:4x:
+  „zmyliłeś mnie bo jak widzę git pull &&... to piszę w bashu”).** Start with a verb addressed to Claude („przeczytaj…”,
+  „zrób git pull, potem…”); a leading `git …`/`cd …` makes him type it into bash.
+- **Weekly limits (owner, 2026-10-23 20:4x, R91):** Fable may run to 100 % of its weekly bar; every other model stops at
+  90 % of „All models” (preset `caps` in `tools/pace_plan.json`). Usage credits are ON in his account (40 EUR/month cap, his own
+  setting, dated observation 2026-10-23): past 100 % the platform spends credits, not nothing.
 - His silence is not agreement and not a pause in the work: the queue (`docs/reports/QUEUE_S1.md`) must
   hold the whole state, because he reads it in bursts.
 

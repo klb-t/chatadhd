@@ -1,8 +1,10 @@
-# Kolejka S1 — stan 2026-10-23 18:52 UTC
+# Kolejka S1 — stan 2026-10-23 20:50 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
 **Teleport (R72):** karta startowa nowej sesji S1 = `docs/ops/TELEPORT_S1.md` (aktualizowana tuż przed przełączeniem); zadania zaplanowane = `docs/ops/ZADANIA_ZAPLANOWANE_2026-10-23.md`; przeprowadzka = `docs/ops/PRZEPROWADZKA_GCP_2026-10-23.md`.
+
+## 20:4x UTC (właściciel): sesja VM **ruszyła** (wkleił linię w sesji gcp; moja linia „git pull && …” zmyliła go do basha — zapisane w CLAUDE.md). Limity (zrzut Usage 20:44): sesja 11 %, tydzień All models 70 %, **Fable 93 %** (reset wt 08:59), kredyty użycia WŁĄCZONE (40 EUR/mies., saldo 0). **R91:** Fable do 100 %, reszta do 90 % → `tools/pace_plan.json` 92/100 → 88/90 + `caps`. Konsekwencja: koordynator (Fable) ma ≈ 7 pkt Fable do wtorku: panel Fable dobiega (zostaje), potem Fable tylko na decyzje; pakiety na Sonnet/Haiku; teleport S1 na inny model gotowy w `docs/ops/TELEPORT_S1.md`, gdy Fable się skończy (kredyty to jego ustawienie, nie moja decyzja — nie wyłączam i nie liczę na nie).
 
 ## Naprawa asan GOTOWA (18:52 UTC, `f025ed34` na `claude/m1-w1`; koordynator sam, 4 pliki): `sat_add`/`long_of` w `address_resolve.cpp` (nasycenie zamiast przekręcenia; NaN/∞ → poza zakresem), T6 (340 asercji: skrajne int/double/range na każdym wymiarze + NaN/∞ przez Address zbudowany bez parsera; parser odrzuca je, bo JSON nie ma NaN — zamknięcie wymuszone formatem), limit startu serwera `LOOM_TEST_SERVER_START_SECONDS` (preset 60) w obu testach serwera. Dev: test_address 100 %, oba testy serwera zielone; UBSan potwierdzi job asan CI. **Bramka `r67c`** start 18:52 (pełna, 2 h). Po zielonej: FF main → f025ed34 (sprawdzić, czy nie biegnie CI na main), kontrola CI +2 h 20 min, sha do S2, APK v5 po zielonym CI. Decyzja (odwrót tani): limit startu jako zmienna środowiskowa z presetem, nie stała — odwrót: wpisać liczbę z powrotem.
 

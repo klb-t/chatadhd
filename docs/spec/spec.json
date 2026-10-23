@@ -5,8 +5,8 @@
  "sources": {
   "owner": {
    "path": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
-   "sha256": "70e1b4243eba6107b5e0ddea2b4b1657a2d32cb6fa7c39511f30a4fee70cfae0",
-   "lines": 910
+   "sha256": "01487a0c38b2cc6a643bac3d54ddb7ea6db418fe538eea88ab79ba7ef36083ac",
+   "lines": 916
   },
   "slowa": {
    "path": "docs/architecture/SLOWA_WLASCICIELA_2026-10-16.md",
@@ -5242,6 +5242,58 @@
    ]
   },
   {
+   "id": "s_e2115ad7f760",
+   "aliases": [
+    "R91"
+   ],
+   "kind": "requirement",
+   "title": "Limity tygodnia: Fable do końca, reszta do 90 %; linie do wklejenia w Claude nie mogą wyglądać jak shell",
+   "date": "2026-10-23",
+   "theme": "owner_requirements",
+   "theme_inferred": false,
+   "understanding": {
+    "state": "none"
+   },
+   "quotes": [
+    {
+     "text": "ruszyło ale zmyliłeś mnie bo jak widzę git pull &&... to piszę w bashu.\nlimit się tylko na fabla kończy. jego możesz do samego końca dojechać, resztę do 90",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:897-898",
+     "ref": null,
+     "attr": [],
+     "lead": null,
+     "secondary": false
+    }
+   ],
+   "sense": null,
+   "summary": null,
+   "restatement": [
+    {
+     "text": "Zrzut Usage 20:44: sesja 11 %, tydzień wszystkie modele 70 %, Fable 93 % (reset wt 08:59), kredyty uzycia WLACZONE z limitem miesiecznym 40 EUR i saldem 0 EUR (obserwacja datowana: po wyczerpaniu limitu Fable platforma zacznie zuzywac kredyty do 40 EUR/mies. - to jego wlasne ustawienie). Regula: Fable wolno wyjechac do 100 % limitu tygodnia; pozostale modele do 90 % paska 'All models' (preset w tools/pace_plan.json). Uwaga robocza: linia do wklejenia w prompt Claude nie moze zaczynac sie od polecenia shella (git pull && ...), bo wtedy wpisuje ja w bashu - pisac zdaniem.",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:900"
+    }
+   ],
+   "commentary": [],
+   "status": null,
+   "gap_text": null,
+   "evidence": [],
+   "next_step": null,
+   "refs": [],
+   "supersedes": [],
+   "superseded_by": [],
+   "supersession_notes": [],
+   "tags": [],
+   "heading_note": "owner, 2026-10-23",
+   "sources": [
+    {
+     "role": "owner",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:896-900"
+    }
+   ],
+   "files": [
+    "owner"
+   ]
+  },
+  {
    "id": "s_18ec73967a7b",
    "aliases": [
     "owner:decision-rebuild-don-t-recover"
@@ -5257,7 +5309,7 @@
    "quotes": [
     {
      "text": "\"nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane\"",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:897",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:903",
      "ref": null,
      "attr": [],
      "lead": null,
@@ -5269,7 +5321,7 @@
    "restatement": [
     {
      "text": "Recovered versions (`history/chatadhd_v0.8.3`, `history/chatadhd_v0.9.0`) and\nthe historical report are sources of requirements, ideas and data assets\n(e.g. `film_structure.json`), and real ground truth for self-discovery tests —\nnot code to merge. Everything is rebuilt in Loom with tests.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:899-902"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:905-908"
     }
    ],
    "commentary": [],
@@ -5286,7 +5338,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:896-902"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:902-908"
     }
    ],
    "files": [
@@ -5312,7 +5364,7 @@
    "restatement": [
     {
      "text": "`workbench_mockup_2026-09-26.webp`: dockable/floating panels (conversation\nlist, active conversation, knowledge graph with active context window, project\nstructure with dimmed high-confidence auto-completable nodes, artifact views\nfor music/video with timeline + storyboard, video player, execution\nenvironment with agent), multi-format ingestion, Loom SDK at the centre.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:905-909"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:911-915"
     }
    ],
    "commentary": [],
@@ -5329,7 +5381,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:904-909"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:910-915"
     }
    ],
    "files": [
