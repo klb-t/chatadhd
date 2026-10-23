@@ -2531,6 +2531,67 @@ Result<std::string> find_address(const Env& env, const std::string& raw, bool ex
   return std::string();
 }
 
+Result<Json> known_names(const Env& env, const std::string& raw) {
+  LOOM_TRY_ASSIGN(auto cat, Catalogue::open(env));
+  LOOM_TRY_ASSIGN(auto profile, RuntimeProfile::load("graph_sources", env.root));
+  const Json values = profile.values();
+  const Json match = values.value("match", Json::object());
+  NameMatch m;
+  m.fold_map = match.value("fold", Json::object());
+  const Json cfg = values.value("unknown_names", Json::object());
+  const std::size_t show = static_cast<std::size_t>(std::max<std::int64_t>(0, json::get_int(cfg, "show", 6)));
+  const std::size_t near_prefix = static_cast<std::size_t>(std::max<std::int64_t>(1, json::get_int(cfg, "near_prefix", 3)));
+  const auto said = m.words(raw);
+  const std::string lang = env.lang.empty() ? std::string("en") : env.lang;
+  struct Row {
+    Json node;
+    std::vector<std::string> words;
+    std::size_t near = 0;
+    std::int64_t order = 1000;
+  };
+  std::vector<Row> rows;
+  if (auto entry = RuntimeProfile::load("graph_entry", env.root)) {
+    const Json areas = entry->values().value("areas", Json::object());
+    for (const auto& a : areas.items()) {
+      LOOM_TRY_ASSIGN(auto n, cat.node("area:" + a.key()));
+      if (!n) continue;
+      Row r;
+      r.order = json::get_int(*n, "order", 1000);
+      r.node = std::move(*n);
+      rows.push_back(std::move(r));
+    }
+  } else {
+    log::write(log::Level::Debug, kLog, "known_names: graph_entry not readable: " + entry.error().message);
+  }
+  const Json aliases = values.value("aliases", Json::array());
+  for (const auto& a : aliases) {
+    const std::string address = json::get_string(a, "address");
+    const Json by_lang = a.value("words", Json::object());
+    const Json in_lang = by_lang.value(lang, Json::array());
+    for (auto& r : rows)
+      if (json::get_string(r.node, "address") == address)
+        for (const auto& w : strings_in(in_lang)) r.words.push_back(w);
+  }
+  for (auto& r : rows) {
+    std::vector<std::string> spoken = r.words;
+    spoken.push_back(json::get_string(r.node, "label"));
+    for (const auto& name : spoken)
+      for (const auto& nw : m.words(name))
+        for (const auto& qw : said) {
+          std::size_t p = 0;
+          while (p < nw.size() && p < qw.size() && nw[p] == qw[p]) ++p;
+          r.near = std::max(r.near, p);
+        }
+  }
+  std::stable_sort(rows.begin(), rows.end(), [](const Row& a, const Row& b) { return a.near != b.near ? a.near > b.near : a.order < b.order; });
+  const std::size_t total = rows.size();
+  const std::size_t shown = show == 0 ? total : std::min(show, total);
+  Json names = Json::array();
+  for (std::size_t i = 0; i < shown; ++i)
+    names.push_back(Json{{"address", json::get_string(rows[i].node, "address")}, {"label", json::get_string(rows[i].node, "label")}, {"words", rows[i].words}});
+  return Json{{"names", names}, {"total", total}, {"shown", shown}, {"nearest", !rows.empty() && rows.front().near >= near_prefix}};
+}
+
 Result<Json> navigate(const Env& env, const Json& request) {
   LOOM_TRY_ASSIGN(auto cat, Catalogue::open(env));
   std::string focus_address = cat.canonical(json::get_string(request, "focus"));

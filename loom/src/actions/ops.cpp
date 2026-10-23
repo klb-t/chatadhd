@@ -2136,6 +2136,29 @@ std::string nav_suffix(const Ctx& x, const Json& row) {
   return out;
 }
 
+// G1a: what the graph does have, when a sentence named nothing: the areas with the words the data gives them, the nearest to the words
+// said first (projection::known_names); "" when the names cannot be read (the refusal then stands alone, as it did).
+std::string names_known(const Ctx& x, const projection::Env& env, const std::string& said) {
+  auto known = projection::known_names(env, said);
+  if (!known) {
+    log::write(log::Level::Debug, "loom.actions.ops", "known_names: " + known.error().message);
+    return std::string();
+  }
+  const Json names = known->value("names", Json::array());
+  if (names.empty()) return std::string();
+  std::string joined;
+  for (const auto& n : names) {
+    const Json words = n.value("words", Json::array());
+    std::string spoken;
+    for (const auto& w : words) spoken += (spoken.empty() ? "" : ", ") + w.get<std::string>();
+    const std::string label = n.value("label", "");
+    joined += (joined.empty() ? "" : "; ") + (spoken.empty() ? label : x.say("nav_name_words", Json{{"label", label}, {"words", spoken}}));
+  }
+  const std::int64_t rest = json::get_int(*known, "total", 0) - json::get_int(*known, "shown", 0);
+  const std::string more = rest > 0 ? x.say("nav_names_more", Json{{"count", rest}}) : std::string();
+  return " " + x.say(known->value("nearest", false) ? "nav_names_near" : "nav_names_all", Json{{"names", joined}, {"more", more}});
+}
+
 // The focus the sentence names: an address, or the name of an area or of a node (projection::find_address).
 bool focus_of(const Ctx& x, const projection::Env& env, const char* arg, std::string& out, StepOutcome& failure) {
   const std::string said = trim_quotes(x.str(arg));
@@ -2147,7 +2170,7 @@ bool focus_of(const Ctx& x, const projection::Env& env, const char* arg, std::st
     return false;
   }
   if (found->empty()) {
-    failure = fail(Errc::NotFound, x.say("nav_no_focus", Json{{"focus", said}}));
+    failure = fail(Errc::NotFound, x.say("nav_no_focus", Json{{"focus", said}}) + names_known(x, env, said));
     return false;
   }
   out = *found;

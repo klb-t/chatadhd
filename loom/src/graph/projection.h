@@ -140,6 +140,14 @@ Result<std::vector<Json>> profile_slots(const Env& env);
 // that has every word of the sentence as a whole word. "" = nothing has that name (never a part of another word: rzeczy is not przeczyta).
 Result<std::string> find_address(const Env& env, const std::string& words, bool exact_only = false);
 
+// G1a: the names a person can say for a place of the graph, the ones nearest to the words they said first (a sentence that named nothing:
+// "pokaż coś w grafie" must not end at "nothing has that name"). The areas of graph_entry with the words graph_sources.aliases gives them in
+// this language, ranked by the longest common start of any word with any word said (ties: the order of the root). Reply:
+// {names: [{address, label, words: [...]}], total, shown, nearest}; `nearest` is true when the first name shares at least
+// graph_sources.unknown_names.near_prefix letters with a word said (else the names are just the ones that exist). shown follows
+// unknown_names.show (preset 6; 0 = all); the rest is counted in total, never dropped silently.
+Result<Json> known_names(const Env& env, const std::string& words);
+
 // graph.navigate {focus?, perspectives?[], hops=1, limit=navigator_children_limit, query?, offset?, lang, conv_id?}
 //  -> {schema, focus{address,label,kind,evidence,provenance{layer,layers[]}}, children[...], edges[{src,dst,kind,meaning}], breadcrumbs[],
 //      counts{total,shown,collapsed}, hidden_by_you{count,items[]}, unknown[], pages, limit{value,from}, perspectives?[]}

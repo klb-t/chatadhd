@@ -1216,12 +1216,18 @@
             "rozmowy",
             "konwersacje",
             "czaty",
-            "moje rozmowy"
+            "moje rozmowy",
+            "projekty",
+            "kontekst",
+            "moje projekty"
           ],
           "en": [
             "conversations",
             "chats",
-            "my conversations"
+            "my conversations",
+            "projects",
+            "context",
+            "my projects"
           ]
         }
       },
@@ -1233,13 +1239,21 @@
             "role modeli",
             "modele",
             "kto co robi",
-            "dostawcy"
+            "dostawcy",
+            "konektory",
+            "konektor",
+            "dostawca",
+            "połączenia"
           ],
           "en": [
             "roles",
             "model roles",
             "models",
-            "providers"
+            "providers",
+            "connectors",
+            "connector",
+            "provider",
+            "connections"
           ]
         }
       },
@@ -1249,12 +1263,18 @@
           "pl": [
             "ustawienia",
             "moje ustawienia",
-            "profile"
+            "profile",
+            "opcje",
+            "konfiguracja",
+            "preferencje"
           ],
           "en": [
             "settings",
             "my settings",
-            "profiles"
+            "profiles",
+            "options",
+            "configuration",
+            "preferences"
           ]
         }
       },
@@ -1293,13 +1313,19 @@
             "mnie",
             "mój profil",
             "ty",
-            "o mnie"
+            "o mnie",
+            "użytkownik",
+            "ja sam",
+            "o sobie"
           ],
           "en": [
             "me",
             "my profile",
             "you",
-            "about me"
+            "about me",
+            "user",
+            "myself",
+            "about myself"
           ]
         }
       },
@@ -1309,12 +1335,20 @@
           "pl": [
             "urządzenia",
             "gesty",
-            "klawisze"
+            "klawisze",
+            "io",
+            "wejście wyjście",
+            "wejście i wyjście",
+            "wyjście"
           ],
           "en": [
             "devices",
             "gestures",
-            "keys"
+            "keys",
+            "io",
+            "i/o",
+            "input output",
+            "input and output"
           ]
         }
       },
@@ -1323,11 +1357,15 @@
         "words": {
           "pl": [
             "narzędzia",
-            "agent"
+            "agent",
+            "narzędzie",
+            "agenci"
           ],
           "en": [
             "tools",
-            "agent"
+            "agent",
+            "tool",
+            "agents"
           ]
         }
       },
@@ -1395,9 +1433,202 @@
             "levels of the settings"
           ]
         }
+      },
+      {
+        "address": "area:data_corpora",
+        "words": {
+          "pl": [
+            "import",
+            "importy",
+            "zaimportowane",
+            "zaimportowane dane",
+            "dane",
+            "korpusy",
+            "dane i korpusy",
+            "po imporcie"
+          ],
+          "en": [
+            "import",
+            "imports",
+            "imported",
+            "imported data",
+            "data",
+            "corpora",
+            "data and corpora"
+          ]
+        }
+      },
+      {
+        "address": "area:knowledge",
+        "words": {
+          "pl": [
+            "wiedza",
+            "twierdzenia",
+            "dowody",
+            "encje",
+            "fakty"
+          ],
+          "en": [
+            "knowledge",
+            "claims",
+            "evidence",
+            "entities",
+            "facts"
+          ]
+        }
+      },
+      {
+        "address": "area:self_model",
+        "words": {
+          "pl": [
+            "aplikacja",
+            "o aplikacji",
+            "samomodel",
+            "zasady aplikacji"
+          ],
+          "en": [
+            "app",
+            "the app",
+            "about the app",
+            "self-model",
+            "principles"
+          ]
+        }
+      },
+      {
+        "address": "area:technologies",
+        "words": {
+          "pl": [
+            "technologie",
+            "adaptery"
+          ],
+          "en": [
+            "technologies",
+            "adapters"
+          ]
+        }
+      },
+      {
+        "address": "area:interfaces",
+        "words": {
+          "pl": [
+            "interfejsy",
+            "interfejs"
+          ],
+          "en": [
+            "interfaces",
+            "interface"
+          ]
+        }
+      },
+      {
+        "address": "area:parties",
+        "words": {
+          "pl": [
+            "podmioty",
+            "strony",
+            "ludzie"
+          ],
+          "en": [
+            "parties",
+            "people"
+          ]
+        }
+      },
+      {
+        "address": "area:methods",
+        "words": {
+          "pl": [
+            "metody"
+          ],
+          "en": [
+            "methods"
+          ]
+        }
+      },
+      {
+        "address": "area:ontology",
+        "words": {
+          "pl": [
+            "ontologia",
+            "rodzaje węzłów"
+          ],
+          "en": [
+            "ontology",
+            "node kinds"
+          ]
+        }
+      },
+      {
+        "address": "area:provenance_history",
+        "words": {
+          "pl": [
+            "pochodzenie",
+            "historia",
+            "skąd się wzięło"
+          ],
+          "en": [
+            "provenance",
+            "history",
+            "where things came from"
+          ]
+        }
+      },
+      {
+        "address": "area:resource_economy",
+        "words": {
+          "pl": [
+            "ekonomia",
+            "koszty",
+            "zasoby",
+            "budżet"
+          ],
+          "en": [
+            "economy",
+            "costs",
+            "resources",
+            "budget"
+          ]
+        }
+      },
+      {
+        "address": "area:privacy_consent",
+        "words": {
+          "pl": [
+            "prywatność",
+            "zgody"
+          ],
+          "en": [
+            "privacy",
+            "consents"
+          ]
+        }
+      },
+      {
+        "address": "area:storage_security",
+        "words": {
+          "pl": [
+            "magazyn",
+            "bezpieczeństwo",
+            "szyfrowanie"
+          ],
+          "en": [
+            "storage",
+            "security",
+            "encryption"
+          ]
+        }
       }
     ],
-    "aliases_description": "Words that name a node besides its own name, per language (find_address, the sentences of the chat: „przejdź do ustawień”). A list of examples: an overlay may add more."
+    "aliases_description": "Words that name a node besides its own name, per language (find_address, the sentences of the chat: „przejdź do ustawień”). A list of examples: an overlay may add more.",
+    "unknown_names": {
+      "description": {
+        "pl": "Co mówi odpowiedź, gdy zdanie nazwało coś, czego w grafie nie ma (G1a): nazwy, które istnieją, najbliższe powiedzianym słowom na początku. show = ile nazw podać (0 = wszystkie; reszta jest policzona w odpowiedzi, nie ukryta); near_prefix = od ilu wspólnych liter na początku mówimy „najbliżej”. Kalibracja, nie ograniczenie.",
+        "en": "What the answer says when a sentence named something the graph does not have (G1a): the names that exist, the nearest to the words said first. show = how many names to give (0 = all; the rest is counted in the answer, not hidden); near_prefix = how many shared first letters make a name “closest”. Calibration, not a limit."
+      },
+      "show": 6,
+      "near_prefix": 3
+    }
   },
   "value_schema": {
     "type": "object",

@@ -4576,7 +4576,7 @@
           "id": "graph.navigate.root.pl",
           "action": "graph.navigate",
           "lang": "pl",
-          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:pokaz|otworz|wyswietl)\\s+(?:mi\\s+)?(?:korzen\\s+grafu|caly\\s+graf|wejscie\\s+do\\s+grafu)\\s*[.!?]*\\s*$",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:(?:pokaz|otworz|wyswietl|zobacz|wejdz\\s+do|przejdz\\s+do|chce\\s+zobaczyc)\\s+(?:mi\\s+)?(?:(?:caly\\s+|cala\\s+|glowny\\s+|glowna\\s+|poczatkowy\\s+|startowy\\s+)graf(?:u|ie|em)?|(?:katalog|widok|ekran|korzen|poczatek|start|strone|strona|wejscie|poziom|spis\\s+tresci)\\s+(?:glowny\\s+|glowna\\s+|glowne\\s+|poczatkowy\\s+|startowy\\s+|domowy\\s+|domowa\\s+|najwyzszy\\s+)?(?:(?:w|na|do|z)\\s+)?graf(?:u|ie|em)?|(?:glowny\\s+|glowna\\s+|glowne\\s+|poczatkowy\\s+|startowy\\s+|domowy\\s+|domowa\\s+|najwyzszy\\s+)(?:katalog|widok|ekran|strone|strona)\\s+graf(?:u|ie|em)?)|(?:otworz|zobacz|wejdz\\s+do|przejdz\\s+do|chce\\s+zobaczyc)\\s+(?:mi\\s+)?graf(?:u|ie|em)?)\\s*[.!?]*\\s*$",
           "args": [],
           "takes_scope": false
         },
@@ -4584,7 +4584,7 @@
           "id": "graph.navigate.root.en",
           "action": "graph.navigate",
           "lang": "en",
-          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:show|open)\\s+(?:me\\s+)?(?:the\\s+)?(?:graph\\s+root|whole\\s+graph|graph\\s+entry)\\s*[.!?]*\\s*$",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:(?:show|open|display|go\\s+to|take\\s+me\\s+to)\\s+(?:me\\s+)?(?:the\\s+)?(?:(?:whole\\s+|entire\\s+|main\\s+|top\\s+|root\\s+|home\\s+|top\\s+level\\s+)graph(?:\\s+(?:root|entry|home|start|overview|top\\s+level|root\\s+(?:directory|folder|level)))?|graph\\s+(?:root|entry|home|start|top\\s+level|root\\s+(?:directory|folder|level))|(?:root|top\\s+level|main\\s+view|main\\s+screen|home|start|entry|overview)\\s+(?:directory\\s+|folder\\s+|level\\s+|page\\s+)?(?:of|in)\\s+the\\s+graph)|(?:open|go\\s+to|take\\s+me\\s+to)\\s+(?:me\\s+)?(?:the\\s+)?graph)\\s*[.!?]*\\s*$",
           "args": [],
           "takes_scope": false
         },
@@ -4592,7 +4592,7 @@
           "id": "graph.navigate.in.pl",
           "action": "graph.navigate",
           "lang": "pl",
-          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:pokaz|otworz|wyswietl)\\s+(?:mi\\s+)?(.+?)\\s+w\\s+grafie\\s*[.!?]*\\s*$",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:pokaz|otworz|wyswietl|zobacz)\\s+(?:mi\\s+)?(.+?)\\s+(?:w|na|z)\\s+graf(?:ie|u|em)?\\s*[.!?]*\\s*$",
           "args": [
             "focus"
           ],
@@ -4605,7 +4605,7 @@
           "id": "graph.navigate.in.en",
           "action": "graph.navigate",
           "lang": "en",
-          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:show|open|display)\\s+(?:me\\s+)?(?:the\\s+)?(.+?)\\s+in\\s+the\\s+graph\\s*[.!?]*\\s*$",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:show|open|display)\\s+(?:me\\s+)?(?:the\\s+)?(.+?)\\s+(?:in|on|from)\\s+(?:the\\s+)?graph\\s*[.!?]*\\s*$",
           "args": [
             "focus"
           ],
