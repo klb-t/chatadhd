@@ -2339,6 +2339,48 @@
         }
       },
       {
+        "id": "graph_navigate_root",
+        "title": {
+          "en": "The start of the graph (its root)",
+          "pl": "Początek grafu (katalog główny)"
+        },
+        "via": "action",
+        "action": "graph.navigate",
+        "surfaces": {
+          "http": [
+            "POST /api/graph/navigate"
+          ],
+          "invoke": [
+            "actions.graph.navigate"
+          ]
+        },
+        "examples": {
+          "pl": "pokaż katalog główny grafu",
+          "en": "open the root of the graph"
+        }
+      },
+      {
+        "id": "graph_navigate_area",
+        "title": {
+          "en": "An area of the graph by the name you use",
+          "pl": "Obszar grafu pod nazwą, której używasz"
+        },
+        "via": "action",
+        "action": "graph.navigate",
+        "surfaces": {
+          "http": [
+            "POST /api/graph/navigate"
+          ],
+          "invoke": [
+            "actions.graph.navigate"
+          ]
+        },
+        "examples": {
+          "pl": "pokaż import w grafie",
+          "en": "show the import in the graph"
+        }
+      },
+      {
         "id": "graph_card",
         "title": {
           "en": "Card of a graph node",

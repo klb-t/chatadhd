@@ -13610,19 +13610,29 @@
         "phrases": {
           "en": [
             "show in the graph",
-            "go into"
+            "go into",
+            "open the graph",
+            "show the graph root",
+            "show the root of the graph"
           ],
           "pl": [
             "pokaż w grafie",
-            "wejdź w"
+            "wejdź w",
+            "katalog główny grafu",
+            "otwórz graf",
+            "pokaż korzeń grafu"
           ]
         },
         "examples": {
           "en": [
-            "show the ROM in the graph"
+            "show the ROM in the graph",
+            "open the root of the graph",
+            "show the import in the graph"
           ],
           "pl": [
-            "pokaż ROM w grafie"
+            "pokaż ROM w grafie",
+            "pokaż katalog główny grafu",
+            "pokaż import w grafie"
           ]
         },
         "stores_result": false,
