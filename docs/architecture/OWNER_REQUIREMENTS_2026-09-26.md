@@ -785,6 +785,11 @@ Doprecyzowanie R67: głębokość i szerokość to argumenty funkcji. Architekto
 
 Ciąg dalszy R69 (odczyt ASR: „prąd” = prompt, „kmini” = pomni/uwzględnia, „bajas” = bias). Selektor bierze węzeł odpowiedzi generowanej właśnie przez model — w wymiarze wiadomości pozycja −1 względem ostatniego promptu użytkownika; widzi we wszystkich perspektywach, co się w nim schodzi; uwzględnia, co jest w cache, by jak najwięcej z niego skorzystać; jeśli nie zaburza układu, modyfikacje dokłada na końcu; kontekst budowany od najuniwersalniejszych i najogólniejszych danych do szczegółowych (projekt → gałąź → moduł → funkcja). Przepływ wołany nie tylko przez użytkownika, ale i agenta oraz eksperymentatora (auto/półauto), np. po niewystarczającej odpowiedzi ponawia pytanie z szerszym i głębszym kontekstem; przy zmianie tematu na dowolnym poziomie deterministyczny selektor trzymałby duży kontekst (bias na cache) — a wtedy trzeba zawęzić dla oszczędności, gdy wiadomo, że powrotu nie będzie w czasie życia cache.
 
+## R71 — Write the bootstrap: one command to paste over ssh (kept in the repo for now), so he does not have to look up all the names again (owner, 2026-10-23)
+> A napiszesz mi swojego bootstrapa , chyba najprościej będzie tymczasowo w repo umieścić ale obojętnie, Bo chodzi o to żebyś mi dał jedną komendę do wklejenia przez ssh, żebym znów nie musiał szukać tych nazw wszystkich
+
+Przeprowadzka (R68): właściciel chce JEDNĄ komendę do wklejenia przez ssh na świeżej VM, która stawia środowisko (nazwy pakietów, Claude Code, Remote Control) — skrypt może leżeć tymczasowo w repo.
+
 ## Decision — rebuild, don't recover
 > "nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane"
 

@@ -5,8 +5,8 @@
  "sources": {
   "owner": {
    "path": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
-   "sha256": "184aff0a990a4345ab0dde4e6e79d170736e860feb04a9e253fb0e572aca7bfb",
-   "lines": 802
+   "sha256": "257eaae659f65fa6fcefaba721697110e19803e100d884744052e02b446d6c0f",
+   "lines": 807
   },
   "slowa": {
    "path": "docs/architecture/SLOWA_WLASCICIELA_2026-10-16.md",
@@ -3970,6 +3970,60 @@
    ]
   },
   {
+   "id": "s_728a73b626a0",
+   "aliases": [
+    "R71"
+   ],
+   "kind": "requirement",
+   "title": "Write the bootstrap: one command to paste over ssh (kept in the repo for now), so he does not have to look up all the names again",
+   "date": "2026-10-23",
+   "theme": "owner_requirements",
+   "theme_inferred": false,
+   "understanding": {
+    "state": "none"
+   },
+   "quotes": [
+    {
+     "text": "A napiszesz mi swojego bootstrapa , chyba najprościej będzie tymczasowo w repo umieścić ale obojętnie, Bo chodzi o to żebyś mi dał jedną komendę do wklejenia przez ssh, żebym znów nie musiał szukać tych nazw wszystkich",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:789",
+     "ref": null,
+     "attr": [],
+     "lead": null,
+     "secondary": false
+    }
+   ],
+   "sense": null,
+   "summary": null,
+   "restatement": [
+    {
+     "text": "Przeprowadzka (R68): właściciel chce JEDNĄ komendę do wklejenia przez ssh na świeżej VM, która stawia środowisko (nazwy pakietów, Claude Code, Remote Control) — skrypt może leżeć tymczasowo w repo.",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:791"
+    }
+   ],
+   "commentary": [],
+   "status": null,
+   "gap_text": null,
+   "evidence": [],
+   "next_step": null,
+   "refs": [
+    "s_5a8666c3f7e4"
+   ],
+   "supersedes": [],
+   "superseded_by": [],
+   "supersession_notes": [],
+   "tags": [],
+   "heading_note": "owner, 2026-10-23",
+   "sources": [
+    {
+     "role": "owner",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:788-791"
+    }
+   ],
+   "files": [
+    "owner"
+   ]
+  },
+  {
    "id": "s_18ec73967a7b",
    "aliases": [
     "owner:decision-rebuild-don-t-recover"
@@ -3985,7 +4039,7 @@
    "quotes": [
     {
      "text": "\"nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane\"",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:789",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:794",
      "ref": null,
      "attr": [],
      "lead": null,
@@ -3997,7 +4051,7 @@
    "restatement": [
     {
      "text": "Recovered versions (`history/chatadhd_v0.8.3`, `history/chatadhd_v0.9.0`) and\nthe historical report are sources of requirements, ideas and data assets\n(e.g. `film_structure.json`), and real ground truth for self-discovery tests —\nnot code to merge. Everything is rebuilt in Loom with tests.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:791-794"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:796-799"
     }
    ],
    "commentary": [],
@@ -4014,7 +4068,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:788-794"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:793-799"
     }
    ],
    "files": [
@@ -4040,7 +4094,7 @@
    "restatement": [
     {
      "text": "`workbench_mockup_2026-09-26.webp`: dockable/floating panels (conversation\nlist, active conversation, knowledge graph with active context window, project\nstructure with dimmed high-confidence auto-completable nodes, artifact views\nfor music/video with timeline + storyboard, video player, execution\nenvironment with agent), multi-format ingestion, Loom SDK at the centre.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:797-801"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:802-806"
     }
    ],
    "commentary": [],
@@ -4057,7 +4111,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:796-801"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:801-806"
     }
    ],
    "files": [
