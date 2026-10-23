@@ -5,13 +5,13 @@ Ten plik jest **wygenerowany** z `docs/spec/spec.json` poleceniem `python3 tools
 
 Status pochodzi z pliku luk i jest **obserwacją z podanej daty**, nie ograniczeniem.
 
-Pozycji razem: **493**.
+Pozycji razem: **494**.
 
 | Status (z LUKI) | liczba |
 |---|---|
 | częściowo | 210 |
 | jest | 151 |
-| bez statusu (nie ma w LUKI) | 110 |
+| bez statusu (nie ma w LUKI) | 111 |
 | brak | 16 |
 | nieaktualne | 5 |
 | sprzeczne | 1 |
@@ -19,7 +19,7 @@ Pozycji razem: **493**.
 | Rodzaj | liczba |
 |---|---|
 | remark | 367 |
-| requirement | 69 |
+| requirement | 70 |
 | philosophy | 36 |
 | statement | 10 |
 | decision | 4 |
@@ -28,13 +28,13 @@ Pozycji razem: **493**.
 
 | Rozumienie (R61) | liczba |
 |---|---|
-| none | 490 |
+| none | 491 |
 | proposed | 3 |
 
 | W których plikach | liczba |
 |---|---|
 | LUKI + SLOWA | 379 |
-| rejestr R/D | 76 |
+| rejestr R/D | 77 |
 | SLOWA | 34 |
 | LUKI | 4 |
 
@@ -54,7 +54,7 @@ Pozycji razem: **493**.
 | Proces i współpraca | 67 |
 | Pozostałe | 33 |
 | Uzupełnienia (wypowiedzi bez numeru) | 10 |
-| Rejestr wymagań R/D | 76 |
+| Rejestr wymagań R/D | 77 |
 | bez tematu | 3 |
 
 ## Filozofia
@@ -589,8 +589,9 @@ Pozycji razem: **493**.
 - `s_d70418b3948e` **R67** — No mock-ups, placeholders, fakes or temporary bridges - only full functionality; the context of an API call is inferred from the wide, multi-dimensional context (history, teleology, perspective...); depth and width are optional arguments, inferred by default, passable as absolute or modifying parameters — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L766)
 - `s_5a8666c3f7e4` **R68** — Move the coordinator to GCP: code there and deploy at once; prepare for the move, possibly tomorrow — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L772)
 - `s_9d68f9c43c49` **R69** — Depth and width as arguments of a function: a context selector that takes a graph node corresponding to ... (continuation of R67; the sentence breaks off) — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L777)
-- `s_18ec73967a7b` **owner:decision-rebuild-don-t-recover** — Decision — rebuild, don't recover — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L783)
-- `s_223e1568b3b9` **owner:ui-reference** — UI reference — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L791)
+- `s_13a549d5ba3f` **R70** — The context selector takes the node of the reply being generated (message dimension, position -1 to the last user prompt), sees what converges in all perspectives, minds the cache, appends modifications at the end, builds from the most general to the most specific (project > branch > module > function); the flow is called by the user, the agent or the experimenter (retry with wider/deeper context), and narrows on a topic change when no return is expected within the cache lifetime — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L783)
+- `s_18ec73967a7b` **owner:decision-rebuild-don-t-recover** — Decision — rebuild, don't recover — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L788)
+- `s_223e1568b3b9` **owner:ui-reference** — UI reference — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L796)
 
 ## Bez tematu
 
