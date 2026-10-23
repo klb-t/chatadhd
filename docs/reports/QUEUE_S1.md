@@ -2,6 +2,8 @@
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
+**Teleport (R72):** karta startowa nowej sesji S1 = `docs/ops/TELEPORT_S1.md` (aktualizowana tuż przed przełączeniem); zadania zaplanowane = `docs/ops/ZADANIA_ZAPLANOWANE_2026-10-23.md`; przeprowadzka = `docs/ops/PRZEPROWADZKA_GCP_2026-10-23.md`.
+
 
 ## S2 smoke 39913958478 na 5a14c15b (= main 94872898 + 4 nowe kroki), 07:42 UTC: 44/3/0 ×3 — wszystkie trzy po stronie sterownika: (1) regex importu oczekiwał „znaleziono”, a zdanie jądra dla gołego .json jest inne i uczciwe; (2) „pokaż katalog główny grafu” = propozycja + „tak” (sterownik nie potwierdzał) — odpowiedziałem: tak idzie dziś przez propozycję, e2e webu robi to samo, czy nawigacja tylko do odczytu ma wymagać potwierdzenia to pytanie o preset, nie o sterownik; (3) „Ty” czytane za wcześnie (wiersze ogólne za zwiniętym „Wszystkie wiersze”). Działa: „Co tu widzę?” z ⋮ > Graf. Poprawki sterownika 32c7a401, wynik za ~50 min. Uwaga S2 o tonie zdania „ten czytnik nie odczytuje nawet ich nazw” → złagodzić na „jeszcze” w K2c-3 (treść zostaje uczciwa: JSON ChatGPT może nieść nazwy, więc „format ich nie niesie” byłoby fałszem).
 
