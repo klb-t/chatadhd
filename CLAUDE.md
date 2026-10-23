@@ -627,6 +627,11 @@ before the loop. Bind the object to a name first (`const Json x = unwrap(f()); f
 
 **Second ASan-only pitfall: a pointer or reference into a value that is later replaced** (CI 273, 2026-10-22: `const Json* f = field_of(l, slot)` pointed into `l.state`, then `write(e, l, …)` did `l.state = *r`, and the next `*f` read freed memory — the dev gate, built without ASan, passed). Never keep a pointer/reference into a container or state object across a call that can reassign or grow it; take a copy first (`std::optional<Json>` instead of `const Json*`) or re-look-up after the call. A local ASan build does not fit on the machine (disk), so only the `asan` job of CI proves this class — read such code with the question "what does this call assign to?".
 
+**A CI run shown as "cancelled" with no newer push is a job timeout** (run 281, 2026-10-23: the `dev (g++)` job hit
+`timeout-minutes: 45` inside "Build and test web workbench" while asan/vendored/libcxx were green; GitHub reports a timed-out
+job as cancelled, and the run inherits it). Check `list_workflow_jobs` step timings before treating it as a flake; the dev
+limit is now 100 min (a preset) because the web stage (60+ e2e scripts) grows with every M1 package.
+
 **gcc accepts what clang rejects** (CI 262, 2026-10-22: the generated onboarding pack passed ~420 KB and clang's constexpr step limit stopped the vendored/Android build while every gcc job stayed green): generated `*.inc` data must be emitted with explicit lengths (`std::string_view(R"...", N)`), never as bare literals measured by a constexpr strlen. `tools/clang_inc_check.py` runs `clang++ -fsyntax-only` on every source that includes a generated `.inc`; `tools/gate.sh` runs it.
 
 > **Update 2026-09-29 (owner):** Python compatibility is no longer required — it was
