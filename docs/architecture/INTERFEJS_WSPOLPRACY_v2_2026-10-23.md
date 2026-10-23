@@ -1,6 +1,6 @@
 # Interfejs współpracy v2 — synteza dyskusji trzech kątów (R90; Fable, 2026-10-23)
 
-Stan na **2026-10-23 ≈ 18:xx UTC**. Buduje na (nie powtarza): synteza R89 `INTERFEJS_WSPOLPRACY_2026-10-23.md` (interfejs =
+Stan na **2026-10-23 ≈ 18:48 UTC** (czas commita `96ca991c`; addendum poniżej ≈ 18:51, commit `df1593c5`). Buduje na (nie powtarza): synteza R89 `INTERFEJS_WSPOLPRACY_2026-10-23.md` (interfejs =
 perspektywa grafu aplikacji + cienki widok na telefon; role jako presety; routing korekt jako dane; pakiety P1–P11; §9 kontrola),
 trzy projekty z dyskusją `INTERFEJS_PANEL_2026-10-23/{wlasciciel,koordynator,ekonomia}.md` (W1–W10, K1–K9, E1–E10, każdy z §6
 „Po dyskusji”), stan narzędzi: R88 v1 (skrzynka `spec_inbox` + zadanie „Sekretarz spec”), P1 (rekord biegu sekretarza `spec_runs`),
@@ -9,7 +9,7 @@ P2 (kolejka „Czeka na Ciebie”, pola `if_silent`, `cost_to_reverse`) — `doc
 
 Konwencja: każda liczba i nazwa niżej to **przykład** albo **preset** (z `_history`, R83/R84), fakty o teraźniejszości mają datę
 (R60), jego słowa tylko dosłownie z R-id, każda lista jest otwarta. Kontrola Haiku przed użyciem (4 antywzorce + R60) tego
-dokumentu: **nie wykonana w tym pakiecie** — następny krok, jak §9 w syntezie R89.
+dokumentu: nie wykonana w pakiecie, który go napisał; **wykonana później** (23.10) — wynik i poprawki w sekcji „Kontrola przed użyciem” na końcu.
 **Addendum (23.10, ten sam pakiet, po `git pull`):** w międzyczasie sesja S1-VM zapisała rekonesans `docs/ops/VM_RECON_2026-10-23.md`
 (commit `2211c8eb`), a właściciel R91 (limity: Fable do 100 %, reszta do 90 %). Fakty z rekonesansu zmieniają przesłankę konfliktu 4,
 wiersz S1-VM w 2.7, pakiet IW-8, §7 i luki L3/L4 — poprawione w miejscu, z datą; kształt decyzji bez zmian.
@@ -19,14 +19,14 @@ wiersz S1-VM w 2.7, pakiet IW-8, §7 i luki L3/L4 — poprawione w miejscu, z da
 1. Jeden ekran na telefonie: liczniki **czeka na Ciebie · zrobione od Twojej wizyty · w toku · nie wyszło · oryginalne od agentów ·
    miejsca · koszt dnia** (lista otwarta), każdy rozwijalny — zamiast 4 674 linii dokumentów stanu (QUEUE 645, INDEX 1 822,
    CLAUDE.md 677, rejestr 909, SPEC.md 621; stan 23.10).
-2. Każde pytanie do Ciebie niesie odpowiedź, którą przyjmę bez Ciebie, czas, po którym ją przyjmę, i koszt odwrotu; milczenie =
+2. Pytanie do Ciebie niesie domyślnie (preset) odpowiedź, którą przyjmę bez Ciebie, czas, po którym ją przyjmę, i koszt odwrotu (pytanie bez tych pól jest dozwolone i dostaje advisory); milczenie =
    zadeklarowany skutek, wykonany bez modelu po drodze. Dziś czeka 12 parafraz (P2, 23.10 12:37); z tych pól istnieją dwa (`if_silent`, `cost_to_reverse`), brakuje czasu i kryteriów.
 3. Jednym dotknięciem (przykłady): Zatwierdzam · Popraw (głosem) · To przykład · To nie moje słowa · Stop (z pokazanym kosztem) ·
    Wolna ręka na zakres · Co pamiętasz o… · Odpal rutynę. Między dotknięciem a zapisem nie stoi żaden model.
 4. Twoje słowa trafiają do agentów **dosłownie** (`spec:<id>`), nie w moich parafrazach — dziś cytuje je 0 z 21 briefów.
-5. Linie statusu pisze bieg (started / finished / building / failed / original_ideas — Twoja lista z 00:1x), nie Fable: dziś 37 z 60
+5. Linie statusu pisze bieg (rodzaje zdarzeń, np. started / finished / building / failed / original_ideas — etykiety koordynatora dla ziarna z Twojego zdania z 00:1x: „co zaczynasz implementować, co kończysz, co budujesz, co nie wyszło, co agenci wymyślili oryginalnego” — CLAUDE.md, „Thread style”), nie Fable: dziś 37 z 60
    ostatnich commitów gałęzi to księgowość koordynatora. Dyskusja = osobny strumień, otwierasz go Ty.
-6. Koszt widzisz **przy geście** (zanim zatrzymasz, zatwierdzisz start, podtrzymasz maszynę) jako klasę lub zakres i jako jedną
+6. Koszt (preset, §1 wiersz 6) widzisz **przy geście** (zanim zatrzymasz, zatwierdzisz start, podtrzymasz maszynę) jako klasę lub zakres i jako jedną
    sumę dnia; paragon per pozycja o dotknięcie dalej; waluty: punkty, Twój czas (słowa wysłane), godziny VM, dysk — lista otwarta.
 7. Mapa miejsc odpowiada na Twoje pytania z R90 („czy ogarniesz stamtąd wszystko?”, „Masz podgląd na wszystkie sesje, nie?”,
    „nie pamiętam czy ageds też ma serwer?”): chmura S1, S1-VM, S2, sekretarz, strona, CI, usługi (ChatADHD, Watchdog, AGEDS…).
@@ -36,7 +36,7 @@ wiersz S1-VM w 2.7, pakiet IW-8, §7 i luki L3/L4 — poprawione w miejscu, z da
 8. Po przerwie jeden ekran „Od Twojego wyjścia”: co zdecydowałem wstępnie (z odwrotem), co skończone, co nie wyszło, co czeka.
 9. Przestaje kosztować Twoją uwagę: czytanie kolejki i QUEUE, szukanie nazw, pilnowanie, co biegnie i gdzie, odpowiadanie na
    pytania, które mają oczywistą odpowiedź, poprawianie tej samej klasy błędu („to przykład” — 5 razy jednego dnia, 23.10).
-10. Pierwszy pakiet: **zapis biegu** (Sonnet, ≈ 40 wywołań — preset; ≈ 0,5 pkt — szacunek z bazy pakietu 0,43–0,5 pkt, nasze-06); 11 pakietów, 9 bez Fable (§4). Nic nie jest
+10. Pierwszy pakiet: **zapis biegu** (Sonnet, ≈ 40 wywołań — preset; ≈ 0,5 pkt — szacunek z bazy pakietu 0,43–0,5 pkt, nasze-06); 11 pakietów, 10 z nich wykonuje Sonnet/Haiku bez koordynatora (§4, liczone z tabeli). Nic nie jest
     ukryte: wszystko widoczne, zwinięte wg presetu, z wierszem „N zwiniętych — pokaż”.
 
 ## §1 Rozstrzygnięcia konfliktów z dyskusji
@@ -45,27 +45,27 @@ wiersz S1-VM w 2.7, pakiet IW-8, §7 i luki L3/L4 — poprawione w miejscu, z da
 |---|---|---|---|---|
 | 1 | **Dom zdarzeń biegu**: repo + lustro (K) vs baza strony od razu (W) vs ledger jsonl (E) | **Kierunek decyduje o magazynie pierwotnym**: jego gesty → baza strony (telefon dociera za 0 tokenów); nasze biegi i próbki → plik w repo (każde miejsce pisze za 0; commit lokalny natychmiast, push na gałąź dokumentów co N biegów, preset N=1); sekretarz lustruje w obie strony w swojej kadencji; każdy licznik niesie „stan z HH:MM” i źródło | bieg na VM nie ma bazy strony, telefon nie ma repo (fakt 23.10); bieg niezacommitowany ginie z maszyną (restarty kontenera, 23.10); `loom.yml`/`python.yml` biegną tylko na push do `main` z filtrem ścieżek → push na gałąź dokumentów = 0 min CI (fakt 23.10) | jedno miejsce, gdy VM dostanie dostęp do bazy strony (fakt do zmierzenia) |
 | 2 | **Jedna skrzynka czy dwie** (`spec_inbox` W vs `routine_requests` K vs routing klasą E) | **Jedna skrzynka** `spec_inbox`: każdy jego gest = datowana wypowiedź z polem `class` (statement / approval / correction / marker / routine_request / sample / … — lista otwarta); konsumenci (sekretarz, operator, koordynator) filtrują | dwie skrzynki = dwa stany „czeka”, których on nie rozróżni (W 6.3 #1); dwa odpytywania = dwa prefiksy na kadencję (E) | osobna kolekcja per klasa (indeks), ten sam kształt dokumentu |
-| 3 | **Kto wykonuje `if_silent` po terminie**; operator (K6) = sekretarz? | **Jedno zadanie zaplanowane** (sekretarz = operator v1) z rozszerzonym promptem: wykonuje `if_silent` dla klas o niskim koszcie odwrotu, resztę eskaluje; termin `ask_after` → **zadanie jednorazowe** (`run_once_at`) zamiast czuwania; `ask_after` liczy się od **pierwszego pokazania** (znacznik wizyty), z twardym limitem (preset) | każde odpalenie świeżej sesji płaci prefiks ≈ 39 tys. tokenów (nasze-02); pytanie z 2 w nocy nie może rozstrzygnąć się milczeniem, zanim je zobaczył (E 6.1); „Zatwierdzam” nie wymaga osądu — między dotknięciem a `spec.py approve` nie stoi model (W 6.2 p.6) | kadencja sekretarza jako preset; drugie zadanie, gdy pomiar pokaże, że jedno nie nadąża |
-| 4 | **Podtrzymanie VM** (E „nie podtrzymywać do jego tak/nie” vs K „na czas biegu”) | **Trwałość biegu na VM, nie podtrzymanie**: bieg = rekord `routine_run` w stanie `running` z `where: vm` (agent, bramka, build); tętno i sekretarz **nie** są biegiem; po zgaśnięciu maszyny `vm.wake` (start instancji z chmury) **tylko gdy bieg był `running`** (preset), wznowienie z rekordu; godziny VM na paragonie tego biegu; na bezczynności — nic; próg potwierdzany przez niego: prognoza godzin/dobę > ×10 bazy z rekonesansu. **Addendum 23.10:** `VM_RECON` §2 — gaśnięcie to wywłaszczenie Spot (`preemptible: TRUE`, `automaticRestart: FALSE`), **brak jakiegokolwiek mechanizmu bezczynności**; „podtrzymanie” nic by nie dało. Przesłanka „30 min bezczynności” była jego słowem (R90), datowany fakt ją zastąpił — zmienia się pole `policy` węzła `place`, kształt decyzji nie | R90 dosłownie: „nie wiem czy chodzący Code to blokuje, Zadbaj o te wszystkie rzeczy” — prosił, by biegnąca praca nie ginęła; budzenie pod biegiem, który sam uruchomił, to koszt biegu, nie nowy wydatek poza budżetem; stary preset E wymyślał ograniczenie (domyślnie tracić pracę) | wyłączyć `vm.wake`; Spot → Standard (jego pieniądze, §7) |
+| 3 | **Kto wykonuje `if_silent` po terminie**; operator (K6) = sekretarz? | **Jedno zadanie zaplanowane** (sekretarz = operator v1) z rozszerzonym promptem: wykonuje `if_silent` dla klas o niskim koszcie odwrotu, resztę eskaluje; termin `ask_after` → **zadanie jednorazowe** (`run_once_at`) zamiast czuwania; `ask_after` liczy się od **pierwszego pokazania** (znacznik wizyty), z twardym limitem (preset) | każde odpalenie świeżej sesji płaci prefiks ≈ 39 tys. tokenów (nasze-02); domyślnie (preset) pytanie z 2 w nocy nie rozstrzyga się milczeniem przed pierwszym pokazaniem (E 6.1); „Zatwierdzam” nie wymaga osądu — między dotknięciem a `spec.py approve` nie stoi model (W 6.2 p.6) | kadencja sekretarza jako preset; drugie zadanie, gdy pomiar pokaże, że jedno nie nadąża |
+| 4 | **Podtrzymanie VM** (E „nie podtrzymywać do jego tak/nie” vs K „na czas biegu”) | **Trwałość biegu na VM, nie podtrzymanie**: bieg = rekord `routine_run` w stanie `running` z `where: vm` (agent, bramka, build); tętno i sekretarz **nie** są biegiem; po zgaśnięciu maszyny `vm.wake` (start instancji z chmury) **tylko gdy bieg był `running`** (preset), wznowienie z rekordu; godziny VM na paragonie tego biegu; na bezczynności — nic; próg potwierdzany przez niego: prognoza godzin/dobę > ×10 bazy z rekonesansu. **Addendum 23.10:** `VM_RECON` §2 — gaśnięcie to wywłaszczenie Spot (`preemptible: TRUE`, `automaticRestart: FALSE`), **brak jakiegokolwiek mechanizmu bezczynności**; „podtrzymanie” nic by nie dało. Przesłanka bezczynności była jego słowem: „po pół godzinie bezczynności się zamyka” (R90), datowany fakt ją zastąpił — zmienia się pole `policy` węzła `place`, kształt decyzji nie | R90 dosłownie: „nie wiem czy chodzący Code to blokuje, Zadbaj o te wszystkie rzeczy” — prosił, by biegnąca praca nie ginęła; budzenie pod biegiem, który sam uruchomił, to koszt biegu, nie nowy wydatek poza budżetem; stary preset E wymyślał ograniczenie (domyślnie tracić pracę); **jego polecenie z `VM_RECON` §8** (23.10, cytat za S1-VM): „Ustaw możliwość na życzenie automatycznego awansu ze spot do standard, w przypadku zadań pozostałych do wykonania podczas preemptingu. No i na logikę w miarę szybko żeby z powrotem na spot” — kod `spot_guard` w `tools/gcp/` (niewdrożony, nieprzetestowany na żywo, 23.10) pokrywa się częściowo z `vm.wake` (zakres do ustalenia przy IW-8, bez zmiany tej decyzji) | wyłączyć `vm.wake`; Spot → Standard (jego pieniądze, §7) |
 | 5 | **Model w rutynie** (K „rola w rutynie, tabela osobno” vs E3 „licznik przed startem musi znać model”) | Rutyna niesie **rolę**; tabela rola→model to osobne, datowane dane (R89 §4.2), luz R63 = parametr tej tabeli per model koordynatora; **`start_gate` rozwiązuje rola→model→miejsce PRZED startem i zapisuje wynik w biegu, briefie i na paragonie**; brak modelu w `agent()` = advisory z pokazanym dziedziczonym, nie błąd | cennik ról kalibruje się z tego, co faktycznie biegło — błąd 11:23 (626 tys. tokenów na Fable zamiast presetu roli) to brak tego zapisu; twardy błąd = wymyślone ograniczenie | `start_gate` w trybie „tylko loguj” |
-| 6 | **Paragon dla niego** (E1 przy każdej pozycji vs W przy geście) | **Przy geście + suma dnia** (preset per urządzenie); paragon per pozycja istnieje jako dane, o dotknięcie dalej; „przy każdej pozycji” jako preset do włączenia | SLOWA:66 „nie bierz bezwzględnych liczb za bardzo serio pokazuje tylko orientacyjnie” — liczba przy każdej linii to szum; E1 zostaje kształtem rekordu bez zmian | włączyć preset „przy każdej pozycji”; mierzyć, czy otwiera paragony |
-| 7 | **`attention_plan.json`** (E2 osobny plik vs waluta + próg) | **Nie powstaje**: czas czytania = waluta na paragonie liczona z tego, co WYSYŁAMY (słowa × preset tempa, `reliability: low`), próg = jeden wiersz routingu (E9) z `_history`; licznik „dziś do Ciebie: N słów” zostaje | baza niezmierzona (słów/dobę za 21–23.10 nikt nie policzył) → plik byłby zgadywaniem z własnym cyklem utrzymania; dwa pliki planu = dwie prawdy | osobny plik, gdy pomiar pokaże zależność progu od pory/klasy |
+| 6 | **Paragon dla niego** (E1 przy każdej pozycji vs W przy geście) | **Przy geście + suma dnia** (preset per urządzenie); paragon per pozycja istnieje jako dane, o dotknięcie dalej; „przy każdej pozycji” jako preset do włączenia | hipoteza koordynatora: liczba przy każdej linii kosztuje uwagę (do zmierzenia: czy otwiera paragony); SLOWA:66 („nie bierz bezwzględnych liczb za bardzo serio pokazuje tylko orientacyjne relacje między nimi”) dotyczy jego szacunku postępu M1, nie paragonów — tło, nie dowód; E1 zostaje kształtem rekordu bez zmian | włączyć preset „przy każdej pozycji”; mierzyć, czy otwiera paragony |
+| 7 | **`attention_plan.json`** (E2 osobny plik vs waluta + próg) | **Nie powstaje w v2 (preset; wraca, gdy L1 da bazę)**: czas czytania = waluta na paragonie liczona z tego, co WYSYŁAMY (słowa × preset tempa, `reliability: low`), próg = jeden wiersz routingu (E9) z `_history`; licznik „dziś do Ciebie: N słów” zostaje | baza niezmierzona (obserwacja 23.10: słów/dobę za 21–23.10 nikt nie policzył, luka L1) → plik byłby zgadywaniem z własnym cyklem utrzymania; dwa pliki planu = dwie prawdy | osobny plik, gdy pomiar pokaże zależność progu od pory/klasy |
 | 8 | **Budżet uwagi / „każda linia musi zmieniać licznik” jako filtr** (E2/E9, W teza) | Budżet uwagi i reguła „linia = zmiana licznika” to **licznik i advisory dla koordynatora oraz preset filtru widoku** („nie gadaj tyle” ↔ „gadaj”), nigdy mechanizm, który czegoś nie pokaże; u niego wszystko widoczne, zwinięte wg routingu, wiersz „N zwiniętych — pokaż” | ZASADA WŁAŚCICIELA: filtr wybierający za niego ukrywa; ukrycie kosztuje zaufanie bez odwrotu, zwinięcie 0 | — (filtr to preset, zmiana = jego słowo) |
-| 9 | **Pora / „tryb nocny”** (W8 flaga vs E9 wiersz; wnioskowanie z wizyt) | **Wiersz routingu** klasa × pora × budżet jako dane; jego słowo („idę spać”, „wróciłem” — przykłady) przestawia wartość; wnioskowanie z czasów wizyt może tylko **zaproponować** wiersz (Tak/Nie, `if_silent: bez zmian`), nigdy przestawić | cicha decyzja o tym, co i kiedy widzi, ukrywa; wiersz nie ma „trybu” do wyłączania — odwrót = usunięcie wiersza | usunąć wiersz |
-| 10 | **Zasięg „stop” z telefonu** (W8 pauza z kosztem vs E5 miejsca vs K1 `interrupt` niesprawdzony na VM) | „stop” **adresuje miejsca**: lista tego, co drogie biegnie, per miejsce, z kosztem utopionym z paragonu biegu; preset: pauza wszędzie, odpowiedź jednym dotknięciem per wiersz; kanał do VM = **flaga w repo czytana przez tętno** (opóźnienie = interwał tętna, preset); do czasu E5+K1: dzisiejsze zachowanie + zapis kto/kiedy | 2 przypadkowe dotknięcia jednego dnia (R89 „odruchowo stop nacisnąłem”, R90 „coś przypadkiem nacisnąłem”); `send_message` do sesji VM odmówiony przez platformę 23.10 | preset „stop zawsze natychmiast, wszędzie” |
+| 9 | **Pora / „tryb nocny”** (W8 flaga vs E9 wiersz; wnioskowanie z wizyt) | **Wiersz routingu** klasa × pora × budżet jako dane; jego słowo (np. „mogę iść spać” R75, „wróciłem” — przykłady) przestawia wartość; wnioskowanie z czasów wizyt może tylko **zaproponować** wiersz (Tak/Nie, `if_silent: bez zmian`), nigdy przestawić | cicha decyzja o tym, co i kiedy widzi, ukrywa; wiersz nie ma „trybu” do wyłączania — odwrót = usunięcie wiersza | usunąć wiersz |
+| 10 | **Zasięg „stop” z telefonu** (W8 pauza z kosztem vs E5 miejsca vs K1 `interrupt` niesprawdzony na VM) | „stop” **adresuje miejsca**: lista tego, co drogie biegnie, per miejsce, z kosztem utopionym z paragonu biegu; preset: pauza wszędzie, odpowiedź jednym dotknięciem per wiersz; kanał do VM = **flaga w repo czytana przez tętno** (opóźnienie = interwał tętna, preset; do czasu ponownego sprawdzenia `send_message`); do czasu E5+K1: dzisiejsze zachowanie + zapis kto/kiedy | 2 przypadkowe dotknięcia jednego dnia (R89 „odruchowo stop nacisnąłem”, R90 „coś przypadkiem nacisnąłem”); `send_message` do sesji VM odmówiony przez platformę (obserwacja 23.10; okno ważności: do zmiany uprawnień lub nadania karty zaufania sesji VM, sprawdzić przed IW-8) | preset „stop zawsze natychmiast, wszędzie”; `send_message` do VM po zmianie uprawnień |
 | 11 | **Co jedzie do agenta jako „filozofia”** (K3 całe `CLAUDE.md` vs E10 węzły spec wg tematu) | **Oba, mierzone**: `CLAUDE.md` jako prefiks wspólny (trafienie cache) + `spec:` wg tematu pakietu w części własnej; miara = znaleziska kontroli przed użyciem na pakiet przed/po | `CLAUDE.md` ≈ 39 tys. tokenów = 7,3 % wydatku agentów (nasze-02) — ale `spec:` w 0/21 briefów; decyzja z góry byłaby zgadywaniem | wrócić do samego `CLAUDE.md` |
-| 12 | **Pomiar jego uwagi** (W: wizyty, dotknięcia, czas do gestu; E: tylko to, co wysyłamy) | Preset = **tylko znacznik ostatniej wizyty** (konieczny dla W9 i dla `ask_after` od pokazania), jako węzeł w bazie strony; reszta wyłączona do jego słowa; to, co wysyłamy, mierzymy po swojej stronie | odwrotne domyślne wymagałoby zgody, o którą nie pytamy w nocy; „no telemetry” (CLAUDE.md) | jego słowo włącza więcej (preset `attention_samples`) |
+| 12 | **Pomiar jego uwagi** (W: wizyty, dotknięcia, czas do gestu; E: tylko to, co wysyłamy) | Preset = **tylko znacznik ostatniej wizyty** (konieczny dla W9 i dla `ask_after` od pokazania), jako węzeł w bazie strony; reszta wyłączona do jego słowa; to, co wysyłamy, mierzymy po swojej stronie | pozostałe pomiary są wyłączone jako wartość domyślna (preset), nie jako wymóg zgody; włącza je jego słowo; „no telemetry” (CLAUDE.md) | jego słowo włącza więcej (preset `attention_samples`) |
 | 13 | **Warsztat K9 jako ekran dla niego** (K vs W 6.2 p.4) | Warsztat jest koordynatora/operatora; dla niego biegi = **wiersz liczników** („w toku: 2 biegi · 14 min · ≈ 0,4 pkt” — przykład) + wariant zapytania W5 „co biegnie” → gałąź biegów; **wszystkie rutyny widoczne i uruchamialne przez niego** z kartą `start_gate` przed startem; kolejność na pierwszym ekranie = preset zasiany tym, o co prosił (R71, R90 „odpal”, R62 „podkręć”) | R90 „wyeksponować wszystkie narzędzia”; nic nie jest niedostępne z definicji, kolejność to preset, przeszłość to ziarno, nie zamknięcie (K 6.2) | kolejność alfabetyczna / inna (preset) |
-| 14 | **`confirm: owner` jako pauza biegu** (K `apk.release` vs W3) | Bieg czeka na niego **tylko** w klasach z CLAUDE.md (jego pieniądze poza budżetem, jego dane u nowego dostawcy, ×10) i przy drogim odwrocie; reszta = pytanie W3 z odpowiedzią domyślną, `ask_after`, `if_silent` — decyzja wstępna z odwrotem; predykat klasa × koszt odwrotu to dane | R75 „ostrożnie podejmij wstępną taką żeby się dało z małymi kosztami w razie w wycofać”; R62 „działaj śmiało” | preset „czekaj zawsze” per klasa |
-| 15 | **Operator: kadencja i stan runnera** (K6 co godzinę vs E koszt pustego biegu; K2 runner) | Kadencja = preset związany z pomiarem pustego biegu (P1 `spec_runs`); runner v1 `tools/routine.py` **bez własnego stanu** poza zapisem biegu (bez kolejki, retry, harmonogramu) | 24 prefiksy/dobę za czuwanie co godzinę (E 6.2 p.8); każda cecha runnera = cecha do przeniesienia do jądra drugi raz (P7) | kadencja; runner w jądrze (port `tool_source`) |
-| 16 | **Aplikacja ChatADHD jako konsola** (W10) | Opcja „później” z datowanym kosztem (build + synchronizacja grafu spec z telefonem), zapisana w E9 jako kanał; nie skreślona | R90 „ten nasz Interfejs do komunikacji to przeglądarkowy, nie?”; jedyna maszyna buildu zajęta pakietami M1 (23.10); „absence today is not absence forever” | wstawić do kolejki po P7 |
+| 14 | **`confirm: owner` jako pauza biegu** (K `apk.release` vs W3) | Bieg czeka na niego w klasach z CLAUDE.md (przykłady listy: jego pieniądze poza budżetem, jego dane u nowego dostawcy, sprzeczność z wymaganiem, ×10) oraz — preset do potwierdzenia — przy drogim odwrocie (próg kosztu odwrotu to dane); reszta = pytanie W3 z odpowiedzią domyślną, `ask_after`, `if_silent` — decyzja wstępna z odwrotem; predykat klasa × koszt odwrotu to dane | R75 „ostrożnie podejmij wstępną taką żeby się dało z małymi kosztami w razie w wycofać”; R62 „działaj śmiało” | preset „czekaj zawsze” per klasa |
+| 15 | **Operator: kadencja i stan runnera** (K6 co godzinę vs E koszt pustego biegu; K2 runner) | Kadencja = preset związany z pomiarem pustego biegu (P1 `spec_runs`); runner v1 `tools/routine.py` **bez własnego stanu** poza zapisem biegu (kolejka, retry i harmonogram: w v1 wyłączone jako preset, nie wycięte — wracają jako pakiet, gdy pomiar pokaże potrzebę) | 24 prefiksy/dobę za czuwanie co godzinę (E 6.2 p.8); koszt (hipoteza koordynatora): każda cecha runnera to cecha do przeniesienia do jądra drugi raz (P7) — argument kosztowy, nie zakaz | kadencja; runner w jądrze (port `tool_source`) |
+| 16 | **Aplikacja ChatADHD jako konsola** (W10) | Opcja „później” z datowanym kosztem (build + synchronizacja grafu spec z telefonem), zapisana w E9 jako kanał; nie skreślona | R90 „ten nasz Interfejs do komunikacji to przeglądarkowy, nie?”; obserwacja 23.10: chmura S1 zajęta pakietami M1, a VM zbudowała jądro w ≈ 12 min (`VM_RECON` §7) — stan, nie ograniczenie; „absence today is not absence forever” | wstawić do kolejki po P7 |
 
 ## §2 Model interfejsu (abstrakcje; układ ekranu — preset)
 
-### 2.1 Jedno źródło: zapis biegu (`loom.routine_run/1`), trzech czytelników
+### 2.1 Jedno źródło: zapis biegu (`loom.routine_run/1`), wielu czytelników (przykłady: koordynator, nowa sesja, kontrola, strona)
 
 Środek ciężkości po dyskusji: nie rutyna, lecz **zapis biegu** — jeden rekord pisany przez skrypt (0 tokenów na ścieżce zapisu),
-z którego trzy kąty czytają trzy rzeczy. Pola (lista otwarta, kształt ≈ `loom.action_run/1` z jądra):
+z którego kąty dyskusji (były trzy) czytają różne rzeczy. Pola (lista otwarta, kształt ≈ `loom.action_run/1` z jądra):
 
 | Grupa pól | Przykłady pól | Kto czyta |
 |---|---|---|
@@ -103,7 +103,7 @@ pierwsza instancja (scalić). Lustro w bazie strony pisze sekretarz. Zasada ekon
 | koordynator | czyta zapisy biegów i eskalacje, pisze briefy jako rekordy, podejmuje `judgement`; nie pisze linii statusu | Fable (ustawił on) | — |
 | wykonawca pakietu | dostaje brief = prefiks wspólny (pakiet kontekstu, hash) + część własna; cytuje `spec:<id>`; pisze kartę do `routine_run` | Sonnet (preset roli) | 0 (karta = plik) |
 | kontroler przed użyciem | emituje **dane** (decyzje, przykłady, dodatki, pomiary, znaleziska), nie prozę (W6) | Haiku (14–17 wywołań, nasze-24) | 0 |
-| `start_gate` | krok bez osądu: rola→model→miejsce, estymata, okno, dysk/żywotność miejsca, co przekroczy → start / advisory / „czeka na Ciebie” (tylko klasy CLAUDE.md) | skrypt (0 tokenów) albo operator | 0 |
+| `start_gate` | krok bez osądu: rola→model→miejsce, estymata, okno, dysk/żywotność miejsca, co przekroczy → start / advisory / „czeka na Ciebie” (klasy z CLAUDE.md; przykłady listy) | skrypt (0 tokenów) albo operator | 0 |
 
 ### 2.4 Rutyny, makra, szablony jako dane z wersją i zapisem biegu
 
@@ -116,12 +116,11 @@ pierwsza instancja (scalić). Lustro w bazie strony pisze sekretarz. Zasada ekon
   odwołań z hashem (`CLAUDE.md`, `spec:R58 R59 R60 R83 R84` przez `spec.py cite --full`, `principles.json`, dokument obszaru po nagłówku,
   wpisy INDEX po kluczu, schemat karty — przykład zestawu). Inne rutyny (przykłady, dopełniane tym, co już jest w `tools/workflows/`):
   `check.before_use`, `gate.full`, `ci.read`, `ff.main`, `smoke.read`, `apk.release`, `pace.check`→`start_gate`, `ledger.sample`,
-  `secretary.run`, `addendum.apply`, `teleport.refresh`, `tasks.recreate`, `vm.keepalive`, `vm.recon`, `status.lines`.
-- **Szablon briefu** `loom.brief/1` + `brief.render` → prompt z częścią wspólną **bajt w bajt** (hash w zapisie biegu — jedyny tani dowód
-  trafienia cache) i częścią własną na końcu; `spec.py cite` jako krok walidacji; brief w repo przed startem (praktyka `briefs/README.md`).
-- **Makra = słowa sterujące**: jedna tabela `words.json` zasiana jego słownikiem z cytatów („stop” R89, „wolna ręka” R89, „rób to co
-  wiesz” R75, „podkręć” R62, „nie gadaj tyle” CLAUDE.md, „odpal” R90, „idę spać” R75, „co pamiętasz” R73 — przykłady, on dopisuje
-  jednym zdaniem, warianty ASR), **dwa rendery**: telefon (gesty W8) i warsztat (przyciski/makra K9). Rekord gestu niesie skutek, koszt,
+  `secretary.run`, `addendum.apply`, `teleport.refresh`, `tasks.recreate`, `vm.heartbeat` (zamiast odrzuconego podtrzymania, wiersz 4), `vm.recon`, `status.lines`.
+- **Szablon briefu** `loom.brief/1` + `brief.render` → prompt z częścią wspólną **bajt w bajt** (hash w zapisie biegu — tani dowód identycznego prefiksu; trafienie cache mierzy `cache_read`, luka L5) i częścią własną na końcu; `spec.py cite` jako krok walidacji; brief w repo przed startem (praktyka `briefs/README.md`).
+- **Makra = słowa sterujące**: jedna tabela `words.json` zasiana jego słownikiem z cytatów („stop” R89, „tutaj masz wolną rękę” R89, „rób to co
+  wiesz” R75, „podkręć” R62, „nie gadaj tyle” CLAUDE.md, „odpal” R90, „mogę iść spać” R75, „co pamiętasz” R73 — przykłady, on dopisuje
+  jednym zdaniem, warianty ASR), **rendery** (przykłady: telefon — gesty W8; warsztat — przyciski/makra K9). Rekord gestu niesie skutek, koszt,
   odwrót, datę; każde użycie zapisane z pochodzeniem; potwierdzenie tylko, gdy koszt przekracza próg (preset).
 
 ### 2.5 Narzędzia wyeksponowane (K1 + R90 „wyeksponować wszystkie narzędzia”)
@@ -132,7 +131,7 @@ nie było sprawdzone na VM”, 23.10). Dla niego: wszystko widoczne i uruchamial
 konfliktu 14); kolejność — preset zasiany jego prośbami; reszta o dotknięcie dalej. Efekty nieznane = najgorszy przypadek (preset, jak
 `tool_sources.h`).
 
-### 2.6 Kanały i dwie waluty (uzupełnienie E9/E1)
+### 2.6 Kanały i waluty (uzupełnienie E9/E1)
 
 | Kanał (przykład) | Niesie | Koszt tokenów | Koszt jego czasu | Stan 23.10 |
 |---|---|---|---|---|
@@ -144,7 +143,7 @@ konfliktu 14); kolejność — preset zasiany jego prośbami; reszta o dotknięc
 | aplikacja ChatADHD | te same perspektywy z grafu | 0 | niski | opcja „później” (konflikt 16) |
 
 Routing klasa × pora × budżet → kanał i forma, jako wiersze danych z `_history`; każda wiadomość poza presetem ma na paragonie powód.
-**Dwie waluty** (punkty konta, jego czas) to przykłady z otwartej listy `receipt[]`; jego czas liczony po naszej stronie (słowa wysłane),
+**Waluty** (przykłady z otwartej listy `receipt[]`: punkty konta, jego czas, godziny VM, GB, …); jego czas liczony po naszej stronie (słowa wysłane),
 nigdy jako filtr. Koszt pokazywany **przy geście** i jako suma dnia (konflikt 6). Próbka okna (`rate_limit_event`, jego „46 %” jako
 `source: owner` rozpoznane przez sekretarza i potwierdzone jednym dotknięciem, `if_silent: przyjmij`) to księga dnia, łączona po czasie,
 nie przypisywana do biegu.
@@ -154,7 +153,7 @@ nie przypisywana do biegu.
 | Miejsce (przykład) | Waluta miejsca | Co tam biegnie (preset) | Kanał „stop” | Stan 23.10 |
 |---|---|---|---|---|
 | chmura S1 (`session_015y…`) | punkty konta; kontener (dysk ~95 % = restart) | koordynator, pakiety, bramki, zadania zaplanowane (sekretarz), `watch_url` | `interrupt` / `send_message` | działa |
-| S1-VM `devbox-20260923` (GCP, e2) | godziny × stawka (jego pieniądze), dysk; polityka: **Spot/preemptible** — Google zatrzymuje w dowolnej chwili, bez auto-restartu; brak mechanizmu bezczynności (fakt 23.10, `VM_RECON` §2) | administracja, tętno, `vm.wake`, build/bramka na zlecenie bez tokenów | flaga w repo czytana przez tętno | Claude Code v2.1.309, Opus 5.5 (zrzut 17:3x), sesja `rc` w tmux od 18:20; rekonesans zad. 1–2 zrobiony, build dev w toku 18:52; brak `/dev/kvm` i `npm`; publicznie tylko port 22; `send_message` z chmury odmówiony |
+| S1-VM `devbox-20260923` (GCP, e2) | godziny × stawka (jego pieniądze), dysk; polityka: **Spot/preemptible** — Google zatrzymuje w dowolnej chwili, bez auto-restartu; brak mechanizmu bezczynności (fakt 23.10, `VM_RECON` §2) | administracja, tętno, `vm.wake`, build/bramka na zlecenie bez tokenów | flaga w repo czytana przez tętno | Claude Code v2.1.309, Opus 5.5 (zrzut 17:3x), sesja `rc` w tmux od 18:20; rekonesans zad. 1–2 zrobiony; build dev zakończony (zimny ≈ 12 min, ctest 242/242 po py3.11, `VM_RECON` §7); `npm` doinstalowany 23.10 (`VM_RECON` §7), `/dev/kvm` nadal brak (`VM_RECON` §3); publicznie tylko port 22; `send_message` z chmury odmówiony (obserwacja 23.10, por. konflikt 10) |
 | S2 (`session_01Armc…`) | punkty konta | smoke na emulatorze (GitHub Actions) | `send_message` | działa od 13.10 |
 | zadanie „Sekretarz spec” | prefiks per odpalenie (≈ 39 tys. tokenów) | skrzynka, lustro, `if_silent`, `start_gate` | wyłączenie zadania | działa (co godzinę o :23) |
 | strona-artefakt + baza | 0 tokenów | jego gesty, liczniki, render | — | działa |
@@ -165,10 +164,10 @@ Reguły (presety): praca bez tokenów idzie do miejsca bez tokenów (E6), krok m
 konfliktu 4; „stop” adresuje miejsca (konflikt 10); mapa miejsc = jeden wiersz liczników dla niego („miejsca: 3 żyją · 1 śpi ·
 2 nie postawiono” — przykład), rozwijalny.
 
-### 2.8 Teleport i powrót: jeden `handover`, cztery rendery
+### 2.8 Teleport i powrót: jeden `handover`, wiele renderów (cztery niżej to przykłady)
 
 Karta teleportu (sesja → sesja), karta pakietu (agent → koordynator), rekord sekretarza (bieg → koordynator) i **„Od Twojego
-wyjścia”** (nocna zmiana → on) to cztery rendery jednego rekordu z zapisów biegów + głowy kolejki + spec `proposed` + mapy miejsc,
+wyjścia”** (nocna zmiana → on) to przykłady renderów jednego rekordu (lista otwarta) z zapisów biegów + głowy kolejki + spec `proposed` + mapy miejsc,
 z własnym paragonem (koszt odbudowy kontekstu 0,2–0,46 mln tokenów na żywy kontekst — pomiar z CLAUDE.md; praca, która przepadnie)
 i warunkiem „tylko między pakietami” jako predykatem.
 
@@ -180,7 +179,7 @@ on: dotknięcie / tekst / głos / słowo sterujące  →  spec_inbox {class, tex
     operator_ok → start_gate → bieg; statement → węzeł raw + warstwa odczytu (tytuł, continues/corrects/exemplifies)
   → bieg pisze routine_run (events z counter_delta, receipt, decisions)  →  sekretarz lustruje → baza strony
   → strona renderuje liczniki / kolejkę / „Od Twojego wyjścia” / gałąź „co pamiętasz”      (0 tokenów)
-  → koordynator czyta zapisy i eskalacje klas: pieniądze · jego dane · ×10 · drogi odwrót · sprzeczność z filozofią
+  → koordynator czyta zapisy i eskalacje klas (przykłady): pieniądze · jego dane · ×10 · drogi odwrót · sprzeczność z filozofią
 ```
 
 ## §3 Co przestaje istnieć w dzisiejszym przepływie
@@ -197,10 +196,10 @@ on: dotknięcie / tekst / głos / słowo sterujące  →  spec_inbox {class, tex
 | Preflight w głowie koordynatora | 11:23: etap na Fable zamiast presetu roli, 626 tys. tokenów | `start_gate` z zapisem rozwiązanego modelu (IW-6) |
 | Dwie ręczne tabele: narzędzia per maszyna (TELEPORT §5), zadania do odtworzenia | „Nic z tego nie było sprawdzone na VM”; „zadania NIE jadą same” (23.10) | katalog narzędzi + `place.tools[]` + `tasks.recreate` (IW-2, IW-8) |
 | Karta teleportu pisana ręcznie | `TELEPORT_S1.md` 62 linie ręcznie 08:0x; `VM_START_PROMPT` druga ręczna instancja | render `handover` (IW-11) |
-| „Tryb nocny” jako flaga; `attention_plan.json` | nie powstały — i nie powstaną (konflikty 7, 9) | wiersz routingu + waluta czasu |
+| „Tryb nocny” jako flaga; `attention_plan.json` | nie powstały (23.10); nie powstają w v2 (preset), wracają, gdy L1 da bazę lub pomiar pokaże potrzebę (konflikty 7, 9) | wiersz routingu + waluta czasu |
 | Pełny log czytany przez agenta | 1,5 mln tokenów/agent (S2, 21.10) | wycinek (R89 P9 — bez zmian, poza tym dokumentem) |
 
-## §4 Pakiety (≈ 50 wywołań każdy — preset; kolejność — preset; akceptacja + pomiar „po”)
+## §4 Pakiety (≈ 50 wywołań każdy — preset; kolejność — preset; akceptacja + pomiar „po” — progi i liczby w kolumnach to presety/przykłady)
 
 | # | Pakiet | Zakres (przykłady wartości) | Akceptacja | Pomiar „po” | Kto | Scala |
 |---|---|---|---|---|---|---|
@@ -208,25 +207,24 @@ on: dotknięcie / tekst / głos / słowo sterujące  →  spec_inbox {class, tex
 | IW-2 | Katalog narzędzi + pakiet kontekstu + `spec:` w briefie | `tools/routines/tools.json` (ziarno TELEPORT §5 + narzędzia repo, dostępność per miejsce z datą); `context_packs.json` (`podwykonawca`, `kontroler`, `sesja`); `tools/context_pack.py` → prefiks z hashem; `single-package.js` przyjmuje `context_pack` i `spec[]`, waliduje `spec.py cite` (advisory) | następny brief ma `spec:` ≥ 1 i hash prefiksu w karcie; diff prefiksu dwóch briefów = 0 | `spec:` 0/21 → 1/1; `cache_creation` na bieg vs rozmiar prefiksu (baza 7,3 %); znaleziska kontroli przed/po | Sonnet | K1, K3, P3, P4 |
 | IW-3 | Pytanie w pełnym kształcie + jedna skrzynka z klasą + `if_silent` bez czuwania | `spec.py propose/correct --ask-after --criteria`; `spec_html.py` renderuje kryteria i czas od `first_shown`; `spec_inbox.class` (otwarte) z `verdict`; prompt sekretarza: wykonuje `if_silent` niskiego kosztu, eskaluje resztę, zakłada `run_once_at` na `ask_after`; twardy limit (preset) | jedno pytanie rozstrzygnięte milczeniem z rekordem decyzji i odwrotem; „Zatwierdzam” → `approve` bez modelu; test e2e 400 px | pytań/dobę; udział rozstrzygniętych milczeniem; odwrotów po milczeniu (cel: rzadkie) | Sonnet | W3, K6 (część), konflikty 2, 3 |
 | IW-4 | Liczniki W1 + „Od Twojego wyjścia” + mapa miejsc v1 | `spec_html.py`: sekcja liczników z `runs.jsonl` + `spec_inbox` + `docs/ops/places.json` (statyczna tabela miejsc i usług z datą); znacznik ostatniej wizyty jako węzeł bazy strony (preset: tylko on); render W9 po progu (przykład > 6 h); „N zwiniętych — pokaż”; „dziś do Ciebie: N słów” | liczniki zgodne z rekordami (test); W9 renderuje się po symulowanej przerwie; brak liczby liczonej przez model | dotknięć do pierwszej decyzji; pierwsza wiadomość po powrocie: pytanie o stan czy decyzja; słowa/dobę do niego (baza 21–23.10 do policzenia) | Sonnet | W1, W9, E4, E5 (v1), E2 (licznik) |
-| IW-5 | Słowa sterujące i gesty jako jedna tabela | `tools/routines/words.json` zasiane cytatami (2.4), rekord gestu `{gesture, patterns, effect, cost, reversal, since, render}`; sekretarz rozpoznaje słowa w `statement` (warianty ASR) i stosuje bez modelu, gdy skutek ma koszt < próg; węzeł `mandate`; „stop” → zapis kto/kiedy + lista biegów `running` z paragonu | „to przykład” i „wolna ręka” ze strony dają rekordy bez modelu; „stop” przy biegu pokazuje koszt z `receipt[]`; test tabeli słów | trafienia/chybienia; przypadkowe „stop” bez straty (cel 100 %); mandatów i odwrotów na tydzień | Sonnet | W8, K9 (makra), W4 (część) |
+| IW-5 | Słowa sterujące i gesty jako jedna tabela | `tools/routines/words.json` zasiane cytatami (2.4), rekord gestu `{gesture, patterns, effect, cost, reversal, since, render}`; sekretarz rozpoznaje słowa w `statement` (warianty ASR) i stosuje bez modelu, gdy skutek ma koszt < próg; węzeł `mandate`; „stop” → zapis kto/kiedy + lista biegów `running` z paragonu | „to przykład” i „wolna ręka” ze strony dają rekordy bez modelu; „stop” przy biegu pokazuje koszt z `receipt[]`; test tabeli słów | trafienia/chybienia; przypadkowe „stop” bez straty (cel — preset, np. 100 %); mandatów i odwrotów na tydzień | Sonnet | W8, K9 (makra), W4 (część) |
 | IW-6 | `start_gate` + tabela rola→model datowana | `tools/start_gate.py` (uogólnia `pace.py`): rola→model→miejsce, estymata z `cost_per_package`, okno i `caps` per model z `pace_plan.json` (R91: Fable do 100 %, reszta do 90 % — jego słowa, preset), dysk/żywotność miejsca, co przekroczy → karta JSON; `single-package.js` wywołuje przed `agent()`; brak `model` = advisory z dziedziczonym; wynik do `routine_run.resolved` i do briefu; `roles.json` z `_history` i luzem R63 | 3 starty z kartami; test przypadku advisory; `--log-only` | etapy na innym modelu niż preset roli (baza: 1 workflow, 626 tys.); `calls_used/plan_calls` (baza 2–5×) | Sonnet | E3, E8 (funkcja okna), konflikt 5 |
 | IW-7 | Rutyny jako dane + runner v1 + brief jako rekord | `loom.routine/1`, `loom.brief/1`, `brief.render` (prefiks bajt w bajt); `tools/routine.py` renderuje i zapisuje bieg, bez stanu własnego; pierwsze rutyny: `package.run`, `check.before_use`, `secretary.run`, `status.lines`; wersjonowanie z `_history` | jeden pakiet przeprowadzony runnerem end-to-end z rekordem; brief K2c-1 rozłożony na pakiet kontekstu + część własną ≈ 2 tys. znaków (przykład) | udział biegów przez rutynę vs ad hoc; długość części własnej; `cache_creation` | Sonnet (1–2 pakiety) | K2, K4, K8, E10 |
-| IW-8 | **VM jako miejsce w danych + trwałość biegu** (rekonesans zad. 1–2 **już zrobiony prozą**: `VM_RECON_2026-10-23.md`) | `places.json` z rekonesansu (polityka Spot, usługi i ich stan, narzędzia z datą, braki: `/dev/kvm`, `npm`); tętno (`systemd --user` timer) pisze rekord do repo; `vm.wake` z chmury (`gcloud compute instances start`) gdy bieg `running where: vm` i tętno ustało (preset); flaga „stop” w repo; `claude-rc.service` po jego dotknięciu (`VM_RECON` §6); prompt-wprowadzenie z R90 jako instancja pakietu kontekstu `sesja`; narzędzia sesji sprawdzone na VM → `tools[]` | węzeł `place` VM z datowanymi polami; 24 h tętna w repo; jedno wywłaszczenie przeżyte: bieg wznowiony z rekordu; nic nie usunięte bez rekordu | baza godzin VM/dobę (→ próg ×10); wywłaszczeń/dobę; czas od wywłaszczenia do wznowienia; wolne GB | sesja S1-VM (model wg jego ustawienia, 23.10: Opus 5.5) + Sonnet (chmura: `vm.wake`) | E5, E6, K 6.3 #2, R90 (1)(2)(4)(5), `VM_RECON` |
+| IW-8 | **VM jako miejsce w danych + trwałość biegu** (rekonesans zad. 1–2 **już zrobiony prozą**: `VM_RECON_2026-10-23.md`) | `places.json` z rekonesansu (polityka Spot, usługi i ich stan, narzędzia z datą, braki: `/dev/kvm`; `npm` doinstalowany 23.10, `VM_RECON` §7); tętno (`systemd --user` timer) pisze rekord do repo; `vm.wake` z chmury (`gcloud compute instances start`) gdy bieg `running where: vm` i tętno ustało (preset); flaga „stop” w repo; `claude-rc.service` po jego dotknięciu (`VM_RECON` §6); prompt-wprowadzenie z R90 jako instancja pakietu kontekstu `sesja`; narzędzia sesji sprawdzone na VM → `tools[]` | węzeł `place` VM z datowanymi polami; 24 h tętna w repo; jedno wywłaszczenie przeżyte: bieg wznowiony z rekordu; nic nie usunięte bez rekordu | baza godzin VM/dobę (→ próg ×10); wywłaszczeń/dobę; czas od wywłaszczenia do wznowienia; wolne GB | sesja S1-VM (model: ustawienie sesji, 23.10: Opus 5.5, §2.7) + Sonnet (chmura: `vm.wake`) | E5, E6, K 6.3 #2, R90 (1)(2)(4)(5), `VM_RECON` |
 | IW-9 | Kontrola emituje dane; znacznik → addendum | `check-before-use.js` wypisuje JSON (decyzje, przykłady, dodatki, pomiary, znaleziska) obok dokumentu; strona renderuje dokument jako diff decyzji (W6), pełny tekst o dotknięcie dalej; `addendum.apply` czyta znaczniki `class=marker` ze skrzynki jako znaleziska; agent w biegu nie restartowany | jeden dokument projektowy w renderze diffu; jeden znacznik → rekord addendum | czy otwiera pełny tekst; znaczników na dokument; czas znacznik → addendum; powroty tej samej klasy błędu | Haiku (kontrola) + Sonnet (skrypt) | W4, W6, K 6.1 |
 | IW-10 | Operator = rozszerzony mandat sekretarza | rutyny `operator_ok` w zadaniu zaplanowanym: `start_gate`, `ci.read`, `ledger.sample`, `status.lines`, `teleport.refresh`, `tasks.recreate`; `judgement` → propozycja do koordynatora (nic nie wykonane); kadencja z `_history` związana z pomiarem pustego biegu | 5 biegów operatora bez błędu; 1 eskalacja z powodem | tury koordynatora na pakiet przed/po (baza ≈ 20 × 0,28 mln); koszt pustego biegu z `spec_runs` | Sonnet; koordynator tylko czyta kartę | K6, P1 |
-| IW-11 | `handover` — jeden rekord, cztery rendery | `tools/handover.py` z `runs.jsonl` + głowa QUEUE + spec `proposed` + `places.json` → teleport / karta pakietu / rekord sekretarza / „Od Twojego wyjścia”; paragon teleportu; `supersedes` | `TELEPORT_S1.md` wygenerowany równoważny ręcznemu; W9 z tego samego skryptu | minuty do pierwszej produktywnej komendy po teleportach; pytań nowej sesji do starej/do niego | Sonnet | E7, W9, K 6.1 |
+| IW-11 | `handover` — jeden rekord, rendery (np. cztery) | `tools/handover.py` z `runs.jsonl` + głowa QUEUE + spec `proposed` + `places.json` → teleport / karta pakietu / rekord sekretarza / „Od Twojego wyjścia”; paragon teleportu; `supersedes` | `TELEPORT_S1.md` wygenerowany równoważny ręcznemu; W9 z tego samego skryptu | minuty do pierwszej produktywnej komendy po teleportach; pytań nowej sesji do starej/do niego | Sonnet | E7, W9, K 6.1 |
 
 **Pierwszy = IW-1 (zapis biegu), dlaczego:** to najtańszy krok po R88 v1 i P2 — jeden skrypt i jeden schemat, zero jądra, zero
-buildu (jedyna maszyna buildu jest zajęta M1, 23.10), sekretarz już biegnie i już pisze `spec_runs` (P1), więc IW-1 tylko uogólnia
+buildu (obserwacja 23.10: chmura S1 zajęta pakietami M1; build na VM zimny ≈ 12 min, `VM_RECON` §7), sekretarz już biegnie i już pisze `spec_runs` (P1), więc IW-1 tylko uogólnia
 istniejący zapis. Jest też **warunkiem** reszty: bez niego liczniki W1/W9 liczyłyby się z prozy QUEUE, paragony E1 nie miałyby domu,
 `handover` nie miałby źródła, a pierwszy pomiar oszczędności (linie QUEUE ręczne vs generowane) jest widoczny po 48 h. K1+K3
 (IW-2), które kąt koordynatora stawiał pierwsze, mierzy się dopiero na NASTĘPNYM pakiecie — więc idzie drugie, równolegle, gdy
 tempo pozwala (`tools/pace.py`). Kolejność dalej: IW-3 → IW-4 (one dają jemu ekran) → IW-5, IW-6 → IW-7 → IW-9, IW-10, IW-11.
 IW-8 biegnie **niezależnie** w sesji S1-VM (ruszyła 23.10 18:20 i zapisała rekonesans); kanał chmura → VM nadal bez `send_message`
-(karta zaufania odmawiana, 23.10), więc zlecenia idą przez repo; do czasu `places.json` `where: vm` zostaje presetem `cloud`. Z R89 bez zmian: P6, P7 (spec jako węzły grafu — IW-7/IW-2 są jego danymi wejściowymi),
+(karta zaufania odmawiana — obserwacja 23.10, do ponownego sprawdzenia po nadaniu karty), więc zlecenia idą przez repo (preset); do czasu `places.json` `where: vm` zostaje presetem `cloud`. Z R89 bez zmian: P6, P7 (spec jako węzły grafu — IW-7/IW-2 są jego danymi wejściowymi),
 P8 (routing korekt złożonych — nie dotyka jego dotknięć), P9, P10, P11. Pakiet bez pomiaru „po” dostaje advisory w karcie, nie
-blokadę. **9 z 11 pakietów może wykonać Sonnet/Haiku bez koordynatora** (koordynator czyta karty); IW-8 — sesja VM; Fable tylko
-przy sprzeczności z filozofią zgłoszonej przez kontrolę.
+blokadę. **10 z 11 pakietów może wykonać Sonnet/Haiku bez koordynatora** (liczone z tabeli; koordynator czyta karty); IW-8 — sesja VM + Sonnet; Fable według routingu modeli (preset w `roles.json`, np. wiersz: sprzeczność z filozofią zgłoszona przez kontrolę).
 
 ## §5 Decyzje z odwrotem (koordynator, 2026-10-23; każda to preset)
 
@@ -235,20 +233,20 @@ przy sprzeczności z filozofią zgłoszonej przez kontrolę.
 | Zapis biegu jest jednym źródłem; liczniki, paragony i karty przekazania to rendery | trzy kąty czytają trzy rzeczy z tego samego rekordu; 37/60 commitów to księgowość, której nikt nie czyta jako danych | proza QUEUE jak dziś (render może ją nadal produkować) |
 | Ścieżki zapisu bez tokenów; model tylko jako warstwa odczytu z paragonem | jego gest i jego cytat są nietykalne; każda tura modelu na ścieżce zapisu to koszt i ryzyko interpretacji | model na ścieżce zapisu jako jawna opcja z paragonem |
 | Kierunek decyduje o magazynie: gesty → baza strony, biegi → repo; sekretarz lustruje | konflikt 1; każde miejsce pisze za 0 tam, gdzie dociera | jedno miejsce po pomiarze dostępności |
-| Jedna skrzynka z `class`; jedna tabela słów z dwoma renderami | dwa stany „czeka” i dwie tabele słów = dwa źródła błędów | rozdzielenie kolekcji/tabel po pomiarze |
-| `ask_after` od pierwszego pokazania; `if_silent` przez `run_once_at` | pytanie nie może rozstrzygnąć się, zanim je zobaczył; 0 pollingu | kadencja sekretarza |
-| Trwałość biegu na VM: `vm.wake` po wywłaszczeniu tylko gdy bieg `running where: vm`; na bezczynności nic; tętno i sekretarz nie są biegiem | konflikt 4; R90 „Zadbaj”; `VM_RECON` 23.10: gaśnięcie = Spot, brak mechanizmu bezczynności | wyłączyć `vm.wake`; Spot → Standard po jego tak (§7) |
+| Jedna skrzynka z `class`; jedna tabela słów z renderami (przykłady: telefon, warsztat) | dwa stany „czeka” i dwie tabele słów = dwa źródła błędów | rozdzielenie kolekcji/tabel po pomiarze |
+| `ask_after` od pierwszego pokazania; `if_silent` przez `run_once_at` | domyślnie (preset) pytanie nie rozstrzyga się przed pierwszym pokazaniem; 0 pollingu | kadencja sekretarza |
+| Trwałość biegu na VM: `vm.wake` po wywłaszczeniu tylko gdy bieg `running where: vm`; na bezczynności nic; tętno i sekretarz nie są biegiem | konflikt 4; R90 „Zadbaj”; `VM_RECON` 23.10: gaśnięcie = Spot, brak mechanizmu bezczynności; jego polecenie z `VM_RECON` §8 (awans na życzenie, `spot_guard`) | wyłączyć `vm.wake`; Spot → Standard po jego tak (§7) |
 | Rola w rutynie, tabela rola→model osobno; `start_gate` zapisuje rozwiązany model; brak modelu = advisory | kalibracja cennika z tego, co biegło; twardy błąd = ograniczenie | `--log-only` |
-| Koszt przy geście + suma dnia; paragon per pozycja o dotknięcie dalej | SLOWA:66; szum vs decyzja | preset „przy każdej pozycji” |
+| Koszt przy geście + suma dnia; paragon per pozycja o dotknięcie dalej | hipoteza koordynatora (SLOWA:66 dotyczy jego szacunku, nie paragonów); koszt uwagi vs decyzja — do zmierzenia | preset „przy każdej pozycji” |
 | Nic nie jest filtrem tego, co widzi: wszystko widoczne, zwinięte, „N zwiniętych — pokaż”; budżet uwagi = licznik + advisory | ZASADA WŁAŚCICIELA; ukrycie bez odwrotu | — |
 | Pora i uwaga jako wiersze routingu przestawiane jego słowem; wnioskowanie tylko proponuje | cicha decyzja ukrywa | usunąć wiersz |
-| „stop” adresuje miejsca; kanał do VM = flaga w repo czytana przez tętno | 2 przypadkowe dotknięcia 23.10; `send_message` do VM odmówiony | „stop natychmiast wszędzie” |
-| Pomiar jego zachowania = tylko znacznik ostatniej wizyty; to, co wysyłamy, mierzymy sami | zgoda, o którą nie pytamy w nocy | jego słowo włącza więcej |
+| „stop” adresuje miejsca; kanał do VM = flaga w repo czytana przez tętno | 2 przypadkowe dotknięcia 23.10; `send_message` do VM odmówiony (obserwacja 23.10, do ponownego sprawdzenia) | „stop natychmiast wszędzie” |
+| Pomiar jego zachowania = tylko znacznik ostatniej wizyty; to, co wysyłamy, mierzymy sami | wartość domyślna (preset), nie wymóg zgody | jego słowo włącza więcej |
 | Wszystkie rutyny i narzędzia widoczne i uruchamialne przez niego z kartą `start_gate`; kolejność = preset zasiany jego prośbami | R90 „wyeksponować wszystkie narzędzia”; nic niedostępne z definicji | inna kolejność |
-| Bieg czeka na niego tylko w klasach CLAUDE.md i przy drogim odwrocie; reszta = decyzja wstępna W3 | R75, R62 | „czekaj zawsze” per klasa |
-| Runner v1 bez stanu własnego; dom rutyn `tools/routines/` w repo; jądro przez import P7 | KOD ≠ DANE; każda cecha runnera to cecha do przeniesienia drugi raz; maszyna buildu zajęta | od razu w jądrze |
+| Bieg czeka na niego w klasach z CLAUDE.md (pieniądze poza budżetem, dane u nowego dostawcy, sprzeczność z wymaganiem, ×10 — przykłady listy) i, jako preset do potwierdzenia, przy drogim odwrocie; reszta = decyzja wstępna W3 | R75, R62 | „czekaj zawsze” per klasa |
+| Runner v1 bez stanu własnego; dom rutyn `tools/routines/` w repo; jądro przez import P7 | KOD ≠ DANE; koszt (hipoteza): każda cecha runnera to cecha do przeniesienia drugi raz; obserwacja 23.10: chmura S1 zajęta M1, VM buduje jądro w ≈ 12 min (`VM_RECON` §7); kolejka/retry/harmonogram wyłączone jako preset, nie wycięte | od razu w jądrze |
 | `CLAUDE.md` jako prefiks wspólny + `spec:` wg tematu; mierzone na następnym pakiecie | konflikt 11; decyzja z góry = zgadywanie | samo `CLAUDE.md` |
-| Aplikacja jako konsola (W10) = opcja „później” z datowanym kosztem w E9 | R90 „przeglądarkowy, nie?”; build zajęty | wstawić po P7 |
+| Aplikacja jako konsola (W10) = opcja „później” z datowanym kosztem w E9 | R90 „przeglądarkowy, nie?”; obserwacja 23.10: chmura S1 zajęta M1, VM zbuduje jądro w ≈ 12 min (`VM_RECON` §7) — stan, nie zakaz | wstawić po P7 |
 | Pierwszy pakiet IW-1; IW-8 niezależnie w sesji VM | §4 | kolejność w `QUEUE_S1.md` |
 
 ## §6 Oryginalne pomysły z trzech kątów i dyskusji (każdy z tanim eksperymentem i miarą)
@@ -256,16 +254,16 @@ przy sprzeczności z filozofią zgłoszonej przez kontrolę.
 | # | Pomysł | Skąd | Tani eksperyment | Miara |
 |---|---|---|---|---|
 | 1 | **Linia statusu = render zdarzenia z `counter_delta`**: koordynator nie pisze linii, bieg je pisze, a jego lista z 00:1x to schemat zdarzeń, nie prośba o styl | K7 + W1/W7 (dyskusja) | IW-1: 48 h, generowane obok ręcznych | ręczne/generowane; linie bez zmiany licznika (cel 0 — preset filtru) |
-| 2 | **Jeden `handover`, cztery rendery** — „Od Twojego wyjścia” jest przekazaniem zmiany od nocnej zmiany do niego | E7 + W9 (powstało w dyskusji) | IW-11: `TELEPORT_S1.md` wygenerowany z danych | pytań nowej sesji; jego pierwsza wiadomość po powrocie |
+| 2 | **Jeden `handover`, wiele renderów (np. cztery)** — „Od Twojego wyjścia” jest przekazaniem zmiany od nocnej zmiany do niego | E7 + W9 (powstało w dyskusji) | IW-11: `TELEPORT_S1.md` wygenerowany z danych | pytań nowej sesji; jego pierwsza wiadomość po powrocie |
 | 3 | **„stop” adresuje miejsca** i pokazuje koszt utopiony z paragonu biegu; odpowiedź jednym dotknięciem per wiersz | W8 + E5 + K1 (dyskusja) | IW-5: „stop” przy biegu testowym | przypadkowe „stop” bez straty |
 | 4 | **Gest = ten sam kształt co warunek wstępny** `{…, why/effect, cost, reversal, since}`: polityka z pokazanym skutkiem zamiast wiedzy plemiennej | W (6.1, z K5) | IW-5: `words.json` + `places.json` w jednym schemacie | ile reguł CLAUDE.md da się zapisać tym kształtem (preset: zliczyć) |
-| 5 | **Jedna tabela słów zasiana jego słownikiem z cytatów**, dwa rendery (telefon, warsztat) | W (6.1, z K9) | IW-5: 8 słów z R-id, test wariantów ASR | trafienia/chybienia; słowa dopisane przez niego |
-| 6 | **`ask_after` od pierwszego pokazania + `run_once_at`** — pytanie nie rozstrzyga się, zanim je zobaczył; 0 pollingu | E (6.1) | IW-3: jedno pytanie z terminem | rozstrzygnięć milczeniem przed zobaczeniem (cel 0) |
+| 5 | **Jedna tabela słów zasiana jego słownikiem z cytatów**, rendery (przykłady: telefon, warsztat) | W (6.1, z K9) | IW-5: 8 słów z R-id, test wariantów ASR | trafienia/chybienia; słowa dopisane przez niego |
+| 6 | **`ask_after` od pierwszego pokazania + `run_once_at`** — domyślnie (preset) pytanie nie rozstrzyga się przed pierwszym pokazaniem; 0 pollingu | E (6.1) | IW-3: jedno pytanie z terminem | rozstrzygnięć milczeniem przed zobaczeniem (cel 0) |
 | 7 | **Ścieżki zapisu bez tokenów** jako zasada ekonomii; model = warstwa odczytu z własnym paragonem | E (uogólnienie W 6.2 p.6) | IW-1/IW-3: zliczyć wywołania modelu na ścieżce zapisu | 0 na ścieżce zapisu; tokeny warstwy odczytu per gest |
 | 8 | **Kierunek decyduje o magazynie** (telefon → baza strony, miejsca → repo), sekretarz lustruje | E 6.4 #1 | IW-1 + IW-4: licznik z „stan z HH:MM” | opóźnienie lustra; rozjazdy |
 | 9 | **Rozwiązany model zapisany na paragonie kalibruje cennik ról**; luz R63 jako parametr tabeli | K 6.1 + E 6.1 | IW-6: 5 biegów z `resolved` | odchylenie estymata/koszt per rola |
 | 10 | **Jego liczba jako próbka `source: owner`** rozpoznana w zdaniu i potwierdzona dotknięciem | E4 + W (6.1) | regex „% tygodniowego” w sekretarzu + wiersz w kolejce | próbek/dobę od niego; poprawek |
-| 11 | **Hash pakietu kontekstu = dowód trafienia cache**; prefiks bajt w bajt mierzony `cache_creation` | K3/K4 + E10 | IW-2: dwa agenty, diff prefiksu = 0 | `cache_creation` vs rozmiar prefiksu |
+| 11 | **Hash pakietu kontekstu = dowód identycznego prefiksu**; trafienie cache mierzone `cache_read`, koszt `cache_creation` (L5) | K3/K4 + E10 | IW-2: dwa agenty, diff prefiksu = 0 | `cache_creation` vs rozmiar prefiksu |
 | 12 | **Mapa miejsc jako wiersz liczników odpowiada na pytania z R90** bez tury Fable | W (6.1, z E5) | IW-4: `places.json` statyczny | pytań o miejsca w czacie (cel: w dół) |
 | 13 | **Znacznik „to przykład” jako znalezisko kontroli i addendum**; agent nie restartowany | W4 + K 6.1 | IW-9: jeden znacznik → addendum | czas znacznik→addendum; powroty klasy błędu |
 | 14 | **Rekonesans VM jako pierwszy rekord `place` i pierwszy bieg nowego formatu**: proza `VM_RECON` (23.10) przepisana na `places.json` + `routine_run` jest testem K7 i ziarnem E5 (nowe w syntezie) | §4 IW-8 | konwersja prozy → danych; następny bieg VM pisze rekord od razu | czy rekord wystarczył nowej sesji bez pytań; pola, których proza nie miała |
@@ -276,10 +274,10 @@ przy sprzeczności z filozofią zgłoszonej przez kontrolę.
 
 | # | Pytanie | Klasa | Preset do czasu odpowiedzi (`if_silent`) | Liczba (datowana) |
 |---|---|---|---|---|
-| 1 | **Zmienić `devbox-20260923` ze Spot na Standard**, żeby maszyna przestała znikać pod pracą? (= pytanie 1 z `VM_RECON`; tu z presetem) | pieniądze | **nie** — zostaje Spot (0 nowego wydatku); biegi na VM są wznawialne z rekordu, a `vm.wake` budzi maszynę po wywłaszczeniu **tylko gdy bieg był w toku** (godziny na paragonie biegu); na bezczynności nic | godzina Standard ≈ 3–4 × droższa (`VM_RECON`, 23.10); baza godzin/dobę — po 24 h tętna (IW-8) |
+| 1 | **Zmienić `devbox-20260923` ze Spot na Standard na stałe**, żeby maszyna przestała znikać pod pracą? (= pytanie 1 z `VM_RECON`; tu z presetem. **Część odpowiedzi już jest — jego polecenie z `VM_RECON` §8** (cytat za S1-VM, 23.10): „Ustaw możliwość na życzenie automatycznego awansu ze spot do standard, w przypadku zadań pozostałych do wykonania podczas preemptingu. No i na logikę w miarę szybko żeby z powrotem na spot” — awans na życzenie i powrót na Spot to kod `tools/gcp/spot_guard.yaml`, niewdrożony i nieprzetestowany na żywo; pytanie zostaje tylko o stałe Standard, którego nie napisał) | pieniądze | **nie** — zostaje Spot (0 nowego wydatku); biegi na VM są wznawialne z rekordu, a `vm.wake` budzi maszynę po wywłaszczeniu **tylko gdy bieg był w toku** (godziny na paragonie biegu); na bezczynności nic | godzina Standard ≈ 3–4 × droższa (`VM_RECON`, 23.10); baza godzin/dobę — po 24 h tętna (IW-8) |
 | 2 | **Wdrożyć na dysku GCP serwer ChatADHD (kształt B: rozmowy na dysku) i AGEDS (nagrania i wiadomości)?** (= pytania 3–4 z `VM_RECON`; jedna pozycja na usługę w „Czeka na Ciebie”) | prywatne dane | **nie** — usługi zostają „nie postawiono” w mapie miejsc; nic z jego danych nie trafia na dysk GCP bez tak | koszt: dysk i godziny VM wg bazy z IW-8 |
 
-Brak innych pytań: baza strony i zadania zaplanowane to ten sam dostawca, co sesje (żadne dane nie idą do nowego dostawcy); pomiar jego
+Brak innych pytań: baza strony i zadania zaplanowane to ten sam dostawca, co sesje (obserwacja 23.10, źródło: opisy narzędzi Artifact i zadań zaplanowanych w tej sesji — hostowane na claude.ai; niepotwierdzone dokumentem platformy, do sprawdzenia; jeśli tak, żadne dane nie idą do nowego dostawcy); pomiar jego
 zachowania ograniczony do znacznika wizyty (jego słowo włącza więcej); `vm.wake` pod biegiem to koszt biegu w jego budżecie (advisory,
 pytanie dopiero przy prognozie > ×10 bazy); wszystko inne to decyzje techniczne z odwrotem (§5).
 **Dotknięcia tylko jego, nie pytania:** karta zaufania sesji VM (bez niej `send_message` chmura → VM odmawiane, stan 23.10; zlecenia
@@ -291,12 +289,60 @@ idą przez repo) i wklejenie `claude-rc.service` na VM (`VM_RECON` §6 — klasy
 |---|---|---|---|
 | L1 | Słowa/dobę do niego (baza z QUEUE i czatu 21–23.10) — nikt nie policzył | waluta jego czasu bez bazy; licznik W1 | IW-4 (skrypt zliczający) |
 | L2 | Koszt pustego i niepustego biegu sekretarza (`spec_runs` z P1: ile biegów zapisano — do odczytu) | kadencja operatora; IW-10 | IW-1 scala i liczy |
-| L3 | Narzędzia sesji na VM (TELEPORT §5) — po `VM_RECON` 23.10 znane: brak `/dev/kvm` (bez emulatora), brak `npm`, build dev w toku; „aktywność dla 30 min” nie dotyczy (wywłaszczenie Spot); **nadal**: czy baza strony osiągalna z VM; czy `watch_url`/POST ze strony działa; czy `gcloud compute instances start` z chmury ma uprawnienia | `where: vm`, kanał „stop”, lustro, `vm.wake` | IW-8 |
-| L4 | Stan usług (R90 pytanie) — po `VM_RECON` 23.10: WatchDog żyje na VM (`watchdog.service`, 8080 loopback, dane 0,9 MB); AGEDS i ChatADHD nie postawione (klony do inwentarza; AGEDS planowany port 8090); **nadal**: to proza, nie `places.json` | mapa usług jako dane | IW-8 |
+| L3 | Narzędzia sesji na VM (TELEPORT §5) — po `VM_RECON` 23.10 znane: brak `/dev/kvm` (bez emulatora), `npm` doinstalowany (§7), build dev zakończony (zimny ≈ 12 min, 242/242); „aktywność dla 30 min” nie dotyczy (wywłaszczenie Spot); **nadal**: czy baza strony osiągalna z VM; czy `watch_url`/POST ze strony działa; czy `gcloud compute instances start` z chmury ma uprawnienia | `where: vm`, kanał „stop”, lustro, `vm.wake` | IW-8 |
+| L4 | Stan usług (R90 pytanie) — po `VM_RECON` 23.10: WatchDog żyje na VM (`watchdog.service`, 8080 loopback, dane 0,9 MB); AGEDS i ChatADHD nie postawione (klony do inwentarza; AGEDS: port do ustalenia (`VM_RECON` §5: np. 8090)); **nadal**: to proza, nie `places.json` | mapa usług jako dane | IW-8 |
 | L5 | `cache_creation` per agent vs rozmiar prefiksu; czy świeże sesje zadań dzielą cache | wartość IW-2/IW-7 i kadencji | IW-2 |
 | L6 | Tury koordynatora oznaczone klasą kroku (mechaniczny / osąd) — dziś dwa punkty, nie baza | liczba dla IW-10 | IW-1 (`events.class`) |
 | L7 | Mnożnik Fable w limicie; koszt pakietu Haiku (R89 L2) | routing pakietów po koszcie | próbki `rate_limit_event` przy biegach o znanym `resolved` |
 | L8 | Czy powiadomienie push jest możliwe z artefaktu (platforma) | kanał „czeka na Ciebie: 1” | sprawdzenie w jednym pakiecie strony |
 | L9 | Twardy limit `ask_after` i tempo czytania (słowa/min) — presety bez pomiaru | W3, waluta czasu | kalibracja z jego odpowiedzi (R59: on poprawia) |
-| L10 | Kontrola Haiku tego dokumentu (4 antywzorce + R60) — nie wykonana | check-before-use (CLAUDE.md) | następny krok koordynatora |
+| L10 | Kontrola Haiku tego dokumentu (4 antywzorce + R60) — wykonana 23.10 (7 blokujących, 22 sformułowań), poprawki zastosowane; wynik w sekcji „Kontrola przed użyciem” | check-before-use (CLAUDE.md) | zamknięta; ponowna kontrola po kolejnym addendum |
 | L11 | Odpowiedniość pakietów R89 P3–P5 ↔ IW-1/2/6/11: P3 i P4 wchłonięte, P5 częściowo (kompakt przed pauzą zostaje osobno) | żeby nie powstały dwa pakiety na to samo | `QUEUE_S1.md` przy planowaniu |
+
+## Kontrola przed użyciem (chatadhd, 2026-10-23)
+
+Kontrola Haiku (tylko odczyt; 4 antywzorce + R60) dała **7 blokujących i 22 sformułowań, żadne nie pominięte**. Znaleziska traktowano jako twierdzenia do sprawdzenia, nie polecenia: każde zestawiono ze źródłem (`tools/spec.py show`, `OWNER_REQUIREMENTS_2026-09-26.md`, `SLOWA_WLASCICIELA_2026-10-16.md`, `CLAUDE.md`, `docs/ops/VM_RECON_2026-10-23.md`, `git log`) i dopiero potem poprawiono najmniejszym przeformułowaniem. Treść decyzji bez zmian, zakres bez dodatków.
+
+**Zastosowano: 29 z 29** (60 podmian tekstu, bo wiele znalezisk powtarza się w kilku paragrafach). **Odrzucone w całości: żadne.** Odrzucone lub zmienione zostały tylko części proponowanej naprawy (niżej). Numery linii poniżej to numery sprzed poprawek.
+
+| # | Linia | Co zmieniono |
+|---|---|---|
+| 1 | 22 | „Każde pytanie…” → domyślnie (preset); pytanie bez tych pól jest dozwolone i dostaje advisory |
+| 2 | 200 | usunięte „i nie powstaną”: nie powstają w v2 (preset), wracają, gdy L1 da bazę; to samo w §1 wiersz 7. Wiersz 9 nie wycina flagi, tylko uogólnia ją na wiersz routingu |
+| 3 | 59 | usunięte „tylko”; klasy z CLAUDE.md jako przykłady listy, dodana „sprzeczność z wymaganiem”; „drogi odwrót” zostaje jako preset do potwierdzenia; tak samo w §2.3, §2.9, §5 |
+| 4 | 57 | „zgoda, o którą nie pytamy w nocy” → wartość domyślna (preset); reguły CLAUDE.md nie wymagają zgody na pomiar po naszej stronie; też §5 |
+| 5 | 228 | „Fable tylko…” → routing modeli jako preset w `roles.json`, wiersz o sprzeczności z filozofią jako przykład |
+| 6 | 211 | nagłówek §4: progi i liczby to presety lub przykłady; „cel 100 %” → „cel — preset, np. 100 %” |
+| 7 | 249 | kolejka, retry i harmonogram: w v1 wyłączone jako preset, nie wycięte; koszt przeniesienia i stan maszyny buildu jako datowane obserwacje; też §1 wiersze 15–16 i §4. Wariant „jądro od razu” już był w kolumnie Odwrót |
+| 8 | 27 | jego zdanie dosłownie z CLAUDE.md („Thread style”; nie ma R-id w `spec.json`); angielskie nazwy zdarzeń opisane jako etykiety koordynatora |
+| 9 | 29 | dopisane „(preset, §1 wiersz 6)” |
+| 10 | 39 | liczba policzona z tabeli §4: 10 z 11 bez koordynatora (IW-8 = sesja VM + Sonnet); żaden pakiet w tabeli nie używa Fable; też §4 |
+| 11 | 51 | SLOWA:66 cytowane w całości i przypisane do właściwego tematu (jego szacunek postępu M1, nie paragony); „szum” zastąpione hipotezą do zmierzenia; też §5 |
+| 12 | 49 | dosłownie „po pół godzinie bezczynności się zamyka” (R90) |
+| 13 | 122 | zmienione inaczej niż proponowała kontrola (patrz niżej) |
+| 14 | 123 | „mogę iść spać” (R75); też §1 wiersz 9 |
+| 15 | 147 | „Waluty” jako przykłady z otwartej listy; nagłówek 2.6 bez „dwie” |
+| 16 | 65 | nagłówek 2.1: „wielu czytelników (przykłady…)”; „trzy kąty” zostają tylko jako fakt o przebiegu dyskusji |
+| 17 | 171 | „rendery” jako przykłady: §2.8, IW-11, §6 wiersz 2 |
+| 18 | 124 | „rendery (przykłady: telefon, warsztat)”: §2.4, §5, §6 wiersz 5 |
+| 19 | 157 | `npm` doinstalowany 23.10 (`VM_RECON` §7), `/dev/kvm` nadal brak (§3); „build dev w toku” → zakończony (zimny ≈ 12 min, 242/242, §7); też L3 i IW-8 |
+| 20 | 220 | „jedyna maszyna buildu zajęta” było nieprawdą 23.10 (VM zbudowała jądro, `VM_RECON` §7); datowana obserwacja w §1 wiersz 16, §4, §5 |
+| 21 | 295 | „AGEDS: port do ustalenia (`VM_RECON` §5: np. 8090)” |
+| 22 | 279 | jego polecenie z `VM_RECON` §8 dosłownie (cytat za S1-VM) dopisane w §1 wiersz 4, §5 i §7 Q1; pytanie zawężone do stałego Standard |
+| 23 | 268 | hash = dowód identycznego prefiksu; trafienie cache mierzy `cache_read` (L5); też §2.4 |
+| 24 | 119 | `vm.keepalive` → `vm.heartbeat` z odsyłaczem do wiersza 4 |
+| 25 | 55 | odmowa `send_message` jako obserwacja 23.10 z oknem ważności i warunkiem ponownego sprawdzenia; kanał przez repo to preset; też §4, §5 |
+| 26 | 48 | „domyślnie (preset)” zamiast „nie może”; też §5 i §6 wiersz 6 |
+| 27 | 214 | „model: ustawienie sesji (23.10: Opus 5.5)” zamiast „wg jego ustawienia” |
+| 28 | 282 | oznaczone jako obserwacja 23.10 do sprawdzenia; źródło słabe (opisy narzędzi w sesji), nie dokument platformy |
+| 29 | 3 | godzina z commitów (`96ca991c` ≈ 18:48, `df1593c5` ≈ 18:51 UTC); przy okazji zaktualizowane L10 i nagłówek (kontrola wykonana) |
+
+**Odrzucone części proponowanej naprawy (z powodem):**
+
+- Znalezisko 13: odsyłacz do SLOWA_WLASCICIELA:266 odrzucony. Ta linia to zapis koordynatora z `PLAN_2026-10-13.md` („Właściciel: „wolna ręka, …””), nie jego słowa. Użyto dosłownego „tutaj masz wolną rękę” z R89 (cytat 2). Nazwa gestu „wolna ręka” zostaje etykietą (§0 punkt 3, IW-5).
+- Znaleziska 1 i 7, część „jądro od razu jako preset-alternatywa”: niedopisywane, bo kolumna Odwrót już zawiera „od razu w jądrze”.
+- Znalezisko 11, część „domyślna suma dnia jako preset”: już było w wierszu („preset per urządzenie”).
+
+**Odpowiedź na pytanie R60 po poprawkach:** (a) wiersz 7 i §3 mają warunek ponownego otwarcia (L1); (b) runner, aplikacja jako konsola, kanał do VM i repo-first są presetami z datowanymi obserwacjami i oknem ważności, nie ograniczeniami; (c) „zgoda w nocy” zastąpiona wartością domyślną.
+
+**Zauważone, niezmienione (bez wpływu na decyzje):** `vm.wake` i `spot_guard` (`VM_RECON` §8) częściowo się pokrywają, zakres do ustalenia przy IW-8; §0 punkt 6 („podtrzymasz maszynę”) to przykład gestu z otwartej listy, do przeglądu przy IW-5.
