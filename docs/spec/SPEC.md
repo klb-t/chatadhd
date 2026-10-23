@@ -5,13 +5,13 @@ Ten plik jest **wygenerowany** z `docs/spec/spec.json` poleceniem `python3 tools
 
 Status pochodzi z pliku luk i jest **obserwacją z podanej daty**, nie ograniczeniem.
 
-Pozycji razem: **508**.
+Pozycji razem: **509**.
 
 | Status (z LUKI) | liczba |
 |---|---|
 | częściowo | 210 |
 | jest | 151 |
-| bez statusu (nie ma w LUKI) | 125 |
+| bez statusu (nie ma w LUKI) | 126 |
 | brak | 16 |
 | nieaktualne | 5 |
 | sprzeczne | 1 |
@@ -19,7 +19,7 @@ Pozycji razem: **508**.
 | Rodzaj | liczba |
 |---|---|
 | remark | 367 |
-| requirement | 84 |
+| requirement | 85 |
 | philosophy | 36 |
 | statement | 10 |
 | decision | 4 |
@@ -28,14 +28,14 @@ Pozycji razem: **508**.
 
 | Rozumienie (R61) | liczba |
 |---|---|
-| none | 496 |
+| none | 497 |
 | proposed | 10 |
 | corrected | 2 |
 
 | W których plikach | liczba |
 |---|---|
 | LUKI + SLOWA | 379 |
-| rejestr R/D | 91 |
+| rejestr R/D | 92 |
 | SLOWA | 34 |
 | LUKI | 4 |
 
@@ -55,7 +55,7 @@ Pozycji razem: **508**.
 | Proces i współpraca | 67 |
 | Pozostałe | 33 |
 | Uzupełnienia (wypowiedzi bez numeru) | 10 |
-| Rejestr wymagań R/D | 91 |
+| Rejestr wymagań R/D | 92 |
 | bez tematu | 3 |
 
 ## Filozofia
@@ -605,8 +605,9 @@ Pozycji razem: **508**.
 - `s_4bbd386eaca6` **R82** — Proste reprezentacje silnik ogarnia na bieżąco sam, o trudniejsze pyta — to standard; użytkownik może zażyczyć sobie, by pytać o wszystko albo o nic — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L849)
 - `s_80c95f8ca565` **R83** — Żadne „dwa pokrętła”: nie zamykać list wybranymi, nie zawsze reprezentatywnymi przykładami — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L854)
 - `s_20c566121cde` **R84** — Listy opcji definiujemy jedynie wtedy, gdy są konieczne — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L859)
-- `s_18ec73967a7b` **owner:decision-rebuild-don-t-recover** — Decision — rebuild, don't recover — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L864)
-- `s_223e1568b3b9` **owner:ui-reference** — UI reference — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L872)
+- `s_52ddb515794e` **R85** — „Pokrętło” to wielowymiarowa dana, mapowana z coraz większą rozdzielczością na podstawie interakcji z użytkownikiem — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L864)
+- `s_18ec73967a7b` **owner:decision-rebuild-don-t-recover** — Decision — rebuild, don't recover — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L869)
+- `s_223e1568b3b9` **owner:ui-reference** — UI reference — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L877)
 
 ## Bez tematu
 

@@ -5,8 +5,8 @@
  "sources": {
   "owner": {
    "path": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
-   "sha256": "16b026e4f6d5ed709fe902265a4e031e2ea1180d43faa81dd00bc8803f4623a6",
-   "lines": 878
+   "sha256": "6c9810ec1f28c1fd29ea3e6527e9c0cad6d8c2a8e81bc78e8b625c04229bfaaf",
+   "lines": 883
   },
   "slowa": {
    "path": "docs/architecture/SLOWA_WLASCICIELA_2026-10-16.md",
@@ -4870,6 +4870,64 @@
    ]
   },
   {
+   "id": "s_52ddb515794e",
+   "aliases": [
+    "R85"
+   ],
+   "kind": "requirement",
+   "title": "„Pokrętło” to wielowymiarowa dana, mapowana z coraz większą rozdzielczością na podstawie interakcji z użytkownikiem",
+   "date": "2026-10-23",
+   "theme": "owner_requirements",
+   "theme_inferred": false,
+   "understanding": {
+    "state": "none"
+   },
+   "quotes": [
+    {
+     "text": "właśnie to co ty mówisz jedno pokrętło to ja widzę wielowymiarową daną mapowaną coraz większą rozdzielczością na podstawie interakcji z użytkownikiem",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:865",
+     "ref": null,
+     "attr": [],
+     "lead": null,
+     "secondary": false
+    }
+   ],
+   "sense": null,
+   "summary": null,
+   "restatement": [
+    {
+     "text": "Domknięcie R81–R84 (09:2x UTC): to, co nazwałem pokrętłem (jedna wartość), jest wielowymiarową daną — mapą preferencji/granic — której rozdzielczość rośnie z każdą interakcją z użytkownikiem (odpowiedź, poprawka, wybór, „nie pytaj następnym razem”, zoom, odrzucenie). Preset to gruba mapa startowa; każda interakcja dokłada punkt z pochodzeniem (K2c: dowód, data, metoda); silnik odpytuje mapę w rozdzielczości potrzebnej do decyzji (R79: pole widzenia) i tam, gdzie mapa jest rzadka, albo wyprowadza (R81: w granicach swobody), albo pyta (R82). Wymiary mapy nie są z góry wyliczone (R84) — wyłaniają się z interakcji i z charakterystyki zadań. Ten sam mechanizm dla wszystkich ustawień, nie tylko renderowania.",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:867"
+    }
+   ],
+   "commentary": [],
+   "status": null,
+   "gap_text": null,
+   "evidence": [],
+   "next_step": null,
+   "refs": [
+    "s_281f9b0d06cf",
+    "s_4bbd386eaca6",
+    "s_80c95f8ca565",
+    "s_20c566121cde",
+    "s_7fb787bed8cd"
+   ],
+   "supersedes": [],
+   "superseded_by": [],
+   "supersession_notes": [],
+   "tags": [],
+   "heading_note": "owner, 2026-10-23",
+   "sources": [
+    {
+     "role": "owner",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:864-867"
+    }
+   ],
+   "files": [
+    "owner"
+   ]
+  },
+  {
    "id": "s_18ec73967a7b",
    "aliases": [
     "owner:decision-rebuild-don-t-recover"
@@ -4885,7 +4943,7 @@
    "quotes": [
     {
      "text": "\"nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane\"",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:865",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:870",
      "ref": null,
      "attr": [],
      "lead": null,
@@ -4897,7 +4955,7 @@
    "restatement": [
     {
      "text": "Recovered versions (`history/chatadhd_v0.8.3`, `history/chatadhd_v0.9.0`) and\nthe historical report are sources of requirements, ideas and data assets\n(e.g. `film_structure.json`), and real ground truth for self-discovery tests —\nnot code to merge. Everything is rebuilt in Loom with tests.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:867-870"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:872-875"
     }
    ],
    "commentary": [],
@@ -4914,7 +4972,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:864-870"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:869-875"
     }
    ],
    "files": [
@@ -4940,7 +4998,7 @@
    "restatement": [
     {
      "text": "`workbench_mockup_2026-09-26.webp`: dockable/floating panels (conversation\nlist, active conversation, knowledge graph with active context window, project\nstructure with dimmed high-confidence auto-completable nodes, artifact views\nfor music/video with timeline + storyboard, video player, execution\nenvironment with agent), multi-format ingestion, Loom SDK at the centre.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:873-877"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:878-882"
     }
    ],
    "commentary": [],
@@ -4957,7 +5015,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:872-877"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:877-882"
     }
    ],
    "files": [

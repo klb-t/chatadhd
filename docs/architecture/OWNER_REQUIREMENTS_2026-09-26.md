@@ -861,6 +861,11 @@ Korekta mojego zapisu R81 („dwa pokrętła”) i R82 („trzy położenia”):
 
 Uzupełnienie R83 (09:2x UTC): nie tylko nie zamykać list przykładami — w ogóle nie definiować list opcji (enumów, wyliczeń dozwolonych wartości, stałych zestawów), jeśli nie są konieczne. Domyślny kształt ustawienia to wartość otwarta (liczba, tekst, zakres, predykat, odwołanie do danych) z presetami jako przykładami; zamknięta lista tylko tam, gdzie wymusza ją rzecz sama (np. protokół dostawcy, format pliku, prawo) i wtedy z zapisanym powodem oraz datą (obserwacja, R60), żeby dało się ją otworzyć, gdy powód zniknie. Dla kodu: żadnych enumów „z głowy” w jądrze i w danych; tam, gdzie dziś są (np. stany, rodzaje), rodzaje dodaje się przez użycie (CLAUDE.md: „add new kinds by just using them”).
 
+## R85 — „Pokrętło” to wielowymiarowa dana, mapowana z coraz większą rozdzielczością na podstawie interakcji z użytkownikiem (owner, 2026-10-23)
+> właśnie to co ty mówisz jedno pokrętło to ja widzę wielowymiarową daną mapowaną coraz większą rozdzielczością na podstawie interakcji z użytkownikiem
+
+Domknięcie R81–R84 (09:2x UTC): to, co nazwałem pokrętłem (jedna wartość), jest wielowymiarową daną — mapą preferencji/granic — której rozdzielczość rośnie z każdą interakcją z użytkownikiem (odpowiedź, poprawka, wybór, „nie pytaj następnym razem”, zoom, odrzucenie). Preset to gruba mapa startowa; każda interakcja dokłada punkt z pochodzeniem (K2c: dowód, data, metoda); silnik odpytuje mapę w rozdzielczości potrzebnej do decyzji (R79: pole widzenia) i tam, gdzie mapa jest rzadka, albo wyprowadza (R81: w granicach swobody), albo pyta (R82). Wymiary mapy nie są z góry wyliczone (R84) — wyłaniają się z interakcji i z charakterystyki zadań. Ten sam mechanizm dla wszystkich ustawień, nie tylko renderowania.
+
 ## Decision — rebuild, don't recover
 > "nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane"
 
