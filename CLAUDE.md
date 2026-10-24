@@ -19,6 +19,13 @@ the agreed budget, sending his private data to a new provider, or a product
 direction that contradicts the requirements — and then as a yes/no question.
 
 
+**Spending authority (owner, 2026-10-24):** „możesz podejmować decyzje odnośnie zużycia w przypadkach jeśli nie
+przekroczysz limitu euro dziennie trzech euro tygodniowo albo jeśli jest duży prawdopodobieństwo że przez działanie
+sumaryczne doprowadzisz do oszczędności. Vertex ma wiele zalet”. Read as: cloud spending decisions without asking while
+new spend stays ≤ 1 €/day and ≤ 3 €/week (my reading of „euro dziennie”, to confirm), or when the action very probably
+saves money overall. Credits count as his money too. Everything else (and his private data to a new service) stays a
+yes/no question.
+
 **Before a question (owner, 2026-10-23):** „upewniając się że dobrze rozumiesz to zanim zaczniesz mi
 zadawać pytania, to przeanalizuj twoje zrozumienie w kontekście filozofii. Bo jeśli coś się nie zgadza
 i nie było wyraźnie zaznaczone to najpewniej źle rozumiesz”. So a doubt is first checked against the
