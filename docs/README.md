@@ -16,6 +16,7 @@ retained through the archive rather than presented as current product claims.
 | [Application profiles](APPLICATION_PROFILES.md) | Versioned interface/workflow data, simultaneous views, actual Loom adapters and evidence gaps |
 | [Limits and wiring](LIMITS_AND_WIRING_2026-10-01.md) | Missing connections and remaining resource/policy work |
 | [Research and costs](RESEARCH_AND_COSTS_2026-10-01.md) | Conclusions with task-specific denominators and spending reconciliation |
+| [AGEDS connector](AGEDS_CONNECTOR.md) | Read-only bridge to the Evidence Workbench: typed intents in, anchored quotes out; off by default |
 
 ## Technical references
 
