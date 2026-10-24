@@ -1,5 +1,7 @@
 # Kolejka S1 — stan 2026-10-23 22:35 UTC
 
+## Później (właściciel 2026-10-24, nie priorytet): dopasować VM do zużycia, gdy przez tygodnie nie używamy połowy mocy albo spot-guard często awansuje na Standard; dane do decyzji zbiera się samo (sysstat, log spot-guard), research dopiero wtedy. Kredyty: `docs/ops/KREDYTY_I_USLUGI_2026-10-24.md` (361239f1).
+
 ## S2 2026-10-23 22:54 UTC: APK v5 ready - package.yml run 40033660848 on main 51315dd6 = success (22:26-22:42); artifacts: chatadhd-android-apk-TEST-KEY (18.4 MB), chatadhd-0.10.00-ci.27.51315dd (50.2 MB), chatadhd-server-linux-x64, chatadhd-server-linux-arm64, first-steps-screenshots; https://github.com/klb-t/chatadhd/actions/runs/40033660848
 
 ## S2 2026-10-23 22:27 UTC: APK v5 dispatched - package.yml run 40033660848 on main 51315dd6 (= f025ed34 + asan timeout 240; android/server/first_steps, arm64-v8a, Release); emulator proof = android-smoke 40011129193 on f025ed34, 47/0/0 x3 (app code identical); https://github.com/klb-t/chatadhd/actions/runs/40033660848
