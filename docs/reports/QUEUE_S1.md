@@ -1,5 +1,7 @@
 # Kolejka S1 — stan 2026-10-23 22:35 UTC
 
+## Czeka na właściciela (2026-10-25, od sesji WatchDog JH16, zadanie ZADANIE_JH16_HOFFMANN_2026-10-25): nowe pobranie liczby wyników wyszukiwania wymaga klucza SerpApi — brak go w `keys.env`, w kontenerze i w bazie WatchDoga; Google Custom Search jest zamknięte dla nowych klientów (obserwacja z 2026-10-25 wg sesji WatchDog, niezweryfikowana tutaj). Darmowy plan SerpApi ≈ 250 zapytań/mies., 0 €; konto zakłada właściciel na swój e-mail (nowy dostawca → jego tak/nie). Do tego czasu WatchDog weryfikuje metodę i obliczenia na danych z publikacji, poprawia produkt (źródło `serp_generic` zwracało zmyśloną liczbę 42000) i wdraża nową wersję na VM.
+
 ## Później (właściciel 2026-10-24, nie priorytet): dopasować VM do zużycia, gdy przez tygodnie nie używamy połowy mocy albo spot-guard często awansuje na Standard; dane do decyzji zbiera się samo (sysstat, log spot-guard), research dopiero wtedy. Kredyty: `docs/ops/KREDYTY_I_USLUGI_2026-10-24.md` (361239f1).
 
 ## S2 2026-10-23 22:54 UTC: APK v5 ready - package.yml run 40033660848 on main 51315dd6 = success (22:26-22:42); artifacts: chatadhd-android-apk-TEST-KEY (18.4 MB), chatadhd-0.10.00-ci.27.51315dd (50.2 MB), chatadhd-server-linux-x64, chatadhd-server-linux-arm64, first-steps-screenshots; https://github.com/klb-t/chatadhd/actions/runs/40033660848
