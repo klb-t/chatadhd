@@ -2451,6 +2451,28 @@
           "takes_scope": false
         },
         {
+          "id": "memory.restore.pl",
+          "action": "memory.restore",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:przywroc|cofnij\\s+zapomnienie)\\s+(?:zapomniany\\s+)?(?:wpis\\s+)?(?:pamieci\\s+)?([0-9a-f]{12})\\s*[.!?]*\\s*$",
+          "args": [
+            "id"
+          ],
+          "original": [],
+          "takes_scope": false
+        },
+        {
+          "id": "memory.restore.en",
+          "action": "memory.restore",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:bring\\s+back|restore)\\s+(?:the\\s+)?(?:forgotten\\s+)?(?:memory\\s+)?(?:entry\\s+)?([0-9a-f]{12})\\s*[.!?]*\\s*$",
+          "args": [
+            "id"
+          ],
+          "original": [],
+          "takes_scope": false
+        },
+        {
           "id": "memory.forget.pl",
           "action": "memory.forget",
           "lang": "pl",

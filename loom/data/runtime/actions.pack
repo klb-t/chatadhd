@@ -9009,6 +9009,14 @@
           "verb": "POST",
           "path": "/api/memory/restore"
         },
+        "phrases": {
+          "en": [
+            "bring back the forgotten entry"
+          ],
+          "pl": [
+            "przywróć zapomniany wpis"
+          ]
+        },
         "examples": {
           "en": [
             "bring back the forgotten entry a1b2c3d4e5f6"

@@ -2551,13 +2551,8 @@
           ]
         },
         "examples": {
-          "pl": "przywróć zapomniany wpis",
-          "en": "bring back the forgotten entry"
-        },
-        "chat_outcome": "unavailable",
-        "chat_outcome_reason": {
-          "pl": "Samo zdanie nie wskaże, który zapomniany wpis wrócić; wybierasz go na liście „Zapomniane” na ekranie „Ty”, a propozycja mówi to wprost.",
-          "en": "The sentence alone does not say which forgotten entry to bring back; you pick it on the list “Forgotten” on the screen “You”, and the proposal says so plainly."
+          "pl": "przywróć zapomniany wpis a1b2c3d4e5f6",
+          "en": "bring back the forgotten entry a1b2c3d4e5f6"
         }
       },
       {
