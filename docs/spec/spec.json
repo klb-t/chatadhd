@@ -5,8 +5,8 @@
  "sources": {
   "owner": {
    "path": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
-   "sha256": "aaa4adc2098a22690ff207d41648360673a59ab8c83180b6afdb30df8f9ed469",
-   "lines": 948
+   "sha256": "7c3818e9213647b615c39f6043c17e7c859aadf32dfc79a2fcf73ab077a706aa",
+   "lines": 951
   },
   "slowa": {
    "path": "docs/architecture/SLOWA_WLASCICIELA_2026-10-16.md",
@@ -5613,6 +5613,53 @@
    ]
   },
   {
+   "id": "s_4decf2d9c8f8",
+   "aliases": [
+    "R98"
+   ],
+   "kind": "requirement",
+   "title": "AGEDS: pakiet spraw właściciela dla adwokata, konwersacyjny interfejs dowodów (tekst, głos, później awatar)",
+   "date": "2026-10-25",
+   "theme": "owner_requirements",
+   "theme_inferred": false,
+   "understanding": {
+    "state": "none"
+   },
+   "quotes": [
+    {
+     "text": "prosiłem o Watch doga i czata ADHD, chociaż AGEDS trzeba by zrobić też, żeby pokazać adwokatowi. i nie ma nigdzie napisanego o rzeczniku, nie? bo ja bym teraz chciał żeby w AG EDS utworzyć mój pakiet spraw, zebrać wszystkie dowody, opracować, i stworzyć konwersacyjny interfejs opisujący dowody dane, meta dane, powiązania, punkty widzenia, udowodnione fakty, hipotezy i tak dalej. jak zrobimy głosowy i tekstowy to później jeszcze audio video z avatarem na unreal engine. zaraz ci jeszcze podrzucę jak coś znalazłem w historii o tym rzeczniku",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:935",
+     "ref": null,
+     "attr": [],
+     "lead": null,
+     "secondary": false
+    }
+   ],
+   "sense": null,
+   "summary": null,
+   "restatement": [],
+   "commentary": [],
+   "status": null,
+   "gap_text": null,
+   "evidence": [],
+   "next_step": null,
+   "refs": [],
+   "supersedes": [],
+   "superseded_by": [],
+   "supersession_notes": [],
+   "tags": [],
+   "heading_note": "owner, 2026-10-25",
+   "sources": [
+    {
+     "role": "owner",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:934-935"
+    }
+   ],
+   "files": [
+    "owner"
+   ]
+  },
+  {
    "id": "s_18ec73967a7b",
    "aliases": [
     "owner:decision-rebuild-don-t-recover"
@@ -5628,7 +5675,7 @@
    "quotes": [
     {
      "text": "\"nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane\"",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:935",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:938",
      "ref": null,
      "attr": [],
      "lead": null,
@@ -5640,7 +5687,7 @@
    "restatement": [
     {
      "text": "Recovered versions (`history/chatadhd_v0.8.3`, `history/chatadhd_v0.9.0`) and\nthe historical report are sources of requirements, ideas and data assets\n(e.g. `film_structure.json`), and real ground truth for self-discovery tests —\nnot code to merge. Everything is rebuilt in Loom with tests.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:937-940"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:940-943"
     }
    ],
    "commentary": [],
@@ -5657,7 +5704,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:934-940"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:937-943"
     }
    ],
    "files": [
@@ -5683,7 +5730,7 @@
    "restatement": [
     {
      "text": "`workbench_mockup_2026-09-26.webp`: dockable/floating panels (conversation\nlist, active conversation, knowledge graph with active context window, project\nstructure with dimmed high-confidence auto-completable nodes, artifact views\nfor music/video with timeline + storyboard, video player, execution\nenvironment with agent), multi-format ingestion, Loom SDK at the centre.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:943-947"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:946-950"
     }
    ],
    "commentary": [],
@@ -5700,7 +5747,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:942-947"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:945-950"
     }
    ],
    "files": [
