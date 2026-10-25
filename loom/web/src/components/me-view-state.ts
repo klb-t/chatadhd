@@ -224,6 +224,9 @@ export function detailLines(attrs: Record<string, unknown> | undefined, t: Shell
     const was = review.was && typeof review.was.class === "string" ? wordOrNull(t, `me.class.${review.was.class}`) : null;
     if (was) out.push(t("me.details.review_was", { was }));
   }
+  const previous = attrs.previous as { value_human?: unknown; time?: unknown } | undefined;
+  if (previous && typeof previous.value_human === "string" && previous.value_human !== "")
+    out.push(t("me.details.previous", { value: previous.value_human, time: typeof previous.time === "string" ? formatTime(previous.time, language) : "" }));
   const prov = attrs.provenance as { words?: unknown } | undefined;
   if (prov && typeof prov.words === "string" && prov.words) out.push(t("me.details.provenance", { words: prov.words }));
   return out;

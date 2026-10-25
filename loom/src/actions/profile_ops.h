@@ -48,7 +48,7 @@ Result<Reply> show(const Env& env, const Json& args);       // read only
 Result<Reply> set(const Env& env, const Json& args);        // gated: confirm:profile.set
 Result<Reply> confirm(const Env& env, const Json& args);    // gated: confirm:profile.confirm (a remark or a section card)
 // M1-W2b-2a: the person's verdict on something the analysis or a model concluded (a topic, a person or an organisation found in the messages).
-// args.ref = the id of the node of the database. The verdict is written into the node's metadata.review {decision, time, by, method} and the
+// args.entry = the id of the node of the database. The verdict is written into the node's metadata.review {decision, time, by, method} and the
 // previous verdict is kept in metadata.review_history: a rejection keeps the node and a record of it, a confirmation turns the conclusion into
 // something the person said (the projection reads the verdict); nothing is deleted. Gated: confirm:inference.confirm / confirm:inference.reject.
 Result<Reply> confirm_inference(const Env& env, const Json& args);

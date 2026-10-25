@@ -892,7 +892,7 @@ Result<Reply> confirm(const Env& e, const Json& args) {
 
 namespace {
 Result<Reply> judge_inference(const Env& e, const Json& args, const std::string& decision) {
-  const std::string ref = json::get_string(args, "ref");
+  const std::string ref = json::get_string(args, "entry");
   if (ref.empty()) return err(Errc::InvalidArgument, e.say("inference_no_ref", Json::object()));
   auto got = e.db.get_node(ref);
   if (!got) return got.error();
@@ -900,7 +900,7 @@ Result<Reply> judge_inference(const Env& e, const Json& args, const std::string&
   const Node node = **got;
   Json meta = node.metadata.is_object() ? node.metadata : Json::object();
   const Json prior = meta.value("review", Json(nullptr));
-  Json data{{"ref", ref}, {"label", node.label}, {"decision", decision}};
+  Json data{{"entry", ref}, {"label", node.label}, {"decision", decision}};
   const std::string now = timeutil::utc_now_iso();
   if (prior.is_object() && json::get_string(prior, "decision") == decision) {
     data["written"] = false;

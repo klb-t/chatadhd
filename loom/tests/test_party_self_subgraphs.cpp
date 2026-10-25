@@ -257,6 +257,11 @@ TEST_SUITE("party_self_subgraphs") {
     CHECK(after.at("human") == "poprawione przez Ciebie");
     CHECK(after.at("provenance").at("time").is_string());
     CHECK(evidence_of_style("en").at("human") == "corrected by you");
+    // what the correction overwrote is kept and told under the details (the earlier value, in words)
+    const Json node = p.card("party:self/communication.style");
+    REQUIRE(node.contains("attrs"));
+    CHECK(node.at("attrs").at("previous").at("value_human") == "direct");
+    CHECK(node.at("attrs").at("previous").at("time").is_string());
   }
 
   TEST_CASE("an action on a node lists the parameters the person still has to give, from the action catalogue; what the node fills is not asked") {
@@ -317,45 +322,47 @@ TEST_SUITE("party_self_subgraphs") {
     CHECK(t.at("evidence").at("class") == "inferred");
     CHECK(has_action(t, "inference.confirm"));
     CHECK(has_action(t, "inference.reject"));
-    CHECK(action_of(t, "inference.confirm").at("args").at("ref") == topic);
+    CHECK(action_of(t, "inference.confirm").at("args").at("entry") == topic);
     CHECK(action_of(t, "inference.confirm").at("params").empty());  // the node fills the only argument
     // nothing is written until the person says yes
-    const Json waiting = p.call("inference.reject", Json{{"ref", topic}});
+    const Json waiting = p.call("inference.reject", Json{{"entry", topic}});
     REQUIRE(waiting.at("status") == "awaiting_confirmation");
     CHECK(row("subgraph:self/interests", "interest:kuchnia").at("evidence").at("class") == "inferred");
-    unwrap(p.rt->actions().confirm(Json{{"run_id", waiting.at("id")}, {"approved", true}, {"receipt_id", waiting.at("pending").at("receipt_id")}, {"ref", "test"}}));
+    const Json done = unwrap(p.rt->actions().confirm(Json{{"run_id", waiting.at("id")}, {"approved", true}, {"receipt_id", waiting.at("pending").at("receipt_id")}, {"ref", "test"}}));
+    INFO(done.dump());
+    REQUIRE(done.at("status") == "completed");
     t = row("subgraph:self/interests", "interest:kuchnia");  // the entry is still there
     CHECK(t.at("evidence").is_null());
     CHECK(t.at("state") == "rejected");
-    CHECK(t.at("attrs").at("review").at("decision") == "rejected");
-    CHECK(t.at("attrs").at("review").at("time").is_string());
-    CHECK(t.at("attrs").at("review").at("was").at("class") == "inferred");  // what it was before the verdict
+    CHECK(p.card("interest:kuchnia").at("attrs").at("review").at("decision") == "rejected");
+    CHECK(p.card("interest:kuchnia").at("attrs").at("review").at("time").is_string());
+    CHECK(p.card("interest:kuchnia").at("attrs").at("review").at("was").at("class") == "inferred");  // what it was before the verdict
     CHECK_FALSE(has_action(t, "inference.reject"));
     CHECK(has_action(t, "inference.confirm"));
     const auto stored = unwrap(p.rt->db().get_node(topic));
     REQUIRE(stored.has_value());
     CHECK(stored->metadata.at("review").at("decision") == "rejected");
     // a later confirmation turns it into the person's word and keeps the earlier verdict in the history
-    p.confirmed("inference.confirm", Json{{"ref", topic}});
+    p.confirmed("inference.confirm", Json{{"entry", topic}});
     t = row("subgraph:self/interests", "interest:kuchnia");
     CHECK(t.at("evidence").at("class") == "said");
     CHECK(t.at("evidence").at("provenance").at("method") == "user_confirmed");
     CHECK(t.at("evidence").at("provenance").at("time").is_string());
     CHECK(t.at("evidence").at("human") == "potwierdzone przez Ciebie");
-    CHECK(t.at("attrs").at("review").at("history").size() == 1);
+    CHECK(p.card("interest:kuchnia").at("attrs").at("review").at("history").size() == 1);
     CHECK(has_action(t, "inference.reject"));
     CHECK_FALSE(has_action(t, "inference.confirm"));
     // the same verdict twice changes nothing
-    const Json again = p.confirmed("inference.confirm", Json{{"ref", topic}});
+    const Json again = p.confirmed("inference.confirm", Json{{"entry", topic}});
     CHECK(again.at("result").at("data").at("written") == false);
     // a contact (person found by the analysis) goes the same way
     Json c = row("subgraph:self/network", "party:" + contact.substr(2));
     CHECK(c.at("evidence").at("class") == "inferred");
-    p.confirmed("inference.confirm", Json{{"ref", contact}});
+    p.confirmed("inference.confirm", Json{{"entry", contact}});
     c = row("subgraph:self/network", "party:" + contact.substr(2));
     CHECK(c.at("evidence").at("class") == "said");
     // an unknown entry is refused with words
-    const Json bad = p.confirmed("inference.confirm", Json{{"ref", "n_nope"}});
+    const Json bad = p.confirmed("inference.confirm", Json{{"entry", "n_nope"}});
     CHECK(bad.at("status") != "completed");
     CHECK(p.transport->requests().empty());
   }

@@ -2384,7 +2384,8 @@ std::string_view(R"loom_onboard(                    "label": "cm_preview_request
                 "me.details.review": "Your decision: {{decision}}, {{time}}",
                 "me.review.confirmed": "confirmed",
                 "me.review.rejected": "rejected",
-                "me.details.review_was": "Before your decision it was: {{was}}"
+                "me.details.review_was": "Before your decision it was: {{was}}",
+                "me.details.previous": "Before: {{value}} ({{time}})"
               },
               "pl": {
                 "title": "Graf",
@@ -2785,15 +2786,16 @@ std::string_view(R"loom_onboard(                    "label": "cm_preview_request
                 "me.details.review": "Twoja decyzja: {{decision}}, {{time}}",
                 "me.review.confirmed": "potwierdzone",
                 "me.review.rejected": "odrzucone",
-                "me.details.review_was": "Przed Twoją decyzją było: {{was}}"
+                "me.details.review_was": "Przed Twoją decyzją było: {{was}}",
+)loom_onboard", 59935),
+std::string_view(R"loom_onboard(                "me.details.previous": "Poprzednio: {{value}} ({{time}})"
               }
             }
           }
         },
         {
           "id": "presentation.settings_human/v1",
-)loom_onboard", 59976),
-std::string_view(R"loom_onboard(          "key": "presentation.settings_human",
+          "key": "presentation.settings_human",
           "area": "presentation/settings_human",
           "revision": 1,
           "label": "Words of the human settings screen (Settings = the eight groups of settings.resolved with counts, the filter Show only changed, a field with what it is for, its value and its provenance, the planned reason, Engine › All fields); texts only",
@@ -3689,11 +3691,11 @@ std::string_view(R"loom_onboard(          "key": "presentation.settings_human",
             "graph.types": "Type definitions"
           },
           "pl": {
-            "field.questions_suffix": "; pytania: {{disposition}}",
+)loom_onboard", 59964),
+std::string_view(R"loom_onboard(            "field.questions_suffix": "; pytania: {{disposition}}",
             "knowledge.questions_suffix": " · pytania: {{disposition}}",
             "field.legend": "{{label}} ({{status}}{{suffix}})",
-)loom_onboard", 59983),
-std::string_view(R"loom_onboard(            "candidate.legend": "{{field}} · {{provenance}} · {{review}}",
+            "candidate.legend": "{{field}} · {{provenance}} · {{review}}",
             "knowledge.legend": "{{label}} · {{status}}{{suffix}}",
             "default.legend": "{{label}} · {{area}}",
             "field.never": "Pytania i wnioskowanie dotyczące tego pola są wykluczone.",
@@ -4188,7 +4190,7 @@ std::string_view(R"loom_onboard(            "candidate.legend": "{{field}} · {{
               {
                 "action": "inference.confirm",
                 "args": {
-                  "ref": "attrs.node_id"
+                  "entry": "attrs.node_id"
                 },
                 "where": {
                   "evidence.class": "inferred"
@@ -4197,7 +4199,7 @@ std::string_view(R"loom_onboard(            "candidate.legend": "{{field}} · {{
               {
                 "action": "inference.reject",
                 "args": {
-                  "ref": "attrs.node_id"
+                  "entry": "attrs.node_id"
                 },
                 "where": {
                   "evidence.class": "inferred"
@@ -4206,7 +4208,7 @@ std::string_view(R"loom_onboard(            "candidate.legend": "{{field}} · {{
               {
                 "action": "inference.confirm",
                 "args": {
-                  "ref": "attrs.node_id"
+                  "entry": "attrs.node_id"
                 },
                 "where": {
                   "state": "rejected"
@@ -4215,7 +4217,7 @@ std::string_view(R"loom_onboard(            "candidate.legend": "{{field}} · {{
               {
                 "action": "inference.reject",
                 "args": {
-                  "ref": "attrs.node_id"
+                  "entry": "attrs.node_id"
                 },
                 "where": {
                   "evidence.provenance.method": "user_confirmed"
@@ -4252,7 +4254,7 @@ std::string_view(R"loom_onboard(            "candidate.legend": "{{field}} · {{
               {
                 "action": "inference.confirm",
                 "args": {
-                  "ref": "attrs.node_id"
+                  "entry": "attrs.node_id"
                 },
                 "where": {
                   "evidence.class": "inferred"
@@ -4261,7 +4263,7 @@ std::string_view(R"loom_onboard(            "candidate.legend": "{{field}} · {{
               {
                 "action": "inference.reject",
                 "args": {
-                  "ref": "attrs.node_id"
+                  "entry": "attrs.node_id"
                 },
                 "where": {
                   "evidence.class": "inferred"
@@ -4270,7 +4272,7 @@ std::string_view(R"loom_onboard(            "candidate.legend": "{{field}} · {{
               {
                 "action": "inference.confirm",
                 "args": {
-                  "ref": "attrs.node_id"
+                  "entry": "attrs.node_id"
                 },
                 "where": {
                   "state": "rejected"
@@ -4279,7 +4281,7 @@ std::string_view(R"loom_onboard(            "candidate.legend": "{{field}} · {{
               {
                 "action": "inference.reject",
                 "args": {
-                  "ref": "attrs.node_id"
+                  "entry": "attrs.node_id"
                 },
                 "where": {
                   "evidence.provenance.method": "user_confirmed"
@@ -4938,12 +4940,12 @@ std::string_view(R"loom_onboard(            "candidate.legend": "{{field}} · {{
           "pl": {
             "title": "Analiza w tle czeka na Ciebie",
             "explanation": "Nic nie wysłano. Przewidywane zużycie tej analizy jest znacznie wyższe niż zwykle dla tej pracy, więc najpierw pytamy. Nic nie jest ograniczane; decydujesz Ty.",
-            "baseline_key": "Grupa porównawcza: {{key}}",
+)loom_onboard", 59991),
+std::string_view(R"loom_onboard(            "baseline_key": "Grupa porównawcza: {{key}}",
             "resource": "{{name}}: oczekiwane {{projected}}, baza {{baseline}}, wzrost {{ratio}}",
             "unknown": "nieznane",
             "confirm": "Kontynuuj",
-)loom_onboard", 59998),
-std::string_view(R"loom_onboard(            "reject": "Wstrzymaj analizę",
+            "reject": "Wstrzymaj analizę",
             "confirm_failed": "Nie udało się wysłać odpowiedzi ({{reason}}).",
             "status_approved": "Kontynuowano",
             "status_declined": "Wstrzymano",
@@ -5909,10 +5911,10 @@ std::string_view(R"loom_onboard(            "reject": "Wstrzymaj analizę",
             "cm_status_own": "Twój",
             "cm_modify_busy": "Zmieniam…",
             "cm_modify_failed": "Nie udało się zmienić kontekstu: {{reason}}",
-            "cm_modify_declined": "Zostawione bez zmian.",
+)loom_onboard", 59972),
+std::string_view(R"loom_onboard(            "cm_modify_declined": "Zostawione bez zmian.",
             "cm_modify_reset": "Cofnij zmiany następnego zapytania",
-)loom_onboard", 59872),
-std::string_view(R"loom_onboard(            "cm_flow_help": "Otwiera kartę ustawienia „Przepływ żądania”: tam wybierasz, czy graf idzie do modelu i wraca w odpowiedzi (dla tej rozmowy, dla Ciebie albo dla całej instalacji).",
+            "cm_flow_help": "Otwiera kartę ustawienia „Przepływ żądania”: tam wybierasz, czy graf idzie do modelu i wraca w odpowiedzi (dla tej rozmowy, dla Ciebie albo dla całej instalacji).",
             "cm_preview_help": "Pokazuje żądanie, które pójdzie z następnym Wyślij. Możesz je poprawić; użyje go jednorazowo.",
             "cm_reason_no_navigator": "Ten ekran nie ma nawigatora grafu, więc nie ma gdzie pokazać karty ustawienia.",
             "cm_reason_preview_empty": "Wpisz najpierw wiadomość: podgląd pokazuje żądanie z Twoim tekstem.",
@@ -6663,7 +6665,8 @@ std::string_view(R"loom_onboard(            "cm_flow_help": "Otwiera kartę usta
             "me.details.review": "Your decision: {{decision}}, {{time}}",
             "me.review.confirmed": "confirmed",
             "me.review.rejected": "rejected",
-            "me.details.review_was": "Before your decision it was: {{was}}"
+            "me.details.review_was": "Before your decision it was: {{was}}",
+            "me.details.previous": "Before: {{value}} ({{time}})"
           },
           "pl": {
             "title": "Graf",
@@ -6874,10 +6877,10 @@ std::string_view(R"loom_onboard(            "cm_flow_help": "Otwiera kartę usta
             "reason.entity_kind_not_configured": "rodzaj encji nie jest skonfigurowany",
             "reason.no_device_registry": "brak listy urządzeń",
             "reason.no_interface_registry": "brak listy interfejsów",
-            "reason.pack_file_absent": "pakiet wiedzy nie ma takiego pliku",
+)loom_onboard", 59989),
+std::string_view(R"loom_onboard(            "reason.pack_file_absent": "pakiet wiedzy nie ma takiego pliku",
             "reason.pack_unavailable": "nie da się odczytać pakietu wiedzy",
-)loom_onboard", 59949),
-std::string_view(R"loom_onboard(            "reason.profile_unavailable": "nie da się odczytać profilu działania",
+            "reason.profile_unavailable": "nie da się odczytać profilu działania",
             "reason.provider_failed": "licznik zawiódł",
             "reason.provider_missing": "ta wersja nie ma licznika o tej nazwie",
             "reason.query_failed": "zapytanie do bazy zawiodło",
@@ -7065,7 +7068,8 @@ std::string_view(R"loom_onboard(            "reason.profile_unavailable": "nie d
             "me.details.review": "Twoja decyzja: {{decision}}, {{time}}",
             "me.review.confirmed": "potwierdzone",
             "me.review.rejected": "odrzucone",
-            "me.details.review_was": "Przed Twoją decyzją było: {{was}}"
+            "me.details.review_was": "Przed Twoją decyzją było: {{was}}",
+            "me.details.previous": "Poprzednio: {{value}} ({{time}})"
           }
         }
       }
@@ -7810,7 +7814,8 @@ std::string_view(R"loom_onboard(            "reason.profile_unavailable": "nie d
       "additionalProperties": false
     }
   },
-  "runtime_bindings": {
+)loom_onboard", 59992),
+std::string_view(R"loom_onboard(  "runtime_bindings": {
     "/settings": "onboarding.settings",
     "/privacy": "onboarding.privacy"
   },
@@ -7818,8 +7823,7 @@ std::string_view(R"loom_onboard(            "reason.profile_unavailable": "nie d
     "/prompt": "prompt.onboarding",
     "/graph_method/prompt/text": "prompt.onboarding"
   },
-)loom_onboard", 59990),
-std::string_view(R"loom_onboard(  "method_selection": {
+  "method_selection": {
     "parameter_layers": [
       "preset",
       "recipe",
@@ -7838,7 +7842,7 @@ std::string_view(R"loom_onboard(  "method_selection": {
   },
   "presentation_key": "presentation.onboarding"
 }
-)loom_onboard", 450)};
+)loom_onboard", 675)};
 static constexpr std::string_view kOnboardingScenario[] = {
 std::string_view(R"loom_onboard({
   "schema": "loom.onboarding.scenario/1",

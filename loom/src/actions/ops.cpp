@@ -2603,8 +2603,8 @@ StepOutcome profile_confirm_op(Ctx& x) {
   return profile_run(x, profile::confirm, {"kind", "text", "section", "decision", "user_id", "expected_revision", "locale"});
 }
 
-StepOutcome inference_confirm_op(Ctx& x) { return profile_run(x, profile::confirm_inference, {"ref", "locale"}); }
-StepOutcome inference_reject_op(Ctx& x) { return profile_run(x, profile::reject_inference, {"ref", "locale"}); }
+StepOutcome inference_confirm_op(Ctx& x) { return profile_run(x, profile::confirm_inference, {"entry", "locale"}); }
+StepOutcome inference_reject_op(Ctx& x) { return profile_run(x, profile::reject_inference, {"entry", "locale"}); }
 
 // ── the units a conversation belongs to (M1-K2c-1): the kinds, the words and the conversation are the data's, the store's and the call's ─────────
 

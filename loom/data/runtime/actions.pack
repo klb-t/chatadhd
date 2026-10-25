@@ -14775,7 +14775,7 @@
         "stores_result": false,
         "params": [
           {
-            "name": "ref",
+            "name": "entry",
             "type": "string",
             "required": true,
             "description": {
@@ -14861,7 +14861,7 @@
         "stores_result": false,
         "params": [
           {
-            "name": "ref",
+            "name": "entry",
             "type": "string",
             "required": true,
             "description": {

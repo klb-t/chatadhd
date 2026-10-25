@@ -279,7 +279,7 @@ export default function MeView({ result, t, language, convId, proposalFeature, o
   // The fixed button "Poznaj mnie" is the action of the interview; the card's own offer of it would be the same button twice.
   const headerButtons = useMemo(() => actionButtons(card?.actions, t).filter(b => b.id !== INTERVIEW_ACTION), [card, t]);
   const changed = useCallback((text: string) => { setDone(text); onChanged(); }, [onChanged]);
-  const interviewButton: ActionButton = { id: INTERVIEW_ACTION, label: t("me.interview.start"), title: t("me.interview.start"), planned: false, args: { op: "start" } };
+  const interviewButton: ActionButton = { id: INTERVIEW_ACTION, label: t("me.interview.start"), title: t("me.interview.start"), planned: false, args: { op: "start" }, params: [] };
   const common = { t, language, convId, proposalFeature, onChanged: changed, onOpenConversation };
   return (
     <section className="me-view" data-testid="me-view" aria-label={t("me.title")} data-parts={heads.length}>

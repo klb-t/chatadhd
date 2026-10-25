@@ -1246,11 +1246,27 @@ Result<std::vector<Json>> profile_slots(const Env& env) {
       fields[json::get_string(f, "id")] = std::move(one);
     }
   }
+  const Json history = snap ? snap->value("history", Json::array()) : Json::array();
+  // The value a field held before its present one (the last event of the field that replaced a known value with another): what a correction
+  // overwrote. The history is bounded by the person's retention rules; when it no longer holds the event there is no previous value to show.
+  auto previous_of = [&](const std::string& id, const Json& now) -> Json {
+    if (!history.is_array()) return Json(nullptr);
+    for (auto e = history.rbegin(); e != history.rend(); ++e) {
+      if (!e->is_object() || json::get_string(*e, "field") != id) continue;
+      const Json before = e->value("before", Json(nullptr));
+      if (!before.is_object() || json::get_string(before, "status") != "known") continue;
+      const Json value = before.value("value", Json(nullptr));
+      if (value.is_null() || value == now) continue;
+      return Json{{"value", value}, {"time", before.value("time", Json(nullptr))}, {"provenance", before.value("provenance", Json(nullptr))}};
+    }
+    return Json(nullptr);
+  };
   std::vector<Json> out;
   for (const auto& it : fields.items()) {
     const Json& f = it.value();
     const Json prov = f.value("provenance", Json(nullptr));
     out.push_back(Json{{"id", it.key()},
+                       {"previous", json::get_string(f, "status") == "known" ? previous_of(it.key(), f.value("value", Json(nullptr))) : Json(nullptr)},
                        {"section", f.value("section", "")},
                        {"category", f.value("category", "")},
                        {"state", f.value("status", "unknown")},
@@ -1458,6 +1474,10 @@ Result<Read> read_party(Impl& c, const Json& src, const std::string&, const Json
     }
     n["attrs"] = Json{{"slot", id}, {"section", s.value("section", "")}, {"category", s.value("category", "")}};
     if (!value_id.is_null()) n["attrs"]["value_id"] = value_id;
+    // What a correction overwrote (the card says it under the details): the earlier value in words, and when it was given.
+    if (known)
+      if (const Json prev = s.value("previous", Json(nullptr)); prev.is_object())
+        n["attrs"]["previous"] = Json{{"value_human", c.human_value(prev.value("value", Json(nullptr)), Json::object())}, {"time", prev.value("time", Json(nullptr))}};
     // Whether the interview asks this slot at your level, and when it will not, why (profile.show says the same): null = no level or no interview yet.
     if (plan.contains("asked")) {
       const bool is_asked = asked.count(id) > 0;

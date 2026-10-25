@@ -323,6 +323,35 @@ try {
     await audit("10-inferred"); await shot("10-inferred");
   });
 
+  await step("7b Odrzuć / Potwierdź on a conclusion: the question → Tak; the entry stays as rejected (no evidence, the kernel's state word) and then becomes the person's word with the time; the buttons follow the state", async () => {
+    const holder = holderOf(c => c.address === "interest:kuchnia");
+    assert.ok(holder, "some part holds the topic");
+    await openSection(holder.address);
+    const addr = "interest:kuchnia";
+    const r = row(addr);
+    await r.scrollIntoViewIfNeeded();
+    assert.ok(await r.locator('[data-action="inference.confirm"]').count() === 1 && await r.locator('[data-action="inference.reject"]').count() === 1, "both buttons on a conclusion");
+    assert.equal(await r.locator('[data-action="inference.reject"]').innerText(), say("me.action.inference.reject"));
+    await r.locator('[data-action="inference.reject"]').tap();
+    await page.getByTestId("me-gate").waitFor();
+    assert.equal(await page.getByTestId("me-input-form").count(), 0, "the node fills its only argument: the form is not shown");
+    await audit("12-reject-proposal"); await shot("12-reject-proposal");
+    await page.getByTestId("me-proposal-confirm").tap();
+    const rejected = await until("the kernel's rejected entry", async () => (await navigate(holder.address)).children.find(c => c.address === addr && c.state === "rejected"));
+    assert.equal(rejected.evidence, null); assert.equal(rejected.attrs.review.decision, "rejected");
+    await until("the screen says it", async () => (await row(addr).innerText()).includes(say("me.state.rejected")));
+    assert.equal(await row(addr).locator('[data-action="inference.reject"]').count(), 0, "a rejected entry offers only Potwierdź");
+    await audit("13-rejected"); await shot("13-rejected");
+    await row(addr).locator('[data-action="inference.confirm"]').tap();
+    await page.getByTestId("me-gate").waitFor();
+    await page.getByTestId("me-proposal-confirm").tap();
+    const said = await until("the confirmed entry", async () => (await navigate(holder.address)).children.find(c => c.address === addr && c.evidence?.class === "said"));
+    assert.equal(said.evidence.provenance.method, "user_confirmed"); assert.ok(said.evidence.provenance.time);
+    await until("the chip says it", async () => (await row(addr).getByTestId("me-row-chip").innerText()) === say("me.class.said"));
+    assert.notEqual(await row(addr).getAttribute("data-inferred"), "true", "no longer drawn as a conclusion");
+    await audit("14-confirmed"); await shot("14-confirmed");
+  });
+
   await step("8 the entry point 'Poznaj mnie' opens the conversation of the interview (no model) and closes the panel", async () => {
     await page.evaluate(() => window.scrollTo(0, 0)); await page.getByTestId("me-view").evaluate(el => el.scrollIntoView({ block: "start" }));
     await page.getByTestId("me-actions-interview").getByTestId("me-action").tap();

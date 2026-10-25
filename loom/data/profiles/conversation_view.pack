@@ -2216,7 +2216,8 @@
             "me.details.review": "Your decision: {{decision}}, {{time}}",
             "me.review.confirmed": "confirmed",
             "me.review.rejected": "rejected",
-            "me.details.review_was": "Before your decision it was: {{was}}"
+            "me.details.review_was": "Before your decision it was: {{was}}",
+            "me.details.previous": "Before: {{value}} ({{time}})"
           },
           "pl": {
             "title": "Graf",
@@ -2617,7 +2618,8 @@
             "me.details.review": "Twoja decyzja: {{decision}}, {{time}}",
             "me.review.confirmed": "potwierdzone",
             "me.review.rejected": "odrzucone",
-            "me.details.review_was": "Przed Twoją decyzją było: {{was}}"
+            "me.details.review_was": "Przed Twoją decyzją było: {{was}}",
+            "me.details.previous": "Poprzednio: {{value}} ({{time}})"
           }
         }
       }

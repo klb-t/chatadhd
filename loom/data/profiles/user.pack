@@ -330,7 +330,7 @@
               {
                 "action": "inference.confirm",
                 "args": {
-                  "ref": "attrs.node_id"
+                  "entry": "attrs.node_id"
                 },
                 "where": {
                   "evidence.class": "inferred"
@@ -339,7 +339,7 @@
               {
                 "action": "inference.reject",
                 "args": {
-                  "ref": "attrs.node_id"
+                  "entry": "attrs.node_id"
                 },
                 "where": {
                   "evidence.class": "inferred"
@@ -348,7 +348,7 @@
               {
                 "action": "inference.confirm",
                 "args": {
-                  "ref": "attrs.node_id"
+                  "entry": "attrs.node_id"
                 },
                 "where": {
                   "state": "rejected"
@@ -357,7 +357,7 @@
               {
                 "action": "inference.reject",
                 "args": {
-                  "ref": "attrs.node_id"
+                  "entry": "attrs.node_id"
                 },
                 "where": {
                   "evidence.provenance.method": "user_confirmed"
@@ -394,7 +394,7 @@
               {
                 "action": "inference.confirm",
                 "args": {
-                  "ref": "attrs.node_id"
+                  "entry": "attrs.node_id"
                 },
                 "where": {
                   "evidence.class": "inferred"
@@ -403,7 +403,7 @@
               {
                 "action": "inference.reject",
                 "args": {
-                  "ref": "attrs.node_id"
+                  "entry": "attrs.node_id"
                 },
                 "where": {
                   "evidence.class": "inferred"
@@ -412,7 +412,7 @@
               {
                 "action": "inference.confirm",
                 "args": {
-                  "ref": "attrs.node_id"
+                  "entry": "attrs.node_id"
                 },
                 "where": {
                   "state": "rejected"
@@ -421,7 +421,7 @@
               {
                 "action": "inference.reject",
                 "args": {
-                  "ref": "attrs.node_id"
+                  "entry": "attrs.node_id"
                 },
                 "where": {
                   "evidence.provenance.method": "user_confirmed"
