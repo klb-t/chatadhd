@@ -1,5 +1,6 @@
 #include "loom/util/sha256.h"
 
+#include <algorithm>
 #include <cstring>
 #include <fstream>
 #include <vector>
@@ -200,7 +201,8 @@ void pbkdf2_hmac_sha256(std::string_view password, std::string_view salt, std::u
   std::uint32_t block = 1;
   std::size_t written = 0;
   std::vector<std::uint8_t> first(salt.size() + 4);
-  std::memcpy(first.data(), salt.data(), salt.size());
+  // std::copy, not memcpy: g++ 15 -O2 reports a bogus -Wstringop-overflow for memcpy into a size+4 vector
+  std::copy(salt.begin(), salt.end(), first.begin());
   while (written < out_len) {
     first[salt.size()] = static_cast<std::uint8_t>(block >> 24);
     first[salt.size() + 1] = static_cast<std::uint8_t>(block >> 16);
