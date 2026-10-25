@@ -136,8 +136,8 @@ TEST_SUITE("party_self_subgraphs") {
       CHECK(c.at("actions").is_array());
       CHECK(c.contains("count"));
     }
-    // the seven kinds of the table and the one added (the interview's other fields)
-    CHECK(parts == std::set<std::string>{"identity", "preferences", "policies", "units", "interests", "network", "memory", "slots"});
+    // the kinds of the table and the ones added (the interview's other fields)
+    CHECK(parts == std::set<std::string>{"identity", "preferences", "policies", "units", "interests", "network", "memory", "forgotten", "slots"});
     CHECK(child(you, "subgraph:self/memory")->at("label") == "Co pamiętam");
     CHECK(child(you, "subgraph:self/memory")->at("count") == 2);
     CHECK(child(you, "subgraph:self/units")->at("count") == 1);
@@ -403,6 +403,56 @@ TEST_SUITE("party_self_subgraphs") {
     for (const auto& c : en.at("children"))
       if (c.at("evidence").at("human") == "origin not recorded - an older note") found = true;
     CHECK(found);
+  }
+
+  TEST_CASE("Zapomnij: the entry leaves the conversations and the memory text, stays on the folded list Zapomniane with the record of forgetting; the words are kept or dropped by a preset") {
+    for (const bool keep : {true, false}) {
+      fsutil::TempDir td;
+      if (!keep) {
+        std::filesystem::create_directories(td.path() / "profiles");
+        unwrap(fsutil::write_file(td.path() / "profiles" / "chat_ops.pack",
+                                  R"({"schema":"loom.runtime_profile_overlay/1","domain":"chat_ops","overrides":{"forget":{"keep_content":false}}})"));
+      }
+      RuntimeOptions o;
+      o.data_dir = td.path().string();
+      o.start_workers = false;
+      o.http = std::make_shared<net::ScriptedTransport>();
+      auto rt = unwrap(Runtime::open(o));
+      rt->config().set("model_registry_autorefresh", "off");
+      const std::string id = unwrap(rt->memory().add_node("Mam kota Filemona"));
+      unwrap(rt->memory().add_node("Lubię herbatę"));
+      auto nav = [&](const std::string& part) { return unwrap(rt->actions().invoke("graph.navigate", Json{{"focus", part}, {"lang", "pl"}, {"limit", 0}, {"hops", 1}})); };
+      const Json waiting = unwrap(rt->actions().invoke("run", Json{{"action", "memory.forget"}, {"element", Json{{"class", "application"}}}, {"args", Json{{"query", id}}}, {"locale", "pl"}, {"ref", "test"}}));
+      REQUIRE(waiting.at("status") == "awaiting_confirmation");
+      CHECK(rt->memory().get_node(id)->active);   // nothing before the yes
+      const Json done = unwrap(rt->actions().confirm(Json{{"run_id", waiting.at("id")}, {"approved", true}, {"receipt_id", waiting.at("pending").at("receipt_id")}, {"ref", "test"}}));
+      REQUIRE(done.at("status") == "completed");
+      // not deleted: inactive, with the record; the memory text no longer holds it
+      const auto node = rt->memory().get_node(id);
+      REQUIRE(node);
+      CHECK_FALSE(node->active);
+      CHECK(node->metadata.at("forgotten").at("kept") == keep);
+      CHECK(node->metadata.at("forgotten").at("by") == "user");
+      CHECK(node->metadata.at("forgotten").contains("time"));
+      CHECK(node->content.empty() == !keep);
+      CHECK(rt->memory().get_active_context(16000).find("Filemona") == std::string::npos);
+      CHECK(rt->memory().get_active_context(16000).find("herbat") != std::string::npos);
+      // the screen: gone from "Co pamiętam", on the list "Zapomniane" (its own part) with the status and the sentence
+      const Json mem = nav("subgraph:self/memory");
+      CHECK(mem.at("children").size() == 1);
+      const Json gone = nav("subgraph:self/forgotten");
+      REQUIRE(gone.at("children").size() == 1);
+      const Json& row = gone.at("children")[0];
+      CHECK(row.at("status") == "forgotten");
+      const Json card = unwrap(rt->actions().invoke("graph.card", Json{{"address", row.at("address")}, {"lang", "pl"}}));
+      CHECK(card.at("attrs").at("forgotten").at("kept") == keep);
+      CHECK(row.at("why").get<std::string>().find("Zapomniałeś") == 0);
+      if (!keep) CHECK(row.at("label") == "(treść niezachowana)");
+      const Json me = nav("party:self");
+      bool part = false;
+      for (const auto& c : me.at("children")) part = part || c.at("address") == "subgraph:self/forgotten";
+      CHECK(part);
+    }
   }
 
   TEST_CASE("a preference goes through the scope chain: what ships is the installation level, your answer in the profile the person level, the chip says which") {

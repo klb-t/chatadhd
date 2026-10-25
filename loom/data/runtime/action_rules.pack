@@ -544,8 +544,8 @@
         "effect": "confirm",
         "initiator": "application preset",
         "reason": {
-          "en": "Forgetting removes a memory entry for good; you confirm each one.",
-          "pl": "Zapomnienie usuwa wpis pamięci na stałe; każde potwierdzasz sam."
+          "en": "Forgetting takes a memory entry out of every conversation; the record that it was forgotten stays on the list of forgotten entries (with its words, unless the setting says otherwise); you confirm each one.",
+          "pl": "Zapomnienie wyjmuje wpis pamięci ze wszystkich rozmów; zapis, że został zapomniany, zostaje na liście zapomnianych (z treścią, chyba że ustawienie mówi inaczej); każde potwierdzasz sam."
         }
       },
       "confirm:usage.compact": {

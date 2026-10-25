@@ -8906,9 +8906,9 @@
         "kind": "atomic",
         "status": "implemented",
         "title": "Forget something",
-        "description": "Removes the one memory entry that matches the words (or the id); with several matches it lists them and removes nothing.",
+        "description": "Takes the one memory entry that matches the words (or the id) out of every conversation and records it as forgotten (who, when, and its words unless the setting drops them); with several matches it lists them and forgets none.",
         "why": {
-          "pl": "Usuwa jeden pasujący wpis pamięci; przy kilku pasujących tylko je wypisuje."
+          "pl": "Wyjmuje jeden pasujący wpis pamięci ze wszystkich rozmów i zapisuje go jako zapomniany; przy kilku pasujących tylko je wypisuje."
         },
         "labels": {
           "pl": "Zapomnij coś"

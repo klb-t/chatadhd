@@ -1328,6 +1328,18 @@
         "en": "you confirmed it",
         "pl": "potwierdzone przez Ciebie"
       },
+      "forgotten.why": {
+        "en": "You forgot this entry. It no longer goes into any conversation; it stays here so that nothing disappears silently.",
+        "pl": "Zapomniałeś ten wpis. Nie trafia już do żadnej rozmowy; zostaje tutaj, żeby nic nie znikało po cichu."
+      },
+      "forgotten.why_dropped": {
+        "en": "You forgot this entry and its words were not kept. It no longer goes into any conversation; only the record of forgetting stays.",
+        "pl": "Zapomniałeś ten wpis i jego treść nie została zachowana. Nie trafia już do żadnej rozmowy; zostaje tylko zapis, że go zapomniano."
+      },
+      "forgotten.label_dropped": {
+        "en": "(words not kept)",
+        "pl": "(treść niezachowana)"
+      },
       "review.rejected": {
         "en": "You rejected this conclusion. It stays on the list so that nothing disappears silently; you can confirm it later.",
         "pl": "Odrzuciłeś ten wniosek. Zostaje na liście, żeby nic nie znikało po cichu; możesz go później potwierdzić."

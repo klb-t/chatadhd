@@ -132,7 +132,10 @@ TEST_SUITE("chat_ops") {
       CHECK(f.text_of(recalled).find(pl ? "lubię kawę" : "I like coffee") != std::string::npos);
       // forget: one match is removed, after the yes
       const auto forgot = f.say_and_confirm(pl ? "zapomnij, że lubię kawę" : "forget that I like coffee", "memory.forget", pl ? "tak" : "yes");
-      CHECK(f.rt->memory().get_all().empty());
+      // forgotten, not deleted: the entry stays as a record, out of every conversation
+      REQUIRE(f.rt->memory().get_all().size() == 1);
+      CHECK_FALSE(f.rt->memory().get_all()[0].active);
+      CHECK(f.rt->memory().get_active_context(16000).empty());
       CHECK(f.text_of(forgot).find(pl ? "Zapomniane" : "Forgot") != std::string::npos);
     }
   }

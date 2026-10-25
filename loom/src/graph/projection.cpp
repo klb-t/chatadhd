@@ -1725,6 +1725,20 @@ Result<Read> read_memory(Impl& c, const Json& src, const std::string&, const Jso
                       {"provenance", Json{{"known", !source_kind.empty() || !prov.is_null()}, {"source", source_kind.empty() ? Json(nullptr) : Json(source_kind)},
                                           {"time", prov.is_object() ? prov.value("time", Json(nullptr)) : Json(nullptr)}, {"ref", prov.is_object() ? prov.value("ref", Json(nullptr)) : Json(nullptr)},
                                           {"words", n["evidence"]["human"]}}}};
+    // A forgotten entry (memory.forget) stays on the list with the record of forgetting: it is not in any conversation, and it says so, when, and
+    // whether its words were kept. It is its own status, so that a part of the screen (data) can fold it away without hiding it.
+    const Json forgotten = m.metadata.is_object() ? m.metadata.value("forgotten", Json(nullptr)) : Json(nullptr);
+    if (forgotten.is_object()) {
+      const bool kept = json::get_bool(forgotten, "kept", true);
+      const std::string when = json::get_string(forgotten, "time");
+      n["status"] = "forgotten";
+      n["state"] = "forgotten";
+      if (m.content.empty()) n["label"] = c.word("forgotten.label_dropped");
+      std::string why = c.word(kept ? "forgotten.why" : "forgotten.why_dropped");
+      if (when.size() >= 10) why += " (" + when.substr(0, 10) + ")";
+      n["why"] = why;
+      n["attrs"]["forgotten"] = forgotten;
+    }
     r.nodes.push_back(std::move(n));
   }
   return r;

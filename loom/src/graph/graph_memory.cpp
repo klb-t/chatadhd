@@ -86,6 +86,26 @@ Result<GraphContextDetail> GraphMemorySelector::select_context_detailed(std::str
   return detail;
 }
 
+Result<std::vector<std::string>> GraphMemorySelector::review_excluded_decisions(const Json& overrides) const {
+  LOOM_TRY_ASSIGN(auto profile, RuntimeProfile::load("graph_memory", cfg_.path().parent_path(), overrides));
+  const Json values = profile.values();
+  const Json list = values.value("review_excluded_decisions", Json::array());
+  std::vector<std::string> out;
+  if (list.is_array())
+    for (const auto& v : list)
+      if (v.is_string()) out.push_back(v.get<std::string>());
+  return out;
+}
+
+bool GraphMemorySelector::review_excluded(const Json& node_metadata, const std::vector<std::string>& excluded) {
+  if (excluded.empty() || !node_metadata.is_object()) return false;
+  const Json review = node_metadata.value("review", Json(nullptr));
+  if (!review.is_object()) return false;
+  const Json decision = review.value("decision", Json(nullptr));
+  if (!decision.is_string()) return false;
+  return std::find(excluded.begin(), excluded.end(), decision.get<std::string>()) != excluded.end();
+}
+
 Result<std::string> GraphMemorySelector::select_impl(std::string_view text, const GraphSelectOptions& opts, const Json& overrides,
                                                      GraphContextDetail* detail) {
   LOOM_TRY_ASSIGN(auto profile, RuntimeProfile::load("graph_memory", cfg_.path().parent_path(), overrides));
@@ -113,6 +133,7 @@ Result<std::string> GraphMemorySelector::select_impl(std::string_view text, cons
 
   LOOM_TRY_ASSIGN(auto seed_labels, extract_seed_labels_checked(text, opts.analysis, overrides));
   if (seed_labels.empty()) return "";
+  LOOM_TRY_ASSIGN(auto review_excluded, review_excluded_decisions(overrides));
 
   std::vector<std::string> seed_ids_order;
   std::set<std::string> seed_ids_set;
@@ -140,6 +161,11 @@ Result<std::string> GraphMemorySelector::select_impl(std::string_view text, cons
     if (visited.count(node_id)) continue;
     visited.insert(node_id);
 
+    if (node_id.rfind("m_", 0) != 0 && !review_excluded.empty()) {
+      // A node the person rejected is neither a way into the context nor a way through it.
+      auto node = db_.get_node(node_id);
+      if (node && *node && GraphMemorySelector::review_excluded((*node)->metadata, review_excluded)) continue;
+    }
     if (node_id.rfind("m_", 0) == 0) {
       auto m = db_.get_msg(node_id);
       if (m && *m) {

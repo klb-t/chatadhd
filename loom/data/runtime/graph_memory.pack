@@ -16,6 +16,9 @@
     "separator": "\n---\n",
     "graph_label_codepoints": 40,
     "default_expand_max_nodes": 500,
+    "review_excluded_decisions": [
+      "rejected"
+    ],
     "context": {
       "max_tokens": 4000,
       "include_memory": true,
@@ -93,6 +96,13 @@
         "type": "integer",
         "minimum": 0,
         "description": "0 means unlimited."
+      },
+      "review_excluded_decisions": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "Verdicts of the person on a graph node (metadata.review.decision) whose node the selection neither starts from nor walks through; [] lets every node in."
       },
       "context": {
         "type": "object",
@@ -221,6 +231,7 @@
       "separator",
       "graph_label_codepoints",
       "default_expand_max_nodes",
+      "review_excluded_decisions",
       "context"
     ],
     "additionalProperties": false

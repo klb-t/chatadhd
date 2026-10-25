@@ -615,8 +615,28 @@ StepOutcome memory_forget(Ctx& x) {
     return fail(Errc::Conflict, x.say("memory_ambiguous", Json{{"count", found.size()}}) + "\n" + join_lines(lines));
   }
   const MemoryNode node = found[0];
-  if (auto st = mem.delete_node(node.id, true); !st) return fail(st.error());
-  return answer(x.say("memory_forgotten", Json{{"content", clip(node.content, 400)}, {"id", node.id}}), Json{{"id", node.id}, {"content", node.content}});
+  // Nothing vanishes silently: the entry leaves every conversation (it is made inactive; the context never reads an inactive one) and the record of
+  // forgetting - when, by whom, from which conversation, and whether its words stay - is kept on the entry. Whether the words stay is the pack's
+  // preset (chat_ops forget.keep_content), not a rule. The entries below it go with it, each with the same record.
+  const bool keep = json::get_bool(x.cfg.value("forget", Json::object()), "keep_content", true);
+  const std::string when = timeutil::utc_now_iso();
+  std::vector<std::string> ids{node.id};
+  for (std::size_t i = 0; i < ids.size(); ++i)
+    for (const auto& child : mem.get_children(ids[i])) ids.push_back(child.id);
+  for (const auto& id : ids) {
+    auto entry = mem.get_node(id);
+    if (!entry) continue;
+    Json meta = entry->metadata.is_object() ? entry->metadata : Json::object();
+    Json record{{"time", when}, {"by", "user"}, {"kept", keep}, {"was_active", entry->active}};
+    if (const std::string conv = x.conv_id(); !conv.empty()) record["conv_id"] = conv;
+    if (id != node.id) record["via"] = node.id;
+    meta["forgotten"] = record;
+    Json fields{{"active", false}, {"metadata", meta}};
+    if (!keep) fields["content"] = "";
+    if (auto st = mem.update_node(id, fields); !st) return fail(st.error());
+  }
+  return answer(x.say(keep ? "memory_forgotten" : "memory_forgotten_dropped", Json{{"content", clip(node.content, 400)}, {"id", node.id}}),
+                Json{{"id", node.id}, {"content", keep ? Json(node.content) : Json(nullptr)}, {"forgotten", Json{{"time", when}, {"kept", keep}, {"entries", ids.size()}}}});
 }
 
 // ── import and export ───────────────────────────────────────────────

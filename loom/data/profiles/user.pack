@@ -444,7 +444,13 @@
             "stability_rank": 7,
             "members": [
               {
-                "source": "memory"
+                "source": "memory",
+                "where": {
+                  "status": [
+                    "active",
+                    "inactive"
+                  ]
+                }
               }
             ],
             "actions": [
@@ -463,6 +469,29 @@
                 "action": "memory.recall"
               }
             ]
+          },
+          {
+            "id": "forgotten",
+            "label": {
+              "pl": "Zapomniane",
+              "en": "Forgotten"
+            },
+            "why": {
+              "pl": "Wpisy pamięci, które kazałeś zapomnieć. Nie trafiają do żadnej rozmowy; zapis (kiedy, przez kogo, czy z treścią) zostaje tutaj, żeby nic nie znikało po cichu.",
+              "en": "Memory entries you told me to forget. They go into no conversation; the record (when, by whom, with or without its words) stays here so that nothing disappears silently."
+            },
+            "order_for_prefix": null,
+            "stability_rank": 8,
+            "members": [
+              {
+                "source": "memory",
+                "where": {
+                  "status": "forgotten"
+                }
+              }
+            ],
+            "actions": [],
+            "actions_here": []
           },
           {
             "id": "slots",

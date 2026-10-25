@@ -417,6 +417,42 @@ TEST_SUITE("graph_memory") {
     CHECK(gm.select_context("database and API review", opts).empty());
   }
 
+  TEST_CASE("select_context: a node the person rejected is neither a way in nor a way through; a confirmed one is; the verdicts excluded are data") {
+    fsutil::TempDir td;
+    auto db = open_db(td.path() / "gm.db");
+    Config cfg(td.path() / "config.json");
+    auto an = unwrap(SemanticAnalyzer::create());
+    GraphMemorySelector gm(*db, cfg, *an);
+    auto conv1 = unwrap(db->create_conv("Old conversation"));
+    const std::string old_mid = mk_msg(*db, conv1.id, "we discussed the database and the API design", "assistant");
+    const auto topic = unwrap(db->get_or_create_node("tech", "topic"));
+    unwrap(db->create_link(old_mid, topic, "tagged_with", 0.5));
+    auto conv2 = unwrap(db->create_conv("New conversation"));
+    GraphSelectOptions opts;
+    opts.current_conv_id = conv2.id;
+    const std::string query = "database and API review";
+    CHECK(gm.select_context(query, opts).find("database and the API design") != std::string::npos);   // no verdict: in
+
+    auto set_review = [&](const std::string& decision) {
+      NodePatch patch;
+      patch.metadata = Json{{"review", Json{{"decision", decision}, {"by", "user"}}}};
+      REQUIRE(db->update_node(topic, patch));
+    };
+    set_review("confirmed");
+    CHECK(gm.select_context(query, opts).find("database and the API design") != std::string::npos);   // confirmed: in
+    set_review("rejected");
+    CHECK(gm.select_context(query, opts).empty());                                                      // rejected: out (seed and path)
+    const auto excluded = unwrap(gm.review_excluded_decisions());
+    REQUIRE(excluded.size() == 1);
+    CHECK(excluded[0] == "rejected");
+    // The list is data: an empty one lets the rejected node in (the person may want that), another verdict word excludes that one.
+    const Json none{{"review_excluded_decisions", Json::array()}};
+    CHECK(unwrap(gm.select_context_checked(query, opts, none)).find("database and the API design") != std::string::npos);
+    set_review("confirmed");
+    const Json confirmed_out{{"review_excluded_decisions", Json::array({"confirmed"})}};
+    CHECK(unwrap(gm.select_context_checked(query, opts, confirmed_out)).empty());
+  }
+
   TEST_CASE("ContextSelector: memory + graph + fts merged under a token budget") {
     fsutil::TempDir td;
     auto db = open_db(td.path() / "cs.db");

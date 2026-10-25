@@ -75,6 +75,11 @@ class GraphMemorySelector {
   Result<GraphContextDetail> select_context_detailed(std::string_view text, const GraphSelectOptions& opts = {},
                                                      const Json& overrides = Json::object());
 
+  // The verdicts of the person on a node (metadata.review.decision) that keep the node out of the context: the selection neither starts from
+  // such a node nor walks through it (graph_memory profile, review_excluded_decisions; preset ["rejected"], [] lets everything in).
+  Result<std::vector<std::string>> review_excluded_decisions(const Json& overrides = Json::object()) const;
+  static bool review_excluded(const Json& node_metadata, const std::vector<std::string>& excluded);
+
   // Loom: BFS subgraph around `seed_ids` (nodes or messages) up to `depth`
   // hops, capped at max_nodes. Output shape matches Database::get_graph_data
   // ({"nodes":[{"id","label","type","kind",...}], "edges":[{"src","dst",

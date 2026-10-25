@@ -363,6 +363,7 @@ Result<Json> compile_unified_context(Database& db, const Config& cfg,
       LOOM_TRY_ASSIGN(auto topic, db.find_node(utf8::to_lower(label), "topic"));
       if (topic) seed(topic->id);
     }
+    LOOM_TRY_ASSIGN(auto review_excluded, graph->review_excluded_decisions());
     std::size_t visited = 0, messages = 0;
     std::string stop_reason;
     while (!queue.empty()) {
@@ -371,6 +372,14 @@ Result<Json> compile_unified_context(Database& db, const Config& cfg,
       const auto [id, hops] = queue.front();
       queue.pop_front();
       ++visited;
+      if (id.rfind("m_", 0) != 0 && !review_excluded.empty()) {
+        // A node the person rejected is neither a way into the context nor a way through it.
+        LOOM_TRY_ASSIGN(auto reviewed, db.get_node(id));
+        if (reviewed && GraphMemorySelector::review_excluded(reviewed->metadata, review_excluded)) {
+          dropped.push_back(Json{{"ref", id}, {"channel", "legacy_graph"}, {"ref_kind", "node"}, {"drop_reason", "rejected_by_person"}});
+          continue;
+        }
+      }
       if (id.rfind("m_", 0) == 0) {
         LOOM_TRY_ASSIGN(auto message, db.get_msg(id));
         if (message) {

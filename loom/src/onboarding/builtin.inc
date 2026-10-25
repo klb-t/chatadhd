@@ -4304,7 +4304,13 @@ std::string_view(R"loom_onboard(            "field.questions_suffix": "; pytania
             "stability_rank": 7,
             "members": [
               {
-                "source": "memory"
+                "source": "memory",
+                "where": {
+                  "status": [
+                    "active",
+                    "inactive"
+                  ]
+                }
               }
             ],
             "actions": [
@@ -4323,6 +4329,29 @@ std::string_view(R"loom_onboard(            "field.questions_suffix": "; pytania
                 "action": "memory.recall"
               }
             ]
+          },
+          {
+            "id": "forgotten",
+            "label": {
+              "pl": "Zapomniane",
+              "en": "Forgotten"
+            },
+            "why": {
+              "pl": "Wpisy pamięci, które kazałeś zapomnieć. Nie trafiają do żadnej rozmowy; zapis (kiedy, przez kogo, czy z treścią) zostaje tutaj, żeby nic nie znikało po cichu.",
+              "en": "Memory entries you told me to forget. They go into no conversation; the record (when, by whom, with or without its words) stays here so that nothing disappears silently."
+            },
+            "order_for_prefix": null,
+            "stability_rank": 8,
+            "members": [
+              {
+                "source": "memory",
+                "where": {
+                  "status": "forgotten"
+                }
+              }
+            ],
+            "actions": [],
+            "actions_here": []
           },
           {
             "id": "slots",
@@ -4922,7 +4951,8 @@ std::string_view(R"loom_onboard(            "field.questions_suffix": "; pytania
       "label": "Texts for the question of the background analysis held by the x10 usage guard, asked in the conversation; texts only, they do not change what is sent",
       "value": {
         "schema": "loom.presentation_feature/1",
-        "feature": "semantic_question",
+)loom_onboard", 59974),
+std::string_view(R"loom_onboard(        "feature": "semantic_question",
         "locales": {
           "en": {
             "title": "The background analysis is waiting for you",
@@ -4940,8 +4970,7 @@ std::string_view(R"loom_onboard(            "field.questions_suffix": "; pytania
           "pl": {
             "title": "Analiza w tle czeka na Ciebie",
             "explanation": "Nic nie wysłano. Przewidywane zużycie tej analizy jest znacznie wyższe niż zwykle dla tej pracy, więc najpierw pytamy. Nic nie jest ograniczane; decydujesz Ty.",
-)loom_onboard", 59991),
-std::string_view(R"loom_onboard(            "baseline_key": "Grupa porównawcza: {{key}}",
+            "baseline_key": "Grupa porównawcza: {{key}}",
             "resource": "{{name}}: oczekiwane {{projected}}, baza {{baseline}}, wzrost {{ratio}}",
             "unknown": "nieznane",
             "confirm": "Kontynuuj",
@@ -5896,7 +5925,8 @@ std::string_view(R"loom_onboard(            "baseline_key": "Grupa porównawcza:
             "cm_deeper": "Głębiej",
             "cm_narrower": "Węziej",
             "cm_shallower": "Płycej",
-            "cm_selector_profile": "Profil selektora",
+)loom_onboard", 59965),
+std::string_view(R"loom_onboard(            "cm_selector_profile": "Profil selektora",
             "cm_flow_text_graph": "Przepływ: tekst ↔ graf",
             "cm_preview_request": "Podgląd wysyłki",
             "cm_steps_help": "Szerzej, głębiej, węziej i płycej działają tylko na następne zapytanie; po jego wysłaniu wszystko wraca do ustawień.",
@@ -5911,8 +5941,7 @@ std::string_view(R"loom_onboard(            "baseline_key": "Grupa porównawcza:
             "cm_status_own": "Twój",
             "cm_modify_busy": "Zmieniam…",
             "cm_modify_failed": "Nie udało się zmienić kontekstu: {{reason}}",
-)loom_onboard", 59972),
-std::string_view(R"loom_onboard(            "cm_modify_declined": "Zostawione bez zmian.",
+            "cm_modify_declined": "Zostawione bez zmian.",
             "cm_modify_reset": "Cofnij zmiany następnego zapytania",
             "cm_flow_help": "Otwiera kartę ustawienia „Przepływ żądania”: tam wybierasz, czy graf idzie do modelu i wraca w odpowiedzi (dla tej rozmowy, dla Ciebie albo dla całej instalacji).",
             "cm_preview_help": "Pokazuje żądanie, które pójdzie z następnym Wyślij. Możesz je poprawić; użyje go jednorazowo.",
@@ -6863,7 +6892,8 @@ std::string_view(R"loom_onboard(            "cm_modify_declined": "Zostawione be
             "reason.reader_missing": "ta wersja nie ma czytelnika tego źródła",
             "reason.read_under_parent": "wypisywane pod swoim rodzicem",
             "reason.read_under_conversation": "wypisywane pod rozmową",
-            "reason.read_under_flow": "wypisywane pod przepływem",
+)loom_onboard", 59949),
+std::string_view(R"loom_onboard(            "reason.read_under_flow": "wypisywane pod przepływem",
             "reason.config_unavailable": "nie da się odczytać ustawień",
             "reason.config_value_not_an_object": "to ustawienie nie jest listą wpisów",
             "reason.settings_fields_unavailable": "nie da się odczytać opisu ustawień",
@@ -6877,8 +6907,7 @@ std::string_view(R"loom_onboard(            "cm_modify_declined": "Zostawione be
             "reason.entity_kind_not_configured": "rodzaj encji nie jest skonfigurowany",
             "reason.no_device_registry": "brak listy urządzeń",
             "reason.no_interface_registry": "brak listy interfejsów",
-)loom_onboard", 59989),
-std::string_view(R"loom_onboard(            "reason.pack_file_absent": "pakiet wiedzy nie ma takiego pliku",
+            "reason.pack_file_absent": "pakiet wiedzy nie ma takiego pliku",
             "reason.pack_unavailable": "nie da się odczytać pakietu wiedzy",
             "reason.profile_unavailable": "nie da się odczytać profilu działania",
             "reason.provider_failed": "licznik zawiódł",
@@ -7764,7 +7793,8 @@ std::string_view(R"loom_onboard(            "reason.pack_file_absent": "pakiet w
             },
             "provenance": "builtin_preset",
             "consent_event": null
-          }
+)loom_onboard", 60000),
+std::string_view(R"loom_onboard(          }
         ]
       }
     },
@@ -7814,8 +7844,7 @@ std::string_view(R"loom_onboard(            "reason.pack_file_absent": "pakiet w
       "additionalProperties": false
     }
   },
-)loom_onboard", 59992),
-std::string_view(R"loom_onboard(  "runtime_bindings": {
+  "runtime_bindings": {
     "/settings": "onboarding.settings",
     "/privacy": "onboarding.privacy"
   },
@@ -7842,7 +7871,7 @@ std::string_view(R"loom_onboard(  "runtime_bindings": {
   },
   "presentation_key": "presentation.onboarding"
 }
-)loom_onboard", 675)};
+)loom_onboard", 1791)};
 static constexpr std::string_view kOnboardingScenario[] = {
 std::string_view(R"loom_onboard({
   "schema": "loom.onboarding.scenario/1",
