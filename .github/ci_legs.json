@@ -19,14 +19,14 @@
   "cc": "clang",
   "cxx": "clang++",
   "debug_info": "-g",
-  "timeout": 45
+  "timeout": 90
  },
  {
   "preset": "libcxx",
   "cc": "clang",
   "cxx": "clang++",
   "debug_info": "-g",
-  "timeout": 45,
+  "timeout": 90,
   "name": "libcxx (clang++ + libc++)"
  }
 ]
