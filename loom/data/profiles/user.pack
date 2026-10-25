@@ -299,7 +299,10 @@
             ],
             "actions_here": [
               {
-                "action": "units.define"
+                "action": "units.define",
+                "ask": [
+                  "label"
+                ]
               },
               {
                 "action": "units.list"
@@ -323,7 +326,44 @@
                 "source": "interest"
               }
             ],
-            "actions": [],
+            "actions": [
+              {
+                "action": "inference.confirm",
+                "args": {
+                  "ref": "attrs.node_id"
+                },
+                "where": {
+                  "evidence.class": "inferred"
+                }
+              },
+              {
+                "action": "inference.reject",
+                "args": {
+                  "ref": "attrs.node_id"
+                },
+                "where": {
+                  "evidence.class": "inferred"
+                }
+              },
+              {
+                "action": "inference.confirm",
+                "args": {
+                  "ref": "attrs.node_id"
+                },
+                "where": {
+                  "state": "rejected"
+                }
+              },
+              {
+                "action": "inference.reject",
+                "args": {
+                  "ref": "attrs.node_id"
+                },
+                "where": {
+                  "evidence.provenance.method": "user_confirmed"
+                }
+              }
+            ],
             "actions_here": []
           },
           {
@@ -350,7 +390,44 @@
                 }
               }
             ],
-            "actions": [],
+            "actions": [
+              {
+                "action": "inference.confirm",
+                "args": {
+                  "ref": "attrs.node_id"
+                },
+                "where": {
+                  "evidence.class": "inferred"
+                }
+              },
+              {
+                "action": "inference.reject",
+                "args": {
+                  "ref": "attrs.node_id"
+                },
+                "where": {
+                  "evidence.class": "inferred"
+                }
+              },
+              {
+                "action": "inference.confirm",
+                "args": {
+                  "ref": "attrs.node_id"
+                },
+                "where": {
+                  "state": "rejected"
+                }
+              },
+              {
+                "action": "inference.reject",
+                "args": {
+                  "ref": "attrs.node_id"
+                },
+                "where": {
+                  "evidence.provenance.method": "user_confirmed"
+                }
+              }
+            ],
             "actions_here": []
           },
           {
@@ -374,7 +451,7 @@
               {
                 "action": "memory.forget",
                 "args": {
-                  "id": "attrs.note_id"
+                  "query": "attrs.note_id"
                 }
               }
             ],

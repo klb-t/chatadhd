@@ -678,6 +678,36 @@
           "en": "Your copy of a ROM item changes what the application shows as its read-only memory from now on; you confirm each one (the ROM itself is never written).",
           "pl": "Twoja kopia elementu ROM zmienia od teraz to, co aplikacja pokazuje jako swoją pamięć tylko do odczytu; każdą potwierdzasz sam (sam ROM nigdy nie jest zapisywany)."
         }
+      },
+      "confirm:inference.confirm": {
+        "id": "confirm:inference.confirm",
+        "scope": "app_preset",
+        "target": {
+          "kind": "class",
+          "id": "application"
+        },
+        "action": "inference.confirm",
+        "effect": "confirm",
+        "initiator": "application preset",
+        "reason": {
+          "en": "Confirming a conclusion turns it into something you said: from then on the application treats it as your word; you confirm each one.",
+          "pl": "Potwierdzenie wniosku zmienia go w Twoje słowo: od tej chwili aplikacja traktuje go jako coś, co powiedziałeś; każde potwierdzasz sam."
+        }
+      },
+      "confirm:inference.reject": {
+        "id": "confirm:inference.reject",
+        "scope": "app_preset",
+        "target": {
+          "kind": "class",
+          "id": "application"
+        },
+        "action": "inference.reject",
+        "effect": "confirm",
+        "initiator": "application preset",
+        "reason": {
+          "en": "Rejecting a conclusion changes what the application assumes about you; the entry stays with the record of your decision, and you confirm each one.",
+          "pl": "Odrzucenie wniosku zmienia to, co aplikacja o Tobie zakłada; wpis zostaje z zapisem decyzji, a każdą decyzję potwierdzasz sam."
+        }
       }
     },
     "extrapolation": {

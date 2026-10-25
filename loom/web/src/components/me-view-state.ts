@@ -3,7 +3,7 @@
 // counts, the evidence of a row, the actions of a row - all of it comes from the kernel's answer, nothing is a list of this file.
 // The only things written here are PRESETS, each labelled as one, and the argument names that a typed action takes, which are DATA in the pack
 // words (me.input.<action>) because the kernel does not yet list the parameters of an action on a node (gap, see the report).
-import type { GraphNavigateResult, GraphNodeRow, InheritanceLevel } from "../api/graph-projection";
+import type { ActionParam, GraphNavigateResult, GraphNodeRow, InheritanceLevel } from "../api/graph-projection";
 import type { ActionRun } from "../api/types";
 import type { ShellT } from "../shell/text";
 import { stateWord } from "./navigator-state";
@@ -70,7 +70,7 @@ export function provenanceLine(row: Pick<GraphNodeRow, "evidence">, t: ShellT, l
 export function formatTime(iso: string, language: string): string {
   const date = new Date(iso);
   if (Number.isNaN(date.getTime())) return iso;
-  try { return new Intl.DateTimeFormat(language, { dateStyle: "medium", timeStyle: "short" }).format(date); } catch { return iso; }
+  try { return new Intl.DateTimeFormat(language || undefined, { dateStyle: "medium", timeStyle: "short" }).format(date); } catch { return iso; }
 }
 
 /** The value of a row in the kernel's words. A slot the person closed ("never"), skipped or left unknown has NO value in the answer (value null):
@@ -94,24 +94,30 @@ export interface ActionButton {
   title: string;
   planned: boolean;
   args: Record<string, unknown>;
+  /** What the kernel says the person still has to give (actions[].params); empty = the kernel lists none (an older kernel, or nothing to give). */
+  params: ActionParam[];
 }
-type RowAction = { id: string; label: string; decision?: string | null; implementation?: string | null; args?: Record<string, unknown> };
+type RowAction = { id: string; label: string; decision?: string | null; implementation?: string | null; args?: Record<string, unknown>; params?: ActionParam[] };
 /** The buttons of a node: its actions[] as the kernel offered them (nothing is added here). */
 export function actionButtons(actions: RowAction[] | undefined, t: ShellT): ActionButton[] {
   return (actions ?? []).map(a => ({
     id: a.id, title: a.label, label: wordOrNull(t, `me.action.${a.id}`) ?? a.label,
     planned: a.implementation !== undefined && a.implementation !== null && a.implementation !== "implemented",
-    args: a.args ?? {},
+    args: a.args ?? {}, params: Array.isArray(a.params) ? a.params : [],
   }));
 }
 
 export interface InputField { arg: string; label: string }
-/** The arguments an action takes from the person's own typing: declared by the words (me.input.<action> = the names, me.input.<action>.<name> =
- *  the label of each), so a new action needs a word, not code. No word = nothing to type (the action runs with the arguments the kernel gave). */
-export function inputFields(actionId: string, t: ShellT): InputField[] {
-  const names = wordOrNull(t, `me.input.${actionId}`);
+/** The arguments an action takes from the person's own typing. FIRST the kernel's list (actions[].params: derived from the action catalogue, so a new
+ *  action needs no code and no word); the words me.<input>.<action>.<name> are only an optional override of a label. When the kernel lists none, the old
+ *  way stays: the words me.input.<action> (the names) and me.input.<action>.<name> (the labels). No list and no word = nothing to type. */
+export function inputFields(action: string | Pick<ActionButton, "id" | "params">, t: ShellT): InputField[] {
+  const id = typeof action === "string" ? action : action.id;
+  const params = typeof action === "string" ? [] : action.params ?? [];
+  if (params.length > 0) return params.map(p => ({ arg: p.name, label: wordOrNull(t, `me.input.${id}.${p.name}`) ?? (p.label && p.label !== "" ? p.label : p.name) }));
+  const names = wordOrNull(t, `me.input.${id}`);
   if (!names) return [];
-  return names.split(/\s+/).filter(Boolean).map(arg => ({ arg, label: wordOrNull(t, `me.input.${actionId}.${arg}`) ?? arg }));
+  return names.split(/\s+/).filter(Boolean).map(arg => ({ arg, label: wordOrNull(t, `me.input.${id}.${arg}`) ?? arg }));
 }
 /** The arguments of a run: the kernel's, then what was typed (an empty field is left out - the kernel says what is missing). */
 export function runArgs(button: Pick<ActionButton, "args">, typed: Record<string, string>): Record<string, unknown> {
@@ -205,12 +211,19 @@ export function rowView(row: GraphNodeRow, t: ShellT, language: string): RowView
 
 /** What the details of a row say, from graph.card: why the kernel does (not) ask a slot, the words of a note's origin; the chain of a preference
  *  is drawn with chainRows (node-card-state) by the component. */
-export function detailLines(attrs: Record<string, unknown> | undefined, t: ShellT): string[] {
+export function detailLines(attrs: Record<string, unknown> | undefined, t: ShellT, language = ""): string[] {
   const out: string[] = [];
   if (!attrs) return out;
   const reason = typeof attrs.reason_text === "string" ? attrs.reason_text : "";
   if (reason) out.push(t("me.details.reason", { reason }));
   else if (attrs.asked_at_level === true) out.push(t("me.details.in_level"));
+  const review = attrs.review as { decision?: unknown; time?: unknown; was?: { class?: unknown } | null } | undefined;
+  if (review && typeof review.decision === "string") {
+    const decision = wordOrNull(t, `me.review.${review.decision}`);
+    if (decision) out.push(t("me.details.review", { decision, time: typeof review.time === "string" ? formatTime(review.time, language) : "" }));
+    const was = review.was && typeof review.was.class === "string" ? wordOrNull(t, `me.class.${review.was.class}`) : null;
+    if (was) out.push(t("me.details.review_was", { was }));
+  }
   const prov = attrs.provenance as { words?: unknown } | undefined;
   if (prov && typeof prov.words === "string" && prov.words) out.push(t("me.details.provenance", { words: prov.words }));
   return out;

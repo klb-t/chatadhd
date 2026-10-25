@@ -2535,6 +2535,58 @@
         }
       },
       {
+        "id": "inference_confirm",
+        "title": {
+          "pl": "Potwierdź wniosek",
+          "en": "Confirm a conclusion"
+        },
+        "via": "action",
+        "action": "inference.confirm",
+        "surfaces": {
+          "http": [
+            "POST /api/inference/confirm"
+          ],
+          "invoke": [
+            "actions.inference.confirm"
+          ]
+        },
+        "examples": {
+          "pl": "potwierdź wniosek",
+          "en": "confirm this conclusion"
+        },
+        "chat_outcome": "unavailable",
+        "chat_outcome_reason": {
+          "pl": "Samo zdanie nie wskaże, o który wniosek chodzi; wniosek wybierasz na ekranie „Ty”, a propozycja mówi to wprost.",
+          "en": "The sentence alone does not say which conclusion is meant; you pick the conclusion on the screen “You”, and the proposal says so plainly."
+        }
+      },
+      {
+        "id": "inference_reject",
+        "title": {
+          "pl": "Odrzuć wniosek",
+          "en": "Reject a conclusion"
+        },
+        "via": "action",
+        "action": "inference.reject",
+        "surfaces": {
+          "http": [
+            "POST /api/inference/reject"
+          ],
+          "invoke": [
+            "actions.inference.reject"
+          ]
+        },
+        "examples": {
+          "pl": "odrzuć wniosek",
+          "en": "reject this conclusion"
+        },
+        "chat_outcome": "unavailable",
+        "chat_outcome_reason": {
+          "pl": "Samo zdanie nie wskaże, o który wniosek chodzi; wniosek wybierasz na ekranie „Ty”, a propozycja mówi to wprost.",
+          "en": "The sentence alone does not say which conclusion is meant; you pick the conclusion on the screen “You”, and the proposal says so plainly."
+        }
+      },
+      {
         "id": "profile_confirm",
         "title": {
           "pl": "Potwierdź, co zrozumiałem",

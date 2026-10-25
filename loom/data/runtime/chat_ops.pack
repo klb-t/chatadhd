@@ -1242,7 +1242,13 @@
         "memory_prov_folder": "from an attached folder",
         "memory_prov_guardian": "added by the context guardian",
         "memory_prov_other": "{{source}}",
-        "nav_area_counters": "{{label}}{{counters}}.{{why}} This area shows only counters today: its contents are not yet listed as separate nodes."
+        "nav_area_counters": "{{label}}{{counters}}.{{why}} This area shows only counters today: its contents are not yet listed as separate nodes.",
+        "inference_no_ref": "Say which entry you mean.",
+        "inference_unknown": "I do not know that entry.",
+        "inference_confirmed": "Confirmed: “{{label}}” now counts as something you said. The time and the way are recorded.",
+        "inference_rejected": "Rejected: “{{label}}” stays on the list as rejected by you, with the time of your decision. You can confirm it later.",
+        "inference_already_confirmed": "“{{label}}” is already confirmed by you; nothing changed.",
+        "inference_already_rejected": "“{{label}}” is already rejected by you; nothing changed."
       },
       "pl": {
         "unknown": "nieznane",
@@ -1669,7 +1675,13 @@
         "memory_prov_folder": "z dołączonego folderu",
         "memory_prov_guardian": "dopisał strażnik kontekstu",
         "memory_prov_other": "{{source}}",
-        "nav_area_counters": "{{label}}{{counters}}.{{why}} Ten obszar pokazuje dziś tylko liczniki: jego zawartość nie jest jeszcze rozpisana na osobne węzły."
+        "nav_area_counters": "{{label}}{{counters}}.{{why}} Ten obszar pokazuje dziś tylko liczniki: jego zawartość nie jest jeszcze rozpisana na osobne węzły.",
+        "inference_no_ref": "Powiedz, o który wpis chodzi.",
+        "inference_unknown": "Nie znam takiego wpisu.",
+        "inference_confirmed": "Potwierdzone: „{{label}}” liczy się teraz jako coś, co powiedziałeś. Czas i sposób są zapisane.",
+        "inference_rejected": "Odrzucone: „{{label}}” zostaje na liście jako odrzucone przez Ciebie, z czasem Twojej decyzji. Możesz to później potwierdzić.",
+        "inference_already_confirmed": "„{{label}}” jest już potwierdzone przez Ciebie; nic nie zmieniłem.",
+        "inference_already_rejected": "„{{label}}” jest już odrzucone przez Ciebie; nic nie zmieniłem."
       }
     },
     "pipelines": {

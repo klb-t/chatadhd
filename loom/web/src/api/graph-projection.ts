@@ -7,6 +7,10 @@
  *  (an analysis or model concluded it) | extrapolated. An open list: GraphEvidence.class is any string, a class the screen has no word for is shown as unknown. */
 export type EvidenceClass = "declared" | "observed" | "said" | "derived" | "inferred" | "extrapolated";
 
+/** A parameter the person still has to give for an action on a node (kernel M1-W2b-2a: derived from the action catalogue; the arguments the node
+ *  fills itself are not listed). `kind` says how it is entered (an open value: free_text, ...), `label` is the kernel's words in the language asked. */
+export interface ActionParam { name: string; kind?: string; type?: string; required?: boolean; label?: string }
+
 export interface GraphEvidence {
   class: EvidenceClass | string;
   confidence: number | null;
@@ -63,7 +67,7 @@ export interface GraphNodeRow {
   /** A node shown here although its own place is elsewhere (its parent stays the breadcrumbs). */
   shown_also_in?: string;
   /** M1-K2c-2: the actions of the catalogue that fit this node, with the arguments the node fills in (a slot, a note id ...). A part of Ty carries the actions of the part itself. */
-  actions?: { id: string; label: string; decision?: string | null; implementation?: string | null; args?: Record<string, unknown> }[];
+  actions?: { id: string; label: string; decision?: string | null; implementation?: string | null; args?: Record<string, unknown>; params?: ActionParam[] }[];
   /** A part of Ty (kind person_subgraph): how many of its entries carry each evidence class. */
   evidence_classes?: Record<string, number>;
   value_unknown_reason?: string;

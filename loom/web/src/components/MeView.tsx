@@ -98,7 +98,7 @@ function ActionBar({ buttons, subject, defaultValue, scope, t, language, proposa
   const press = (button: ActionButton) => {
     setNote(null); setText(null); setGate(null);
     if (button.id === INTERVIEW_ACTION) { void startInterview(); return; }
-    const fields = inputFields(button.id, t);
+    const fields = inputFields(button, t);
     if (fields.length === 0) { void execute(button, {}); return; }
     setForm({ button, values: Object.fromEntries(fields.map((f, i) => [f.arg, i === 0 ? defaultValue : ""])) });
   };
@@ -118,7 +118,7 @@ function ActionBar({ buttons, subject, defaultValue, scope, t, language, proposa
     finally { setBusy(false); }
   };
 
-  const fields = form ? inputFields(form.button.id, t) : [];
+  const fields = form ? inputFields(form.button, t) : [];
   const gateAnswer: PendingAnswer | null = gate ? { kind: "confirmation", runId: gate.runId, receiptId: gate.receiptId, proposal: null, usage: null, clientStep: null, guardian: null } : null;
   if (buttons.length === 0 && !note && !text) return null;
   return (
@@ -172,7 +172,7 @@ function MeRow({ row, view, t, language, convId, proposalFeature, opacity, onCha
     return () => { alive = false; };
   }, [open, row.address, language, convId, reloadKey, t]);
   const loaded = card && !("error" in card) ? card : null;
-  const lines = useMemo(() => loaded ? detailLines(loaded.attrs, t) : [], [loaded, t]);
+  const lines = useMemo(() => loaded ? detailLines(loaded.attrs, t, language) : [], [loaded, t, language]);
   const chain = useMemo(() => { const levels = inheritanceOf(loaded); return levels.length > 0 && loaded ? chainRows(levels, t, loaded.provenance) : []; }, [loaded, t]);
   const style = view.inferred ? ({ "--me-inferred-opacity": String(opacity) } as CSSProperties) : undefined;
   return (

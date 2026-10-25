@@ -2209,7 +2209,14 @@
             "me.map.show": "Show in the map",
             "me.map.hide": "Hide the map",
             "me.rows.show": "All rows",
-            "me.rows.hide": "Hide all rows"
+            "me.rows.hide": "Hide all rows",
+            "me.action.inference.confirm": "Confirm",
+            "me.action.inference.reject": "Reject",
+            "me.state.rejected": "rejected by you",
+            "me.details.review": "Your decision: {{decision}}, {{time}}",
+            "me.review.confirmed": "confirmed",
+            "me.review.rejected": "rejected",
+            "me.details.review_was": "Before your decision it was: {{was}}"
           },
           "pl": {
             "title": "Graf",
@@ -2603,7 +2610,14 @@
             "me.map.show": "Pokaż w mapie",
             "me.map.hide": "Ukryj mapę",
             "me.rows.show": "Wszystkie wiersze",
-            "me.rows.hide": "Ukryj wszystkie wiersze"
+            "me.rows.hide": "Ukryj wszystkie wiersze",
+            "me.action.inference.confirm": "Potwierdź",
+            "me.action.inference.reject": "Odrzuć",
+            "me.state.rejected": "odrzucone przez Ciebie",
+            "me.details.review": "Twoja decyzja: {{decision}}, {{time}}",
+            "me.review.confirmed": "potwierdzone",
+            "me.review.rejected": "odrzucone",
+            "me.details.review_was": "Przed Twoją decyzją było: {{was}}"
           }
         }
       }

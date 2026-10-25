@@ -1289,6 +1289,21 @@ const Json& application_actions(Impl& c) {
   for (const auto& a : catalogue->value("actions", Json::array())) {
     const std::string id = json::get_string(a, "id");
     Json row{{"label", catalogue_title(a, c.lang())}, {"decision", nullptr}, {"implementation", a.value("status", Json(nullptr))}};
+    // The parameters the action takes (the catalogue's `params`): name, how it is entered (kind), the words that ask for it, whether it is required.
+    // The label is the pack's word for this parameter (param.<action>.<name>, data of graph_sources) else the catalogue's own description.
+    Json params = Json::array();
+    for (const auto& p : a.value("params", Json::array())) {
+      const std::string name = json::get_string(p, "name");
+      if (name.empty()) continue;
+      Json label = c.words.value("param." + id + "." + name, Json(nullptr));
+      const std::string words = label.is_object() ? c.say(label) : std::string();
+      params.push_back(Json{{"name", name},
+                            {"kind", json::get_string(p, "edit", json::get_string(p, "type", "free_text"))},
+                            {"type", json::get_string(p, "type", "string")},
+                            {"required", json::get_bool(p, "required", false)},
+                            {"label", words.empty() ? c.say(p.value("description", Json())) : words}});
+    }
+    row["params"] = std::move(params);
     if (const Json* d = json::find(decisions, id)) {
       row["decision"] = d->value("decision", Json(nullptr));
       if (!d->value("implementation", Json(nullptr)).is_null()) row["implementation"] = (*d)["implementation"];
@@ -1342,6 +1357,8 @@ Json self_actions(Impl& c, const Json& specs, const Json& node) {
       log::write(log::Level::Debug, kLog, "the parts of You offer the action '" + id + "', which the catalogue does not have");
       continue;
     }
+    // `where` (the same form as the members' where of a part): the action is offered only on a node that has these fields (a state, an evidence class).
+    if (s.contains("where") && !fits_where(node, s["where"])) continue;
     const Json arg_specs = s.value("args", Json::object());
     Json args = Json::object();
     bool complete = true;
@@ -1360,10 +1377,24 @@ Json self_actions(Impl& c, const Json& specs, const Json& node) {
     Json row = *known;
     row["id"] = id;
     row["args"] = args;
+    // What the person still has to give: the required parameters the node did not fill, and those the spec names in `ask` (optional ones). The web
+    // builds its form from this list; the arguments of `args` are never asked for.
+    Json ask = Json::array();
+    std::set<std::string> named;
+    for (const auto& n : s.value("ask", Json::array()))
+      if (n.is_string()) named.insert(n.get<std::string>());
+    for (const auto& p : known->value("params", Json::array())) {
+      const std::string name = json::get_string(p, "name");
+      if (args.contains(name)) continue;
+      if (json::get_bool(p, "required", false) || named.count(name)) ask.push_back(p);
+    }
+    row["params"] = std::move(ask);
     out.push_back(std::move(row));
   }
   return out;
 }
+
+void apply_review(Impl& c, Json& n, const Json& src, const Json& meta);
 
 Result<Read> read_party(Impl& c, const Json& src, const std::string&, const Json&) {
   Read r;
@@ -1465,7 +1496,8 @@ Result<Read> read_party(Impl& c, const Json& src, const std::string&, const Json
         n["same_as"] = Json::array({t.id});
         n["evidence"] = evidence_of(Json{{"class", "inferred"}, {"confidence", t.metadata.is_object() && t.metadata.contains("confidence") ? t.metadata["confidence"] : Json(nullptr)}},
                                     "db", t.id, "analysis", t.created);
-        n["attrs"] = Json{{"contact", true}, {"node_kind", k.get<std::string>()}};
+        n["attrs"] = Json{{"contact", true}, {"node_kind", k.get<std::string>()}, {"node_id", t.id}};
+        apply_review(c, n, src, t.metadata);
         r.edges.push_back(Json{{"src", "party:self"}, {"dst", "party:" + bare}, {"kind", "knows"}});
         r.nodes.push_back(std::move(n));
       }
@@ -1602,6 +1634,32 @@ Result<Read> read_privacy(Impl& c, const Json& src, const std::string&, const Js
   return r;
 }
 
+// The person's verdict on a conclusion of the analysis (metadata.review of the database node, written by inference.confirm / inference.reject):
+// confirmed = something the person said now (class from evidence_by_method.user_confirmed, said unless the pack says otherwise; the time is the
+// verdict's); rejected = the entry stays, holds no evidence, says why (state rejected) and keeps what it was (attrs.review.was). Nothing is dropped.
+void apply_review(Impl& c, Json& n, const Json& src, const Json& meta) {
+  if (!meta.is_object()) return;
+  const Json review = meta.value("review", Json(nullptr));
+  if (!review.is_object()) return;
+  const std::string decision = json::get_string(review, "decision");
+  const std::string method = json::get_string(review, "method", decision == "confirmed" ? "user_confirmed" : "user_rejected");
+  Json info{{"decision", decision}, {"time", review.value("time", Json(nullptr))}, {"method", method}, {"was", n["evidence"]}};
+  const Json history = meta.value("review_history", Json(nullptr));
+  if (history.is_array() && !history.empty()) info["history"] = history;
+  n["attrs"]["review"] = info;
+  if (decision == "confirmed") {
+    Json cls = Json{{"class", "said"}, {"confidence", 1.0}};
+    if (const Json* by = json::find(src.value("evidence_by_method", Json::object()), method); by && by->is_object()) cls = *by;
+    n["evidence"] = evidence_of(cls, "db", json::get_string(n["evidence"]["provenance"], "source_ref"), method, review.value("time", Json(nullptr)));
+  } else if (decision == "rejected") {
+    n["evidence"] = nullptr;
+    n["state"] = "rejected";
+    n["status"] = "rejected";
+    const std::string why = c.word("review.rejected");
+    if (!why.empty()) n["why"] = why;
+  }
+}
+
 Result<Read> read_topics(Impl& c, const Json& src, const std::string&, const Json& paging) {
   if (!c.env.db) return Error(Errc::Unavailable, "database_unavailable");
   const std::int64_t limit = c.page_limit(src, paging);
@@ -1612,6 +1670,8 @@ Result<Read> read_topics(Impl& c, const Json& src, const std::string&, const Jso
     Json n = c.make(src, address, t.label, "party:self", "db", t.id, "analysis", t.created);
     n["same_as"] = Json::array({t.id});
     if (t.metadata.is_object() && t.metadata.contains("confidence")) n["evidence"]["confidence"] = t.metadata["confidence"];
+    n["attrs"]["node_id"] = t.id;
+    apply_review(c, n, src, t.metadata);
     r.edges.push_back(Json{{"src", "party:self"}, {"dst", address}, {"kind", "interested_in"}});
     r.nodes.push_back(std::move(n));
   }

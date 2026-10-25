@@ -110,6 +110,25 @@ test('the arguments a person types are declared by the words; the run is the nod
   }
 });
 
+test('the form comes from the kernel\'s params of the action; the words are only a label override; no params = the old behaviour', () => {
+  const [b] = me.actionButtons([{ id: 'inference.reject', label: 'Odrzuć wniosek', args: { ref: 'n_1' }, params: [{ name: 'why', kind: 'free_text', required: true, label: 'Dlaczego?' }] }], t);
+  assert.deepEqual(b.params.map(p => p.name), ['why']);
+  assert.deepEqual(me.inputFields(b, t), [{ arg: 'why', label: 'Dlaczego?' }], 'the kernel\'s label when the pack has no word');
+  // a word of the pack overrides the kernel's label (profile.set.value has one), and a kernel list beats the word listing the names
+  const set = { id: 'profile.set', params: [{ name: 'value', label: 'Wartość (jądro)' }, { name: 'extra', label: 'Dodatkowe' }] };
+  assert.deepEqual(me.inputFields(set, t), [{ arg: 'value', label: 'Nowa wartość' }, { arg: 'extra', label: 'Dodatkowe' }]);
+  // an older kernel (no params) or an empty list: the words decide, as before
+  assert.deepEqual(me.inputFields({ id: 'profile.set', params: [] }, t), [{ arg: 'value', label: 'Nowa wartość' }]);
+  assert.deepEqual(me.actionButtons([{ id: 'x.y', label: 'X' }], t)[0].params, []);
+  assert.deepEqual(me.inputFields({ id: 'x.y', params: [] }, t), []);
+  // the confirm / reject buttons have words in both languages and the verdict is told in the details
+  assert.equal(me.actionButtons([{ id: 'inference.confirm', label: 'k' }], t)[0].label, 'Potwierdź');
+  assert.equal(me.actionButtons([{ id: 'inference.reject', label: 'k' }], tEn)[0].label, 'Reject');
+  const lines = me.detailLines({ review: { decision: 'rejected', time: '2026-10-25T10:00:00Z', was: { class: 'inferred' } } }, t, 'pl');
+  assert.equal(lines.length, 2); assert.match(lines[0], /odrzucone/); assert.match(lines[1], /wywnioskowane/);
+  assert.equal(me.stateText({ value: null, value_human: null }), null);
+});
+
 test('a run is a gate (the kernel\'s reasons in the language), an error (the kernel\'s message) or done (the kernel\'s text)', () => {
   const gated = { id: 'ar_1', status: 'awaiting_confirmation', pending: { kind: 'confirmation', receipt_id: 'arr_1', gates: [{ reason: { en: 'Forgetting is final.', pl: 'Zapomnienie jest na stałe.' } }] } };
   const g = me.interpretRun(gated, t, 'pl');

@@ -259,6 +259,107 @@ TEST_SUITE("party_self_subgraphs") {
     CHECK(evidence_of_style("en").at("human") == "corrected by you");
   }
 
+  TEST_CASE("an action on a node lists the parameters the person still has to give, from the action catalogue; what the node fills is not asked") {
+    Person& p = shared_person();
+    const Json ident = p.navigate("subgraph:self/preferences");
+    const Json* style = child(ident, "party:self/communication.style");
+    if (!style) style = child(ident, "preference:communication.style");
+    const Json units = p.navigate("subgraph:self/units");
+    // units.define is offered on the part itself: kind and id are required, the name is optional and the spec asks for it
+    const Json card = p.navigate("party:self");
+    const Json part = [&] {
+      for (const auto& c : card.at("children"))
+        if (c.at("address") == "subgraph:self/units") return c;
+      FAIL("no part units");
+      return Json();
+    }();
+    const Json& define = action_of(part, "units.define");
+    REQUIRE(define.at("params").is_array());
+    std::vector<std::string> names;
+    for (const auto& q : define.at("params")) names.push_back(q.at("name"));
+    CHECK(names == std::vector<std::string>{"kind", "id", "label"});
+    CHECK(define.at("params").at(0).at("required") == true);
+    CHECK(define.at("params").at(2).at("required") == false);
+    CHECK(define.at("params").at(0).at("label") == "Rodzaj (na przykład projekt)");
+    // the unit's own actions get kind and id from the node: nothing is left to ask
+    const Json& u = units.at("children").at(0);
+    CHECK(action_of(u, "units.forget").at("params").empty());
+    // a field of the profile: the slot comes from the node, the value is asked
+    bool found = false;
+    for (const char* part_id : {"identity", "preferences", "slots"}) {
+      const Json nav = p.navigate(std::string("subgraph:self/") + part_id);
+      for (const auto& c : nav.at("children"))
+        if (has_action(c, "profile.set") && c.at("evidence").is_object()) {
+          const Json& set = action_of(c, "profile.set");
+          REQUIRE(set.at("params").size() == 1);
+          CHECK(set.at("params").at(0).at("name") == "value");
+          CHECK(set.at("params").at(0).at("label") == "Nowa wartość");
+          found = true;
+          break;
+        }
+      if (found) break;
+    }
+    CHECK(found);
+  }
+
+  TEST_CASE("an inferred topic or contact can be confirmed or rejected; confirming makes it the person's word with the time, rejecting keeps the entry and a record") {
+    Person p;
+    NodeOptions o;
+    const std::string topic = unwrap(p.rt->db().create_node("kuchnia", "topic", o));
+    const std::string contact = unwrap(p.rt->db().create_node("Jan Kowalski", "person", o));
+    auto row = [&](const std::string& part, const std::string& address) {
+      const Json nav = p.navigate(part);
+      const Json* r = child(nav, address);
+      REQUIRE(r);
+      return *r;
+    };
+    Json t = row("subgraph:self/interests", "interest:kuchnia");
+    CHECK(t.at("evidence").at("class") == "inferred");
+    CHECK(has_action(t, "inference.confirm"));
+    CHECK(has_action(t, "inference.reject"));
+    CHECK(action_of(t, "inference.confirm").at("args").at("ref") == topic);
+    CHECK(action_of(t, "inference.confirm").at("params").empty());  // the node fills the only argument
+    // nothing is written until the person says yes
+    const Json waiting = p.call("inference.reject", Json{{"ref", topic}});
+    REQUIRE(waiting.at("status") == "awaiting_confirmation");
+    CHECK(row("subgraph:self/interests", "interest:kuchnia").at("evidence").at("class") == "inferred");
+    unwrap(p.rt->actions().confirm(Json{{"run_id", waiting.at("id")}, {"approved", true}, {"receipt_id", waiting.at("pending").at("receipt_id")}, {"ref", "test"}}));
+    t = row("subgraph:self/interests", "interest:kuchnia");  // the entry is still there
+    CHECK(t.at("evidence").is_null());
+    CHECK(t.at("state") == "rejected");
+    CHECK(t.at("attrs").at("review").at("decision") == "rejected");
+    CHECK(t.at("attrs").at("review").at("time").is_string());
+    CHECK(t.at("attrs").at("review").at("was").at("class") == "inferred");  // what it was before the verdict
+    CHECK_FALSE(has_action(t, "inference.reject"));
+    CHECK(has_action(t, "inference.confirm"));
+    const auto stored = unwrap(p.rt->db().get_node(topic));
+    REQUIRE(stored.has_value());
+    CHECK(stored->metadata.at("review").at("decision") == "rejected");
+    // a later confirmation turns it into the person's word and keeps the earlier verdict in the history
+    p.confirmed("inference.confirm", Json{{"ref", topic}});
+    t = row("subgraph:self/interests", "interest:kuchnia");
+    CHECK(t.at("evidence").at("class") == "said");
+    CHECK(t.at("evidence").at("provenance").at("method") == "user_confirmed");
+    CHECK(t.at("evidence").at("provenance").at("time").is_string());
+    CHECK(t.at("evidence").at("human") == "potwierdzone przez Ciebie");
+    CHECK(t.at("attrs").at("review").at("history").size() == 1);
+    CHECK(has_action(t, "inference.reject"));
+    CHECK_FALSE(has_action(t, "inference.confirm"));
+    // the same verdict twice changes nothing
+    const Json again = p.confirmed("inference.confirm", Json{{"ref", topic}});
+    CHECK(again.at("result").at("data").at("written") == false);
+    // a contact (person found by the analysis) goes the same way
+    Json c = row("subgraph:self/network", "party:" + contact.substr(2));
+    CHECK(c.at("evidence").at("class") == "inferred");
+    p.confirmed("inference.confirm", Json{{"ref", contact}});
+    c = row("subgraph:self/network", "party:" + contact.substr(2));
+    CHECK(c.at("evidence").at("class") == "said");
+    // an unknown entry is refused with words
+    const Json bad = p.confirmed("inference.confirm", Json{{"ref", "n_nope"}});
+    CHECK(bad.at("status") != "completed");
+    CHECK(p.transport->requests().empty());
+  }
+
   TEST_CASE("Co pamiętam lists the notes with where each came from; an old note says its origin is unknown, in the words of the app") {
     Person& p = shared_person();
     const Json mem = p.navigate("subgraph:self/memory", "pl");
@@ -283,7 +384,7 @@ TEST_SUITE("party_self_subgraphs") {
     CHECK(old_card.at("attrs").at("provenance").at("known") == false);
     CHECK(old_card.at("attrs").at("provenance").at("words") == "pochodzenie niezapisane - starsza notatka");
     // forgetting is offered on each note, with the note's own id in the arguments (the card shows no id as text)
-    CHECK(action_of(old_card, "memory.forget").at("args").at("id") == old_card.at("attrs").at("note_id"));
+    CHECK(action_of(old_card, "memory.forget").at("args").at("query") == old_card.at("attrs").at("note_id"));
     // the breadcrumbs lead through the part to You
     const Json crumbs = note.at("breadcrumbs");
     REQUIRE(crumbs.size() >= 2);

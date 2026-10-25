@@ -259,6 +259,8 @@
         "POST /api/guardian/undo",
         "POST /api/guardian/unmerge",
         "POST /api/import",
+        "POST /api/inference/confirm",
+        "POST /api/inference/reject",
         "POST /api/knowledge/cancel",
         "POST /api/knowledge/run",
         "POST /api/media/transcribe",

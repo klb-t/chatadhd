@@ -578,7 +578,13 @@
           "en": "A topic you write about. It is a conclusion of the analysis, not something you said.",
           "pl": "Temat, o którym piszesz. To wniosek z analizy, a nie coś, co powiedziałeś."
         },
-        "description": "Topic nodes the analysis found in your messages (nodes of kind topic): an inference from the analysis, never something you said; the confidence is unknown until the analysis records one."
+        "description": "Topic nodes the analysis found in your messages (nodes of kind topic): an inference from the analysis, never something you said; the confidence is unknown until the analysis records one.",
+        "evidence_by_method": {
+          "user_confirmed": {
+            "class": "said",
+            "confidence": 1.0
+          }
+        }
       },
       {
         "id": "memory",
@@ -1317,7 +1323,39 @@
         "GB",
         "TB",
         "PB"
-      ]
+      ],
+      "evidence.method.user_confirmed": {
+        "en": "you confirmed it",
+        "pl": "potwierdzone przez Ciebie"
+      },
+      "review.rejected": {
+        "en": "You rejected this conclusion. It stays on the list so that nothing disappears silently; you can confirm it later.",
+        "pl": "Odrzuciłeś ten wniosek. Zostaje na liście, żeby nic nie znikało po cichu; możesz go później potwierdzić."
+      },
+      "param.profile.set.value": {
+        "en": "New value",
+        "pl": "Nowa wartość"
+      },
+      "param.memory.remember.content": {
+        "en": "What should I remember?",
+        "pl": "Co mam zapamiętać?"
+      },
+      "param.memory.forget.query": {
+        "en": "Which note should I forget? (a word from it)",
+        "pl": "Którą notatkę mam zapomnieć? (słowo z niej)"
+      },
+      "param.units.define.kind": {
+        "en": "Kind (for example project)",
+        "pl": "Rodzaj (na przykład projekt)"
+      },
+      "param.units.define.id": {
+        "en": "Short name (no spaces)",
+        "pl": "Krótka nazwa (bez spacji)"
+      },
+      "param.units.define.label": {
+        "en": "Name in words (optional)",
+        "pl": "Nazwa słowami (nieobowiązkowa)"
+      }
     },
     "match": {
       "description": "How a name in a sentence is compared with the names of the graph (find_address): folded (lower case and these letters replaced), word by word; two words are the same when equal or when they share a stem of at least min_prefix letters and neither goes on for more than max_suffix letters after it. Calibration, not a limit.",

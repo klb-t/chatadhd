@@ -2377,7 +2377,14 @@ std::string_view(R"loom_onboard(                    "label": "cm_preview_request
                 "me.map.show": "Show in the map",
                 "me.map.hide": "Hide the map",
                 "me.rows.show": "All rows",
-                "me.rows.hide": "Hide all rows"
+                "me.rows.hide": "Hide all rows",
+                "me.action.inference.confirm": "Confirm",
+                "me.action.inference.reject": "Reject",
+                "me.state.rejected": "rejected by you",
+                "me.details.review": "Your decision: {{decision}}, {{time}}",
+                "me.review.confirmed": "confirmed",
+                "me.review.rejected": "rejected",
+                "me.details.review_was": "Before your decision it was: {{was}}"
               },
               "pl": {
                 "title": "Graf",
@@ -2771,14 +2778,22 @@ std::string_view(R"loom_onboard(                    "label": "cm_preview_request
                 "me.map.show": "Pokaż w mapie",
                 "me.map.hide": "Ukryj mapę",
                 "me.rows.show": "Wszystkie wiersze",
-                "me.rows.hide": "Ukryj wszystkie wiersze"
+                "me.rows.hide": "Ukryj wszystkie wiersze",
+                "me.action.inference.confirm": "Potwierdź",
+                "me.action.inference.reject": "Odrzuć",
+                "me.state.rejected": "odrzucone przez Ciebie",
+                "me.details.review": "Twoja decyzja: {{decision}}, {{time}}",
+                "me.review.confirmed": "potwierdzone",
+                "me.review.rejected": "odrzucone",
+                "me.details.review_was": "Przed Twoją decyzją było: {{was}}"
               }
             }
           }
         },
         {
           "id": "presentation.settings_human/v1",
-          "key": "presentation.settings_human",
+)loom_onboard", 59976),
+std::string_view(R"loom_onboard(          "key": "presentation.settings_human",
           "area": "presentation/settings_human",
           "revision": 1,
           "label": "Words of the human settings screen (Settings = the eight groups of settings.resolved with counts, the filter Show only changed, a field with what it is for, its value and its provenance, the planned reason, Engine › All fields); texts only",
@@ -2788,8 +2803,7 @@ std::string_view(R"loom_onboard(                    "label": "cm_preview_request
             "status": {
               "state": "present",
               "today": {
-)loom_onboard", 59683),
-std::string_view(R"loom_onboard(                "pl": "Ekran jest w aplikacji (loom/web/src/components/SettingsHuman.tsx): menu ⋮ › Ustawienia pokazuje grupy z settings.resolved z licznikami „N pól · M Twoje”, pola z opisem, wartością słowami, chipem pochodzenia i przepływami, które je czytają; „Pokaż tylko zmienione” zawęża do pól ustawionych przez Ciebie; zmiana pola otwiera tę samą kartę co w nawigatorze; Silnik › Wszystkie pola to dawny ekran ustawień w całości.",
+                "pl": "Ekran jest w aplikacji (loom/web/src/components/SettingsHuman.tsx): menu ⋮ › Ustawienia pokazuje grupy z settings.resolved z licznikami „N pól · M Twoje”, pola z opisem, wartością słowami, chipem pochodzenia i przepływami, które je czytają; „Pokaż tylko zmienione” zawęża do pól ustawionych przez Ciebie; zmiana pola otwiera tę samą kartę co w nawigatorze; Silnik › Wszystkie pola to dawny ekran ustawień w całości.",
                 "en": "The screen is in the app (loom/web/src/components/SettingsHuman.tsx): menu ⋮ › Settings shows the groups of settings.resolved with the counts “N fields · M yours”, fields with a description, the value in words, a provenance chip and the flows that read them; “Show only changed” narrows to the fields you set; changing a field opens the same card as the navigator; Engine › All fields is the former settings screen in full."
               },
               "reason": {
@@ -3678,7 +3692,8 @@ std::string_view(R"loom_onboard(                "pl": "Ekran jest w aplikacji (l
             "field.questions_suffix": "; pytania: {{disposition}}",
             "knowledge.questions_suffix": " · pytania: {{disposition}}",
             "field.legend": "{{label}} ({{status}}{{suffix}})",
-            "candidate.legend": "{{field}} · {{provenance}} · {{review}}",
+)loom_onboard", 59983),
+std::string_view(R"loom_onboard(            "candidate.legend": "{{field}} · {{provenance}} · {{review}}",
             "knowledge.legend": "{{label}} · {{status}}{{suffix}}",
             "default.legend": "{{label}} · {{area}}",
             "field.never": "Pytania i wnioskowanie dotyczące tego pola są wykluczone.",
@@ -3686,8 +3701,7 @@ std::string_view(R"loom_onboard(                "pl": "Ekran jest w aplikacji (l
             "field.choose": "Wybierz wartość",
             "field.submit": "Prześlij do potwierdzenia",
             "field.recorded": "Zapisana wartość i pochodzenie",
-)loom_onboard", 59965),
-std::string_view(R"loom_onboard(            "status.reopen": "Ponownie zezwól na pytania",
+            "status.reopen": "Ponownie zezwól na pytania",
             "status.decline": "Odmów odpowiedzi",
             "status.decline_questions": "Odmów dalszych pytań",
             "status.never_action": "Nigdy nie pytaj ani nie wnioskuj",
@@ -4143,7 +4157,10 @@ std::string_view(R"loom_onboard(            "status.reopen": "Ponownie zezwól n
             ],
             "actions_here": [
               {
-                "action": "units.define"
+                "action": "units.define",
+                "ask": [
+                  "label"
+                ]
               },
               {
                 "action": "units.list"
@@ -4167,7 +4184,44 @@ std::string_view(R"loom_onboard(            "status.reopen": "Ponownie zezwól n
                 "source": "interest"
               }
             ],
-            "actions": [],
+            "actions": [
+              {
+                "action": "inference.confirm",
+                "args": {
+                  "ref": "attrs.node_id"
+                },
+                "where": {
+                  "evidence.class": "inferred"
+                }
+              },
+              {
+                "action": "inference.reject",
+                "args": {
+                  "ref": "attrs.node_id"
+                },
+                "where": {
+                  "evidence.class": "inferred"
+                }
+              },
+              {
+                "action": "inference.confirm",
+                "args": {
+                  "ref": "attrs.node_id"
+                },
+                "where": {
+                  "state": "rejected"
+                }
+              },
+              {
+                "action": "inference.reject",
+                "args": {
+                  "ref": "attrs.node_id"
+                },
+                "where": {
+                  "evidence.provenance.method": "user_confirmed"
+                }
+              }
+            ],
             "actions_here": []
           },
           {
@@ -4194,7 +4248,44 @@ std::string_view(R"loom_onboard(            "status.reopen": "Ponownie zezwól n
                 }
               }
             ],
-            "actions": [],
+            "actions": [
+              {
+                "action": "inference.confirm",
+                "args": {
+                  "ref": "attrs.node_id"
+                },
+                "where": {
+                  "evidence.class": "inferred"
+                }
+              },
+              {
+                "action": "inference.reject",
+                "args": {
+                  "ref": "attrs.node_id"
+                },
+                "where": {
+                  "evidence.class": "inferred"
+                }
+              },
+              {
+                "action": "inference.confirm",
+                "args": {
+                  "ref": "attrs.node_id"
+                },
+                "where": {
+                  "state": "rejected"
+                }
+              },
+              {
+                "action": "inference.reject",
+                "args": {
+                  "ref": "attrs.node_id"
+                },
+                "where": {
+                  "evidence.provenance.method": "user_confirmed"
+                }
+              }
+            ],
             "actions_here": []
           },
           {
@@ -4218,7 +4309,7 @@ std::string_view(R"loom_onboard(            "status.reopen": "Ponownie zezwól n
               {
                 "action": "memory.forget",
                 "args": {
-                  "id": "attrs.note_id"
+                  "query": "attrs.note_id"
                 }
               }
             ],
@@ -4851,7 +4942,8 @@ std::string_view(R"loom_onboard(            "status.reopen": "Ponownie zezwól n
             "resource": "{{name}}: oczekiwane {{projected}}, baza {{baseline}}, wzrost {{ratio}}",
             "unknown": "nieznane",
             "confirm": "Kontynuuj",
-            "reject": "Wstrzymaj analizę",
+)loom_onboard", 59998),
+std::string_view(R"loom_onboard(            "reject": "Wstrzymaj analizę",
             "confirm_failed": "Nie udało się wysłać odpowiedzi ({{reason}}).",
             "status_approved": "Kontynuowano",
             "status_declined": "Wstrzymano",
@@ -4917,8 +5009,7 @@ std::string_view(R"loom_onboard(            "status.reopen": "Ponownie zezwól n
             "state.unknown": "nieznane",
             "state.declined": "odmówiono",
             "state.never": "nigdy",
-)loom_onboard", 59988),
-std::string_view(R"loom_onboard(            "issues": "{{count}} problemów w danych wejścia",
+            "issues": "{{count}} problemów w danych wejścia",
             "empty": "Nie skonfigurowano żadnych obszarów."
           }
         }
@@ -5820,7 +5911,8 @@ std::string_view(R"loom_onboard(            "issues": "{{count}} problemów w da
             "cm_modify_failed": "Nie udało się zmienić kontekstu: {{reason}}",
             "cm_modify_declined": "Zostawione bez zmian.",
             "cm_modify_reset": "Cofnij zmiany następnego zapytania",
-            "cm_flow_help": "Otwiera kartę ustawienia „Przepływ żądania”: tam wybierasz, czy graf idzie do modelu i wraca w odpowiedzi (dla tej rozmowy, dla Ciebie albo dla całej instalacji).",
+)loom_onboard", 59872),
+std::string_view(R"loom_onboard(            "cm_flow_help": "Otwiera kartę ustawienia „Przepływ żądania”: tam wybierasz, czy graf idzie do modelu i wraca w odpowiedzi (dla tej rozmowy, dla Ciebie albo dla całej instalacji).",
             "cm_preview_help": "Pokazuje żądanie, które pójdzie z następnym Wyślij. Możesz je poprawić; użyje go jednorazowo.",
             "cm_reason_no_navigator": "Ten ekran nie ma nawigatora grafu, więc nie ma gdzie pokazać karty ustawienia.",
             "cm_reason_preview_empty": "Wpisz najpierw wiadomość: podgląd pokazuje żądanie z Twoim tekstem.",
@@ -5858,8 +5950,7 @@ std::string_view(R"loom_onboard(            "issues": "{{count}} problemów w da
             "wk_note": "Te wybory dotyczą następnego zapytania. Zapisane wiadomości i pamięć zostają.",
             "wk_query": "Zapytanie wyboru",
             "wk_query_ph": "Użyj wysyłanej wiadomości",
-)loom_onboard", 59993),
-std::string_view(R"loom_onboard(            "wk_project": "Identyfikator projektu",
+            "wk_project": "Identyfikator projektu",
             "wk_project_ph": "Projekt (opcjonalnie)",
             "wk_targets": "Identyfikatory encji docelowych",
             "wk_targets_ph": "Rozdziel przecinkami lub spacjami",
@@ -6565,7 +6656,14 @@ std::string_view(R"loom_onboard(            "wk_project": "Identyfikator projekt
             "me.map.show": "Show in the map",
             "me.map.hide": "Hide the map",
             "me.rows.show": "All rows",
-            "me.rows.hide": "Hide all rows"
+            "me.rows.hide": "Hide all rows",
+            "me.action.inference.confirm": "Confirm",
+            "me.action.inference.reject": "Reject",
+            "me.state.rejected": "rejected by you",
+            "me.details.review": "Your decision: {{decision}}, {{time}}",
+            "me.review.confirmed": "confirmed",
+            "me.review.rejected": "rejected",
+            "me.details.review_was": "Before your decision it was: {{was}}"
           },
           "pl": {
             "title": "Graf",
@@ -6778,7 +6876,8 @@ std::string_view(R"loom_onboard(            "wk_project": "Identyfikator projekt
             "reason.no_interface_registry": "brak listy interfejsów",
             "reason.pack_file_absent": "pakiet wiedzy nie ma takiego pliku",
             "reason.pack_unavailable": "nie da się odczytać pakietu wiedzy",
-            "reason.profile_unavailable": "nie da się odczytać profilu działania",
+)loom_onboard", 59949),
+std::string_view(R"loom_onboard(            "reason.profile_unavailable": "nie da się odczytać profilu działania",
             "reason.provider_failed": "licznik zawiódł",
             "reason.provider_missing": "ta wersja nie ma licznika o tej nazwie",
             "reason.query_failed": "zapytanie do bazy zawiodło",
@@ -6827,8 +6926,7 @@ std::string_view(R"loom_onboard(            "wk_project": "Identyfikator projekt
             "role.no_model": "brak modelu",
             "role.composed": "dostawcy po kolei",
             "collapsed.source": "{{label}}: pokazano {{shown}} z {{total}}",
-)loom_onboard", 59951),
-std::string_view(R"loom_onboard(            "area.cell": "Komórka osi: {{label}}",
+            "area.cell": "Komórka osi: {{label}}",
             "calibration.whole_pack": "{{pack}} (cały pakiet)",
             "evidence.method.task": "zapisane przez zadanie w tle",
             "reason.setting_absent": "tego ustawienia nie ma w opisie ustawień",
@@ -6960,7 +7058,14 @@ std::string_view(R"loom_onboard(            "area.cell": "Komórka osi: {{label}
             "me.map.show": "Pokaż w mapie",
             "me.map.hide": "Ukryj mapę",
             "me.rows.show": "Wszystkie wiersze",
-            "me.rows.hide": "Ukryj wszystkie wiersze"
+            "me.rows.hide": "Ukryj wszystkie wiersze",
+            "me.action.inference.confirm": "Potwierdź",
+            "me.action.inference.reject": "Odrzuć",
+            "me.state.rejected": "odrzucone przez Ciebie",
+            "me.details.review": "Twoja decyzja: {{decision}}, {{time}}",
+            "me.review.confirmed": "potwierdzone",
+            "me.review.rejected": "odrzucone",
+            "me.details.review_was": "Przed Twoją decyzją było: {{was}}"
           }
         }
       }
@@ -7713,7 +7818,8 @@ std::string_view(R"loom_onboard(            "area.cell": "Komórka osi: {{label}
     "/prompt": "prompt.onboarding",
     "/graph_method/prompt/text": "prompt.onboarding"
   },
-  "method_selection": {
+)loom_onboard", 59990),
+std::string_view(R"loom_onboard(  "method_selection": {
     "parameter_layers": [
       "preset",
       "recipe",
@@ -7732,7 +7838,7 @@ std::string_view(R"loom_onboard(            "area.cell": "Komórka osi: {{label}
   },
   "presentation_key": "presentation.onboarding"
 }
-)loom_onboard", 56765)};
+)loom_onboard", 450)};
 static constexpr std::string_view kOnboardingScenario[] = {
 std::string_view(R"loom_onboard({
   "schema": "loom.onboarding.scenario/1",

@@ -890,4 +890,41 @@ Result<Reply> confirm(const Env& e, const Json& args) {
   return err(Errc::InvalidArgument, e.say("profile_confirm_kind", Json::object()));
 }
 
+namespace {
+Result<Reply> judge_inference(const Env& e, const Json& args, const std::string& decision) {
+  const std::string ref = json::get_string(args, "ref");
+  if (ref.empty()) return err(Errc::InvalidArgument, e.say("inference_no_ref", Json::object()));
+  auto got = e.db.get_node(ref);
+  if (!got) return got.error();
+  if (!*got) return err(Errc::NotFound, e.say("inference_unknown", Json::object()));
+  const Node node = **got;
+  Json meta = node.metadata.is_object() ? node.metadata : Json::object();
+  const Json prior = meta.value("review", Json(nullptr));
+  Json data{{"ref", ref}, {"label", node.label}, {"decision", decision}};
+  const std::string now = timeutil::utc_now_iso();
+  if (prior.is_object() && json::get_string(prior, "decision") == decision) {
+    data["written"] = false;
+    data["time"] = prior.value("time", Json(nullptr));
+    return Reply{e.say(decision == "confirmed" ? "inference_already_confirmed" : "inference_already_rejected", Json{{"label", node.label}}), data};
+  }
+  // The verdict that is replaced is kept: what the person decided before stays in the record (nothing silently vanishes).
+  if (prior.is_object()) {
+    Json history = meta.value("review_history", Json::array());
+    if (!history.is_array()) history = Json::array();
+    history.push_back(prior);
+    meta["review_history"] = history;
+  }
+  meta["review"] = Json{{"decision", decision}, {"time", now}, {"by", "user"}, {"method", decision == "confirmed" ? "user_confirmed" : "user_rejected"}};
+  NodePatch patch;
+  patch.metadata = meta;
+  if (auto st = e.db.update_node(ref, patch); !st) return st.error();
+  data["written"] = true;
+  data["time"] = now;
+  return Reply{e.say(decision == "confirmed" ? "inference_confirmed" : "inference_rejected", Json{{"label", node.label}}), data};
+}
+}  // namespace
+
+Result<Reply> confirm_inference(const Env& e, const Json& args) { return judge_inference(e, args, "confirmed"); }
+Result<Reply> reject_inference(const Env& e, const Json& args) { return judge_inference(e, args, "rejected"); }
+
 }  // namespace loom::actions::profile

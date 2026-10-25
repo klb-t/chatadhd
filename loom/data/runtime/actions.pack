@@ -14737,6 +14737,178 @@
         },
         "default_element": "application"
       },
+      "inference.confirm": {
+        "id": "inference.confirm",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Confirm a conclusion about you",
+        "description": "Marks a conclusion of the analysis or of a model (a topic, a person, an organisation) as confirmed by you, after you confirm: from then on it counts as something you said, with the time and the way recorded. The earlier verdict, if any, is kept in the history of the entry.",
+        "why": {
+          "pl": "Uznajesz wniosek analizy albo modelu za prawdziwy. Od tej chwili liczy się jako coś, co powiedziałeś, z zapisanym czasem i sposobem."
+        },
+        "labels": {
+          "pl": "Potwierdź wniosek"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "port": "actions",
+        "action": "inference.confirm",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "ref",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "The entry whose conclusion you judge (the id of the node).",
+              "pl": "Wpis, o którego wniosku decydujesz (identyfikator węzła)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "locale",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Language of the words (en, pl); default: the language of the run.",
+              "pl": "Język słów (en, pl); domyślnie język uruchomienia."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/inference/confirm"
+        },
+        "phrases": {
+          "en": [
+            "confirm this conclusion"
+          ],
+          "pl": [
+            "potwierdź wniosek"
+          ]
+        },
+        "examples": {
+          "en": [
+            "confirm this conclusion"
+          ],
+          "pl": [
+            "potwierdź wniosek"
+          ]
+        },
+        "result_text": {
+          "en": "Confirmed:",
+          "pl": "Potwierdzono:"
+        },
+        "default_element": "application"
+      },
+      "inference.reject": {
+        "id": "inference.reject",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Reject a conclusion about you",
+        "description": "Marks a conclusion of the analysis or of a model (a topic, a person, an organisation) as rejected by you, after you confirm. The entry is not deleted: it stays with the record of your verdict and the time, and you can confirm it later.",
+        "why": {
+          "pl": "Odrzucasz wniosek analizy albo modelu. Wpis nie znika: zostaje z zapisem Twojej decyzji i czasu, a potwierdzić go możesz później."
+        },
+        "labels": {
+          "pl": "Odrzuć wniosek"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "port": "actions",
+        "action": "inference.reject",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "ref",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "The entry whose conclusion you judge (the id of the node).",
+              "pl": "Wpis, o którego wniosku decydujesz (identyfikator węzła)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "locale",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Language of the words (en, pl); default: the language of the run.",
+              "pl": "Język słów (en, pl); domyślnie język uruchomienia."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/inference/reject"
+        },
+        "phrases": {
+          "en": [
+            "reject this conclusion"
+          ],
+          "pl": [
+            "odrzuć wniosek"
+          ]
+        },
+        "examples": {
+          "en": [
+            "reject this conclusion"
+          ],
+          "pl": [
+            "odrzuć wniosek"
+          ]
+        },
+        "result_text": {
+          "en": "Rejected:",
+          "pl": "Odrzucono:"
+        },
+        "default_element": "application"
+      },
       "context.receipt": {
         "id": "context.receipt",
         "kind": "atomic",

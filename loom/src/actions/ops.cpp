@@ -2603,6 +2603,9 @@ StepOutcome profile_confirm_op(Ctx& x) {
   return profile_run(x, profile::confirm, {"kind", "text", "section", "decision", "user_id", "expected_revision", "locale"});
 }
 
+StepOutcome inference_confirm_op(Ctx& x) { return profile_run(x, profile::confirm_inference, {"ref", "locale"}); }
+StepOutcome inference_reject_op(Ctx& x) { return profile_run(x, profile::reject_inference, {"ref", "locale"}); }
+
 // ── the units a conversation belongs to (M1-K2c-1): the kinds, the words and the conversation are the data's, the store's and the call's ─────────
 
 using UnitFn = Result<units::Reply> (*)(const units::Env&, const Json&);
@@ -2651,6 +2654,7 @@ const std::map<std::string, Op>& table() {
       {"graph.navigate", graph_navigate}, {"graph.card", graph_card}, {"settings.resolved", settings_resolved_op}, {"roles.resolved", roles_resolved_op},
       {"rom.override", rom_override_op}, {"context.modify", context_modify}, {"context.receipt", context_receipt},
       {"profile.interview", profile_interview_op}, {"profile.show", profile_show_op}, {"profile.set", profile_set_op}, {"profile.confirm", profile_confirm_op},
+      {"inference.confirm", inference_confirm_op}, {"inference.reject", inference_reject_op},
       {"units.define", units_define_op}, {"units.list", units_list_op}, {"units.forget", units_forget_op},
       {"conversation.set_unit", conversation_set_unit_op}, {"conversation.clear_unit", conversation_clear_unit_op}};
   return t;
