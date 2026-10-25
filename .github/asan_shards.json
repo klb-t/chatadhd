@@ -1,0 +1,63 @@
+{
+ "schema": "loom.asan_shards/1",
+ "_comment": [
+  "Shard plan for the asan leg of .github/workflows/loom.yml (read by .github/scripts/asan_shards.py). Presets, not rules.",
+  "shards: ordered list; 'tests' are fnmatch patterns over CTest names (an exact name is a pattern); the shard with rest=true takes every test no other shard lists, so a new test lands there on its own.",
+  "The number of shards is the length of this list: add a shard (or move names) to change it; the CI matrix follows.",
+  "Seeded from run 284 (asan, main f025ed34): test step 140 min, 514 min of tests over 4 slots; durations measured under 4-way contention, cli.smoke (495 s) from the log of run 38528837225.",
+  "Tests of >=150 s were spread over the first two shards by longest-processing-time; the many short ones stay in rest. Re-balance from a newer log with: asan_shards.py dryrun --durations ...",
+  "Open: a stale pattern raises an advisory, not an error."
+ ],
+ "shards": [
+  {
+   "name": "a",
+   "tests": [
+    "compat.test_active_task_compiler_compat",
+    "compat.test_db_compat",
+    "compat.test_import_compat",
+    "unit.test_archive",
+    "unit.test_chat_active_task_acceptance_validation",
+    "unit.test_chat_active_task_durable_audit",
+    "unit.test_chat_ops",
+    "unit.test_client_devices",
+    "unit.test_context_engine",
+    "unit.test_context_modify",
+    "unit.test_context_receipt",
+    "unit.test_emergent_catalogue",
+    "unit.test_graph_projection",
+    "unit.test_onboarding_presentation_store",
+    "unit.test_party_self_subgraphs",
+    "unit.test_profile_ops",
+    "unit.test_profile_words",
+    "unit.test_semantic_worker"
+   ]
+  },
+  {
+   "name": "b",
+   "tests": [
+    "cli.smoke",
+    "compat.test_crypto_compat",
+    "unit.test_action_runner",
+    "unit.test_chat_active_task",
+    "unit.test_chat_coverage",
+    "unit.test_chat_route",
+    "unit.test_conversation_view",
+    "unit.test_graph_sent_to_model",
+    "unit.test_guardian",
+    "unit.test_import_stream",
+    "unit.test_kb_pack",
+    "unit.test_knowledge",
+    "unit.test_onboarding_store",
+    "unit.test_profile_chat",
+    "unit.test_rules_from_chat",
+    "unit.test_semantic_llm",
+    "unit.test_tool_loop",
+    "unit.test_views_actions"
+   ]
+  },
+  {
+   "name": "rest",
+   "rest": true
+  }
+ ]
+}

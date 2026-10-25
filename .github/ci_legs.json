@@ -1,0 +1,32 @@
+[
+ {
+  "preset": "dev",
+  "cc": "gcc",
+  "cxx": "g++",
+  "debug_info": "-g",
+  "timeout": 100
+ },
+ {
+  "preset": "asan",
+  "cc": "gcc",
+  "cxx": "g++",
+  "debug_info": "-g1",
+  "timeout": 150,
+  "sharded": true
+ },
+ {
+  "preset": "vendored",
+  "cc": "clang",
+  "cxx": "clang++",
+  "debug_info": "-g",
+  "timeout": 45
+ },
+ {
+  "preset": "libcxx",
+  "cc": "clang",
+  "cxx": "clang++",
+  "debug_info": "-g",
+  "timeout": 45,
+  "name": "libcxx (clang++ + libc++)"
+ }
+]

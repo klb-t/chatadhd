@@ -88,3 +88,11 @@ after existing web checks. An absent name produces `CAPABILITY_UNAVAILABLE`;
 it establishes no test coverage. Every declared name starts through argv in its
 package directory, and a failing child fails CI. The current main does not yet
 declare W10's `test:interface-2` or `test:interface-2-native`.
+
+## asan shards
+
+`asan_shards.py` splits the asan CTest run into shards defined by data in `.github/asan_shards.json`
+(shard -> name patterns, plus one `rest` shard for everything unlisted; the shard count is the list length).
+`.github/ci_legs.json` lists the matrix legs; a `plan` job expands them. `verify_ctest.py --shard S` checks one
+shard of the full manifest, and the `shards-cover-manifest` job checks that the shards' evidence adds up to the whole.
+Re-balance with `asan_shards.py dryrun --durations <json of [name, seconds, number]>`.

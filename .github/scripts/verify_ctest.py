@@ -270,6 +270,17 @@ def verify(manifest: dict, junit: ET.Element, preset: str,
     }
 
 
+def shard_manifest(manifest: dict, shards_file: Path, shard: str) -> dict:
+    """Keep only the manifest entries that the shard plan assigns to `shard`."""
+    from asan_shards import assign, load_plan, manifest_names
+    plan = load_plan(shards_file)
+    parts = assign(plan, manifest_names(manifest))
+    if shard not in parts:
+        raise ValueError(f"unknown shard {shard!r}; plan has {sorted(parts)}")
+    keep = set(parts[shard])
+    return {**manifest, "tests": [t for t in manifest["tests"] if t["name"] in keep]}
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--manifest", type=Path, required=True)
@@ -278,13 +289,23 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--preset", required=True)
     parser.add_argument("--policy", type=Path, default=DEFAULT_POLICY,
                         help="local versioned evidence policy (default: %(default)s)")
+    parser.add_argument("--shard", help="check only this shard of the (full) manifest")
+    parser.add_argument("--shards-file", type=Path,
+                        default=Path(__file__).resolve().parents[1] / "asan_shards.json",
+                        help="shard plan used with --shard (default: %(default)s)")
     args = parser.parse_args(argv)
     policy = None
     try:
         policy = load_policy(args.policy)
         manifest_bytes = args.manifest.read_bytes()
         junit_bytes = args.junit.read_bytes()
-        result = verify(json.loads(manifest_bytes), ET.fromstring(junit_bytes), args.preset, policy)
+        manifest = json.loads(manifest_bytes)
+        if args.shard:
+            manifest = shard_manifest(manifest, args.shards_file, args.shard)
+        result = verify(manifest, ET.fromstring(junit_bytes), args.preset, policy)
+        if args.shard:
+            result["shard"] = args.shard
+            result["entry_names"] = sorted(row["name"] for row in result["entries"])
         result["input_sha256"] = {
             "manifest": hashlib.sha256(manifest_bytes).hexdigest(),
             "junit": hashlib.sha256(junit_bytes).hexdigest(),

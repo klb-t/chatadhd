@@ -14,6 +14,8 @@ on:
       - ".github/workflows/loom.yml"
       - ".github/scripts/**"
       - ".github/ctest-evidence-policy*.json"
+      - ".github/asan_shards.json"
+      - ".github/ci_legs.json"
   pull_request:
     paths:
       - "loom/**"
@@ -25,6 +27,8 @@ on:
       - ".github/workflows/loom.yml"
       - ".github/scripts/**"
       - ".github/ctest-evidence-policy*.json"
+      - ".github/asan_shards.json"
+      - ".github/ci_legs.json"
   workflow_dispatch:
 
 permissions:
@@ -35,7 +39,24 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # The matrix is data: legs in .github/ci_legs.json, the asan shard plan in .github/asan_shards.json.
+  plan:
+    name: plan matrix
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      matrix: ${{ steps.matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Expand the legs (asan is split into the shards of the plan)
+        id: matrix
+        run: |
+          python3 .github/scripts/asan_shards.py matrix --legs .github/ci_legs.json --shards .github/asan_shards.json > matrix.json
+          cat matrix.json
+          echo "matrix=$(cat matrix.json)" >> "$GITHUB_OUTPUT"
+
   build-test:
+    needs: plan
     name: ${{ matrix.name || format('{0} ({1})', matrix.preset, matrix.cxx) }}
     runs-on: ubuntu-24.04
     # ASan+UBSan, measured: cold build ~25 min + FFI companion ~8 min (run 38528837225: job cancelled at 45 min with
@@ -44,21 +65,13 @@ jobs:
     # dev (g++), measured 2026-10-23 (run 39959453902 on 5090ab2c): build 2 min + CTest 30 min + JNI + web workbench
     # (npm ci, build, unit, 60+ e2e scripts) hit the 45 min limit at 12 min of the web step; GitHub reports a job
     # timeout as "cancelled". The web stage grows with every M1 package, so dev gets 100 (a preset, not a target).
-    # Presets, not limits: asan's ctest step alone took 142 min on 2026-10-23 (run 283) and was cut at the 150-min job
-    # limit in run 284 (build+configure ~10 min before it); 240 leaves room for the suite to grow. dev 100 since run 281.
-    timeout-minutes: ${{ matrix.preset == 'asan' && 240 || matrix.preset == 'dev' && 100 || 45 }}
+    # asan's ctest step alone took 140 min on 2026-10-23 (run 284, cut at the 150-min job limit; 514 min of tests over 4
+    # slots), so the asan leg runs as shards (.github/asan_shards.json), each estimated at ~45-60 min of tests. dev 100 since run 281.
+    # Per-leg limit (a preset) comes from the matrix data: timeout in .github/ci_legs.json.
+    timeout-minutes: ${{ matrix.timeout }}
     strategy:
       fail-fast: false
-      matrix:
-        include:
-          - { preset: dev, cc: gcc, cxx: g++, debug_info: "-g" }
-          # Keep line tables/stack locations, omitting bulky local-variable DWARF.
-          - { preset: asan, cc: gcc, cxx: g++, debug_info: "-g1" }
-          # Closest to the Android build: Clang + the vendored SQLite amalgamation.
-          - { preset: vendored, cc: clang, cxx: clang++, debug_info: "-g" }
-          # The Android NDK ships libc++, every other leg uses libstdc++. Differences between the two standard
-          # libraries (destruction order, unspecified behaviour, missing includes) are invisible without this leg.
-          - { preset: libcxx, cc: clang, cxx: clang++, debug_info: "-g", name: "libcxx (clang++ + libc++)" }
+      matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
     env:
       CC: ${{ matrix.cc }}
       CXX: ${{ matrix.cxx }}
@@ -102,7 +115,7 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: ~/.cache/ccache
-          key: ccache-${{ matrix.preset }}-${{ matrix.cxx }}-${{ github.sha }}
+          key: ccache-${{ matrix.preset }}-${{ matrix.cxx }}${{ matrix.shard && format('-{0}', matrix.shard) || '' }}-${{ github.sha }}
           restore-keys: ccache-${{ matrix.preset }}-${{ matrix.cxx }}-
 
       - name: Configure
@@ -138,7 +151,7 @@ jobs:
         uses: actions/cache/save@v4
         with:
           path: ~/.cache/ccache
-          key: ccache-${{ matrix.preset }}-${{ matrix.cxx }}-${{ github.sha }}
+          key: ccache-${{ matrix.preset }}-${{ matrix.cxx }}${{ matrix.shard && format('-{0}', matrix.shard) || '' }}-${{ github.sha }}
 
       - name: Test
         working-directory: loom
@@ -183,8 +196,15 @@ jobs:
             --binary build/${{ matrix.preset }}/cli/loom \
             --binary build/${{ matrix.preset }}/server/loom-server \
             --optional-binary build/${{ matrix.preset }}/libloom.so
+          # The manifest is always the WHOLE suite; a shard selects its part with the same code that verify_ctest uses.
           ctest --preset ${{ matrix.preset }} --show-only=json-v1 > build/${{ matrix.preset }}/verification/ctest-manifest.json
-          ctest --preset ${{ matrix.preset }} --no-tests=error \
+          SELECT=()
+          if [ -n '${{ matrix.shard }}' ]; then
+            REGEX=$(python ../.github/scripts/asan_shards.py select --shards ../.github/asan_shards.json \
+              --shard '${{ matrix.shard }}' --manifest build/${{ matrix.preset }}/verification/ctest-manifest.json)
+            SELECT=(-R "$REGEX")
+          fi
+          ctest --preset ${{ matrix.preset }} --no-tests=error "${SELECT[@]}" \
             --test-output-size-passed 10485760 --test-output-size-failed 10485760 \
             --output-junit "$PWD/build/${{ matrix.preset }}/verification/ctest.xml"
 
@@ -196,13 +216,14 @@ jobs:
             --manifest loom/build/${{ matrix.preset }}/verification/ctest-manifest.json \
             --junit loom/build/${{ matrix.preset }}/verification/ctest.xml \
             --preset ${{ matrix.preset }} \
+            ${{ matrix.shard && format('--shards-file .github/asan_shards.json --shard {0}', matrix.shard) || '' }} \
             --output loom/build/${{ matrix.preset }}/verification/executed-cases.json
 
       - name: Retain complete CTest evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: ctest-${{ matrix.preset }}-${{ matrix.cxx }}
+          name: ctest-${{ matrix.preset }}-${{ matrix.cxx }}${{ matrix.shard && format('-{0}', matrix.shard) || '' }}
           path: |
             loom/build/${{ matrix.preset }}/verification/
             loom/build/${{ matrix.preset }}/Testing/Temporary/LastTest.log
@@ -283,3 +304,26 @@ jobs:
             --package-json package.json \
             --script test:interface-2 \
             --script test:interface-2-native
+
+  # Every sharded leg proves its own part; this job proves the parts add up to the whole manifest,
+  # each entry executed in exactly one shard.
+  shards-cover-manifest:
+    needs: [plan, build-test]
+    if: always() && needs.plan.result == 'success'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: ctest-asan-*
+          path: shard-evidence
+      - name: Union of the asan shards equals the manifest
+        run: |
+          set -e
+          M=$(find shard-evidence -name ctest-manifest.json | head -1)
+          python .github/scripts/asan_shards.py merge --shards .github/asan_shards.json --manifest "$M" \
+            $(find shard-evidence -name executed-cases.json)
