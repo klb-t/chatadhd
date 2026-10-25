@@ -931,6 +931,13 @@ Cel do zmierzenia, nie zalozenie: hibernacja Linuksa (zrzut uzywanego RAM do swa
 
 Slowa wlasciciela wypowiedziane w sesji VM (gcp) ok. 19:10 UTC, zapisane przez te sesje w docs/ops/VM_RECON_2026-10-23.md par. 8 (zrodlo: zapis sesji VM, nie czat S1). Odpowiada na pytanie o pieniadze z rekonesansu: TAK dla awansu na Standard tylko na czas pozostalych zadan, z szybkim powrotem na Spot; pytanie o stale przejscie na Standard pozostaje otwarte, ale traci wage. Wdrozenie spot-guard (tools/gcp/) z promocja jest wiec zgodne z jego decyzja; instalator uruchamia on sam (klasyfikator uprawnien blokowal sesje VM).
 
+## R98 — AGEDS: pakiet spraw właściciela dla adwokata, konwersacyjny interfejs dowodów (tekst, głos, później awatar) (owner, 2026-10-25)
+> prosiłem o Watch doga i czata ADHD, chociaż AGEDS trzeba by zrobić też, żeby pokazać adwokatowi. i nie ma nigdzie napisanego o rzeczniku, nie? bo ja bym teraz chciał żeby w AG EDS utworzyć mój pakiet spraw, zebrać wszystkie dowody, opracować, i stworzyć konwersacyjny interfejs opisujący dowody dane, meta dane, powiązania, punkty widzenia, udowodnione fakty, hipotezy i tak dalej. jak zrobimy głosowy i tekstowy to później jeszcze audio video z avatarem na unreal engine. zaraz ci jeszcze podrzucę jak coś znalazłem w historii o tym rzeczniku
+
+## R99 — Krótko do właściciela; AGEDS rzecznik: model użytkowników, spraw, pakietów i współdzielonych źródeł (GPT) (owner, 2026-10-25)
+> ogranicz to co do mnie piszesz do kluczowych informacji bo i tak nie czytam tego a to kosztuje wiele tokenów. tak samo jak dużo napiszesz a na początku zadasz pytanie raczej nie  licz na odpowiedź.
+> podsumowanie tematu z GPT: [pełna treść: docs/architecture/AGEDS_RZECZNIK_GPT_2026-10-25.md]
+
 ## Decision — rebuild, don't recover
 > "nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane"
 

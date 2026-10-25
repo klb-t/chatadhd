@@ -5,8 +5,8 @@
  "sources": {
   "owner": {
    "path": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
-   "sha256": "7c3818e9213647b615c39f6043c17e7c859aadf32dfc79a2fcf73ab077a706aa",
-   "lines": 951
+   "sha256": "26ce2cda2263ff61bb8c5b72499796ff2e58f8e29f79318984bbdfd8826b79b8",
+   "lines": 955
   },
   "slowa": {
    "path": "docs/architecture/SLOWA_WLASCICIELA_2026-10-16.md",
@@ -5660,6 +5660,53 @@
    ]
   },
   {
+   "id": "s_5eaff9b7c238",
+   "aliases": [
+    "R99"
+   ],
+   "kind": "requirement",
+   "title": "Krótko do właściciela; AGEDS rzecznik: model użytkowników, spraw, pakietów i współdzielonych źródeł (GPT)",
+   "date": "2026-10-25",
+   "theme": "owner_requirements",
+   "theme_inferred": false,
+   "understanding": {
+    "state": "none"
+   },
+   "quotes": [
+    {
+     "text": "ogranicz to co do mnie piszesz do kluczowych informacji bo i tak nie czytam tego a to kosztuje wiele tokenów. tak samo jak dużo napiszesz a na początku zadasz pytanie raczej nie  licz na odpowiedź.\npodsumowanie tematu z GPT: [pełna treść: docs/architecture/AGEDS_RZECZNIK_GPT_2026-10-25.md]",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:938-939",
+     "ref": null,
+     "attr": [],
+     "lead": null,
+     "secondary": false
+    }
+   ],
+   "sense": null,
+   "summary": null,
+   "restatement": [],
+   "commentary": [],
+   "status": null,
+   "gap_text": null,
+   "evidence": [],
+   "next_step": null,
+   "refs": [],
+   "supersedes": [],
+   "superseded_by": [],
+   "supersession_notes": [],
+   "tags": [],
+   "heading_note": "owner, 2026-10-25",
+   "sources": [
+    {
+     "role": "owner",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:937-939"
+    }
+   ],
+   "files": [
+    "owner"
+   ]
+  },
+  {
    "id": "s_18ec73967a7b",
    "aliases": [
     "owner:decision-rebuild-don-t-recover"
@@ -5675,7 +5722,7 @@
    "quotes": [
     {
      "text": "\"nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane\"",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:938",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:942",
      "ref": null,
      "attr": [],
      "lead": null,
@@ -5687,7 +5734,7 @@
    "restatement": [
     {
      "text": "Recovered versions (`history/chatadhd_v0.8.3`, `history/chatadhd_v0.9.0`) and\nthe historical report are sources of requirements, ideas and data assets\n(e.g. `film_structure.json`), and real ground truth for self-discovery tests —\nnot code to merge. Everything is rebuilt in Loom with tests.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:940-943"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:944-947"
     }
    ],
    "commentary": [],
@@ -5704,7 +5751,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:937-943"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:941-947"
     }
    ],
    "files": [
@@ -5730,7 +5777,7 @@
    "restatement": [
     {
      "text": "`workbench_mockup_2026-09-26.webp`: dockable/floating panels (conversation\nlist, active conversation, knowledge graph with active context window, project\nstructure with dimmed high-confidence auto-completable nodes, artifact views\nfor music/video with timeline + storyboard, video player, execution\nenvironment with agent), multi-format ingestion, Loom SDK at the centre.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:946-950"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:950-954"
     }
    ],
    "commentary": [],
@@ -5747,7 +5794,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:945-950"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:949-954"
     }
    ],
    "files": [
