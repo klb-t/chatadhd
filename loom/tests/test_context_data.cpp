@@ -145,10 +145,10 @@ TEST_SUITE("context_data") {
       CHECK(both(s.at("label")));
       CHECK(both(s.at("why")));
       CHECK(ranks.insert(s.at("stability_rank").get<int>()).second);
-      if (s.at("id") == "memory" || s.at("id") == "slots") CHECK(s.at("order_for_prefix").is_null());  // not part of the profile prefix
+      if (s.at("id") == "memory" || s.at("id") == "forgotten" || s.at("id") == "slots") CHECK(s.at("order_for_prefix").is_null());  // not part of the profile prefix
       else CHECK(s.at("order_for_prefix").is_number());
       if (s.at("id") == "preferences") CHECK(s.at("per_flow") == true);
     }
-    CHECK(ids == std::set<std::string>{"identity", "preferences", "policies", "interests", "network", "units", "memory", "slots"});  // slots: added in M1-K2c-2
+    CHECK(ids == std::set<std::string>{"identity", "preferences", "policies", "interests", "network", "units", "memory", "forgotten", "slots"});  // slots: added in M1-K2c-2, forgotten in M1-W2b2b
   }
 }

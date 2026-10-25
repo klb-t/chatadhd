@@ -380,7 +380,7 @@ TEST_SUITE("party_self_subgraphs") {
     REQUIRE(known);
     REQUIRE(old);
     CHECK(known->at("evidence").at("human") == "napisałeś to Ty");
-    CHECK(known->at("evidence").at("class") == "observed");
+    CHECK(known->at("evidence").at("class") == "said");   // a note the person wrote is their word, not something observed
     CHECK(old->at("evidence").at("human") == "pochodzenie niezapisane - starsza notatka");
     CHECK(old->at("evidence").at("class") == "declared");  // not claimed to be something you said
     const Json note = p.card(known->at("address"));

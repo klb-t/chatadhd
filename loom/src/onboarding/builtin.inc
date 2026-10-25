@@ -4341,7 +4341,7 @@ std::string_view(R"loom_onboard(            "field.questions_suffix": "; pytania
               "en": "Memory entries you told me to forget. They go into no conversation; the record (when, by whom, with or without its words) stays here so that nothing disappears silently."
             },
             "order_for_prefix": null,
-            "stability_rank": 8,
+            "stability_rank": 9,
             "members": [
               {
                 "source": "memory",

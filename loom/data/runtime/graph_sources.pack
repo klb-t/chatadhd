@@ -618,6 +618,10 @@
             "class": "inferred",
             "confidence": null
           },
+          "note_user": {
+            "class": "said",
+            "confidence": null
+          },
           "not_recorded_before_m1": {
             "class": "declared",
             "confidence": null

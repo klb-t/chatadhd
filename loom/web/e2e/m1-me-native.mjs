@@ -292,6 +292,18 @@ try {
     assert.equal(holder.count, 2); console.log(`[m1-me] header of the memory part: ${holder.count} → ${head}`);
     await sectionHead(holder.address).evaluate(el => el.scrollIntoView({ block: "start" }));
     await audit("08-zapomnij-done"); await shot("08-zapomnij-done");
+    // Nothing vanishes silently: the note is on the folded list "Zapomniane" with the record of forgetting; the model's memory no longer has it.
+    const forgottenAddr = "subgraph:self/forgotten";
+    await section(forgottenAddr).waitFor();
+    assert.equal(await sectionHead(forgottenAddr).getAttribute("aria-expanded"), "false", "the list of forgotten entries is folded by default");
+    assert.ok((await sectionHead(forgottenAddr).innerText()).includes("Zapomniane"), "its head is the pack's word");
+    await openSection(forgottenAddr);
+    const gone = await navigate(forgottenAddr);
+    assert.equal(gone.children.length, 1);
+    assert.equal(gone.children[0].status, "forgotten");
+    assert.ok(gone.children[0].label.includes("Filemona"), "the words are kept by the preset");
+    await row(gone.children[0].address).waitFor();
+    await audit("08b-zapomniane"); await shot("08b-zapomniane");
   });
 
   await step("7 a preference says who set it and the chain on a tap; an inferred entry has the preset look and says it is a conclusion", async () => {
