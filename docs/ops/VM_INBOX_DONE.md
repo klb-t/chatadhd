@@ -8,3 +8,4 @@
 - wpis 13: poprawka g++15 `sha256.cpp` przeniesiona na `claude/m1-w1` (`9e0d2a94`), FF main po bramce.
 - wpis 14: spot-guard wdrożony 24.10 (`74c448b9`), pierwszy przebieg „nothing to do (RUNNING, SPOT)”.
 - wpis 16: pakiet „shardy asan” w toku (agent Sonnet na `~/wt/m1d1`).
+- 2026-10-25 — wpis 7: `claude-rc.service` zainstalowany i włączony za zgodą właściciela (systemd --user, linger=yes; skrypt `~/.local/bin/claude-rc-start.sh` startuje tmux `rc` z sesjami gcp, watchdog, ageds, chatadhd; odwrót: `systemctl --user disable claude-rc`).
