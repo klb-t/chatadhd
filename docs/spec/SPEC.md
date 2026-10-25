@@ -5,13 +5,13 @@ Ten plik jest **wygenerowany** z `docs/spec/spec.json` poleceniem `python3 tools
 
 Status pochodzi z pliku luk i jest **obserwacją z podanej daty**, nie ograniczeniem.
 
-Pozycji razem: **523**.
+Pozycji razem: **524**.
 
 | Status (z LUKI) | liczba |
 |---|---|
 | częściowo | 210 |
 | jest | 151 |
-| bez statusu (nie ma w LUKI) | 140 |
+| bez statusu (nie ma w LUKI) | 141 |
 | brak | 16 |
 | nieaktualne | 5 |
 | sprzeczne | 1 |
@@ -19,7 +19,7 @@ Pozycji razem: **523**.
 | Rodzaj | liczba |
 |---|---|
 | remark | 367 |
-| requirement | 99 |
+| requirement | 100 |
 | philosophy | 36 |
 | statement | 10 |
 | decision | 4 |
@@ -28,14 +28,14 @@ Pozycji razem: **523**.
 
 | Rozumienie (R61) | liczba |
 |---|---|
-| none | 509 |
+| none | 510 |
 | proposed | 12 |
 | corrected | 2 |
 
 | W których plikach | liczba |
 |---|---|
 | LUKI + SLOWA | 379 |
-| rejestr R/D | 106 |
+| rejestr R/D | 107 |
 | SLOWA | 34 |
 | LUKI | 4 |
 
@@ -55,7 +55,7 @@ Pozycji razem: **523**.
 | Proces i współpraca | 67 |
 | Pozostałe | 33 |
 | Uzupełnienia (wypowiedzi bez numeru) | 10 |
-| Rejestr wymagań R/D | 106 |
+| Rejestr wymagań R/D | 107 |
 | bez tematu | 3 |
 
 ## Filozofia
@@ -620,8 +620,9 @@ Pozycji razem: **523**.
 - `s_c7bb946dd993` **R97** — Spot-guard: na życzenie automatyczny awans Spot→Standard, gdy przy wywłaszczeniu zostały zadania; szybki powrót na Spot — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L929)
 - `s_4decf2d9c8f8` **R98** — AGEDS: pakiet spraw właściciela dla adwokata, konwersacyjny interfejs dowodów (tekst, głos, później awatar) — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L934)
 - `s_5eaff9b7c238` **R99** — Krótko do właściciela; AGEDS rzecznik: model użytkowników, spraw, pakietów i współdzielonych źródeł (GPT) — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L937)
-- `s_18ec73967a7b` **owner:decision-rebuild-don-t-recover** — Decision — rebuild, don't recover — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L941)
-- `s_223e1568b3b9` **owner:ui-reference** — UI reference — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L949)
+- `s_a50a787171eb` **R100** — Zgoda: wszystkie dane właściciela mogą iść do Google Vertex; warunek: nie publicznie i nie do trenowania; cache Vertex zostaje włączony — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L941)
+- `s_18ec73967a7b` **owner:decision-rebuild-don-t-recover** — Decision — rebuild, don't recover — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L946)
+- `s_223e1568b3b9` **owner:ui-reference** — UI reference — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L954)
 
 ## Bez tematu
 

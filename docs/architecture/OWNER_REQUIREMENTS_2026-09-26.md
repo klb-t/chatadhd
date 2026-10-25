@@ -938,6 +938,11 @@ Slowa wlasciciela wypowiedziane w sesji VM (gcp) ok. 19:10 UTC, zapisane przez t
 > ogranicz to co do mnie piszesz do kluczowych informacji bo i tak nie czytam tego a to kosztuje wiele tokenów. tak samo jak dużo napiszesz a na początku zadasz pytanie raczej nie  licz na odpowiedź.
 > podsumowanie tematu z GPT: [pełna treść: docs/architecture/AGEDS_RZECZNIK_GPT_2026-10-25.md]
 
+## R100 — Zgoda: wszystkie dane właściciela mogą iść do Google Vertex; warunek: nie publicznie i nie do trenowania; cache Vertex zostaje włączony (owner, 2026-10-25)
+> kwestii pytania: tak do vertexa możemy wszystko wysyłać przy zaznaczeniu wszystkich możliwych opcji żeby najmniejsza retencja była
+> nie nie nie cache nie wyłączaj bo to koszty za duże by były
+> przesadziłem chodzi mi o to żeby nie oddawać publicznie ani do trenowania
+
 ## Decision — rebuild, don't recover
 > "nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane"
 

@@ -5,8 +5,8 @@
  "sources": {
   "owner": {
    "path": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
-   "sha256": "26ce2cda2263ff61bb8c5b72499796ff2e58f8e29f79318984bbdfd8826b79b8",
-   "lines": 955
+   "sha256": "e8480232a5e9ca96c95303f13c3768a39fdf818813b0d1a5ff4569eb8e8fb5e7",
+   "lines": 960
   },
   "slowa": {
    "path": "docs/architecture/SLOWA_WLASCICIELA_2026-10-16.md",
@@ -5707,6 +5707,53 @@
    ]
   },
   {
+   "id": "s_a50a787171eb",
+   "aliases": [
+    "R100"
+   ],
+   "kind": "requirement",
+   "title": "Zgoda: wszystkie dane właściciela mogą iść do Google Vertex; warunek: nie publicznie i nie do trenowania; cache Vertex zostaje włączony",
+   "date": "2026-10-25",
+   "theme": "owner_requirements",
+   "theme_inferred": false,
+   "understanding": {
+    "state": "none"
+   },
+   "quotes": [
+    {
+     "text": "kwestii pytania: tak do vertexa możemy wszystko wysyłać przy zaznaczeniu wszystkich możliwych opcji żeby najmniejsza retencja była\nnie nie nie cache nie wyłączaj bo to koszty za duże by były\nprzesadziłem chodzi mi o to żeby nie oddawać publicznie ani do trenowania",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:942-944",
+     "ref": null,
+     "attr": [],
+     "lead": null,
+     "secondary": false
+    }
+   ],
+   "sense": null,
+   "summary": null,
+   "restatement": [],
+   "commentary": [],
+   "status": null,
+   "gap_text": null,
+   "evidence": [],
+   "next_step": null,
+   "refs": [],
+   "supersedes": [],
+   "superseded_by": [],
+   "supersession_notes": [],
+   "tags": [],
+   "heading_note": "owner, 2026-10-25",
+   "sources": [
+    {
+     "role": "owner",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:941-944"
+    }
+   ],
+   "files": [
+    "owner"
+   ]
+  },
+  {
    "id": "s_18ec73967a7b",
    "aliases": [
     "owner:decision-rebuild-don-t-recover"
@@ -5722,7 +5769,7 @@
    "quotes": [
     {
      "text": "\"nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane\"",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:942",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:947",
      "ref": null,
      "attr": [],
      "lead": null,
@@ -5734,7 +5781,7 @@
    "restatement": [
     {
      "text": "Recovered versions (`history/chatadhd_v0.8.3`, `history/chatadhd_v0.9.0`) and\nthe historical report are sources of requirements, ideas and data assets\n(e.g. `film_structure.json`), and real ground truth for self-discovery tests —\nnot code to merge. Everything is rebuilt in Loom with tests.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:944-947"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:949-952"
     }
    ],
    "commentary": [],
@@ -5751,7 +5798,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:941-947"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:946-952"
     }
    ],
    "files": [
@@ -5777,7 +5824,7 @@
    "restatement": [
     {
      "text": "`workbench_mockup_2026-09-26.webp`: dockable/floating panels (conversation\nlist, active conversation, knowledge graph with active context window, project\nstructure with dimmed high-confidence auto-completable nodes, artifact views\nfor music/video with timeline + storyboard, video player, execution\nenvironment with agent), multi-format ingestion, Loom SDK at the centre.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:950-954"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:955-959"
     }
    ],
    "commentary": [],
@@ -5794,7 +5841,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:949-954"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:954-959"
     }
    ],
    "files": [
