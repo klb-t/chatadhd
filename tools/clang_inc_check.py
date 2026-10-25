@@ -37,7 +37,7 @@ for e in cc:
             continue
         else:
             out.append(a)
-    out += ["-fsyntax-only", "-Wno-unknown-warning-option"]
+    out += ["-fsyntax-only", "-Wno-unknown-warning-option", "-Wno-unused-command-line-argument"]
     r = subprocess.run(out, cwd=e["directory"], capture_output=True, text=True)
     print(("ok   " if r.returncode == 0 else "FAIL ") + (str(f.relative_to(root)) if f.is_relative_to(root) else str(f)))
     if r.returncode:
