@@ -490,7 +490,17 @@
                 }
               }
             ],
-            "actions": [],
+            "actions": [
+              {
+                "action": "memory.restore",
+                "args": {
+                  "id": "attrs.note_id"
+                },
+                "where": {
+                  "attrs.forgotten.kept": true
+                }
+              }
+            ],
             "actions_here": []
           },
           {

@@ -2355,6 +2355,7 @@ std::string_view(R"loom_onboard(                    "label": "cm_preview_request
                 "me.details.provenance": "Origin: {{words}}",
                 "me.action.profile.set": "Correct",
                 "me.action.memory.forget": "Forget",
+                "me.action.memory.restore": "Restore",
                 "me.action.planned": "planned",
                 "me.input.profile.set": "value",
                 "me.input.profile.set.value": "New value",
@@ -2385,7 +2386,12 @@ std::string_view(R"loom_onboard(                    "label": "cm_preview_request
                 "me.review.confirmed": "confirmed",
                 "me.review.rejected": "rejected",
                 "me.details.review_was": "Before your decision it was: {{was}}",
-                "me.details.previous": "Before: {{value}} ({{time}})"
+                "me.details.previous": "Before: {{value}} ({{time}})",
+                "me.details.forgotten": "Forgotten {{who}}, {{time}}",
+                "me.details.forgotten_no_who": "Forgotten, {{time}}",
+                "me.details.forgotten_kept": "Its words are kept, so you can bring it back.",
+                "me.details.forgotten_dropped": "Its words were not kept, so it cannot be brought back.",
+                "me.forgotten.by.user": "by you"
               },
               "pl": {
                 "title": "Graf",
@@ -2757,6 +2763,7 @@ std::string_view(R"loom_onboard(                    "label": "cm_preview_request
                 "me.details.provenance": "Pochodzenie: {{words}}",
                 "me.action.profile.set": "Popraw",
                 "me.action.memory.forget": "Zapomnij",
+                "me.action.memory.restore": "Przywróć",
                 "me.action.planned": "planowane",
                 "me.input.profile.set": "value",
                 "me.input.profile.set.value": "Nowa wartość",
@@ -2780,15 +2787,20 @@ std::string_view(R"loom_onboard(                    "label": "cm_preview_request
                 "me.map.hide": "Ukryj mapę",
                 "me.rows.show": "Wszystkie wiersze",
                 "me.rows.hide": "Ukryj wszystkie wiersze",
-                "me.action.inference.confirm": "Potwierdź",
+)loom_onboard", 59993),
+std::string_view(R"loom_onboard(                "me.action.inference.confirm": "Potwierdź",
                 "me.action.inference.reject": "Odrzuć",
                 "me.state.rejected": "odrzucone przez Ciebie",
                 "me.details.review": "Twoja decyzja: {{decision}}, {{time}}",
                 "me.review.confirmed": "potwierdzone",
                 "me.review.rejected": "odrzucone",
                 "me.details.review_was": "Przed Twoją decyzją było: {{was}}",
-)loom_onboard", 59935),
-std::string_view(R"loom_onboard(                "me.details.previous": "Poprzednio: {{value}} ({{time}})"
+                "me.details.previous": "Poprzednio: {{value}} ({{time}})",
+                "me.details.forgotten": "Zapomniane {{who}}, {{time}}",
+                "me.details.forgotten_no_who": "Zapomniane, {{time}}",
+                "me.details.forgotten_kept": "Jego treść jest zachowana, więc możesz go przywrócić.",
+                "me.details.forgotten_dropped": "Jego treść nie została zachowana, więc nie da się go przywrócić.",
+                "me.forgotten.by.user": "przez Ciebie"
               }
             }
           }
@@ -3673,7 +3685,8 @@ std::string_view(R"loom_onboard(                "me.details.previous": "Poprzedn
             "error.presentation_control": "Onboarding presentation names unsupported control {{group}}.",
             "type.object": "an object",
             "type.array": "an array",
-            "type.string": "a string",
+)loom_onboard", 59986),
+std::string_view(R"loom_onboard(            "type.string": "a string",
             "review_state.pending": "pending",
             "review_state.confirmed": "confirmed",
             "review_state.rejected": "rejected",
@@ -3691,8 +3704,7 @@ std::string_view(R"loom_onboard(                "me.details.previous": "Poprzedn
             "graph.types": "Type definitions"
           },
           "pl": {
-)loom_onboard", 59964),
-std::string_view(R"loom_onboard(            "field.questions_suffix": "; pytania: {{disposition}}",
+            "field.questions_suffix": "; pytania: {{disposition}}",
             "knowledge.questions_suffix": " · pytania: {{disposition}}",
             "field.legend": "{{label}} ({{status}}{{suffix}})",
             "candidate.legend": "{{field}} · {{provenance}} · {{review}}",
@@ -4350,7 +4362,17 @@ std::string_view(R"loom_onboard(            "field.questions_suffix": "; pytania
                 }
               }
             ],
-            "actions": [],
+            "actions": [
+              {
+                "action": "memory.restore",
+                "args": {
+                  "id": "attrs.note_id"
+                },
+                "where": {
+                  "attrs.forgotten.kept": true
+                }
+              }
+            ],
             "actions_here": []
           },
           {
@@ -4926,7 +4948,8 @@ std::string_view(R"loom_onboard(            "field.questions_suffix": "; pytania
             "requeued": "Requeued {{count}} ({{failed}} failed, {{stalled}} stalled).",
             "retry_mode": "Retry",
             "mode_explicit_requeue": "Only when I requeue",
-            "mode_automatic": "Automatically",
+)loom_onboard", 59978),
+std::string_view(R"loom_onboard(            "mode_automatic": "Automatically",
             "action_failed": "The request could not be completed ({{reason}})."
           },
           "pl": {
@@ -4951,8 +4974,7 @@ std::string_view(R"loom_onboard(            "field.questions_suffix": "; pytania
       "label": "Texts for the question of the background analysis held by the x10 usage guard, asked in the conversation; texts only, they do not change what is sent",
       "value": {
         "schema": "loom.presentation_feature/1",
-)loom_onboard", 59974),
-std::string_view(R"loom_onboard(        "feature": "semantic_question",
+        "feature": "semantic_question",
         "locales": {
           "en": {
             "title": "The background analysis is waiting for you",
@@ -5911,7 +5933,8 @@ std::string_view(R"loom_onboard(        "feature": "semantic_question",
             "cm_issue_no_submenu": "zmiana nr {{n}}: nie ma podmenu „{{name}}”",
             "cm_issue_exists": "zmiana nr {{n}}: „{{name}}” już jest w menu",
             "cm_issue_move_missing": "zmiana nr {{n}}: nie ma czego przenieść („{{name}}”)",
-            "cm_issue_move_into_itself": "zmiana nr {{n}}: nie da się przenieść „{{name}}” do wnętrza tej samej pozycji",
+)loom_onboard", 59885),
+std::string_view(R"loom_onboard(            "cm_issue_move_into_itself": "zmiana nr {{n}}: nie da się przenieść „{{name}}” do wnętrza tej samej pozycji",
             "cm_issue_unknown_op": "zmiana nr {{n}}: nieznana zmiana „{{op}}”",
             "tool_chip_on": "{{name}}: włączone",
             "att_unreadable": "nie da się wysłać tego rodzaju pliku (da się wysłać obrazy i pliki tekstowe)",
@@ -5925,8 +5948,7 @@ std::string_view(R"loom_onboard(        "feature": "semantic_question",
             "cm_deeper": "Głębiej",
             "cm_narrower": "Węziej",
             "cm_shallower": "Płycej",
-)loom_onboard", 59965),
-std::string_view(R"loom_onboard(            "cm_selector_profile": "Profil selektora",
+            "cm_selector_profile": "Profil selektora",
             "cm_flow_text_graph": "Przepływ: tekst ↔ graf",
             "cm_preview_request": "Podgląd wysyłki",
             "cm_steps_help": "Szerzej, głębiej, węziej i płycej działają tylko na następne zapytanie; po jego wysłaniu wszystko wraca do ustawień.",
@@ -6665,6 +6687,7 @@ std::string_view(R"loom_onboard(            "cm_selector_profile": "Profil selek
             "me.details.provenance": "Origin: {{words}}",
             "me.action.profile.set": "Correct",
             "me.action.memory.forget": "Forget",
+            "me.action.memory.restore": "Restore",
             "me.action.planned": "planned",
             "me.input.profile.set": "value",
             "me.input.profile.set.value": "New value",
@@ -6695,7 +6718,12 @@ std::string_view(R"loom_onboard(            "cm_selector_profile": "Profil selek
             "me.review.confirmed": "confirmed",
             "me.review.rejected": "rejected",
             "me.details.review_was": "Before your decision it was: {{was}}",
-            "me.details.previous": "Before: {{value}} ({{time}})"
+            "me.details.previous": "Before: {{value}} ({{time}})",
+            "me.details.forgotten": "Forgotten {{who}}, {{time}}",
+            "me.details.forgotten_no_who": "Forgotten, {{time}}",
+            "me.details.forgotten_kept": "Its words are kept, so you can bring it back.",
+            "me.details.forgotten_dropped": "Its words were not kept, so it cannot be brought back.",
+            "me.forgotten.by.user": "by you"
           },
           "pl": {
             "title": "Graf",
@@ -6870,7 +6898,8 @@ std::string_view(R"loom_onboard(            "cm_selector_profile": "Profil selek
             "count.name.tool_sources": "źródła narzędzi",
             "count.name.tool_source_kinds": "rodzaje źródeł narzędzi",
             "count.name.roles": "role modeli",
-            "count.name.roles_settings": "ustawienia ról",
+)loom_onboard", 59946),
+std::string_view(R"loom_onboard(            "count.name.roles_settings": "ustawienia ról",
             "count.name.connectors": "konektory",
             "count.name.environments": "środowiska",
             "count.name.messages_waiting": "wiadomości czekające na analizę",
@@ -6892,8 +6921,7 @@ std::string_view(R"loom_onboard(            "cm_selector_profile": "Profil selek
             "reason.reader_missing": "ta wersja nie ma czytelnika tego źródła",
             "reason.read_under_parent": "wypisywane pod swoim rodzicem",
             "reason.read_under_conversation": "wypisywane pod rozmową",
-)loom_onboard", 59949),
-std::string_view(R"loom_onboard(            "reason.read_under_flow": "wypisywane pod przepływem",
+            "reason.read_under_flow": "wypisywane pod przepływem",
             "reason.config_unavailable": "nie da się odczytać ustawień",
             "reason.config_value_not_an_object": "to ustawienie nie jest listą wpisów",
             "reason.settings_fields_unavailable": "nie da się odczytać opisu ustawień",
@@ -7068,6 +7096,7 @@ std::string_view(R"loom_onboard(            "reason.read_under_flow": "wypisywan
             "me.details.provenance": "Pochodzenie: {{words}}",
             "me.action.profile.set": "Popraw",
             "me.action.memory.forget": "Zapomnij",
+            "me.action.memory.restore": "Przywróć",
             "me.action.planned": "planowane",
             "me.input.profile.set": "value",
             "me.input.profile.set.value": "Nowa wartość",
@@ -7098,7 +7127,12 @@ std::string_view(R"loom_onboard(            "reason.read_under_flow": "wypisywan
             "me.review.confirmed": "potwierdzone",
             "me.review.rejected": "odrzucone",
             "me.details.review_was": "Przed Twoją decyzją było: {{was}}",
-            "me.details.previous": "Poprzednio: {{value}} ({{time}})"
+            "me.details.previous": "Poprzednio: {{value}} ({{time}})",
+            "me.details.forgotten": "Zapomniane {{who}}, {{time}}",
+            "me.details.forgotten_no_who": "Zapomniane, {{time}}",
+            "me.details.forgotten_kept": "Jego treść jest zachowana, więc możesz go przywrócić.",
+            "me.details.forgotten_dropped": "Jego treść nie została zachowana, więc nie da się go przywrócić.",
+            "me.forgotten.by.user": "przez Ciebie"
           }
         }
       }
@@ -7723,7 +7757,8 @@ std::string_view(R"loom_onboard(            "reason.read_under_flow": "wypisywan
       "prompt_version": "prompt_version",
       "recipe_version": "recipe_version",
       "parameter_set_version": "parameter_set_version",
-      "preset_version": "preset_version",
+)loom_onboard", 59990),
+std::string_view(R"loom_onboard(      "preset_version": "preset_version",
       "run": "run"
     },
     "predicates": {
@@ -7793,8 +7828,7 @@ std::string_view(R"loom_onboard(            "reason.read_under_flow": "wypisywan
             },
             "provenance": "builtin_preset",
             "consent_event": null
-)loom_onboard", 60000),
-std::string_view(R"loom_onboard(          }
+          }
         ]
       }
     },
@@ -7871,7 +7905,7 @@ std::string_view(R"loom_onboard(          }
   },
   "presentation_key": "presentation.onboarding"
 }
-)loom_onboard", 1791)};
+)loom_onboard", 3886)};
 static constexpr std::string_view kOnboardingScenario[] = {
 std::string_view(R"loom_onboard({
   "schema": "loom.onboarding.scenario/1",

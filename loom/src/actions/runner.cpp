@@ -523,6 +523,23 @@ Interpreter ActionRunner::make_interpreter(const Loaded& loaded) {
   deps.settings = loaded.settings;
   const ElementResolver* resolver = &loaded.resolver;
   Runtime* rt = &rt_;
+  deps.value_of = [rt](const std::string& dotted) -> Json {
+    const std::size_t dot = dotted.find('.');
+    if (dot == std::string::npos) return nullptr;
+    auto profile = RuntimeProfile::load(dotted.substr(0, dot), rt->paths().root);
+    if (!profile) return nullptr;
+    Json at = profile->values();
+    std::string rest = dotted.substr(dot + 1);
+    while (!rest.empty()) {
+      const std::size_t d = rest.find('.');
+      const std::string key = rest.substr(0, d);
+      if (!at.is_object() || !at.contains(key)) return nullptr;
+      const Json next = at.at(key);
+      at = next;
+      rest = d == std::string::npos ? std::string() : rest.substr(d + 1);
+    }
+    return at;
+  };
   deps.element_content = [resolver, rt](const Json& element) {
     return resolver->content_parts(ElementSources{&rt->db(), &rt->blobs(), rt->paths().root}, element);
   };

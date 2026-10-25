@@ -265,6 +265,7 @@
         "POST /api/knowledge/run",
         "POST /api/media/transcribe",
         "POST /api/memory",
+        "POST /api/memory/restore",
         "POST /api/messages/:id/edit",
         "POST /api/messages/:id/restore",
         "POST /api/messages/:id/status",

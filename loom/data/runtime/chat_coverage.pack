@@ -2535,6 +2535,32 @@
         }
       },
       {
+        "id": "memory_restore",
+        "title": {
+          "en": "Bring back a forgotten entry",
+          "pl": "Przywróć zapomniany wpis"
+        },
+        "via": "action",
+        "action": "memory.restore",
+        "surfaces": {
+          "http": [
+            "POST /api/memory/restore"
+          ],
+          "invoke": [
+            "actions.memory.restore"
+          ]
+        },
+        "examples": {
+          "pl": "przywróć zapomniany wpis",
+          "en": "bring back the forgotten entry"
+        },
+        "chat_outcome": "unavailable",
+        "chat_outcome_reason": {
+          "pl": "Samo zdanie nie wskaże, który zapomniany wpis wrócić; wybierasz go na liście „Zapomniane” na ekranie „Ty”, a propozycja mówi to wprost.",
+          "en": "The sentence alone does not say which forgotten entry to bring back; you pick it on the list “Forgotten” on the screen “You”, and the proposal says so plainly."
+        }
+      },
+      {
         "id": "inference_confirm",
         "title": {
           "pl": "Potwierdź wniosek",

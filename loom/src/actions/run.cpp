@@ -618,10 +618,47 @@ Result<std::set<std::string>> Interpreter::element_traits(const Json& element, c
   return traits;
 }
 
+// {<profile>.<path>?<if true>|<if false>} in a reason becomes one of the two texts, by the value now (absent/false/0/"" = false).
+static std::string expand_reason_text(const std::string& text, const std::function<Json(const std::string&)>& value_of) {
+  std::string out;
+  std::size_t at = 0;
+  while (at < text.size()) {
+    const std::size_t open = text.find('{', at);
+    if (open == std::string::npos) break;
+    const std::size_t close = text.find('}', open);
+    if (close == std::string::npos) break;
+    const std::string body = text.substr(open + 1, close - open - 1);
+    const std::size_t q = body.find('?');
+    const std::size_t bar = body.find('|', q == std::string::npos ? 0 : q);
+    if (q == std::string::npos || bar == std::string::npos) {
+      out += text.substr(at, close + 1 - at);
+      at = close + 1;
+      continue;
+    }
+    const Json v = value_of(body.substr(0, q));
+    const bool truthy = v.is_boolean() ? v.get<bool>() : v.is_number() ? v.get<double>() != 0 : v.is_string() ? !v.get<std::string>().empty() : !v.is_null();
+    out += text.substr(at, open - at);
+    out += truthy ? body.substr(q + 1, bar - q - 1) : body.substr(bar + 1);
+    at = close + 1;
+  }
+  out += text.substr(at);
+  return out;
+}
+
+static void expand_reason(Json& reason, const std::function<Json(const std::string&)>& value_of) {
+  if (!value_of) return;
+  if (reason.is_string()) {
+    reason = expand_reason_text(reason.get<std::string>(), value_of);
+  } else if (reason.is_object()) {
+    for (auto it = reason.begin(); it != reason.end(); ++it)
+      if (it.value().is_string()) it.value() = expand_reason_text(it.value().get<std::string>(), value_of);
+  }
+}
+
 // Gate of one action for the element: the rules of the action and of every name it lists in gate_as;
 // the most restrictive decision wins (the action itself on a tie).
 static Result<Json> gate_one(const Engine& engine, const Element& element, const std::string& action, const Json& entry,
-                             const Scope& scope) {
+                             const Scope& scope, const std::function<Json(const std::string&)>& value_of) {
   LOOM_TRY_ASSIGN(Decision best, engine.decide(element, action, scope));
   for (const auto& alias : strings_of(json::find(entry, "gate_as"))) {
     LOOM_TRY_ASSIGN(Decision d, engine.decide(element, alias, scope));
@@ -632,7 +669,10 @@ static Result<Json> gate_one(const Engine& engine, const Element& element, const
   g["status"] = best.status;
   g["rule"] = best.rule;
   g["effect"] = best.effect;
-  if (!best.reason.is_null()) g["reason"] = best.reason;
+  if (!best.reason.is_null()) {
+    g["reason"] = best.reason;
+    expand_reason(g["reason"], value_of);
+  }
   if (!best.initiator.empty()) g["initiator"] = best.initiator;
   return g;
 }
@@ -653,7 +693,7 @@ Result<Json> Interpreter::gate_plan(const Json& plan, const Json& element_json, 
     auto add_gate = [&](const std::string& action, const std::string& owner) -> Status {
       if (!seen.insert(action).second) return {};
       const Json* entry = json::find(catalogue, action);
-      LOOM_TRY_ASSIGN(Json g, gate_one(engine, current, action, entry ? *entry : Json::object(), scope));
+      LOOM_TRY_ASSIGN(Json g, gate_one(engine, current, action, entry ? *entry : Json::object(), scope, deps_.value_of));
       g["id"] = item_id + ":" + action;
       g["item"] = item_id;
       g["action"] = action;

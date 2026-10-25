@@ -544,8 +544,22 @@
         "effect": "confirm",
         "initiator": "application preset",
         "reason": {
-          "en": "Forgetting takes a memory entry out of every conversation; the record that it was forgotten stays on the list of forgotten entries (with its words, unless the setting says otherwise); you confirm each one.",
-          "pl": "Zapomnienie wyjmuje wpis pamięci ze wszystkich rozmów; zapis, że został zapomniany, zostaje na liście zapomnianych (z treścią, chyba że ustawienie mówi inaczej); każde potwierdzasz sam."
+          "en": "Forgetting takes a memory entry out of every conversation; the record that it was forgotten stays on the list of forgotten entries {chat_ops.forget.keep_content?together with its words, so you can bring it back|without its words (the setting says so), so it cannot be brought back}; you confirm each one.",
+          "pl": "Zapomnienie wyjmuje wpis pamięci ze wszystkich rozmów; zapis, że został zapomniany, zostaje na liście zapomnianych {chat_ops.forget.keep_content?razem z jego treścią, więc możesz go stamtąd przywrócić|bez jego treści (tak mówi ustawienie), więc nie da się go przywrócić}; każde potwierdzasz sam."
+        }
+      },
+      "confirm:memory.restore": {
+        "id": "confirm:memory.restore",
+        "scope": "app_preset",
+        "target": {
+          "kind": "action",
+          "id": "memory.restore"
+        },
+        "effect": "confirm",
+        "initiator": "application preset",
+        "reason": {
+          "en": "Bringing an entry back puts it into your conversations again, as it was before you forgot it; the record of forgetting stays in its history; you confirm each one.",
+          "pl": "Przywrócenie wpisu wkłada go znowu do Twoich rozmów, takim jak był, zanim go zapomniałeś; zapis o zapomnieniu zostaje w jego historii; każde potwierdzasz sam."
         }
       },
       "confirm:usage.compact": {

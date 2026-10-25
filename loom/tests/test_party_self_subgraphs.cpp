@@ -424,6 +424,11 @@ TEST_SUITE("party_self_subgraphs") {
       auto nav = [&](const std::string& part) { return unwrap(rt->actions().invoke("graph.navigate", Json{{"focus", part}, {"lang", "pl"}, {"limit", 0}, {"hops", 1}})); };
       const Json waiting = unwrap(rt->actions().invoke("run", Json{{"action", "memory.forget"}, {"element", Json{{"class", "application"}}}, {"args", Json{{"query", id}}}, {"locale", "pl"}, {"ref", "test"}}));
       REQUIRE(waiting.at("status") == "awaiting_confirmation");
+      // the question tells the truth for the setting in force (a sentence with a token of the data, not a branch in the code)
+      const std::string asked = waiting.dump();
+      CHECK((asked.find("razem z jego treścią") != std::string::npos) == keep);
+      CHECK((asked.find("nie da się go przywrócić") != std::string::npos) == !keep);
+      CHECK(asked.find("{chat_ops") == std::string::npos);
       CHECK(rt->memory().get_node(id)->active);   // nothing before the yes
       const Json done = unwrap(rt->actions().confirm(Json{{"run_id", waiting.at("id")}, {"approved", true}, {"receipt_id", waiting.at("pending").at("receipt_id")}, {"ref", "test"}}));
       REQUIRE(done.at("status") == "completed");
@@ -452,6 +457,31 @@ TEST_SUITE("party_self_subgraphs") {
       bool part = false;
       for (const auto& c : me.at("children")) part = part || c.at("address") == "subgraph:self/forgotten";
       CHECK(part);
+      // the way back is offered when there is something to give back, and only then
+      CHECK(has_action(row, "memory.restore") == keep);
+      // asking anyway: the answer says why nothing came back, the entry stays forgotten
+      const Json back = unwrap(rt->actions().invoke("run", Json{{"action", "memory.restore"}, {"element", Json{{"class", "application"}}}, {"args", Json{{"id", id}}}, {"locale", "pl"}, {"ref", "test"}}));
+      REQUIRE(back.at("status") == "awaiting_confirmation");
+      CHECK(back.dump().find("{chat_ops") == std::string::npos);
+      const Json restored = unwrap(rt->actions().confirm(Json{{"run_id", back.at("id")}, {"approved", true}, {"receipt_id", back.at("pending").at("receipt_id")}, {"ref", "test"}}));
+      const auto after = rt->memory().get_node(id);
+      REQUIRE(after);
+      if (keep) {
+        CHECK(restored.at("status") == "completed");
+        CHECK(after->active);
+        CHECK_FALSE(after->metadata.contains("forgotten"));
+        REQUIRE(after->metadata.at("forget_history").size() == 1);
+        CHECK(after->metadata.at("forget_history")[0].at("restored").at("by") == "user");
+        CHECK(rt->memory().get_active_context(16000).find("Filemona") != std::string::npos);
+        CHECK(nav("subgraph:self/forgotten").at("children").size() == 0);
+        CHECK(nav("subgraph:self/memory").at("children").size() == 2);
+      } else {
+        CHECK(restored.at("status") == "failed");
+        CHECK(restored.at("error").at("code") == "conflict");
+        CHECK(restored.at("error").at("message").get<std::string>().find("nothing to bring back") != std::string::npos);
+        CHECK_FALSE(after->active);
+        CHECK(after->metadata.contains("forgotten"));
+      }
     }
   }
 

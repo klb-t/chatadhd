@@ -127,6 +127,12 @@ test('the form comes from the kernel\'s params of the action; the words are only
   const lines = me.detailLines({ review: { decision: 'rejected', time: '2026-10-25T10:00:00Z', was: { class: 'inferred' } } }, t, 'pl');
   assert.equal(lines.length, 2); assert.match(lines[0], /odrzucone/); assert.match(lines[1], /wywnioskowane/);
   assert.equal(me.stateText({ value: null, value_human: null }), null);
+  // a forgotten entry: when and by whom in words (no raw ids), and whether the words were kept
+  const f = me.detailLines({ forgotten: { time: '2026-10-25T10:00:00Z', by: 'user', kept: true } }, t, 'pl');
+  assert.equal(f.length, 2); assert.match(f[0], /^Zapomniane przez Ciebie, /); assert.match(f[1], /możesz go przywrócić/);
+  const g2 = me.detailLines({ forgotten: { time: '2026-10-25T10:00:00Z', by: 'someone-new', kept: false } }, t, 'pl');
+  assert.match(g2[0], /^Zapomniane, /); assert.doesNotMatch(g2[0], /someone/); assert.match(g2[1], /nie da się go przywrócić/);
+  assert.equal(me.actionButtons([{ id: 'memory.restore', label: 'k' }], t)[0].label, 'Przywróć');
 });
 
 test('a run is a gate (the kernel\'s reasons in the language), an error (the kernel\'s message) or done (the kernel\'s text)', () => {

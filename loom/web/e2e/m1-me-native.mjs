@@ -304,6 +304,34 @@ try {
     assert.ok(gone.children[0].label.includes("Filemona"), "the words are kept by the preset");
     await row(gone.children[0].address).waitFor();
     await audit("08b-zapomniane"); await shot("08b-zapomniane");
+    // The details of a forgotten row say when and by whom, in words; the way back (Przywróć) is offered because the words were kept.
+    const frow = row(gone.children[0].address);
+    await page.getByTestId(`me-details-${gone.children[0].address}`).locator(".disclosure-head").first().tap();
+    const detail = await until("the details of the forgotten entry", async () => { const t = (await page.getByTestId(`me-details-${gone.children[0].address}`).getByTestId("me-detail-line").allInnerTexts()).join(" | "); return t.includes("Zapomniane") ? t : null; });
+    assert.ok(/przez Ciebie/.test(detail) && /zachowana/.test(detail) && !/user|true|kept/.test(detail), `time and who in words, no raw ids: ${detail}`);
+    assert.equal(await frow.locator('[data-action="memory.restore"]').innerText(), say("me.action.memory.restore"));
+    await audit("08c-zapomniane-szczegoly"); await shot("08c-zapomniane-szczegoly");
+  });
+
+  await step("6b Przywróć on a forgotten entry → the question → Tak: it is active again, back in 'Co pamiętam', gone from 'Zapomniane'; the record of forgetting is kept in its history", async () => {
+    const holder = holderOf(c => c.kind === "memory_note");
+    const forgottenAddr = "subgraph:self/forgotten";
+    const gone = await navigate(forgottenAddr);
+    assert.equal(gone.children.length, 1);
+    const entry = gone.children[0];
+    await row(entry.address).locator('[data-action="memory.restore"]').tap();
+    await page.getByTestId("me-gate").waitFor();
+    const ask = (await page.getByTestId("me-proposal-ask").innerText()).replace(/\s+/g, " ");
+    assert.ok(ask.includes(say("me.action.memory.restore")), `the question names the action: ${ask}`);
+    const reasons = (await page.getByTestId("me-proposal-reason").allInnerTexts()).join(" ");
+    assert.ok(!/[{}]/.test(reasons), `no token left in the reason: ${reasons}`);
+    await page.getByTestId("me-proposal-confirm").tap();
+    await until("the kernel brought it back", async () => (await navigate(forgottenAddr)).children.length === 0);
+    const back = await navigate(holder.address);
+    assert.ok(back.children.some(c => c.label.includes("Filemona") && c.status === "active"), "back in the notes, active");
+    assert.equal(back.children.length, 2);
+    await until("the screen shows it", async () => (await section(holder.address).innerText()).includes("Filemona") || (await row(entry.address).count()) === 1);
+    await audit("08d-przywrocone"); await shot("08d-przywrocone");
   });
 
   await step("7 a preference says who set it and the chain on a tap; an inferred entry has the preset look and says it is a conclusion", async () => {

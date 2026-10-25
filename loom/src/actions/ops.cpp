@@ -639,6 +639,41 @@ StepOutcome memory_forget(Ctx& x) {
                 Json{{"id", node.id}, {"content", keep ? Json(node.content) : Json(nullptr)}, {"forgotten", Json{{"time", when}, {"kept", keep}, {"entries", ids.size()}}}});
 }
 
+// The way back from the list "Forgotten": the entry (and the entries that went with it) is made what it was before forgetting, the record of
+// forgetting is not erased but moved to metadata.forget_history together with the restoring (when, by whom). An entry whose words were not kept has
+// nothing to give back: it stays forgotten and the answer says so (preset; reversal: restore the record only by dropping the check below).
+StepOutcome memory_restore(Ctx& x) {
+  auto& mem = x.rt.memory();
+  const std::string id = trim_quotes(x.str("id", x.str("query")));
+  if (utf8::is_blank(id)) return fail(Errc::InvalidArgument, "say which entry to bring back");
+  auto found = mem.get_node(id);
+  if (!found) return fail(Errc::NotFound, x.say("memory_none", Json{{"query", id}}));
+  const Json mark = found->metadata.is_object() ? found->metadata.value("forgotten", Json(nullptr)) : Json(nullptr);
+  if (!mark.is_object()) return fail(Errc::Conflict, x.say("memory_not_forgotten", Json{{"content", clip(found->content, 400)}, {"id", id}}));
+  if (utf8::is_blank(found->content)) return fail(Errc::Conflict, x.say("memory_restore_no_content", Json{{"id", id}}));
+  const std::string when = timeutil::utc_now_iso();
+  std::vector<std::string> ids{id};
+  for (std::size_t i = 0; i < ids.size(); ++i)
+    for (const auto& child : mem.get_children(ids[i])) ids.push_back(child.id);
+  std::size_t restored = 0;
+  for (const auto& one : ids) {
+    auto entry = mem.get_node(one);
+    if (!entry || !entry->metadata.is_object() || !entry->metadata.contains("forgotten")) continue;
+    Json meta = entry->metadata;
+    Json record = meta.at("forgotten");
+    record["restored"] = Json{{"time", when}, {"by", "user"}};
+    Json history = meta.value("forget_history", Json::array());
+    if (!history.is_array()) history = Json::array();
+    history.push_back(record);
+    meta["forget_history"] = history;
+    meta.erase("forgotten");
+    const bool was_active = json::get_bool(record, "was_active", true);
+    if (auto st = mem.update_node(one, Json{{"active", was_active}, {"metadata", meta}}); !st) return fail(st.error());
+    ++restored;
+  }
+  return answer(x.say("memory_restored", Json{{"content", clip(found->content, 400)}, {"id", id}}), Json{{"id", id}, {"restored", Json{{"time", when}, {"entries", restored}}}});
+}
+
 // ── import and export ───────────────────────────────────────────────
 
 StepOutcome export_conversation(Ctx& x) {
@@ -2659,7 +2694,7 @@ const std::map<std::string, Op>& table() {
       {"conversation.delete", conversation_delete}, {"message.edit", message_edit}, {"message.versions", message_versions},
       {"message.restore", message_restore}, {"message.set_status", message_set_status}, {"message.weight", message_weight},
       {"search.find", search_find}, {"graph.related", graph_related}, {"graph.overview", graph_overview}, {"graph.reindex", graph_reindex},
-      {"memory.recall", memory_recall}, {"memory.remember", memory_remember}, {"memory.update", memory_update}, {"memory.forget", memory_forget},
+      {"memory.recall", memory_recall}, {"memory.remember", memory_remember}, {"memory.update", memory_update}, {"memory.forget", memory_forget}, {"memory.restore", memory_restore},
       {"export.conversation", export_conversation}, {"import.run", import_run}, {"storage.connect", storage_connect},
       {"ports.show", ports_show}, {"ports.set", ports_set}, {"usage.spend", usage_spend}, {"usage.set_limit", usage_set_limit},
       {"usage.compact", usage_compact}, {"economy.report", economy_report}, {"models.list", models_list}, {"models.refresh", models_refresh},

@@ -2187,6 +2187,7 @@
             "me.details.provenance": "Origin: {{words}}",
             "me.action.profile.set": "Correct",
             "me.action.memory.forget": "Forget",
+            "me.action.memory.restore": "Restore",
             "me.action.planned": "planned",
             "me.input.profile.set": "value",
             "me.input.profile.set.value": "New value",
@@ -2217,7 +2218,12 @@
             "me.review.confirmed": "confirmed",
             "me.review.rejected": "rejected",
             "me.details.review_was": "Before your decision it was: {{was}}",
-            "me.details.previous": "Before: {{value}} ({{time}})"
+            "me.details.previous": "Before: {{value}} ({{time}})",
+            "me.details.forgotten": "Forgotten {{who}}, {{time}}",
+            "me.details.forgotten_no_who": "Forgotten, {{time}}",
+            "me.details.forgotten_kept": "Its words are kept, so you can bring it back.",
+            "me.details.forgotten_dropped": "Its words were not kept, so it cannot be brought back.",
+            "me.forgotten.by.user": "by you"
           },
           "pl": {
             "title": "Graf",
@@ -2589,6 +2595,7 @@
             "me.details.provenance": "Pochodzenie: {{words}}",
             "me.action.profile.set": "Popraw",
             "me.action.memory.forget": "Zapomnij",
+            "me.action.memory.restore": "Przywróć",
             "me.action.planned": "planowane",
             "me.input.profile.set": "value",
             "me.input.profile.set.value": "Nowa wartość",
@@ -2619,7 +2626,12 @@
             "me.review.confirmed": "potwierdzone",
             "me.review.rejected": "odrzucone",
             "me.details.review_was": "Przed Twoją decyzją było: {{was}}",
-            "me.details.previous": "Poprzednio: {{value}} ({{time}})"
+            "me.details.previous": "Poprzednio: {{value}} ({{time}})",
+            "me.details.forgotten": "Zapomniane {{who}}, {{time}}",
+            "me.details.forgotten_no_who": "Zapomniane, {{time}}",
+            "me.details.forgotten_kept": "Jego treść jest zachowana, więc możesz go przywrócić.",
+            "me.details.forgotten_dropped": "Jego treść nie została zachowana, więc nie da się go przywrócić.",
+            "me.forgotten.by.user": "przez Ciebie"
           }
         }
       }

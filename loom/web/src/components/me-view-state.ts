@@ -227,6 +227,13 @@ export function detailLines(attrs: Record<string, unknown> | undefined, t: Shell
   const previous = attrs.previous as { value_human?: unknown; time?: unknown } | undefined;
   if (previous && typeof previous.value_human === "string" && previous.value_human !== "")
     out.push(t("me.details.previous", { value: previous.value_human, time: typeof previous.time === "string" ? formatTime(previous.time, language) : "" }));
+  const forgotten = attrs.forgotten as { time?: unknown; by?: unknown; kept?: unknown } | undefined;
+  if (forgotten && typeof forgotten === "object") {
+    const by = typeof forgotten.by === "string" ? wordOrNull(t, `me.forgotten.by.${forgotten.by}`) : null;
+    const time = typeof forgotten.time === "string" ? formatTime(forgotten.time, language) : "";
+    out.push(t(by ? "me.details.forgotten" : "me.details.forgotten_no_who", { who: by ?? "", time }));
+    out.push(t(forgotten.kept === false ? "me.details.forgotten_dropped" : "me.details.forgotten_kept"));
+  }
   const prov = attrs.provenance as { words?: unknown } | undefined;
   if (prov && typeof prov.words === "string" && prov.words) out.push(t("me.details.provenance", { words: prov.words }));
   return out;
