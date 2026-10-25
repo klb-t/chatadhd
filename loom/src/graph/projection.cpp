@@ -1669,7 +1669,8 @@ void apply_review(Impl& c, Json& n, const Json& src, const Json& meta) {
   n["attrs"]["review"] = info;
   if (decision == "confirmed") {
     Json cls = Json{{"class", "said"}, {"confidence", 1.0}};
-    if (const Json* by = json::find(src.value("evidence_by_method", Json::object()), method); by && by->is_object()) cls = *by;
+    const Json by_method = src.value("evidence_by_method", Json::object());
+    if (const Json* by = json::find(by_method, method); by && by->is_object()) cls = *by;
     n["evidence"] = evidence_of(cls, "db", json::get_string(n["evidence"]["provenance"], "source_ref"), method, review.value("time", Json(nullptr)));
   } else if (decision == "rejected") {
     n["evidence"] = nullptr;
