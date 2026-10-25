@@ -338,7 +338,8 @@ try {
     await audit("12-reject-proposal"); await shot("12-reject-proposal");
     await page.getByTestId("me-proposal-confirm").tap();
     const rejected = await until("the kernel's rejected entry", async () => (await navigate(holder.address)).children.find(c => c.address === addr && c.state === "rejected"));
-    assert.equal(rejected.evidence, null); assert.equal(rejected.attrs.review.decision, "rejected");
+    assert.equal(rejected.evidence, null);
+    assert.equal((await api("POST", "/api/graph/card", { address: addr, lang: "pl" })).attrs.review.decision, "rejected");
     await until("the screen says it", async () => (await row(addr).innerText()).includes(say("me.state.rejected")));
     assert.equal(await row(addr).locator('[data-action="inference.reject"]').count(), 0, "a rejected entry offers only Potwierdź");
     await audit("13-rejected"); await shot("13-rejected");
