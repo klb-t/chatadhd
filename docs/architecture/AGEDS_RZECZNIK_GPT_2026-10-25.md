@@ -1,4 +1,4 @@
-# AGEDS — rzecznik materiału dowodowego: podsumowanie z rozmowy właściciela z GPT (przekazane 2026-10-25, dosłownie)
+# AGEDS — rzecznik materiału dowodowego: podsumowanie z rozmowy właściciela z GPT (przekazane 2026-10-25; wierne skrócenie, pełny tekst w czacie sesji gcp)
 
 Uzupełnienie do zadania „rzecznik materiału dowodowego w AGEDS”: model użytkowników, spraw, pakietów i współdzielonych źródeł.
 

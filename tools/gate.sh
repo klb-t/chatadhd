@@ -6,7 +6,7 @@
 # a 1 h limit killed gate k2b4 on 2026-10-23 in the middle of the web e2e (the kill shows up as 'Target page ... has been closed').
 # (copied from the session scratchpad into tools/ on 2026-10-21; the lint step is a heuristic report, it does not fail the gate)
 set -uo pipefail
-export CCACHE_BASEDIR=/home/user CCACHE_NOHASHDIR=true CCACHE_DIR=/home/user/.ccache CCACHE_MAXSIZE=12G
+export CCACHE_BASEDIR="${CCACHE_BASEDIR:-$HOME}" CCACHE_NOHASHDIR=true CCACHE_DIR="${CCACHE_DIR:-$HOME/.ccache}" CCACHE_MAXSIZE="${CCACHE_MAXSIZE:-12G}"  # OPS2: was hard-coded /home/user
 TOOLS="$(cd "$(dirname "$0")" && pwd)"; ROOT="$(cd "$1" && pwd)"; LABEL="${2:-$(basename "$ROOT")}"
 OUT="${GATE_OUT:-${TMPDIR:-/tmp}/gate-$LABEL}"; mkdir -p "$OUT"   # logs outside the working tree (override with GATE_OUT)
 LOG="$OUT/gate.log"; : > "$LOG"
