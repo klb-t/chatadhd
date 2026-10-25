@@ -557,6 +557,9 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
         // The default model removes the conversation's own: what the chain gives it now (its project's, or the person's pick) is shown.
         if (!resolution || !mountedRef.current || modelChoicesRef.current !== choices) return;
         const own = conversationModel(resolution);
+        // The same answer feeds the default option's label: the optimistic state change above already re-ran the label's own resolution, possibly
+        // before the clear reached the kernel (stale label); this one is read after the write.
+        setResolvedDefault(typeof resolution.value === "string" && resolution.value ? resolution.value : null);
         setOwnModel(own === null ? null : { convId: target, model: own });
       })
       .then(undefined, (err: unknown) => { if (mountedRef.current && selectedConvRef.current === target) setModelNote(t("cm_model_not_saved", { reason: err instanceof Error ? err.message : String(err) })); });
