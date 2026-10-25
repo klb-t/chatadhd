@@ -9,7 +9,8 @@ export type EvidenceClass = "declared" | "observed" | "said" | "derived" | "infe
 
 /** A parameter the person still has to give for an action on a node (kernel M1-W2b-2a: derived from the action catalogue; the arguments the node
  *  fills itself are not listed). `kind` says how it is entered (an open value: free_text, ...), `label` is the kernel's words in the language asked. */
-export interface ActionParam { name: string; kind?: string; type?: string; required?: boolean; label?: string }
+export interface ActionParamChoice { value: string; label: string }
+export interface ActionParam { name: string; kind?: string; type?: string; required?: boolean; label?: string; choices?: ActionParamChoice[]; none?: string }
 
 export interface GraphEvidence {
   class: EvidenceClass | string;

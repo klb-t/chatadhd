@@ -2381,6 +2381,7 @@ std::string_view(R"loom_onboard(                    "label": "cm_preview_request
                 "me.rows.hide": "Hide all rows",
                 "me.action.inference.confirm": "Confirm",
                 "me.action.inference.reject": "Reject",
+                "me.action.profile.restart": "Get to know me from scratch",
                 "me.state.rejected": "rejected by you",
                 "me.details.review": "Your decision: {{decision}}, {{time}}",
                 "me.review.confirmed": "confirmed",
@@ -2391,6 +2392,8 @@ std::string_view(R"loom_onboard(                    "label": "cm_preview_request
                 "me.details.forgotten_no_who": "Forgotten, {{time}}",
                 "me.details.forgotten_kept": "Its words are kept, so you can bring it back.",
                 "me.details.forgotten_dropped": "Its words were not kept, so it cannot be brought back.",
+                "me.details.forget_history": "Earlier: forgotten {{who}}, {{time}}; brought back {{who_restored}}, {{time_restored}}.",
+                "me.details.forget_history_no_restore": "Earlier: forgotten {{who}}, {{time}}.",
                 "me.forgotten.by.user": "by you"
               },
               "pl": {
@@ -2781,15 +2784,16 @@ std::string_view(R"loom_onboard(                    "label": "cm_preview_request
                 "me.confirm.no": "Nie",
                 "me.confirm.declined": "Nic nie zmieniłem — odmówiłeś.",
                 "me.confirm.done": "Gotowe: {{action}}.",
-                "me.confirm.failed": "Nie udało się ({{reason}}).",
+)loom_onboard", 59975),
+std::string_view(R"loom_onboard(                "me.confirm.failed": "Nie udało się ({{reason}}).",
                 "me.result.title": "Odpowiedź:",
                 "me.map.show": "Pokaż w mapie",
                 "me.map.hide": "Ukryj mapę",
                 "me.rows.show": "Wszystkie wiersze",
                 "me.rows.hide": "Ukryj wszystkie wiersze",
-)loom_onboard", 59993),
-std::string_view(R"loom_onboard(                "me.action.inference.confirm": "Potwierdź",
+                "me.action.inference.confirm": "Potwierdź",
                 "me.action.inference.reject": "Odrzuć",
+                "me.action.profile.restart": "Poznaj mnie od nowa",
                 "me.state.rejected": "odrzucone przez Ciebie",
                 "me.details.review": "Twoja decyzja: {{decision}}, {{time}}",
                 "me.review.confirmed": "potwierdzone",
@@ -2800,6 +2804,8 @@ std::string_view(R"loom_onboard(                "me.action.inference.confirm": "
                 "me.details.forgotten_no_who": "Zapomniane, {{time}}",
                 "me.details.forgotten_kept": "Jego treść jest zachowana, więc możesz go przywrócić.",
                 "me.details.forgotten_dropped": "Jego treść nie została zachowana, więc nie da się go przywrócić.",
+                "me.details.forget_history": "Wcześniej: zapomniane {{who}}, {{time}}; przywrócone {{who_restored}}, {{time_restored}}.",
+                "me.details.forget_history_no_restore": "Wcześniej: zapomniane {{who}}, {{time}}.",
                 "me.forgotten.by.user": "przez Ciebie"
               }
             }
@@ -3676,7 +3682,8 @@ std::string_view(R"loom_onboard(                "me.action.inference.confirm": "
             "layer_name.user_disabled": "user_disabled",
             "layer_name.pack_proposal": "pack_proposal",
             "layer_name.none": "none",
-            "option.true": "True",
+)loom_onboard", 59998),
+std::string_view(R"loom_onboard(            "option.true": "True",
             "option.false": "False",
             "error.template_parameter": "Missing presentation template parameter {{key}}.",
             "error.presentation_invalid": "Invalid onboarding presentation at {{path}}.",
@@ -3685,8 +3692,7 @@ std::string_view(R"loom_onboard(                "me.action.inference.confirm": "
             "error.presentation_control": "Onboarding presentation names unsupported control {{group}}.",
             "type.object": "an object",
             "type.array": "an array",
-)loom_onboard", 59986),
-std::string_view(R"loom_onboard(            "type.string": "a string",
+            "type.string": "a string",
             "review_state.pending": "pending",
             "review_state.confirmed": "confirmed",
             "review_state.rejected": "rejected",
@@ -4062,6 +4068,9 @@ std::string_view(R"loom_onboard(            "type.string": "a string",
               },
               {
                 "action": "profile.show"
+              },
+              {
+                "action": "profile.restart"
               }
             ]
           },
@@ -4166,7 +4175,10 @@ std::string_view(R"loom_onboard(            "type.string": "a string",
                 "args": {
                   "kind": "attrs.unit_kind",
                   "id": "attrs.unit_id"
-                }
+                },
+                "ask": [
+                  "conv_id"
+                ]
               }
             ],
             "actions_here": [
@@ -4931,7 +4943,8 @@ std::string_view(R"loom_onboard(            "type.string": "a string",
       }
     },
     {
-      "id": "presentation.semantic_queue/v1",
+)loom_onboard", 59972),
+std::string_view(R"loom_onboard(      "id": "presentation.semantic_queue/v1",
       "key": "presentation.semantic_queue",
       "area": "presentation/semantic_queue",
       "revision": 1,
@@ -4948,8 +4961,7 @@ std::string_view(R"loom_onboard(            "type.string": "a string",
             "requeued": "Requeued {{count}} ({{failed}} failed, {{stalled}} stalled).",
             "retry_mode": "Retry",
             "mode_explicit_requeue": "Only when I requeue",
-)loom_onboard", 59978),
-std::string_view(R"loom_onboard(            "mode_automatic": "Automatically",
+            "mode_automatic": "Automatically",
             "action_failed": "The request could not be completed ({{reason}})."
           },
           "pl": {
@@ -5925,7 +5937,8 @@ std::string_view(R"loom_onboard(            "mode_automatic": "Automatically",
             "cm_issue_no_id": "pozycja w „{{name}}” nie ma identyfikatora",
             "cm_issue_unknown_kind": "„{{name}}” jest rodzaju, którego ta wersja nie zna ({{kind}})",
             "cm_issue_toggle_target": "przełącznik „{{name}}” nie mówi, co włącza",
-            "cm_issue_no_panel": "„{{name}}” ma otwierać panel, ale żadnego nie wskazuje",
+)loom_onboard", 59948),
+std::string_view(R"loom_onboard(            "cm_issue_no_panel": "„{{name}}” ma otwierać panel, ale żadnego nie wskazuje",
             "cm_issue_unknown_panel": "„{{name}}” otwiera panel, którego ta wersja nie zna ({{panel}})",
             "cm_issue_ops_shape": "Twoje zmiany menu mają zły kształt",
             "cm_issue_op_shape": "zmiana nr {{n}} nie jest zmianą",
@@ -5933,8 +5946,7 @@ std::string_view(R"loom_onboard(            "mode_automatic": "Automatically",
             "cm_issue_no_submenu": "zmiana nr {{n}}: nie ma podmenu „{{name}}”",
             "cm_issue_exists": "zmiana nr {{n}}: „{{name}}” już jest w menu",
             "cm_issue_move_missing": "zmiana nr {{n}}: nie ma czego przenieść („{{name}}”)",
-)loom_onboard", 59885),
-std::string_view(R"loom_onboard(            "cm_issue_move_into_itself": "zmiana nr {{n}}: nie da się przenieść „{{name}}” do wnętrza tej samej pozycji",
+            "cm_issue_move_into_itself": "zmiana nr {{n}}: nie da się przenieść „{{name}}” do wnętrza tej samej pozycji",
             "cm_issue_unknown_op": "zmiana nr {{n}}: nieznana zmiana „{{op}}”",
             "tool_chip_on": "{{name}}: włączone",
             "att_unreadable": "nie da się wysłać tego rodzaju pliku (da się wysłać obrazy i pliki tekstowe)",
@@ -6713,6 +6725,7 @@ std::string_view(R"loom_onboard(            "cm_issue_move_into_itself": "zmiana
             "me.rows.hide": "Hide all rows",
             "me.action.inference.confirm": "Confirm",
             "me.action.inference.reject": "Reject",
+            "me.action.profile.restart": "Get to know me from scratch",
             "me.state.rejected": "rejected by you",
             "me.details.review": "Your decision: {{decision}}, {{time}}",
             "me.review.confirmed": "confirmed",
@@ -6723,6 +6736,8 @@ std::string_view(R"loom_onboard(            "cm_issue_move_into_itself": "zmiana
             "me.details.forgotten_no_who": "Forgotten, {{time}}",
             "me.details.forgotten_kept": "Its words are kept, so you can bring it back.",
             "me.details.forgotten_dropped": "Its words were not kept, so it cannot be brought back.",
+            "me.details.forget_history": "Earlier: forgotten {{who}}, {{time}}; brought back {{who_restored}}, {{time_restored}}.",
+            "me.details.forget_history_no_restore": "Earlier: forgotten {{who}}, {{time}}.",
             "me.forgotten.by.user": "by you"
           },
           "pl": {
@@ -6882,7 +6897,8 @@ std::string_view(R"loom_onboard(            "cm_issue_move_into_itself": "zmiana
             "count.name.layers.privacy": "warstwy prywatności",
             "count.name.perspectives.store": "zapisane perspektywy",
             "count.name.db.nodes": "węzły grafu",
-            "count.name.storage_categories": "kategorie magazynu",
+)loom_onboard", 59968),
+std::string_view(R"loom_onboard(            "count.name.storage_categories": "kategorie magazynu",
             "count.name.storages": "magazyny",
             "count.name.storage_backends_reachable": "osiągalne magazyny",
             "count.name.storage_backends_unprobed": "niesprawdzone magazyny",
@@ -6898,8 +6914,7 @@ std::string_view(R"loom_onboard(            "cm_issue_move_into_itself": "zmiana
             "count.name.tool_sources": "źródła narzędzi",
             "count.name.tool_source_kinds": "rodzaje źródeł narzędzi",
             "count.name.roles": "role modeli",
-)loom_onboard", 59946),
-std::string_view(R"loom_onboard(            "count.name.roles_settings": "ustawienia ról",
+            "count.name.roles_settings": "ustawienia ról",
             "count.name.connectors": "konektory",
             "count.name.environments": "środowiska",
             "count.name.messages_waiting": "wiadomości czekające na analizę",
@@ -7122,6 +7137,7 @@ std::string_view(R"loom_onboard(            "count.name.roles_settings": "ustawi
             "me.rows.hide": "Ukryj wszystkie wiersze",
             "me.action.inference.confirm": "Potwierdź",
             "me.action.inference.reject": "Odrzuć",
+            "me.action.profile.restart": "Poznaj mnie od nowa",
             "me.state.rejected": "odrzucone przez Ciebie",
             "me.details.review": "Twoja decyzja: {{decision}}, {{time}}",
             "me.review.confirmed": "potwierdzone",
@@ -7132,6 +7148,8 @@ std::string_view(R"loom_onboard(            "count.name.roles_settings": "ustawi
             "me.details.forgotten_no_who": "Zapomniane, {{time}}",
             "me.details.forgotten_kept": "Jego treść jest zachowana, więc możesz go przywrócić.",
             "me.details.forgotten_dropped": "Jego treść nie została zachowana, więc nie da się go przywrócić.",
+            "me.details.forget_history": "Wcześniej: zapomniane {{who}}, {{time}}; przywrócone {{who_restored}}, {{time_restored}}.",
+            "me.details.forget_history_no_restore": "Wcześniej: zapomniane {{who}}, {{time}}.",
             "me.forgotten.by.user": "przez Ciebie"
           }
         }
@@ -7719,7 +7737,8 @@ std::string_view(R"loom_onboard(            "count.name.roles_settings": "ustawi
             "level.stores": "Co zapiszę",
             "level.model_sees": "Co zobaczy model",
             "level.aria": "Wybierz poziom: {{label}}",
-            "level.hint": "Dotknij poziomu albo napisz własnymi słowami, na przykład „nie pytaj o zdrowie”.",
+)loom_onboard", 59894),
+std::string_view(R"loom_onboard(            "level.hint": "Dotknij poziomu albo napisz własnymi słowami, na przykład „nie pytaj o zdrowie”.",
             "chips.order": "skip decline never review status",
             "chips.aria": "Szybkie odpowiedzi",
             "chip.skip.label": "Pomiń",
@@ -7757,8 +7776,7 @@ std::string_view(R"loom_onboard(            "count.name.roles_settings": "ustawi
       "prompt_version": "prompt_version",
       "recipe_version": "recipe_version",
       "parameter_set_version": "parameter_set_version",
-)loom_onboard", 59990),
-std::string_view(R"loom_onboard(      "preset_version": "preset_version",
+      "preset_version": "preset_version",
       "run": "run"
     },
     "predicates": {
@@ -7905,7 +7923,7 @@ std::string_view(R"loom_onboard(      "preset_version": "preset_version",
   },
   "presentation_key": "presentation.onboarding"
 }
-)loom_onboard", 3886)};
+)loom_onboard", 5270)};
 static constexpr std::string_view kOnboardingScenario[] = {
 std::string_view(R"loom_onboard({
   "schema": "loom.onboarding.scenario/1",

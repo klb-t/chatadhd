@@ -14977,6 +14977,81 @@
         },
         "default_element": "application"
       },
+      "profile.restart": {
+        "id": "profile.restart",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Get to know me from scratch",
+        "description": "Starts the interview about you again, after you confirm: the answers of the fields that the preset names (default: those you gave or declined; the ones you closed with \"never\" stay) go back to unknown, and the interview begins with its first question. The earlier answers are not erased: they stay in the history of the profile with their time.",
+        "why": {
+          "pl": "Zaczynasz wywiad o sobie od początku: odpowiedzi wskazane w ustawieniu (domyślnie udzielone i odrzucone; zamknięte słowem „nigdy” zostają) wracają do stanu „nieznane”, a wywiad zaczyna od pierwszego pytania. Wcześniejszych odpowiedzi nic nie kasuje: zostają w historii profilu z czasem."
+        },
+        "labels": {
+          "pl": "Poznaj mnie od nowa"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "port": "actions",
+        "action": "profile.restart",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "locale",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Language of the words (en, pl); default: the language of the run.",
+              "pl": "Język słów (en, pl); domyślnie język uruchomienia."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/profile/restart"
+        },
+        "phrases": {
+          "en": [
+            "get to know me from scratch"
+          ],
+          "pl": [
+            "poznaj mnie od nowa"
+          ]
+        },
+        "examples": {
+          "en": [
+            "get to know me from scratch"
+          ],
+          "pl": [
+            "poznaj mnie od nowa"
+          ]
+        },
+        "result_text": {
+          "en": "We start again:",
+          "pl": "Zaczynamy od nowa:"
+        },
+        "default_element": "application"
+      },
       "context.receipt": {
         "id": "context.receipt",
         "kind": "atomic",

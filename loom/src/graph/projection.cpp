@@ -1283,6 +1283,39 @@ namespace {
 
 Json catalogue_title(const Json& a, const std::string& lang);
 
+// The choices of an action parameter (graph_sources `param_choices`, key <action>.<parameter>): the person picks from words, never types an id.
+// `from` names a source the kernel can read; today "conversations" (the list of conversations: value = id, label = title). A source the kernel
+// cannot read, or an unreadable database, leaves the parameter as a typed one (logged), nothing is refused. The param then has `kind: "choice"` and
+// `choices: [{value, label}]`; `none` (words) is the empty choice of an optional parameter.
+void add_choices(Impl& c, const std::string& action, const std::string& name, Json& param) {
+  const Json table = c.profile_values.value("param_choices", Json::object());
+  const Json* spec = json::find(table, action + "." + name);
+  if (!spec || !spec->is_object()) return;
+  const std::string from = json::get_string(*spec, "from");
+  const std::string vf = json::get_string(*spec, "value", "id");
+  const std::string lf = json::get_string(*spec, "label", "title");
+  Json choices = Json::array();
+  if (from == "conversations" && c.env.db) {
+    auto convs = c.env.db->list_convs(-1);
+    if (!convs) {
+      log::write(log::Level::Debug, kLog, "choices of " + action + "." + name + ": conversations not readable: " + convs.error().message);
+      return;
+    }
+    for (const auto& cv : *convs) {
+      const Json row = cv.to_json();
+      std::string label = json::get_string(row, lf);
+      if (label.empty()) label = c.say(spec->value("untitled", Json("")));
+      choices.push_back(Json{{"value", json::get_string(row, vf)}, {"label", label}});
+    }
+  } else {
+    log::write(log::Level::Debug, kLog, "choices of " + action + "." + name + ": no reader for source '" + from + "'");
+    return;
+  }
+  param["kind"] = "choice";
+  param["choices"] = std::move(choices);
+  if (const Json* none = json::find(*spec, "none"); none && !json::get_bool(param, "required", false)) param["none"] = c.say(*none);
+}
+
 // The actions of the catalogue as the class application sees them (the class the person's own actions are for): id -> {label, decision,
 // implementation}, once per render. The label is the catalogue's title in the language asked; the decision is the rules' status for it.
 const Json& application_actions(Impl& c) {
@@ -1313,11 +1346,13 @@ const Json& application_actions(Impl& c) {
       if (name.empty()) continue;
       Json label = c.words.value("param." + id + "." + name, Json(nullptr));
       const std::string words = label.is_object() ? c.say(label) : std::string();
-      params.push_back(Json{{"name", name},
-                            {"kind", json::get_string(p, "edit", json::get_string(p, "type", "free_text"))},
-                            {"type", json::get_string(p, "type", "string")},
-                            {"required", json::get_bool(p, "required", false)},
-                            {"label", words.empty() ? c.say(p.value("description", Json())) : words}});
+      Json param{{"name", name},
+                 {"kind", json::get_string(p, "edit", json::get_string(p, "type", "free_text"))},
+                 {"type", json::get_string(p, "type", "string")},
+                 {"required", json::get_bool(p, "required", false)},
+                 {"label", words.empty() ? c.say(p.value("description", Json())) : words}};
+      add_choices(c, id, name, param);
+      params.push_back(std::move(param));
     }
     row["params"] = std::move(params);
     if (const Json* d = json::find(decisions, id)) {
@@ -1739,6 +1774,10 @@ Result<Read> read_memory(Impl& c, const Json& src, const std::string&, const Jso
       n["why"] = why;
       n["attrs"]["forgotten"] = forgotten;
     }
+    // The earlier forgettings of an entry that was brought back (metadata.forget_history: when, by whom, and the restoring): the record is kept
+    // whatever the entry is now, and the screen can say it in words.
+    const Json history = m.metadata.is_object() ? m.metadata.value("forget_history", Json(nullptr)) : Json(nullptr);
+    if (history.is_array() && !history.empty()) n["attrs"]["forget_history"] = history;
     r.nodes.push_back(std::move(n));
   }
   return r;

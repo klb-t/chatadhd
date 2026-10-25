@@ -29,6 +29,8 @@ struct Env {
   // remark rules have (the preset), "conversation" = only the language of the conversation, a list = those. The language of the conversation (lang)
   // stays the language of what is SAID; see onboarding::match_languages.
   Json match_languages = Json(nullptr);
+  // M1-W2b-2d: what "Poznaj mnie od nowa" resets (pack chat_ops, profile.restart: reset_statuses, purge_history, reset_sections); null = the presets in the code.
+  Json restart = Json(nullptr);
 };
 
 // The id of the flow a conversation carries in its metadata when it is the interview (conversations.metadata.flow).
@@ -51,6 +53,7 @@ Result<Reply> confirm(const Env& env, const Json& args);    // gated: confirm:pr
 // args.entry = the id of the node of the database. The verdict is written into the node's metadata.review {decision, time, by, method} and the
 // previous verdict is kept in metadata.review_history: a rejection keeps the node and a record of it, a confirmation turns the conclusion into
 // something the person said (the projection reads the verdict); nothing is deleted. Gated: confirm:inference.confirm / confirm:inference.reject.
+Result<Reply> restart(const Env& env, const Json& args);    // gated: confirm:profile.restart; resets what the preset says, keeps the history, starts again
 Result<Reply> confirm_inference(const Env& env, const Json& args);
 Result<Reply> reject_inference(const Env& env, const Json& args);
 

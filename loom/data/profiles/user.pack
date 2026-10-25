@@ -190,6 +190,9 @@
               },
               {
                 "action": "profile.show"
+              },
+              {
+                "action": "profile.restart"
               }
             ]
           },
@@ -294,7 +297,10 @@
                 "args": {
                   "kind": "attrs.unit_kind",
                   "id": "attrs.unit_id"
-                }
+                },
+                "ask": [
+                  "conv_id"
+                ]
               }
             ],
             "actions_here": [

@@ -2643,7 +2643,8 @@ StepOutcome profile_run(Ctx& x, ProfileFn fn, std::initializer_list<const char*>
                    [rt](const std::string& what, const Json& payload) {
                      if (what == "conv_created") rt->bus().emit(events::kConvCreated, payload);
                    },
-                   lx.cfg.value("profile", Json::object()).value("match_languages", Json(nullptr))};
+                   lx.cfg.value("profile", Json::object()).value("match_languages", Json(nullptr)),
+                   lx.cfg.value("profile", Json::object()).value("restart", Json(nullptr))};
   auto r = fn(env, args);
   if (!r) return fail(r.error());
   return answer(r->text, r->data);
@@ -2652,6 +2653,7 @@ StepOutcome profile_run(Ctx& x, ProfileFn fn, std::initializer_list<const char*>
 StepOutcome profile_interview_op(Ctx& x) {
   return profile_run(x, profile::interview, {"op", "slot", "text", "category", "section", "user_id", "expected_revision", "reopen", "erase", "mode", "locale", "conv_id", "in_conversation"});
 }
+StepOutcome profile_restart_op(Ctx& x) { return profile_run(x, profile::restart, {"user_id", "locale", "in_conversation"}); }
 StepOutcome profile_show_op(Ctx& x) { return profile_run(x, profile::show, {"user_id", "locale"}); }
 StepOutcome profile_set_op(Ctx& x) { return profile_run(x, profile::set, {"slot", "value", "user_id", "expected_revision", "locale"}); }
 StepOutcome profile_confirm_op(Ctx& x) {
@@ -2708,7 +2710,7 @@ const std::map<std::string, Op>& table() {
       {"view_model.show", view_model_show}, {"interaction.show", interaction_show}, {"interaction.rebind", interaction_rebind}, {"edge_kinds.list", edge_kinds_list}, {"edge_kinds.classify", edge_kinds_classify},
       {"graph.navigate", graph_navigate}, {"graph.card", graph_card}, {"settings.resolved", settings_resolved_op}, {"roles.resolved", roles_resolved_op},
       {"rom.override", rom_override_op}, {"context.modify", context_modify}, {"context.receipt", context_receipt},
-      {"profile.interview", profile_interview_op}, {"profile.show", profile_show_op}, {"profile.set", profile_set_op}, {"profile.confirm", profile_confirm_op},
+      {"profile.interview", profile_interview_op}, {"profile.restart", profile_restart_op}, {"profile.show", profile_show_op}, {"profile.set", profile_set_op}, {"profile.confirm", profile_confirm_op},
       {"inference.confirm", inference_confirm_op}, {"inference.reject", inference_reject_op},
       {"units.define", units_define_op}, {"units.list", units_list_op}, {"units.forget", units_forget_op},
       {"conversation.set_unit", conversation_set_unit_op}, {"conversation.clear_unit", conversation_clear_unit_op}};

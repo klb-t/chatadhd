@@ -956,7 +956,7 @@ Result<Json> ActionRunner::invoke(std::string_view action, const Json& request) 
   if (action == "context.modify" || action == "context.receipt") return run_gated(action, request);
   // The interview of the person (M1-K2b-1): a run like any other, so profile.set and profile.confirm wait for the person (confirm:profile.set / .confirm).
   if (action == "profile.interview" || action == "profile.show" || action == "profile.set" || action == "profile.confirm" ||
-      action == "inference.confirm" || action == "inference.reject" || action == "memory.restore")
+      action == "inference.confirm" || action == "inference.reject" || action == "memory.restore" || action == "profile.restart")
     return run_gated(action, request);
   // The units a conversation belongs to (M1-K2c-1): defining, forgetting, assigning and clearing wait for the person (confirm:<action>); listing only reads.
   if (action == "units.define" || action == "units.list" || action == "units.forget" || action == "conversation.set_unit" || action == "conversation.clear_unit")

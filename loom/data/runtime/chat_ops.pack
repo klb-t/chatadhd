@@ -1150,6 +1150,8 @@
         "profile_scenario_old": "The saved interview scenario is older than this program: it lacks what the question \"how many questions\" and the remarks need. I changed nothing.",
         "profile_no_level": "It is not chosen yet how many questions to ask. Choose it in the settings.",
         "profile_start": "Let us get to know each other. This is a form in a conversation: no model, nothing leaves this device.",
+        "profile_restart_done": "We start getting to know each other again: {{count}} answers went back to unknown; the earlier answers stay in the history.",
+        "profile_restart_kept": "{{count}} fields stay as they were (for example the ones you closed with \"never\").",
         "profile_start_resume": "Back to getting to know each other. This is a form in a conversation: no model, nothing leaves this device.",
         "profile_done": "At the level \"{{level}}\" I have no more questions. You change the level in the settings, or say \"ask more\".",
         "profile_level_line": "{{label}} - {{asks}} {{stores}} {{model_sees}}",
@@ -1587,6 +1589,8 @@
         "profile_scenario_old": "Zapisany scenariusz wywiadu jest starszy niż ten program: brakuje w nim tego, czego potrzebują pytanie „ile pytań” i uwagi. Niczego nie zmieniłem.",
         "profile_no_level": "Nie wybrano jeszcze, ile pytań zadawać. Wybierz to w ustawieniach.",
         "profile_start": "Poznajmy się. To formularz w rozmowie: bez modelu, nic nie wychodzi poza to urządzenie.",
+        "profile_restart_done": "Poznajemy się od nowa: {{count}} odpowiedzi wróciło do stanu „nieznane”; wcześniejsze odpowiedzi zostają w historii.",
+        "profile_restart_kept": "{{count}} pól zostaje jak było (na przykład te, które zamknąłeś słowem „nigdy”).",
         "profile_start_resume": "Wracamy do poznawania się. To formularz w rozmowie: bez modelu, nic nie wychodzi poza to urządzenie.",
         "profile_done": "Na poziomie „{{level}}” nie mam już pytań. Poziom zmienisz w ustawieniach albo napisz „pytaj więcej”.",
         "profile_level_line": "{{label}} - {{asks}} {{stores}} {{model_sees}}",
@@ -1858,6 +1862,14 @@
     },
     "profile": {
       "default_user": "local",
+      "restart": {
+        "reset_statuses": [
+          "known",
+          "declined"
+        ],
+        "purge_history": false,
+        "reset_sections": true
+      },
       "match_languages": "all",
       "words": {
         "never": {

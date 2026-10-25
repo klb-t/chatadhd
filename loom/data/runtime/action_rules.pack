@@ -722,6 +722,21 @@
           "en": "Rejecting a conclusion changes what the application assumes about you; the entry stays with the record of your decision, and you confirm each one.",
           "pl": "Odrzucenie wniosku zmienia to, co aplikacja o Tobie zakłada; wpis zostaje z zapisem decyzji, a każdą decyzję potwierdzasz sam."
         }
+      },
+      "confirm:profile.restart": {
+        "id": "confirm:profile.restart",
+        "scope": "app_preset",
+        "target": {
+          "kind": "class",
+          "id": "application"
+        },
+        "action": "profile.restart",
+        "effect": "confirm",
+        "initiator": "application preset",
+        "reason": {
+          "en": "Starting again resets the answers you gave or declined (the ones the setting names) to unknown and begins the interview with its first question. The earlier answers stay in the history; the fields you closed with \"never\" stay closed. You confirm it yourself.",
+          "pl": "Zaczęcie od nowa przestawia udzielone i odrzucone odpowiedzi (te, które wskazuje ustawienie) na „nieznane” i zaczyna wywiad od pierwszego pytania. Wcześniejsze odpowiedzi zostają w historii; pola zamknięte słowem „nigdy” zostają zamknięte. Zgadzasz się sam."
+        }
       }
     },
     "extrapolation": {

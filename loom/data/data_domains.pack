@@ -150,7 +150,7 @@
     {
       "path": "graph/interfaces.pack",
       "schema": "loom.graph_interfaces/1",
-      "sha256": "dbf041ffe5c8c94106abcf5c1b8378f1f1134cd4676691fad89c2c34df7b3065",
+      "sha256": "df5eee3645dd4f86ad186a6b94acc51e9c27fa50000d5e04859a26516ae1bb8c",
       "domain": "graph_entry",
       "role": "configuration",
       "validation_refs": [

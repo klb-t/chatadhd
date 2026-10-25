@@ -81,6 +81,7 @@ try {
   await runApp("units.define", { kind: "project", id: "remont", label: "Remont" });
   const talk = await api("POST", "/api/conversations", { title: "Rozmowa o remoncie" });
   await runApp("conversation.set_unit", { conv_id: talk.id, kind: "project", id: "remont" });
+  const gardenTalk = await api("POST", "/api/conversations", { title: "Rozmowa o ogrodzie" });  // a second conversation: the picker of "Dodaj rozmowę do jednostki" lists it
   // an analysis found a person and a topic (nodes of the graph): the kernel shows them as conclusions
   const seeded = await runChild("python3", ["-c", "import sqlite3,sys; c=sqlite3.connect(sys.argv[1]); [c.execute('insert into nodes(id,kind,label,content,tags,metadata,created) values (?,?,?,?,?,?,?)',r) for r in [('n_e2eanna0001','person','Anna Testowa','','[]','{}','2026-10-22T10:00:00Z'),('n_e2etopic001','topic','kuchnia','','[]','{}','2026-10-22T10:00:00Z')]]; c.commit()", path.join(dataDir, "chatadhd.db")]);
   assert.equal(seeded.status, 0, `seeding nodes: ${seeded.stderr}`);
@@ -393,6 +394,31 @@ try {
     await audit("14-confirmed"); await shot("14-confirmed");
   });
 
+  await step("7c Dodaj rozmowę do jednostki: a picker of conversation titles (no ids), the question names the title; Tak puts the conversation in the unit", async () => {
+    const holder = holderOf(c => c.address.startsWith("unit:"));
+    assert.ok(holder, "some part holds the unit");
+    await openSection(holder.address);
+    const unit = (await navigate(holder.address)).children.find(c => c.address.startsWith("unit:"));
+    const other = gardenTalk;
+    const r = row(unit.address);
+    await r.scrollIntoViewIfNeeded();
+    await r.locator('[data-action="conversation.set_unit"]').tap();
+    const select = page.getByTestId("me-input-conv_id");
+    await select.waitFor();
+    assert.equal(await select.evaluate(el => el.tagName), "SELECT", "a picker, not a text field");
+    const options = await select.locator("option").evaluateAll(os => os.map(o => ({ value: o.value, text: o.textContent })));
+    assert.ok(options.some(o => o.text === "Rozmowa o ogrodzie" && o.value === other.id), `the title is shown, the id is the value: ${JSON.stringify(options)} vs ${other.id}`);
+    assert.ok(options.every(o => o.text !== o.value || o.value === ""), "no raw id on screen");
+    await audit("15-unit-picker"); await shot("15-unit-picker");
+    await select.selectOption({ label: "Rozmowa o ogrodzie" });
+    await page.getByTestId("me-input-next").tap();
+    await page.getByTestId("me-gate").waitFor();
+    assert.ok((await page.getByTestId("me-proposal-ask").innerText()).includes("Rozmowa o ogrodzie"), "the question names the conversation by its title");
+    await page.getByTestId("me-proposal-confirm").tap();
+    const conv = await until("the conversation in the unit", async () => { const l = await api("GET", "/api/conversations?limit=50"); return (Array.isArray(l) ? l : l.conversations).find(c => c.id === other.id && c.metadata?.units?.project === "remont"); });
+    assert.equal(conv.metadata.units.project, "remont");
+  });
+
   await step("8 the entry point 'Poznaj mnie' opens the conversation of the interview (no model) and closes the panel", async () => {
     await page.evaluate(() => window.scrollTo(0, 0)); await page.getByTestId("me-view").evaluate(el => el.scrollIntoView({ block: "start" }));
     await page.getByTestId("me-actions-interview").getByTestId("me-action").tap();
@@ -419,6 +445,35 @@ try {
     assert.equal(await back(), true);
     await nav().waitFor({ state: "detached" });
     assert.equal(await back(), false);
+  });
+
+  await step("9b Poznaj mnie od nowa: the question says the answers stay in the history; Nie changes nothing; Tak puts the answers back to unknown (the 'never' field stays), keeps the history and opens the interview from its first question", async () => {
+    const show = async () => (await api("POST", "/api/actions/run", { action: "profile.show", args: {}, element: APP })).result.data.slots;
+    const stateOf = async slot => (await show()).find(r => r.slot === slot)?.state;
+    assert.equal(await stateOf("communication.style"), "known");
+    await page.getByTestId("shell-menu-toggle").tap(); await page.getByTestId("shell-menu-me").tap(); await page.getByTestId("me-view").waitFor();
+    const holder = parts.find(p => p.actions?.some(a => a.id === "profile.restart"));
+    assert.ok(holder, "a part of the kernel offers the restart: " + JSON.stringify(parts.map(p => [p.address, (p.actions ?? []).map(a => a.id)])));
+    await openSection(holder.address);
+    const button = page.locator('[data-action="profile.restart"]').first();
+    await button.scrollIntoViewIfNeeded();
+    assert.equal(await button.innerText(), say("me.action.profile.restart"));
+    await button.tap();
+    await page.getByTestId("me-gate").waitFor();
+    assert.equal(await page.getByTestId("me-input-form").count(), 0, "nothing to type: the preset says what is reset");
+    assert.ok((await page.getByTestId("me-proposal-ask").innerText()).length > 0);
+    assert.ok((await page.getByTestId("me-gate").innerText()).includes("historii"), "the question says the earlier answers stay in the history");
+    await audit("16-restart-proposal"); await shot("16-restart-proposal");
+    await page.getByTestId("me-proposal-reject").tap();
+    assert.equal(await stateOf("communication.style"), "known", "Nie changes nothing");
+    await button.tap();
+    await page.getByTestId("me-gate").waitFor();
+    await page.getByTestId("me-proposal-confirm").tap();
+    await nav().waitFor({ state: "detached" });
+    await page.getByTestId("interview-info").waitFor();
+    assert.equal(await stateOf("communication.style"), "unknown");
+    assert.equal(await stateOf("health.needs"), "never", "what the person closed stays closed");
+    await audit("17-restarted"); await shot("17-restarted");
   });
 
   await step("10 the model server received 0 requests; no page errors; the text audit found no developer text on any screenshot", async () => {

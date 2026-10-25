@@ -3477,6 +3477,7 @@
           "POST /api/perspectives",
           "POST /api/profile/confirm",
           "POST /api/profile/interview",
+          "POST /api/profile/restart",
           "POST /api/profile/set",
           "POST /api/profile/show",
           "POST /api/roles/resolved",

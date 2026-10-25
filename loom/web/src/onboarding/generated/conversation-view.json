@@ -2213,6 +2213,7 @@
             "me.rows.hide": "Hide all rows",
             "me.action.inference.confirm": "Confirm",
             "me.action.inference.reject": "Reject",
+            "me.action.profile.restart": "Get to know me from scratch",
             "me.state.rejected": "rejected by you",
             "me.details.review": "Your decision: {{decision}}, {{time}}",
             "me.review.confirmed": "confirmed",
@@ -2223,6 +2224,8 @@
             "me.details.forgotten_no_who": "Forgotten, {{time}}",
             "me.details.forgotten_kept": "Its words are kept, so you can bring it back.",
             "me.details.forgotten_dropped": "Its words were not kept, so it cannot be brought back.",
+            "me.details.forget_history": "Earlier: forgotten {{who}}, {{time}}; brought back {{who_restored}}, {{time_restored}}.",
+            "me.details.forget_history_no_restore": "Earlier: forgotten {{who}}, {{time}}.",
             "me.forgotten.by.user": "by you"
           },
           "pl": {
@@ -2621,6 +2624,7 @@
             "me.rows.hide": "Ukryj wszystkie wiersze",
             "me.action.inference.confirm": "Potwierdź",
             "me.action.inference.reject": "Odrzuć",
+            "me.action.profile.restart": "Poznaj mnie od nowa",
             "me.state.rejected": "odrzucone przez Ciebie",
             "me.details.review": "Twoja decyzja: {{decision}}, {{time}}",
             "me.review.confirmed": "potwierdzone",
@@ -2631,6 +2635,8 @@
             "me.details.forgotten_no_who": "Zapomniane, {{time}}",
             "me.details.forgotten_kept": "Jego treść jest zachowana, więc możesz go przywrócić.",
             "me.details.forgotten_dropped": "Jego treść nie została zachowana, więc nie da się go przywrócić.",
+            "me.details.forget_history": "Wcześniej: zapomniane {{who}}, {{time}}; przywrócone {{who_restored}}, {{time_restored}}.",
+            "me.details.forget_history_no_restore": "Wcześniej: zapomniane {{who}}, {{time}}.",
             "me.forgotten.by.user": "przez Ciebie"
           }
         }

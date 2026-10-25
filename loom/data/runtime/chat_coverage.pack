@@ -2608,6 +2608,29 @@
         }
       },
       {
+        "id": "profile_restart",
+        "title": {
+          "pl": "Poznaj mnie od nowa",
+          "en": "Get to know me from scratch"
+        },
+        "via": "action",
+        "action": "profile.restart",
+        "surfaces": {
+          "http": [
+            "POST /api/profile/restart"
+          ],
+          "invoke": [
+            "actions.profile.restart"
+          ]
+        },
+        "check": "phrases",
+        "chat_outcome": "unavailable",
+        "chat_outcome_reason": {
+          "pl": "Restart wywiadu wybierasz na ekranie „Ty” (przycisk „Poznaj mnie od nowa”): zmienia wiele pól naraz, więc propozycja mówi wprost, co wraca do „nieznane”.",
+          "en": "You choose the restart of the interview on the screen “You” (the button “Get to know me from scratch”): it changes many fields at once, so the proposal says plainly what goes back to unknown."
+        }
+      },
+      {
         "id": "profile_confirm",
         "title": {
           "pl": "Potwierdź, co zrozumiałem",

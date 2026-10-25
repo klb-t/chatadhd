@@ -1373,6 +1373,22 @@
         "pl": "Nazwa słowami (nieobowiązkowa)"
       }
     },
+    "param_choices": {
+      "description": "Where the values of an action parameter come from, when the person should pick them instead of typing (key: <action>.<parameter>). `from` names a source of choices the kernel can read (conversations: the list of conversations); `value` and `label` are the fields that become the value and the words shown (title); `none` is the words of the empty choice (the parameter is optional: leaving it out has a meaning). A parameter with no entry here is typed. Presets: any action parameter can be given a source here.",
+      "conversation.set_unit.conv_id": {
+        "from": "conversations",
+        "value": "id",
+        "label": "title",
+        "untitled": {
+          "en": "(conversation without a title)",
+          "pl": "(rozmowa bez tytułu)"
+        },
+        "none": {
+          "en": "The open conversation",
+          "pl": "Otwarta rozmowa"
+        }
+      }
+    },
     "match": {
       "description": "How a name in a sentence is compared with the names of the graph (find_address): folded (lower case and these letters replaced), word by word; two words are the same when equal or when they share a stem of at least min_prefix letters and neither goes on for more than max_suffix letters after it. Calibration, not a limit.",
       "fold": {

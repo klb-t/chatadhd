@@ -18,7 +18,7 @@ import ActionProposalBlock from "./ActionProposalBlock";
 import "./me-view.css";
 import { chainRows } from "./node-card-state";
 import {
-  INTERVIEW_ACTION, OPEN_SECTIONS_SETTING, actionButtons, detailLines, inferredOpacityOf, inheritanceOf, inputFields, interpretRun, looseRows, openSectionsOf, rowView, runArgs,
+  INTERVIEW_ACTION, OPEN_SECTIONS_SETTING, actionButtons, detailLines, inferredOpacityOf, inheritanceOf, inputFields, shownValue, interpretRun, looseRows, openSectionsOf, rowView, runArgs,
   runRequest, sections, serializeSections, withSection, type ActionButton, type RowView,
 } from "./me-view-state";
 
@@ -71,17 +71,23 @@ function ActionBar({ buttons, subject, defaultValue, scope, t, language, proposa
     setBusy(true); setNote(null); setText(null);
     try {
       const args = runArgs(button, typed);
-      const what = [subject, ...Object.values(typed).filter(v => v.trim() !== "")].filter(Boolean);
+      const fieldsOf = inputFields(button, t);
+      const what = [subject, ...Object.entries(typed).filter(([, v]) => v.trim() !== "").map(([k, v]) => shownValue(fieldsOf.find(f => f.arg === k), v))].filter(Boolean);
       const run = await actions.run(runRequest(button, args));
       const outcome = interpretRun(run, t, language);
       if (outcome.kind === "gate") {
         setForm(null);
         setGate({ button, runId: outcome.gate.runId, receiptId: outcome.gate.receiptId, reasons: outcome.gate.reasons, what: what.length > 1 ? `${what[0]} → ${what.slice(1).join(", ")}` : what[0] ?? "" });
       } else if (outcome.kind === "error") setNote({ kind: "error", text: outcome.text });
-      else finish(button, outcome.text !== "" ? outcome.text : null);
+      else {
+        finish(button, outcome.text !== "" ? outcome.text : null);
+        // An action that started a conversation (the restart of the interview) says which: the page opens it, as "Poznaj mnie" does.
+        const opened = outcome.data?.open_conv_id;
+        if (typeof opened === "string" && opened !== "") onOpenConversation?.(opened);
+      }
     } catch (failure) { setNote({ kind: "error", text: t("me.confirm.failed", { reason: failure instanceof Error ? failure.message : String(failure) }) }); }
     finally { setBusy(false); }
-  }, [subject, t, language, finish]);
+  }, [subject, t, language, finish, onOpenConversation]);
 
   const startInterview = useCallback(async () => {
     const actions = api.actions;
@@ -100,7 +106,7 @@ function ActionBar({ buttons, subject, defaultValue, scope, t, language, proposa
     if (button.id === INTERVIEW_ACTION) { void startInterview(); return; }
     const fields = inputFields(button, t);
     if (fields.length === 0) { void execute(button, {}); return; }
-    setForm({ button, values: Object.fromEntries(fields.map((f, i) => [f.arg, i === 0 ? defaultValue : ""])) });
+    setForm({ button, values: Object.fromEntries(fields.map((f, i) => [f.arg, i === 0 && !f.choices ? defaultValue : ""])) });
   };
   const answer = async (approved: boolean) => {
     const actions = api.actions;
@@ -113,7 +119,11 @@ function ActionBar({ buttons, subject, defaultValue, scope, t, language, proposa
       const outcome = interpretRun(run, t, language);
       if (outcome.kind === "error") { setGate(null); setNote({ kind: "error", text: outcome.text }); }
       else if (outcome.kind === "gate") setGate({ ...gate, runId: outcome.gate.runId, receiptId: outcome.gate.receiptId, reasons: outcome.gate.reasons });
-      else finish(button, null);
+      else {
+        finish(button, null);
+        const opened = outcome.data?.open_conv_id;
+        if (typeof opened === "string" && opened !== "") onOpenConversation?.(opened);
+      }
     } catch (failure) { setGate(null); setNote({ kind: "error", text: t("me.confirm.failed", { reason: failure instanceof Error ? failure.message : String(failure) }) }); }
     finally { setBusy(false); }
   };
@@ -133,8 +143,14 @@ function ActionBar({ buttons, subject, defaultValue, scope, t, language, proposa
         onSubmit={e => { e.preventDefault(); void execute(form.button, form.values); }}>
         {fields.map(f => <label key={f.arg} className="me-input-label">
           <span>{f.label}</span>
-          <input className="ncard-input" data-testid={`me-input-${f.arg}`} type="text" value={form.values[f.arg] ?? ""} autoFocus={f === fields[0]}
-            onChange={e => setForm(cur => cur ? { ...cur, values: { ...cur.values, [f.arg]: e.target.value } } : cur)} />
+          {f.choices
+            ? <select className="ncard-input" data-testid={`me-input-${f.arg}`} value={form.values[f.arg] ?? ""} autoFocus={f === fields[0]}
+              onChange={e => setForm(cur => cur ? { ...cur, values: { ...cur.values, [f.arg]: e.target.value } } : cur)}>
+              <option value="">{f.none ?? ""}</option>
+              {f.choices.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
+            </select>
+            : <input className="ncard-input" data-testid={`me-input-${f.arg}`} type="text" value={form.values[f.arg] ?? ""} autoFocus={f === fields[0]}
+              onChange={e => setForm(cur => cur ? { ...cur, values: { ...cur.values, [f.arg]: e.target.value } } : cur)} />}
         </label>)}
         <div className="ncard-buttons">
           <button type="submit" className="ncard-btn ncard-btn-primary" data-testid="me-input-next" disabled={busy}>{t("me.input.next")}</button>

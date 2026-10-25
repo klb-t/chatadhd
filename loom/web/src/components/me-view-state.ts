@@ -107,14 +107,14 @@ export function actionButtons(actions: RowAction[] | undefined, t: ShellT): Acti
   }));
 }
 
-export interface InputField { arg: string; label: string }
+export interface InputField { arg: string; label: string; choices?: { value: string; label: string }[]; none?: string }
 /** The arguments an action takes from the person's own typing. FIRST the kernel's list (actions[].params: derived from the action catalogue, so a new
  *  action needs no code and no word); the words me.<input>.<action>.<name> are only an optional override of a label. When the kernel lists none, the old
  *  way stays: the words me.input.<action> (the names) and me.input.<action>.<name> (the labels). No list and no word = nothing to type. */
 export function inputFields(action: string | Pick<ActionButton, "id" | "params">, t: ShellT): InputField[] {
   const id = typeof action === "string" ? action : action.id;
   const params = typeof action === "string" ? [] : action.params ?? [];
-  if (params.length > 0) return params.map(p => ({ arg: p.name, label: wordOrNull(t, `me.input.${id}.${p.name}`) ?? (p.label && p.label !== "" ? p.label : p.name) }));
+  if (params.length > 0) return params.map(p => ({ arg: p.name, label: wordOrNull(t, `me.input.${id}.${p.name}`) ?? (p.label && p.label !== "" ? p.label : p.name), ...(p.kind === "choice" && p.choices ? { choices: p.choices, none: p.none ?? "" } : {}) }));
   const names = wordOrNull(t, `me.input.${id}`);
   if (!names) return [];
   return names.split(/\s+/).filter(Boolean).map(arg => ({ arg, label: wordOrNull(t, `me.input.${id}.${arg}`) ?? arg }));
@@ -234,6 +234,17 @@ export function detailLines(attrs: Record<string, unknown> | undefined, t: Shell
     out.push(t(by ? "me.details.forgotten" : "me.details.forgotten_no_who", { who: by ?? "", time }));
     out.push(t(forgotten.kept === false ? "me.details.forgotten_dropped" : "me.details.forgotten_kept"));
   }
+  // The earlier forgettings (and the restorings) of an entry that is in use again, each in words with its time; an unknown author is left out.
+  const history = Array.isArray(attrs.forget_history) ? attrs.forget_history as { time?: unknown; by?: unknown; restored?: { time?: unknown; by?: unknown } | null }[] : [];
+  const whoOf = (by: unknown) => typeof by === "string" ? wordOrNull(t, `me.forgotten.by.${by}`) ?? "" : "";
+  const timeOf = (iso: unknown) => typeof iso === "string" ? formatTime(iso, language) : "";
+  for (const h of history) {
+    if (!h || typeof h !== "object") continue;
+    const restored = h.restored && typeof h.restored === "object" ? h.restored : null;
+    out.push((restored
+      ? t("me.details.forget_history", { who: whoOf(h.by), time: timeOf(h.time), who_restored: whoOf(restored.by), time_restored: timeOf(restored.time) })
+      : t("me.details.forget_history_no_restore", { who: whoOf(h.by), time: timeOf(h.time) })).replace(/\s+([,;])/g, "$1"));
+  }
   const prov = attrs.provenance as { words?: unknown } | undefined;
   if (prov && typeof prov.words === "string" && prov.words) out.push(t("me.details.provenance", { words: prov.words }));
   return out;
@@ -247,3 +258,6 @@ export function inheritanceOf(card: { inheritance?: InheritanceLevel[]; attrs?: 
   const resolved = card.attrs?.resolved as { inheritance?: unknown } | undefined;
   return Array.isArray(resolved?.inheritance) ? resolved.inheritance as InheritanceLevel[] : [];
 }
+
+/** What a typed value is called on the screen: a picked choice shows its words (the title), never its id. */
+export const shownValue = (field: InputField | undefined, value: string): string => field?.choices?.find(c => c.value === value)?.label ?? value;

@@ -924,6 +924,62 @@ Result<Reply> judge_inference(const Env& e, const Json& args, const std::string&
 }
 }  // namespace
 
+// "Poznaj mnie od nowa" (M1-W2b-2d): a gated restart of the interview. WHAT is reset is a preset of the pack (chat_ops profile.restart, Env::restart):
+//   reset_statuses - the states of a field that go back to "unknown" (default known and declined; "never" is the person's own boundary and stays unless
+//                    the list names it); purge_history - false: the earlier answers stay in the history of the profile (the store's own record, with the
+//                    time), nothing is erased; reset_sections - sections that were finished or skipped become pending again.
+// The interview then starts from its first question (the level question is asked again, because its field is unknown), in the conversation of the interview.
+Result<Reply> restart(const Env& e, const Json& args) {
+  LOOM_TRY_ASSIGN(auto l, load(e, args, true));
+  const Json cfg = e.restart.is_object() ? e.restart : Json::object();
+  std::set<std::string> reset;
+  if (cfg.contains("reset_statuses") && cfg.at("reset_statuses").is_array()) {
+    for (const auto& st : cfg.at("reset_statuses"))
+      if (st.is_string()) reset.insert(st.get<std::string>());
+  } else {
+    reset = {"known", "declined"};
+  }
+  const bool purge = json::get_bool(cfg, "purge_history", false);
+  const bool sections = json::get_bool(cfg, "reset_sections", true);
+  // Ids first: nothing is held across a write (the write replaces the state).
+  std::vector<std::pair<std::string, std::string>> todo;
+  std::map<std::string, std::int64_t> kept;
+  const Json fields = l.state.at("profile").at("fields");
+  for (const auto& [id, f] : fields.items()) {
+    const std::string status = json::get_string(f, "status", "unknown");
+    if (status == "unknown") continue;
+    if (reset.count(status)) todo.emplace_back(id, status);
+    else ++kept[status];
+  }
+  std::vector<std::string> section_ids;
+  if (sections) {
+    const Json secs = l.state.at("session").value("sections", Json::object());
+    for (const auto& [sid, sv] : secs.items())
+      if (json::get_string(sv, "status", "pending") != "pending") section_ids.push_back(sid);
+  }
+  Json by_status = Json::object();
+  for (const auto& [id, status] : todo) {
+    LOOM_TRY(write(e, l, Json{{"op", "status"}, {"field", id}, {"status", "unknown"}, {"purge_history", purge}}));
+    by_status[status] = by_status.value(status, 0) + 1;
+  }
+  for (const auto& sid : section_ids) LOOM_TRY(write(e, l, Json{{"op", "repeat"}, {"section", sid}}));
+  Json kept_json = Json::object();
+  for (const auto& [status, n] : kept) kept_json[status] = n;
+  Json forwarded = args;
+  forwarded["in_conversation"] = json::get_bool(args, "in_conversation", true);
+  LOOM_TRY_ASSIGN(auto started, op_start(e, forwarded));
+  Json data = started.data;
+  data["restarted"] = true;
+  data["reset"] = by_status;
+  data["kept"] = kept_json;
+  data["history_kept"] = !purge;
+  data["reset_total"] = todo.size();
+  if (const Json* cid = json::find(data, "conv_id"); cid && cid->is_string()) data["open_conv_id"] = *cid;
+  std::string text = e.say("profile_restart_done", Json{{"count", std::to_string(todo.size())}});
+  if (!kept.empty()) text += " " + e.say("profile_restart_kept", Json{{"count", std::to_string([&] { std::int64_t t = 0; for (const auto& [k, n] : kept) t += n; return t; }())}});
+  return Reply{text + " " + started.text, data};
+}
+
 Result<Reply> confirm_inference(const Env& e, const Json& args) { return judge_inference(e, args, "confirmed"); }
 Result<Reply> reject_inference(const Env& e, const Json& args) { return judge_inference(e, args, "rejected"); }
 

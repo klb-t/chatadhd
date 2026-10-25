@@ -289,6 +289,22 @@ TEST_SUITE("party_self_subgraphs") {
     // the unit's own actions get kind and id from the node: nothing is left to ask
     const Json& u = units.at("children").at(0);
     CHECK(action_of(u, "units.forget").at("params").empty());
+    // "Dodaj rozmowę do jednostki": the conversation is picked from the conversations by title (a choice source named in data), the id is the value
+    const Json& add = action_of(u, "conversation.set_unit");
+    REQUIRE(add.at("params").size() == 1);
+    const Json& conv_param = add.at("params").at(0);
+    CHECK(conv_param.at("name") == "conv_id");
+    CHECK(conv_param.at("kind") == "choice");
+    CHECK(conv_param.at("required") == false);
+    CHECK(conv_param.at("none") == "Otwarta rozmowa");
+    bool titled = false;
+    for (const auto& ch : conv_param.at("choices")) {
+      CHECK(ch.at("value").get<std::string>().rfind("c_", 0) == 0);
+      CHECK_FALSE(ch.at("label").get<std::string>().empty());
+      CHECK(ch.at("label") != ch.at("value"));
+      titled = titled || ch.at("label") == "Remont mieszkania";
+    }
+    CHECK(titled);
     // a field of the profile: the slot comes from the node, the value is asked
     bool found = false;
     for (const char* part_id : {"identity", "preferences", "slots"}) {
@@ -405,6 +421,48 @@ TEST_SUITE("party_self_subgraphs") {
     CHECK(found);
   }
 
+  TEST_CASE("Poznaj mnie od nowa: asks first; the preset's statuses go back to unknown with the earlier answers kept in the history, a field closed with 'never' stays, the interview starts again in a conversation") {
+    Person p;  // its own person: the restart changes the profile
+    p.make();
+    auto state = [&] { return unwrap(onboarding::OnboardingStore(p.rt->db()).read("local")); };
+    auto history_of = [&](const std::string& field) {
+      std::size_t n = 0;
+      for (const auto& h : state().value("history", Json::array()))
+        if (json::get_string(h, "field") == field) ++n;
+      return n;
+    };
+    const std::size_t before = history_of("communication.style");
+    REQUIRE(before >= 1);
+    // offered on the first part of You, from the catalogue, with the words of the pack
+    const Json you = p.navigate("party:self");
+    const Json part = [&] {
+      for (const auto& c : you.at("children"))
+        if (has_action(c, "profile.restart")) return c;
+      FAIL("no part offers profile.restart");
+      return Json();
+    }();
+    CHECK(action_of(part, "profile.restart").at("label") == "Poznaj mnie od nowa");
+    const Json waiting = p.call("profile.restart");
+    REQUIRE(waiting.at("status") == "awaiting_confirmation");
+    CHECK(waiting.dump().find("zostają w historii") != std::string::npos);
+    CHECK(state().at("profile").at("fields").at("communication.style").at("status") == "known");  // nothing before the yes
+    const Json done = unwrap(p.rt->actions().confirm(Json{{"run_id", waiting.at("id")}, {"approved", true}, {"receipt_id", waiting.at("pending").at("receipt_id")}, {"ref", "test"}}));
+    REQUIRE(done.at("status") == "completed");
+    const Json data = done.at("result").at("data");
+    CHECK(data.at("restarted") == true);
+    CHECK(data.at("history_kept") == true);
+    CHECK(data.at("reset").at("known").get<int>() >= 2);
+    CHECK(data.at("reset").at("declined").get<int>() == 1);
+    CHECK(data.at("kept").at("never").get<int>() == 1);  // the boundary the person set stays
+    CHECK(data.at("open_conv_id").is_string());
+    const Json st = state();
+    CHECK(st.at("profile").at("fields").at("communication.style").at("status") == "unknown");
+    CHECK(st.at("profile").at("fields").at("knowledge.avoid").at("status") == "never");
+    CHECK(history_of("communication.style") > before);  // the earlier answer is still there, and the reset is one more event
+    // the first question is the level question again
+    CHECK(data.at("level_choice_pending") == true);
+  }
+
   TEST_CASE("Zapomnij: the entry leaves the conversations and the memory text, stays on the folded list Zapomniane with the record of forgetting; the words are kept or dropped by a preset") {
     for (const bool keep : {true, false}) {
       fsutil::TempDir td;
@@ -475,6 +533,11 @@ TEST_SUITE("party_self_subgraphs") {
         CHECK(rt->memory().get_active_context(16000).find("Filemona") != std::string::npos);
         CHECK(nav("subgraph:self/forgotten").at("children").size() == 0);
         CHECK(nav("subgraph:self/memory").at("children").size() == 2);
+        // the story of the forgetting is on the entry's node for the screen (Szczegóły): when, by whom, and the restoring
+        const Json restored_card = unwrap(rt->actions().invoke("graph.card", Json{{"address", "memory:" + id}, {"lang", "pl"}}));
+        REQUIRE(restored_card.at("attrs").contains("forget_history"));
+        CHECK(restored_card.at("attrs").at("forget_history").at(0).at("restored").at("time").is_string());
+        CHECK(restored_card.at("attrs").at("forget_history").at(0).at("by") == "user");
       } else {
         CHECK(restored.at("status") == "failed");
         CHECK(restored.at("error").at("code") == "conflict");
