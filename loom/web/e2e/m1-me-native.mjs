@@ -419,6 +419,43 @@ try {
     assert.equal(conv.metadata.units.project, "remont");
   });
 
+  await step("7d Popraw na poziomie (preferencja): poziom i rozmowa z listy słów (bez identyfikatorów), pytanie o zgodę; Tak ustawia wartość tylko dla tej rozmowy, a wiersz mówi \"ustawił: Ta rozmowa\"", async () => {
+    const prefPart = holderOf(c => c.address === "preference:length");
+    assert.ok(prefPart, "some part holds the preference 'length'");
+    await openSection(prefPart.address);
+    const pref = byKind[prefPart.address].children.find(c => c.address === "preference:length");
+    const r = row(pref.address);
+    await r.scrollIntoViewIfNeeded();
+    const before = await api("POST", "/api/graph/card", { address: pref.address, lang: "pl" });
+    await r.locator('[data-action="rules.set"]').tap();
+    await page.getByTestId("me-input-form").waitFor();
+    const level = page.getByTestId("me-input-scope"), instance = page.getByTestId("me-input-scope_id");
+    for (const sel of [level, instance]) assert.equal(await sel.evaluate(el => el.tagName), "SELECT", "a picker, not a text field");
+    const levels = await level.locator("option").evaluateAll(os => os.map(o => ({ value: o.value, text: o.textContent })));
+    assert.ok(levels.some(o => o.value === "person" && o.text === say("chip.person")), `Ty is among the levels: ${JSON.stringify(levels)}`);
+    assert.ok(levels.some(o => o.value === "conversation" && o.text === say("chip.conversation")), `the conversation level in words: ${JSON.stringify(levels)}`);
+    assert.ok(!levels.some(o => o.value === "installation"), "the preset level is not a level a person writes");
+    const instances = await instance.locator("option").evaluateAll(os => os.map(o => ({ value: o.value, text: o.textContent })));
+    assert.ok(instances.some(o => o.text === "Rozmowa o remoncie" && o.value === talk.id), `the title is shown, the id is the value: ${JSON.stringify(instances)}`);
+    assert.ok(instances.every(o => o.text !== o.value || o.value === ""), "no raw id on screen");
+    await level.selectOption({ value: "conversation" });
+    await instance.selectOption({ label: "Rozmowa o remoncie" });
+    await page.getByTestId("me-input-value").fill("long");
+    await audit("16-level-picker"); await shot("16-level-picker");
+    await page.getByTestId("me-input-next").tap();
+    await page.getByTestId("me-gate").waitFor();
+    const ask = (await page.getByTestId("me-proposal-ask").innerText()).replace(/\s+/g, " ");
+    assert.ok(ask.includes("Rozmowa o remoncie"), `the question names the conversation by its title: ${ask}`);
+    assert.equal((await api("POST", "/api/graph/card", { address: pref.address, lang: "pl", conv_id: talk.id })).value, before.value, "nothing is written before the yes");
+    await page.getByTestId("me-proposal-confirm").tap();
+    await page.getByTestId("me-gate").waitFor({ state: "detached" });
+    const after = await until("the conversation's value in the kernel", async () => { const c = await api("POST", "/api/graph/card", { address: pref.address, lang: "pl", conv_id: talk.id }); return c.value === "long" ? c : null; });
+    assert.equal(after.provenance.scope, "conversation");
+    assert.equal((await api("POST", "/api/graph/card", { address: pref.address, lang: "pl" })).value, before.value, "the person's level is untouched");
+    await audit("17-level-done"); await shot("17-level-done");
+    console.log(`[m1-me] Popraw na poziomie: ${pref.label} = ${after.value_human} (${after.provenance.chip.label})`);
+  });
+
   await step("8 the entry point 'Poznaj mnie' opens the conversation of the interview (no model) and closes the panel", async () => {
     await page.evaluate(() => window.scrollTo(0, 0)); await page.getByTestId("me-view").evaluate(el => el.scrollIntoView({ block: "start" }));
     await page.getByTestId("me-actions-interview").getByTestId("me-action").tap();

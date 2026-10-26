@@ -807,6 +807,34 @@
     },
     "scoped_values": {
       "keys": {
+        "preference.style": {
+          "setting": "preference.style",
+          "label": {
+            "en": "Preference: how to speak to you",
+            "pl": "Preferencja: jak do Ciebie mówić"
+          }
+        },
+        "preference.length": {
+          "setting": "preference.length",
+          "label": {
+            "en": "Preference: how much detail",
+            "pl": "Preferencja: ile szczegółów"
+          }
+        },
+        "preference.language": {
+          "setting": "preference.language",
+          "label": {
+            "en": "Preference: language",
+            "pl": "Preferencja: język"
+          }
+        },
+        "preference.adhd_needs": {
+          "setting": "preference.adhd_needs",
+          "label": {
+            "en": "Preference: attention needs",
+            "pl": "Preferencja: potrzeby uwagi"
+          }
+        },
         "action_results.target": {
           "setting": "action_result_target",
           "label": {

@@ -220,6 +220,20 @@
                 "args": {
                   "slot": "attrs.slot"
                 }
+              },
+              {
+                "action": "rules.set",
+                "args": {
+                  "key": "attrs.key",
+                  "effect": {
+                    "const": "set_value"
+                  }
+                },
+                "ask": [
+                  "scope",
+                  "scope_id",
+                  "value"
+                ]
               }
             ],
             "actions_here": [

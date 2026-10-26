@@ -614,6 +614,51 @@ TEST_SUITE("party_self_subgraphs") {
     CHECK(q.card("preference:style", "pl", conv).at("provenance").at("scope") == "installation");
   }
 
+  TEST_CASE("Correct at a level: a preference offers rules.set with the level and the instance picked from words, and the answer after the yes is that level's") {
+    Person q;
+    const std::string conv = unwrap(q.rt->db().create_conv("Rozmowa o remoncie")).id;
+    ConvPatch patch;
+    patch.metadata = Json{{"units", Json{{"project", "remont"}}}};
+    LOOM_REQUIRE_OK(q.rt->db().update_conv(conv, patch));
+    unwrap(q.rt->db().create_node("Remont", "unit", [] { NodeOptions o; o.metadata = Json{{"unit_kind", "project"}, {"unit_id", "remont"}}; return o; }()));
+    const Json prefs = q.navigate("subgraph:self/preferences", "pl", 1, conv);
+    const Json* row = child(prefs, "preference:length");
+    REQUIRE(row);
+    const Json& set = action_of(*row, "rules.set");
+    CHECK(set.at("args").at("key") == "preference.length");
+    CHECK(set.at("args").at("effect") == "set_value");
+    std::map<std::string, Json> ask;
+    for (const auto& prm : set.at("params")) ask[prm.at("name").get<std::string>()] = prm;
+    REQUIRE(ask.size() == 3);
+    // the level: the levels of the chain by their words (data names which are offered), never an id the person has to know
+    REQUIRE(ask.count("scope"));
+    CHECK(ask.at("scope").at("kind") == "choice");
+    std::map<std::string, std::string> levels;
+    for (const auto& ch : ask.at("scope").at("choices")) levels[ch.at("value").get<std::string>()] = ch.at("label").get<std::string>();
+    CHECK(levels.at("person") == "Ty");
+    CHECK(levels.at("conversation") == "Ta rozmowa");
+    CHECK(levels.count("project"));
+    CHECK_FALSE(levels.count("installation"));
+    CHECK_FALSE(levels.count("engine"));
+    // the instance: a conversation by its title or a unit by its words; the id is only the value
+    std::map<std::string, std::string> instances;
+    for (const auto& ch : ask.at("scope_id").at("choices")) instances[ch.at("value").get<std::string>()] = ch.at("label").get<std::string>();
+    CHECK(instances.at(conv) == "Rozmowa o remoncie");
+    REQUIRE(instances.count("remont"));
+    CHECK(instances.at("remont") == "Remont (project)");
+    CHECK(ask.at("value").at("label") == "Nowa wartość");
+    // nothing is written before the yes; after it the conversation's level supplies the value and says so
+    const Json waiting = q.call("rules.set", Json{{"key", "preference.length"}, {"effect", "set_value"}, {"scope", "conversation"}, {"scope_id", conv}, {"value", "long"}});
+    CHECK(waiting.at("status") == "awaiting_confirmation");
+    CHECK(q.card("preference:length", "pl", conv).at("provenance").at("scope") == "installation");
+    unwrap(q.rt->actions().confirm(Json{{"run_id", waiting.at("id")}, {"approved", true}, {"receipt_id", waiting.at("pending").at("receipt_id")}, {"ref", "test"}}));
+    const Json after = q.card("preference:length", "pl", conv);
+    CHECK(after.at("value") == "long");
+    CHECK(after.at("provenance").at("scope") == "conversation");
+    CHECK(after.at("provenance").at("chip").at("label") == "Ta rozmowa");
+    CHECK(q.card("preference:length").at("value") == "concise");  // seen from nowhere in particular the person's level is untouched
+  }
+
   TEST_CASE("the units and the interests hang under You with their evidence; a unit is still where it was (Kontekst i projekty)") {
     Person& p = shared_person();
     const Json units = p.navigate("subgraph:self/units");

@@ -1307,6 +1307,54 @@ void add_choices(Impl& c, const std::string& action, const std::string& name, Js
       if (label.empty()) label = c.say(spec->value("untitled", Json("")));
       choices.push_back(Json{{"value", json::get_string(row, vf)}, {"label", label}});
     }
+    // `also: ["units"]` adds the units (nodes of kind unit: value = the unit's id, label = its words and kind): a rule at a unit's level belongs to
+    // one unit, one at the conversation's level to one conversation, and the same parameter names the instance of either.
+    for (const auto& a : spec->value("also", Json::array())) {
+      if (!a.is_string() || a.get<std::string>() != "units") continue;
+      auto units = c.env.db->list_nodes(std::string("unit"), 500);
+      if (!units) {
+        log::write(log::Level::Debug, kLog, "choices of " + action + "." + name + ": units not readable: " + units.error().message);
+        continue;
+      }
+      for (const auto& u : *units) {
+        const Json row = u.to_json();
+        const Json meta = row.value("metadata", Json::object());
+        const std::string uid = json::get_string(meta, "unit_id");
+        if (uid.empty()) continue;
+        const std::string words = json::get_string(row, "label", uid);
+        const std::string kind = json::get_string(meta, "unit_kind");
+        choices.push_back(Json{{"value", uid}, {"label", kind.empty() ? words : words + " (" + kind + ")"}});
+      }
+    }
+  } else if (from == "scope_levels") {
+    // The levels of the one scope chain (the same chain a row's inheritance shows), limited to the levels the data names: a person picks the level a value
+    // is written at. The words are the screen's chip words (chip.<level>), else the chain's own label. No chain readable: the parameter stays typed.
+    const scopes::Resolver* r = c.get_resolver();
+    if (!r) {
+      log::write(log::Level::Debug, kLog, "choices of " + action + "." + name + ": scope chain not readable");
+      return;
+    }
+    scopes::Binding b;
+    b.key = "preference.probe";
+    b.conv_id = c.env.conv_id;
+    auto got = r->resolve(b);
+    if (!got) {
+      log::write(log::Level::Debug, kLog, "choices of " + action + "." + name + ": chain not resolved: " + got.error().message);
+      return;
+    }
+    // `levels` (data): the levels worth offering when a value is written by hand (the preset leaves out the ones no person writes by hand, as the
+    // engine's and the installation's); absent = every level of the chain. Either way the order is the chain's.
+    std::set<std::string> offered;
+    for (const auto& e : spec->value("levels", Json::array()))
+      if (e.is_string()) offered.insert(e.get<std::string>());
+    const Json chain = got->chain;
+    for (const auto& l : chain) {
+      const std::string level = json::get_string(l, "level");
+      if (level.empty() || (!offered.empty() && !offered.count(level))) continue;
+      std::string label = c.word("chip." + level);
+      if (label.empty()) label = c.say(l.value("label", Json(level)));
+      choices.push_back(Json{{"value", level}, {"label", label}});
+    }
   } else {
     log::write(log::Level::Debug, kLog, "choices of " + action + "." + name + ": no reader for source '" + from + "'");
     return;
