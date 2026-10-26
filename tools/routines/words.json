@@ -1,0 +1,169 @@
+{
+ "schema": "loom.words/1",
+ "_comment": "Słowa sterujące i gesty jako jedna tabela (IW-5, INTERFEJS_WSPOLPRACY_v2 §2.4, §2.2 wiersz `gesture`, §0 punkt 3). Rekord gestu = {gesture, patterns, effect, cost, reversal, since, render} — ten sam kształt co warunek wstępny {check, why, since}. WSZYSTKO TU TO PRZYKŁADY I PRESETY: lista gestów jest otwarta (właściciel dopisuje jednym zdaniem: `tools/words.py add`), wzorce to ziarna wariantów ASR, rodzaje skutków (`effect[].do`) to lista otwarta (nieznany = eskalacja, najgorszy przypadek), progi to presety. Cytaty są dosłowne, z pozycją spec; etykieta gestu to etykieta koordynatora, nie jego słowa. Czyta: tools/words.py (0 tokenów, bez modelu).",
+ "_history": [
+  {"at": "2026-10-26", "by": "IW-5 (Opus, VM)", "what": "ziarno: 8 słów z §2.4 (R89 ×2, R75 ×2, R62, CLAUDE.md Thread style, R90, R73) + gesty z §0 punkt 3 (zatwierdzam, popraw, to przykład, to nie moje słowa); dopisane przez koordynatora (lista otwarta): warianty ASR bez polskich znaków, „zatrzymaj” przy stop"}
+ ],
+ "presets": {
+  "confirm_if_points_above": 0.25,
+  "_confirm_note": "gest, którego koszt (cost.points, punkty tygodnia) przekracza próg, nie jest stosowany bez --confirmed: karta pokazuje koszt i czeka; reszta stosowana od razu (R89/W8: potwierdzenie tylko gdy koszt > próg)",
+  "fold": {"lowercase": true, "strip_diacritics": true, "strip_punctuation": true, "collapse_spaces": true},
+  "standalone_max_words": 6,
+  "_standalone_note": "gest z `standalone: true` (krótkie słowa, np. stop) stosuje się tylko, gdy wypowiedź ma najwyżej tyle słów; dłuższa = trafienie słabe (zapisane, eskalowane, nie stosowane) — przypadkowe „stop” w zdaniu bez straty",
+  "mandate_default_until": "24h",
+  "mandate_default_scope": "wszystko poza wyjątkami stałymi",
+  "mandate_exceptions_ref": "CLAUDE.md: jego pieniądze ponad budżet · jego prywatne dane do nowego dostawcy · ×10 zużycia · sprzeczność z wymaganiem",
+  "state_file": "docs/spec/gestures_state.json",
+  "uses_log": "docs/reports/runs/words_uses.jsonl",
+  "runs_index": "docs/reports/runs/runs.jsonl",
+  "inbox_classes": ["statement", "word", "voice", "gesture"],
+  "effect_kinds_examples": ["stop_request", "mandate", "presence", "preference", "marker", "spec_command", "routine_request", "lookup", "request"],
+  "surfaces_examples": ["phone", "workshop"]
+ },
+ "gestures": [
+  {
+   "id": "stop",
+   "gesture": "Stop",
+   "patterns": ["stop", "stopp", "stoop", "zatrzymaj", "zatrzymaj wszystko"],
+   "standalone": true,
+   "effect": [{"do": "stop_request"}],
+   "cost": {"class": "zero", "points": 0, "note": "sam zapis; pokazuje koszt utopiony biegów w toku z receipt[]"},
+   "reversal": "words.py reverse <use_id> (wycofanie prośby; nic nie zostało zabite przez sam gest)",
+   "since": "2026-10-23",
+   "spec": "R89",
+   "quote": {"text": "odruchowo stop nacisnąłem i nie wiem czy ci wszystkiego nie zatrzymałem", "spec": "R89"},
+   "render": [{"surface": "phone", "label": "Stop", "order": 5, "shows": "koszt utopiony"}, {"surface": "workshop", "kind": "button", "label": "Stop"}]
+  },
+  {
+   "id": "free_hand",
+   "gesture": "Wolna ręka na zakres",
+   "patterns": ["tutaj masz wolną rękę", "masz wolną rękę", "wolna ręka", "wolną rękę"],
+   "effect": [{"do": "mandate", "mode": "free_hand"}],
+   "cost": {"class": "zero", "points": 0, "note": "węzeł mandate; koszt pojawia się przy biegach, które z niego korzystają"},
+   "reversal": "words.py reverse <use_id> (mandat wycofany; decyzje wstępne pod nim mają własne odwroty)",
+   "since": "2026-10-23",
+   "spec": "R89",
+   "quote": {"text": "tutaj masz wolną rękę", "spec": "R89"},
+   "render": [{"surface": "phone", "label": "Wolna ręka", "order": 6}, {"surface": "workshop", "kind": "button", "label": "Wolna ręka…"}]
+  },
+  {
+   "id": "do_what_you_know",
+   "gesture": "Rób to co wiesz",
+   "patterns": ["rób to co wiesz", "rób co wiesz"],
+   "effect": [{"do": "mandate", "mode": "R75", "note": "ostrożna decyzja wstępna, tania do wycofania"}],
+   "cost": {"class": "zero", "points": 0},
+   "reversal": "words.py reverse <use_id>",
+   "since": "2026-10-23",
+   "spec": "R75",
+   "quote": {"text": "a ty rób to co wiesz", "spec": "R75"},
+   "render": [{"surface": "workshop", "kind": "macro", "label": "Rób to co wiesz"}]
+  },
+  {
+   "id": "going_to_sleep",
+   "gesture": "Idę spać",
+   "patterns": ["mogę iść spać", "idę spać", "ide spac"],
+   "effect": [{"do": "presence", "state": "away"}, {"do": "mandate", "mode": "R75"}],
+   "cost": {"class": "zero", "points": 0},
+   "reversal": "words.py reverse <use_id> (obecność wraca, mandat wycofany)",
+   "since": "2026-10-23",
+   "spec": "R75",
+   "quote": {"text": "to ja mogę iść spać wreszcie", "spec": "R75"},
+   "render": [{"surface": "phone", "label": "Idę spać", "order": 9}]
+  },
+  {
+   "id": "pace_up",
+   "gesture": "Podkręć tempo",
+   "patterns": ["podkręć", "podkręć trochę", "podkrec"],
+   "effect": [{"do": "request", "class": "pace", "to": "coordinator", "note": "nowe punkty pace_plan.json to osąd (ile), więc prośba do koordynatora; zapis bez modelu"}],
+   "cost": {"class": "tokens", "points": 0, "note": "sama prośba 0; zmiana tempa zmienia zużycie tygodnia"},
+   "reversal": "pace_plan.json _history (poprzednie punkty jednym wpisem)",
+   "since": "2026-10-23",
+   "spec": "R62",
+   "quote": {"text": "plany zużycia tygodniowego to sobie podkręć trochę", "spec": "R62"},
+   "render": [{"surface": "workshop", "kind": "macro", "label": "Podkręć tempo"}]
+  },
+  {
+   "id": "less_talk",
+   "gesture": "Nie gadaj tyle",
+   "patterns": ["nie gadaj tyle", "nie gadaj"],
+   "effect": [{"do": "preference", "key": "thread_style", "value": "status_lines_only"}],
+   "cost": {"class": "zero", "points": 0},
+   "reversal": "words.py reverse <use_id>",
+   "since": "2026-10-23",
+   "spec": "CLAUDE.md Thread style",
+   "quote": {"text": "nie gadaj tyle bo ja i tak tego nie czytam", "spec": "CLAUDE.md (Thread style, 2026-10-23 00:1x)"},
+   "render": [{"surface": "phone", "label": "Krócej", "order": 10}]
+  },
+  {
+   "id": "launch",
+   "gesture": "Odpal rutynę",
+   "patterns": ["odpal", "odpal mocnego agenta", "uruchom"],
+   "effect": [{"do": "routine_request", "note": "reszta wypowiedzi = nazwa rutyny/zadania; przed biegiem start_gate"}],
+   "cost": {"class": "tokens", "points": 0.5, "note": "preset ≈ jeden pakiet (pace_plan.json cost_per_package.default); karta start_gate podaje dokładniej"},
+   "reversal": "stop przy biegu (koszt utopiony z receipt[])",
+   "since": "2026-10-23",
+   "spec": "R90",
+   "quote": {"text": "na samo przekminienie tego interfejsu odpal mocnego agenta", "spec": "R90"},
+   "render": [{"surface": "phone", "label": "Odpal rutynę", "order": 8}, {"surface": "workshop", "kind": "button", "label": "Odpal…"}]
+  },
+  {
+   "id": "what_do_you_remember",
+   "gesture": "Co pamiętasz o…",
+   "patterns": ["co pamiętasz", "co pamietasz"],
+   "effect": [{"do": "lookup", "command": "python3 tools/spec.py list", "note": "reszta wypowiedzi = temat; tylko odczyt"}],
+   "cost": {"class": "zero", "points": 0},
+   "reversal": "nic do odwracania (odczyt)",
+   "since": "2026-10-23",
+   "spec": "R73",
+   "quote": {"text": "żebym widział co pamiętasz", "spec": "R73"},
+   "render": [{"surface": "phone", "label": "Co pamiętasz o…", "order": 7}]
+  },
+  {
+   "id": "approve",
+   "gesture": "Zatwierdzam",
+   "patterns": ["zatwierdzam", "zatwierdzam parafrazę", "zatwierdzone"],
+   "standalone": true,
+   "effect": [{"do": "spec_command", "command": "approve"}],
+   "cost": {"class": "zero", "points": 0},
+   "reversal": "python3 tools/spec.py reopen <id>",
+   "since": "2026-10-23",
+   "spec": "R61",
+   "render": [{"surface": "phone", "label": "Zatwierdzam", "order": 1}]
+  },
+  {
+   "id": "correct",
+   "gesture": "Popraw",
+   "patterns": ["popraw", "poprawka"],
+   "standalone": false,
+   "effect": [{"do": "spec_command", "command": "correct", "text": "remainder"}],
+   "cost": {"class": "zero", "points": 0},
+   "reversal": "python3 tools/spec.py reopen <id>",
+   "since": "2026-10-23",
+   "spec": "R61",
+   "render": [{"surface": "phone", "label": "Popraw (głosem)", "order": 2}]
+  },
+  {
+   "id": "is_example",
+   "gesture": "To przykład",
+   "patterns": ["to przykład", "to jest przykład", "przykład to jest", "przypominam przykład to jest"],
+   "effect": [{"do": "marker", "marker": "example"}],
+   "cost": {"class": "zero", "points": 0, "note": "znacznik; addendum, które go zużywa, ma własny koszt"},
+   "reversal": "words.py reverse <use_id>",
+   "since": "2026-10-23",
+   "spec": "R90",
+   "quote": {"text": "przypominam przykład to jest", "spec": "R90"},
+   "render": [{"surface": "phone", "label": "To przykład", "order": 3}]
+  },
+  {
+   "id": "not_my_words",
+   "gesture": "To nie moje słowa",
+   "patterns": ["to nie moje słowa", "nie moje słowa", "tego nie mówiłem"],
+   "effect": [{"do": "marker", "marker": "not_my_words"}],
+   "cost": {"class": "zero", "points": 0},
+   "reversal": "words.py reverse <use_id>",
+   "since": "2026-10-23",
+   "spec": "R58",
+   "render": [{"surface": "phone", "label": "To nie moje słowa", "order": 4}]
+  }
+ ]
+}
