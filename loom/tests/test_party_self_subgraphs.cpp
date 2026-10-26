@@ -137,8 +137,10 @@ TEST_SUITE("party_self_subgraphs") {
       CHECK(c.contains("count"));
     }
     // the kinds of the table and the ones added (the interview's other fields)
-    CHECK(parts == std::set<std::string>{"identity", "preferences", "policies", "units", "interests", "network", "memory", "forgotten", "slots", "devices", "automations"});
+    CHECK(parts == std::set<std::string>{"identity", "preferences", "policies", "units", "interests", "network", "memory", "forgotten", "slots", "devices", "automations", "learned"});
     CHECK(child(you, "subgraph:self/memory")->at("label") == "Co pamiętam");
+    CHECK(child(you, "subgraph:self/learned")->at("label") == "Wyuczone przez model");
+    CHECK(child(you, "subgraph:self/learned")->at("count") == 0);  // empty part: count 0, the sentence says so
     CHECK(child(you, "subgraph:self/memory")->at("count") == 2);
     CHECK(child(you, "subgraph:self/units")->at("count") == 1);
     CHECK(child(you, "subgraph:self/interests")->at("count") == 1);
@@ -647,6 +649,21 @@ TEST_SUITE("party_self_subgraphs") {
     REQUIRE(instances.count("remont"));
     CHECK(instances.at("remont") == "Remont (project)");
     CHECK(ask.at("value").at("label") == "Nowa wartość");
+    // the instance follows the level (data: depends_on / for_levels): a conversation belongs to the conversation level, a unit to the project level
+    CHECK(ask.at("scope_id").at("depends_on") == "scope");
+    for (const auto& ch : ask.at("scope_id").at("choices")) {
+      const std::string v = ch.at("value").get<std::string>();
+      REQUIRE(ch.contains("levels"));
+      CHECK(ch.at("levels") == (v == conv ? Json::array({"conversation"}) : Json::array({"project"})));
+    }
+    // a mismatched instance is refused with a sentence, not a crash, and nothing is written
+    const Json wrong = q.call("rules.set", Json{{"key", "preference.length"}, {"effect", "set_value"}, {"scope", "project"}, {"scope_id", conv}, {"value", "long"}});
+    REQUIRE(wrong.at("status") == "awaiting_confirmation");
+    const Json refused = unwrap(q.rt->actions().confirm(Json{{"run_id", wrong.at("id")}, {"approved", true}, {"receipt_id", wrong.at("pending").at("receipt_id")}, {"ref", "test"}}));
+    INFO(refused.dump());
+    CHECK(refused.at("status") != "completed");
+    CHECK(refused.dump().find("does not belong to the level") != std::string::npos);
+    CHECK(q.card("preference:length", "pl", conv).at("provenance").at("scope") == "installation");
     // nothing is written before the yes; after it the conversation's level supplies the value and says so
     const Json waiting = q.call("rules.set", Json{{"key", "preference.length"}, {"effect", "set_value"}, {"scope", "conversation"}, {"scope_id", conv}, {"value", "long"}});
     CHECK(waiting.at("status") == "awaiting_confirmation");
@@ -657,6 +674,34 @@ TEST_SUITE("party_self_subgraphs") {
     CHECK(after.at("provenance").at("scope") == "conversation");
     CHECK(after.at("provenance").at("chip").at("label") == "Ta rozmowa");
     CHECK(q.card("preference:length").at("value") == "concise");  // seen from nowhere in particular the person's level is untouched
+  }
+
+  TEST_CASE("Learned by the model: analysis nodes of a model method (kinds and methods from data), inferred, with confirm/reject; regex and unknown ones are not there") {
+    Person p;
+    auto make = [&](const char* label, const char* kind, const char* method) {
+      NodeOptions o;
+      if (method) o.metadata = Json{{"provenance", Json{{"method", method}, {"at", "2026-10-26T10:00:00Z"}}}};
+      return unwrap(p.rt->db().create_node(label, kind, o));
+    };
+    const std::string concept_id = make("pętla zwrotna", "concept", "model:vendor/m1");
+    make("batchowy", "entity", "batch:vendor/m2");
+    make("regexowy", "entity", "regex");
+    make("stary", "entity", nullptr);
+    make("dziwny rodzaj", "gadget", "model:vendor/m1");  // a kind outside the list in data
+    const Json nav = p.navigate("subgraph:self/learned");
+    std::set<std::string> labels;
+    for (const auto& c : nav.at("children")) labels.insert(c.at("label").get<std::string>());
+    CHECK(labels == std::set<std::string>{"pętla zwrotna", "batchowy"});
+    const Json* r = child(nav, "learned:concept:pętla zwrotna");
+    REQUIRE(r);
+    CHECK(r->at("evidence").at("class") == "inferred");
+    CHECK(has_action(*r, "inference.confirm"));
+    CHECK(has_action(*r, "inference.reject"));
+    CHECK(action_of(*r, "inference.confirm").at("args").at("entry") == concept_id);
+    const Json you_nav = p.navigate("party:self");
+    CHECK(child(you_nav, "subgraph:self/learned")->at("count") == 2);
+    const Json you_en = p.navigate("party:self", "en");
+    CHECK(child(you_en, "subgraph:self/learned")->at("label") == "Learned by the model");
   }
 
   TEST_CASE("the units and the interests hang under You with their evidence; a unit is still where it was (Kontekst i projekty)") {

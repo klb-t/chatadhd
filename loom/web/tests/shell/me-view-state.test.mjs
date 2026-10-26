@@ -208,3 +208,14 @@ test('the chain of a preference is read from the card of a setting (inheritance)
   assert.deepEqual(me.inheritanceOf({ inheritance: [], attrs: { resolved: { inheritance: chain } } }), chain);
   for (const none of [null, undefined, {}, { attrs: {} }, { attrs: { resolved: {} } }, { attrs: { resolved: { inheritance: 'x' } } }]) assert.deepEqual(me.inheritanceOf(none), []);
 });
+
+test('a field that depends on another offers only the choices of its current value; a choice with no levels fits any; an empty controller offers all', () => {
+  const field = { arg: 'scope_id', label: 'x', depends_on: 'scope', choices: [
+    { value: 'c1', label: 'Rozmowa', levels: ['conversation'] }, { value: 'p1', label: 'Remont', levels: ['project'] }, { value: 'any', label: 'Wszędzie' }] };
+  assert.deepEqual(me.visibleChoices(field, { scope: 'conversation' }).map(c => c.value), ['c1', 'any']);
+  assert.deepEqual(me.visibleChoices(field, { scope: 'project' }).map(c => c.value), ['p1', 'any']);
+  assert.deepEqual(me.visibleChoices(field, { scope: '' }).map(c => c.value), ['c1', 'p1', 'any']);
+  assert.deepEqual(me.visibleChoices({ ...field, depends_on: undefined }, { scope: 'project' }).map(c => c.value), ['c1', 'p1', 'any']);
+  const fields = me.inputFields({ id: 'rules.set', params: [{ name: 'scope_id', kind: 'choice', choices: field.choices, depends_on: 'scope' }] }, (k) => null);
+  assert.equal(fields[0].depends_on, 'scope');
+});

@@ -18,7 +18,7 @@ import ActionProposalBlock from "./ActionProposalBlock";
 import "./me-view.css";
 import { chainRows } from "./node-card-state";
 import {
-  INTERVIEW_ACTION, OPEN_SECTIONS_SETTING, actionButtons, detailLines, inferredOpacityOf, inheritanceOf, inputFields, shownValue, interpretRun, looseRows, openSectionsOf, rowView, runArgs,
+  INTERVIEW_ACTION, OPEN_SECTIONS_SETTING, actionButtons, detailLines, inferredOpacityOf, inheritanceOf, inputFields, visibleChoices, shownValue, interpretRun, looseRows, openSectionsOf, rowView, runArgs,
   runRequest, sections, serializeSections, withSection, type ActionButton, type RowView,
 } from "./me-view-state";
 
@@ -145,9 +145,15 @@ function ActionBar({ buttons, subject, defaultValue, scope, t, language, proposa
           <span>{f.label}</span>
           {f.choices
             ? <select className="ncard-input" data-testid={`me-input-${f.arg}`} value={form.values[f.arg] ?? ""} autoFocus={f === fields[0]}
-              onChange={e => setForm(cur => cur ? { ...cur, values: { ...cur.values, [f.arg]: e.target.value } } : cur)}>
+              onChange={e => setForm(cur => {
+                if (!cur) return cur;
+                const values = { ...cur.values, [f.arg]: e.target.value };
+                // a field that depends on this one drops a value that no longer applies (the person picks again)
+                for (const d of fields) if (d.depends_on === f.arg && !visibleChoices(d, values).some(c => c.value === values[d.arg])) values[d.arg] = "";
+                return { ...cur, values };
+              })}>
               <option value="">{f.none ?? ""}</option>
-              {f.choices.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
+              {visibleChoices(f, form.values).map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
             </select>
             : <input className="ncard-input" data-testid={`me-input-${f.arg}`} type="text" value={form.values[f.arg] ?? ""} autoFocus={f === fields[0]}
               onChange={e => setForm(cur => cur ? { ...cur, values: { ...cur.values, [f.arg]: e.target.value } } : cur)} />}

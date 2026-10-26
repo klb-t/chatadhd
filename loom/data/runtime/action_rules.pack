@@ -803,6 +803,10 @@
         "conversation",
         "turn"
       ],
+      "scope_id_patterns": {
+        "conversation": "^c_.+",
+        "project": "^[^/]+/.+"
+      },
       "overlay": "action_rules"
     },
     "scoped_values": {
@@ -1242,6 +1246,13 @@
           "instance_levels": {
             "type": "array",
             "items": {
+              "type": "string"
+            }
+          },
+          "scope_id_patterns": {
+            "type": "object",
+            "description": "Per level, the form an instance id of that level has (a regular expression, ECMAScript); a scope_id that does not fit the chosen level is refused with a sentence and nothing is written. A level not listed accepts any id.",
+            "additionalProperties": {
               "type": "string"
             }
           },

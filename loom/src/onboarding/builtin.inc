@@ -4309,6 +4309,63 @@ std::string_view(R"loom_onboard(            "layer_name.user_disabled": "user_di
             "actions_here": []
           },
           {
+            "id": "learned",
+            "label": {
+              "pl": "Wyuczone przez model",
+              "en": "Learned by the model"
+            },
+            "why": {
+              "pl": "To, co model wyciągnął z Twoich wiadomości: pojęcia, tematy, osoby; to wnioski z analizy, nie Twoje słowa. Zero znaczy, że model jeszcze nic nie zapisał.",
+              "en": "What the model took out of your messages: concepts, topics, people; these are conclusions of the analysis, not your words. Zero means the model has not written anything yet."
+            },
+            "order_for_prefix": null,
+            "stability_rank": 12,
+            "members": [
+              {
+                "source": "learned"
+              }
+            ],
+            "actions": [
+              {
+                "action": "inference.confirm",
+                "args": {
+                  "entry": "attrs.node_id"
+                },
+                "where": {
+                  "evidence.class": "inferred"
+                }
+              },
+              {
+                "action": "inference.reject",
+                "args": {
+                  "entry": "attrs.node_id"
+                },
+                "where": {
+                  "evidence.class": "inferred"
+                }
+              },
+              {
+                "action": "inference.confirm",
+                "args": {
+                  "entry": "attrs.node_id"
+                },
+                "where": {
+                  "state": "rejected"
+                }
+              },
+              {
+                "action": "inference.reject",
+                "args": {
+                  "entry": "attrs.node_id"
+                },
+                "where": {
+                  "evidence.provenance.method": "user_confirmed"
+                }
+              }
+            ],
+            "actions_here": []
+          },
+          {
             "id": "network",
             "label": {
               "pl": "Sieć",
@@ -4928,7 +4985,8 @@ std::string_view(R"loom_onboard(            "layer_name.user_disabled": "user_di
             "guardian_scope_message": "tej wiadomości",
             "guardian_scope_conversation": "tej rozmowy",
             "guardian_scope_task_kind": "tego rodzaju zadań",
-            "guardian_scope_person": "wszystkiego, co robisz",
+)loom_onboard", 59944),
+std::string_view(R"loom_onboard(            "guardian_scope_person": "wszystkiego, co robisz",
             "guardian_scope_global": "wszędzie",
             "guardian_exceptions": "Wyjątki: {{list}}",
             "guardian_instruction": "Jedno polecenie w miejsce serii doprecyzowań (Twoje wiadomości zostają bez zmian): {{instruction}}",
@@ -4965,8 +5023,7 @@ std::string_view(R"loom_onboard(            "layer_name.user_disabled": "user_di
             "decline": "Not now",
             "cancel": "Cancel the run",
             "sending": "Sending the answer to the kernel...",
-)loom_onboard", 60000),
-std::string_view(R"loom_onboard(            "uploading": "Sending the files of the folder: {{done}} of {{total}}",
+            "uploading": "Sending the files of the folder: {{done}} of {{total}}",
             "sent": "The answer was sent.",
             "failed": "The device could not do it ({{reason}}).",
             "send_failed": "The answer could not be sent ({{reason}}).",
@@ -5938,7 +5995,8 @@ std::string_view(R"loom_onboard(            "uploading": "Sending the files of t
             "ve3d_counts": "{{nodes}} węzłów w 3D, widocznych etykiet: {{labels}}",
             "scene_hint_title": "Sterowanie (3D, {{mode}})",
             "scene_hint_select": "Wybór: {{what}}",
-            "scene_hint_held": "Trzymaj: {{what}}",
+)loom_onboard", 59982),
+std::string_view(R"loom_onboard(            "scene_hint_held": "Trzymaj: {{what}}",
             "scene_hint_stick": "Drążek teraz: {{what}}",
             "scene_hint_coarse": "Duże gesty (tylko zgrubne ruchy sceny): {{what}}",
             "scene_hint_recorded": "Zapisane tylko jako dane (głos, bez obsługi): {{count}}",
@@ -5972,8 +6030,7 @@ std::string_view(R"loom_onboard(            "uploading": "Sending the files of t
             "cm_on": "włączone",
             "cm_off": "wyłączone",
             "cm_unavailable": "niedostępne",
-)loom_onboard", 59987),
-std::string_view(R"loom_onboard(            "cm_reason_image": "Ustaw w Ustawieniach model do obrazów i dostawcę, który go obsługuje; wtedy to, co napiszesz, zostanie namalowane.",
+            "cm_reason_image": "Ustaw w Ustawieniach model do obrazów i dostawcę, który go obsługuje; wtedy to, co napiszesz, zostanie namalowane.",
             "cm_reason_music": "Ta wersja jeszcze nie umie tworzyć muzyki: nie ma takiej czynności, więc podłączenie dostawcy nic by nie dało.",
             "cm_reason_upload": "To połączenie nie potrafi przekazać plików do aplikacji.",
             "cm_reason_unknown_action": "Ta pozycja nie ma w tej wersji żadnej czynności.",
@@ -6904,7 +6961,8 @@ std::string_view(R"loom_onboard(            "cm_reason_image": "Ustaw w Ustawien
             "evidence.declared": "preset ROM",
             "evidence.observed": "powiedziałeś lub zrobiłeś",
             "evidence.said": "powiedziałeś to",
-            "evidence.derived": "wyprowadzone",
+)loom_onboard", 59973),
+std::string_view(R"loom_onboard(            "evidence.derived": "wyprowadzone",
             "evidence.inferred": "wniosek modelu (pewność {{confidence}})",
             "evidence.inferred_unknown": "wniosek modelu (pewność nieznana)",
             "evidence.extrapolated": "ekstrapolowane",
@@ -6922,8 +6980,7 @@ std::string_view(R"loom_onboard(            "cm_reason_image": "Ustaw w Ustawien
             "rom.status.present": "jest",
             "rom.status.partial": "częściowo",
             "rom.status.missing": "brak",
-)loom_onboard", 59916),
-std::string_view(R"loom_onboard(            "reason.no_projection_source": "żadne źródło nie wypisuje jeszcze elementów tego obszaru",
+            "reason.no_projection_source": "żadne źródło nie wypisuje jeszcze elementów tego obszaru",
             "reason.database_unavailable": "nie da się odczytać bazy",
             "reason.memory_unavailable": "nie da się odczytać pamięci",
             "reason.planned": "planowane",
@@ -7733,7 +7790,8 @@ std::string_view(R"loom_onboard(            "reason.no_projection_source": "żad
             "en": "The empty chat shows the card “Let us get to know each other” (setting onboarding_card = show, while the interview has not started): Start opens the interview conversation, Later hides the card until the next launch, Never ask hides it for good. In the interview conversation the first question is three level cards (minimal, usual, detailed) with a preview: what I will ask, what I will write down, what the model will see; tapping a card sends the level's name as your answer. Under a question there are quick replies (Skip, Not now, Never, Summary, How many left) — they send the control word as an ordinary message. A remark like “do not ask about health” gives a proposal “This is what I understood” with Yes and No. Above the conversation a line “A conversation without a model — a form only” shows the number of questions left. No model is called."
           },
           "reason": {
-            "pl": "Ekran „Ty” (podgrafy, stany pól, Popraw/Zapomnij), jednostki i przycisk „Poznaj mnie” w menu to osobna paczka (W2b); wywiad z modelem nie istnieje (jądro odrzuca go z powodem).",
+)loom_onboard", 59898),
+std::string_view(R"loom_onboard(            "pl": "Ekran „Ty” (podgrafy, stany pól, Popraw/Zapomnij), jednostki i przycisk „Poznaj mnie” w menu to osobna paczka (W2b); wywiad z modelem nie istnieje (jądro odrzuca go z powodem).",
             "en": "The “You” screen (subgraphs, slot states, Correct/Forget), units and the “Get to know me” menu entry are a separate package (W2b); an interview with a model does not exist (the kernel refuses it with a reason)."
           }
         },
@@ -7759,8 +7817,7 @@ std::string_view(R"loom_onboard(            "reason.no_projection_source": "żad
             "level.model_sees": "What the model will see",
             "level.aria": "Choose the level: {{label}}",
             "level.hint": "Tap a level or write in your own words, for example “do not ask about health”.",
-)loom_onboard", 59945),
-std::string_view(R"loom_onboard(            "chips.order": "skip decline never review status",
+            "chips.order": "skip decline never review status",
             "chips.aria": "Quick replies",
             "chip.skip.label": "Skip",
             "chip.skip.say": "skip",
@@ -7983,7 +8040,7 @@ std::string_view(R"loom_onboard(            "chips.order": "skip decline never r
   },
   "presentation_key": "presentation.onboarding"
 }
-)loom_onboard", 7328)};
+)loom_onboard", 9272)};
 static constexpr std::string_view kOnboardingScenario[] = {
 std::string_view(R"loom_onboard({
   "schema": "loom.onboarding.scenario/1",

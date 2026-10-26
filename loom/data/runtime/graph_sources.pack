@@ -587,6 +587,38 @@
         }
       },
       {
+        "id": "learned",
+        "prefix": "learned:",
+        "class": "learned",
+        "reader": "db.learned",
+        "kinds": ["entity", "concept", "code_ref", "topic", "person", "org"],
+        "methods": ["model:", "batch:"],
+        "label": {
+          "en": "Learned by the model",
+          "pl": "Wyuczone przez model"
+        },
+        "parent": {
+          "of": "party"
+        },
+        "contain_edge": "part_of",
+        "edges": [],
+        "epistemic_default": {
+          "class": "inferred",
+          "confidence": null
+        },
+        "node_why": {
+          "en": "Something the model took out of your messages. It is a conclusion of the analysis, not something you said.",
+          "pl": "Coś, co model wyciągnął z Twoich wiadomości. To wniosek z analizy, a nie coś, co powiedziałeś."
+        },
+        "description": "Analysis nodes whose provenance.method says a model produced them (kinds: an open list in data, seed entity, concept, code_ref, topic, person, org; methods: a preset list of prefixes, model: and batch:). Older nodes, imported ones and those found by the regex are not listed: nothing claims they came from a model.",
+        "evidence_by_method": {
+          "user_confirmed": {
+            "class": "said",
+            "confidence": 1.0
+          }
+        }
+      },
+      {
         "id": "memory",
         "prefix": "memory:",
         "class": "memory_note",
@@ -1394,6 +1426,11 @@
       "rules.set.scope_id": {
         "from": "conversations",
         "also": ["units"],
+        "depends_on": "scope",
+        "for_levels": {
+          "conversations": ["conversation"],
+          "units": ["project"]
+        },
         "value": "id",
         "label": "title",
         "untitled": {

@@ -429,6 +429,63 @@
             "actions_here": []
           },
           {
+            "id": "learned",
+            "label": {
+              "pl": "Wyuczone przez model",
+              "en": "Learned by the model"
+            },
+            "why": {
+              "pl": "To, co model wyciągnął z Twoich wiadomości: pojęcia, tematy, osoby; to wnioski z analizy, nie Twoje słowa. Zero znaczy, że model jeszcze nic nie zapisał.",
+              "en": "What the model took out of your messages: concepts, topics, people; these are conclusions of the analysis, not your words. Zero means the model has not written anything yet."
+            },
+            "order_for_prefix": null,
+            "stability_rank": 12,
+            "members": [
+              {
+                "source": "learned"
+              }
+            ],
+            "actions": [
+              {
+                "action": "inference.confirm",
+                "args": {
+                  "entry": "attrs.node_id"
+                },
+                "where": {
+                  "evidence.class": "inferred"
+                }
+              },
+              {
+                "action": "inference.reject",
+                "args": {
+                  "entry": "attrs.node_id"
+                },
+                "where": {
+                  "evidence.class": "inferred"
+                }
+              },
+              {
+                "action": "inference.confirm",
+                "args": {
+                  "entry": "attrs.node_id"
+                },
+                "where": {
+                  "state": "rejected"
+                }
+              },
+              {
+                "action": "inference.reject",
+                "args": {
+                  "entry": "attrs.node_id"
+                },
+                "where": {
+                  "evidence.provenance.method": "user_confirmed"
+                }
+              }
+            ],
+            "actions_here": []
+          },
+          {
             "id": "network",
             "label": {
               "pl": "Sieć",

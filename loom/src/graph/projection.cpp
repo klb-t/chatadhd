@@ -1295,6 +1295,13 @@ void add_choices(Impl& c, const std::string& action, const std::string& name, Js
   const std::string vf = json::get_string(*spec, "value", "id");
   const std::string lf = json::get_string(*spec, "label", "title");
   Json choices = Json::array();
+  // `for_levels` (data): per source, the values of the parameter named by `depends_on` for which its choices apply ({"conversations": ["conversation"],
+  // "units": ["project"]}); a source not listed applies to any value. The choices carry them as `levels`, so a screen offers only the fitting ones.
+  const auto for_levels = [&](const char* source) -> Json {
+    const Json per_source = spec->value("for_levels", Json::object());
+    const Json* lv = json::find(per_source, source);
+    return lv && lv->is_array() ? *lv : Json(nullptr);
+  };
   if (from == "conversations" && c.env.db) {
     auto convs = c.env.db->list_convs(-1);
     if (!convs) {
@@ -1305,7 +1312,9 @@ void add_choices(Impl& c, const std::string& action, const std::string& name, Js
       const Json row = cv.to_json();
       std::string label = json::get_string(row, lf);
       if (label.empty()) label = c.say(spec->value("untitled", Json("")));
-      choices.push_back(Json{{"value", json::get_string(row, vf)}, {"label", label}});
+      Json choice{{"value", json::get_string(row, vf)}, {"label", label}};
+      if (const Json lv = for_levels("conversations"); lv.is_array()) choice["levels"] = lv;
+      choices.push_back(std::move(choice));
     }
     // `also: ["units"]` adds the units (nodes of kind unit: value = the unit's id, label = its words and kind): a rule at a unit's level belongs to
     // one unit, one at the conversation's level to one conversation, and the same parameter names the instance of either.
@@ -1323,7 +1332,9 @@ void add_choices(Impl& c, const std::string& action, const std::string& name, Js
         if (uid.empty()) continue;
         const std::string words = json::get_string(row, "label", uid);
         const std::string kind = json::get_string(meta, "unit_kind");
-        choices.push_back(Json{{"value", uid}, {"label", kind.empty() ? words : words + " (" + kind + ")"}});
+        Json choice{{"value", uid}, {"label", kind.empty() ? words : words + " (" + kind + ")"}};
+        if (const Json lv = for_levels("units"); lv.is_array()) choice["levels"] = lv;
+        choices.push_back(std::move(choice));
       }
     }
   } else if (from == "scope_levels") {
@@ -1361,6 +1372,7 @@ void add_choices(Impl& c, const std::string& action, const std::string& name, Js
   }
   param["kind"] = "choice";
   param["choices"] = std::move(choices);
+  if (const std::string dep = json::get_string(*spec, "depends_on"); !dep.empty()) param["depends_on"] = dep;
   if (const Json* none = json::find(*spec, "none"); none && !json::get_bool(param, "required", false)) param["none"] = c.say(*none);
 }
 
@@ -1778,6 +1790,40 @@ Result<Read> read_topics(Impl& c, const Json& src, const std::string&, const Jso
     apply_review(c, n, src, t.metadata);
     r.edges.push_back(Json{{"src", "party:self"}, {"dst", address}, {"kind", "interested_in"}});
     r.nodes.push_back(std::move(n));
+  }
+  return r;
+}
+
+// "Learned by the model": analysis nodes (any kind named in the source's `kinds`, an open list in data) whose provenance.method (written by the graph
+// engine when it created the node) is one of the source's `methods` (a preset list in data; a method counts when it equals an entry or starts with it,
+// e.g. "model:" covers "model:<id>"). Evidence class and the way to confirm/reject are the same as for the interests; a node with no provenance
+// (older, imported, regex) is simply not here - it was never claimed to come from a model.
+Result<Read> read_learned(Impl& c, const Json& src, const std::string&, const Json& paging) {
+  if (!c.env.db) return Error(Errc::Unavailable, "database_unavailable");
+  const std::int64_t limit = c.page_limit(src, paging);
+  std::vector<std::string> kinds, methods;
+  for (const auto& k : src.value("kinds", Json::array())) if (k.is_string()) kinds.push_back(k.get<std::string>());
+  for (const auto& m : src.value("methods", Json::array())) if (m.is_string()) methods.push_back(m.get<std::string>());
+  Read r;
+  for (const auto& kind : kinds) {
+    LOOM_TRY_ASSIGN(auto nodes, c.env.db->list_nodes(std::string_view(kind), limit > 0 ? static_cast<int>(limit) : -1));
+    for (const auto& t : nodes) {
+      const Json prov = t.metadata.is_object() ? t.metadata.value("provenance", Json(nullptr)) : Json(nullptr);
+      const std::string method = prov.is_object() ? json::get_string(prov, "method") : std::string();
+      bool counts = false;
+      for (const auto& m : methods)
+        if (!method.empty() && !m.empty() && starts_with(method, m)) counts = true;
+      if (!counts) continue;
+      const std::string address = "learned:" + kind + ":" + t.label;
+      Json n = c.make(src, address, t.label, "party:self", "db", t.id, method, prov.value("at", Json(t.created)));
+      n["same_as"] = Json::array({t.id});
+      if (t.metadata.contains("confidence")) n["evidence"]["confidence"] = t.metadata["confidence"];
+      n["attrs"]["node_id"] = t.id;
+      n["attrs"]["node_kind"] = kind;
+      n["attrs"]["method"] = method;
+      apply_review(c, n, src, t.metadata);
+      r.nodes.push_back(std::move(n));
+    }
   }
   return r;
 }
@@ -2290,7 +2336,7 @@ const std::map<std::string, Impl::Reader>& Impl::readers() {
       {"graph_entry.areas", read_areas},  {"rom.items", read_rom},          {"settings.groups", read_groups},  {"settings.fields", read_settings},
       {"scopes.chain", read_scopes},      {"ports.roles", read_roles},      {"models.bound", read_models},     {"profile.items", read_profile_items},
       {"config.items", read_config_items}, {"views.effective", read_views}, {"party.self", read_party},         {"user.preferences", read_preferences},
-      {"user.privacy", read_privacy},     {"db.topics", read_topics},       {"memory.notes", read_memory},     {"db.conversations", read_conversations},
+      {"user.privacy", read_privacy},     {"db.topics", read_topics}, {"db.learned", read_learned},       {"memory.notes", read_memory},     {"db.conversations", read_conversations},
       {"db.messages", read_messages},     {"db.units", read_units},         {"actions.catalogue", read_flows}, {"actions.steps", read_steps},
       {"static.nodes", read_static},      {"automations.declared", read_automations}, {"db.tasks", read_tasks}, {"calibration.items", read_calibration},
       {"nodes.also", read_also}, {"party.subgraphs", read_subgraphs}};

@@ -25,6 +25,7 @@
       {"id": "projection_preference", "prefix": "preference:", "source": "projection", "class": "preference"},
       {"id": "projection_policy", "prefix": "policy:", "source": "projection", "class": "privacy_rule"},
       {"id": "projection_interest", "prefix": "interest:", "source": "projection", "class": "interest"},
+      {"id": "projection_learned", "prefix": "learned:", "source": "projection", "class": "learned"},
       {"id": "projection_memory", "prefix": "memory:", "source": "projection", "class": "memory_note"},
       {"id": "projection_conv", "prefix": "conv:", "source": "projection", "class": "conversation", "same_as_prefix": "c_"},
       {"id": "projection_msg", "prefix": "msg:", "source": "projection", "class": "message", "same_as_prefix": "m_"},

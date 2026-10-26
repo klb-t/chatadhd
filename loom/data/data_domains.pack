@@ -117,7 +117,7 @@
     {
       "path": "graph/classes.pack",
       "schema": "loom.graph_classes/1",
-      "sha256": "0efc06c0bd84a7c7bdb30442e6bdfc4c6c3288b4af8280da47a2a00a8cc073e4",
+      "sha256": "1ec953bc2e43b9420824791fe73db3ff833e1c445018d095858cebd8bee901e0",
       "domain": "graph_entry",
       "role": "configuration",
       "validation_refs": [

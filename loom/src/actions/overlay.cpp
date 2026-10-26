@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <mutex>
 #include <optional>
+#include <regex>
 #include <set>
 
 #include "loom/action_rules.h"
@@ -204,6 +205,19 @@ Result<RuleDraft> draft_rule(const fs::path& root, const Json& request) {
       if (l.is_string()) s.insert(l.get<std::string>());
     return s;
   }();
+  if (!scope_id.empty()) {
+    // the instance must be one of the chosen level (data: user_rules.scope_id_patterns); a mismatch is a sentence, nothing is written
+    const Json patterns = cfg.value("scope_id_patterns", Json::object());
+    if (const Json* pat = json::find(patterns, level); pat && pat->is_string()) {
+      bool fits = true;
+      try {
+        fits = std::regex_match(scope_id, std::regex(pat->get<std::string>()));
+      } catch (const std::regex_error&) {
+        fits = true;  // a pattern that cannot be read is data's mistake, not a reason to refuse the person
+      }
+      if (!fits) return invalid("the chosen instance does not belong to the level '" + level + "' (for example a conversation chosen for the project level); pick the level and the instance together. Nothing was saved.");
+    }
+  }
   if (instance_levels.count(level) && scope_id.empty()) return invalid("a rule at the level '" + level + "' belongs to one instance of it: give scope_id");
 
   // What the rule says.

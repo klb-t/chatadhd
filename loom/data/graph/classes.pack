@@ -1369,6 +1369,12 @@
         "pl": "Zainteresowanie (wywnioskowany temat)"
       }
     },
+    "learned": {
+      "label": {
+        "en": "Learned by the model (inferred)",
+        "pl": "Wyuczone przez model (wywnioskowane)"
+      }
+    },
     "memory_note": {
       "label": {
         "en": "Memory note",

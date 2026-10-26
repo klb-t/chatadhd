@@ -107,14 +107,19 @@ export function actionButtons(actions: RowAction[] | undefined, t: ShellT): Acti
   }));
 }
 
-export interface InputField { arg: string; label: string; choices?: { value: string; label: string }[]; none?: string }
+export interface InputField { arg: string; label: string; choices?: { value: string; label: string; levels?: string[] }[]; none?: string; depends_on?: string }
+/** The choices of a field that apply now: when the field depends on another one (data: `depends_on`), only those listed for that field's current value (a choice with no `levels` applies to any). */
+export const visibleChoices = (field: InputField, values: Record<string, string>): { value: string; label: string }[] => {
+  const on = field.depends_on ? values[field.depends_on] ?? "" : "";
+  return (field.choices ?? []).filter(c => !field.depends_on || !c.levels || on === "" || c.levels.includes(on));
+};
 /** The arguments an action takes from the person's own typing. FIRST the kernel's list (actions[].params: derived from the action catalogue, so a new
  *  action needs no code and no word); the words me.<input>.<action>.<name> are only an optional override of a label. When the kernel lists none, the old
  *  way stays: the words me.input.<action> (the names) and me.input.<action>.<name> (the labels). No list and no word = nothing to type. */
 export function inputFields(action: string | Pick<ActionButton, "id" | "params">, t: ShellT): InputField[] {
   const id = typeof action === "string" ? action : action.id;
   const params = typeof action === "string" ? [] : action.params ?? [];
-  if (params.length > 0) return params.map(p => ({ arg: p.name, label: wordOrNull(t, `me.input.${id}.${p.name}`) ?? (p.label && p.label !== "" ? p.label : p.name), ...(p.kind === "choice" && p.choices ? { choices: p.choices, none: p.none ?? "" } : {}) }));
+  if (params.length > 0) return params.map(p => ({ arg: p.name, label: wordOrNull(t, `me.input.${id}.${p.name}`) ?? (p.label && p.label !== "" ? p.label : p.name), ...(p.kind === "choice" && p.choices ? { choices: p.choices, none: p.none ?? "", ...(p.depends_on ? { depends_on: p.depends_on } : {}) } : {}) }));
   const names = wordOrNull(t, `me.input.${id}`);
   if (!names) return [];
   return names.split(/\s+/).filter(Boolean).map(arg => ({ arg, label: wordOrNull(t, `me.input.${id}.${arg}`) ?? arg }));

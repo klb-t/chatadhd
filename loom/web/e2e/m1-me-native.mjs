@@ -453,6 +453,16 @@ try {
     assert.equal(after.provenance.scope, "conversation");
     assert.equal((await api("POST", "/api/graph/card", { address: pref.address, lang: "pl" })).value, before.value, "the person's level is untouched");
     await audit("17-level-done"); await shot("17-level-done");
+    // the same value on the screen: with that conversation open in the chat, the row of the preference says in words which level set it
+    await page.getByTestId("shell-drawer-toggle").tap();
+    await page.locator('[data-testid="shell-conv"]', { hasText: "Rozmowa o remoncie" }).first().tap();
+    await page.getByTestId("shell-menu-toggle").tap(); await page.getByTestId("shell-menu-me").tap(); await page.getByTestId("me-view").waitFor();
+    await openSection(prefPart.address);
+    const line = await until("the row names the level that set the value", async () => {
+      const el = row(pref.address).getByTestId("me-row-setby");
+      return (await el.count()) > 0 ? (await el.first().innerText()).replace(/\s+/g, " ").trim() : null;
+    });
+    assert.equal(line, say("me.chip.set_by", { who: "Ta rozmowa" }), "the row says who set the value: this conversation");
     console.log(`[m1-me] Popraw na poziomie: ${pref.label} = ${after.value_human} (${after.provenance.chip.label})`);
   });
 
