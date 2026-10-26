@@ -189,6 +189,7 @@ Result<std::optional<Json>> SemanticLLM::call_llm(std::string_view text, const S
     }
   }
   (void)extra_in;
+  if (parsed->is_object() && !result.model.empty()) (*parsed)["model"] = result.model;
   if (plan.wanted && parsed->is_object())
     (*parsed)["annotation"] = Json{{"version", plan.version},
                                    {"cost", Json{{"calls", 1 + extra_calls}, {"flow", choice.flow}, {"input_bytes", request.prompt.size()}, {"output_bytes", raw.size() + static_cast<std::size_t>(extra_out)}, {"receipt", result.operation_id}, {"model", result.model}}}};

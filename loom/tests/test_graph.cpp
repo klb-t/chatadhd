@@ -263,6 +263,41 @@ TEST_SUITE("graph_engine") {
     CHECK(conv_edge);
   }
 
+  TEST_CASE("ingest_analysis records provenance of new analysis nodes (model / batch / regex), old and unknown stay unstamped") {
+    fsutil::TempDir td;
+    auto db = open_db(td.path() / "g.db");
+    EventBus bus;
+    auto an = unwrap(SemanticAnalyzer::create());
+    GraphEngine ge(*db, bus, *an);
+    auto conv = unwrap(db->create_conv("Test"));
+    std::string mid = mk_msg(*db, conv.id, "irrelevant text body");
+    auto ent = [](const char* n, const char* k) { return Json{{"name", n}, {"kind", k}, {"relevance", 0.9}}; };
+
+    Json llm = Json{{"source", "llm"}, {"model", "vendor/m1"}, {"entities", Json::array({ent("Alpha", "concept")})},
+                    {"topics", Json::array({Json{{"label", "Beta"}, {"confidence", 0.8}}})}};
+    CHECK(ge.ingest_analysis(mid, conv.id, llm));
+    auto alpha = unwrap(db->find_node("Alpha"));
+    REQUIRE(alpha.has_value());
+    CHECK(alpha->metadata.at("provenance").at("method") == "model:vendor/m1");
+    CHECK(!alpha->metadata.at("provenance").at("at").get<std::string>().empty());
+    auto beta = unwrap(db->find_node("beta", "topic"));
+    REQUIRE(beta.has_value());
+    CHECK(beta->metadata.at("provenance").at("method") == "model:vendor/m1");
+
+    Json batch = Json{{"source", "llm_batch"}, {"model", "vendor/m2"}, {"entities", Json::array({ent("Gamma", "entity")})}};
+    ge.ingest_analysis(mid, conv.id, batch);
+    CHECK(unwrap(db->find_node("Gamma"))->metadata.at("provenance").at("method") == "batch:vendor/m2");
+
+    Json rx = Json{{"source", "regex"}, {"entities", Json::array({ent("Delta", "entity"), ent("Alpha", "concept")})}};
+    ge.ingest_analysis(mid, conv.id, rx);
+    CHECK(unwrap(db->find_node("Delta"))->metadata.at("provenance").at("method") == "regex");
+    CHECK(unwrap(db->find_node("Alpha"))->metadata.at("provenance").at("method") == "model:vendor/m1");  // born with it, keeps it
+
+    Json unknown = Json{{"entities", Json::array({ent("Epsilon", "entity")})}};
+    ge.ingest_analysis(mid, conv.id, unknown);
+    CHECK(!unwrap(db->find_node("Epsilon"))->metadata.contains("provenance"));
+  }
+
   TEST_CASE("on_message: skips short text, writes semantic metadata, mark_analysed, emits graph:changed") {
     fsutil::TempDir td;
     auto db = open_db(td.path() / "g.db");

@@ -214,6 +214,7 @@ void fetch_batch_results(Database& db, const Config& cfg, const Secrets& secrets
         }
         Json analysis = *parsed;
         analysis["source"] = "llm_batch";
+        analysis["model"] = cfg_string(cfg, "semantic_model");
         auto mr = db.get_msg(msg_id);
         std::string conv_id = (mr && *mr) ? (*mr)->conv_id : std::string();
         graph.ingest_analysis(msg_id, conv_id, analysis);

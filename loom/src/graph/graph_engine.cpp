@@ -27,6 +27,38 @@ namespace loom {
 namespace {
 constexpr std::string_view kLog = "loom.graph";
 
+
+// Provenance of analysis nodes (JSON metadata only, schema unchanged): which method produced the analysis that created the node.
+// Explicit `analysis.provenance.method` wins; else the analysis `source` ("llm" -> model:<id>, "llm_batch" -> batch:<id>, "regex" -> regex).
+// An analysis whose method is unknown stamps nothing (old and foreign nodes stay "unknown"). Only a NEW node is stamped:
+// a node that already exists keeps the provenance it was born with.
+std::string analysis_method(const Json& analysis) {
+  if (!analysis.is_object()) return {};
+  if (const Json* p = json::find(analysis, "provenance"); p && p->is_object()) {
+    auto m = json::get_string(*p, "method");
+    if (!m.empty()) return m;
+  }
+  const std::string source = json::get_string(analysis, "source");
+  std::string model = json::get_string(analysis, "model");
+  if (model.empty()) {
+    if (const Json* ann = json::find(analysis, "annotation"); ann && ann->is_object())
+      if (const Json* cost = json::find(*ann, "cost"); cost && cost->is_object()) model = json::get_string(*cost, "model");
+  }
+  if (source == "regex") return "regex";
+  if (source == "llm") return "model:" + (model.empty() ? std::string("unknown") : model);
+  if (source == "llm_batch") return "batch:" + (model.empty() ? std::string("unknown") : model);
+  return {};
+}
+
+Result<std::string> node_with_provenance(Database& db, const std::string& label, const std::string& kind, const std::string& method) {
+  if (method.empty()) return db.get_or_create_node(label, kind);
+  LOOM_TRY_ASSIGN(auto existing, db.find_node(label, kind));
+  if (existing) return existing->id;
+  NodeOptions opts;
+  opts.metadata = Json{{"provenance", Json{{"method", method}, {"at", timeutil::utc_now_iso()}}}};
+  return db.create_node(label, kind, opts);
+}
+
 // Shared by on_message() and ingest_analysis(): materialises entities,
 // topics and relations from a unified analysis dict, plus the msg->conv
 // "part_of" edge. Returns whether anything (other than the conv edge) was
@@ -38,6 +70,7 @@ Result<bool> ingest_common(Database& db, std::string_view msg_id, std::string_vi
   const Json& rp = policy.at("relations");
   const Json& membership = policy.at("membership");
   bool changed = false;
+  const std::string method = analysis_method(analysis);
 
   if (const Json* ents = json::find(analysis, ep.at("array").get<std::string>()); ents && ents->is_array()) {
     for (const auto& ent : *ents) {
@@ -45,7 +78,7 @@ Result<bool> ingest_common(Database& db, std::string_view msg_id, std::string_vi
       std::string kind = json::get_string(ent, ep.at("kind").get<std::string>(), ep.at("default_kind").get<std::string>());
       double relevance = json::get_number(ent, ep.at("relevance").get<std::string>(), ep.at("default_relevance").get<double>());
       if (name.empty() || utf8::length(name) < ep.at("min_label_codepoints").get<std::size_t>() || relevance < ep.at("min_relevance").get<double>()) continue;
-      LOOM_TRY_ASSIGN(auto nid, db.get_or_create_node(name, kind));
+      LOOM_TRY_ASSIGN(auto nid, node_with_provenance(db, name, kind, method));
       LOOM_TRY(db.create_link(msg_id, nid, ep.at("predicate").get<std::string>(), relevance));
       changed = true;
     }
@@ -62,7 +95,7 @@ Result<bool> ingest_common(Database& db, std::string_view msg_id, std::string_vi
         label = t.get<std::string>();
       }
       if (label.empty() || conf < tp.at("min_confidence").get<double>()) continue;
-      LOOM_TRY_ASSIGN(auto nid, db.get_or_create_node(tp.at("lowercase").get<bool>() ? utf8::to_lower(label) : label, tp.at("kind").get<std::string>()));
+      LOOM_TRY_ASSIGN(auto nid, node_with_provenance(db, tp.at("lowercase").get<bool>() ? utf8::to_lower(label) : label, tp.at("kind").get<std::string>(), method));
       LOOM_TRY(db.create_link(msg_id, nid, tp.at("predicate").get<std::string>(), conf));
       changed = true;
     }
