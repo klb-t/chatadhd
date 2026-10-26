@@ -32,8 +32,11 @@ import { ShellLanguage, ShellText, shellTranslator } from "./shell/text";
 import { themeFromConfig } from "./shell/theme";
 import { DEFAULT_LAYOUT, JOURNAL_LIMIT, LAYOUTS, START_VIEW_PRESET, layoutOfMode, parseShellHash, readSaved, resolveLayoutId, resolveStartView, startViewOrder, writeSaved } from "./shell/start-view";
 import WindowHost from "./shell/windows/WindowHost";
-import { activePanelOf, baseWindow, layoutState, overlays, setPanel, switchLayout } from "./shell/windows/session";
-import type { WState } from "./shell/windows/model";
+import { activePanelOf, baseWindow, layoutState, setPanel, switchLayout, visibleOverlay } from "./shell/windows/session";
+import { createState, type WState } from "./shell/windows/model";
+import { WINDOW_DATA, closeWindows, focusWindow, runWindowStep, switcherEntries, visibleId, type WindowReceipt } from "./shell/windows/ops";
+import { WINDOW_STEP_EVENT, type WindowStepDetail } from "./context/browser-host";
+import { layerStack } from "./shell/history";
 import { shellLanguage } from "./shell/language";
 import { cssVariables, mergeData } from "./shell/animation";
 import { glyphVariables } from "./shell/disclosure-glyphs";
@@ -115,12 +118,54 @@ export default function App() {
       if (!live) return;
       setConfig(cfg);
       setLayout(resolved.layout ?? layoutOfMode(cfg.layout_mode));
+      // W2: the last session's windows come back with its layout (window_layout_last; preset window_restore_last, false = the layout only)
+      const saved = resolved.source === "last_saved" && WINDOW_DATA.window_restore_last !== false ? readSaved(localStorage)?.windows ?? null : null;
+      if (saved && saved.id === resolved.layout) setWin(createState(saved, JOURNAL_LIMIT));
       setActiveConvId(resolved.conversationId);
       setStarted(true);
     })();
     return () => { live = false; };
   }, []);
-  useEffect(() => { if (started && layout) writeSaved(localStorage, { layout, conversationId: activeConvId }); }, [started, layout, activeConvId]);
+  useEffect(() => { if (started && layout) writeSaved(localStorage, { layout, conversationId: activeConvId, windows: WINDOW_DATA.window_restore_last === false ? null : win.layout }); }, [started, layout, activeConvId, win.layout]);
+
+  // W2 (OKNA §4.2): the journal of visits. A change of the window in front made by a window step or the switcher is a visit; each visit
+  // above the first is one layer of the LayerStack (`visit:<n>`), so Back walks the windows back (window_back: visits | to_chat |
+  // close_window | none - a preset in data). Menus and sheets stay layers above them, as before.
+  const winRef = useRef(win);
+  winRef.current = win;
+  const [visits, setVisits] = useState<string[]>([]);
+  const moveTo = useCallback((next: WState) => {
+    const before = visibleId(winRef.current.layout), after = visibleId(next.layout);
+    winRef.current = next;
+    setWin(next);
+    if (before === after || after === null || (WINDOW_DATA.window_back ?? "visits") === "none") return;
+    setVisits(v => (v.length ? v : before ? [before] : []).concat(after));
+  }, []);
+  const visitBack = useCallback(() => {
+    const mode = WINDOW_DATA.window_back ?? "visits";
+    setVisits(v => {
+      const rest = v.slice(0, -1);
+      const s = winRef.current;
+      let next = s;
+      if (mode === "close_window") next = closeWindows(s, {}).state;
+      else if (mode === "to_chat") { const chat = s.layout.windows.find(w => w.kind === "chat" && typeof w.params?.panel !== "string"); if (chat) next = focusWindow(s, chat.id); }
+      else { const prev = [...rest].reverse().find(id => s.layout.windows.some(w => w.id === id)); if (prev) next = focusWindow(s, prev); }
+      winRef.current = next;
+      setWin(next);
+      return rest.length > 1 ? rest : [];
+    });
+  }, []);
+  const visitLayers = useRef<string[]>([]);
+  useEffect(() => {
+    const stack = layerStack();
+    if (!stack) return;
+    const want = visits.slice(1).map((_, i) => `visit:${i + 1}`);
+    for (const id of [...visitLayers.current].reverse()) if (!want.includes(id)) stack.remove(id);
+    for (const id of want) if (!visitLayers.current.includes(id)) stack.push(id, visitBack);
+    visitLayers.current = want;
+  }, [visits, visitBack]);
+  // A window that is gone drops out of the journal (closed from the switcher or by a sentence).
+  useEffect(() => { setVisits(v => { const left = v.filter(id => win.layout.windows.some(w => w.id === id)); return left.length === v.length ? v : left.length > 1 ? left : []; }); }, [win.layout]);
   // Animation and disclosure glyphs are data: the resolved tables become CSS variables (prefers-reduced-motion selects the reduced-motion style).
   useEffect(() => {
     const reduced = typeof window.matchMedia === "function" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -213,7 +258,52 @@ export default function App() {
 
   // Back (Android, browser) and Escape close the panel drawer and the knowledge sheet before anything else; in the workshop the
   // knowledge view is docked beside the chat, not an overlay, so only the sheet of the chat layout is a layer.
-  useLayer("panel", activePanel !== null, () => setActivePanel(null));
+  // W2: a panel reached through a visit is closed by Back through the journal of visits (the window waits in the switcher), not here
+  const visited = visits.length > 1 && visits[visits.length - 1] === visibleOverlay(win.layout)?.id;
+  useLayer("panel", activePanel !== null && !visited, () => setActivePanel(null));
+
+  // W2: a client step of the kernel on the windows (window.open / close / focus / next / prev, from a sentence such as „otwórz graf obok”):
+  // the step is done on the window state at once and answered with what was done, in words of the shell (the receipt).
+  const windowLabel = useCallback((id: string) => {
+    const w = winRef.current.layout.windows.find(x => x.id === id);
+    const panel = w && typeof w.params?.panel === "string" ? w.params.panel as PanelId : null;
+    if (!panel) return w?.kind === "chat" ? t("window_chat") : (w?.title_override ?? w?.kind ?? id);
+    return PANEL_TEXT_IDS[panel] ? t(PANEL_TEXT_IDS[panel]!) : (PANEL_LABELS[panel] ?? panel);
+  }, [t]);
+  useEffect(() => {
+    const known = (id: string) => Object.prototype.hasOwnProperty.call(PANEL_LABELS, id);
+    const onStep = (event: Event) => {
+      const detail = (event as CustomEvent<WindowStepDetail>).detail;
+      if (!detail || detail.outcome) return;
+      const deviceClass = window.innerWidth < 600 ? "phone" : "desktop";
+      const { state, receipt } = runWindowStep(winRef.current, detail.action, detail.args ?? {}, known, deviceClass);
+      moveTo(state);
+      const say = (r: WindowReceipt): string => {
+        const names = r.windows.map(windowLabel).join(", ");
+        if (r.state === "none") return t("window_receipt_none", { word: r.word ?? "" });
+        if (r.op === "close") return t("window_receipt_close", { count: names || "0" });
+        if (r.op === "open") return t("window_receipt_open", { screen: names }) + (r.placementAsked && r.placementAsked !== r.placementUsed ? " " + t("window_receipt_placement", { asked: r.placementAsked }) : "");
+        return t("window_receipt_focus", { screen: names });
+      };
+      const text = say(receipt);
+      detail.outcome = receipt.state === "none"
+        ? { state: "failed", error: { message: text } }
+        : { state: "ok", parts: [{ kind: "text", text }], data: { schema: "loom.window_receipt/1", ...receipt, layout: state.layout.id } };
+    };
+    window.addEventListener(WINDOW_STEP_EVENT, onStep);
+    return () => window.removeEventListener(WINDOW_STEP_EVENT, onStep);
+  }, [moveTo, t, windowLabel]);
+  const shellWindows = useMemo(() => {
+    const front = visibleId(win.layout);
+    return {
+      entries: switcherEntries(win.layout).map(w => ({ id: w.id, label: windowLabel(w.id), front: w.id === front, closable: typeof w.params?.panel === "string" })),
+      focus: (id: string) => moveTo(focusWindow(winRef.current, id)),
+      close: (id: string) => {
+        const w = winRef.current.layout.windows.find(x => x.id === id);
+        if (w && typeof w.params?.panel === "string") moveTo(closeWindows(winRef.current, { target: { panel: String(w.params.panel) } }).state);
+      },
+    };
+  }, [win.layout, windowLabel, moveTo]);
   // the layout shows one window full-screen (the plain chat app is that case); a grid of docks (the former Workshop) is not
   const fullWindow = layout !== null && baseWindow(win.layout) !== null;
   useLayer("knowledge-sheet", knowledgeOpen && fullWindow, () => setKnowledgeOpen(false));
@@ -223,7 +313,7 @@ export default function App() {
   useDialogFocus(knowledgeOpen && fullWindow, knowledgeRef, "shell-menu-toggle");
 
   const panelTitle = activePanel ? (PANEL_TEXT_IDS[activePanel] ? t(PANEL_TEXT_IDS[activePanel]!) : PANEL_LABELS[activePanel]) : "";
-  const topKind = overlays(win.layout).at(-1)?.kind ?? null;   // the kind decides the component (settings = SettingsHuman, settings_fields = SettingsPanel)
+  const topKind = visibleOverlay(win.layout)?.kind ?? null;   // the kind decides the component (settings = SettingsHuman, settings_fields = SettingsPanel)
   const panels = activePanel && (
 
           <>
@@ -341,7 +431,7 @@ export default function App() {
   );
   const host = <WindowHost state={win} renderOverlay={() => panels} grid={workshop} renderWindow={w => w.kind !== "chat" ? null : (
       <ChatShell profileHost={userProfileHost} convId={activeConvId} onSelect={setActiveConvId} onCreated={onConversationCreated} onShowInGraph={openNavigator}
-        refreshKey={convRefreshKey} onMessagesChanged={onMessagesChanged} behindOverlay={activePanel !== null || knowledgeOpen}
+        refreshKey={convRefreshKey} onMessagesChanged={onMessagesChanged} windows={shellWindows} behindOverlay={activePanel !== null || knowledgeOpen}
         actions={{ panel: (id) => { if (id === "settings") setSettingsView(""); setActivePanel(id as PanelId); }, navigator: (focus) => { setNavigatorFocus(focus); setActivePanel("navigator"); }, knowledge: () => setKnowledgeOpen(true), workshop: () => setLayout("workshop") }} />)} />;
   return (
     <ShellText.Provider value={t}><ShellLanguage.Provider value={uiLanguage}>

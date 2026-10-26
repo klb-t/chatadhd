@@ -34,6 +34,11 @@
           "action": "navigator:conv:current"
         },
         {
+          "id": "windows",
+          "label": "menu_windows",
+          "action": "sheet:windows"
+        },
+        {
           "id": "views",
           "label": "menu_views",
           "action": "sheet:views"
@@ -142,8 +147,8 @@
         ]
       },
       "switcher": {
-        "style": "bar",
-        "position": "bottom"
+        "style": "sheet",
+        "position": "menu"
       }
     },
     "siatka": {
@@ -289,5 +294,51 @@
     }
   },
   "panel_kinds_note": "W1: which window kind a panel of the app opens as (maximized over the layout, OKNA §3.3). Open map: a panel missing here opens as the kind of its own id.",
-  "panel_placement": "maximize"
+  "panel_placement": "maximize",
+  "window_words": {
+    "czat": "chat",
+    "rozmow": "chat",
+    "chat": "chat",
+    "conversation": "chat",
+    "graf": "navigator",
+    "graph": "navigator",
+    "nawigator": "navigator",
+    "navigator": "navigator",
+    "ustawien": "settings",
+    "ustawieni": "settings",
+    "settings": "settings",
+    "pamiec": "memory",
+    "pamie": "memory",
+    "memory": "memory",
+    "import": "import",
+    "dziennik": "logs",
+    "log": "logs",
+    "kontekst": "context",
+    "context": "context",
+    "metod": "methods",
+    "method": "methods",
+    "analiz": "analysis",
+    "analysis": "analysis",
+    "operacj": "operations",
+    "operation": "operations",
+    "perspektyw": "perspectives",
+    "perspective": "perspectives",
+    "silnik widok": "view-engine",
+    "view engine": "view-engine"
+  },
+  "window_words_note": "W2: a word of a sentence (folded, no diacritics) to a window: the longest stem a word starts with wins; the value is `chat` (the own chat window) or a panel id. Open map, an example set; an id of a panel is accepted as is.",
+  "window_placements": {
+    "any": {
+      "beside": "maximize",
+      "below": "maximize",
+      "float": "maximize",
+      "tab": "maximize",
+      "shelf": "maximize"
+    }
+  },
+  "window_placements_note": "W2: the placement a screen uses for an asked one, per device class (`any` = every class). Preset: every placement is the next maximized window of the stack (OKNA §4.1) until docking and floating are drawn (W3/W4); the receipt says so when it differs from the asked one. A preset, not a rule.",
+  "window_back": "visits",
+  "window_back_note": "W2 (OKNA §4.2): what Back does with windows: visits (back to the previous window of the journal of visits), to_chat (back to the chat window), close_window (closes the window in front), none (Back never changes the window). Preset of the phone.",
+  "window_restore_last": true,
+  "window_restore_last_note": "W2: the start view `last_saved` restores the windows of the last session (window_layout_last in localStorage loom.shell.last.v2), not only the layout id. false = only the layout id, as in W1."
 }

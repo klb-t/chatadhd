@@ -292,6 +292,7 @@ jobs:
           npm run test:m1-profile
           npm run test:m1-me
           npm run test:m1-import-truth
+          npm run test:windows-w2
           npm run test:chat-first
           npm run test:composer-menu-browser
           npm run test:workspace

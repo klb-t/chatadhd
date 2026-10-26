@@ -8,7 +8,7 @@ import SemanticStatus from "../components/SemanticStatus";
 import DiagnosticsSheet from "../components/DiagnosticsSheet";
 import SemanticDot from "./SemanticDot";
 import { useShellText } from "./text";
-import { CHAT_MENU, menuEntries, parseMenuAction, resolveNavigatorFocus } from "./menu";
+import { CHAT_MENU, menuEntries, parseMenuAction, resolveNavigatorFocus, type SheetId } from "./menu";
 import { useLayer } from "./use-layer";
 import "./shell.css";
 
@@ -18,6 +18,12 @@ export interface ShellActions {
   navigator(focus: string): void;
   knowledge(): void;
   workshop(): void;
+}
+/** W2: the switcher „Okna” (sheet): the open windows, the one in front marked; a tap brings one forward, × closes one. */
+export interface ShellWindows {
+  entries: { id: string; label: string; front: boolean; closable: boolean }[];
+  focus(id: string): void;
+  close(id: string): void;
 }
 interface Props {
   profileHost: UserProfileHost;
@@ -29,17 +35,18 @@ interface Props {
   refreshKey: number;
   onMessagesChanged: () => void;
   actions: ShellActions;
+  windows?: ShellWindows;
   /** A panel or the knowledge sheet of the app lies over the shell: the whole shell is `inert` (no focus, no taps, hidden from a reader). */
   behindOverlay?: boolean;
 }
-type Sheet = "views" | "semantic" | "diagnostics" | null;
+type Sheet = SheetId | null;
 
 function bridge(): { openConnection?: () => void } | undefined {
   return (window as unknown as { LoomBridge?: { openConnection?: () => void } }).LoomBridge;
 }
 
 /** The default view (R56): the full-screen standard chat app. Menu entries come from data (shell/data/layouts.json, profile Czat). */
-export default function ChatShell({ profileHost, convId, onSelect, onCreated, refreshKey, onMessagesChanged, actions, behindOverlay = false, onShowInGraph }: Props) {
+export default function ChatShell({ profileHost, convId, onSelect, onCreated, refreshKey, onMessagesChanged, actions, windows, behindOverlay = false, onShowInGraph }: Props) {
   const t = useShellText();
   const [drawer, setDrawer] = useState(false);
   const [menu, setMenu] = useState(false);
@@ -77,9 +84,16 @@ export default function ChatShell({ profileHost, convId, onSelect, onCreated, re
     <button className="shell-row" data-testid="layout-chat" aria-pressed onClick={() => setSheet(null)}>{t("layout_chat")}</button>
     <button className="shell-row" data-testid="layout-grid" onClick={() => { setSheet(null); actions.workshop(); }}>{t("layout_grid")}</button>
   </>;
+  if (sheet === "windows") sheetBody = <div data-testid="windows-sheet" role="list">
+    {(windows?.entries ?? []).map(w => <div key={w.id} role="listitem" className="shell-row" style={{ display: "flex", alignItems: "center", gap: 8 }} data-testid="windows-entry" data-window={w.id} data-front={w.front ? "true" : "false"}>
+      <button className="shell-row" style={{ flex: 1, textAlign: "start", border: 0, background: "transparent" }} aria-current={w.front ? "true" : undefined} data-testid="windows-entry-focus"
+        onClick={() => { setSheet(null); windows?.focus(w.id); }}>{w.label}{w.front ? ` · ${t("windows_active")}` : ""}</button>
+      {w.closable && <button className="icon-btn" aria-label={t("windows_close", { screen: w.label })} data-testid="windows-entry-close" onClick={() => windows?.close(w.id)}>×</button>}
+    </div>)}
+  </div>;
   if (sheet === "semantic") sheetBody = <SemanticStatus profileHost={profileHost} />;
   if (sheet === "diagnostics") sheetBody = <DiagnosticsSheet convId={convId} />;
-  const sheetTitle = sheet === "views" ? t("views_title") : sheet === "diagnostics" ? t("menu_diagnostics") : t("menu_semantic");
+  const sheetTitle = sheet === "windows" ? t("windows_title") : sheet === "views" ? t("views_title") : sheet === "diagnostics" ? t("menu_diagnostics") : t("menu_semantic");
 
   return (
     <div className="shell-root" data-testid="chat-shell" {...inertAttr(behindOverlay)}>

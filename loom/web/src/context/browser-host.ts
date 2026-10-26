@@ -1,4 +1,4 @@
-import type { DeviceHost, PickedFolder, RecorderLike, StreamLike } from "./client-device";
+import type { DeviceHost, PickedFolder, RecorderLike, StepOutcome, StreamLike } from "./client-device";
 
 /** The Android shell's JavaScript interface, when the page runs inside it (notifications are the shell's, not the WebView's). */
 interface ShellBridge {
@@ -89,8 +89,19 @@ function playBlob(blob: Blob): Promise<void> {
 }
 
 /** The real browser as a DeviceHost: only what the page has is present, so only that is declared. */
+/** W2: the event the page sends to its shell for a window step; the shell's listener fills `outcome` synchronously. */
+export const WINDOW_STEP_EVENT = "loom:window-step";
+export interface WindowStepDetail { action: string; args: { [name: string]: unknown }; outcome: StepOutcome | null }
+
 export function browserHost(): DeviceHost {
   const host: DeviceHost = {};
+  if (typeof window !== "undefined" && typeof CustomEvent !== "undefined") {
+    host.arrangeWindows = (action, args) => {
+      const detail: WindowStepDetail = { action, args, outcome: null };
+      window.dispatchEvent(new CustomEvent(WINDOW_STEP_EVENT, { detail }));
+      return detail.outcome;
+    };
+  }
   const media = typeof navigator !== "undefined" ? navigator.mediaDevices : undefined;
   if (media && typeof media.getUserMedia === "function") {
     host.mediaDevices = { getUserMedia: (constraints) => media.getUserMedia(constraints) as Promise<StreamLike> };

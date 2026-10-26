@@ -3,12 +3,12 @@
 // the v1 values ("chat" | "workshop", key loom.shell.last.v1) are still read and mapped to `czat` / `siatka`.
 import layoutsFile from "./data/layouts.json";
 import { layoutIdOfMode, layoutIdOfSaved, parseLayoutHash, readLayoutsFile } from "./windows/migrate";
-import type { WLayout } from "./windows/model";
+import { check, type WLayout } from "./windows/model";
 
 export const START_VIEW_PRESET: readonly string[] = ["last_saved", "last_conversation", "new_conversation"];
 /** A layout id (open set: a preset of layouts.json or a layout the person saved). */
 export type Layout = string;
-export interface SavedView { layout: Layout; conversationId: string | null }
+export interface SavedView { layout: Layout; conversationId: string | null; /** W2: window_layout_last - the windows of the layout as they were (v2 only). */ windows?: WLayout | null }
 export interface StartProbes {
   saved(): SavedView | null;
   conversationExists(id: string): Promise<boolean>;
@@ -74,7 +74,12 @@ export function readSaved(store: Pick<Storage, "getItem">): SavedView | null {
   try {
     const v = JSON.parse(store.getItem(LAST_KEY) ?? "null");
     if (v && v.schema === "loom.shell.last/2" && typeof v.layout === "string" && v.layout && conv(v))
-      return { layout: resolveLayoutId(v.layout), conversationId: v.conversation_id };
+    {
+      const view: SavedView = { layout: resolveLayoutId(v.layout), conversationId: v.conversation_id };
+      const windows = savedWindows(v.window_layout_last, view.layout);
+      if (windows) view.windows = windows;
+      return view;
+    }
   } catch { /* unreadable: try v1 */ }
   try {
     const v = JSON.parse(store.getItem(LAST_KEY_V1) ?? "null");
@@ -84,5 +89,16 @@ export function readSaved(store: Pick<Storage, "getItem">): SavedView | null {
   return null;
 }
 export function writeSaved(store: Pick<Storage, "setItem">, view: SavedView): void {
-  try { store.setItem(LAST_KEY, JSON.stringify({ schema: "loom.shell.last/2", layout: view.layout, conversation_id: view.conversationId })); } catch { /* storage blocked */ }
+  const record: Record<string, unknown> = { schema: "loom.shell.last/2", layout: view.layout, conversation_id: view.conversationId };
+  if (view.windows) record.window_layout_last = view.windows;
+  try { store.setItem(LAST_KEY, JSON.stringify(record)); } catch { /* storage blocked */ }
+}
+
+/** W2: a saved window state is used only when it is a layout of the same id that passes the model's check; anything else is dropped
+ *  (the layout's preset opens, as in W1). */
+export function savedWindows(value: unknown, layoutId: string): WLayout | null {
+  if (!value || typeof value !== "object") return null;
+  const l = value as WLayout;
+  if (l.id !== layoutId || !Array.isArray(l.windows) || !l.tree || !l.leaves) return null;
+  try { return check(l).length === 0 ? l : null; } catch { return null; }
 }

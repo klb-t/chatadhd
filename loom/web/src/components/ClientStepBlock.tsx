@@ -74,6 +74,15 @@ export default function ClientStepBlock({ feature, step, runId, receiptId, host,
     else setProblem(outcome.error ? outcome.error.message : outcome.state);
   };
 
+  // W2: a step on the windows of this page needs no device permission and no tap: the shell does it at once and answers what it did.
+  const auto = useRef(false);
+  useEffect(() => {
+    if (texts.kind !== "window" || auto.current) return;
+    auto.current = true;
+    void begin();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [texts.kind]);
+
   const decline = async () => {
     recordingRef.current?.abort();
     setRecording(null);

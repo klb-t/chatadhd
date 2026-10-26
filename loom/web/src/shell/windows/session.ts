@@ -19,17 +19,20 @@ export function layoutState(layout: WLayout, limit = 50): WState { return create
 
 /** Windows opened over the layout for a panel (they carry `params.panel`). */
 export const overlays = (l: WLayout): Win[] => l.windows.filter((w) => typeof w.params?.panel === "string");
-/** The panel shown on top (the last overlay), or null. */
+/** W2: the overlay shown (the maximized one; others opened over the layout wait in the switcher), or null. */
+export const visibleOverlay = (l: WLayout): Win | null => { const o = overlays(l); return [...o].reverse().find((w) => w.mode === "maximized") ?? null; };
+/** The panel shown on top, or null. */
 export function activePanelOf(s: WState | null): string | null {
-  const o = s ? overlays(s.layout) : [];
-  return o.length ? String(o[o.length - 1].params.panel) : null;
+  const o = s ? visibleOverlay(s.layout) : null;
+  return o ? String(o.params.panel) : null;
 }
 /** The window of the layout itself shown full-screen: the maximized one, or the one an overlay covers. Null = the layout is a grid (W3). */
 export function baseWindow(l: WLayout): Win | null {
   const own = l.windows.filter((w) => typeof w.params?.panel !== "string");
   const max = own.find((w) => w.mode === "maximized");
   if (max) return max;
-  const covered = overlays(l).map((w) => w.params.over).find((id) => typeof id === "string");
+  const top = visibleOverlay(l);
+  const covered = (top ? [top] : overlays(l)).map((w) => w.params.over).find((id) => typeof id === "string");
   return own.find((w) => w.id === covered) ?? null;
 }
 
@@ -44,18 +47,25 @@ function oneStep(before: WState, after: WState, op: string): WState {
 /** Closes the overlays; a window an overlay covered is maximized again (the stack of §4.1). One journal entry. */
 export function closePanels(s: WState, ctx: Ctx = WINDOW_CTX): WState {
   let state = s;
-  for (const w of overlays(s.layout)) {
+  const top = visibleOverlay(s.layout);
+  for (const w of top ? [top] : []) {   // W2: the shown panel; windows waiting in the switcher stay
     state = apply(state, { op: "close", id: w.id }, ctx).state;
     const over = w.params.over;
     const back = typeof over === "string" ? state.layout.windows.find((x) => x.id === over) : undefined;
-    if (back && back.mode !== "maximized") state = apply(state, { op: "maximize", id: back.id }, ctx).state;
+    // W2: the covered window may be gone (closed from the switcher): the first own window of the layout that is not a handle comes forward
+    // (the window the layout's preset maximizes; a layout without one, a grid, stays a grid)
+    const presetMax = (layoutsFile as { layouts?: Record<string, { windows?: { id: string; mode: string }[] }> }).layouts?.[state.layout.id]?.windows?.find((x) => x.mode === "maximized")?.id;
+    const next = back ?? (state.layout.windows.some((x) => x.mode === "maximized") ? undefined : state.layout.windows.find((x) => x.id === presetMax));
+    if (next && next.mode !== "maximized") state = apply(state, { op: "maximize", id: next.id }, ctx).state;
   }
   return oneStep(s, state, "close");
 }
 
-/** Opens a panel as a window over the layout (preset placement: maximize). One panel at a time, as before W1: an open one is closed first. */
+/** Opens a panel as a window over the layout (preset placement: maximize). One panel at a time, as before W1: the shown one is closed
+ *  first (W2: windows opened by a sentence or the switcher and now waiting in the switcher stay). */
 export function openPanel(s: WState, panel: string, ctx: Ctx = WINDOW_CTX, data: PanelData = DATA): WState {
-  const before = overlays(s.layout);
+  const top = visibleOverlay(s.layout);
+  const before = top ? [top] : [];
   const over = before.map((w) => w.params.over).find((id) => typeof id === "string") ?? s.layout.windows.find((w) => w.mode === "maximized")?.id ?? null;
   let state = before.length ? apply(s, { op: "close", id: before[0].id }, ctx).state : s;
   for (const w of before.slice(1)) state = apply(state, { op: "close", id: w.id }, ctx).state;

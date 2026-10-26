@@ -7,13 +7,14 @@ export interface MenuEnv { androidShell: boolean }
 export type MenuTarget =
   | { kind: "panel"; panel: string }
   | { kind: "navigator"; focus: string }
-  | { kind: "sheet"; sheet: "views" | "semantic" | "diagnostics" }
+  | { kind: "sheet"; sheet: SheetId }
   | { kind: "workshop" }
   | { kind: "connection" }
   | { kind: "knowledge" }
   | { kind: "unknown"; action: string };
 
-export const SHEETS = ["views", "semantic", "diagnostics"] as const;
+export const SHEETS = ["views", "semantic", "diagnostics", "windows"] as const;   // windows: the switcher „Okna” (W2, switcher.style sheet)
+export type SheetId = typeof SHEETS[number];
 
 /** The entries of the menu in the layout `czat`, in the order of the data. */
 export const CHAT_MENU: readonly MenuEntry[] = layouts.layouts.czat.menu as MenuEntry[];
@@ -30,7 +31,7 @@ export function parseMenuAction(action: string): MenuTarget {
   if (action.startsWith("navigator:")) return { kind: "navigator", focus: action.slice(10) };
   if (action.startsWith("sheet:")) {
     const sheet = action.slice(6);
-    if ((SHEETS as readonly string[]).includes(sheet)) return { kind: "sheet", sheet: sheet as "views" | "semantic" | "diagnostics" };
+    if ((SHEETS as readonly string[]).includes(sheet)) return { kind: "sheet", sheet: sheet as SheetId };
   }
   if (action === "layout:workshop") return { kind: "workshop" };
   if (action === "connection") return { kind: "connection" };

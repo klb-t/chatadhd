@@ -4,7 +4,7 @@
 // docks; until its dock tree is drawn (W3) the host hands it to `grid`, the former Workshop markup, with the overlay to place inside it.
 import type { ReactNode } from "react";
 import type { WState, Win } from "./model";
-import { baseWindow, overlays } from "./session";
+import { baseWindow, visibleOverlay } from "./session";
 
 export interface WindowHostProps {
   state: WState;
@@ -18,9 +18,10 @@ export interface WindowHostProps {
 
 export default function WindowHost({ state, renderWindow, renderOverlay, grid }: WindowHostProps) {
   const l = state.layout;
-  const over = overlays(l);
-  // one node, not a keyed list: the overlay element stays the same DOM node when one panel replaces another, as before W1
-  const overlay = over.length ? renderOverlay(over[over.length - 1]) : null;
+  // W2: the overlay in front (maximized); others opened over the layout wait in the switcher (sheet „Okna”) and are not drawn.
+  // One node, not a keyed list: the overlay element stays the same DOM node when one panel replaces another, as before W1
+  const top = visibleOverlay(l);
+  const overlay = top ? renderOverlay(top) : null;
   const base = baseWindow(l);
   if (!base) return <>{grid(overlay)}</>;
   return <>{renderWindow(base)}{overlay}</>;

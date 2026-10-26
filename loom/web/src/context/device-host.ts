@@ -40,6 +40,9 @@ export interface DeviceHost {
   /** Notifications through the native shell instead of the Notification API (the Android WebView has none): the permission state
    *  (granted | prompt), asking for it (Android shows its own dialog; the answer comes later), and showing one (false: refused). */
   nativeNotify?: { state(): string; request(): void; show(title: string, body: string): boolean };
+  /** W2 (OKNA §6.1): arranges the windows of the page (window.open / close / focus / next / prev); the shell answers synchronously with
+   *  what it did, or null when no shell listens (then the capability is unavailable). */
+  arrangeWindows?: (action: string, args: { [name: string]: unknown }) => StepOutcome | null;
 }
 
 /** A folder the person chose: its name and its files with their paths inside it (forward slashes, no leading slash). */

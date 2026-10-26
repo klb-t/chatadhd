@@ -74,6 +74,7 @@ export async function detectCapabilities(host: DeviceHost): PendingCapabilities 
   } else if (host.nativeNotify) {
     found.shows_notifications = { permission: host.nativeNotify.state() === "granted" ? "granted" : "prompt", via: "native shell" };
   }
+  if (host.arrangeWindows) found.arranges_windows = { permission: "granted", via: "window system of the page" };
   if (host.pickFile) found.picks_files = { permission: "granted", via: "file chooser" };
   if (host.pickFolder) found.picks_folders = { permission: "granted", via: "folder chooser" };
   if (host.mediaDevices || host.notifications) found.requests_permission = { permission: "granted", via: "Permissions API" };
@@ -89,7 +90,7 @@ export async function declaration(host: DeviceHost, clientId: string, kind: stri
 // ── one step on the device ──────────────────────────────────────────
 
 /** The kinds of step a person has to start (or stop) themselves, by the action of the step. */
-export type StepKind = "record" | "photo" | "file" | "folder" | "read_clipboard" | "write_clipboard" | "notify" | "play" | "permission" | "unsupported";
+export type StepKind = "record" | "photo" | "file" | "folder" | "read_clipboard" | "write_clipboard" | "notify" | "play" | "permission" | "window" | "unsupported";
 
 const KIND_OF_ACTION: { [action: string]: StepKind } = {
   "device.record_audio": "record",
@@ -105,7 +106,9 @@ const KIND_OF_ACTION: { [action: string]: StepKind } = {
 
 export function stepKind(spec: ClientStepSpec): StepKind {
   const action = typeof spec.action === "string" ? spec.action : "";
-  return KIND_OF_ACTION[action] ?? "unsupported";
+  if (KIND_OF_ACTION[action]) return KIND_OF_ACTION[action];
+  // W2: every action of the catalogue on the windows of the page (window.open, window.close ... and any later one) is one kind: the shell does it
+  return spec.capability === "arranges_windows" || action.startsWith("window.") ? "window" : "unsupported";
 }
 
 function text(value: unknown): string {
@@ -215,6 +218,11 @@ export type StepProgress = (done: number, total: number) => void;
 export async function runStep(host: DeviceHost, spec: ClientStepSpec, load: BlobLoader, upload: BlobUploader, progress?: StepProgress): PendingOutcome {
   try {
     switch (stepKind(spec)) {
+      case "window": {
+        const done = host.arrangeWindows ? host.arrangeWindows(text(spec.action), spec.with ?? {}) : null;
+        if (!done) throw new DeviceError("unavailable", "no window system on this page");
+        return done;
+      }
       case "photo": {
         const taken = host.takePicture ? await host.takePicture() : null;
         const picture = taken ?? (host.pickFile ? await host.pickFile("image/*", "environment") : null);
