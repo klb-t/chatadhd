@@ -1,0 +1,47 @@
+{
+ "schema": "loom.routine_run/1",
+ "run_id": "r_17dfe7992e02",
+ "routine": {
+  "id": "package.run",
+  "version": null,
+  "hash": null
+ },
+ "params": {
+  "id": "IW-7+IW-8"
+ },
+ "context_pack_hash": null,
+ "brief_hash": null,
+ "where": "vm:devbox-20260923",
+ "resolved": {
+  "role": "wykonawca pakietu",
+  "model": "opus",
+  "place": "vm:devbox-20260923"
+ },
+ "started": "2026-10-26T17:34:49.198603Z",
+ "finished": null,
+ "state": "running",
+ "summary": null,
+ "steps": [],
+ "commits": [],
+ "cards": [],
+ "escalations": [],
+ "advisories": [],
+ "original_ideas": [],
+ "events": [
+  {
+   "at": "2026-10-26T17:34:49.198603Z",
+   "kind": "started",
+   "text": "IW-7 rutyny jako dane + runner v1 + brief jako rekord; IW-8 VM jako miejsce w danych + trwałość biegu",
+   "counter_delta": {
+    "w_toku": 1
+   }
+  }
+ ],
+ "receipt": [],
+ "decisions": [],
+ "markers_applied": [],
+ "spec": [
+  "R90"
+ ],
+ "updated": "2026-10-26T17:34:49.198603Z"
+}

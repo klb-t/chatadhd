@@ -1,0 +1,119 @@
+{
+ "schema": "loom.routines/1",
+ "_comment": "Rutyny jako dane (IW-7, INTERFEJS_WSPOLPRACY_v2 §2.4; 2026-10-26). Każda rutyna = akcja złożona `loom.routine/1` (schemat: schemas/routine.schema.json): kroki z `do` (cmd / brief.render / confirm / handoff / render — lista otwarta; nieznany rodzaj = krok przekazany dalej z uwagą), `when`, `where`, warunki wstępne {check, why, since} czytające pola miejsca z docs/ops/places.json. Runner: tools/routine.py (bez stanu własnego — stan to zapis biegu loom.routine_run/1). Wersje: kilka wpisów z tym samym id; bieg nazywa wersję, stara zostaje. Wszystkie rutyny, kroki, progi i polecenia niżej to PRZYKŁADY i presety, nie zamknięta lista.",
+ "_history": [
+  {"at": "2026-10-26", "by": "IW-7/IW-8 (Opus, sesja na VM)", "what": "pierwsze rutyny: package.run, check.before_use, secretary.run, status.lines (IW-7) oraz vm.heartbeat, vm.sync, vm.wake (IW-8)"}
+ ],
+ "presets": {
+  "brief_labels": {
+   "design_doc": "Dokument projektowy",
+   "decisions": "Decyzje już podjęte",
+   "measurements": "Pomiary",
+   "hypothesis": "Hipoteza",
+   "plan_calls": "Plan wywołań",
+   "card_schema": "Dodatkowe pola karty"
+  },
+  "brief_passthrough": ["wt", "branch", "base_note", "remote_branch", "ci_workflow", "id", "accept", "rules_extra", "model", "run_id", "runs_root", "context_pack", "spec", "start_gate"],
+  "_history": [{"at": "2026-10-26", "by": "IW-7", "what": "etykiety części własnej briefu (PL) i pola przekazywane do single-package.js"}]
+ },
+ "routines": [
+  {
+   "schema": "loom.routine/1",
+   "id": "package.run",
+   "version": 1,
+   "since": "2026-10-26",
+   "supersedes": null,
+   "title": "pakiet agenta: brama startu → brief (prefiks bajt w bajt) → agent (przekazanie) → karta do zapisu biegu",
+   "changelog": [{"version": 1, "at": "2026-10-26", "what": "pierwsza wersja (IW-7)"}],
+   "params": {"brief": {"required": true, "about": "plik loom.brief/1 albo dawny brief single-package"}, "role": {"default": "wykonawca pakietu"}, "used": {"default": "", "about": "zużycie okna w % (pusty = brama bez próbki)"}, "out": {"default": "{root}/.routine_out/{run_id}.args.json"}},
+   "presets": {"_history": []},
+   "where": "{params.where}",
+   "steps": [
+    {"id": "start_gate", "do": "cmd", "argv": ["python3", "{repo}/tools/start_gate.py", "--role", "{params.role}", "--json", "--run-id", "{run_id}", "--runs-root", "{root}"], "when": {"path": "params.skip_gate", "op": "falsy"}, "capture": "gate", "json": true, "ok_codes": [0, 1, 2, 3]},
+    {"id": "brief", "do": "brief.render", "brief": "{params.brief}", "out": "{params.out}", "gate_from": "gate"},
+    {"id": "agent", "do": "handoff", "text": "uruchom Workflow({scriptPath: 'tools/workflows/single-package.js', args: <{params.out}>}); po biegu: python3 tools/routine.py resume {run_id} --done agent --card <karta.json>", "where": "{params.where}"},
+    {"id": "card", "do": "cmd", "argv": ["python3", "{repo}/tools/run_record.py", "--root", "{root}", "import-card", "{params.card}", "--run-id", "{run_id}"], "when": {"path": "params.card", "op": "exists"}}
+   ]
+  },
+  {
+   "schema": "loom.routine/1",
+   "id": "check.before_use",
+   "version": 1,
+   "since": "2026-10-26",
+   "title": "kontrola przed użyciem dokumentu albo briefu (CLAUDE.md „Check before use”)",
+   "changelog": [{"version": 1, "at": "2026-10-26", "what": "pierwsza wersja (IW-7); sam przebieg kontroli to workflow check-before-use.js"}],
+   "params": {"doc": {"required": true}},
+   "steps": [
+    {"id": "brief_check", "do": "cmd", "argv": ["python3", "{repo}/tools/context_pack.py", "check-brief", "{params.doc}"], "when": {"path": "params.doc", "op": "matches", "value": "\\.json$"}, "ok_codes": [0, 1]},
+    {"id": "review", "do": "handoff", "text": "Workflow({scriptPath: 'tools/workflows/check-before-use.js', args: {doc: '{params.doc}'}}) (preset roli: kontroler); potem python3 tools/routine.py resume {run_id} --done review"},
+    {"id": "addendum", "do": "confirm", "question": "zastosować znaleziska kontroli jako addendum (bez restartu agenta)?", "if_silent": "proceed", "cost_to_reverse": "niski (git revert addendum)"}
+   ]
+  },
+  {
+   "schema": "loom.routine/1",
+   "id": "secretary.run",
+   "version": 1,
+   "since": "2026-10-26",
+   "title": "bieg sekretarza (R88): skrzynka → gesty bez modelu → lustro biegów",
+   "changelog": [{"version": 1, "at": "2026-10-26", "what": "pierwsza wersja (IW-7): kroki zapisane jako dane; sam sekretarz to zadanie zaplanowane"}],
+   "params": {"inbox": {"default": "", "about": "plik JSON z wierszami spec_inbox (pusty = krok pominięty)"}},
+   "steps": [
+    {"id": "words", "do": "cmd", "argv": ["python3", "{repo}/tools/words.py", "inbox", "{params.inbox}"], "when": {"path": "params.inbox", "op": "truthy"}, "ok_codes": [0, 1]},
+    {"id": "spec_runs", "do": "handoff", "text": "lustro biegów do bazy strony (spec_runs) — zapis przez narzędzie ArtifactData w zadaniu sekretarza"},
+    {"id": "status", "do": "render", "what": "status-lines"}
+   ]
+  },
+  {
+   "schema": "loom.routine/1",
+   "id": "status.lines",
+   "version": 1,
+   "since": "2026-10-26",
+   "title": "linie statusu z zapisów biegów (render zdarzeń z niezerową deltą)",
+   "changelog": [{"version": 1, "at": "2026-10-26", "what": "pierwsza wersja (IW-7)"}],
+   "params": {"since": {"default": ""}},
+   "steps": [
+    {"id": "render", "do": "render", "what": "status-lines", "since": "{params.since}"}
+   ]
+  },
+  {
+   "schema": "loom.routine/1",
+   "id": "vm.heartbeat",
+   "version": 1,
+   "since": "2026-10-26",
+   "title": "tętno VM: obserwacje z datą do repo, flaga spot-guard zgodna z biegami `running` na VM, prośby „stop”",
+   "changelog": [{"version": 1, "at": "2026-10-26", "what": "pierwsza wersja (IW-8); timer systemd --user w tools/gcp/vm-heartbeat.timer"}],
+   "params": {"place": {"default": "vm:devbox-20260923"}},
+   "where": "{params.place}",
+   "preconditions": [
+    {"check": {"path": "place.kind", "op": "eq", "value": "vm"}, "why": "tętno opisuje maszynę z places.json", "since": "2026-10-26"}
+   ],
+   "steps": [
+    {"id": "beat", "do": "cmd", "argv": ["python3", "{repo}/tools/vm_place.py", "--root", "{root}", "heartbeat", "--place", "{params.place}"]}
+   ]
+  },
+  {
+   "schema": "loom.routine/1",
+   "id": "vm.sync",
+   "version": 1,
+   "since": "2026-10-26",
+   "title": "bieg `running` z where: vm ⇒ work-pending=true dla spot-guard (work.sh pending / done)",
+   "changelog": [{"version": 1, "at": "2026-10-26", "what": "pierwsza wersja (IW-8)"}],
+   "params": {"place": {"default": "vm:devbox-20260923"}},
+   "steps": [
+    {"id": "sync", "do": "cmd", "argv": ["python3", "{repo}/tools/vm_place.py", "--root", "{root}", "sync", "--place", "{params.place}"]}
+   ]
+  },
+  {
+   "schema": "loom.routine/1",
+   "id": "vm.wake",
+   "version": 1,
+   "since": "2026-10-26",
+   "title": "z chmury: obudź VM, gdy bieg `running where: vm` a tętno ustało (gcloud compute instances start)",
+   "changelog": [{"version": 1, "at": "2026-10-26", "what": "pierwsza wersja (IW-8); na bezczynności nic (INTERFEJS_WSPOLPRACY_v2 §5)"}],
+   "params": {"place": {"default": "vm:devbox-20260923"}, "dry_run": {"default": ""}},
+   "steps": [
+    {"id": "wake", "do": "cmd", "argv": ["python3", "{repo}/tools/vm_place.py", "--root", "{root}", "wake", "--place", "{params.place}", "{params.dry_run}"]}
+   ]
+  }
+ ]
+}
