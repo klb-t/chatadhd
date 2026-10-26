@@ -414,6 +414,9 @@ class Runner:
             if res == "fail":
                 rr.finish(self.root, self.cfg, run_id, state="failed", summary=f"krok {step['id']} nie wyszedł", at=at)
                 return rr.load(self.root, self.cfg, run_id)[0]
+        rec, _ = rr.load(self.root, self.cfg, run_id)
+        if rec.get("state") in ("done", "failed"):  # krok sam zakończył bieg (np. import-card) — bez drugiego „finished”
+            return rec
         return rr.finish(self.root, self.cfg, run_id, state="done", summary=f"{r['id']}@{r.get('version')}: kroki wykonane",
                          at=at)
 

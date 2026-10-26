@@ -18,9 +18,9 @@
   "place": "vm:devbox-20260923"
  },
  "started": "2026-10-26T17:34:49.198603Z",
- "finished": null,
- "state": "running",
- "summary": null,
+ "finished": "2026-10-26T17:49:55.763009Z",
+ "state": "done",
+ "summary": "pakiet przeprowadzony runnerem jako r_cf02eb70ab29 (package.run); ten rekord = ręczne kroki tej samej sesji",
  "steps": [
   {
    "id": "iw7-runner",
@@ -72,6 +72,15 @@
    "counter_delta": {
     "w_toku": 1
    }
+  },
+  {
+   "at": "2026-10-26T17:49:55.763009Z",
+   "kind": "finished",
+   "text": "pakiet przeprowadzony runnerem jako r_cf02eb70ab29 (package.run); ten rekord = ręczne kroki tej samej sesji",
+   "counter_delta": {
+    "w_toku": -1,
+    "zrobione": 1
+   }
   }
  ],
  "receipt": [],
@@ -80,5 +89,5 @@
  "spec": [
   "R90"
  ],
- "updated": "2026-10-26T17:46:31.819477Z"
+ "updated": "2026-10-26T17:49:55.763009Z"
 }

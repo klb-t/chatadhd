@@ -11,7 +11,8 @@
   "used": "",
   "out": "/tmp/claude-1001/-home-kielbowicz-marcin-chatadhd/c5c0e66c-567c-4222-aa07-f624d6155c63/scratchpad/iw78.args.json",
   "brief": "tools/workflows/briefs/iw7_iw8_brief.json",
-  "where": "vm:devbox-20260923"
+  "where": "vm:devbox-20260923",
+  "card": "/tmp/claude-1001/-home-kielbowicz-marcin-chatadhd/c5c0e66c-567c-4222-aa07-f624d6155c63/scratchpad/card.json"
  },
  "context_pack_hash": "sha256:daeeacccdddd2a1e3a29da50e328f6914f45fd30722b8f23f8f1e849d2578457",
  "brief_hash": "sha256:f6e52b6aaec6188b9fead486c82b380616bb7f21f0c12cab54ac3275276584b0",
@@ -28,9 +29,9 @@
   "advisories": 1
  },
  "started": "2026-10-26T17:48:21.231980Z",
- "finished": null,
- "state": "running",
- "summary": null,
+ "finished": "2026-10-26T17:49:55.197327Z",
+ "state": "done",
+ "summary": "package.run@1: kroki wykonane",
  "steps": [
   {
    "id": "_preconditions",
@@ -117,18 +118,85 @@
    "id": "agent",
    "clock": {
     "started": "2026-10-26T17:48:21.314387Z",
-    "updated": "2026-10-26T17:48:21.314387Z",
+    "updated": "2026-10-26T17:49:55.197327Z",
     "ended": "2026-10-26T17:48:21.314387Z"
    },
-   "state": "handoff",
+   "state": "done",
    "where": "vm:devbox-20260923",
-   "text": "uruchom Workflow({scriptPath: 'tools/workflows/single-package.js', args: </tmp/claude-1001/-home-kielbowicz-marcin-chatadhd/c5c0e66c-567c-4222-aa07-f624d6155c63/scratchpad/iw78.args.json>}); po biegu: python3 tools/routine.py resume r_cf02eb70ab29 --done agent --card <karta.json>"
+   "text": "uruchom Workflow({scriptPath: 'tools/workflows/single-package.js', args: </tmp/claude-1001/-home-kielbowicz-marcin-chatadhd/c5c0e66c-567c-4222-aa07-f624d6155c63/scratchpad/iw78.args.json>}); po biegu: python3 tools/routine.py resume r_cf02eb70ab29 --done agent --card <karta.json>",
+   "by": "resume --done"
+  },
+  {
+   "id": "card",
+   "clock": {
+    "started": "2026-10-26T17:49:55.197327Z",
+    "updated": "2026-10-26T17:49:55.608576Z",
+    "ended": "2026-10-26T17:49:55.608576Z"
+   },
+   "state": "done",
+   "in_hash": "sha256:e2be6735f9e871a704eaa3adb452e3d51f588187056818145c9e3e5064578b09",
+   "where": "vm:devbox-20260923",
+   "out_hash": "sha256:5b9918c27c90ded08c855d9a46cbb67bdaf2b47471d0fb9db98422ea9a92666c",
+   "exit": 0
   }
  ],
- "commits": [],
- "cards": [],
+ "commits": [
+  "e47d30ad",
+  "c8b12ff9",
+  "254de26f",
+  "a6ec01e0",
+  "f4a585d4",
+  "9c983224"
+ ],
+ "cards": [
+  {
+   "done": true,
+   "commits": [
+    "e47d30ad",
+    "c8b12ff9",
+    "254de26f",
+    "a6ec01e0",
+    "f4a585d4",
+    "9c983224"
+   ],
+   "ci": "not pushed by CI (tools/ only; python unittest 161 OK, 12 skipped)",
+   "summary": "IW-7: routines.json (7 rutyn loom.routine/1), schematy routine/brief, tools/routine.py (run/resume bez stanu, brief render/split), pakiet jadro, K2c-1 rozłożony (1957 znaków części własnej). IW-8: tools/vm_place.py (sync/preempt/heartbeat/wake/resume-list), bieg running where: vm ⇒ work-pending dla spot-guard, hak wywłaszczenia czyta zapisy biegów, timer tętna (niezainstalowany), places.json węzeł VM z datowanymi polami. Testy z fałszywym gcloud.",
+   "decisions": [
+    "hak stanu run_record→vm_place sync wyłączony w presecie (odwrót: state_change_hooks.enabled)",
+    "handoff zostawia bieg running (odwrót: run_state na kroku)",
+    "tętno bez push (odwrót: --push w unicie)"
+   ],
+   "not_done": [
+    "instalacja timera tętna i 24 h tętna w repo",
+    "wywłaszczenie przeżyte na żywo (tylko test z fałszywym gcloud)",
+    "L3: gcloud start z chmury, baza strony z VM",
+    "metadane spot-guard-runs-root na instancji (install_spot_guard.sh nieuruchomiony)"
+   ],
+   "run_id": "r_cf02eb70ab29",
+   "spec": [
+    "R90"
+   ]
+  }
+ ],
  "escalations": [],
- "advisories": [],
+ "advisories": [
+  {
+   "kind": "not_done",
+   "text": "instalacja timera tętna i 24 h tętna w repo"
+  },
+  {
+   "kind": "not_done",
+   "text": "wywłaszczenie przeżyte na żywo (tylko test z fałszywym gcloud)"
+  },
+  {
+   "kind": "not_done",
+   "text": "L3: gcloud start z chmury, baza strony z VM"
+  },
+  {
+   "kind": "not_done",
+   "text": "metadane spot-guard-runs-root na instancji (install_spot_guard.sh nieuruchomiony)"
+  }
+ ],
  "original_ideas": [],
  "events": [
   {
@@ -143,6 +211,15 @@
    "at": "2026-10-26T17:48:21.314387Z",
    "kind": "paused",
    "text": "agent: uruchom Workflow({scriptPath: 'tools/workflows/single-package.js', args: </tmp/claude-1001/-home-kielbowicz-marcin-chatadhd/c5c0e66c-567c-4222-aa07-f624d6155c63/scratchpad/iw78.args.json>}); po biegu: python3 tools/routine.py resume r_cf02eb70ab29 --done agent --card <karta.json>"
+  },
+  {
+   "at": "2026-10-26T17:49:55.434284Z",
+   "kind": "finished",
+   "text": "IW-7: routines.json (7 rutyn loom.routine/1), schematy routine/brief, tools/routine.py (run/resume bez stanu, brief render/split), pakiet jadro, K2c-1 rozłożony (1957 znaków części własnej). IW-8: tools/vm_place.py (sync/preempt/heartbeat/wake/resume-list), bieg running where: vm ⇒ work-pending dla spot-guard, hak wywłaszczenia czyta zapisy biegów, timer tętna (niezainstalowany), places.json węzeł VM z datowanymi polami. Testy z fałszywym gcloud.",
+   "counter_delta": {
+    "w_toku": -1,
+    "zrobione": 1
+   }
   }
  ],
  "receipt": [
@@ -155,10 +232,26 @@
    "reliability": "estimate"
   }
  ],
- "decisions": [],
+ "decisions": [
+  {
+   "text": "hak stanu run_record→vm_place sync wyłączony w presecie (odwrót: state_change_hooks.enabled)",
+   "by": "agent",
+   "at": "2026-10-26T17:49:55.434284Z"
+  },
+  {
+   "text": "handoff zostawia bieg running (odwrót: run_state na kroku)",
+   "by": "agent",
+   "at": "2026-10-26T17:49:55.434284Z"
+  },
+  {
+   "text": "tętno bez push (odwrót: --push w unicie)",
+   "by": "agent",
+   "at": "2026-10-26T17:49:55.434284Z"
+  }
+ ],
  "markers_applied": [],
  "spec": [
   "R90"
  ],
- "updated": "2026-10-26T17:48:59.407663Z"
+ "updated": "2026-10-26T17:50:11.860289Z"
 }

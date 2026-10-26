@@ -257,6 +257,7 @@ class TestPackageRunEndToEnd(RunnerBase):
         self.assertEqual(st["start_gate"]["state"], "skipped")
         self.assertEqual(st["card"]["state"], "done")
         self.assertIn("abc", json.dumps(self.rec(rid)["commits"]))
+        self.assertEqual([e["kind"] for e in self.rec(rid)["events"]].count("finished"), 1)  # karta kończy bieg raz
 
 
 if __name__ == "__main__":
