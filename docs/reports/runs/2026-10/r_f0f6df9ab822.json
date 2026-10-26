@@ -18,10 +18,21 @@
   "place": "vm:devbox-20260923"
  },
  "started": "2026-10-26T17:16:47.960543Z",
- "finished": null,
- "state": "running",
- "summary": null,
- "steps": [],
+ "finished": "2026-10-26T17:22:30.778259Z",
+ "state": "done",
+ "summary": "IW-4: page_counters.py + places.json (VM devbox z sesjami gcp/watchdog/ageds/chatadhd) + W1/W9 na stronie spec; 96 testów zielone z e2e 400 px; strona nie opublikowana (robi to sekretarz/koordynator)",
+ "steps": [
+  {
+   "id": "counters-places-page",
+   "clock": {
+    "started": "2026-10-26T17:22:29.997892Z",
+    "updated": "2026-10-26T17:22:29.997892Z",
+    "ended": "2026-10-26T17:22:29.997892Z"
+   },
+   "state": "done",
+   "commit": "beb70ad2"
+  }
+ ],
  "commits": [],
  "cards": [],
  "escalations": [],
@@ -35,15 +46,57 @@
    "counter_delta": {
     "w_toku": 1
    }
+  },
+  {
+   "at": "2026-10-26T17:22:30.189027Z",
+   "kind": "decision",
+   "text": "znacznik wizyty = dokument spec_visits/owner w bazie strony, zapisuje tylko właściciel (preset visit_marker_who); bez bazy localStorage"
+  },
+  {
+   "at": "2026-10-26T17:22:30.398109Z",
+   "kind": "decision",
+   "text": "W9 i liczniki liczą tylko zdarzenia z niezerową deltą (jak linie statusu IW-1); mapa miejsc liczy miejsca+sesje+usługi razem"
+  },
+  {
+   "at": "2026-10-26T17:22:30.580493Z",
+   "kind": "original_ideas",
+   "text": "odmiana podpisów stanu w places.json ({one,few,many}) — „3 żyją · 1 śpi” zamiast stałego napisu; stub bazy w teście renderu obsługuje kolekcje po nazwie",
+   "counter_delta": {
+    "oryginalne": 1
+   }
+  },
+  {
+   "at": "2026-10-26T17:22:30.778259Z",
+   "kind": "finished",
+   "text": "IW-4: page_counters.py + places.json (VM devbox z sesjami gcp/watchdog/ageds/chatadhd) + W1/W9 na stronie spec; 96 testów zielone z e2e 400 px; strona nie opublikowana (robi to sekretarz/koordynator)",
+   "counter_delta": {
+    "w_toku": -1,
+    "zrobione": 1
+   }
   }
  ],
  "receipt": [],
- "decisions": [],
+ "decisions": [
+  {
+   "text": "znacznik wizyty = dokument spec_visits/owner w bazie strony, zapisuje tylko właściciel (preset visit_marker_who); bez bazy localStorage",
+   "reversal": "PRESET visit_marker_who=none",
+   "cost_to_reverse": "low",
+   "by": "wykonawca IW-4",
+   "at": "2026-10-26T17:22:30.189027Z"
+  },
+  {
+   "text": "W9 i liczniki liczą tylko zdarzenia z niezerową deltą (jak linie statusu IW-1); mapa miejsc liczy miejsca+sesje+usługi razem",
+   "reversal": "PRESET events_filter=all",
+   "cost_to_reverse": "low",
+   "by": "wykonawca IW-4",
+   "at": "2026-10-26T17:22:30.398109Z"
+  }
+ ],
  "markers_applied": [],
  "spec": [
   "R88",
   "R89",
   "R90"
  ],
- "updated": "2026-10-26T17:16:47.960543Z"
+ "updated": "2026-10-26T17:22:30.778259Z"
 }
