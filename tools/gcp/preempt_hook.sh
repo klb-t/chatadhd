@@ -7,6 +7,14 @@
 md() { curl -s -H 'Metadata-Flavor: Google' "http://metadata.google.internal/computeMetadata/v1/$1"; }
 [ "$(md instance/preempted)" = "TRUE" ] || exit 0
 [ "$(md instance/attributes/work-pending)" = "true" ] && exit 0
+# IW-8 (2026-10-26): a run record `running` with where = this VM means work in progress. Repos to scan come from
+# metadata spot-guard-runs-root (one path, its .claude/worktrees/* are scanned too; empty = skip); the records decide
+# before the process heuristic below. Runs as root: python3 reads the owner's checkout, work.sh calls gcloud.
+rr="$(md instance/attributes/spot-guard-runs-root)"
+if [ -n "$rr" ] && [ -f "$rr/tools/vm_place.py" ]; then
+  timeout 90 python3 "$rr/tools/vm_place.py" --root "$rr" preempt >/tmp/spot-guard-runs.txt 2>&1
+  [ "$(md instance/attributes/work-pending)" = "true" ] && exit 0
+fi
 re="$(md instance/attributes/spot-guard-busy-procs)"
 [ -n "$re" ] || exit 0
 if pgrep -f -a -- "$re" >/tmp/spot-guard-busy.txt 2>/dev/null; then

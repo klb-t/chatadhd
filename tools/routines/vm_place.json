@@ -1,0 +1,29 @@
+{
+ "_comment": "Presety tools/vm_place.py (IW-8, 2026-10-26): VM jako miejsce w danych + trwałość biegu. Każda wartość to preset, każda lista jest otwarta. Nadpisanie: --config albo VM_PLACE_CONFIG. Fakty o maszynie są w docs/ops/places.json (datowane), tu tylko jak je zbierać i co z nimi robić.",
+ "_history": [
+  {"at": "2026-10-26", "by": "IW-8 (Opus, sesja na VM)", "what": "pierwsze presety; instancja i strefa z docs/ops/VM_RECON_2026-10-23.md i opisu instancji (gcloud describe tylko do odczytu, 2026-10-26)"}
+ ],
+ "place": "vm:devbox-20260923",
+ "instance": "devbox-20260923",
+ "zone": "europe-west4-c",
+ "project": "",
+ "where_aliases": ["vm"],
+ "scan_roots": ["{root}", "{root}/.claude/worktrees/*"],
+ "heartbeat_dir": "docs/reports/places/heartbeat",
+ "work_sh": "tools/gcp/work.sh",
+ "metadata_url": "http://metadata.google.internal/computeMetadata/v1/instance",
+ "metadata_timeout_s": 2,
+ "own_note_prefix": "runs:",
+ "release_foreign_pending": false,
+ "stale_minutes": 20,
+ "defer_to_spot_guard": true,
+ "stop_scope_match": ["wszystk", "\\bvm\\b", "devbox", "maszyn"],
+ "stop_state_after": "paused",
+ "on_stop": [],
+ "probe_user_units": ["claude-rc.service", "vm-heartbeat.timer"],
+ "probe_system_units": ["chatadhd", "watchdog", "watchdog-novnc", "caddy"],
+ "probe_tmux_session": "rc",
+ "commit": false,
+ "push": false,
+ "push_branch": ""
+}

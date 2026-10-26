@@ -388,15 +388,44 @@ def start(root: Path, cfg: dict, routine: str, *, version=None, routine_hash=Non
         if provenance:
             rec["provenance"] = provenance
         save(root, cfg, rec, at=at)
+    state_hooks(root, cfg, rec, None)
     return rec
 
 
 def mutate(root: Path, cfg: dict, run_id: str, fn, at: str | None = None) -> dict:
     with locked(root, cfg):
         rec, p = load(root, cfg, run_id)
+        before = rec.get("state")
         fn(rec)
         save(root, cfg, rec, p, at=at)
+    if rec.get("state") != before:
+        state_hooks(root, cfg, rec, before)
     return rec
+
+
+def state_hooks(root: Path, cfg: dict, rec: dict, before) -> None:
+    """Polecenie po zmianie stanu biegu (preset state_change_hooks, IW-8: vm.sync dla spot-guard). Poza blokadą;
+    błąd polecenia = ostrzeżenie na stderr, nigdy błąd zapisu."""
+    h = cfg.get("state_change_hooks") or {}
+    if not h.get("enabled") or os.environ.get("RUN_RECORD_HOOKS") == "off":
+        return
+    if h.get("only_repo_root", True) and Path(root).resolve() != REPO.resolve():
+        return
+    where = rec.get("where") or ""
+    import fnmatch
+    if not any(fnmatch.fnmatch(where, pat) for pat in h.get("where_match", [])):
+        return
+    argv = [a.replace("{repo}", str(REPO)).replace("{root}", str(root)).replace("{run_id}", rec["run_id"])
+            for a in h.get("argv", [])]
+    if not argv:
+        return
+    import subprocess
+    try:
+        r = subprocess.run(argv, capture_output=True, text=True, timeout=float(h.get("timeout_s", 90)))
+        if r.returncode != 0:
+            print(f"ostrzeżenie: hak stanu {argv[1:3]}: {r.stderr.strip()[-300:]}", file=sys.stderr)
+    except (OSError, subprocess.TimeoutExpired) as e:
+        print(f"ostrzeżenie: hak stanu: {e}", file=sys.stderr)
 
 
 def add_step(root, cfg, run_id, step_id, *, state=None, in_hash=None, out_hash=None, where=None, tokens=None,

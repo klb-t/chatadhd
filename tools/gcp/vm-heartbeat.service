@@ -1,0 +1,13 @@
+# IW-8 (2026-10-26): heartbeat of the VM as a place in data (tools/vm_place.py heartbeat). Not installed by the package;
+# install as a user unit (no root):  tools/gcp/install_heartbeat.sh   (reverse: systemctl --user disable --now vm-heartbeat.timer)
+# What it does every tick: dated observations -> docs/reports/places/heartbeat/<place>.jsonl, work-pending for
+# spot-guard := "a run record is running here" (tools/gcp/work.sh), "stop" requests addressed to this VM, reboot noted
+# in running runs. Commits only the heartbeat file (git commit -- <file>); --push is left out on purpose: in a shared checkout it would also push the coordinator's unpushed commits (add it when the checkout is dedicated).
+[Unit]
+Description=ChatADHD VM heartbeat (IW-8)
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/chatadhd
+ExecStart=/usr/bin/python3 %h/chatadhd/tools/vm_place.py --root %h/chatadhd heartbeat --commit

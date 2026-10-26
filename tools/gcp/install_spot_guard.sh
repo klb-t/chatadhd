@@ -51,6 +51,8 @@ set_default spot-guard-pending-ttl-hours 8
 set_default spot-guard-try-spot-first false
 set_default spot-guard-restart-idle false
 set_default spot-guard-busy-procs 'cc1plus|ninja|ctest|loom_tests|gate\.sh|playwright'
+# IW-8: checkout whose run records (running, where = this VM) count as work in progress at preemption (preset: this repo)
+set_default spot-guard-runs-root "${RUNS_ROOT:-$(cd "$here/../.." && pwd)}"
 if grep -qx shutdown-script <<<"$have" && ! gcloud compute instances describe "$INSTANCE" --zone "$ZONE" \
      --format='value(metadata.items.shutdown-script)' | grep -q 'spot-guard'; then
   echo "UWAGA: instancja ma już inny shutdown-script; nie nadpisuję. Hak: $here/preempt_hook.sh"

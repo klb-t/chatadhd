@@ -30,5 +30,13 @@
     },
     "line": "{label} {hhmm} UTC — {title}{text_sep}{text}",
     "queue_heading": "## {title} {label} ({hhmm} UTC, `{run_id}`{extras}): {text}"
+  },
+  "state_change_hooks": {
+    "_comment": "IW-8 (2026-10-26): polecenie po zmianie stanu biegu, którego where pasuje do where_match (preset: VM). Preset vm.sync: bieg running na VM ⇒ work-pending=true dla spot-guard (tools/vm_place.py sync → tools/gcp/work.sh → gcloud add-metadata). WYŁĄCZONE w presecie, bo pisze prawdziwe metadane instancji; włącza koordynator/on (enabled: true). Bez tego to samo robi tętno (co 10 min) i hak wywłaszczenia (tools/gcp/preempt_hook.sh). only_repo_root: tylko rekordy w checkoucie tego skryptu (testy w katalogach tymczasowych nie wywołują polecenia). RUN_RECORD_HOOKS=off wyłącza zawsze.",
+    "enabled": false,
+    "only_repo_root": true,
+    "where_match": ["vm", "vm:*"],
+    "argv": ["python3", "{repo}/tools/vm_place.py", "--root", "{root}", "sync"],
+    "timeout_s": 90
   }
 }

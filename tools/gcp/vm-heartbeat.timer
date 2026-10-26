@@ -1,0 +1,12 @@
+# IW-8: tick of tools/gcp/vm-heartbeat.service. Cadence is a preset (OnUnitActiveSec); OnBootSec gives the first beat
+# soon after a restart, so a preemption + restart is noted in the running runs within minutes.
+[Unit]
+Description=ChatADHD VM heartbeat tick (IW-8)
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=10min
+Persistent=true
+
+[Install]
+WantedBy=timers.target
