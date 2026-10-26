@@ -1,0 +1,32 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "loom.brief/1",
+ "title": "Brief pakietu jako rekord (IW-7, INTERFEJS_WSPOLPRACY_v2 §2.2 K4, §2.4)",
+ "description": "Część wspólna = pakiet kontekstu (context_pack → prefiks bajt w bajt z hashem, tools/context_pack.py); część własna = scope + pola strukturalne. `python3 tools/routine.py brief render` robi z niego args dla tools/workflows/single-package.js. Pola dodatkowe przechodzą bez zmian (lista otwarta).",
+ "type": "object",
+ "required": ["schema", "id", "scope", "accept"],
+ "additionalProperties": true,
+ "properties": {
+  "schema": {"const": "loom.brief/1"},
+  "version": {"type": ["integer", "string"]},
+  "id": {"type": "string"},
+  "wt": {"type": "string"},
+  "branch": {"type": "string"},
+  "remote_branch": {"type": "string"},
+  "ci_workflow": {"type": "string"},
+  "role": {"type": "string", "description": "rola dla start_gate (model rozwiązuje tabela roles.json)"},
+  "model": {"type": "string", "description": "nadpisanie modelu (preset: z roli przez start_gate)"},
+  "context_pack": {"type": "string"},
+  "spec": {"type": "array", "items": {"type": "string"}},
+  "scope": {"type": "string", "description": "część własna"},
+  "accept": {"type": "string"},
+  "rules_extra": {"type": "string"},
+  "design_doc": {"type": "string"},
+  "decisions": {"type": "array"},
+  "measurements": {"type": "array"},
+  "hypothesis": {"type": "string"},
+  "plan_calls": {"type": ["number", "string"]},
+  "card_schema": {"type": "object"},
+  "_history": {"type": "array"}
+ }
+}

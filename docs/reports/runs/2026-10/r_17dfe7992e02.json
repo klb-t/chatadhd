@@ -21,7 +21,17 @@
  "finished": null,
  "state": "running",
  "summary": null,
- "steps": [],
+ "steps": [
+  {
+   "id": "iw7-runner",
+   "clock": {
+    "started": "2026-10-26T17:38:06.047106Z",
+    "updated": "2026-10-26T17:38:06.047106Z",
+    "ended": "2026-10-26T17:38:06.047106Z"
+   },
+   "state": "done"
+  }
+ ],
  "commits": [],
  "cards": [],
  "escalations": [],
@@ -43,5 +53,5 @@
  "spec": [
   "R90"
  ],
- "updated": "2026-10-26T17:34:49.198603Z"
+ "updated": "2026-10-26T17:38:06.047106Z"
 }

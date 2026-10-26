@@ -2,7 +2,8 @@
   "schema": "loom.context_packs/1",
   "_comment": "Pakiety kontekstu (IW-2, INTERFEJS_WSPOLPRACY_v2 §2.2 K3, §2.4). Pakiet = lista odwołań; tools/context_pack.py render <pakiet> robi z niego prefiks briefu, bajt w bajt powtarzalny, z hashem (sha256 tekstu) — tani dowód identycznego prefiksu dwóch briefów. Trzy pakiety niżej to PRZYKŁADY (jego przykład R90: „przy starcie nowego podwykonawcy całą filozofię mu zapodać do kontekstu. przypominam przykład to jest”); zestawy odwołań to presety. Rodzaje odwołań (otwarte, dopisywane w kodzie): file, section, lines, spec, tools, text. Tryb odwołania: full (treść) albo pointer (ścieżka + hash, gdy treść i tak dociera inną drogą, np. CLAUDE.md wstrzykiwany każdemu agentowi). more: allowed + recorded = agent może czytać więcej, zapisuje to jako krok biegu.",
   "_history": [
-    {"at": "2026-10-26", "by": "IW-2 (Opus)", "what": "pierwsze trzy pakiety; CLAUDE.md w trybie pointer w podwykonawcy (harness wstrzykuje go każdemu agentowi; odwrót: mode full)"}
+    {"at": "2026-10-26", "by": "IW-2 (Opus)", "what": "pierwsze trzy pakiety; CLAUDE.md w trybie pointer w podwykonawcy (harness wstrzykuje go każdemu agentowi; odwrót: mode full)"},
+    {"at": "2026-10-26", "by": "IW-7 (Opus)", "what": "pakiet jadro = podwykonawca + reguły wspólne briefów jądra wyjęte z k2c1_brief.json (rozkład briefu K2c-1: pakiet + część własna)"}
   ],
   "presets": {
     "header": "=== PAKIET KONTEKSTU {pack} (loom.context_packs/1) — część wspólna briefu; hash prefiksu w karcie i w zapisie biegu ===",
@@ -41,6 +42,19 @@
         {"kind": "lines", "path": "docs/reports/QUEUE_S1.md", "match": "^## ", "max_matches": 8, "label": "głowa kolejki (preset: 8 najnowszych nagłówków)"},
         {"kind": "spec", "ids": ["R88", "R89", "R90", "R92"], "label": "jego słowa o interfejsie i VM"},
         {"kind": "tools", "label": "katalog narzędzi z dostępnością per miejsce"}
+      ],
+      "more": {"allowed": true, "recorded": true}
+    },
+    "jadro": {
+      "for": "wykonawca pakietu jądra C++ (loom/), przykład pakietu pochodnego od podwykonawcy",
+      "refs": [
+        {"kind": "file", "path": "CLAUDE.md", "mode": "pointer", "label": "reguły właściciela i repozytorium"},
+        {"kind": "spec", "ids": ["R58", "R59", "R60", "R83", "R84"], "label": "jego słowa: przykłady to przykłady, silnik obsługuje każdą konfigurację"},
+        {"kind": "section", "path": "CLAUDE.md", "heading": "## Examples are examples; the engine handles every configuration (owner, 2026-10-23)", "label": "filozofia (wycinek)"},
+        {"kind": "file", "path": "loom/data/philosophy/principles.json", "mode": "pointer", "label": "zasady jako dane"},
+        {"kind": "file", "path": "tools/routines/schemas/routine_run.schema.json", "mode": "pointer", "label": "schemat zapisu biegu"},
+        {"kind": "text", "label": "jak cytować i zapisywać", "text": "Pozycje spec cytuj jako spec:<numer> i czytaj przez `python3 tools/spec.py show <numer>`. Bieg zapisuje `python3 tools/run_record.py` (0 tokenów). Katalog narzędzi: `python3 tools/context_pack.py tools`."},
+        {"kind": "text", "label": "reguły pakietu jądra (wspólne dla briefów K*)", "text": "Reguły pakietu jądra (ziarno z briefów K1c–K2c, 2026-10-26; lista otwarta, presety):\n- Nic nie jest decydowane za osobę; każdy zapis jej danych pyta najpierw przez ISTNIEJĄCY mechanizm potwierdzenia (action_rules.pack confirm:<akcja> + run_gated, jak rules.set / settings.set / profile.set). Stare dane nigdy nie są cicho przepisywane. Słowa to DANE pl+en (chat_ops.pack i paczki sąsiadów), bez literałów w C++; jego listy to ziarna — czytaj prawdziwe listy z paczek i dopisz, co wynika z filozofii, mówiąc, co dodałeś.\n- Nowa akcja = wpis w actions.pack (parametry, opisy pl+en, read-only), action_rules.pack (bramka), chat_ops.pack (zdania bez nazw wewnętrznych: bez snake_case, kropkowanych id, true/false, '='), chat_coverage.pack (chat_outcome: pending|executed|unavailable|continuation + powód pl/en). Potem python3 loom/src/model/gen_runtime_profiles.py i --check; zmiana graph/interfaces.pack → gen_graph_interfaces.py → gen_runtime_profiles.py (--check) → przepięcie sha256 zmienionych paczek w loom/data/data_domains.pack (rom.pack: gen_rom_catalogue.py).\n- DYSCYPLINA ASAN (CI to jedyny dowód, 2 h): (a) nigdy range-for po .at()/.value()/operator[] tymczasowego obiektu; (b) nigdy wskaźnik/referencja do Json/stanu przez wywołanie, które może go przypisać lub powiększyć (write(), apply(), setter) — kopia albo ponowne wyszukanie. Przeczytaj własny diff z tymi dwoma pytaniami przed commitem; python3 tools/lint_asan_range_for.py <baza> = 0 podejrzanych.\n- Decyzje są Twoje (R1–R53): każdą z odwrotem zapisz w docs/reports/INDEX.md pod nagłówkiem pakietu. Nie dotykaj loom/android/smoke/*, złotego chat_request_legacy.json ani schematu paragonu, chyba że część własna mówi inaczej.\n- Maszyna wspólna: nie zabijaj procesów po nazwie (pid/port, który sam uruchomiłeś). Nie uruchamiaj pełnej bramki. Jeden natywny build naraz (loom/build/dev tego worktree), w tle, odpytywany krótkimi wywołaniami (zasada cache: żadne wywołanie > ~4 min). Wygenerowane *.inc z jawną długością. Testy niezależne od szybkości i kolejności. Dane prywatne: tylko syntetyczne; nie czytaj docs/exports ani eval/real-holdout-key. Teksty dla właściciela prostym polskim i angielskim; nic opisane jako działające, co jest tylko planowane.\n- Akceptacja jądra (preset): cmake --build --preset dev; ctest --preset dev z filtrem z części własnej (wklej linie podsumowania); gen_runtime_profiles.py --check czysto; python3 tools/clang_inc_check.py loom/build/dev; push na gałąź z briefu."}
       ],
       "more": {"allowed": true, "recorded": true}
     }

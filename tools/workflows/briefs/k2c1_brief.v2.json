@@ -1,0 +1,23 @@
+{
+ "schema": "loom.brief/1",
+ "version": 1,
+ "wt": "/home/user/wt/m1d0",
+ "branch": "claude/m1-w0",
+ "remote_branch": "claude/m1-w0",
+ "id": "M1-K2c1-units-and-provenance",
+ "model": "sonnet",
+ "accept": "cmake --build --preset dev (run from loom/, in the background, polled with short calls) succeeds; ctest --preset dev -R 'chat|route|coverage|actions|memory|unit|scope|profile|onboarding|runtime_profile|kb_pack|kb_data_domains|graph_entry|rom|abi_compat|compat' green INCLUDING unit.test_chat_ops, unit.test_chat_coverage and the Python compat tests (paste the summary lines); gen_runtime_profiles.py --check clean; python3 /home/user/chatadhd/tools/clang_inc_check.py loom/build/dev all ok; python3 /home/user/chatadhd/tools/lint_asan_range_for.py 01dd2319 shows 0 suspicious lines; pushed to origin claude/m1-w0. The card pastes: one answer of each new action in pl (define with its confirmation question, list, set_unit, clear_unit, forget with the count), a memory read answer with provenance for a new note and the wording for an old one, the list of memory write paths you stamped (and any you could not), the 'what I added to the unit kinds' note, and exactly what is left for K2c-2 (party:self subgraph projection) and W2b.",
+ "context_pack": "jadro",
+ "scope": "Package K2c-1 (kernel, no web): UNITS (projects / teams / organisations a conversation belongs to — seeds; read unit_kinds from graph_views.pack / chat_ops.pack and say what you added) and PROVENANCE of memory notes, as actions + data, so the 'Ty' screen (W2b) can show and edit them. Source: docs/architecture/M1_USTAWIENIA_JAKO_GRAF_2026-10-16.md '3.7 Graf > Ty' (bullets 'Jednostki', 'Co pamietam') and '### M1-K2' (units.define, conversation.set_unit, MemoryNode.metadata.provenance) — only those.\nFACTS (verify): scope_resolver.cpp ~l.96 READS conversations.metadata.units (scope level 'project'); no writer yet. Memory notes: memory.json, memory_engine.cpp, free-form metadata (Python compat: new key is fine; run loom/tests/compat/). Conversation metadata goes through ConvPatch (see how conversation.* patch title/pin).\nBUILD, commit after each: (1) units.define {kind,id,label?} (gated) → node unit:<kind>/<id> (kind 'unit', metadata.unit_kind, label, created), idempotent; label change only after confirm; units.list {kind?} (read-only, conversations per unit); units.forget {kind,id} (gated, says how many conversations are affected). (2) conversation.set_unit {conv_id?,kind,id} / conversation.clear_unit {conv_id?,kind} (gated; conv_id = open conversation): merge metadata.units, keep other keys (flow=profile.interview); test that a unit-level rule applies after set_unit and stops after clear_unit. (3) every memory WRITE path (grep memory_engine.cpp, ops.cpp: remember / tree add / import / folder attach / guardian) stamps metadata.provenance {source, time, ref?}; read actions (memory.recall / list) add `provenance`, or 'pochodzenie nieznane (zapisane przed M1)' for old notes; receipt unchanged. (4) catalogue + words + coverage for every new action (pack rule). (5) doctest: confirm before any write, affected counts, metadata merge, scope effect, provenance on every path + old-format memory.json fixture, words check on new sentences.",
+ "spec": [],
+ "_history": [
+  {
+   "at": "2026-10-26T17:39:46.497563Z",
+   "by": "routine.py brief split",
+   "what": "rozłożony na pakiet jadro + część własną",
+   "from_hash": "sha256:0db914c271d81776476ee98c2e02879102c698a37b54e336afc74c8f1b39056f"
+  }
+ ],
+ "role": "wykonawca pakietu",
+ "_comment": "Brief K2c-1 rozłożony (IW-7, 2026-10-26): część wspólna = pakiet kontekstu jadro (reguły z dawnego scope i rules_extra), część własna ≈ 2 tys. znaków (przykład z tabeli IW-7). Oryginał: k2c1_brief.json (zostaje). Render: python3 tools/routine.py brief render tools/workflows/briefs/k2c1_brief.v2.json"
+}

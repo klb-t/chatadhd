@@ -1,0 +1,37 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "loom.routine/1",
+ "title": "Rutyna jako dane (IW-7, INTERFEJS_WSPOLPRACY_v2 §2.4)",
+ "description": "Akcja złożona: kroki z `do` (lista otwarta; runner tools/routine.py zna cmd, brief.render, render, confirm, handoff, a nieznany rodzaj przekazuje dalej z uwagą), `when`, `where`, warunki wstępne {check, why, since} czytające pola miejsca. Wersje: wiele wpisów o tym samym id; bieg nazywa wersję; stara zostaje. Pola dodatkowe dozwolone.",
+ "type": "object",
+ "required": ["id", "version", "since", "steps"],
+ "additionalProperties": true,
+ "properties": {
+  "schema": {"const": "loom.routine/1"},
+  "id": {"type": "string"},
+  "version": {"type": ["integer", "string"]},
+  "since": {"type": "string"},
+  "supersedes": {"type": ["integer", "string", "null"]},
+  "title": {"type": "string"},
+  "changelog": {"type": "array", "items": {"type": "object"}},
+  "params": {"type": "object", "additionalProperties": {"type": "object"}},
+  "presets": {"type": "object"},
+  "variants": {"type": "object"},
+  "where": {"type": ["string", "null"]},
+  "preconditions": {"type": "array", "items": {"$ref": "#/$defs/precondition"}},
+  "steps": {"type": "array", "items": {"$ref": "#/$defs/step"}}
+ },
+ "$defs": {
+  "predicate": {"type": ["object", "boolean", "null"],
+   "description": "{path, op, value} | {all: [...]} | {any: [...]} | {not: ...}; op (otwarte): eq ne in nin gt ge lt le truthy falsy matches contains exists missing; nieznany op = uwaga, warunek spełniony"},
+  "precondition": {"type": "object", "required": ["check"], "additionalProperties": true,
+   "properties": {"check": {"$ref": "#/$defs/predicate"}, "why": {"type": "string"}, "since": {"type": "string"},
+                  "on_fail": {"type": "string", "description": "preset: advisory; stop tylko wprost"}}},
+  "step": {"type": "object", "required": ["id", "do"], "additionalProperties": true,
+   "properties": {"id": {"type": "string"}, "do": {"type": "string"}, "when": {"$ref": "#/$defs/predicate"},
+                  "where": {"type": "string"}, "argv": {"type": "array", "items": {"type": "string"}},
+                  "ok_codes": {"type": "array", "items": {"type": "integer"}}, "capture": {"type": "string"},
+                  "question": {"type": "string"}, "if_silent": {"type": "string"}, "cost_to_reverse": {"type": "string"},
+                  "ask_after": {"type": "string"}, "mandate_scope": {"type": "string"}, "text": {"type": "string"}}}
+ }
+}
