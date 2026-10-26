@@ -340,5 +340,7 @@
   "window_back": "visits",
   "window_back_note": "W2 (OKNA §4.2): what Back does with windows: visits (back to the previous window of the journal of visits), to_chat (back to the chat window), close_window (closes the window in front), none (Back never changes the window). Preset of the phone.",
   "window_restore_last": true,
-  "window_restore_last_note": "W2: the start view `last_saved` restores the windows of the last session (window_layout_last in localStorage loom.shell.last.v2), not only the layout id. false = only the layout id, as in W1."
+  "window_restore_last_note": "W2: the start view `last_saved` restores the windows of the last session (window_layout_last in localStorage loom.shell.last.v2), not only the layout id. false = only the layout id, as in W1.",
+  "window_restore_front": "layout",
+  "window_restore_front_note": "W2: which window is in front after a start that restored window_layout_last: layout (preset: the window the layout's preset maximizes, the chat; the restored others wait in the switcher - a start looks as before W2) | saved (the window that was in front when the page was left)."
 }

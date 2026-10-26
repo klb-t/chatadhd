@@ -120,7 +120,14 @@ export default function App() {
       setLayout(resolved.layout ?? layoutOfMode(cfg.layout_mode));
       // W2: the last session's windows come back with its layout (window_layout_last; preset window_restore_last, false = the layout only)
       const saved = resolved.source === "last_saved" && WINDOW_DATA.window_restore_last !== false ? readSaved(localStorage)?.windows ?? null : null;
-      if (saved && saved.id === resolved.layout) setWin(createState(saved, JOURNAL_LIMIT));
+      if (saved && saved.id === resolved.layout) {
+        // window_restore_front (preset `layout`): the window the layout's preset maximizes (the chat) is in front after a start, the others
+        // wait in the switcher, as the start looked before W2; `saved` = the window that was in front when the page was left
+        let restored = createState(saved, JOURNAL_LIMIT);
+        const presetFront = LAYOUTS[saved.id]?.windows.find(w => w.mode === "maximized")?.id;
+        if ((WINDOW_DATA.window_restore_front ?? "layout") === "layout" && presetFront) restored = { ...focusWindow(restored, presetFront), past: [], future: [] };
+        setWin(restored);
+      }
       setActiveConvId(resolved.conversationId);
       setStarted(true);
     })();

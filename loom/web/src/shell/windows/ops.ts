@@ -11,6 +11,7 @@ export interface WindowData {
   window_placements?: Record<string, Record<string, string>>;
   window_back?: string;
   window_restore_last?: boolean;
+  window_restore_front?: string;
   panel_kinds?: Record<string, string>;
   panel_kinds_by_layout?: Record<string, Record<string, string>>;
   panel_placement?: string;

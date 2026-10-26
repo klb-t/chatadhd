@@ -413,6 +413,36 @@
       "decision": "applicable",
       "label": "Skąd coś pochodzi",
       "implementation": "implemented"
+    },
+    {
+      "id": "window.open",
+      "decision": "applicable",
+      "label": "Otwórz okno",
+      "implementation": "planned"
+    },
+    {
+      "id": "window.close",
+      "decision": "applicable",
+      "label": "Zamknij okna",
+      "implementation": "planned"
+    },
+    {
+      "id": "window.focus",
+      "decision": "applicable",
+      "label": "Przełącz na okno",
+      "implementation": "planned"
+    },
+    {
+      "id": "window.next",
+      "decision": "applicable",
+      "label": "Następne okno",
+      "implementation": "planned"
+    },
+    {
+      "id": "window.prev",
+      "decision": "applicable",
+      "label": "Poprzednie okno",
+      "implementation": "planned"
     }
   ],
   "breadcrumbs": [
