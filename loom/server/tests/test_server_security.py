@@ -436,6 +436,38 @@ def main() -> int:
     finally:
         srv.stop()
 
+    # 11d. an answer that advertises Keep-Alive keeps its promise: after a streamed (SSE) import the same connection
+    #      answers the next request. The server used to close it right after the final chunk, so a client reusing it
+    #      raced the close; under ASan a retrying client then resent an already consumed upload body -> 400 "malformed"
+    #      in 11b. Deterministic: the second request is written right after the final chunk on the same socket.
+    srv = Server(root, "--allow-chunked-uploads", "--max-upload-bytes", "30000", "--keep-alive-timeout-s", "30")
+    try:
+        sa, _ = login(srv.base, "alice", "alice-password")
+        cookie = "; ".join(f"{c.name}={c.value}" for c in sa.cookies)
+        boundary = "r20boundary"
+        doc = ("# s\n\n" + "user: hello\n\nassistant: hi\n\n" * 20).encode()
+        part = (f"--{boundary}\r\nContent-Disposition: form-data; name=\"file\"; filename=\"c.md\"\r\n"
+                f"Content-Type: text/markdown\r\n\r\n").encode() + doc + f"\r\n--{boundary}--\r\n".encode()
+        with socket.create_connection(("127.0.0.1", srv.port), timeout=60) as sock:
+            sock.sendall((f"POST /api/import HTTP/1.1\r\nHost: 127.0.0.1:{srv.port}\r\nCookie: {cookie}\r\n"
+                          f"Content-Type: multipart/form-data; boundary={boundary}\r\nTransfer-Encoding: chunked\r\n\r\n"
+                          ).encode() + f"{len(part):x}\r\n".encode() + part + b"\r\n0\r\n\r\n")
+            first = b""
+            while not first.endswith(b"\r\n0\r\n\r\n"):
+                got = sock.recv(65536)
+                assert got, ("the SSE answer ended before its final chunk", first[-200:])
+                first += got
+            assert b"Keep-Alive:" in first.split(b"\r\n\r\n", 1)[0], first[:300]
+            sock.sendall(f"GET /api/auth/me HTTP/1.1\r\nHost: 127.0.0.1:{srv.port}\r\nCookie: {cookie}\r\n\r\n".encode())
+            second = b""
+            while b"\r\n\r\n" not in second:
+                got = sock.recv(65536)
+                assert got, "the server closed a connection it had advertised as Keep-Alive"
+                second += got
+            assert second.startswith(b"HTTP/1.1 200"), second[:200]
+    finally:
+        srv.stop()
+
     # 12. throttling covers registration (account flooding, invite guessing) and the password check
     #     The delay after the free attempts is a base of 1 s in the preset; under a sanitizer on a loaded runner one Argon2id
     #     request takes longer than that, so the next attempt came after the delay and was never throttled (CI 257: eight 403 and no

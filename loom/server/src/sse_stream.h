@@ -83,7 +83,7 @@ class SseQueue {
     if (items_.empty() && !closed_ && stopping().load()) {
       lk.unlock();
       sink.done();
-      return false;
+      return true;  // finished, not cancelled (see below)
     }
     while (!items_.empty()) {
       std::string item = std::move(items_.front());
@@ -97,8 +97,11 @@ class SseQueue {
     }
     if (closed_) {
       lk.unlock();
+      // A finished stream returns true: httplib takes false as "cancelled" and closes the connection after the final
+      // chunk although the answer advertised Keep-Alive, so a client may reuse it while the close is on its way
+      // (CI asan, server.security 11b: the retried upload resent an already consumed body -> 400 "malformed").
       sink.done();
-      return false;
+      return true;
     }
     return true;
   }
