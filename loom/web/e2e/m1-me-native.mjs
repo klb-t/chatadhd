@@ -454,6 +454,8 @@ try {
     assert.equal((await api("POST", "/api/graph/card", { address: pref.address, lang: "pl" })).value, before.value, "the person's level is untouched");
     await audit("17-level-done"); await shot("17-level-done");
     // the same value on the screen: with that conversation open in the chat, the row of the preference says in words which level set it
+    for (let i = 0; i < 4 && (await nav().count()) > 0; i++) { await back(); await page.waitForTimeout(150); }   // Back closes the layers of the panel
+    await nav().waitFor({ state: "detached" });
     await page.getByTestId("shell-drawer-toggle").tap();
     await page.locator('[data-testid="shell-conv"]', { hasText: "Rozmowa o remoncie" }).first().tap();
     await page.getByTestId("shell-menu-toggle").tap(); await page.getByTestId("shell-menu-me").tap(); await page.getByTestId("me-view").waitFor();
