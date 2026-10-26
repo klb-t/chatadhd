@@ -393,34 +393,46 @@ def main() -> int:
         srv.stop()
 
     # 11c. a client that stalls past --read-timeout-s before its body ends gets 408 with that reason, not 400 "malformed"
-    #      (CI 285 and the run on 597f92ba: under load a stall before the limit turned the expected 413 into such a 400)
+    #      (CI 285 and the run on 597f92ba: under load a stall before the limit turned the expected 413 into such a 400).
+    #      Deterministic on a slow server: the client sends part of a chunked body and then nothing at all, and waits for
+    #      the answer instead of sleeping a fixed time, so the server's read timeout is the only thing that can end it.
     srv = Server(root, "--allow-chunked-uploads", "--max-upload-bytes", "30000", "--read-timeout-s", "1")
     try:
         b = srv.base
         sa, _ = login(b, "alice", "alice-password")
         boundary = "r20boundary"
+        cookie = "; ".join(f"{c.name}={c.value}" for c in sa.cookies)
 
-        def stalling(payload: bytes, stall_at: int):
-            yield (f"--{boundary}\r\nContent-Disposition: form-data; name=\"file\"; filename=\"c.md\"\r\n"
-                   f"Content-Type: text/markdown\r\n\r\n").encode()
-            for i in range(0, len(payload), 1000):
-                if i == stall_at:
-                    time.sleep(2.5)
-                yield payload[i:i + 1000]
-            yield f"\r\n--{boundary}--\r\n".encode()
-        hdr = {"Content-Type": f"multipart/form-data; boundary={boundary}",
-               "Cookie": "; ".join(f"{c.name}={c.value}" for c in sa.cookies)}
-        try:
-            r = requests.post(b + "/api/import", data=stalling(b"x" * 100_000, 10_000), headers=hdr, timeout=60)
-            assert r.status_code == 408 and "stopped sending" in r.text, (r.status_code, r.text[:300])
-        except requests.ConnectionError:
-            pass  # the server may close while the client still writes; it must not answer 400 "malformed"
-        # past the limit the stall changes nothing: the answer stays 413
-        try:
-            r = requests.post(b + "/api/import", data=stalling(b"x" * 100_000, 50_000), headers=hdr, timeout=60)
-            assert r.status_code == 413, (r.status_code, r.text[:300])
-        except requests.ConnectionError:
-            pass
+        def stalled_upload(sent: int) -> tuple:
+            head = (f"--{boundary}\r\nContent-Disposition: form-data; name=\"file\"; filename=\"c.md\"\r\n"
+                    f"Content-Type: text/markdown\r\n\r\n").encode() + b"x" * sent
+            with socket.create_connection(("127.0.0.1", srv.port), timeout=120) as sock:
+                sock.sendall((f"POST /api/import HTTP/1.1\r\nHost: 127.0.0.1:{srv.port}\r\nCookie: {cookie}\r\n"
+                              f"Content-Type: multipart/form-data; boundary={boundary}\r\n"
+                              f"Transfer-Encoding: chunked\r\n\r\n").encode())
+                for i in range(0, len(head), 1000):
+                    part = head[i:i + 1000]
+                    sock.sendall(f"{len(part):x}\r\n".encode() + part + b"\r\n")
+                answer = b""
+                while b"\r\n\r\n" not in answer:  # the answer comes only after the server gives up reading
+                    got = sock.recv(65536)
+                    if not got:
+                        break
+                    answer += got
+                status = int(answer.split(b" ", 2)[1]) if answer.startswith(b"HTTP/") else 0
+                while got:
+                    try:
+                        got = sock.recv(65536)
+                    except OSError:
+                        break
+                    answer += got
+            return status, answer.decode("utf-8", "replace")
+        # well below the limit (a third of it): only the read timeout can end the request -> 408 with the reason
+        status, text = stalled_upload(10_000)
+        assert status == 408 and "stopped sending" in text, (status, text[-300:])
+        # well past the limit before the stall: the size is known, the answer stays 413
+        status, text = stalled_upload(50_000)
+        assert status == 413, (status, text[-300:])
     finally:
         srv.stop()
 
