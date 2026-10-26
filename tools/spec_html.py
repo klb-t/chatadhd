@@ -20,7 +20,11 @@ import datetime as _dt
 import html
 import json
 import re
+import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import spec as spec_mod  # noqa: E402  (presety pytania i czas rozstrzygnięcia: jedno miejsce, tools/spec.py)
 
 REPO = Path(__file__).resolve().parents[1]
 STATUS_LABEL = {
@@ -46,6 +50,9 @@ QUEUE_PRESET = {
         # wiersz bez parafrazy do zatwierdzenia: sam wpis ze skrzynki, który sekretarz przekazał koordynatorowi
         "escalated": "Twój wpis nie jest jeszcze zapisany w spec; sekretarz przekazał go koordynatorowi",
     },
+    # IW-3: presety pytania (niski koszt odwrotu, domyślny ask_after, klasa wpisu ze skrzynki) — z tools/spec.py,
+    # nadpisywane przez docs/spec/config.json w main()
+    "question": spec_mod.DEFAULT_CONFIG["question"],
 }
 
 
@@ -86,8 +93,20 @@ def build_queue(nodes: list[dict], preset: dict | None = None) -> list[dict]:
             by_cost = (pre.get("if_silent") or {}).get("by_cost") or {}
             silent = by_cost[cost_s] if cost_s in by_cost else (pre.get("if_silent") or {}).get("default", "")
             src = "preset"
-        rows.append({"id": n["id"], "cost_to_reverse": cost_s, "if_silent": silent, "if_silent_source": src,
-                     "date": str(und.get("date") or n.get("date") or ""), "_a": _alias_key(n)})
+        row = {"id": n["id"], "cost_to_reverse": cost_s, "if_silent": silent, "if_silent_source": src,
+               "date": str(und.get("date") or n.get("date") or ""), "_a": _alias_key(n)}
+        # IW-3: pytanie w pełnym kształcie (W3) — kryteria, klasa, czas od pierwszego pokazania, chwila rozstrzygnięcia
+        qcfg = pre.get("question") or spec_mod.DEFAULT_CONFIG["question"]
+        for fld in ("class", "first_shown", "ask_after"):
+            if und.get(fld):
+                row[fld] = str(und[fld])
+        if und.get("criteria"):
+            row["criteria"] = [str(c) for c in und["criteria"]]
+        due = spec_mod.question_due(und, qcfg)
+        if due is not None:
+            row["due"] = due.strftime("%Y-%m-%dT%H:%M:%SZ")
+            row["silence_applies"] = spec_mod.is_low_cost(und, qcfg)  # False = po czasie eskalacja, nie milczenie
+        rows.append(row)
     rows.sort(key=lambda r: r["_a"], reverse=True)  # remis daty: wyższy numer pierwszy (numery rosną z czasem); sort jest stabilny
     rows.sort(key=lambda r: r["date"], reverse=True)
     rows.sort(key=lambda r: 0 if r["cost_to_reverse"].lower() in first else 1)
@@ -114,7 +133,7 @@ def _recent(node: dict, since: _dt.date) -> bool:
 
 
 def build_html(spec: dict, focus: list[str], recent_hours: int, now: _dt.datetime, out_name: str,
-               queue_first: list[str] | None = None) -> str:
+               queue_first: list[str] | None = None, question: dict | None = None) -> str:
     since = (now - _dt.timedelta(hours=recent_hours)).date()
     focus_set = {f.strip() for f in focus if f.strip()}
     nodes = spec["nodes"]
@@ -123,6 +142,8 @@ def build_html(spec: dict, focus: list[str], recent_hours: int, now: _dt.datetim
         n["_recent"] = _recent(n, since)
         n["_dates"] = _dates(n)
     preset = {**QUEUE_PRESET, "cost_first": list(QUEUE_PRESET["cost_first"] if queue_first is None else queue_first)}
+    if question is not None:
+        preset["question"] = question
     queue = build_queue(nodes, preset)
     themes = list(spec.get("themes") or [])
     known = {t["id"] for t in themes}
@@ -147,7 +168,8 @@ def build_html(spec: dict, focus: list[str], recent_hours: int, now: _dt.datetim
         "counts": counts,
         "queue": queue,
         "queue_preset": {"cost_first": preset["cost_first"], "sort_note": queue_sort_note(preset),
-                         "if_silent_escalated": preset["if_silent"]["escalated"]},
+                         "if_silent_escalated": preset["if_silent"]["escalated"],
+                         "class_by_kind": (preset.get("question") or {}).get("class_by_kind") or {}},
         "status_policy": spec.get("status_policy"),
         "sources": spec.get("sources"),
         "out": out_name,
@@ -194,6 +216,8 @@ button:focus-visible, input:focus-visible, summary:focus-visible { outline: 2px 
 .counts { display: flex; flex-wrap: wrap; gap: .4rem .9rem; font-size: .85rem; color: var(--muted); margin-top: .4rem; font-variant-numeric: tabular-nums; }
 .counts b { color: var(--fg); font-weight: 600; }
 section.queue { margin: 1rem 0; padding: .7rem .9rem; background: var(--card); border: 1px solid var(--accent); border-left-width: 4px; border-radius: .4rem; }
+.qitem .crit { margin: .3rem 0 0; font-size: .9rem; } .qitem .crit ul { margin: .1rem 0 0 1.1rem; padding: 0; } .qitem .crit li { overflow-wrap: anywhere; }
+.qitem .qtime { margin-top: .25rem; font-size: .85rem; color: var(--muted, #777); overflow-wrap: anywhere; }
 section.queue h2 { margin: 0 0 .3rem; font-family: var(--serif); font-size: 1.1rem; }
 .qnote { font-size: .8rem; color: var(--muted); margin: .15rem 0; }
 .qlist { margin-top: .4rem; }
@@ -375,6 +399,7 @@ blockquote { margin: .2rem 0; padding: .4rem .7rem; background: var(--card); bor
     applyQueueFilter();
   };
   const KIND_LABEL = { approve: 'Zatwierdzam', correct: 'Popraw', remark: 'Uwaga' };
+  const CLASS_LABEL = { approval: 'Zatwierdzam', correction: 'Popraw', remark: 'Uwaga', marker: 'Znacznik', statement: 'Wypowiedź', routine_request: 'Prośba o rutynę' }; // lista otwarta: nieznana klasa = jej nazwa
   const STATE_LABEL = { new: 'czeka na sekretarza', applied: 'zapisane w spec', escalated: 'przekazane koordynatorowi', rejected: 'odrzucone' };
   const DB = { inbox: null, byNode: {} };
   function nodeOf(id) { return D.nodes.find(n => n.id === id); }
@@ -397,13 +422,33 @@ blockquote { margin: .2rem 0; padding: .4rem .7rem; background: var(--card); bor
     let h = `<article class="qitem" data-q="${esc(n.id)}" data-text="${esc(text)}"><div class="qhead"><a class="alias" href="#${esc(n.id)}">${esc(alias)}</a><span class="title">${esc(n.title || '(bez tytułu)')}</span>`;
     h += `<span class="chip new" data-new-for="${esc(n.id)}" title="ma datę późniejszą niż Twoja ostatnia wizyta" hidden>nowe</span>`;
     if (cost) h += `<span class="chip cost" title="koszt odwrotu zaznaczony przez koordynatora">odwrót: ${esc(cost)}</span>`;
+    if (r.item && r.item.class) h += `<span class="chip qclass" title="klasa pytania (lista otwarta)">${esc(r.item.class)}</span>`;
     if (!r.item && UL[u.state]) h += `<span class="chip ${esc(u.state)}">${esc(UL[u.state])}</span>`;
     if (kinds.length) h += `<span class="chip" title="sekretarz nie zapisał tego sam">u koordynatora: ${esc(kinds.join(', '))}</span>`;
     h += '</div>';
     if (para) h += `<div class="qtext" data-qtext>${esc(para)}</div><button type="button" class="link" data-more hidden>więcej</button>`;
     h += `<div class="silent"><b>Bez Twojej odpowiedzi:</b> ${esc(silent)}${preset ? ' <span class="src">(ustawienie domyślne)</span>' : ''}</div>`;
+    if (r.item) h += questionHtml(r.item);
     for (const x of r.esc) h += `<div class="esc"><b>Przekazane koordynatorowi</b> · ${esc(KIND_LABEL[x.kind] || x.kind)} ${esc((x.at || '').slice(0, 16).replace('T', ' '))}${x.text ? ': ' + esc(x.text) : ''}${(x.why || x.reason) ? ' — powód: ' + esc(x.why || x.reason) : ''}</div>`;
     h += `<div class="inbox" data-inbox-for="${esc(n.id)}" hidden></div><div class="decide" data-decide-for="${esc(n.id)}" hidden></div></article>`;
+    return h;
+  }
+  // IW-3: pytanie w pełnym kształcie — kryteria, czas od pierwszego pokazania, chwila rozstrzygnięcia (liczone przy oglądaniu)
+  function ago(ms) { const h = ms / 3600000; return h < 1 ? Math.max(1, Math.round(ms / 60000)) + ' min' : h < 48 ? Math.round(h) + ' h' : Math.round(h / 24) + ' dni'; }
+  function fmtAt(iso) { return String(iso || '').slice(0, 16).replace('T', ' ') + ' UTC'; }
+  function questionHtml(it) {
+    let h = '';
+    if (it.criteria && it.criteria.length) h += `<div class="crit"><b>Kryteria:</b><ul>${it.criteria.map(c => `<li>${esc(c)}</li>`).join('')}</ul></div>`;
+    const parts = [];
+    const shown = Date.parse(it.first_shown || '');
+    if (!isNaN(shown)) parts.push(`pokazane ${ago(Math.max(0, Date.now() - shown))} temu`);
+    const due = Date.parse(it.due || '');
+    if (!isNaN(due)) {
+      const left = due - Date.now();
+      const when = left > 0 ? `za ${ago(left)} (${fmtAt(it.due)})` : `od ${fmtAt(it.due)}`;
+      parts.push(it.silence_applies ? `milczenie rozstrzyga ${when}` : `${when} trafi do koordynatora (odwrót nie jest tani)`);
+    } else if (it.ask_after) parts.push(`czas „${it.ask_after}” nierozpoznany — milczenie niczego nie rozstrzyga`);
+    if (parts.length) h += `<div class="qtime" data-qtime>${esc(parts.join(' · '))}</div>`;
     return h;
   }
   function renderQueue() {
@@ -456,13 +501,13 @@ blockquote { margin: .2rem 0; padding: .4rem .7rem; background: var(--card); bor
     const list = DB.byNode[nid] || [];
     for (const el of document.querySelectorAll(`[data-inbox-for="${CSS.escape(nid)}"]`)) {
       el.hidden = !list.length;
-      el.innerHTML = list.slice(0, 5).map(x => `<div><b>${esc(KIND_LABEL[x.kind] || x.kind)}</b> ${esc((x.at || '').slice(0, 16).replace('T', ' '))} — ${esc(STATE_LABEL[x.state] || x.state)}${x.text ? ': ' + esc(x.text) : ''}</div>`).join('');
+      el.innerHTML = list.slice(0, 5).map(x => `<div><b>${esc(KIND_LABEL[x.kind] || CLASS_LABEL[x.class] || x.kind || x.class)}</b> ${esc((x.at || '').slice(0, 16).replace('T', ' '))} — ${esc(STATE_LABEL[x.state] || x.state)}${x.text ? ': ' + esc(x.text) : ''}${x.verdict && x.verdict !== x.state ? ' · werdykt: ' + esc(x.verdict) : ''}${x.why ? ' — ' + esc(x.why) : ''}</div>`).join('');
     }
     for (const row of document.querySelectorAll(`.qitem[data-q="${CSS.escape(nid)}"]`)) row.classList.toggle('answered', list.some(x => x.state === 'new'));
   }
   async function sendDecision(nid, kind, text) {
     const n = nodeOf(nid);
-    const entry = { node: nid, alias: ((n && n.aliases) || [])[0] || nid, kind, text, at: new Date().toISOString(), state: 'new', page_generated: D.generated };
+    const entry = { node: nid, alias: ((n && n.aliases) || [])[0] || nid, kind, class: D.queue_preset.class_by_kind[kind] || kind, text, at: new Date().toISOString(), state: 'new', page_generated: D.generated };
     await DB.inbox.add(entry);
     (DB.byNode[nid] = DB.byNode[nid] || []).unshift(entry);
     renderInbox(nid);
@@ -555,7 +600,9 @@ def main(argv=None) -> int:
     spec = json.loads(Path(a.spec).read_text(encoding="utf-8"))
     now = _dt.datetime.fromisoformat(a.now) if a.now else _dt.datetime.utcnow()
     out = Path(a.out)
-    out.write_text(build_html(spec, a.focus, a.recent_hours, now, out.name, a.queue_first), encoding="utf-8")
+    root = Path(a.spec).resolve().parents[2] if Path(a.spec).resolve().parent.name == "spec" else REPO
+    qcfg = spec_mod.load_config(root)["question"]  # presety pytania + docs/spec/config.json
+    out.write_text(build_html(spec, a.focus, a.recent_hours, now, out.name, a.queue_first, question=qcfg), encoding="utf-8")
     n = len(spec["nodes"])
     print(f"zapisano {out} ({out.stat().st_size // 1024} KB, {n} pozycji; rozwinięte: zmienione od {a.recent_hours} h" + (f", w edycji {', '.join(a.focus)}" if a.focus else "") + ")")
     return 0

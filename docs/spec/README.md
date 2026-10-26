@@ -66,7 +66,8 @@ python3 tools/spec.py correct  <numer> --text "jak to ma być naprawdę"   # TYL
 python3 tools/spec.py list --understanding proposed                      # co jeszcze czeka na niego
 ```
 
-Nic nie zatwierdza się samo; `approve` odmawia, gdy nie ma propozycji ani poprawki. Każda zmiana stanu zostaje
+Nic nie zatwierdza się samo poza jednym, jawnie ustawionym wyjątkiem (IW-3, niżej: milczenie po `ask_after`, tylko przy
+niskim koszcie odwrotu, z rekordem decyzji i komendą odwrotu); `approve` odmawia, gdy nie ma propozycji ani poprawki. Każda zmiana stanu zostaje
 w `history` (kto, kiedy, jaki tekst) w `understanding.json`. Cytat dosłowny się przy tym nie zmienia.
 
 ## Jak brief cytuje numery
@@ -157,4 +158,23 @@ dostają znacznik „nowe”, a liczba jest w nagłówku (data bez godziny liczy
 jest oznaczona). Wyszukiwarka przeszukuje także kolejkę; sekcja znika, gdy nic nie czeka. Testy: `tools/tests/test_spec_html.py`
 (w tym strona narysowana w Chromium na 400 px, pomijana, gdy Playwrighta nie ma). Odwrót: usunąć sekcję z `spec_html.py`
 (pola `if_silent` i `cost_to_reverse` są opcjonalne i nic poza stroną ich nie czyta).
+
+**Pytanie w pełnym kształcie i skrzynka z klasą (IW-3, 2026-10-26; wszystkie progi to presety w
+`tools/spec.py` → `DEFAULT_CONFIG["question"]`, nadpisywane przez `docs/spec/config.json`).**
+`spec.py propose|correct` przyjmuje też `--ask-after OKRES` (od pierwszego pokazania; przykłady: `24h`, `2d`, `90m`, `PT6H`
+albo chwila ISO), `--criteria TEKST` (powtarzalne; lista zastępuje poprzednią), `--class KLASA` (otwarta lista, przykłady:
+understanding, money, private-data) i `--first-shown ISO` (preset: chwila `propose`; nowy tekst = nowe pokazanie;
+`spec.py shown <id> [--at] [--force]` poprawia). Strona pokazuje pod pozycją kryteria, klasę, „pokazane N h temu” i kiedy milczenie
+rozstrzyga (albo że po czasie pozycja trafi do koordynatora, gdy odwrót nie jest tani).
+`spec.py silent [--now] [--run-id RID]` wykonuje `if_silent` pytań, którym minął `ask_after`, **tylko** gdy `cost_to_reverse`
+jest na liście niskich (preset `low_cost_to_reverse`, flaga `--low`), do twardego limitu na bieg (preset `max_silent_per_run`,
+`--limit`, `-1` = bez limitu); stan `approved`, `by: silence`, pole `decision` {text, if_silent, reversal, cost_to_reverse, by, at}
+i to samo w `decisions[]` zapisu biegu. Reszta to `escalated` z powodem. Bez `ask_after` milczenie niczego nie rozstrzyga
+(preset `default_ask_after: null`). Odwrót: `spec.py reopen <id> [--why]` (pozycja wraca do `proposed`, decyzja trafia do
+historii jako `reverses`); jego późniejsze `approve` po milczeniu jest dozwolone i nadpisuje `by`.
+Skrzynka: wpis strony ma teraz `class` (z `kind` przez preset `class_by_kind`; lista otwarta) i dostaje od sekretarza `verdict`
+(+ `why`), widoczny przy pozycji. `spec.py inbox <plik.json>` (eksport wpisów `new`) stosuje bez modelu klasy z
+`apply_classes` (approval → approve, correction → correct) oraz każdy wpis, którego tekst jest słowem zatwierdzenia
+(`approve_words`, np. „Zatwierdzam”), a resztę eskaluje; wypisuje werdykty do zapisania z powrotem. Testy:
+`tools/tests/test_spec_question.py`. Odwrót pakietu: nowe pola są opcjonalne; usunięcie podkomend nie zmienia danych.
 

@@ -38,6 +38,27 @@ Commit docs/reports/runs/ together with the spec changes (an empty run may be co
 Keep writing the spec_runs row on the page as before (mirror for the phone).
 ```
 
+**Dopisek IW-3 (2026-10-26) — do wklejenia na koniec promptu razem z dopiskiem IW-1** (żywy prompt zadania NIE został
+zmieniony w pakiecie; wszystkie progi to presety w `tools/spec.py` → `DEFAULT_CONFIG["question"]`, nadpisywane przez
+`docs/spec/config.json`; zmiana presetu nie zmienia tego tekstu):
+```
+Inbox with class (0 tokens, no judgement): export the page's spec_inbox entries with state "new" (ArtifactData list) to
+  a JSON file and run: python3 tools/spec.py inbox <file>
+  It applies class approval (and any entry whose text is an approve word, e.g. "Zatwierdzam") and class correction by itself,
+  and returns one verdict per entry. Write each verdict back to its spec_inbox document: state = verdict.state,
+  verdict = verdict.verdict, why = verdict.why. Classes are an open list: an entry of a class you do not know is escalated,
+  never dropped. Record each applied command as a run step (IW-1 lines).
+Questions that wait (if_silent without watching): run
+  python3 tools/spec.py silent --run-id $RID
+  It executes if_silent ONLY for questions whose ask_after (from first_shown) has passed AND whose cost_to_reverse is on the
+  low list (preset), up to the hard per-run limit (preset); every one gets a decision record with its reversal command
+  (python3 tools/spec.py reopen <id>) in understanding.json and in the run record. Everything in "escalated" goes to the
+  coordinator as an escalation (run_record add $RID escalations ...) with its "why". Do not decide those yourself.
+  For every question in "waiting" that has a "due" time, make sure a one-time task exists at that time
+  (run_once_at = due, prompt: this secretary prompt), so silence resolves without waiting for the next hourly run.
+  If create_trigger is unavailable here, the hourly run picks it up (preset; say so in the run summary).
+```
+
 ## Jednorazowe żywe w chwili zapisu (wygasną same)
 - `CI check (main 94872898)` — 08:55 UTC, sesja S1: czy loom.yml na 94872898 zielony → APK v4.
 - `Read android-smoke 32c7a401` — 08:33 UTC, sesja S2 (nie moja): odczyt smoke sterownika.

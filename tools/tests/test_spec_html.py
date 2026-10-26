@@ -198,7 +198,8 @@ class InBrowser(unittest.TestCase):
         self.assertEqual(len(o["adds"]), 1)
         e = o["adds"][0]
         self.assertEqual((e["node"], e["alias"], e["kind"], e["text"], e["state"]), ("s_a", "R10", "approve", "", "new"))
-        self.assertEqual(sorted(e), ["alias", "at", "kind", "node", "page_generated", "state", "text"])
+        self.assertEqual(sorted(e), ["alias", "at", "class", "kind", "node", "page_generated", "state", "text"])
+        self.assertEqual(e["class"], "approval")  # IW-3: klasa wpisu (lista otwarta) obok dawnego kind
         self.assertEqual(o["queueHeader"], "Czeka na Ciebie (1)")  # ta sama pozycja: parafraza i wpis w jednym wierszu
         self.assertTrue(o["rows"][0]["answered"])
 
@@ -212,6 +213,34 @@ class InBrowser(unittest.TestCase):
         o = self.render(spec_of(mk("s_a", "R10", "proposed"), mk("s_b", "R11", "proposed")), search="R11")
         self.assertEqual({r["alias"]: r["hidden"] for r in o["rows"]}, {"R10": True, "R11": False})
         self.assertIn("pasuje 1", o["queueHeader"])
+
+    def test_full_question_criteria_class_and_time_at_400px(self):
+        """IW-3: kryteria, klasa, czas od pierwszego pokazania i chwila rozstrzygnięcia milczeniem, na szerokości telefonu."""
+        shown = (dt.datetime.now(dt.timezone.utc) - dt.timedelta(hours=3)).strftime("%Y-%m-%dT%H:%M:%SZ")
+        a = mk("s_a", "R10", "proposed", first_shown=shown, ask_after="24h", cost_to_reverse="low", **{"class": "understanding"},
+               criteria=["zgodne z R59 — każda konfiguracja", "odwrót jedną komendą " + "bardzo-długie-słowo" * 6])
+        b = mk("s_b", "R11", "proposed", first_shown=shown, ask_after="1h", cost_to_reverse="high")
+        o = self.render(spec_of(a, b))
+        r = {x["alias"]: x for x in o["rows"]}
+        self.assertEqual(len(r["R10"]["criteria"]), 2)
+        self.assertEqual(r["R10"]["qclass"], "understanding")
+        self.assertIn("pokazane 3 h temu", r["R10"]["qtime"])
+        self.assertIn("milczenie rozstrzyga za 21 h", r["R10"]["qtime"])
+        self.assertIn("trafi do koordynatora", r["R11"]["qtime"])
+
+
+class QuestionFields(unittest.TestCase):
+    def test_queue_row_carries_question_and_due(self):
+        a = mk("s_a", "R10", "proposed", first_shown="2026-10-26T08:00:00Z", ask_after="1d", cost_to_reverse="tani",
+               criteria=["k1"], **{"class": "money"})
+        row = spec_html.build_queue([a])[0]
+        self.assertEqual((row["due"], row["silence_applies"], row["class"], row["criteria"]),
+                         ("2026-10-27T08:00:00Z", True, "money", ["k1"]))
+        row = spec_html.build_queue([mk("s_b", "R11", "proposed")])[0]
+        self.assertNotIn("due", row)  # bez ask_after nie ma chwili rozstrzygnięcia (preset default_ask_after = null)
+        pre = {**spec_html.QUEUE_PRESET, "question": {**spec_html.QUEUE_PRESET["question"], "default_ask_after": "6h"}}
+        row = spec_html.build_queue([mk("s_b", "R11", "proposed", first_shown="2026-10-26T08:00:00Z")], pre)[0]
+        self.assertEqual((row["due"], row["silence_applies"]), ("2026-10-26T14:00:00Z", False))
 
 
 if __name__ == "__main__":
