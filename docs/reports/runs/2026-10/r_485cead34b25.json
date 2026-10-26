@@ -24,8 +24,8 @@
   "advisories": 2
  },
  "started": "2026-10-26T17:24:46.649826Z",
- "finished": null,
- "state": "running",
+ "finished": "2026-10-26T17:32:01.494289Z",
+ "state": "done",
  "summary": null,
  "steps": [
   {
@@ -47,7 +47,9 @@
    "state": "done"
   }
  ],
- "commits": [],
+ "commits": [
+  "78cc97f7 f2b7e115 3890eb75"
+ ],
  "cards": [
   {
    "kind": "start_gate",
@@ -98,6 +100,27 @@
    "counter_delta": {
     "w_toku": 1
    }
+  },
+  {
+   "at": "2026-10-26T17:32:00.984173Z",
+   "kind": "original_ideas",
+   "text": "krótkie słowo sterujące (np. stop) w długiej wypowiedzi = trafienie słabe: zapis bez skutku, eskalacja (przypadkowe stop bez straty; próg słów to preset)",
+   "counter_delta": {
+    "oryginalne": 1
+   }
+  },
+  {
+   "at": "2026-10-26T17:32:01.157611Z",
+   "kind": "decision",
+   "text": "Fable po 100 % = klasa owner (kredyty = jego pieniądze), reszta po capie = wait; roles.json presets.over_cap_class"
+  },
+  {
+   "at": "2026-10-26T17:32:01.494289Z",
+   "kind": "finished",
+   "counter_delta": {
+    "w_toku": -1,
+    "zrobione": 1
+   }
   }
  ],
  "receipt": [
@@ -110,11 +133,19 @@
    "reliability": "estimate"
   }
  ],
- "decisions": [],
+ "decisions": [
+  {
+   "text": "Fable po 100 % = klasa owner (kredyty = jego pieniądze), reszta po capie = wait; roles.json presets.over_cap_class",
+   "reversal": "zmień over_cap_class w tools/routines/roles.json",
+   "cost_to_reverse": null,
+   "by": null,
+   "at": "2026-10-26T17:32:01.157611Z"
+  }
+ ],
  "markers_applied": [],
  "spec": [
   "R89",
   "R91"
  ],
- "updated": "2026-10-26T17:31:17.221115Z"
+ "updated": "2026-10-26T17:32:01.494289Z"
 }
