@@ -137,7 +137,7 @@ TEST_SUITE("party_self_subgraphs") {
       CHECK(c.contains("count"));
     }
     // the kinds of the table and the ones added (the interview's other fields)
-    CHECK(parts == std::set<std::string>{"identity", "preferences", "policies", "units", "interests", "network", "memory", "forgotten", "slots"});
+    CHECK(parts == std::set<std::string>{"identity", "preferences", "policies", "units", "interests", "network", "memory", "forgotten", "slots", "devices", "automations"});
     CHECK(child(you, "subgraph:self/memory")->at("label") == "Co pamiętam");
     CHECK(child(you, "subgraph:self/memory")->at("count") == 2);
     CHECK(child(you, "subgraph:self/units")->at("count") == 1);

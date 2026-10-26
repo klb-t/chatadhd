@@ -316,6 +316,48 @@
             ]
           },
           {
+            "id": "devices",
+            "label": {
+              "pl": "Urządzenia",
+              "en": "Devices"
+            },
+            "why": {
+              "pl": "Urządzenia wejścia i wyjścia, które aplikacja opisuje (opisy, nic nie jest włączane). Tylko do odczytu.",
+              "en": "The input and output devices the app describes (descriptions only, nothing is switched on). Read only."
+            },
+            "order_for_prefix": null,
+            "stability_rank": 10,
+            "members": [
+              {
+                "source": "device",
+                "also": true
+              }
+            ],
+            "actions": [],
+            "actions_here": []
+          },
+          {
+            "id": "automations",
+            "label": {
+              "pl": "Automatyzacje i reguły strażnika",
+              "en": "Automations and guard rules"
+            },
+            "why": {
+              "pl": "To, co działa samo, i czym to się włącza lub wyłącza. Tylko do odczytu; zmieniasz to w ustawieniach.",
+              "en": "What runs without being asked and what switches it on or off. Read only; you change it in the settings."
+            },
+            "order_for_prefix": null,
+            "stability_rank": 11,
+            "members": [
+              {
+                "source": "automation",
+                "also": true
+              }
+            ],
+            "actions": [],
+            "actions_here": []
+          },
+          {
             "id": "interests",
             "label": {
               "pl": "Zainteresowania",

@@ -15032,18 +15032,24 @@
         },
         "phrases": {
           "en": [
-            "restart my profile from zero"
+            "restart my profile from zero",
+            "get to know me again",
+            "get to know me from scratch"
           ],
           "pl": [
-            "zacznij profil od zera"
+            "zacznij profil od zera",
+            "poznaj mnie od nowa",
+            "poznajmy się od nowa"
           ]
         },
         "examples": {
           "en": [
-            "restart my profile from zero"
+            "restart my profile from zero",
+            "get to know me again"
           ],
           "pl": [
-            "zacznij profil od zera"
+            "zacznij profil od zera",
+            "poznaj mnie od nowa"
           ]
         },
         "result_text": {

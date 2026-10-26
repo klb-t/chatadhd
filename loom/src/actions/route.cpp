@@ -1826,6 +1826,13 @@ Result<Json> route_with(Runtime& rt, Data& d, const Json& request) {
     return out;
   }
   std::stable_sort(cands.begin(), cands.end(), [](const Cand& a, const Cand& b) { return a.score > b.score; });
+  // A tie at the top between two phrases, one of which contains the other ("get to know me again" over "get to know me"): the one that says more wins.
+  for (std::size_t k = 1; k < cands.size() && cands[k].score == cands[0].score; ++k)
+    if (cands[k].action != cands[0].action && cands[k].matched.size() > cands[0].matched.size() && cands[k].matched.find(cands[0].matched) != std::string::npos) {
+      std::rotate(cands.begin(), cands.begin() + static_cast<std::ptrdiff_t>(k), cands.begin() + static_cast<std::ptrdiff_t>(k) + 1);
+      break;
+    }
+
   for (auto& c : cands)
     if (c.lang.empty()) c.lang = lang;
 

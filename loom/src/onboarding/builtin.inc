@@ -4194,6 +4194,48 @@ std::string_view(R"loom_onboard(            "option.true": "True",
             ]
           },
           {
+            "id": "devices",
+            "label": {
+              "pl": "Urządzenia",
+              "en": "Devices"
+            },
+            "why": {
+              "pl": "Urządzenia wejścia i wyjścia, które aplikacja opisuje (opisy, nic nie jest włączane). Tylko do odczytu.",
+              "en": "The input and output devices the app describes (descriptions only, nothing is switched on). Read only."
+            },
+            "order_for_prefix": null,
+            "stability_rank": 10,
+            "members": [
+              {
+                "source": "device",
+                "also": true
+              }
+            ],
+            "actions": [],
+            "actions_here": []
+          },
+          {
+            "id": "automations",
+            "label": {
+              "pl": "Automatyzacje i reguły strażnika",
+              "en": "Automations and guard rules"
+            },
+            "why": {
+              "pl": "To, co działa samo, i czym to się włącza lub wyłącza. Tylko do odczytu; zmieniasz to w ustawieniach.",
+              "en": "What runs without being asked and what switches it on or off. Read only; you change it in the settings."
+            },
+            "order_for_prefix": null,
+            "stability_rank": 11,
+            "members": [
+              {
+                "source": "automation",
+                "also": true
+              }
+            ],
+            "actions": [],
+            "actions_here": []
+          },
+          {
             "id": "interests",
             "label": {
               "pl": "Zainteresowania",
@@ -4915,7 +4957,8 @@ std::string_view(R"loom_onboard(            "option.true": "True",
             "unsupported": "This browser has no way to do it ({{reason}}); decline it or cancel the run."
           },
           "pl": {
-            "title": "Twoje urządzenie ma krok do wykonania",
+)loom_onboard", 59990),
+std::string_view(R"loom_onboard(            "title": "Twoje urządzenie ma krok do wykonania",
             "waiting": "Przebieg czeka, aż to urządzenie odpowie; nic innego się w tym czasie nie wykonuje.",
             "start_record": "Zacznij nagrywać",
             "stop_record": "Zatrzymaj i wyślij",
@@ -4943,8 +4986,7 @@ std::string_view(R"loom_onboard(            "option.true": "True",
       }
     },
     {
-)loom_onboard", 59972),
-std::string_view(R"loom_onboard(      "id": "presentation.semantic_queue/v1",
+      "id": "presentation.semantic_queue/v1",
       "key": "presentation.semantic_queue",
       "area": "presentation/semantic_queue",
       "revision": 1,
@@ -5918,7 +5960,8 @@ std::string_view(R"loom_onboard(      "id": "presentation.semantic_queue/v1",
             "cm_reason_music": "Ta wersja jeszcze nie umie tworzyć muzyki: nie ma takiej czynności, więc podłączenie dostawcy nic by nie dało.",
             "cm_reason_upload": "To połączenie nie potrafi przekazać plików do aplikacji.",
             "cm_reason_unknown_action": "Ta pozycja nie ma w tej wersji żadnej czynności.",
-            "cm_issue": "Menu „+” ma problem: {{issue}}",
+)loom_onboard", 59966),
+std::string_view(R"loom_onboard(            "cm_issue": "Menu „+” ma problem: {{issue}}",
             "cm_models_empty": "Lista modeli jest pusta. Wpisz klucz dostawcy w Ustawieniach.",
             "cm_model_not_saved": "Model jest ustawiony dla następnej wiadomości, ale ta rozmowa go nie zapamiętała: {{reason}}",
             "cm_model_not_read": "Nie udało się sprawdzić, jakiego modelu używa ta rozmowa: {{reason}}",
@@ -5937,8 +5980,7 @@ std::string_view(R"loom_onboard(      "id": "presentation.semantic_queue/v1",
             "cm_issue_no_id": "pozycja w „{{name}}” nie ma identyfikatora",
             "cm_issue_unknown_kind": "„{{name}}” jest rodzaju, którego ta wersja nie zna ({{kind}})",
             "cm_issue_toggle_target": "przełącznik „{{name}}” nie mówi, co włącza",
-)loom_onboard", 59948),
-std::string_view(R"loom_onboard(            "cm_issue_no_panel": "„{{name}}” ma otwierać panel, ale żadnego nie wskazuje",
+            "cm_issue_no_panel": "„{{name}}” ma otwierać panel, ale żadnego nie wskazuje",
             "cm_issue_unknown_panel": "„{{name}}” otwiera panel, którego ta wersja nie zna ({{panel}})",
             "cm_issue_ops_shape": "Twoje zmiany menu mają zły kształt",
             "cm_issue_op_shape": "zmiana nr {{n}} nie jest zmianą",
@@ -6872,7 +6914,8 @@ std::string_view(R"loom_onboard(            "cm_issue_no_panel": "„{{name}}”
             "count.name.rom_items": "elementy ROM",
             "count.name.profile_slots": "pola profilu",
             "count.name.principles": "zasady",
-            "count.name.operators": "operatory",
+)loom_onboard", 59982),
+std::string_view(R"loom_onboard(            "count.name.operators": "operatory",
             "count.name.rules": "reguły wnioskowania",
             "count.name.authority_ranks": "rangi autorytetu",
             "count.name.import_formats": "formaty importu",
@@ -6897,8 +6940,7 @@ std::string_view(R"loom_onboard(            "cm_issue_no_panel": "„{{name}}”
             "count.name.layers.privacy": "warstwy prywatności",
             "count.name.perspectives.store": "zapisane perspektywy",
             "count.name.db.nodes": "węzły grafu",
-)loom_onboard", 59968),
-std::string_view(R"loom_onboard(            "count.name.storage_categories": "kategorie magazynu",
+            "count.name.storage_categories": "kategorie magazynu",
             "count.name.storages": "magazyny",
             "count.name.storage_backends_reachable": "osiągalne magazyny",
             "count.name.storage_backends_unprobed": "niesprawdzone magazyny",
@@ -7716,7 +7758,8 @@ std::string_view(R"loom_onboard(            "count.name.storage_categories": "ka
             "chip.next.say": "go on",
             "proposal.yes": "Yes",
             "proposal.no": "No"
-          },
+)loom_onboard", 59998),
+std::string_view(R"loom_onboard(          },
           "pl": {
             "card.title": "Poznajmy się",
             "card.body": "Zbuduję Twój profil w rozmowie. Pierwsze pytanie: jak dokładnie mam Cię znać.",
@@ -7737,8 +7780,7 @@ std::string_view(R"loom_onboard(            "count.name.storage_categories": "ka
             "level.stores": "Co zapiszę",
             "level.model_sees": "Co zobaczy model",
             "level.aria": "Wybierz poziom: {{label}}",
-)loom_onboard", 59894),
-std::string_view(R"loom_onboard(            "level.hint": "Dotknij poziomu albo napisz własnymi słowami, na przykład „nie pytaj o zdrowie”.",
+            "level.hint": "Dotknij poziomu albo napisz własnymi słowami, na przykład „nie pytaj o zdrowie”.",
             "chips.order": "skip decline never review status",
             "chips.aria": "Szybkie odpowiedzi",
             "chip.skip.label": "Pomiń",
@@ -7923,7 +7965,7 @@ std::string_view(R"loom_onboard(            "level.hint": "Dotknij poziomu albo 
   },
   "presentation_key": "presentation.onboarding"
 }
-)loom_onboard", 5270)};
+)loom_onboard", 6601)};
 static constexpr std::string_view kOnboardingScenario[] = {
 std::string_view(R"loom_onboard({
   "schema": "loom.onboarding.scenario/1",
