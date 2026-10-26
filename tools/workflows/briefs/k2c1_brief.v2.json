@@ -18,6 +18,6 @@
    "from_hash": "sha256:0db914c271d81776476ee98c2e02879102c698a37b54e336afc74c8f1b39056f"
   }
  ],
- "role": "wykonawca pakietu",
+ "role": "native_package_executor",
  "_comment": "Brief K2c-1 rozłożony (IW-7, 2026-10-26): część wspólna = pakiet kontekstu jadro (reguły z dawnego scope i rules_extra), część własna ≈ 2 tys. znaków (przykład z tabeli IW-7). Oryginał: k2c1_brief.json (zostaje). Render: python3 tools/routine.py brief render tools/workflows/briefs/k2c1_brief.v2.json"
 }

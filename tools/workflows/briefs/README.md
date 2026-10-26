@@ -19,3 +19,17 @@ RID=$(python3 tools/run_record.py start --routine package.run --param id=<id> --
 `single-package.js` zaczyna prompt od `context_prefix` bajt w bajt (ten sam pakiet = ten sam prefiks; hash w karcie),
 dopisuje `spec:` i — gdy jest `run_id` — każe agentowi zapisywać kroki biegu. Po biegu:
 `python3 tools/run_record.py import-card <karta.json> --run-id $RID`. Pierwszy taki brief: `iw3_brief.json`.
+
+## Brief jako rekord i runner (IW-7; 2026-10-26)
+
+Brief `loom.brief/1` (schemat `tools/routines/schemas/brief.schema.json`): część wspólna = `context_pack`, część własna = `scope` + pola
+strukturalne (`design_doc`, `decisions`, `measurements`, `hypothesis`, `plan_calls`). Cały przebieg jednym poleceniem (0 tokenów):
+
+```
+python3 tools/routine.py run package.run --param brief=<brief.json> [--where vm:devbox-20260923]   # brama startu, args, zapis biegu
+# ... Workflow single-package.js z wypisanym plikiem args ...
+python3 tools/routine.py resume <run_id> --done agent --card <karta.json>                           # karta do zapisu biegu, koniec
+```
+
+`python3 tools/routine.py brief render <brief.json> --prompt` pokazuje prompt agenta; `brief split <stary.json> --pack <pakiet>` robi rekord
+ze starego briefu. Przykłady: `iw7_iw8_brief.json`, `k2c1_brief.v2.json` (pakiet `jadro`).

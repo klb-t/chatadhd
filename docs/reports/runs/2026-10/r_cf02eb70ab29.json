@@ -1,0 +1,164 @@
+{
+ "schema": "loom.routine_run/1",
+ "run_id": "r_cf02eb70ab29",
+ "routine": {
+  "id": "package.run",
+  "version": "1",
+  "hash": "sha256:47c4ee9f38281ad6e41f8da8c5df9ed771d578375d82be98ee525334df78e9ad"
+ },
+ "params": {
+  "role": "package_executor",
+  "used": "",
+  "out": "/tmp/claude-1001/-home-kielbowicz-marcin-chatadhd/c5c0e66c-567c-4222-aa07-f624d6155c63/scratchpad/iw78.args.json",
+  "brief": "tools/workflows/briefs/iw7_iw8_brief.json",
+  "where": "vm:devbox-20260923"
+ },
+ "context_pack_hash": "sha256:daeeacccdddd2a1e3a29da50e328f6914f45fd30722b8f23f8f1e849d2578457",
+ "brief_hash": "sha256:f6e52b6aaec6188b9fead486c82b380616bb7f21f0c12cab54ac3275276584b0",
+ "where": "vm:devbox-20260923",
+ "resolved": {
+  "role": "package_executor",
+  "model": "sonnet",
+  "inherited": false,
+  "place": "vm:devbox-20260923",
+  "via": "start_gate",
+  "at": "2026-10-26T17:48:21Z",
+  "verdict": "start_with_advisories",
+  "estimate_points": 0.5,
+  "advisories": 1
+ },
+ "started": "2026-10-26T17:48:21.231980Z",
+ "finished": null,
+ "state": "running",
+ "summary": null,
+ "steps": [
+  {
+   "id": "_preconditions",
+   "clock": {
+    "started": "2026-10-26T17:48:21.314387Z",
+    "updated": "2026-10-26T17:48:21.314387Z",
+    "ended": "2026-10-26T17:48:21.314387Z"
+   },
+   "state": "done"
+  },
+  {
+   "id": "start_gate",
+   "clock": {
+    "started": "2026-10-26T17:48:21.314387Z",
+    "updated": "2026-10-26T17:48:21.744806Z",
+    "ended": "2026-10-26T17:48:21.744806Z"
+   },
+   "state": "done",
+   "in_hash": "sha256:54d507b2f6f35eefca6bb40e5aff7fcd90a63224d31c0ada1ad95e34c1c2bd40",
+   "where": "vm:devbox-20260923",
+   "out_hash": "sha256:863a634fd48ca062b8e88674a6012f560c2043fecf982f55457229ddac10ba5d",
+   "exit": 0,
+   "out": {
+    "schema": "loom.start_gate_card/1",
+    "at": "2026-10-26T17:48:21Z",
+    "role": "package_executor",
+    "model": {
+     "requested": null,
+     "role_preset": "sonnet",
+     "model": "sonnet",
+     "why": "preset roli",
+     "inherited": false,
+     "observations": [],
+     "name": "Claude Sonnet 5.5"
+    },
+    "place": {
+     "id": "vm:devbox-20260923",
+     "state": "alive",
+     "observed_at": "2026-10-26T17:25Z",
+     "source": "obserwacja z sesji na VM (hostname devbox-20260923…internal)",
+     "disk_source": "shutil.disk_usage(/home/kielbowicz_marcin/chatadhd/.claude/worktrees/agent-ae4c59b3430fdd026) teraz",
+     "disk_free_gb": 15.3,
+     "needs_build": false,
+     "disk_ok": true
+    },
+    "estimate": {
+     "points": 0.5,
+     "per_package": 0.5,
+     "plan_calls": 50.0,
+     "source": "cost_per_package.default (brak pomiaru dla modelu)"
+    },
+    "window": {
+     "cap_key": "all_models",
+     "cap": 90,
+     "used": null,
+     "inflight": 0,
+     "cap_ok": null,
+     "note": "brak odczytu zużycia dla tego limitu (--used / --used-model) — nie sprawdzono"
+    },
+    "exceeds": [],
+    "advisories": [
+     "koszt pakietu dla sonnet niezmierzony — estymata z default (0.5)"
+    ],
+    "verdict": "start_with_advisories",
+    "log_only": false
+   }
+  },
+  {
+   "id": "brief",
+   "clock": {
+    "started": "2026-10-26T17:48:21.314387Z",
+    "updated": "2026-10-26T17:48:21.314387Z",
+    "ended": "2026-10-26T17:48:21.314387Z"
+   },
+   "state": "done",
+   "out_hash": "sha256:f7427b30bb329bc88556331eb97a02790cf6199c96ce1bedd5ffc5fb2100d719",
+   "out": {
+    "args_file": "/tmp/claude-1001/-home-kielbowicz-marcin-chatadhd/c5c0e66c-567c-4222-aa07-f624d6155c63/scratchpad/iw78.args.json",
+    "own_chars": 1232,
+    "context_pack_hash": "sha256:daeeacccdddd2a1e3a29da50e328f6914f45fd30722b8f23f8f1e849d2578457"
+   }
+  },
+  {
+   "id": "agent",
+   "clock": {
+    "started": "2026-10-26T17:48:21.314387Z",
+    "updated": "2026-10-26T17:48:21.314387Z",
+    "ended": "2026-10-26T17:48:21.314387Z"
+   },
+   "state": "handoff",
+   "where": "vm:devbox-20260923",
+   "text": "uruchom Workflow({scriptPath: 'tools/workflows/single-package.js', args: </tmp/claude-1001/-home-kielbowicz-marcin-chatadhd/c5c0e66c-567c-4222-aa07-f624d6155c63/scratchpad/iw78.args.json>}); po biegu: python3 tools/routine.py resume r_cf02eb70ab29 --done agent --card <karta.json>"
+  }
+ ],
+ "commits": [],
+ "cards": [],
+ "escalations": [],
+ "advisories": [],
+ "original_ideas": [],
+ "events": [
+  {
+   "at": "2026-10-26T17:48:21.231980Z",
+   "kind": "started",
+   "text": "pakiet agenta: brama startu → brief (prefiks bajt w bajt) → agent (przekazanie) → karta do zapisu biegu",
+   "counter_delta": {
+    "w_toku": 1
+   }
+  },
+  {
+   "at": "2026-10-26T17:48:21.314387Z",
+   "kind": "paused",
+   "text": "agent: uruchom Workflow({scriptPath: 'tools/workflows/single-package.js', args: </tmp/claude-1001/-home-kielbowicz-marcin-chatadhd/c5c0e66c-567c-4222-aa07-f624d6155c63/scratchpad/iw78.args.json>}); po biegu: python3 tools/routine.py resume r_cf02eb70ab29 --done agent --card <karta.json>"
+  }
+ ],
+ "receipt": [
+  {
+   "currency": "punkty tygodnia",
+   "value": 0.5,
+   "unit": "pkt",
+   "source": "start_gate estymata (cost_per_package.default (brak pomiaru dla modelu))",
+   "at": "2026-10-26T17:48:21.635662Z",
+   "reliability": "estimate"
+  }
+ ],
+ "decisions": [],
+ "markers_applied": [],
+ "spec": [
+  "R90"
+ ],
+ "updated": "2026-10-26T17:48:59.407663Z"
+}

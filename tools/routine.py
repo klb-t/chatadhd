@@ -420,12 +420,12 @@ class Runner:
     def _advise(self, run_id, text):
         rr.add_to_list(self.root, self.cfg, run_id, "advisories", {"at": rr.now_iso(), "text": text})
 
-    def _pause(self, run_id, step, text, at, state="waiting"):
+    def _pause(self, run_id, step, text, at, state="waiting", run_state="paused"):
         rr.add_step(self.root, self.cfg, run_id, step["id"], state=state, at=at, where=step.get("where") and
                     subst(step["where"], {"params": rr.load(self.root, self.cfg, run_id)[0].get("params", {})}) or None,
                     extra={"text": text})
-        rr.set_field(self.root, self.cfg, run_id, "state", "paused", at)
-        rr.add_event(self.root, self.cfg, run_id, "paused", text=f"{step['id']}: {text}", at=at, use_default_delta=False)
+        rr.set_field(self.root, self.cfg, run_id, "state", run_state, at)
+        rr.add_event(self.root, self.cfg, run_id, "paused" if run_state == "paused" else "handoff", text=f"{step['id']}: {text}", at=at, use_default_delta=False)
         self.out(f"PAUZA {run_id} {step['id']}: {text}")
 
     # -- kroki
@@ -540,7 +540,8 @@ class Runner:
 
     def step_handoff(self, run_id, step, ctx, at):
         text = subst(step.get("text", f"krok {step['id']} poza runnerem"), ctx)
-        self._pause(run_id, step, text, at, state="handoff")
+        self._pause(run_id, step, text, at, state="handoff",
+                    run_state=step.get("run_state", "running"))  # praca trwa poza runnerem (agent na miejscu): bieg w toku
         return "pause"
 
 

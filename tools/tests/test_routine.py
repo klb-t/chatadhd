@@ -133,7 +133,7 @@ class TestRunner(RunnerBase):
         self.assertEqual(self.rec(rid)["where"], "vm:t")
         # nowy Runner (żadnego stanu w pamięci) wznawia z rekordu
         rec = self.runner(cat).resume(rid, answers={"ask": "yes"})
-        self.assertEqual(rec["state"], "paused")
+        self.assertEqual(rec["state"], "running")  # handoff: praca trwa poza runnerem = bieg w toku
         self.assertEqual(self.steps(rid)["agent"]["state"], "handoff")
         self.assertIn(rid, self.steps(rid)["agent"]["text"])
         rec = self.runner(cat).resume(rid, done=["agent"])
@@ -141,7 +141,8 @@ class TestRunner(RunnerBase):
         self.assertEqual(self.steps(rid)["two"]["out"], "ALA")
         self.assertEqual(rr.validate_record(self.rec(rid)), [])
         kinds = [e["kind"] for e in self.rec(rid)["events"]]
-        self.assertEqual(kinds.count("resumed"), 2)
+        self.assertEqual(kinds.count("resumed"), 1)
+        self.assertEqual(kinds.count("handoff"), 1)
         self.assertEqual(kinds[-1], "finished")
 
     def test_yes_and_mandate_pass_confirm(self):
@@ -241,7 +242,8 @@ class TestPackageRunEndToEnd(RunnerBase):
         rec = r.start("package.run", {"brief": str(REPO / "tools/workflows/briefs/iw3_brief.json"), "skip_gate": True,
                                       "out": str(out), "where": "vm:t"})
         rid = rec["run_id"]
-        self.assertEqual(rec["state"], "paused")
+        self.assertEqual(rec["state"], "running")
+        self.assertEqual(rec["where"], "vm:t")
         args = json.loads(out.read_text())
         self.assertEqual(args["run_id"], rid)
         self.assertEqual(self.rec(rid)["context_pack_hash"], args["context_pack_hash"])

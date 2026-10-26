@@ -1,0 +1,21 @@
+{
+ "schema": "loom.brief/1",
+ "version": 1,
+ "_comment": "Brief pakietu IW-7 + IW-8 jako rekord (2026-10-26). Pierwszy pakiet przeprowadzony runnerem: python3 tools/routine.py run package.run --param brief=tools/workflows/briefs/iw7_iw8_brief.json. Część własna odtworzona z polecenia koordynatora (sesja gcp na VM).",
+ "id": "IW-7+IW-8",
+ "wt": "/home/kielbowicz_marcin/chatadhd/.claude/worktrees/agent-ae4c59b3430fdd026",
+ "branch": "worktree-agent-ae4c59b3430fdd026",
+ "remote_branch": "claude/chataddhd-cpp-loom-core-IRGRN",
+ "role": "package_executor",
+ "context_pack": "podwykonawca",
+ "spec": ["R90"],
+ "design_doc": "docs/architecture/INTERFEJS_WSPOLPRACY_v2_2026-10-23.md §2, §4 (IW-7, IW-8), §5, §8 (L3, L4)",
+ "scope": "IW-7 Rutyny jako dane + runner v1 + brief jako rekord: loom.routine/1, loom.brief/1, brief.render (prefiks bajt w bajt); tools/routine.py renderuje i zapisuje bieg bez stanu własnego; pierwsze rutyny package.run, check.before_use, secretary.run, status.lines; wersjonowanie z _history. IW-8 VM jako miejsce w danych + trwałość biegu: places.json z rekonesansu (Spot, usługi, narzędzia z datą), tętno do repo (timer systemd --user), vm.wake z chmury, flaga stop, bieg running where: vm ⇒ flaga spot-guard work-pending (work.sh pending/done), tak by bieg w toku znaczył pracę w toku przy wywłaszczeniu. Bez prawdziwych poleceń gcloud zmieniających instancję (describe tylko do odczytu); test z fałszywym gcloud. Bez buildu natywnego.",
+ "decisions": [
+  "runner v1 bez stanu własnego: stan = zapis biegu; handoff i confirm pauzują bieg (odwrót: stan w jądrze po P7)",
+  "hak stanu run_record → vm_place sync wyłączony w presecie, bo pisze prawdziwe metadane instancji (odwrót: state_change_hooks.enabled=true)",
+  "tętno commituje tylko swój plik, bez push w presecie (odwrót: --push w vm-heartbeat.service)"
+ ],
+ "plan_calls": 60,
+ "accept": "jeden pakiet przeprowadzony runnerem end-to-end z rekordem; brief K2c-1 rozłożony na pakiet kontekstu + część własną ≈ 2 tys. znaków; węzeł place VM z datowanymi polami; testy tools/tests zielone; rebase na origin/claude/chataddhd-cpp-loom-core-IRGRN i push"
+}

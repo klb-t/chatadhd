@@ -1820,3 +1820,25 @@ Nie zrobione: nic na GCP, żadnej strony GCP/GitHub nie czytałem; parametryzacj
   co godzinę o :23 (preset), nietypowe wpisy eskalowane do S1 wiadomością; słowa właściciela ze skrzynki zapisywane dosłownie.
 - Odwrót: `update_trigger enabled=false`; publikacja strony z `capabilities: {}` wyłącza bazę; `tools/spec_html.py` bez bloku `wireDb`.
 - Nie sprawdzone: pierwszy bieg sekretarza (narzędzia w świeżej sesji), zachowanie przycisków na telefonie w aplikacji Claude.
+
+## S1 / IW-7 + IW-8 — rutyny jako dane, runner v1, brief jako rekord; VM jako miejsce w danych + trwałość biegu (2026-10-26, sesja na VM, bieg `r_cf02eb70ab29` przez `package.run`)
+
+Co jest: `tools/routines/routines.json` (loom.routine/1: package.run, check.before_use, secretary.run, status.lines, vm.heartbeat,
+vm.sync, vm.wake — przykłady), schematy `routine.schema.json`, `brief.schema.json`, runner `tools/routine.py` (run/resume/brief
+render/split), pakiet kontekstu `jadro`, brief K2c-1 rozłożony (`k2c1_brief.v2.json`: część własna 1957 znaków zamiast 6761 + 663),
+`tools/vm_place.py` (+ `tools/routines/vm_place.json`), timer tętna `tools/gcp/vm-heartbeat.{service,timer}` + `install_heartbeat.sh`,
+hak wywłaszczenia czyta zapisy biegów, węzeł VM w `docs/ops/places.json` (spot, heartbeat, tools[] z datą). Testy: `tools/tests/test_routine.py`,
+`test_vm_place.py` (fałszywy gcloud).
+
+| Decyzja (preset) | Odwrót |
+|---|---|
+| Runner bez stanu własnego: stan = zapis biegu; `confirm` bez odpowiedzi → bieg `paused`; `handoff` → bieg zostaje `running` (praca trwa poza runnerem) | `run_state` na kroku; stan w jądrze po P7 |
+| Bieg `running` z `where` = `vm:devbox-20260923` albo alias `vm` ⇒ work-pending=true (notatka `runs: …`); `done` tylko dla flagi postawionej przez nas, cudzej (`auto:` z haka, ręcznej) nie zdejmujemy | `release_foreign_pending: true`; `where_aliases` |
+| Hak stanu `run_record` → `vm_place.py sync` WYŁĄCZONY w presecie (pisze prawdziwe metadane instancji); działają tętno i hak wywłaszczenia | `state_change_hooks.enabled: true` w `tools/routines/run_record.json` |
+| Tętno niezainstalowane; commituje tylko swój plik, bez push (wspólny checkout wypchnąłby cudze commity) | `tools/gcp/install_heartbeat.sh`; `--push` w unicie |
+| Hak wywłaszczenia: zapisy biegów przed heurystyką procesów; katalog z metadanych `spot-guard-runs-root` (instalator ustawia na repo) | usunąć klucz metadanych |
+| `vm.wake` tylko przy biegu w toku + tętno starsze niż 20 min + instancja zatrzymana; ustępuje spot-guard, gdy ten włączony i work-pending=true | `stale_minutes`, `defer_to_spot_guard: false` |
+| Prośba „stop” (words.py → gestures_state.json) adresowana do VM (zakres pasujący do `stop_scope_match` albo bieg z listy) → biegi `paused` z odwrotem `routine.py resume`; `handled[]` w prośbie | `stop_state_after`, `on_stop` |
+
+Luki: L3 — `gcloud compute instances start` z chmury i baza strony z VM niesprawdzone (stan `unknown` w `tools[]`); 24 h tętna dopiero po instalacji timera;
+wywłaszczenie przeżyte tylko w teście (fałszywy gcloud), nie na żywo; `claude-rc.service` włączona, jeszcze nie przetestowana restartem.

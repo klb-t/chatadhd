@@ -25,7 +25,7 @@
    "supersedes": null,
    "title": "pakiet agenta: brama startu → brief (prefiks bajt w bajt) → agent (przekazanie) → karta do zapisu biegu",
    "changelog": [{"version": 1, "at": "2026-10-26", "what": "pierwsza wersja (IW-7)"}],
-   "params": {"brief": {"required": true, "about": "plik loom.brief/1 albo dawny brief single-package"}, "role": {"default": "wykonawca pakietu"}, "used": {"default": "", "about": "zużycie okna w % (pusty = brama bez próbki)"}, "out": {"default": "{root}/.routine_out/{run_id}.args.json"}},
+   "params": {"brief": {"required": true, "about": "plik loom.brief/1 albo dawny brief single-package"}, "role": {"default": "package_executor", "about": "klucz z tools/routines/roles.json"}, "used": {"default": "", "about": "zużycie okna w % (pusty = brama bez próbki)"}, "out": {"default": "{root}/.routine_out/{run_id}.args.json"}},
    "presets": {"_history": []},
    "where": "{params.where}",
    "steps": [
