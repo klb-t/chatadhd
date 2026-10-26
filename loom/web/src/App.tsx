@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { inertAttr, useDialogFocus } from "./shell/use-dialog-focus";
 import ApplicationProfiles, { profileStyle } from "./components/ApplicationProfiles";
 import { profileAvailability, registerProfile, type ApplicationProfile } from "./profiles/runtime";
@@ -30,7 +30,10 @@ import PerspectivesPanel from "./components/PerspectivesPanel";
 import ViewEnginePanel from "./components/ViewEnginePanel";
 import { ShellLanguage, ShellText, shellTranslator } from "./shell/text";
 import { themeFromConfig } from "./shell/theme";
-import { START_VIEW_PRESET, layoutOfMode, parseShellHash, readSaved, resolveStartView, startViewOrder, writeSaved, type Layout } from "./shell/start-view";
+import { DEFAULT_LAYOUT, JOURNAL_LIMIT, LAYOUTS, START_VIEW_PRESET, layoutOfMode, parseShellHash, readSaved, resolveLayoutId, resolveStartView, startViewOrder, writeSaved } from "./shell/start-view";
+import WindowHost from "./shell/windows/WindowHost";
+import { activePanelOf, baseWindow, layoutState, overlays, setPanel, switchLayout } from "./shell/windows/session";
+import type { WState } from "./shell/windows/model";
 import { shellLanguage } from "./shell/language";
 import { cssVariables, mergeData } from "./shell/animation";
 import { glyphVariables } from "./shell/disclosure-glyphs";
@@ -63,7 +66,19 @@ export default function App() {
     typeof window !== "undefined" ? window.innerWidth > 720 : true,
   );
   const [activeConvId, setActiveConvId] = useState<string | null>(null);
-  const [activePanel, setActivePanel] = useState<PanelId | null>(null);
+  // W1 (OKNA §3): the screen is a layout of the window model. A panel is a window opened maximized over the layout (journaled operations);
+  // `activePanel` is read from the window state. R56: a deep link (#czat, #warsztat, #uklad/<id>) states the layout; otherwise start_view decides.
+  const [win, setWin] = useState<WState>(() => layoutState(LAYOUTS[parseShellHash(window.location.hash)?.layout ?? DEFAULT_LAYOUT], JOURNAL_LIMIT));
+  const [layoutKnown, setLayoutKnown] = useState(() => parseShellHash(window.location.hash) !== null);
+  const activePanel = activePanelOf(win) as PanelId | null;
+  const setActivePanel = useCallback((next: PanelId | null | ((cur: PanelId | null) => PanelId | null)) =>
+    setWin(s => setPanel(s, next as string | null | ((cur: string | null) => string | null))), []);
+  const layout = layoutKnown ? win.layout.id : null;
+  const setLayout = useCallback((name: string) => {
+    const id = resolveLayoutId(name);
+    setWin(s => (s.layout.id === id ? s : switchLayout(s, LAYOUTS[id], JOURNAL_LIMIT)));
+    setLayoutKnown(true);
+  }, []);
   const [settingsView, setSettingsView] = useState<"" | "all_fields">("");   // M1-W0 (3): a request to enter a secret opens Settings at Silnik › Wszystkie pola
   const [navigatorPerspectives, setNavigatorPerspectives] = useState<string[]>([]);   // M1-W1a: perspectives the navigator opens with (from "Pokaż w grafie")
   const [navigatorFocus, setNavigatorFocus] = useState("");   // M1-W0: where menu ⋮ › Graf opens the navigator ("" = root)
@@ -73,8 +88,6 @@ export default function App() {
   // P17 5: on a narrow screen the navigation is a menu under the header; on a wide one it is part of the header and wraps. Same buttons either way.
   const [navOpen, setNavOpen] = useState(false);
   const [primaryProfile, setPrimaryProfile] = useState<ApplicationProfile | null>(null);
-  // R56: the first screen. A deep link (#czat, #warsztat) states the view; otherwise the setting start_view (ordered) decides.
-  const [layout, setLayout] = useState<Layout | null>(() => parseShellHash(window.location.hash)?.layout ?? null);
   const [config, setConfig] = useState<Record<string, unknown>>({});
   const [started, setStarted] = useState(() => parseShellHash(window.location.hash) !== null);
   const sidebarOperations = useRef(0);
@@ -201,13 +214,16 @@ export default function App() {
   // Back (Android, browser) and Escape close the panel drawer and the knowledge sheet before anything else; in the workshop the
   // knowledge view is docked beside the chat, not an overlay, so only the sheet of the chat layout is a layer.
   useLayer("panel", activePanel !== null, () => setActivePanel(null));
-  useLayer("knowledge-sheet", knowledgeOpen && layout === "chat", () => setKnowledgeOpen(false));
+  // the layout shows one window full-screen (the plain chat app is that case); a grid of docks (the former Workshop) is not
+  const fullWindow = layout !== null && baseWindow(win.layout) !== null;
+  useLayer("knowledge-sheet", knowledgeOpen && fullWindow, () => setKnowledgeOpen(false));
   // Each overlay is a dialog for a reader of the screen: focus enters it when it opens and returns to the ⋮ button when it closes.
   const panelRef = useRef<HTMLDivElement>(null), knowledgeRef = useRef<HTMLDivElement>(null);
   useDialogFocus(activePanel !== null, panelRef, "shell-menu-toggle");
-  useDialogFocus(knowledgeOpen && layout === "chat", knowledgeRef, "shell-menu-toggle");
+  useDialogFocus(knowledgeOpen && fullWindow, knowledgeRef, "shell-menu-toggle");
 
   const panelTitle = activePanel ? (PANEL_TEXT_IDS[activePanel] ? t(PANEL_TEXT_IDS[activePanel]!) : PANEL_LABELS[activePanel]) : "";
+  const topKind = overlays(win.layout).at(-1)?.kind ?? null;   // the kind decides the component (settings = SettingsHuman, settings_fields = SettingsPanel)
   const panels = activePanel && (
 
           <>
@@ -229,8 +245,8 @@ export default function App() {
                 {activePanel === "memory" && <MemoryPanel />}
                 {activePanel === "import" && <ImportPanel onImported={() => setConvRefreshKey((k) => k + 1)} />}
                 {activePanel === "context" && <ContextSlider convId={activeConvId} />}
-                {activePanel === "settings" && layout === "workshop" && <SettingsPanel />}
-                {activePanel === "settings" && layout !== "workshop" && <SettingsHuman profileHost={userProfileHost} convId={activeConvId} language={uiLanguage} view={settingsView}
+                {activePanel === "settings" && topKind === "settings_fields" && <SettingsPanel />}
+                {activePanel === "settings" && topKind !== "settings_fields" && <SettingsHuman profileHost={userProfileHost} convId={activeConvId} language={uiLanguage} view={settingsView}
                   onNavigate={address => { setNavigatorFocus(address); setActivePanel("navigator"); }} />}
                 {activePanel === "logs" && <LogPanel />}
                 {activePanel === "methods" && <MethodsPanel transport={api} />}
@@ -252,7 +268,7 @@ export default function App() {
         
   );
   if (layout === null) return null;
-  const workshop = (
+  const workshop = (overlay: ReactNode) => (
     <div className="app-root" data-sidebar-side={primaryProfile?.presentation.sidebar.side ?? "left"}
       style={primaryProfile ? profileStyle(primaryProfile) : undefined}>
       {/* an open panel is a modal dialog: the header, the sidebar and the main panel behind it are inert (no Tab, no taps, no reader) */}
@@ -319,17 +335,18 @@ export default function App() {
           {knowledgeOpen && <KnowledgeWorkbench profileHost={userProfileHost} onClose={() => setKnowledgeOpen(false)} onDataChanged={() => setConvRefreshKey((key) => key + 1)} />}
         </div>
 
-        {panels}
+        {overlay}
       </div>
     </div>
   );
-  if (layout === "chat") return (
-    <ShellText.Provider value={t}><ShellLanguage.Provider value={uiLanguage}>
+  const host = <WindowHost state={win} renderOverlay={() => panels} grid={workshop} renderWindow={w => w.kind !== "chat" ? null : (
       <ChatShell profileHost={userProfileHost} convId={activeConvId} onSelect={setActiveConvId} onCreated={onConversationCreated} onShowInGraph={openNavigator}
         refreshKey={convRefreshKey} onMessagesChanged={onMessagesChanged} behindOverlay={activePanel !== null || knowledgeOpen}
-        actions={{ panel: (id) => { if (id === "settings") setSettingsView(""); setActivePanel(id as PanelId); }, navigator: (focus) => { setNavigatorFocus(focus); setActivePanel("navigator"); }, knowledge: () => setKnowledgeOpen(true), workshop: () => setLayout("workshop") }} />
-      {panels}
-      {knowledgeOpen && <>
+        actions={{ panel: (id) => { if (id === "settings") setSettingsView(""); setActivePanel(id as PanelId); }, navigator: (focus) => { setNavigatorFocus(focus); setActivePanel("navigator"); }, knowledge: () => setKnowledgeOpen(true), workshop: () => setLayout("workshop") }} />)} />;
+  return (
+    <ShellText.Provider value={t}><ShellLanguage.Provider value={uiLanguage}>
+      {host}
+      {fullWindow && knowledgeOpen && <>
         <div className="drawer-backdrop" onClick={() => setKnowledgeOpen(false)} />
         <div className="drawer" style={{ width: "min(960px, 100vw)" }} data-testid="panel-knowledge-sheet" ref={knowledgeRef} role="dialog" aria-modal="true" aria-label={t("menu_knowledge")} tabIndex={-1}>
           <div className="drawer-header"><h2>{t("menu_knowledge")}</h2><button className="icon-btn" aria-label={t("panel_close", { screen: t("menu_knowledge") })} onClick={() => setKnowledgeOpen(false)}>×</button></div>
@@ -338,5 +355,4 @@ export default function App() {
       </>}
     </ShellLanguage.Provider></ShellText.Provider>
   );
-  return <ShellText.Provider value={t}><ShellLanguage.Provider value={uiLanguage}>{workshop}</ShellLanguage.Provider></ShellText.Provider>;
 }

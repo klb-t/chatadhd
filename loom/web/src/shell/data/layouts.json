@@ -261,5 +261,33 @@
     "full_screen_chat": "czat",
     "views_grid": "siatka",
     "windows": "last"
-  }
+  },
+  "fallbacks": {
+    "last": "siatka"
+  },
+  "fallbacks_note": "W1: layout_mode=windows means 'the last own layout' (OKNA §3.1); until saved layouts exist (W5) it opens the grid, as before. A preset, not a rule.",
+  "panel_kinds": {
+    "graph": "graph_view",
+    "graph-entry": "graph_entry",
+    "navigator": "navigator",
+    "perspectives": "perspectives",
+    "view-engine": "view_engine",
+    "memory": "memory",
+    "import": "import",
+    "context": "context",
+    "settings": "settings",
+    "logs": "logs",
+    "methods": "methods",
+    "analysis": "analysis",
+    "onboarding": "onboarding",
+    "user-knowledge": "user_knowledge",
+    "operations": "operations"
+  },
+  "panel_kinds_by_layout": {
+    "siatka": {
+      "settings": "settings_fields"
+    }
+  },
+  "panel_kinds_note": "W1: which window kind a panel of the app opens as (maximized over the layout, OKNA §3.3). Open map: a panel missing here opens as the kind of its own id.",
+  "panel_placement": "maximize"
 }

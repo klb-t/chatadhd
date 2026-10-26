@@ -354,7 +354,7 @@
   {
    "component": "ChatShell",
    "reason": {
-    "pl": "powłoka układu „Czat”: staje się treścią okna chat w pakiecie W1 (obserwacja 2026-10-26)"
+    "pl": "treść okna chat (W1): pasek, menu ⋮ i szuflada rozmów wokół ChatView; WindowHost rysuje ją, gdy okno chat jest zmaksymalizowane"
    }
   },
   {
@@ -367,6 +367,12 @@
    "component": "SemanticDot",
    "reason": {
     "pl": "wskaźnik w pasku czatu, część okna chat"
+   }
+  },
+  {
+   "component": "WindowHost",
+   "reason": {
+    "pl": "gospodarz okien (W1): rysuje aktywny układ i okna otwarte nad nim; sam nie jest widokiem, tylko ramą dla okien"
    }
   }
  ]

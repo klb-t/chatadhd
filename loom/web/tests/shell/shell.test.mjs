@@ -40,15 +40,18 @@ test('start view: preset order last_saved, last_conversation, new_conversation; 
 });
 
 test('layout_mode and deep links', () => {
-  assert.equal(sv.layoutOfMode(undefined), 'chat'); assert.equal(sv.layoutOfMode('full_screen_chat'), 'chat');
-  assert.equal(sv.layoutOfMode('views_grid'), 'workshop'); assert.equal(sv.layoutOfMode('windows'), 'workshop');
-  assert.deepEqual(sv.parseShellHash('#warsztat'), { layout: 'workshop', conversationId: null });
-  assert.deepEqual(sv.parseShellHash('#czat/c_ab12'), { layout: 'chat', conversationId: 'c_ab12' });
+  // W1: the view is a layout id of layouts.json (chat -> czat, workshop -> siatka); the behaviour is the same as before
+  assert.equal(sv.layoutOfMode(undefined), 'czat'); assert.equal(sv.layoutOfMode('full_screen_chat'), 'czat');
+  assert.equal(sv.layoutOfMode('views_grid'), 'siatka'); assert.equal(sv.layoutOfMode('windows'), 'siatka');
+  assert.deepEqual(sv.parseShellHash('#warsztat'), { layout: 'siatka', conversationId: null });
+  assert.deepEqual(sv.parseShellHash('#czat/c_ab12'), { layout: 'czat', conversationId: 'c_ab12' });
   assert.equal(sv.parseShellHash('#other'), null);
   const mem = new Map(); const store = { getItem: k => mem.get(k) ?? null, setItem: (k, v) => mem.set(k, v) };
   assert.equal(sv.readSaved(store), null);
-  sv.writeSaved(store, { layout: 'chat', conversationId: 'c_1' });
-  assert.deepEqual(sv.readSaved(store), { layout: 'chat', conversationId: 'c_1' });
+  sv.writeSaved(store, { layout: 'czat', conversationId: 'c_1' });
+  assert.deepEqual(sv.readSaved(store), { layout: 'czat', conversationId: 'c_1' });
+  mem.clear(); mem.set('loom.shell.last.v1', JSON.stringify({ schema: 'loom.shell.last/1', layout: 'chat', conversation_id: 'c_1' }));
+  assert.deepEqual(sv.readSaved(store), { layout: 'czat', conversationId: 'c_1' }, 'a value saved by the v1 shell is still read');
 });
 
 test('settings are described in settings_fields.pack: start_view, layout_mode (windows planned with a reason), ui_language, animation_*', () => {
