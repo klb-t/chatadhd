@@ -29,16 +29,16 @@ for (const name of names) {
     const [x, y] = await Promise.all([load(a), load(b)]);
     if (x.width !== y.width || x.height !== y.height) return { size: [x.width, x.height, y.width, y.height] };
     const px = (img) => { const c = document.createElement("canvas"); c.width = img.width; c.height = img.height; const g = c.getContext("2d"); g.drawImage(img, 0, 0); return g.getImageData(0, 0, img.width, img.height).data; };
-    const p = px(x), q = px(y); let diff = 0;
-    for (let i = 0; i < p.length; i += 4) if (Math.abs(p[i] - q[i]) > tol || Math.abs(p[i + 1] - q[i + 1]) > tol || Math.abs(p[i + 2] - q[i + 2]) > tol || Math.abs(p[i + 3] - q[i + 3]) > tol) diff++;
-    return { diff, total: p.length / 4 };
+    const p = px(x), q = px(y); let diff = 0, x0 = Infinity, y0 = Infinity, x1 = -1, y1 = -1;
+    for (let i = 0; i < p.length; i += 4) if (Math.abs(p[i] - q[i]) > tol || Math.abs(p[i + 1] - q[i + 1]) > tol || Math.abs(p[i + 2] - q[i + 2]) > tol || Math.abs(p[i + 3] - q[i + 3]) > tol) { diff++; const k = i / 4, cx = k % x.width, cy = Math.floor(k / x.width); x0 = Math.min(x0, cx); y0 = Math.min(y0, cy); x1 = Math.max(x1, cx); y1 = Math.max(y1, cy); }
+    return { diff, total: p.length / 4, box: diff ? [x0, y0, x1, y1] : null };
   }, { a: "data:image/png;base64," + a.toString("base64"), b: "data:image/png;base64," + b.toString("base64"), tol: preset.channel_tolerance ?? 0 });
   if (r.size) rows.push({ name, status: "size_differs", size: r.size });
-  else rows.push({ name, status: r.diff <= (preset.max_diff_pixels ?? 0) && r.diff / r.total <= (preset.max_diff_ratio ?? 0) ? "within_preset" : "differs", diff: r.diff, ratio: r.diff / r.total });
+  else rows.push({ name, status: r.diff <= (preset.max_diff_pixels ?? 0) && r.diff / r.total <= (preset.max_diff_ratio ?? 0) ? "within_preset" : "differs", diff: r.diff, ratio: r.diff / r.total, box: r.box });
 }
 await browser.close();
 const bad = rows.filter((r) => r.status !== "identical" && r.status !== "within_preset");
-for (const r of rows) if (r.status !== "identical") console.log(`${r.status.padEnd(14)} ${r.name}${r.diff !== undefined ? ` ${r.diff} px (${(r.ratio * 100).toFixed(4)} %)` : ""}${r.size ? ` ${r.size.join("x")}` : ""}`);
+for (const r of rows) if (r.status !== "identical") console.log(`${r.status.padEnd(14)} ${r.name}${r.diff !== undefined ? ` ${r.diff} px (${(r.ratio * 100).toFixed(4)} %)` : ""}${r.size ? ` ${r.size.join("x")}` : ""}${r.box ? ` box ${r.box.join(",")}` : ""}`);
 console.log(`[shots-compare] ${rows.length} pictures: ${rows.filter((r) => r.status === "identical").length} identical, ${rows.filter((r) => r.status === "within_preset").length} within the preset, ${bad.length} different`);
 if (jsonOut) writeFileSync(jsonOut, JSON.stringify({ preset, rows }, null, 2));
 process.exit(bad.length ? 1 : 0);
