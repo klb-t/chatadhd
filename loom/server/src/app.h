@@ -46,6 +46,11 @@ struct ServerOptions {
   // checks it before every request, the first one included), so a very small value resets slow-starting clients too. main.cpp accepts
   // whole seconds only and clamps to 2147483647: the library counts the idle time in 64-bit nanoseconds.
   size_t keep_alive_timeout_seconds = 5;
+  // Seconds a request may go without a byte arriving while its headers or body are read; past it the library gives up on the request.
+  // An upload whose client stalls that long before its body ends is answered 408 with that reason (not "malformed"). A long preset
+  // lets a slow or briefly suspended client finish a large upload; a short one frees a thread held by a client that went silent
+  // sooner. Whole seconds; 0 = the library's own value (CPPHTTPLIB_READ_TIMEOUT_SECOND, 5 s).
+  size_t read_timeout_seconds = 30;
   // R20: chunked / unframed request bodies are refused (411) by default. When true they are accepted on the two
   // upload routes only (import, transcribe, a device's blob), streamed to disk and counted against max_upload_bytes; every
   // other route still needs a Content-Length because its body is held in memory.
@@ -79,6 +84,8 @@ class App {
   bool accounts_mode() const { return accounts_ != nullptr; }
 
  private:
+  // The read timeout the library applies (opts_.read_timeout_seconds, or its own 5 s when that is 0).
+  size_t effective_read_timeout_s() const { return opts_.read_timeout_seconds ? opts_.read_timeout_seconds : 5; }
   void register_routes();
   void register_middleware();
   // POST /api/auth/{login,logout,register,password}, GET /api/auth/me.

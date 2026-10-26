@@ -51,11 +51,12 @@ bool parse_keep_alive_seconds(const std::string& text, unsigned long long& secon
 void print_usage(const char* argv0);
 
 // `source` names where the text came from (the flag or the environment variable) for the messages. Exits with 2 on an invalid value.
-size_t keep_alive_seconds_or_exit(const char* source, const std::string& text, const char* argv0) {
+size_t keep_alive_seconds_or_exit(const char* source, const std::string& text, const char* argv0,
+                                  const char* zero_means = "no persistent connections") {
   unsigned long long seconds = 0;
   bool clamped = false;
   if (!parse_keep_alive_seconds(text, seconds, clamped)) {
-    std::cerr << "loom-server: " << source << " takes a whole number of seconds (0 = no persistent connections), got '" << text << "'\n";
+    std::cerr << "loom-server: " << source << " takes a whole number of seconds (0 = " << zero_means << "), got '" << text << "'\n";
     print_usage(argv0);
     std::exit(2);
   }
@@ -74,6 +75,8 @@ void print_usage(const char* argv0) {
                "       [--sse-keepalive-ms N (idle event feeds probe their client this often, 0 = never; preset 5000)]\n"
                "       [--keep-alive-timeout-s N (whole seconds an idle persistent connection is kept, and a new connection may wait before its first request;\n"
                "        advertised to clients as Keep-Alive: timeout=N; 0 = every answer closes its connection; preset 5; above 2147483647 is clamped to it)]\n"
+               "       [--read-timeout-s N (whole seconds a request may go without a byte while its headers or body are read; an upload that stalls\n"
+               "        that long is answered 408; 0 = library default 5; preset 30)]\n"
                "       [--threads N (threads that serve requests; every open page holds one for its event feed; 0 = library default; preset 64)]\n"
                "       [--allow-chunked-uploads (accept chunked/unframed import/transcribe bodies, streamed to disk)]\n"
                "       " << argv0 << " user add|passwd|disable|enable|invite|list --accounts-root DIR [LOGIN]\n"
@@ -182,6 +185,7 @@ int main(int argc, char** argv) {
   if (auto v = env_or("LOOM_SERVER_SSE_KEEPALIVE_MS", ""); !v.empty()) opts.sse_keepalive_ms = std::strtoull(v.c_str(), nullptr, 10);
   if (auto v = env_or("LOOM_SERVER_THREADS", ""); !v.empty()) opts.worker_threads = std::strtoull(v.c_str(), nullptr, 10);
   if (auto v = env_or("LOOM_SERVER_KEEP_ALIVE_TIMEOUT_S", ""); !v.empty()) opts.keep_alive_timeout_seconds = keep_alive_seconds_or_exit("LOOM_SERVER_KEEP_ALIVE_TIMEOUT_S", v, argv[0]);
+  if (auto v = env_or("LOOM_SERVER_READ_TIMEOUT_S", ""); !v.empty()) opts.read_timeout_seconds = keep_alive_seconds_or_exit("LOOM_SERVER_READ_TIMEOUT_S", v, argv[0], "library default");
   if (auto v = env_or("LOOM_SERVER_ALLOW_CHUNKED_UPLOADS", ""); !v.empty()) opts.allow_chunked_uploads = v != "0" && v != "false";
   bool allow_public = false;
 
@@ -216,6 +220,8 @@ int main(int argc, char** argv) {
       opts.sse_keepalive_ms = std::strtoull(next("--sse-keepalive-ms"), nullptr, 10);
     } else if (arg == "--keep-alive-timeout-s") {
       opts.keep_alive_timeout_seconds = keep_alive_seconds_or_exit("--keep-alive-timeout-s", next("--keep-alive-timeout-s"), argv[0]);
+    } else if (arg == "--read-timeout-s") {
+      opts.read_timeout_seconds = keep_alive_seconds_or_exit("--read-timeout-s", next("--read-timeout-s"), argv[0], "library default");
     } else if (arg == "--threads") {
       opts.worker_threads = std::strtoull(next("--threads"), nullptr, 10);
     } else if (arg == "--allow-chunked-uploads") {

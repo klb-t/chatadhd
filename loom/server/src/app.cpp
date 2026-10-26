@@ -222,7 +222,10 @@ struct Upload {
   std::map<std::string, std::string> fields;  // small non-file multipart fields
   std::string error;
   bool too_large = false;
+  bool stalled = false;  // the client sent nothing for the read timeout before the body ended (408, not "malformed")
 };
+
+int upload_status(const Upload& up) { return up.too_large ? 413 : up.stalled ? 408 : 400; }
 
 // Extension of an untrusted upload name, kept only when it is a plain alphanumeric suffix.
 std::string safe_extension(const std::string& filename) {
@@ -248,7 +251,8 @@ fs::path upload_dir_for(LoomContext* ctx) {
 // Streams the multipart part "file" into `dir`/<random name> as it arrives. Other parts are collected as
 // strings up to `field_limit` bytes each (they are options, not payload).
 bool receive_upload(const httplib::Request& req, const httplib::ContentReader& reader, const fs::path& dir,
-                    std::size_t field_limit, std::size_t total_limit, std::size_t drain_limit, Upload& up) {
+                    std::size_t field_limit, std::size_t total_limit, std::size_t drain_limit, std::size_t read_timeout_s,
+                    Upload& up) {
   if (!req.is_multipart_form_data()) {
     up.error = "multipart/form-data with a field \"file\" is required";
     return false;
@@ -257,8 +261,11 @@ bool receive_upload(const httplib::Request& req, const httplib::ContentReader& r
   std::string current;
   bool in_file = false, failed = false;
   std::size_t total = 0;  // counts every body byte (total_limit 0 = no limit), so chunked bodies are bounded too
+  // The library reports a read timeout and a parse error alike (the reader returns false); the time since the last byte tells them apart.
+  auto last_byte = std::chrono::steady_clock::now();
   const bool ok = reader(
       [&](const httplib::MultipartFormData& part) {
+        last_byte = std::chrono::steady_clock::now();
         current = part.name;
         in_file = part.name == "file" && !up.has_file;
         if (in_file) {
@@ -274,6 +281,7 @@ bool receive_upload(const httplib::Request& req, const httplib::ContentReader& r
         return true;
       },
       [&](const char* data, std::size_t n) {
+        last_byte = std::chrono::steady_clock::now();
         total += n;
         // Over the limit: keep reading and discard the rest of the body instead of aborting. Closing a socket
         // that still has unread bytes makes the kernel send a RST, which can destroy the 413 before the client
@@ -300,6 +308,12 @@ bool receive_upload(const httplib::Request& req, const httplib::ContentReader& r
       });
   out.close();
   if (!ok || failed) {
+    if (up.error.empty() && read_timeout_s > 0 &&
+        std::chrono::steady_clock::now() - last_byte >= std::chrono::milliseconds(read_timeout_s * 1000 - 250)) {
+      up.stalled = true;
+      up.error = "the client stopped sending before the body ended (no data for " + std::to_string(read_timeout_s) +
+                 " s; see --read-timeout-s)";
+    }
     if (up.error.empty()) up.error = "malformed multipart body";
     std::error_code ec;
     if (!up.path.empty()) fs::remove(up.path, ec);
@@ -376,6 +390,7 @@ bool App::init() {
   // httplib enforces this only for bodies that announce a Content-Length; the middleware below rejects every
   // other framing and applies the per-route limits before a body is read.
   svr_.set_payload_max_length(opts_.max_upload_bytes == 0 ? (std::numeric_limits<size_t>::max)() : opts_.max_upload_bytes);
+  if (opts_.read_timeout_seconds != 0) svr_.set_read_timeout(static_cast<time_t>(opts_.read_timeout_seconds), 0);
   if (opts_.keep_alive_timeout_seconds == 0) {
     svr_.set_keep_alive_max_count(1);  // the only answer of a connection carries "Connection: close"
   } else {
@@ -781,11 +796,11 @@ void App::route_models_providers() {
       fs::path path;
       ~Cleanup() { std::error_code ignored; if (!path.empty()) fs::remove(path, ignored); }
     } cleanup;
-    const bool received = receive_upload(req, reader, upload_dir_for(ctx), opts_.max_body_bytes ? opts_.max_body_bytes : (std::numeric_limits<std::size_t>::max)(), opts_.max_upload_bytes, opts_.upload_drain_bytes, up);
+    const bool received = receive_upload(req, reader, upload_dir_for(ctx), opts_.max_body_bytes ? opts_.max_body_bytes : (std::numeric_limits<std::size_t>::max)(), opts_.max_upload_bytes, opts_.upload_drain_bytes, effective_read_timeout_s(), up);
     cleanup.path = up.path;
     if (!received) {
       res.set_header("Connection", "close");  // the unread rest of the body must not be parsed as the next request
-      send_error(res, "invalid_argument", up.error, up.too_large ? 413 : 400);
+      send_error(res, "invalid_argument", up.error, upload_status(up));
       return;
     }
     if (!up.has_file) {
@@ -814,11 +829,11 @@ void App::route_models_providers() {
       fs::path path;
       ~Cleanup() { std::error_code ignored; if (!path.empty()) fs::remove(path, ignored); }
     } cleanup;
-    const bool received = receive_upload(req, reader, upload_dir_for(ctx), opts_.max_body_bytes ? opts_.max_body_bytes : (std::numeric_limits<std::size_t>::max)(), opts_.max_upload_bytes, opts_.upload_drain_bytes, up);
+    const bool received = receive_upload(req, reader, upload_dir_for(ctx), opts_.max_body_bytes ? opts_.max_body_bytes : (std::numeric_limits<std::size_t>::max)(), opts_.max_upload_bytes, opts_.upload_drain_bytes, effective_read_timeout_s(), up);
     cleanup.path = up.path;
     if (!received) {
       res.set_header("Connection", "close");  // the unread rest of the body must not be parsed as the next request
-      send_error(res, "invalid_argument", up.error);
+      send_error(res, "invalid_argument", up.error, upload_status(up));
       return;
     }
     if (!up.has_file) {
@@ -1185,9 +1200,9 @@ void App::route_import_export() {
                                    const httplib::ContentReader& reader) {
     LoomContext* ctx = rctx();
     Upload up;
-    if (!receive_upload(req, reader, upload_dir_for(ctx), opts_.max_body_bytes ? opts_.max_body_bytes : (std::numeric_limits<std::size_t>::max)(), opts_.max_upload_bytes, opts_.upload_drain_bytes, up)) {
+    if (!receive_upload(req, reader, upload_dir_for(ctx), opts_.max_body_bytes ? opts_.max_body_bytes : (std::numeric_limits<std::size_t>::max)(), opts_.max_upload_bytes, opts_.upload_drain_bytes, effective_read_timeout_s(), up)) {
       res.set_header("Connection", "close");  // the unread rest of the body must not be parsed as the next request
-      send_error(res, "invalid_argument", up.error, up.too_large ? 413 : 400);
+      send_error(res, "invalid_argument", up.error, upload_status(up));
       return;
     }
     if (!up.has_file) {

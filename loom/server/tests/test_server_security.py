@@ -392,6 +392,38 @@ def main() -> int:
     finally:
         srv.stop()
 
+    # 11c. a client that stalls past --read-timeout-s before its body ends gets 408 with that reason, not 400 "malformed"
+    #      (CI 285 and the run on 597f92ba: under load a stall before the limit turned the expected 413 into such a 400)
+    srv = Server(root, "--allow-chunked-uploads", "--max-upload-bytes", "30000", "--read-timeout-s", "1")
+    try:
+        b = srv.base
+        sa, _ = login(b, "alice", "alice-password")
+        boundary = "r20boundary"
+
+        def stalling(payload: bytes, stall_at: int):
+            yield (f"--{boundary}\r\nContent-Disposition: form-data; name=\"file\"; filename=\"c.md\"\r\n"
+                   f"Content-Type: text/markdown\r\n\r\n").encode()
+            for i in range(0, len(payload), 1000):
+                if i == stall_at:
+                    time.sleep(2.5)
+                yield payload[i:i + 1000]
+            yield f"\r\n--{boundary}--\r\n".encode()
+        hdr = {"Content-Type": f"multipart/form-data; boundary={boundary}",
+               "Cookie": "; ".join(f"{c.name}={c.value}" for c in sa.cookies)}
+        try:
+            r = requests.post(b + "/api/import", data=stalling(b"x" * 100_000, 10_000), headers=hdr, timeout=60)
+            assert r.status_code == 408 and "stopped sending" in r.text, (r.status_code, r.text[:300])
+        except requests.ConnectionError:
+            pass  # the server may close while the client still writes; it must not answer 400 "malformed"
+        # past the limit the stall changes nothing: the answer stays 413
+        try:
+            r = requests.post(b + "/api/import", data=stalling(b"x" * 100_000, 50_000), headers=hdr, timeout=60)
+            assert r.status_code == 413, (r.status_code, r.text[:300])
+        except requests.ConnectionError:
+            pass
+    finally:
+        srv.stop()
+
     # 12. throttling covers registration (account flooding, invite guessing) and the password check
     #     The delay after the free attempts is a base of 1 s in the preset; under a sanitizer on a loaded runner one Argon2id
     #     request takes longer than that, so the next attempt came after the delay and was never throttled (CI 257: eight 403 and no
