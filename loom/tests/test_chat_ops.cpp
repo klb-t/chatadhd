@@ -108,8 +108,11 @@ TEST_SUITE("chat_ops") {
     for (const auto& c : ir.at("heuristic").at("commands")) {
       auto rx = re::Regex::compile(c.at("regex").get<std::string>());
       CHECK_MESSAGE(bool(rx), c.at("id").get<std::string>() << ": " << (rx ? "" : rx.error().message));
-      const bool runnable = f.rt->actions().runnable(unwrap(RuntimeProfile::builtin("actions")).values().at("actions").at(c.at("action").get<std::string>()));
-      CHECK_MESSAGE((runnable || c.at("action") == "actions.status"), c.at("id").get<std::string>() << ": the action is not runnable");
+      const Json entry = unwrap(RuntimeProfile::builtin("actions")).values().at("actions").at(c.at("action").get<std::string>());
+      const bool runnable = f.rt->actions().runnable(entry);
+      // W2: an action the client carries out (a `client` member: window.* on arranges_windows) is runnable for a client that declares it
+      const bool on_client = !entry.value("client", Json::object()).value("capability", "").empty();
+      CHECK_MESSAGE((runnable || on_client || c.at("action") == "actions.status"), c.at("id").get<std::string>() << ": the action is not runnable");
       ++checked;
     }
     CHECK(checked > 100);
