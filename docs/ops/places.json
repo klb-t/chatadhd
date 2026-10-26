@@ -2,7 +2,8 @@
  "schema": "loom.places/1",
  "_comment": "Mapa miejsc v1 (IW-4, 2026-10-26): statyczna tabela miejsc, sesji i usług. Każde pole stanu to DATOWANA OBSERWACJA (observed_at + source), nie ograniczenie (R59/R60). Listy miejsc, stanów, walut i pól są otwarte. Stany to presety słownika `state_labels`; nieznany stan = jego nazwa. Odświeża: ręcznie albo rutyna vm.heartbeat/vm.recon (IW-8). Strona spec liczy z tego jeden wiersz („miejsca: N żyją · …”) bez modelu.",
  "_history": [
-  {"at": "2026-10-26", "by": "IW-4 (Opus, sesja na VM)", "what": "ziarno: §2.7 INTERFEJS_WSPOLPRACY_v2, VM_DEPLOY_2026-10-23 (stan 2026-10-25), obserwacja na VM 2026-10-26 17:2x UTC (tmux, systemctl, curl, df)"}
+  {"at": "2026-10-26", "by": "IW-4 (Opus, sesja na VM)", "what": "ziarno: §2.7 INTERFEJS_WSPOLPRACY_v2, VM_DEPLOY_2026-10-23 (stan 2026-10-25), obserwacja na VM 2026-10-26 17:2x UTC (tmux, systemctl, curl, df)"},
+  {"at": "2026-10-26", "by": "IW-8 (Opus, sesja na VM)", "what": "węzeł VM: spot (polityka z describe), heartbeat (plik + timer), tools[] z datą, kanał stop; fakty Spot i czas startu"}
  ],
  "state_labels": {"alive": {"one": "żyje", "few": "żyją", "many": "żyje"}, "sleeps": {"one": "śpi", "few": "śpią", "many": "śpi"}, "not_deployed": "nie postawiono", "unknown": {"one": "nieznany", "few": "nieznane", "many": "nieznanych"}, "stopped": "zatrzymane"},
  "summary_order": ["alive", "sleeps", "not_deployed", "unknown"],
@@ -13,8 +14,24 @@
    "title": "S1-VM devbox-20260923 (GCP, europe-west4-c, e2)",
    "currency": ["godziny VM × stawka (jego pieniądze)", "dysk"],
    "idle_policy": "Spot; po wywłaszczeniu spot-guard przywraca jako Standard tylko gdy zostały zadania (work.sh pending), wraca na Spot po bezczynności (VM_DEPLOY)",
-   "stop_channel": "flaga w repo czytana przez tętno (IW-8, jeszcze nie ma) / gcloud compute instances stop",
+   "stop_channel": "prośba „stop” w docs/spec/gestures_state.json (gest words.py) czytana przez tętno: biegi running na tym miejscu → paused z odwrotem `routine.py resume` (tools/vm_place.py, IW-8) / gcloud compute instances stop",
    "holds_owner_data": false,
+   "spot": {"provisioning": "SPOT", "termination_action": "STOP", "automatic_restart": false, "observed_at": "2026-10-26T17:40Z", "source": "gcloud compute instances describe (tylko odczyt) + serwer metadanych scheduling", "guard": "spot-guard on (metadane), work-pending=false w chwili obserwacji; bieg running z where = to miejsce ⇒ work-pending=true (tools/vm_place.py sync / tętno / hak wywłaszczenia)", "runs_link": "tools/routines/vm_place.json"},
+   "heartbeat": {"file": "docs/reports/places/heartbeat/vm_devbox-20260923.jsonl", "writer": "tools/vm_place.py heartbeat (rutyna vm.heartbeat)", "cadence": "timer systemd --user tools/gcp/vm-heartbeat.timer (preset 10 min + 2 min po starcie)", "installed": false, "observed_at": "2026-10-26T17:40Z", "source": "IW-8: pliki w repo, instalacja tools/gcp/install_heartbeat.sh (po jego dotknięciu albo decyzji koordynatora)"},
+   "tools": [
+    {"id": "gcloud", "state": "available", "observed_at": "2026-10-26T17:40Z", "source": "which gcloud (/snap/bin/gcloud); describe instancji działa z VM (zakres SA cloud-platform)"},
+    {"id": "python3", "state": "available", "version": "3.14.4", "observed_at": "2026-10-26T17:40Z", "source": "python3 --version"},
+    {"id": "node", "state": "available", "observed_at": "2026-10-26T17:40Z", "source": "which node"},
+    {"id": "npm", "state": "available", "observed_at": "2026-10-23", "source": "VM_RECON_2026-10-23.md §7 (doinstalowany)"},
+    {"id": "gh", "state": "available", "observed_at": "2026-10-26T17:40Z", "source": "which gh"},
+    {"id": "cmake", "state": "available", "observed_at": "2026-10-26T17:40Z", "source": "which cmake; build dev zimny ≈ 12 min (VM_RECON §7)"},
+    {"id": "jq", "state": "available", "observed_at": "2026-10-26T17:40Z", "source": "which jq"},
+    {"id": "tmux", "state": "available", "observed_at": "2026-10-26T17:40Z", "source": "which tmux; sesja rc: claude, watchdog, ageds, chatadhd"},
+    {"id": "/dev/kvm", "state": "missing", "substitute": "emulator Androida w chmurze S2", "observed_at": "2026-10-23", "source": "VM_RECON_2026-10-23.md §3"},
+    {"id": "claude-rc.service", "state": "enabled, inactive", "observed_at": "2026-10-26T17:40Z", "source": "systemctl --user is-enabled/is-active; włączona 25.10 (zgoda właściciela), maszyna nie restartowała się od 23.10 15:44 UTC, więc jednostka jeszcze nie biegła; sesje rc żyją z ręcznego startu"},
+    {"id": "baza strony (ArtifactData) z VM", "state": "unknown", "observed_at": "2026-10-26T17:40Z", "source": "luka L3: niesprawdzone w IW-8"},
+    {"id": "gcloud compute instances start z chmury", "state": "unknown", "observed_at": "2026-10-26T17:40Z", "source": "luka L3: vm.wake z chmury niesprawdzony (uprawnienia sesji w chmurze)"}
+   ],
    "state": "alive",
    "observed_at": "2026-10-26T17:25Z",
    "source": "obserwacja z sesji na VM (hostname devbox-20260923…internal)",
@@ -22,10 +39,12 @@
     {"text": "dysk / 61 GB, zajęte 46 GB (74 %), wolne 16 GB", "observed_at": "2026-10-26T17:25Z", "source": "df -h /"},
     {"text": "8 vCPU, 31 GB RAM", "observed_at": "2026-10-26T17:25Z", "source": "nproc, free -g"},
     {"text": "stały adres devbox-ip 34.158.117.249; publicznie 80/443 (Caddy) i 22", "observed_at": "2026-10-25", "source": "docs/ops/VM_DEPLOY_2026-10-23.md"},
-    {"text": "brak /dev/kvm (emulator Androida zostaje w chmurze S2)", "observed_at": "2026-10-23", "source": "docs/ops/VM_RECON_2026-10-23.md §3"}
+    {"text": "brak /dev/kvm (emulator Androida zostaje w chmurze S2)", "observed_at": "2026-10-23", "source": "docs/ops/VM_RECON_2026-10-23.md §3"},
+    {"text": "Spot: preemptible TRUE, automaticRestart FALSE, onHostMaintenance TERMINATE, instanceTerminationAction STOP", "observed_at": "2026-10-26T17:40Z", "source": "serwer metadanych instance/scheduling + gcloud describe (tylko odczyt)"},
+    {"text": "ostatni start maszyny 2026-10-23T15:44:20Z (brak wywłaszczenia od tego czasu)", "observed_at": "2026-10-26T17:40Z", "source": "/proc/stat btime"}
    ],
    "sessions": [
-    {"id": "gcp", "title": "sesja Claude „gcp” (koordynator S1-VM, Remote Control)", "where": "tmux rc, okno 0 (claude)", "session": "session_01G2FdF1sSV9SQ9kbRg7tTdx", "state": "alive", "observed_at": "2026-10-26T17:25Z", "source": "tmux list-windows -t rc; TELEPORT_S1.md", "restart": "nie wstaje sama po wywłaszczeniu, dopóki nie ma claude-rc.service (VM_DEPLOY)"},
+    {"id": "gcp", "title": "sesja Claude „gcp” (koordynator S1-VM, Remote Control)", "where": "tmux rc, okno 0 (claude)", "session": "session_01G2FdF1sSV9SQ9kbRg7tTdx", "state": "alive", "observed_at": "2026-10-26T17:25Z", "source": "tmux list-windows -t rc; TELEPORT_S1.md", "restart": "po starcie maszyny wstaje z claude-rc.service (włączona 25.10, jeszcze nie przetestowana restartem — obserwacja 2026-10-26)"},
     {"id": "watchdog", "title": "sesja Claude projektu WatchDog", "where": "tmux rc, okno 1", "state": "alive", "observed_at": "2026-10-26T17:25Z", "source": "tmux list-windows -t rc"},
     {"id": "ageds", "title": "sesja Claude projektu AGEDS", "where": "tmux rc, okno 2", "state": "alive", "observed_at": "2026-10-26T17:25Z", "source": "tmux list-windows -t rc"},
     {"id": "chatadhd", "title": "sesja Claude projektu ChatADHD", "where": "tmux rc, okno 3", "state": "alive", "observed_at": "2026-10-26T17:25Z", "source": "tmux list-windows -t rc"}
