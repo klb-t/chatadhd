@@ -1,0 +1,373 @@
+{
+ "schema": "loom.window_kinds/1",
+ "note": "Lista rodzajów to zalążek (przykłady), otwarta: nakładka może dodać rodzaj. Każdy komponent montowany w App.tsx/ChatShell.tsx jest tu jako component rodzaju albo w not_window z powodem (test tests/shell/windows-registry.test.mjs). Status planned zawsze ma reason.pl i jest pokazywany jako pozycja wyszarzona, nigdy ukryty.",
+ "kinds": [
+  {
+   "id": "chat",
+   "label": {
+    "pl": "Czat"
+   },
+   "component": "ChatView",
+   "params": [
+    "conversation",
+    "profile"
+   ],
+   "status": "present",
+   "note": "App.tsx dziś montuje go przez ApplicationProfiles (Warsztat) albo ChatShell (Czat)"
+  },
+  {
+   "id": "conversation_list",
+   "label": {
+    "pl": "Rozmowy"
+   },
+   "component": "ConversationList",
+   "params": [
+    "conversation",
+    "query"
+   ],
+   "status": "present"
+  },
+  {
+   "id": "navigator",
+   "label": {
+    "pl": "Graf"
+   },
+   "component": "GraphNavigator",
+   "params": [
+    "focus",
+    "perspectives",
+    "depth",
+    "budget",
+    "navigator_layout"
+   ],
+   "status": "present"
+  },
+  {
+   "id": "me",
+   "label": {
+    "pl": "Ty"
+   },
+   "component": "GraphNavigator",
+   "params": [
+    "focus"
+   ],
+   "status": "present",
+   "preset_params": {
+    "focus": "party:self"
+   },
+   "note": "nazwane otwarcie nawigatora, nie osobny komponent"
+  },
+  {
+   "id": "settings",
+   "label": {
+    "pl": "Ustawienia"
+   },
+   "component": "SettingsHuman",
+   "params": [
+    "group",
+    "view"
+   ],
+   "status": "present"
+  },
+  {
+   "id": "settings_fields",
+   "label": {
+    "pl": "Ustawienia (wszystkie pola)"
+   },
+   "component": "SettingsPanel",
+   "params": [],
+   "status": "present",
+   "note": "dziś tylko w Warsztacie (App.tsx: layout === workshop)"
+  },
+  {
+   "id": "graph_view",
+   "label": {
+    "pl": "Graf (stary widok)"
+   },
+   "component": "GraphView",
+   "params": [
+    "conversation"
+   ],
+   "status": "present"
+  },
+  {
+   "id": "graph_entry",
+   "label": {
+    "pl": "Graf: wejście"
+   },
+   "component": "GraphEntryPanel",
+   "params": [],
+   "status": "present"
+  },
+  {
+   "id": "memory",
+   "label": {
+    "pl": "Pamięć"
+   },
+   "component": "MemoryPanel",
+   "params": [
+    "node"
+   ],
+   "status": "present"
+  },
+  {
+   "id": "import",
+   "label": {
+    "pl": "Import"
+   },
+   "component": "ImportPanel",
+   "params": [],
+   "status": "present"
+  },
+  {
+   "id": "context",
+   "label": {
+    "pl": "Kontekst następnej wiadomości"
+   },
+   "component": "ContextSlider",
+   "params": [
+    "conversation"
+   ],
+   "status": "present"
+  },
+  {
+   "id": "semantic",
+   "label": {
+    "pl": "Analiza w tle"
+   },
+   "component": "SemanticStatus",
+   "params": [],
+   "status": "present",
+   "note": "dziś sheet:semantic w menu i przycisk w nagłówku Warsztatu"
+  },
+  {
+   "id": "diagnostics",
+   "label": {
+    "pl": "Diagnostyka"
+   },
+   "component": "DiagnosticsSheet",
+   "params": [],
+   "status": "present",
+   "note": "dziś sheet:diagnostics w menu"
+  },
+  {
+   "id": "knowledge",
+   "label": {
+    "pl": "Wiedza"
+   },
+   "component": "KnowledgeWorkbench",
+   "params": [],
+   "status": "present"
+  },
+  {
+   "id": "logs",
+   "label": {
+    "pl": "Dziennik"
+   },
+   "component": "LogPanel",
+   "params": [
+    "level"
+   ],
+   "status": "present"
+  },
+  {
+   "id": "operations",
+   "label": {
+    "pl": "Operacje"
+   },
+   "component": "OperationsPanel",
+   "params": [],
+   "status": "present"
+  },
+  {
+   "id": "methods",
+   "label": {
+    "pl": "Metody"
+   },
+   "component": "MethodsPanel",
+   "params": [],
+   "status": "present"
+  },
+  {
+   "id": "analysis",
+   "label": {
+    "pl": "Analiza"
+   },
+   "component": "AnalysisPanel",
+   "params": [
+    "conversation"
+   ],
+   "status": "present"
+  },
+  {
+   "id": "onboarding",
+   "label": {
+    "pl": "Wywiad o Tobie"
+   },
+   "component": "UserProfilePanel",
+   "params": [
+    "section"
+   ],
+   "status": "present",
+   "preset_params": {
+    "view": "onboarding"
+   },
+   "note": "ten sam komponent co user_knowledge, inny widok"
+  },
+  {
+   "id": "user_knowledge",
+   "label": {
+    "pl": "Co o Tobie wiemy"
+   },
+   "component": "UserProfilePanel",
+   "params": [],
+   "status": "present",
+   "preset_params": {
+    "view": "knowledge"
+   }
+  },
+  {
+   "id": "perspectives",
+   "label": {
+    "pl": "Perspektywy"
+   },
+   "component": "PerspectivesPanel",
+   "params": [
+    "perspective"
+   ],
+   "status": "present"
+  },
+  {
+   "id": "view_engine",
+   "label": {
+    "pl": "Silnik widoku"
+   },
+   "component": "ViewEnginePanel",
+   "params": [
+    "view"
+   ],
+   "status": "present"
+  },
+  {
+   "id": "artifact",
+   "label": {
+    "pl": "Artefakt"
+   },
+   "component": null,
+   "params": [
+    "message",
+    "artifact",
+    "format"
+   ],
+   "status": "planned",
+   "reason": {
+    "pl": "UI08: ramka z przyciskami; dziś artefakty importu to zwykła sekcja treści wiadomości"
+   }
+  },
+  {
+   "id": "request_inspector",
+   "label": {
+    "pl": "Żądanie do modelu"
+   },
+   "component": null,
+   "params": [
+    "conversation",
+    "turn"
+   ],
+   "status": "planned",
+   "reason": {
+    "pl": "dziś „Expert” w czacie tylko w Warsztacie; osobne okno to pakiet W8"
+   }
+  },
+  {
+   "id": "project_structure",
+   "label": {
+    "pl": "Struktura projektu"
+   },
+   "component": null,
+   "params": [
+    "root"
+   ],
+   "status": "planned",
+   "reason": {
+    "pl": "z makiety UI12: drzewo z przyciemnionymi węzłami do uzupełnienia"
+   }
+  },
+  {
+   "id": "execution_env",
+   "label": {
+    "pl": "Środowisko wykonania"
+   },
+   "component": null,
+   "params": [
+    "environment"
+   ],
+   "status": "planned",
+   "reason": {
+    "pl": "z makiety UI12; środowiska są węzłami; obserwacja 2026-10-23: w loom/web/src nie ma okna terminala"
+   }
+  },
+  {
+   "id": "media_player",
+   "label": {
+    "pl": "Odtwarzacz"
+   },
+   "component": null,
+   "params": [
+    "artifact",
+    "position"
+   ],
+   "status": "planned",
+   "reason": {
+    "pl": "z makiety UI12 (wideo/muzyka); multimodalność to projekt"
+   }
+  },
+  {
+   "id": "external",
+   "label": {
+    "pl": "Strona zewnętrzna"
+   },
+   "component": null,
+   "params": [
+    "url",
+    "sandbox"
+   ],
+   "status": "planned",
+   "reason": {
+    "pl": "inni odbiorcy (R60); iframe z polityką wymaga osobnej decyzji bezpieczeństwa"
+   }
+  },
+  {
+   "id": "connection",
+   "label": {
+    "pl": "Połączenie"
+   },
+   "component": null,
+   "params": [],
+   "status": "planned",
+   "reason": {
+    "pl": "dostępne, gdy istnieje odpowiednik na stronie; obserwacja 2026-10-23: dziś to natywna aktywność Androida, otwierana z menu ⋮"
+   }
+  }
+ ],
+ "not_window": [
+  {
+   "component": "ChatShell",
+   "reason": {
+    "pl": "powłoka układu „Czat”: staje się treścią okna chat w pakiecie W1 (obserwacja 2026-10-26)"
+   }
+  },
+  {
+   "component": "ApplicationProfiles",
+   "reason": {
+    "pl": "opakowanie okna chat w Warsztacie (profile aplikacji, styl); nie samodzielny widok"
+   }
+  },
+  {
+   "component": "SemanticDot",
+   "reason": {
+    "pl": "wskaźnik w pasku czatu, część okna chat"
+   }
+  }
+ ]
+}

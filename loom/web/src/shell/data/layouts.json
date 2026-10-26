@@ -1,30 +1,265 @@
 {
-  "schema": "loom.shell_layouts/1",
+  "schema": "loom.shell_layouts/2",
   "default": "czat",
   "layouts": {
     "czat": {
       "label": "Czat",
       "layout_mode": "full_screen_chat",
-      "topbar": ["drawer", "title", "model", "status", "menu"],
-      "menu": [
-        { "id": "graph", "label": "menu_graph", "action": "navigator:" },
-        { "id": "settings", "label": "menu_settings", "action": "panel:settings" },
-        { "id": "me", "label": "menu_me", "action": "navigator:party:self" },
-        { "id": "this_conversation", "label": "menu_this_conversation", "action": "navigator:conv:current" },
-        { "id": "views", "label": "menu_views", "action": "sheet:views" },
-        { "id": "semantic", "label": "menu_semantic", "action": "sheet:semantic" },
-        { "id": "diagnostics", "label": "menu_diagnostics", "action": "sheet:diagnostics" },
-        { "id": "connection", "label": "menu_connection", "action": "connection", "when": "android_shell" },
-        { "id": "workshop", "label": "menu_workshop", "action": "layout:workshop" }
+      "topbar": [
+        "drawer",
+        "title",
+        "model",
+        "status",
+        "menu"
       ],
-      "message_actions": ["copy", "edit", "regenerate", "versions", "exclude"],
-      "composer": ["attach", "text", "mic", "send"],
-      "starters": 4
+      "menu": [
+        {
+          "id": "graph",
+          "label": "menu_graph",
+          "action": "navigator:"
+        },
+        {
+          "id": "settings",
+          "label": "menu_settings",
+          "action": "panel:settings"
+        },
+        {
+          "id": "me",
+          "label": "menu_me",
+          "action": "navigator:party:self"
+        },
+        {
+          "id": "this_conversation",
+          "label": "menu_this_conversation",
+          "action": "navigator:conv:current"
+        },
+        {
+          "id": "views",
+          "label": "menu_views",
+          "action": "sheet:views"
+        },
+        {
+          "id": "semantic",
+          "label": "menu_semantic",
+          "action": "sheet:semantic"
+        },
+        {
+          "id": "diagnostics",
+          "label": "menu_diagnostics",
+          "action": "sheet:diagnostics"
+        },
+        {
+          "id": "connection",
+          "label": "menu_connection",
+          "action": "connection",
+          "when": "android_shell"
+        },
+        {
+          "id": "workshop",
+          "label": "menu_workshop",
+          "action": "layout:workshop"
+        }
+      ],
+      "message_actions": [
+        "copy",
+        "edit",
+        "regenerate",
+        "versions",
+        "exclude"
+      ],
+      "composer": [
+        "attach",
+        "text",
+        "mic",
+        "send"
+      ],
+      "starters": 4,
+      "origin": "preset",
+      "device_class": "any",
+      "tree": {
+        "split": "h",
+        "ratio": 0.28,
+        "a": {
+          "leaf": "L0"
+        },
+        "b": {
+          "leaf": "L1"
+        }
+      },
+      "leaves": {
+        "L0": {
+          "windows": [
+            "w_list"
+          ],
+          "active": "w_list"
+        },
+        "L1": {
+          "windows": [
+            "w_chat"
+          ],
+          "active": "w_chat"
+        }
+      },
+      "windows": [
+        {
+          "id": "w_list",
+          "kind": "conversation_list",
+          "node": "conversations:",
+          "mode": "docked",
+          "z": 0,
+          "params": {},
+          "profile": null,
+          "title_override": null,
+          "collapsed": true,
+          "pinned": false,
+          "dock": {
+            "leaf": "L0"
+          }
+        },
+        {
+          "id": "w_chat",
+          "kind": "chat",
+          "node": "conv:current",
+          "mode": "maximized",
+          "z": 0,
+          "params": {},
+          "profile": null,
+          "title_override": null,
+          "collapsed": false,
+          "pinned": false,
+          "dock": {
+            "leaf": "L1"
+          }
+        }
+      ],
+      "focus": "w_chat",
+      "channels": {
+        "conversation": null
+      },
+      "shelf": {
+        "handles": [
+          "w_list"
+        ]
+      },
+      "switcher": {
+        "style": "bar",
+        "position": "bottom"
+      }
     },
-    "warsztat": {
-      "label": "Warsztat",
+    "siatka": {
+      "label": "Siatka",
+      "origin": "preset",
+      "device_class": "any",
       "layout_mode": "views_grid",
-      "note": "The workbench: the application views grid with every panel, as before P20."
+      "aliases": [
+        "warsztat",
+        "workshop"
+      ],
+      "note": "The workbench: the application views grid with every panel, as before P20. Dawny „Warsztat” (kod: layout workshop).",
+      "tree": {
+        "split": "h",
+        "ratio": 0.22,
+        "a": {
+          "leaf": "L0"
+        },
+        "b": {
+          "split": "h",
+          "ratio": 0.5,
+          "a": {
+            "leaf": "L1"
+          },
+          "b": {
+            "leaf": "L2"
+          }
+        }
+      },
+      "leaves": {
+        "L0": {
+          "windows": [
+            "w_list"
+          ],
+          "active": "w_list"
+        },
+        "L1": {
+          "windows": [
+            "w_chat"
+          ],
+          "active": "w_chat"
+        },
+        "L2": {
+          "windows": [
+            "w_knowledge"
+          ],
+          "active": "w_knowledge"
+        }
+      },
+      "windows": [
+        {
+          "id": "w_list",
+          "kind": "conversation_list",
+          "node": "conversations:",
+          "mode": "docked",
+          "z": 0,
+          "params": {},
+          "profile": null,
+          "title_override": null,
+          "collapsed": false,
+          "pinned": false,
+          "dock": {
+            "leaf": "L0"
+          }
+        },
+        {
+          "id": "w_chat",
+          "kind": "chat",
+          "node": "conv:current",
+          "mode": "docked",
+          "z": 0,
+          "params": {},
+          "profile": null,
+          "title_override": null,
+          "collapsed": false,
+          "pinned": false,
+          "dock": {
+            "leaf": "L1"
+          }
+        },
+        {
+          "id": "w_knowledge",
+          "kind": "knowledge",
+          "node": "knowledge:",
+          "mode": "docked",
+          "z": 0,
+          "params": {},
+          "profile": null,
+          "title_override": null,
+          "collapsed": false,
+          "pinned": false,
+          "dock": {
+            "leaf": "L2"
+          }
+        }
+      ],
+      "focus": "w_chat",
+      "channels": {
+        "conversation": null
+      },
+      "shelf": {
+        "handles": []
+      }
     }
+  },
+  "journal_limit": 50,
+  "aliases": {
+    "warsztat": "siatka",
+    "workshop": "siatka",
+    "chat": "czat",
+    "full_screen_chat": "czat",
+    "views_grid": "siatka"
+  },
+  "layout_modes": {
+    "full_screen_chat": "czat",
+    "views_grid": "siatka",
+    "windows": "last"
   }
 }
