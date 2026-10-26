@@ -348,7 +348,8 @@ class Runner:
             p.setdefault("where", where)
         else:
             p.setdefault("where", "")
-        rec = rr.start(self.root, self.cfg, r["id"], version=r.get("version"), routine_hash=routine_hash(r),
+        rec = rr.start(self.root, self.cfg, r["id"], version=None if r.get("version") is None else str(r["version"]),
+                       routine_hash=routine_hash(r),
                        params=p, where=where, at=at, text=r.get("title"))
         return self.advance(rec["run_id"], at=at)
 
@@ -374,6 +375,7 @@ class Runner:
         return self.advance(run_id, at=at)
 
     def advance(self, run_id: str, at: str | None = None) -> dict:
+        at = at or rr.now_iso()
         rec, _ = rr.load(self.root, self.cfg, run_id)
         ref = f"{rec['routine']['id']}@{rec['routine']['version']}" if rec["routine"].get("version") is not None \
             else rec["routine"]["id"]
