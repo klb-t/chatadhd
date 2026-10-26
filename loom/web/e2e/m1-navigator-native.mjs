@@ -18,6 +18,7 @@ import net from "node:net";
 import path from "node:path";
 import { auditPage } from "./m1-audit.mjs";
 import { fileURLToPath } from "node:url";
+import { stableShot, trackRequests } from "./stable-shot.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const LOOM = path.resolve(here, "../..");
@@ -59,11 +60,12 @@ try {
   browser = await launch.launch({ headless: true }).catch(() => launch.launch({ headless: true, executablePath: CHROMIUM }));
   const context = await browser.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
   const page = await context.newPage();
+  trackRequests(page);
   const errors = [];
   page.on("pageerror", e => errors.push(String(e)));
   const nav = () => page.getByTestId("graph-navigator");
   // a screenshot after the fade/slide animations end (opacity mid-animation would show the chat through the menu); viewport, not full page
-  const shot = async name => { await page.evaluate(() => Promise.all(document.getAnimations().map(a => a.finished.catch(() => {})))); await page.screenshot({ path: path.join(SHOTS, `${name}.png`) }); await audit(name); };
+  const shot = async name => { await stableShot(page, path.join(SHOTS, `${name}.png`)); await audit(name); };
   const audit = async name => { for (const f of await auditPage(page)) AUDIT.push({ shot: name, ...f }); };
   const rowsOf = () => page.getByTestId("nav-rows").locator("li").evaluateAll(els => els.map(li => ({
     address: li.querySelector(".gnav-row-main").dataset.testid.replace("nav-row-", ""), label: li.querySelector(".gnav-label").textContent,

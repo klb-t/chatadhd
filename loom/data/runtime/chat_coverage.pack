@@ -2,7 +2,7 @@
   "schema": "loom.runtime_profile/1",
   "domain": "chat_coverage",
   "revision": 1,
-  "description": "R54 audit as data: everything the user can do must be possible from the conversation window. Every surface of the kernel (a C ABI function, an HTTP route, a loom_invoke operation, a JNI symbol, a settings group or secret) is listed exactly once, as a capability that an action reaches from the conversation (`capabilities`), as something that is not from the chat with a reason (`not_from_chat`), or as a known gap with its plan (`open`). The test tests/test_chat_coverage.cpp fails when the registry (data/graph/interfaces.pack), the settings fields or the loom_invoke dispatcher show a surface that is on none of the three lists, when a list names a surface that is gone, when an action named here is missing, planned or not runnable, and when an example sentence does not reach its action through the router. via: action (an action of the catalogue), native (the window itself), emergent (offered as a proposal by the growing catalogue). check: route (the examples are routed; the default for actions that have them), phrases (the action carries phrases), continuation (the action is reached from a proposal that another action returns, never from a sentence of its own: it carries no phrases, and the entry says so in chat_outcome_reason). chat_outcome (K2b-2): what the example sentences do when they are sent as chat text - pending (a proposal that waits for the person: the default), unavailable (the proposal says honestly that the sentence alone cannot do it, with the reason in chat_outcome_reason), continuation. An action that runs at once is declared in intent_routing (execution.direct), not here. Everything here is data: an overlay may add entries; nothing is a limit.",
+  "description": "R54 audit as data: everything the user can do must be possible from the conversation window. Every surface of the kernel (a C ABI function, an HTTP route, a loom_invoke operation, a JNI symbol, a settings group or secret) is listed exactly once, as a capability that an action reaches from the conversation (`capabilities`), as something that is not from the chat with a reason (`not_from_chat`), or as a known gap with its plan (`open`). The test tests/test_chat_coverage.cpp fails when the registry (data/graph/interfaces.pack), the settings fields or the loom_invoke dispatcher show a surface that is on none of the three lists, when a list names a surface that is gone, when an action named here is missing, planned or not runnable, and when an example sentence does not reach its action through the router. via: action (an action of the catalogue), client (an action of the catalogue the client carries out itself - one with a `client` member, runnable for a client that declares its capability, e.g. the arrangement of windows), native (the window itself), emergent (offered as a proposal by the growing catalogue). check: route (the examples are routed; the default for actions that have them), phrases (the action carries phrases), continuation (the action is reached from a proposal that another action returns, never from a sentence of its own: it carries no phrases, and the entry says so in chat_outcome_reason). chat_outcome (K2b-2): what the example sentences do when they are sent as chat text - pending (a proposal that waits for the person: the default), unavailable (the proposal says honestly that the sentence alone cannot do it, with the reason in chat_outcome_reason), continuation. An action that runs at once is declared in intent_routing (execution.direct), not here. Everything here is data: an overlay may add entries; nothing is a limit.",
   "defaults": {
     "schema": "loom.chat_coverage/1",
     "sources": {
@@ -2795,6 +2795,42 @@
         "examples": {
           "pl": "co wysłaliśmy",
           "en": "what we sent"
+        }
+      },
+      {
+        "id": "windows",
+        "title": {
+          "en": "Arrange the windows of the application",
+          "pl": "Układaj okna aplikacji"
+        },
+        "via": "client",
+        "action": "window.open",
+        "also": [
+          "window.close",
+          "window.focus",
+          "window.next",
+          "window.prev"
+        ],
+        "surfaces": {},
+        "examples": {
+          "pl": "otwórz graf obok",
+          "en": "open the graph beside the chat"
+        },
+        "examples_more": {
+          "pl": [
+            "zamknij wszystko poza czatem",
+            "następne okno",
+            "przełącz na okno ustawienia"
+          ],
+          "en": [
+            "close everything except the chat",
+            "next window",
+            "switch to the settings window"
+          ]
+        },
+        "note": {
+          "en": "W2 of OKNA_SYSTEM: the page (or the Android shell) declares arranges_windows; the sentence runs at once (intent_routing execution.direct) as a client step the page carries out on its window state and answers with what it did (on a phone 'beside' becomes the next maximized window of the stack, reachable from the switcher; the placement is a preset in the page's data).",
+          "pl": "W2 z OKNA_SYSTEM: strona (albo powłoka Androida) deklaruje arranges_windows; zdanie rusza od razu (intent_routing execution.direct) jako krok klienta, który strona wykonuje na swoim stanie okien i odpowiada, co zrobiła (na telefonie „obok” to kolejne zmaksymalizowane okno stosu, dostępne z przełącznika; umiejscowienie to preset w danych strony)."
         }
       }
     ],

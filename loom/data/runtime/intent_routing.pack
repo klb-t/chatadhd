@@ -80,7 +80,12 @@
         "help.can_do",
         "help.how_to",
         "context.modify",
-        "context.receipt"
+        "context.receipt",
+        "window.open",
+        "window.close",
+        "window.focus",
+        "window.next",
+        "window.prev"
       ]
     },
     "on_reject": {
@@ -2166,6 +2171,174 @@
           "set": {
             "list": true
           },
+          "takes_scope": false
+        },
+        {
+          "id": "window.open.beside.pl",
+          "action": "window.open",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:otworz|pokaz|wyswietl)\\s+(?:mi\\s+)?(.+?)\\s+(?:obok|z\\s+boku|na\\s+boku)(?:\\s+(?:czatu|rozmowy))?\\s*[.!?]*\\s*$",
+          "args": [
+            "target"
+          ],
+          "original": [
+            "target"
+          ],
+          "set": {
+            "placement": "beside"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "window.open.beside.en",
+          "action": "window.open",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:open|show)\\s+(?:me\\s+)?(?:the\\s+)?(.+?)\\s+(?:beside|next\\s+to|alongside)(?:\\s+(?:the\\s+)?(?:chat|conversation))?\\s*[.!?]*\\s*$",
+          "args": [
+            "target"
+          ],
+          "original": [
+            "target"
+          ],
+          "set": {
+            "placement": "beside"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "window.open.pl",
+          "action": "window.open",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?otworz\\s+okno\\s+(.+?)\\s*[.!?]*\\s*$",
+          "args": [
+            "target"
+          ],
+          "original": [
+            "target"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "window.open.en",
+          "action": "window.open",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?open\\s+(?:the\\s+|a\\s+)?(.+?)\\s+window\\s*[.!?]*\\s*$",
+          "args": [
+            "target"
+          ],
+          "original": [
+            "target"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "window.close.except.pl",
+          "action": "window.close",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?zamknij\\s+(?:wszystko|wszystkie\\s+okna|reszte)\\s+(?:poza|oprocz|z\\s+wyjatkiem)\\s+(.+?)\\s*[.!?]*\\s*$",
+          "args": [
+            "except"
+          ],
+          "original": [
+            "except"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "window.close.except.en",
+          "action": "window.close",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?close\\s+(?:everything|all(?:\\s+(?:the\\s+)?windows)?|the\\s+rest)\\s+(?:except|but)\\s+(?:for\\s+)?(?:the\\s+)?(.+?)\\s*[.!?]*\\s*$",
+          "args": [
+            "except"
+          ],
+          "original": [
+            "except"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "window.close.pl",
+          "action": "window.close",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?zamknij\\s+okno\\s+(.+?)\\s*[.!?]*\\s*$",
+          "args": [
+            "target"
+          ],
+          "original": [
+            "target"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "window.close.en",
+          "action": "window.close",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?close\\s+(?:the\\s+)?(.+?)\\s+window\\s*[.!?]*\\s*$",
+          "args": [
+            "target"
+          ],
+          "original": [
+            "target"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "window.focus.pl",
+          "action": "window.focus",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:przelacz|przejdz|wroc)\\s+(?:sie\\s+)?(?:na|do)\\s+okn[oa]\\s+(.+?)\\s*[.!?]*\\s*$",
+          "args": [
+            "target"
+          ],
+          "original": [
+            "target"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "window.focus.en",
+          "action": "window.focus",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:switch|go\\s+back|go)\\s+to\\s+(?:the\\s+)?(.+?)\\s+window\\s*[.!?]*\\s*$",
+          "args": [
+            "target"
+          ],
+          "original": [
+            "target"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "window.next.pl",
+          "action": "window.next",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:nastepne|kolejne)\\s+okno\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "window.next.en",
+          "action": "window.next",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?next\\s+window\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "window.prev.pl",
+          "action": "window.prev",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?poprzednie\\s+okno\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "window.prev.en",
+          "action": "window.prev",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?previous\\s+window\\s*[.!?]*\\s*$",
+          "args": [],
           "takes_scope": false
         },
         {

@@ -220,6 +220,11 @@ TEST_SUITE("chat_coverage") {
       for (const auto& a : actions) {
         const Json* entry = entry_of(a);
         REQUIRE_MESSAGE(entry, id << ": no action '" << a << "' in the catalogue");
+        if (via == "client") {
+          // W2 (OKNA): carried out by the client that declares the capability; without a declaration it stays planned, by design
+          CHECK_MESSAGE(entry->value("client", Json::object()).value("capability", "") != "", id << ": '" << a << "' is via client but has no client.capability");
+          continue;
+        }
         CHECK_MESSAGE(f.rt->actions().runnable(*entry), id << ": '" << a << "' is not runnable (planned, or a composite of its own consumer, or no executor)");
       }
       if (via == "emergent") continue;  // offered by the growing catalogue; the emergent tests route it
@@ -250,6 +255,15 @@ TEST_SUITE("chat_coverage") {
         CHECK_MESSAGE((std::find(actions.begin(), actions.end(), reached) != actions.end()),
                       id << " (" << lang << "): \"" << text << "\" reached " << (reached.empty() ? "[a message]" : reached) << ", not " << actions[0]);
       }
+      // more sentences of the same capability (any of its actions)
+      for (const char* lang : {"pl", "en"})
+        for (const auto& more : c.value("examples_more", Json::object()).value(lang, Json::array())) {
+          const std::string text = more.get<std::string>();
+          const Json routed = unwrap(chat_route::route(*f.rt, Json{{"text", text}, {"conv_id", f.conv_id}}));
+          const std::string reached = routed.value("kind", "") == "command" ? routed.at("command").value("action", "") : "";
+          CHECK_MESSAGE((std::find(actions.begin(), actions.end(), reached) != actions.end()),
+                        id << " (" << lang << "): \"" << text << "\" reached " << (reached.empty() ? "[a message]" : reached));
+        }
     }
     // An open entry whose planned action already works is stale: it belongs under capabilities.
     for (const auto& o : coverage.at("open"))

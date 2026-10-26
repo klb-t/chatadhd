@@ -15647,6 +15647,341 @@
           "pl": "Rozmowa:"
         },
         "default_element": "application"
+      },
+      "window.open": {
+        "id": "window.open",
+        "kind": "atomic",
+        "status": "planned",
+        "planned_reason": {
+          "en": "A window of the application belongs to the client that draws it (the web page or the Android shell); this runtime arranges no windows itself. Runnable for a client that declares arranges_windows (W2 of OKNA_SYSTEM).",
+          "pl": "Okno aplikacji należy do klienta, który je rysuje (strony albo powłoki Androida); ten runtime sam nie układa okien. Wykonywalna dla klienta, który deklaruje arranges_windows (W2 z OKNA_SYSTEM)."
+        },
+        "title": "Open a window",
+        "description": "Open a window of the application: a kind (or a word naming it: graph, settings, chat ...), optionally a node and a placement (maximize, beside, below, float, tab, shelf - an open value; the client's device class turns a placement it cannot show into its preset and says so in its answer). The client carries it out and answers with what it did.",
+        "why": {
+          "pl": "Otwiera okno aplikacji."
+        },
+        "labels": {
+          "pl": "Otwórz okno"
+        },
+        "inputs": [],
+        "outputs": [],
+        "requires": [],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.1,
+        "confidence": 0.9,
+        "effects": {
+          "reads_only": false,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "client",
+        "client": {
+          "capability": "arranges_windows",
+          "prompt": {
+            "en": "Open the window on this device.",
+            "pl": "Otwórz okno na tym urządzeniu."
+          },
+          "expects": []
+        },
+        "phrases": {
+          "en": [
+            "open a window"
+          ],
+          "pl": [
+            "otwórz okno",
+            "otworz okno"
+          ]
+        },
+        "params": [
+          {
+            "name": "target",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "The kind of window, or a word naming it (the client resolves the word from its data).",
+              "pl": "Rodzaj okna albo słowo, które go nazywa (klient rozpoznaje słowo ze swoich danych)."
+            }
+          },
+          {
+            "name": "node",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The node the window shows.",
+              "pl": "Węzeł, który okno pokazuje."
+            }
+          },
+          {
+            "name": "placement",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Where the window goes: maximize, beside, below, float, tab, shelf (examples; open value).",
+              "pl": "Gdzie trafia okno: maximize, beside, below, float, tab, shelf (przykłady; wartość otwarta)."
+            }
+          }
+        ],
+        "result_text": {
+          "en": "The window is open.",
+          "pl": "Okno jest otwarte."
+        }
+      },
+      "window.close": {
+        "id": "window.close",
+        "kind": "atomic",
+        "status": "planned",
+        "planned_reason": {
+          "en": "A window of the application belongs to the client that draws it (the web page or the Android shell); this runtime arranges no windows itself. Runnable for a client that declares arranges_windows (W2 of OKNA_SYSTEM).",
+          "pl": "Okno aplikacji należy do klienta, który je rysuje (strony albo powłoki Androida); ten runtime sam nie układa okien. Wykonywalna dla klienta, który deklaruje arranges_windows (W2 z OKNA_SYSTEM)."
+        },
+        "title": "Close windows",
+        "description": "Close a window, a kind of windows, or every window except some (except: words or kinds, comma separated). Pinned windows stay; the client's answer names them.",
+        "why": {
+          "pl": "Zamyka okna aplikacji."
+        },
+        "labels": {
+          "pl": "Zamknij okna"
+        },
+        "inputs": [],
+        "outputs": [],
+        "requires": [],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.1,
+        "confidence": 0.9,
+        "effects": {
+          "reads_only": false,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "client",
+        "client": {
+          "capability": "arranges_windows",
+          "prompt": {
+            "en": "Close the windows on this device.",
+            "pl": "Zamknij okna na tym urządzeniu."
+          },
+          "expects": []
+        },
+        "phrases": {
+          "en": [
+            "close the window"
+          ],
+          "pl": [
+            "zamknij okno"
+          ]
+        },
+        "params": [
+          {
+            "name": "target",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The window (id, kind or a word naming it); empty = the focused one.",
+              "pl": "Okno (id, rodzaj albo słowo, które je nazywa); puste = okno z fokusem."
+            }
+          },
+          {
+            "name": "except",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Close every window except these (words or kinds).",
+              "pl": "Zamknij wszystkie okna poza tymi (słowa albo rodzaje)."
+            }
+          }
+        ],
+        "result_text": {
+          "en": "The windows are closed.",
+          "pl": "Okna są zamknięte."
+        }
+      },
+      "window.focus": {
+        "id": "window.focus",
+        "kind": "atomic",
+        "status": "planned",
+        "planned_reason": {
+          "en": "A window of the application belongs to the client that draws it (the web page or the Android shell); this runtime arranges no windows itself. Runnable for a client that declares arranges_windows (W2 of OKNA_SYSTEM).",
+          "pl": "Okno aplikacji należy do klienta, który je rysuje (strony albo powłoki Androida); ten runtime sam nie układa okien. Wykonywalna dla klienta, który deklaruje arranges_windows (W2 z OKNA_SYSTEM)."
+        },
+        "title": "Switch to a window",
+        "description": "Bring a window to the front (id, kind or a word naming it).",
+        "why": {
+          "pl": "Przełącza na okno."
+        },
+        "labels": {
+          "pl": "Przełącz na okno"
+        },
+        "inputs": [],
+        "outputs": [],
+        "requires": [],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.1,
+        "confidence": 0.9,
+        "effects": {
+          "reads_only": false,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "client",
+        "client": {
+          "capability": "arranges_windows",
+          "prompt": {
+            "en": "Switch to the window on this device.",
+            "pl": "Przełącz na okno na tym urządzeniu."
+          },
+          "expects": []
+        },
+        "phrases": {
+          "en": [
+            "switch window"
+          ],
+          "pl": [
+            "przełącz okno",
+            "przelacz okno"
+          ]
+        },
+        "params": [
+          {
+            "name": "target",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "The window (id, kind or a word naming it).",
+              "pl": "Okno (id, rodzaj albo słowo, które je nazywa)."
+            }
+          }
+        ],
+        "result_text": {
+          "en": "The window is in front.",
+          "pl": "Okno jest na wierzchu."
+        }
+      },
+      "window.next": {
+        "id": "window.next",
+        "kind": "atomic",
+        "status": "planned",
+        "planned_reason": {
+          "en": "A window of the application belongs to the client that draws it (the web page or the Android shell); this runtime arranges no windows itself. Runnable for a client that declares arranges_windows (W2 of OKNA_SYSTEM).",
+          "pl": "Okno aplikacji należy do klienta, który je rysuje (strony albo powłoki Androida); ten runtime sam nie układa okien. Wykonywalna dla klienta, który deklaruje arranges_windows (W2 z OKNA_SYSTEM)."
+        },
+        "title": "Next window",
+        "description": "Bring the next open window to the front (the order of the switcher).",
+        "why": {
+          "pl": "Przełącza na następne okno."
+        },
+        "labels": {
+          "pl": "Następne okno"
+        },
+        "inputs": [],
+        "outputs": [],
+        "requires": [],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.1,
+        "confidence": 0.9,
+        "effects": {
+          "reads_only": false,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "client",
+        "client": {
+          "capability": "arranges_windows",
+          "prompt": {
+            "en": "Switch to the next window on this device.",
+            "pl": "Przełącz na następne okno na tym urządzeniu."
+          },
+          "expects": []
+        },
+        "phrases": {
+          "en": [
+            "next window"
+          ],
+          "pl": [
+            "następne okno",
+            "nastepne okno"
+          ]
+        },
+        "params": [],
+        "result_text": {
+          "en": "The next window is in front.",
+          "pl": "Następne okno jest na wierzchu."
+        }
+      },
+      "window.prev": {
+        "id": "window.prev",
+        "kind": "atomic",
+        "status": "planned",
+        "planned_reason": {
+          "en": "A window of the application belongs to the client that draws it (the web page or the Android shell); this runtime arranges no windows itself. Runnable for a client that declares arranges_windows (W2 of OKNA_SYSTEM).",
+          "pl": "Okno aplikacji należy do klienta, który je rysuje (strony albo powłoki Androida); ten runtime sam nie układa okien. Wykonywalna dla klienta, który deklaruje arranges_windows (W2 z OKNA_SYSTEM)."
+        },
+        "title": "Previous window",
+        "description": "Bring the previous open window to the front (the order of the switcher).",
+        "why": {
+          "pl": "Przełącza na poprzednie okno."
+        },
+        "labels": {
+          "pl": "Poprzednie okno"
+        },
+        "inputs": [],
+        "outputs": [],
+        "requires": [],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.1,
+        "confidence": 0.9,
+        "effects": {
+          "reads_only": false,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "client",
+        "client": {
+          "capability": "arranges_windows",
+          "prompt": {
+            "en": "Switch to the previous window on this device.",
+            "pl": "Przełącz na poprzednie okno na tym urządzeniu."
+          },
+          "expects": []
+        },
+        "phrases": {
+          "en": [
+            "previous window"
+          ],
+          "pl": [
+            "poprzednie okno"
+          ]
+        },
+        "params": [],
+        "result_text": {
+          "en": "The previous window is in front.",
+          "pl": "Poprzednie okno jest na wierzchu."
+        }
       }
     }
   },

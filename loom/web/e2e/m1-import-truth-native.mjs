@@ -17,6 +17,7 @@ import net from "node:net";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { auditPage } from "./m1-audit.mjs";
+import { stableShot, trackRequests } from "./stable-shot.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const LOOM = path.resolve(here, "../..");
@@ -60,10 +61,11 @@ try {
   browser = await launch.launch({ headless: true }).catch(() => launch.launch({ headless: true, executablePath: CHROMIUM }));
   const context = await browser.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
   const page = await context.newPage();
+  trackRequests(page);
   const errors = [];
   page.on("pageerror", e => errors.push(String(e)));
   const audit = async name => { for (const f of await auditPage(page)) AUDIT.push({ shot: name, ...f }); };
-  const shot = async name => { await page.evaluate(() => Promise.all(document.getAnimations().map(a => a.finished.catch(() => {})))); await page.screenshot({ path: path.join(SHOTS, `${name}.png`) }); await audit(name); };
+  const shot = async name => { await stableShot(page, path.join(SHOTS, `${name}.png`)); await audit(name); };
   const noSideScroll = async what => assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), `${what}: no page scroll wider than the phone`);
   const until = async (read, what, ms = 15000) => { let last; for (const end = Date.now() + ms; Date.now() < end;) { last = await read(); if (last) return last; await page.waitForTimeout(50); } throw new Error(`timed out waiting for ${what} (last: ${JSON.stringify(last)})`); };
   const text = async id => (await page.getByTestId(id).innerText()).replace(/\s+/g, " ").trim();

@@ -17,6 +17,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { auditPage } from "./m1-audit.mjs";
 import { request, runChild } from "./harness-lifecycle.mjs";
+import { stableShot, trackRequests } from "./stable-shot.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const LOOM = path.resolve(here, "../..");
@@ -90,9 +91,10 @@ try {
   browser = await launch.launch({ headless: true }).catch(() => launch.launch({ headless: true, executablePath: CHROMIUM }));
   const context = await browser.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
   const page = await context.newPage();
+  trackRequests(page);
   const errors = [];
   page.on("pageerror", e => errors.push(String(e)));
-  const shot = async name => { await page.evaluate(() => Promise.all(document.getAnimations().map(a => a.finished.catch(() => {})))); await page.screenshot({ path: path.join(SHOTS, `${name}.png`) }); };
+  const shot = async name => { await stableShot(page, path.join(SHOTS, `${name}.png`)); };
   const audit = async name => { for (const f of await auditPage(page)) AUDIT.push({ shot: name, ...f }); };
   const back = () => page.evaluate(() => window.__loomBack());
   const nav = () => page.getByTestId("graph-navigator");
