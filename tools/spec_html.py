@@ -133,7 +133,8 @@ def _recent(node: dict, since: _dt.date) -> bool:
 
 
 def build_html(spec: dict, focus: list[str], recent_hours: int, now: _dt.datetime, out_name: str,
-               queue_first: list[str] | None = None, question: dict | None = None, w1: dict | None = None) -> str:
+               queue_first: list[str] | None = None, question: dict | None = None, w1: dict | None = None,
+               checks: list | None = None) -> str:
     since = (now - _dt.timedelta(hours=recent_hours)).date()
     focus_set = {f.strip() for f in focus if f.strip()}
     nodes = spec["nodes"]
@@ -174,6 +175,7 @@ def build_html(spec: dict, focus: list[str], recent_hours: int, now: _dt.datetim
         "sources": spec.get("sources"),
         "out": out_name,
         "w1": w1,  # IW-4: liczniki z zapisów biegów + mapa miejsc (tools/page_counters.py); None = sekcji nie ma
+        "checks": checks or [],  # IW-9: dokumenty jako diff decyzji (tools/check_data.py page); pełny tekst o dotknięcie dalej
     }
     data = json.dumps(payload, ensure_ascii=False).replace("</", "<\\/")
     return TEMPLATE.replace("__DATA__", data)
@@ -299,6 +301,7 @@ blockquote { margin: .2rem 0; padding: .4rem .7rem; background: var(--card); bor
 </header>
 <section class="w1" id="w1" hidden></section>
 <section class="w9" id="w9" hidden></section>
+<section class="w1 checks" id="checks" hidden></section>
 <section class="queue" id="queue" hidden></section>
 <section class="recent" id="recent"></section>
 <div id="inbox-banner" hidden></div>
@@ -331,6 +334,22 @@ blockquote { margin: .2rem 0; padding: .4rem .7rem; background: var(--card); bor
   // --- IW-4: liczniki W1, „Od Twojego wyjścia” (W9), mapa miejsc. Liczby z danych (tools/page_counters.py; skrzynka z bazy). ---
   const W = D.w1 || null;
   const INBOX = { waiting: null, escalated: null, since: [] };
+  // --- IW-9: dokument jako diff decyzji (W6); pełny tekst o dotknięcie dalej. Dane z tools/check_data.py (0 tokenów). ---
+  function renderChecks() {
+    const el = document.getElementById('checks'); const C = D.checks || [];
+    if (!C.length) { el.hidden = true; return; }
+    el.innerHTML = C.map(c => {
+      const d = c.diff; const li = (sign, t, extra) => `<div>${sign} ${esc(t)}${extra ? ' <span class="src">' + esc(extra) + '</span>' : ''}</div>`;
+      let h = d.added.map(x => li('+', x.text, x.reversal ? 'odwrót: ' + x.reversal : '')).join('') +
+        d.changed.map(x => li('~', x.now.text, 'zmienione: ' + x.fields.join(', ')) + x.fields.map(f => `<div class="src">było: ${esc(x.before[f] || '—')}<br>jest: ${esc(x.now[f] || '—')}</div>`).join('')).join('') +
+        d.removed.map(x => li('−', x.text)).join('');
+      if (c.findings_open.length) h += `<div><b>znaleziska otwarte: ${c.findings_open.length}</b></div>` + c.findings_open.map(f => li('!', (f.quote || f.text || ''), (f.origin || '') + ' · ' + (f.state || ''))).join('');
+      return `<details><summary>${esc(c.doc.split('/').pop())}: decyzje +${d.added.length} ~${d.changed.length} −${d.removed.length} =${d.unchanged}</summary><div class="pl">${h}` +
+        `<div class="src">względem: ${esc(c.against)} · dane: ${esc((c.source || {}).kind || '?')} ${esc(c.checked_at || '')}</div>` +
+        (c.full ? `<details><summary>pełny tekst</summary><pre style="white-space:pre-wrap;font-size:.8rem">${esc(c.full)}</pre></details>` : '') + `</div></details>`;
+    }).join('');
+    el.hidden = false;
+  }
   function renderW1() {
     const el = document.getElementById('w1'); if (!W) { el.hidden = true; return; }
     const parts = W.counters.map(c => `<span>${esc(c.label)} <b>${esc(c.value)}</b></span>`);
@@ -540,7 +559,7 @@ blockquote { margin: .2rem 0; padding: .4rem .7rem; background: var(--card); bor
   window.addEventListener('resize', fitMore);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitMore);
   renderQueue();
-  renderW1(); renderW9();
+  renderW1(); renderW9(); renderChecks();
   function openHash() { const id = (location.hash || '').slice(1); if (!id) return; const d = document.getElementById(id); if (!d) return; d.open = true; const t = d.closest('details.theme'); if (t) t.open = true; d.scrollIntoView({ block: 'start' }); }
   window.addEventListener('hashchange', openHash); openHash();
 
@@ -662,6 +681,7 @@ def main(argv=None) -> int:
                     help="koszty odwrotu na początku kolejki „Czeka na Ciebie” (preset: high; bez wartości = bez pierwszeństwa)")
     ap.add_argument("--now", help="UTC ISO (testy)")
     ap.add_argument("--no-counters", action="store_true", help="bez sekcji liczników W1/W9 i mapy miejsc (IW-4)")
+    ap.add_argument("--no-checks", action="store_true", help="bez sekcji dokumentów jako diff decyzji (IW-9)")
     a = ap.parse_args(argv)
     spec = json.loads(Path(a.spec).read_text(encoding="utf-8"))
     now = _dt.datetime.fromisoformat(a.now) if a.now else _dt.datetime.utcnow()
@@ -670,7 +690,10 @@ def main(argv=None) -> int:
     qcfg = spec_mod.load_config(root)["question"]  # presety pytania + docs/spec/config.json
     import page_counters
     w1 = None if a.no_counters else page_counters.collect(root, now.replace(tzinfo=_dt.timezone.utc) if now.tzinfo is None else now)
-    out.write_text(build_html(spec, a.focus, a.recent_hours, now, out.name, a.queue_first, question=qcfg, w1=w1), encoding="utf-8")
+    import check_data
+    checks = None if a.no_checks else check_data.page_data(root, check_data.presets())
+    out.write_text(build_html(spec, a.focus, a.recent_hours, now, out.name, a.queue_first, question=qcfg, w1=w1, checks=checks),
+                   encoding="utf-8")
     n = len(spec["nodes"])
     print(f"zapisano {out} ({out.stat().st_size // 1024} KB, {n} pozycji; rozwinięte: zmienione od {a.recent_hours} h" + (f", w edycji {', '.join(a.focus)}" if a.focus else "") + ")")
     return 0

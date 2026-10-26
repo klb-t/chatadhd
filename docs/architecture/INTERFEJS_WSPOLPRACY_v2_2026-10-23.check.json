@@ -1,0 +1,879 @@
+{
+ "schema": "loom.check_data/1",
+ "doc": "docs/architecture/INTERFEJS_WSPOLPRACY_v2_2026-10-23.md",
+ "doc_hash": "sha256:0fa3c8efe3902afef2cb7fe54ed72ec07c99549134ec2d3209c756b79195b217",
+ "rev": null,
+ "checked_at": "2026-10-26T17:56:57.444384Z",
+ "source": {
+  "kind": "extract",
+  "model": null,
+  "tokens": 0
+ },
+ "decisions": [
+  {
+   "text": "Zapis biegu jest jednym źródłem; liczniki, paragony i karty przekazania to rendery",
+   "line": 233,
+   "section": "§5 Decyzje z odwrotem (koordynator, 2026-10-23; każda to preset)",
+   "why": "trzy kąty czytają trzy rzeczy z tego samego rekordu; 37/60 commitów to księgowość, której nikt nie czyta jako danych",
+   "reversal": "proza QUEUE jak dziś (render może ją nadal produkować)"
+  },
+  {
+   "text": "Ścieżki zapisu bez tokenów; model tylko jako warstwa odczytu z paragonem",
+   "line": 234,
+   "section": "§5 Decyzje z odwrotem (koordynator, 2026-10-23; każda to preset)",
+   "why": "jego gest i jego cytat są nietykalne; każda tura modelu na ścieżce zapisu to koszt i ryzyko interpretacji",
+   "reversal": "model na ścieżce zapisu jako jawna opcja z paragonem"
+  },
+  {
+   "text": "Kierunek decyduje o magazynie: gesty → baza strony, biegi → repo; sekretarz lustruje",
+   "line": 235,
+   "section": "§5 Decyzje z odwrotem (koordynator, 2026-10-23; każda to preset)",
+   "why": "konflikt 1; każde miejsce pisze za 0 tam, gdzie dociera",
+   "reversal": "jedno miejsce po pomiarze dostępności"
+  },
+  {
+   "text": "Jedna skrzynka z `class`; jedna tabela słów z renderami (przykłady: telefon, warsztat)",
+   "line": 236,
+   "section": "§5 Decyzje z odwrotem (koordynator, 2026-10-23; każda to preset)",
+   "why": "dwa stany „czeka” i dwie tabele słów = dwa źródła błędów",
+   "reversal": "rozdzielenie kolekcji/tabel po pomiarze"
+  },
+  {
+   "text": "`ask_after` od pierwszego pokazania; `if_silent` przez `run_once_at`",
+   "line": 237,
+   "section": "§5 Decyzje z odwrotem (koordynator, 2026-10-23; każda to preset)",
+   "why": "domyślnie (preset) pytanie nie rozstrzyga się przed pierwszym pokazaniem; 0 pollingu",
+   "reversal": "kadencja sekretarza"
+  },
+  {
+   "text": "Trwałość biegu na VM: `vm.wake` po wywłaszczeniu tylko gdy bieg `running where: vm`; na bezczynności nic; tętno i sekretarz nie są biegiem",
+   "line": 238,
+   "section": "§5 Decyzje z odwrotem (koordynator, 2026-10-23; każda to preset)",
+   "why": "konflikt 4; R90 „Zadbaj”; `VM_RECON` 23.10: gaśnięcie = Spot, brak mechanizmu bezczynności; jego polecenie z `VM_RECON` §8 (awans na życzenie, `spot_guard`)",
+   "reversal": "wyłączyć `vm.wake`; Spot → Standard po jego tak (§7)"
+  },
+  {
+   "text": "Rola w rutynie, tabela rola→model osobno; `start_gate` zapisuje rozwiązany model; brak modelu = advisory",
+   "line": 239,
+   "section": "§5 Decyzje z odwrotem (koordynator, 2026-10-23; każda to preset)",
+   "why": "kalibracja cennika z tego, co biegło; twardy błąd = ograniczenie",
+   "reversal": "`--log-only`"
+  },
+  {
+   "text": "Koszt przy geście + suma dnia; paragon per pozycja o dotknięcie dalej",
+   "line": 240,
+   "section": "§5 Decyzje z odwrotem (koordynator, 2026-10-23; każda to preset)",
+   "why": "hipoteza koordynatora (SLOWA:66 dotyczy jego szacunku, nie paragonów); koszt uwagi vs decyzja — do zmierzenia",
+   "reversal": "preset „przy każdej pozycji”"
+  },
+  {
+   "text": "Nic nie jest filtrem tego, co widzi: wszystko widoczne, zwinięte, „N zwiniętych — pokaż”; budżet uwagi = licznik + advisory",
+   "line": 241,
+   "section": "§5 Decyzje z odwrotem (koordynator, 2026-10-23; każda to preset)",
+   "why": "ZASADA WŁAŚCICIELA; ukrycie bez odwrotu",
+   "reversal": "—"
+  },
+  {
+   "text": "Pora i uwaga jako wiersze routingu przestawiane jego słowem; wnioskowanie tylko proponuje",
+   "line": 242,
+   "section": "§5 Decyzje z odwrotem (koordynator, 2026-10-23; każda to preset)",
+   "why": "cicha decyzja ukrywa",
+   "reversal": "usunąć wiersz"
+  },
+  {
+   "text": "„stop” adresuje miejsca; kanał do VM = flaga w repo czytana przez tętno",
+   "line": 243,
+   "section": "§5 Decyzje z odwrotem (koordynator, 2026-10-23; każda to preset)",
+   "why": "2 przypadkowe dotknięcia 23.10; `send_message` do VM odmówiony (obserwacja 23.10, do ponownego sprawdzenia)",
+   "reversal": "„stop natychmiast wszędzie”"
+  },
+  {
+   "text": "Pomiar jego zachowania = tylko znacznik ostatniej wizyty; to, co wysyłamy, mierzymy sami",
+   "line": 244,
+   "section": "§5 Decyzje z odwrotem (koordynator, 2026-10-23; każda to preset)",
+   "why": "wartość domyślna (preset), nie wymóg zgody",
+   "reversal": "jego słowo włącza więcej"
+  },
+  {
+   "text": "Wszystkie rutyny i narzędzia widoczne i uruchamialne przez niego z kartą `start_gate`; kolejność = preset zasiany jego prośbami",
+   "line": 245,
+   "section": "§5 Decyzje z odwrotem (koordynator, 2026-10-23; każda to preset)",
+   "why": "R90 „wyeksponować wszystkie narzędzia”; nic niedostępne z definicji",
+   "reversal": "inna kolejność"
+  },
+  {
+   "text": "Bieg czeka na niego w klasach z CLAUDE.md (pieniądze poza budżetem, dane u nowego dostawcy, sprzeczność z wymaganiem, ×10 — przykłady listy) i, jako preset do potwierdzenia, przy drogim odwrocie; reszta = decyzja wstępna W3",
+   "line": 246,
+   "section": "§5 Decyzje z odwrotem (koordynator, 2026-10-23; każda to preset)",
+   "why": "R75, R62",
+   "reversal": "„czekaj zawsze” per klasa"
+  },
+  {
+   "text": "Runner v1 bez stanu własnego; dom rutyn `tools/routines/` w repo; jądro przez import P7",
+   "line": 247,
+   "section": "§5 Decyzje z odwrotem (koordynator, 2026-10-23; każda to preset)",
+   "why": "KOD ≠ DANE; koszt (hipoteza): każda cecha runnera to cecha do przeniesienia drugi raz; obserwacja 23.10: chmura S1 zajęta M1, VM buduje jądro w ≈ 12 min (`VM_RECON` §7); kolejka/retry/harmonogram wyłączone jako preset, nie wycięte",
+   "reversal": "od razu w jądrze"
+  },
+  {
+   "text": "`CLAUDE.md` jako prefiks wspólny + `spec:` wg tematu; mierzone na następnym pakiecie",
+   "line": 248,
+   "section": "§5 Decyzje z odwrotem (koordynator, 2026-10-23; każda to preset)",
+   "why": "konflikt 11; decyzja z góry = zgadywanie",
+   "reversal": "samo `CLAUDE.md`"
+  },
+  {
+   "text": "Aplikacja jako konsola (W10) = opcja „później” z datowanym kosztem w E9",
+   "line": 249,
+   "section": "§5 Decyzje z odwrotem (koordynator, 2026-10-23; każda to preset)",
+   "why": "R90 „przeglądarkowy, nie?”; obserwacja 23.10: chmura S1 zajęta M1, VM zbuduje jądro w ≈ 12 min (`VM_RECON` §7) — stan, nie zakaz",
+   "reversal": "wstawić po P7"
+  },
+  {
+   "text": "Pierwszy pakiet IW-1; IW-8 niezależnie w sesji VM",
+   "line": 250,
+   "section": "§5 Decyzje z odwrotem (koordynator, 2026-10-23; każda to preset)",
+   "why": "§4",
+   "reversal": "kolejność w `QUEUE_S1.md`"
+  }
+ ],
+ "examples": [
+  {
+   "text": "Konwencja: każda liczba i nazwa niżej to **przykład** albo **preset** (z `_history`, R83/R84), fakty o teraźniejszości mają datę",
+   "line": 10,
+   "section": "Interfejs współpracy v2 — synteza dyskusji trzech kątów (R90; Fable, 2026-10-23)"
+  },
+  {
+   "text": "3. Jednym dotknięciem (przykłady): Zatwierdzam · Popraw (głosem) · To przykład · To nie moje słowa · Stop (z pokazanym kosztem) ·",
+   "line": 24,
+   "section": "§0 Dla właściciela w 10 liniach"
+  },
+  {
+   "text": "5. Linie statusu pisze bieg (rodzaje zdarzeń, np. started / finished / building / failed / original_ideas — etykiety koordynatora dla ziarna z Twojego zdania z 00:1x: „co zaczynasz implementować, co kończysz, co budujes…",
+   "line": 27,
+   "section": "§0 Dla właściciela w 10 liniach"
+  },
+  {
+   "text": "pytania, które mają oczywistą odpowiedź, poprawianie tej samej klasy błędu („to przykład” — 5 razy jednego dnia, 23.10).",
+   "line": 38,
+   "section": "§0 Dla właściciela w 10 liniach"
+  },
+  {
+   "text": "9 | **Pora / „tryb nocny”** (W8 flaga vs E9 wiersz; wnioskowanie z wizyt) | **Wiersz routingu** klasa × pora × budżet jako dane; jego słowo (np. „mogę iść spać” R75, „wróciłem” — przykłady) przestawia wartość; wnioskowa…",
+   "line": 54,
+   "section": "§1 Rozstrzygnięcia konfliktów z dyskusji"
+  },
+  {
+   "text": "13 | **Warsztat K9 jako ekran dla niego** (K vs W 6.2 p.4) | Warsztat jest koordynatora/operatora; dla niego biegi = **wiersz liczników** („w toku: 2 biegi · 14 min · ≈ 0,4 pkt” — przykład) + wariant zapytania W5 „co bi…",
+   "line": 58,
+   "section": "§1 Rozstrzygnięcia konfliktów z dyskusji"
+  },
+  {
+   "text": "14 | **`confirm: owner` jako pauza biegu** (K `apk.release` vs W3) | Bieg czeka na niego w klasach z CLAUDE.md (przykłady listy: jego pieniądze poza budżetem, jego dane u nowego dostawcy, sprzeczność z wymaganiem, ×10) …",
+   "line": 59,
+   "section": "§1 Rozstrzygnięcia konfliktów z dyskusji"
+  },
+  {
+   "text": "Grupa pól | Przykłady pól | Kto czyta",
+   "line": 70,
+   "section": "2.1 Jedno źródło: zapis biegu (`loom.routine_run/1`), wielu czytelników (przykłady: koordynator, nowa sesja, kontrola, strona)"
+  },
+  {
+   "text": "decyzje | `decisions[]` {text, reversal, cost_to_reverse, by, at}, `markers_applied[]` (znaczniki „to przykład” zużyte przez addendum) | W6 (diff decyzji), §5",
+   "line": 76,
+   "section": "2.1 Jedno źródło: zapis biegu (`loom.routine_run/1`), wielu czytelników (przykłady: koordynator, nowa sesja, kontrola, strona)"
+  },
+  {
+   "text": "Węzeł (rodzaj — przykład) | Pola proweniencji (otwarte) | Dom v1 (23.10) → v2",
+   "line": 85,
+   "section": "2.2 Artefakty z proweniencją (uzupełnienie tabeli R89 §4.1)"
+  },
+  {
+   "text": "Rola (przykład) | Co robi w v2 | Model (preset, datowany; tabela osobno) | Tokeny na ścieżce zapisu",
+   "line": 100,
+   "section": "2.3 Role jako presety (uzupełnienie R89 §4.2)"
+  },
+  {
+   "text": "kontroler przed użyciem | emituje **dane** (decyzje, przykłady, dodatki, pomiary, znaleziska), nie prozę (W6) | Haiku (14–17 wywołań, nasze-24) | 0",
+   "line": 105,
+   "section": "2.3 Role jako presety (uzupełnienie R89 §4.2)"
+  },
+  {
+   "text": "`start_gate` | krok bez osądu: rola→model→miejsce, estymata, okno, dysk/żywotność miejsca, co przekroczy → start / advisory / „czeka na Ciebie” (klasy z CLAUDE.md; przykłady listy) | skrypt (0 tokenów) albo operator | 0",
+   "line": 106,
+   "section": "2.3 Role jako presety (uzupełnienie R89 §4.2)"
+  },
+  {
+   "text": "- **Jego przykład (R90, dosłownie: „przykład: przy starcie nowego podwykonawcy całą filozofię mu zapodać do kontekstu. przypominam",
+   "line": 114,
+   "section": "2.4 Rutyny, makra, szablony jako dane z wersją i zapisem biegu"
+  },
+  {
+   "text": "przykład to jest”)** = JEDNA instancja: krok `context_pack: podwykonawca` w rutynie `package.run`, gdzie pakiet kontekstu to lista",
+   "line": 115,
+   "section": "2.4 Rutyny, makra, szablony jako dane z wersją i zapisem biegu"
+  },
+  {
+   "text": "wpisy INDEX po kluczu, schemat karty — przykład zestawu). Inne rutyny (przykłady, dopełniane tym, co już jest w `tools/workflows/`):",
+   "line": 117,
+   "section": "2.4 Rutyny, makra, szablony jako dane z wersją i zapisem biegu"
+  },
+  {
+   "text": "wiesz” R75, „podkręć” R62, „nie gadaj tyle” CLAUDE.md, „odpal” R90, „mogę iść spać” R75, „co pamiętasz” R73 — przykłady, on dopisuje",
+   "line": 122,
+   "section": "2.4 Rutyny, makra, szablony jako dane z wersją i zapisem biegu"
+  },
+  {
+   "text": "jednym zdaniem, warianty ASR), **rendery** (przykłady: telefon — gesty W8; warsztat — przyciski/makra K9). Rekord gestu niesie skutek, koszt,",
+   "line": 123,
+   "section": "2.4 Rutyny, makra, szablony jako dane z wersją i zapisem biegu"
+  },
+  {
+   "text": "Kanał (przykład) | Niesie | Koszt tokenów | Koszt jego czasu | Stan 23.10",
+   "line": 136,
+   "section": "2.6 Kanały i waluty (uzupełnienie E9/E1)"
+  },
+  {
+   "text": "**Waluty** (przykłady z otwartej listy `receipt[]`: punkty konta, jego czas, godziny VM, GB, …); jego czas liczony po naszej stronie (słowa wysłane),",
+   "line": 146,
+   "section": "2.6 Kanały i waluty (uzupełnienie E9/E1)"
+  },
+  {
+   "text": "Miejsce (przykład) | Waluta miejsca | Co tam biegnie (preset) | Kanał „stop” | Stan 23.10",
+   "line": 153,
+   "section": "2.7 Wiele maszyn i sesji (E5/E6 + R90 „administrujesz tamtą maszyną”)"
+  },
+  {
+   "text": "2 nie postawiono” — przykład), rozwijalny.",
+   "line": 165,
+   "section": "2.7 Wiele maszyn i sesji (E5/E6 + R90 „administrujesz tamtą maszyną”)"
+  },
+  {
+   "text": "wyjścia”** (nocna zmiana → on) to przykłady renderów jednego rekordu (lista otwarta) z zapisów biegów + głowy kolejki + spec `proposed` + mapy miejsc,",
+   "line": 170,
+   "section": "2.8 Teleport i powrót: jeden `handover`, wiele renderów (cztery niżej to przykłady)"
+  },
+  {
+   "text": "Korekta przez przepisanie reguły; restart agenta | 5× „to przykład” jednego dnia; 3 restarty ≈ 0,9 pkt (nasze-08) | znacznik jako znalezisko → addendum (IW-9)",
+   "line": 195,
+   "section": "§3 Co przestaje istnieć w dzisiejszym przepływie"
+  },
+  {
+   "text": "Pakiet | Zakres (przykłady wartości) | Akceptacja | Pomiar „po” | Kto | Scala",
+   "line": 204,
+   "section": "§4 Pakiety (≈ 50 wywołań każdy — preset; kolejność — preset; akceptacja + pomiar „po” — progi i liczby w kolumnach to presety/przykłady)"
+  },
+  {
+   "text": "IW-4 | Liczniki W1 + „Od Twojego wyjścia” + mapa miejsc v1 | `spec_html.py`: sekcja liczników z `runs.jsonl` + `spec_inbox` + `docs/ops/places.json` (statyczna tabela miejsc i usług z datą); znacznik ostatniej wizyty ja…",
+   "line": 209,
+   "section": "§4 Pakiety (≈ 50 wywołań każdy — preset; kolejność — preset; akceptacja + pomiar „po” — progi i liczby w kolumnach to presety/przykłady)"
+  },
+  {
+   "text": "IW-5 | Słowa sterujące i gesty jako jedna tabela | `tools/routines/words.json` zasiane cytatami (2.4), rekord gestu `{gesture, patterns, effect, cost, reversal, since, render}`; sekretarz rozpoznaje słowa w `statement` …",
+   "line": 210,
+   "section": "§4 Pakiety (≈ 50 wywołań każdy — preset; kolejność — preset; akceptacja + pomiar „po” — progi i liczby w kolumnach to presety/przykłady)"
+  },
+  {
+   "text": "IW-7 | Rutyny jako dane + runner v1 + brief jako rekord | `loom.routine/1`, `loom.brief/1`, `brief.render` (prefiks bajt w bajt); `tools/routine.py` renderuje i zapisuje bieg, bez stanu własnego; pierwsze rutyny: `packa…",
+   "line": 212,
+   "section": "§4 Pakiety (≈ 50 wywołań każdy — preset; kolejność — preset; akceptacja + pomiar „po” — progi i liczby w kolumnach to presety/przykłady)"
+  },
+  {
+   "text": "IW-9 | Kontrola emituje dane; znacznik → addendum | `check-before-use.js` wypisuje JSON (decyzje, przykłady, dodatki, pomiary, znaleziska) obok dokumentu; strona renderuje dokument jako diff decyzji (W6), pełny tekst o …",
+   "line": 214,
+   "section": "§4 Pakiety (≈ 50 wywołań każdy — preset; kolejność — preset; akceptacja + pomiar „po” — progi i liczby w kolumnach to presety/przykłady)"
+  },
+  {
+   "text": "IW-11 | `handover` — jeden rekord, rendery (np. cztery) | `tools/handover.py` z `runs.jsonl` + głowa QUEUE + spec `proposed` + `places.json` → teleport / karta pakietu / rekord sekretarza / „Od Twojego wyjścia”; paragon…",
+   "line": 216,
+   "section": "§4 Pakiety (≈ 50 wywołań każdy — preset; kolejność — preset; akceptacja + pomiar „po” — progi i liczby w kolumnach to presety/przykłady)"
+  },
+  {
+   "text": "blokadę. **10 z 11 pakietów może wykonać Sonnet/Haiku bez koordynatora** (liczone z tabeli; koordynator czyta karty); IW-8 — sesja VM + Sonnet; Fable według routingu modeli (preset w `roles.json`, np. wiersz: sprzecznoś…",
+   "line": 227,
+   "section": "§4 Pakiety (≈ 50 wywołań każdy — preset; kolejność — preset; akceptacja + pomiar „po” — progi i liczby w kolumnach to presety/przykłady)"
+  },
+  {
+   "text": "2 | **Jeden `handover`, wiele renderów (np. cztery)** — „Od Twojego wyjścia” jest przekazaniem zmiany od nocnej zmiany do niego | E7 + W9 (powstało w dyskusji) | IW-11: `TELEPORT_S1.md` wygenerowany z danych | pytań now…",
+   "line": 257,
+   "section": "§6 Oryginalne pomysły z trzech kątów i dyskusji (każdy z tanim eksperymentem i miarą)"
+  },
+  {
+   "text": "5 | **Jedna tabela słów zasiana jego słownikiem z cytatów**, rendery (przykłady: telefon, warsztat) | W (6.1, z K9) | IW-5: 8 słów z R-id, test wariantów ASR | trafienia/chybienia; słowa dopisane przez niego",
+   "line": 260,
+   "section": "§6 Oryginalne pomysły z trzech kątów i dyskusji (każdy z tanim eksperymentem i miarą)"
+  },
+  {
+   "text": "13 | **Znacznik „to przykład” jako znalezisko kontroli i addendum**; agent nie restartowany | W4 + K 6.1 | IW-9: jeden znacznik → addendum | czas znacznik→addendum; powroty klasy błędu",
+   "line": 268,
+   "section": "§6 Oryginalne pomysły z trzech kątów i dyskusji (każdy z tanim eksperymentem i miarą)"
+  },
+  {
+   "text": "L4 | Stan usług (R90 pytanie) — po `VM_RECON` 23.10: WatchDog żyje na VM (`watchdog.service`, 8080 loopback, dane 0,9 MB); AGEDS i ChatADHD nie postawione (klony do inwentarza; AGEDS: port do ustalenia (`VM_RECON` §5: n…",
+   "line": 293,
+   "section": "§8 Luki (pomiary do zrobienia, nie problemy)"
+  },
+  {
+   "text": "3 | 59 | usunięte „tylko”; klasy z CLAUDE.md jako przykłady listy, dodana „sprzeczność z wymaganiem”; „drogi odwrót” zostaje jako preset do potwierdzenia; tak samo w §2.3, §2.9, §5",
+   "line": 312,
+   "section": "Kontrola przed użyciem (chatadhd, 2026-10-23)"
+  },
+  {
+   "text": "5 | 228 | „Fable tylko…” → routing modeli jako preset w `roles.json`, wiersz o sprzeczności z filozofią jako przykład",
+   "line": 314,
+   "section": "Kontrola przed użyciem (chatadhd, 2026-10-23)"
+  },
+  {
+   "text": "6 | 211 | nagłówek §4: progi i liczby to presety lub przykłady; „cel 100 %” → „cel — preset, np. 100 %”",
+   "line": 315,
+   "section": "Kontrola przed użyciem (chatadhd, 2026-10-23)"
+  },
+  {
+   "text": "15 | 147 | „Waluty” jako przykłady z otwartej listy; nagłówek 2.6 bez „dwie”",
+   "line": 324,
+   "section": "Kontrola przed użyciem (chatadhd, 2026-10-23)"
+  },
+  {
+   "text": "16 | 65 | nagłówek 2.1: „wielu czytelników (przykłady…)”; „trzy kąty” zostają tylko jako fakt o przebiegu dyskusji",
+   "line": 325,
+   "section": "Kontrola przed użyciem (chatadhd, 2026-10-23)"
+  },
+  {
+   "text": "17 | 171 | „rendery” jako przykłady: §2.8, IW-11, §6 wiersz 2",
+   "line": 326,
+   "section": "Kontrola przed użyciem (chatadhd, 2026-10-23)"
+  },
+  {
+   "text": "18 | 124 | „rendery (przykłady: telefon, warsztat)”: §2.4, §5, §6 wiersz 5",
+   "line": 327,
+   "section": "Kontrola przed użyciem (chatadhd, 2026-10-23)"
+  },
+  {
+   "text": "21 | 295 | „AGEDS: port do ustalenia (`VM_RECON` §5: np. 8090)”",
+   "line": 330,
+   "section": "Kontrola przed użyciem (chatadhd, 2026-10-23)"
+  },
+  {
+   "text": "**Zauważone, niezmienione (bez wpływu na decyzje):** `vm.wake` i `spot_guard` (`VM_RECON` §8) częściowo się pokrywają, zakres do ustalenia przy IW-8; §0 punkt 6 („podtrzymasz maszynę”) to przykład gestu z otwartej listy…",
+   "line": 348,
+   "section": "Kontrola przed użyciem (chatadhd, 2026-10-23)"
+  }
+ ],
+ "additions": [
+  {
+   "text": "2.2 Artefakty z proweniencją (uzupełnienie tabeli R89 §4.1)",
+   "line": 83,
+   "section": "2.2 Artefakty z proweniencją (uzupełnienie tabeli R89 §4.1)"
+  },
+  {
+   "text": "2.3 Role jako presety (uzupełnienie R89 §4.2)",
+   "line": 98,
+   "section": "2.3 Role jako presety (uzupełnienie R89 §4.2)"
+  },
+  {
+   "text": "2.6 Kanały i waluty (uzupełnienie E9/E1)",
+   "line": 134,
+   "section": "2.6 Kanały i waluty (uzupełnienie E9/E1)"
+  },
+  {
+   "text": "2.9 Droga gestu (uzupełnienie R89 §4.6)",
+   "line": 174,
+   "section": "2.9 Droga gestu (uzupełnienie R89 §4.6)"
+  },
+  {
+   "text": "Kontrola przed użyciem (chatadhd, 2026-10-23)",
+   "line": 302,
+   "section": "Kontrola przed użyciem (chatadhd, 2026-10-23)"
+  }
+ ],
+ "measurements": [
+  {
+   "value": "100 %",
+   "text": "(commit `2211c8eb`), a właściciel R91 (limity: Fable do 100 %, reszta do 90 %). Fakty z rekonesansu zmieniają przesłankę",
+   "line": 14,
+   "section": "Interfejs współpracy v2 — synteza dyskusji trzech kątów (R90; Fable, 2026-10-23)"
+  },
+  {
+   "value": "90 %",
+   "text": "(commit `2211c8eb`), a właściciel R91 (limity: Fable do 100 %, reszta do 90 %). Fakty z rekonesansu zmieniają przesłankę konfliktu 4,",
+   "line": 14,
+   "section": "Interfejs współpracy v2 — synteza dyskusji trzech kątów (R90; Fable, 2026-10-23)"
+  },
+  {
+   "value": "0,5 pkt",
+   "text": "10. Pierwszy pakiet: **zapis biegu** (Sonnet, ≈ 40 wywołań — preset; ≈ 0,5 pkt — szacunek z bazy pakietu 0,43–0,5 pkt, nasze-06); 11 pakie",
+   "line": 39,
+   "section": "§0 Dla właściciela w 10 liniach"
+  },
+  {
+   "value": "0,5 pkt",
+   "text": "iegu** (Sonnet, ≈ 40 wywołań — preset; ≈ 0,5 pkt — szacunek z bazy pakietu 0,43–0,5 pkt, nasze-06); 11 pakietów, 10 z nich wykonuje Sonnet/Haiku be",
+   "line": 39,
+   "section": "§0 Dla właściciela w 10 liniach"
+  },
+  {
+   "value": "0 tokenów",
+   "text": "decyduje o magazynie pierwotnym**: jego gesty → baza strony (telefon dociera za 0 tokenów); nasze biegi i próbki → plik w repo (każde miejsce pisze z",
+   "line": 46,
+   "section": "§1 Rozstrzygnięcia konfliktów z dyskusji"
+  },
+  {
+   "value": "0 min",
+   "text": "` biegną tylko na push do `main` z filtrem ścieżek → push na gałąź dokumentów = 0 min CI (fakt 23.10) | jedno miejsce, gdy VM dostanie dostęp do",
+   "line": 46,
+   "section": "§1 Rozstrzygnięcia konfliktów z dyskusji"
+  },
+  {
+   "value": "39 tys.",
+   "text": "ty), z twardym limitem (preset) | każde odpalenie świeżej sesji płaci prefiks ≈ 39 tys. tokenów (nasze-02); domyślnie (preset) pytanie z 2 w nocy n",
+   "line": 48,
+   "section": "§1 Rozstrzygnięcia konfliktów z dyskusji"
+  },
+  {
+   "value": "626 tys.",
+   "text": "nie błąd | cennik ról kalibruje się z tego, co faktycznie biegło — błąd 11:23 (626 tys. tokenów na Fable zamiast presetu roli) to brak tego zapisu;",
+   "line": 50,
+   "section": "§1 Rozstrzygnięcia konfliktów z dyskusji"
+  },
+  {
+   "value": "39 tys.",
+   "text": "j; miara = znaleziska kontroli przed użyciem na pakiet przed/po | `CLAUDE.md` ≈ 39 tys. tokenów = 7,3 % wydatku agentów (nasze-02) — ale `spec:` w",
+   "line": 56,
+   "section": "§1 Rozstrzygnięcia konfliktów z dyskusji"
+  },
+  {
+   "value": "7,3 %",
+   "text": "ska kontroli przed użyciem na pakiet przed/po | `CLAUDE.md` ≈ 39 tys. tokenów = 7,3 % wydatku agentów (nasze-02) — ale `spec:` w 0/21 briefów; de",
+   "line": 56,
+   "section": "§1 Rozstrzygnięcia konfliktów z dyskusji"
+  },
+  {
+   "value": "14 min",
+   "text": "rdynatora/operatora; dla niego biegi = **wiersz liczników** („w toku: 2 biegi · 14 min · ≈ 0,4 pkt” — przykład) + wariant zapytania W5 „co biegnie",
+   "line": 58,
+   "section": "§1 Rozstrzygnięcia konfliktów z dyskusji"
+  },
+  {
+   "value": "0,4 pkt",
+   "text": "peratora; dla niego biegi = **wiersz liczników** („w toku: 2 biegi · 14 min · ≈ 0,4 pkt” — przykład) + wariant zapytania W5 „co biegnie” → gałąź bi",
+   "line": 58,
+   "section": "§1 Rozstrzygnięcia konfliktów z dyskusji"
+  },
+  {
+   "value": "12 min",
+   "text": "ie?”; obserwacja 23.10: chmura S1 zajęta pakietami M1, a VM zbudowała jądro w ≈ 12 min (`VM_RECON` §7) — stan, nie ograniczenie; „absence today is",
+   "line": 61,
+   "section": "§1 Rozstrzygnięcia konfliktów z dyskusji"
+  },
+  {
+   "value": "0 tokenów",
+   "text": "dyskusji: nie rutyna, lecz **zapis biegu** — jeden rekord pisany przez skrypt (0 tokenów na ścieżce zapisu),",
+   "line": 67,
+   "section": "2.1 Jedno źródło: zapis biegu (`loom.routine_run/1`), wielu czytelników (przykłady: koordynator, nowa sesja, kontrola, strona)"
+  },
+  {
+   "value": "0 tokenów",
+   "text": "t / advisory / „czeka na Ciebie” (klasy z CLAUDE.md; przykłady listy) | skrypt (0 tokenów) albo operator | 0",
+   "line": 106,
+   "section": "2.3 Role jako presety (uzupełnienie R89 §4.2)"
+  },
+  {
+   "value": "0,58 mln",
+   "text": "ji | dyskusja (otwiera on), eskalacje klas CLAUDE.md | tura koordynatora ≈ 0,28–0,58 mln kontekstu | wysoki | działa; styl: linie statusu",
+   "line": 139,
+   "section": "2.6 Kanały i waluty (uzupełnienie E9/E1)"
+  },
+  {
+   "value": "46 %",
+   "text": "geście** i jako suma dnia (konflikt 6). Próbka okna (`rate_limit_event`, jego „46 %” jako",
+   "line": 147,
+   "section": "2.6 Kanały i waluty (uzupełnienie E9/E1)"
+  },
+  {
+   "value": "95 %",
+   "text": "chmura S1 (`session_015y…`) | punkty konta; kontener (dysk ~95 % = restart) | koordynator, pakiety, bramki, zadania zaplanow",
+   "line": 155,
+   "section": "2.7 Wiele maszyn i sesji (E5/E6 + R90 „administrujesz tamtą maszyną”)"
+  },
+  {
+   "value": "12 min",
+   "text": "c` w tmux od 18:20; rekonesans zad. 1–2 zrobiony; build dev zakończony (zimny ≈ 12 min, ctest 242/242 po py3.11, `VM_RECON` §7); `npm` doinstalowa",
+   "line": 156,
+   "section": "2.7 Wiele maszyn i sesji (E5/E6 + R90 „administrujesz tamtą maszyną”)"
+  },
+  {
+   "value": "39 tys.",
+   "text": "zadanie „Sekretarz spec” | prefiks per odpalenie (≈ 39 tys. tokenów) | skrzynka, lustro, `if_silent`, `start_gate` | wy",
+   "line": 158,
+   "section": "2.7 Wiele maszyn i sesji (E5/E6 + R90 „administrujesz tamtą maszyną”)"
+  },
+  {
+   "value": "0 tokenów",
+   "text": "strona-artefakt + baza | 0 tokenów | jego gesty, liczniki, render | — | działa",
+   "line": 159,
+   "section": "2.7 Wiele maszyn i sesji (E5/E6 + R90 „administrujesz tamtą maszyną”)"
+  },
+  {
+   "value": "0,9 MB",
+   "text": "§3): **WatchDog żyje** (`watchdog.service`, kontener, `127.0.0.1:8080`, sqlite 0,9 MB; pulpit VNC/RDP na loopback); ChatADHD i AGEDS **nie postaw",
+   "line": 161,
+   "section": "2.7 Wiele maszyn i sesji (E5/E6 + R90 „administrujesz tamtą maszyną”)"
+  },
+  {
+   "value": "0,46 mln",
+   "text": "z własnym paragonem (koszt odbudowy kontekstu 0,2–0,46 mln tokenów na żywy kontekst — pomiar z CLAUDE.md; praca, która",
+   "line": 171,
+   "section": "2.8 Teleport i powrót: jeden `handover`, wiele renderów (cztery niżej to przykłady)"
+  },
+  {
+   "value": "146 KB",
+   "text": "Brief pisany od zera z wklejanymi regułami | 21 briefów, mediana 6 628 znaków, 146 KB; „CACHE RULE” 20/21, „context small” 18/21 — szablon w głow",
+   "line": 190,
+   "section": "§3 Co przestaje istnieć w dzisiejszym przepływie"
+  },
+  {
+   "value": "0,28 mln",
+   "text": "Tura koordynatora na „jak idzie”, „co biegnie”, „co pamiętasz o…” | tura ≈ 0,28 mln (R89 §4.2) do 377–587 tys. kontekstu (ledger 21.10 06:08)",
+   "line": 192,
+   "section": "§3 Co przestaje istnieć w dzisiejszym przepływie"
+  },
+  {
+   "value": "587 tys.",
+   "text": "jak idzie”, „co biegnie”, „co pamiętasz o…” | tura ≈ 0,28 mln (R89 §4.2) do 377–587 tys. kontekstu (ledger 21.10 06:08) | odpytywany jest ZAPIS bieg",
+   "line": 192,
+   "section": "§3 Co przestaje istnieć w dzisiejszym przepływie"
+  },
+  {
+   "value": "0 tokenów",
+   "text": "587 tys. kontekstu (ledger 21.10 06:08) | odpytywany jest ZAPIS biegu i strona (0 tokenów) (IW-1, IW-4)",
+   "line": 192,
+   "section": "§3 Co przestaje istnieć w dzisiejszym przepływie"
+  },
+  {
+   "value": "5×",
+   "text": "Korekta przez przepisanie reguły; restart agenta | 5× „to przykład” jednego dnia; 3 restarty ≈ 0,9 pkt (nasze-08)",
+   "line": 195,
+   "section": "§3 Co przestaje istnieć w dzisiejszym przepływie"
+  },
+  {
+   "value": "0,9 pkt",
+   "text": "rzepisanie reguły; restart agenta | 5× „to przykład” jednego dnia; 3 restarty ≈ 0,9 pkt (nasze-08) | znacznik jako znalezisko → addendum (IW-9)",
+   "line": 195,
+   "section": "§3 Co przestaje istnieć w dzisiejszym przepływie"
+  },
+  {
+   "value": "626 tys.",
+   "text": "Preflight w głowie koordynatora | 11:23: etap na Fable zamiast presetu roli, 626 tys. tokenów | `start_gate` z zapisem rozwiązanego modelu (IW-6)",
+   "line": 196,
+   "section": "§3 Co przestaje istnieć w dzisiejszym przepływie"
+  },
+  {
+   "value": "1,5 mln",
+   "text": "Pełny log czytany przez agenta | 1,5 mln tokenów/agent (S2, 21.10) | wycinek (R89 P9 — bez zmian, po",
+   "line": 200,
+   "section": "§3 Co przestaje istnieć w dzisiejszym przepływie"
+  },
+  {
+   "value": "0 tokenów",
+   "text": "hemas/`; skrypt `tools/run_record.py` (start / step / event / receipt / finish; 0 tokenów); `docs/reports/runs/<rok-mies>/<id>.json` + `runs.jsonl`;",
+   "line": 206,
+   "section": "§4 Pakiety (≈ 50 wywołań każdy — preset; kolejność — preset; akceptacja + pomiar „po” — progi i liczby w kolumnach to presety/przykłady)"
+  },
+  {
+   "value": "48 h",
+   "text": "nialna w formie od ręcznej; testy schematu | linie QUEUE ręczne vs generowane w 48 h; czas nowej sesji do odpowiedzi „co biegnie” (baza: czyta Q",
+   "line": 206,
+   "section": "§4 Pakiety (≈ 50 wywołań każdy — preset; kolejność — preset; akceptacja + pomiar „po” — progi i liczby w kolumnach to presety/przykłady)"
+  },
+  {
+   "value": "7,3 %",
+   "text": "ów = 0 | `spec:` 0/21 → 1/1; `cache_creation` na bieg vs rozmiar prefiksu (baza 7,3 %); znaleziska kontroli przed/po | Sonnet | K1, K3, P3, P4",
+   "line": 207,
+   "section": "§4 Pakiety (≈ 50 wywołań każdy — preset; kolejność — preset; akceptacja + pomiar „po” — progi i liczby w kolumnach to presety/przykłady)"
+  },
+  {
+   "value": "6 h",
+   "text": "izyty jako węzeł bazy strony (preset: tylko on); render W9 po progu (przykład > 6 h); „N zwiniętych — pokaż”; „dziś do Ciebie: N słów” | liczni",
+   "line": 209,
+   "section": "§4 Pakiety (≈ 50 wywołań każdy — preset; kolejność — preset; akceptacja + pomiar „po” — progi i liczby w kolumnach to presety/przykłady)"
+  },
+  {
+   "value": "100 %",
+   "text": "li słów | trafienia/chybienia; przypadkowe „stop” bez straty (cel — preset, np. 100 %); mandatów i odwrotów na tydzień | Sonnet | W8, K9 (makra),",
+   "line": 210,
+   "section": "§4 Pakiety (≈ 50 wywołań każdy — preset; kolejność — preset; akceptacja + pomiar „po” — progi i liczby w kolumnach to presety/przykłady)"
+  },
+  {
+   "value": "100 %",
+   "text": "z `cost_per_package`, okno i `caps` per model z `pace_plan.json` (R91: Fable do 100 %, reszta do 90 % — jego słowa, preset), dysk/żywotność miejs",
+   "line": 211,
+   "section": "§4 Pakiety (≈ 50 wywołań każdy — preset; kolejność — preset; akceptacja + pomiar „po” — progi i liczby w kolumnach to presety/przykłady)"
+  },
+  {
+   "value": "90 %",
+   "text": "ge`, okno i `caps` per model z `pace_plan.json` (R91: Fable do 100 %, reszta do 90 % — jego słowa, preset), dysk/żywotność miejsca, co przekrocz",
+   "line": 211,
+   "section": "§4 Pakiety (≈ 50 wywołań każdy — preset; kolejność — preset; akceptacja + pomiar „po” — progi i liczby w kolumnach to presety/przykłady)"
+  },
+  {
+   "value": "626 tys.",
+   "text": "visory; `--log-only` | etapy na innym modelu niż preset roli (baza: 1 workflow, 626 tys.); `calls_used/plan_calls` (baza 2–5×) | Sonnet | E3, E8 (fu",
+   "line": 211,
+   "section": "§4 Pakiety (≈ 50 wywołań każdy — preset; kolejność — preset; akceptacja + pomiar „po” — progi i liczby w kolumnach to presety/przykłady)"
+  },
+  {
+   "value": "5×",
+   "text": "u niż preset roli (baza: 1 workflow, 626 tys.); `calls_used/plan_calls` (baza 2–5×) | Sonnet | E3, E8 (funkcja okna), konflikt 5",
+   "line": 211,
+   "section": "§4 Pakiety (≈ 50 wywołań każdy — preset; kolejność — preset; akceptacja + pomiar „po” — progi i liczby w kolumnach to presety/przykłady)"
+  },
+  {
+   "value": "2 tys.",
+   "text": "d-to-end z rekordem; brief K2c-1 rozłożony na pakiet kontekstu + część własną ≈ 2 tys. znaków (przykład) | udział biegów przez rutynę vs ad hoc; d",
+   "line": 212,
+   "section": "§4 Pakiety (≈ 50 wywołań każdy — preset; kolejność — preset; akceptacja + pomiar „po” — progi i liczby w kolumnach to presety/przykłady)"
+  },
+  {
+   "value": "24 h",
+   "text": "dzia sesji sprawdzone na VM → `tools[]` | węzeł `place` VM z datowanymi polami; 24 h tętna w repo; jedno wywłaszczenie przeżyte: bieg wznowiony",
+   "line": 213,
+   "section": "§4 Pakiety (≈ 50 wywołań każdy — preset; kolejność — preset; akceptacja + pomiar „po” — progi i liczby w kolumnach to presety/przykłady)"
+  },
+  {
+   "value": "20 ×",
+   "text": "bez błędu; 1 eskalacja z powodem | tury koordynatora na pakiet przed/po (baza ≈ 20 × 0,28 mln); koszt pustego biegu z `spec_runs` | Sonnet; koor",
+   "line": 215,
+   "section": "§4 Pakiety (≈ 50 wywołań każdy — preset; kolejność — preset; akceptacja + pomiar „po” — progi i liczby w kolumnach to presety/przykłady)"
+  },
+  {
+   "value": "0,28 mln",
+   "text": "łędu; 1 eskalacja z powodem | tury koordynatora na pakiet przed/po (baza ≈ 20 × 0,28 mln); koszt pustego biegu z `spec_runs` | Sonnet; koordynator t",
+   "line": 215,
+   "section": "§4 Pakiety (≈ 50 wywołań każdy — preset; kolejność — preset; akceptacja + pomiar „po” — progi i liczby w kolumnach to presety/przykłady)"
+  },
+  {
+   "value": "12 min",
+   "text": "buildu (obserwacja 23.10: chmura S1 zajęta pakietami M1; build na VM zimny ≈ 12 min, `VM_RECON` §7), sekretarz już biegnie i już pisze `spec_ru",
+   "line": 219,
+   "section": "§4 Pakiety (≈ 50 wywołań każdy — preset; kolejność — preset; akceptacja + pomiar „po” — progi i liczby w kolumnach to presety/przykłady)"
+  },
+  {
+   "value": "48 h",
+   "text": "ierwszy pomiar oszczędności (linie QUEUE ręczne vs generowane) jest widoczny po 48 h. K1+K3",
+   "line": 221,
+   "section": "§4 Pakiety (≈ 50 wywołań każdy — preset; kolejność — preset; akceptacja + pomiar „po” — progi i liczby w kolumnach to presety/przykłady)"
+  },
+  {
+   "value": "48 h",
+   "text": "a z 00:1x to schemat zdarzeń, nie prośba o styl | K7 + W1/W7 (dyskusja) | IW-1: 48 h, generowane obok ręcznych | ręczne/generowane; linie bez zm",
+   "line": 256,
+   "section": "§6 Oryginalne pomysły z trzech kątów i dyskusji (każdy z tanim eksperymentem i miarą)"
+  },
+  {
+   "value": "0 tokenów",
+   "text": "16 | **„Co pamiętasz o…” jako zapytanie zwracające gałąź** (0 tokenów) zamiast tury Fable | W5 + E 6.1 | filtr stanów w wyszukiwa",
+   "line": 271,
+   "section": "§6 Oryginalne pomysły z trzech kątów i dyskusji (każdy z tanim eksperymentem i miarą)"
+  },
+  {
+   "value": "4 ×",
+   "text": "toku** (godziny na paragonie biegu); na bezczynności nic | godzina Standard ≈ 3–4 × droższa (`VM_RECON`, 23.10); baza godzin/dobę — po 24 h tęt",
+   "line": 277,
+   "section": "§7 Pytania tak/nie dla właściciela (tylko pieniądze · prywatne dane · sprzeczność z wymaganiem)"
+  },
+  {
+   "value": "24 h",
+   "text": "c | godzina Standard ≈ 3–4 × droższa (`VM_RECON`, 23.10); baza godzin/dobę — po 24 h tętna (IW-8)",
+   "line": 277,
+   "section": "§7 Pytania tak/nie dla właściciela (tylko pieniądze · prywatne dane · sprzeczność z wymaganiem)"
+  },
+  {
+   "value": "12 min",
+   "text": "v/kvm` (bez emulatora), `npm` doinstalowany (§7), build dev zakończony (zimny ≈ 12 min, 242/242); „aktywność dla 30 min” nie dotyczy (wywłaszczeni",
+   "line": 292,
+   "section": "§8 Luki (pomiary do zrobienia, nie problemy)"
+  },
+  {
+   "value": "30 min",
+   "text": "nstalowany (§7), build dev zakończony (zimny ≈ 12 min, 242/242); „aktywność dla 30 min” nie dotyczy (wywłaszczenie Spot); **nadal**: czy baza stro",
+   "line": 292,
+   "section": "§8 Luki (pomiary do zrobienia, nie problemy)"
+  },
+  {
+   "value": "0,9 MB",
+   "text": "`VM_RECON` 23.10: WatchDog żyje na VM (`watchdog.service`, 8080 loopback, dane 0,9 MB); AGEDS i ChatADHD nie postawione (klony do inwentarza; AGE",
+   "line": 293,
+   "section": "§8 Luki (pomiary do zrobienia, nie problemy)"
+  },
+  {
+   "value": "100 %",
+   "text": "6 | 211 | nagłówek §4: progi i liczby to presety lub przykłady; „cel 100 %” → „cel — preset, np. 100 %”",
+   "line": 315,
+   "section": "Kontrola przed użyciem (chatadhd, 2026-10-23)"
+  },
+  {
+   "value": "100 %",
+   "text": "k §4: progi i liczby to presety lub przykłady; „cel 100 %” → „cel — preset, np. 100 %”",
+   "line": 315,
+   "section": "Kontrola przed użyciem (chatadhd, 2026-10-23)"
+  },
+  {
+   "value": "12 min",
+   "text": "ECON` §7), `/dev/kvm` nadal brak (§3); „build dev w toku” → zakończony (zimny ≈ 12 min, 242/242, §7); też L3 i IW-8",
+   "line": 328,
+   "section": "Kontrola przed użyciem (chatadhd, 2026-10-23)"
+  }
+ ],
+ "findings": [],
+ "r60": null,
+ "verdict": null,
+ "previous": {
+  "doc_hash": "sha256:f648049ee1873720cb1977acba57a16d4653e71959f62511a89986a03e3a9141",
+  "checked_at": "2026-10-26T17:56:57.358356Z",
+  "source": {
+   "kind": "extract",
+   "model": null,
+   "tokens": 0
+  },
+  "decisions": [
+   {
+    "text": "Zapis biegu jest jednym źródłem; liczniki, paragony i karty przekazania to rendery",
+    "line": 230,
+    "section": "§5 Decyzje z odwrotem (koordynator, 2026-10-23; każda to preset)",
+    "why": "trzy kąty czytają trzy rzeczy z tego samego rekordu; 37/60 commitów to księgowość, której nikt nie czyta jako danych",
+    "reversal": "proza QUEUE jak dziś (render może ją nadal produkować)"
+   },
+   {
+    "text": "Ścieżki zapisu bez tokenów; model tylko jako warstwa odczytu z paragonem",
+    "line": 231,
+    "section": "§5 Decyzje z odwrotem (koordynator, 2026-10-23; każda to preset)",
+    "why": "jego gest i jego cytat są nietykalne; każda tura modelu na ścieżce zapisu to koszt i ryzyko interpretacji",
+    "reversal": "model na ścieżce zapisu jako jawna opcja z paragonem"
+   },
+   {
+    "text": "Kierunek decyduje o magazynie: gesty → baza strony, biegi → repo; sekretarz lustruje",
+    "line": 232,
+    "section": "§5 Decyzje z odwrotem (koordynator, 2026-10-23; każda to preset)",
+    "why": "konflikt 1; każde miejsce pisze za 0 tam, gdzie dociera",
+    "reversal": "jedno miejsce po pomiarze dostępności"
+   },
+   {
+    "text": "Jedna skrzynka z `class`; jedna tabela słów z dwoma renderami",
+    "line": 233,
+    "section": "§5 Decyzje z odwrotem (koordynator, 2026-10-23; każda to preset)",
+    "why": "dwa stany „czeka” i dwie tabele słów = dwa źródła błędów",
+    "reversal": "rozdzielenie kolekcji/tabel po pomiarze"
+   },
+   {
+    "text": "`ask_after` od pierwszego pokazania; `if_silent` przez `run_once_at`",
+    "line": 234,
+    "section": "§5 Decyzje z odwrotem (koordynator, 2026-10-23; każda to preset)",
+    "why": "pytanie nie może rozstrzygnąć się, zanim je zobaczył; 0 pollingu",
+    "reversal": "kadencja sekretarza"
+   },
+   {
+    "text": "Podtrzymanie VM na czas biegu (`running where: vm`), nie na bezczynności; tętno i sekretarz nie są biegiem",
+    "line": 235,
+    "section": "§5 Decyzje z odwrotem (koordynator, 2026-10-23; każda to preset)",
+    "why": "konflikt 4; R90 „Zadbaj” + polityka celuje w bezczynność",
+    "reversal": "wyłączyć timer; „zawsze” po jego słowie"
+   },
+   {
+    "text": "Rola w rutynie, tabela rola→model osobno; `start_gate` zapisuje rozwiązany model; brak modelu = advisory",
+    "line": 236,
+    "section": "§5 Decyzje z odwrotem (koordynator, 2026-10-23; każda to preset)",
+    "why": "kalibracja cennika z tego, co biegło; twardy błąd = ograniczenie",
+    "reversal": "`--log-only`"
+   },
+   {
+    "text": "Koszt przy geście + suma dnia; paragon per pozycja o dotknięcie dalej",
+    "line": 237,
+    "section": "§5 Decyzje z odwrotem (koordynator, 2026-10-23; każda to preset)",
+    "why": "SLOWA:66; szum vs decyzja",
+    "reversal": "preset „przy każdej pozycji”"
+   },
+   {
+    "text": "Nic nie jest filtrem tego, co widzi: wszystko widoczne, zwinięte, „N zwiniętych — pokaż”; budżet uwagi = licznik + advisory",
+    "line": 238,
+    "section": "§5 Decyzje z odwrotem (koordynator, 2026-10-23; każda to preset)",
+    "why": "ZASADA WŁAŚCICIELA; ukrycie bez odwrotu",
+    "reversal": "—"
+   },
+   {
+    "text": "Pora i uwaga jako wiersze routingu przestawiane jego słowem; wnioskowanie tylko proponuje",
+    "line": 239,
+    "section": "§5 Decyzje z odwrotem (koordynator, 2026-10-23; każda to preset)",
+    "why": "cicha decyzja ukrywa",
+    "reversal": "usunąć wiersz"
+   },
+   {
+    "text": "„stop” adresuje miejsca; kanał do VM = flaga w repo czytana przez tętno",
+    "line": 240,
+    "section": "§5 Decyzje z odwrotem (koordynator, 2026-10-23; każda to preset)",
+    "why": "2 przypadkowe dotknięcia 23.10; `send_message` do VM odmówiony",
+    "reversal": "„stop natychmiast wszędzie”"
+   },
+   {
+    "text": "Pomiar jego zachowania = tylko znacznik ostatniej wizyty; to, co wysyłamy, mierzymy sami",
+    "line": 241,
+    "section": "§5 Decyzje z odwrotem (koordynator, 2026-10-23; każda to preset)",
+    "why": "zgoda, o którą nie pytamy w nocy",
+    "reversal": "jego słowo włącza więcej"
+   },
+   {
+    "text": "Wszystkie rutyny i narzędzia widoczne i uruchamialne przez niego z kartą `start_gate`; kolejność = preset zasiany jego prośbami",
+    "line": 242,
+    "section": "§5 Decyzje z odwrotem (koordynator, 2026-10-23; każda to preset)",
+    "why": "R90 „wyeksponować wszystkie narzędzia”; nic niedostępne z definicji",
+    "reversal": "inna kolejność"
+   },
+   {
+    "text": "Bieg czeka na niego tylko w klasach CLAUDE.md i przy drogim odwrocie; reszta = decyzja wstępna W3",
+    "line": 243,
+    "section": "§5 Decyzje z odwrotem (koordynator, 2026-10-23; każda to preset)",
+    "why": "R75, R62",
+    "reversal": "„czekaj zawsze” per klasa"
+   },
+   {
+    "text": "Runner v1 bez stanu własnego; dom rutyn `tools/routines/` w repo; jądro przez import P7",
+    "line": 244,
+    "section": "§5 Decyzje z odwrotem (koordynator, 2026-10-23; każda to preset)",
+    "why": "KOD ≠ DANE; każda cecha runnera to cecha do przeniesienia drugi raz; maszyna buildu zajęta",
+    "reversal": "od razu w jądrze"
+   },
+   {
+    "text": "`CLAUDE.md` jako prefiks wspólny + `spec:` wg tematu; mierzone na następnym pakiecie",
+    "line": 245,
+    "section": "§5 Decyzje z odwrotem (koordynator, 2026-10-23; każda to preset)",
+    "why": "konflikt 11; decyzja z góry = zgadywanie",
+    "reversal": "samo `CLAUDE.md`"
+   },
+   {
+    "text": "Aplikacja jako konsola (W10) = opcja „później” z datowanym kosztem w E9",
+    "line": 246,
+    "section": "§5 Decyzje z odwrotem (koordynator, 2026-10-23; każda to preset)",
+    "why": "R90 „przeglądarkowy, nie?”; build zajęty",
+    "reversal": "wstawić po P7"
+   },
+   {
+    "text": "Pierwszy pakiet IW-1; IW-8 niezależnie w sesji VM",
+    "line": 247,
+    "section": "§5 Decyzje z odwrotem (koordynator, 2026-10-23; każda to preset)",
+    "why": "§4",
+    "reversal": "kolejność w `QUEUE_S1.md`"
+   }
+  ],
+  "rev": "96ca991c"
+ },
+ "_history": [
+  {
+   "at": "2026-10-26T17:56:57.358356Z",
+   "source": {
+    "kind": "extract",
+    "model": null,
+    "tokens": 0
+   },
+   "doc_hash": "sha256:f648049ee1873720cb1977acba57a16d4653e71959f62511a89986a03e3a9141"
+  }
+ ]
+}

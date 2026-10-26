@@ -1,0 +1,26 @@
+{
+ "schema": "loom.check_data_presets/1",
+ "_comment": "Presety kontroli jako danych (IW-9, INTERFEJS_WSPOLPRACY_v2 §4; 2026-10-26). Wszystkie wzorce, nazwy, progi i listy niżej to PRZYKŁADY/presety, nie reguły: silnik bierze dowolne. Ekstrakcja bez modelu (`tools/check_data.py extract`) to tania warstwa zastępcza; pełne dane daje kontrola Haiku (`tools/workflows/check-before-use.js`), która emituje te same pola.",
+ "_history": [
+  {"at": "2026-10-26", "by": "IW-9 (Opus, sesja na VM)", "what": "pierwsze presety: nagłówki sekcji decyzji/dodatków, wzorce przykładów i pomiarów, nazwa pliku obok dokumentu, glob dla strony"}
+ ],
+ "sidecar_suffix": ".check.json",
+ "page_glob": ["docs/architecture/*.check.json", "docs/reports/*.check.json", "docs/ops/*.check.json"],
+ "page_full_text_max_chars": 60000,
+ "decision_heading_re": "(?i)decyzj|decision",
+ "addition_heading_re": "(?i)addendum|dopisek|uzupełnieni|kontrola przed użyciem",
+ "reversal_header_re": "(?i)odwr[oó]t|reversal|revert",
+ "example_re": "(?i)\\bprzykład\\w*|\\bexample\\w*|\\bnp\\.",
+ "measurement_re": "(?<![\\w.])\\d+(?:[ \\u00a0]\\d{3})*(?:[,.]\\d+)?\\s?(?:%|mln|tys\\.?|min|h\\b|godz|GB|MB|KB|s\\b|pkt|tokenów|zł|EUR|USD|×)",
+ "max_items": {"examples": 400, "measurements": 400, "additions": 200},
+ "snippet_chars": 220,
+ "finding_states": ["open", "queued", "applied", "rejected"],
+ "marker_inbox_classes": ["marker"],
+ "marker_pattern_label": "marker (jego znacznik)",
+ "addendum": {
+  "routine": "addendum.apply",
+  "model_role": "package_executor",
+  "running_target_states": ["running", "paused"],
+  "note_running": "agent w biegu nie jest restartowany (CLAUDE.md, waste control 6): addendum czeka na koniec biegu {run_id}"
+ }
+}

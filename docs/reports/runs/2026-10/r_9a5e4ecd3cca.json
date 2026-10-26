@@ -1,0 +1,55 @@
+{
+ "schema": "loom.routine_run/1",
+ "run_id": "r_9a5e4ecd3cca",
+ "routine": {
+  "id": "package.run",
+  "version": null,
+  "hash": null
+ },
+ "params": {
+  "package": "IW-9..11"
+ },
+ "context_pack_hash": null,
+ "brief_hash": null,
+ "where": "vm:devbox-20260923",
+ "resolved": null,
+ "started": "2026-10-26T17:53:16.103443Z",
+ "finished": null,
+ "state": "running",
+ "summary": null,
+ "steps": [
+  {
+   "id": "IW-9",
+   "clock": {
+    "started": "2026-10-26T18:00:21.787438Z",
+    "updated": "2026-10-26T18:00:21.787438Z",
+    "ended": "2026-10-26T18:00:21.787438Z"
+   },
+   "state": "done",
+   "out": "tools/check_data.py, check-before-use.js data, routines check.before_use@2 + addendum.apply@1, page diff section"
+  }
+ ],
+ "commits": [],
+ "cards": [],
+ "escalations": [],
+ "advisories": [],
+ "original_ideas": [],
+ "events": [
+  {
+   "at": "2026-10-26T17:53:16.103443Z",
+   "kind": "started",
+   "text": "IW-9 kontrola→dane, IW-10 operator, IW-11 handover",
+   "counter_delta": {
+    "w_toku": 1
+   }
+  }
+ ],
+ "receipt": [],
+ "decisions": [],
+ "markers_applied": [],
+ "spec": [
+  "R90"
+ ],
+ "updated": "2026-10-26T18:00:21.787438Z",
+ "title": "IW-9+IW-10+IW-11"
+}

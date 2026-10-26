@@ -51,6 +51,40 @@
   },
   {
    "schema": "loom.routine/1",
+   "id": "check.before_use",
+   "version": 2,
+   "since": "2026-10-26",
+   "supersedes": 1,
+   "title": "kontrola przed użyciem → DANE obok dokumentu (decyzje, przykłady, dodatki, pomiary, znaleziska) → diff decyzji",
+   "changelog": [{"version": 2, "at": "2026-10-26", "what": "IW-9: kontrola emituje JSON (check-before-use.js zwraca `data`), krok ingest zapisuje <dok>.check.json, render diffu decyzji; ekstrakcja bez modelu jako warstwa zastępcza"}],
+   "params": {"doc": {"required": true}, "result": {"default": "", "about": "plik JSON z wynikiem check-before-use.js (pusty = ekstrakcja bez modelu)"}},
+   "steps": [
+    {"id": "brief_check", "do": "cmd", "argv": ["python3", "{repo}/tools/context_pack.py", "check-brief", "{params.doc}"], "when": {"path": "params.doc", "op": "matches", "value": "\\.json$"}, "ok_codes": [0, 1]},
+    {"id": "extract", "do": "cmd", "argv": ["python3", "{repo}/tools/check_data.py", "--root", "{root}", "extract", "{params.doc}", "--save"], "when": {"path": "params.doc", "op": "matches", "value": "\\.md$"}},
+    {"id": "review", "do": "handoff", "text": "Workflow({scriptPath: 'tools/workflows/check-before-use.js', args: {docs: ['{params.doc}'], wt, remote_branch}}) (preset roli: checker); zapisz zwrot jako JSON i: python3 tools/routine.py resume {run_id} --done review --param result=<plik>"},
+    {"id": "ingest", "do": "cmd", "argv": ["python3", "{repo}/tools/check_data.py", "--root", "{root}", "ingest", "{params.result}", "--run-id", "{run_id}"], "when": {"path": "params.result", "op": "truthy"}},
+    {"id": "diff", "do": "cmd", "argv": ["python3", "{repo}/tools/check_data.py", "--root", "{root}", "render", "{params.doc}"], "when": {"path": "params.doc", "op": "matches", "value": "\\.md$"}},
+    {"id": "addendum", "do": "confirm", "question": "zastosować otwarte znaleziska jako addendum (bez restartu agenta)? — tworzy bieg addendum.apply", "if_silent": "proceed", "cost_to_reverse": "niski (git revert addendum)"},
+    {"id": "queue_addendum", "do": "cmd", "argv": ["python3", "{repo}/tools/check_data.py", "--root", "{root}", "addendum", "--doc", "{params.doc}"]}
+   ]
+  },
+  {
+   "schema": "loom.routine/1",
+   "id": "addendum.apply",
+   "version": 1,
+   "since": "2026-10-26",
+   "title": "znacznik → znalezisko → addendum (Sonnet po końcu biegu; agent w biegu nie jest restartowany)",
+   "changelog": [{"version": 1, "at": "2026-10-26", "what": "IW-9: znaczniki class=marker ze skrzynki i aktywne znaczniki words.py → znaleziska w <dok>.check.json → bieg addendum"}],
+   "params": {"doc": {"required": true}, "inbox": {"default": "", "about": "plik JSON z wierszami spec_inbox (pusty = tylko gestures_state.json)"}},
+   "steps": [
+    {"id": "markers", "do": "cmd", "argv": ["python3", "{repo}/tools/check_data.py", "--root", "{root}", "markers", "--doc", "{params.doc}", "--inbox", "{params.inbox}"], "when": {"path": "params.inbox", "op": "truthy"}},
+    {"id": "markers_gestures", "do": "cmd", "argv": ["python3", "{repo}/tools/check_data.py", "--root", "{root}", "markers", "--doc", "{params.doc}"], "when": {"path": "params.inbox", "op": "falsy"}},
+    {"id": "queue", "do": "cmd", "argv": ["python3", "{repo}/tools/check_data.py", "--root", "{root}", "addendum", "--doc", "{params.doc}", "--run-id", "{run_id}"]},
+    {"id": "apply", "do": "handoff", "text": "Sonnet (rola package_executor): zastosuj znaleziska z {params.doc} (check_data.py render {params.doc}); każde rozstrzygnij: check_data.py resolve --doc {params.doc} --finding <id> --state applied|rejected --why …; jeśli rekord ma waits_for — dopiero po końcu tamtych biegów"}
+   ]
+  },
+  {
+   "schema": "loom.routine/1",
    "id": "secretary.run",
    "version": 1,
    "since": "2026-10-26",
