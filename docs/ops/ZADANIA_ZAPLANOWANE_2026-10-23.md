@@ -24,6 +24,20 @@ Treść: w `docs/reports/QUEUE_S1.md` (sekcja „R88 v1”) i w `docs/spec/READM
 `trig_01VyHbcN2o8DQhwKq6D9iNaU` (list_triggers → derived_state.prompt). Czyta `spec_inbox` artefaktu
 https://claude.ai/artifact/MfbrGaubViGGhsp2Z4ZEm7, stosuje `spec.py approve/correct/add`, odświeża stronę, commit+push.
 
+**Dopisek IW-1 (2026-10-26) — do wklejenia na koniec promptu przy najbliższym `update_trigger`/`create_trigger`**
+(żywy prompt zadania NIE został zmieniony w pakiecie IW-1; do tego czasu biegi z `spec_runs` przenosi
+`python3 tools/run_record.py import-spec-runs <katalog>` — idempotentne):
+```
+Run record (0 tokens, tools/run_record.py, schema loom.routine_run/1): at the start run
+  RID=$(python3 tools/run_record.py start --routine secretary.run@R88-v1 --where cloud:scheduled --param title="Sekretarz spec")
+for every spec.py command you apply: python3 tools/run_record.py step $RID --id cmdN --state done --field command="<command>"
+for every escalation: python3 tools/run_record.py add $RID escalations '{"node":"<id>","why":"<reason>"}'
+at the end: python3 tools/run_record.py finish $RID --summary "<pusta | what changed>"
+  (empty run: add --quiet — it stays in the record and changes no counter, so it gives no status line)
+Commit docs/reports/runs/ together with the spec changes (an empty run may be committed with the next non-empty one).
+Keep writing the spec_runs row on the page as before (mirror for the phone).
+```
+
 ## Jednorazowe żywe w chwili zapisu (wygasną same)
 - `CI check (main 94872898)` — 08:55 UTC, sesja S1: czy loom.yml na 94872898 zielony → APK v4.
 - `Read android-smoke 32c7a401` — 08:33 UTC, sesja S2 (nie moja): odczyt smoke sterownika.

@@ -1,0 +1,34 @@
+{
+  "_comment": "Presety tools/run_record.py (IW-1, 2026-10-26). Każda wartość to preset, nie reguła; każda lista jest otwarta. Nadpisanie: --config <plik> albo zmienna RUN_RECORD_CONFIG; katalog rekordów: --root albo RUN_RECORD_ROOT.",
+  "_history": [
+    {"at": "2026-10-26", "by": "IW-1 (Opus)", "what": "pierwsze presety; ziarno rodzajów zdarzeń = jego lista z CLAUDE.md „Thread style” (zaczynam / kończę / buduję / nie wyszło / oryginalne od agentów)"}
+  ],
+  "runs_dir": "docs/reports/runs",
+  "index_file": "runs.jsonl",
+  "id_prefix": "r_",
+  "seed_states": ["running", "paused", "done", "failed"],
+  "seed_event_kinds": ["started", "finished", "building", "failed", "original_ideas", "decision"],
+  "finish_event_kind": {"done": "finished", "failed": "failed", "_default": "finished"},
+  "default_counter_delta": {
+    "started": {"w_toku": 1},
+    "finished": {"w_toku": -1, "zrobione": 1},
+    "failed": {"w_toku": -1, "nie_wyszlo": 1},
+    "original_ideas": {"oryginalne": 1}
+  },
+  "status_lines": {
+    "_comment": "Linia statusu = render zdarzenia z niezerową deltą licznika (preset filtru: nonzero_delta). Inne filtry: all, kinds.",
+    "filter": "nonzero_delta",
+    "kinds": [],
+    "labels": {
+      "started": "START",
+      "finished": "GOTOWE",
+      "building": "BUDUJĘ",
+      "failed": "NIE WYSZŁO",
+      "original_ideas": "ORYGINALNE",
+      "decision": "DECYZJA",
+      "_default": "{kind}"
+    },
+    "line": "{label} {hhmm} UTC — {title}{text_sep}{text}",
+    "queue_heading": "## {title} {label} ({hhmm} UTC, `{run_id}`{extras}): {text}"
+  }
+}

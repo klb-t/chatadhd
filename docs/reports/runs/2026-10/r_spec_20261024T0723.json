@@ -1,0 +1,63 @@
+{
+ "schema": "loom.routine_run/1",
+ "run_id": "r_spec_20261024T0723",
+ "routine": {
+  "id": "secretary.run",
+  "version": "R88-v1",
+  "hash": null
+ },
+ "params": {
+  "title": "Sekretarz spec",
+  "new": 0,
+  "applied": 0,
+  "escalated": 0
+ },
+ "context_pack_hash": null,
+ "brief_hash": null,
+ "where": "cloud:scheduled",
+ "resolved": {
+  "model": "sonnet",
+  "via": "trigger",
+  "session": null
+ },
+ "started": "2026-10-24T07:23:56Z",
+ "finished": "2026-10-24T07:23:56Z",
+ "state": "done",
+ "summary": "pusta",
+ "steps": [],
+ "commits": [],
+ "cards": [],
+ "escalations": [],
+ "advisories": [],
+ "original_ideas": [],
+ "events": [
+  {
+   "at": "2026-10-24T07:23:56Z",
+   "kind": "started"
+  },
+  {
+   "at": "2026-10-24T07:23:56Z",
+   "kind": "finished",
+   "text": "pusta"
+  }
+ ],
+ "receipt": [],
+ "decisions": [],
+ "markers_applied": [],
+ "spec": [],
+ "provenance": {
+  "from": "spec_runs",
+  "doc_id": "20261024T0723",
+  "row": {
+   "applied": 0,
+   "at": "2026-10-24T07:23:56Z",
+   "commands": [],
+   "escalated": 0,
+   "new": 0,
+   "note": "pusta",
+   "session": null,
+   "_id": "20261024T0723"
+  }
+ },
+ "updated": "2026-10-24T07:23:56Z"
+}

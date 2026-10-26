@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "loom.routine_run/1",
+  "title": "Zapis biegu (loom.routine_run/1)",
+  "description": "Jeden rekord biegu rutyny, pakietu albo zadania zaplanowanego, pisany skryptem tools/run_record.py (0 tokenów). Źródło: docs/architecture/INTERFEJS_WSPOLPRACY_v2_2026-10-23.md §2.1. Każda lista pól jest OTWARTA: additionalProperties jest wszędzie dozwolone, a stany i rodzaje zdarzeń to ziarna (presety w tools/routines/run_record.json), nie zamknięte listy.",
+  "type": "object",
+  "required": ["schema", "run_id", "routine", "started", "state", "events"],
+  "additionalProperties": true,
+  "$defs": {
+    "time": {"type": "string", "minLength": 1, "description": "ISO 8601 UTC, np. 2026-10-26T12:00:00.000000Z"},
+    "hash": {"type": ["string", "null"], "description": "np. sha256:<hex>; format otwarty"},
+    "event": {
+      "type": "object",
+      "required": ["at", "kind"],
+      "additionalProperties": true,
+      "properties": {
+        "at": {"$ref": "#/$defs/time"},
+        "kind": {"type": "string", "minLength": 1, "description": "otwarte; ziarno: started, finished, building, failed, original_ideas, decision"},
+        "text": {"type": "string"},
+        "counter_delta": {"type": "object", "additionalProperties": {"type": "number"}},
+        "class": {"type": ["string", "null"]}
+      }
+    },
+    "step": {
+      "type": "object",
+      "required": ["id"],
+      "additionalProperties": true,
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "state": {"type": "string"},
+        "in_hash": {"$ref": "#/$defs/hash"},
+        "out_hash": {"$ref": "#/$defs/hash"},
+        "where": {"type": ["string", "null"]},
+        "clock": {"type": "object", "additionalProperties": true},
+        "tokens": {"type": ["number", "object", "null"]}
+      }
+    },
+    "receipt": {
+      "type": "object",
+      "required": ["currency", "value", "at"],
+      "additionalProperties": true,
+      "properties": {
+        "currency": {"type": "string", "minLength": 1, "description": "otwarte; przykłady: tokens, cost_equiv, words_to_owner, vm_hours, gb, ci_minutes"},
+        "value": {"type": "number"},
+        "unit": {"type": ["string", "null"]},
+        "source": {"type": ["string", "null"]},
+        "at": {"$ref": "#/$defs/time"},
+        "reliability": {"type": ["number", "string", "null"]}
+      }
+    },
+    "decision": {
+      "type": "object",
+      "required": ["text"],
+      "additionalProperties": true,
+      "properties": {
+        "text": {"type": "string"},
+        "reversal": {"type": ["string", "null"]},
+        "cost_to_reverse": {"type": ["string", "number", "null"]},
+        "by": {"type": ["string", "null"]},
+        "at": {"$ref": "#/$defs/time"}
+      }
+    }
+  },
+  "properties": {
+    "schema": {"const": "loom.routine_run/1"},
+    "run_id": {"type": "string", "pattern": "^[A-Za-z0-9_.:-]+$"},
+    "routine": {
+      "type": "object",
+      "required": ["id"],
+      "additionalProperties": true,
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "version": {"type": ["string", "null"]},
+        "hash": {"$ref": "#/$defs/hash"}
+      }
+    },
+    "params": {"type": "object", "additionalProperties": true},
+    "context_pack_hash": {"$ref": "#/$defs/hash"},
+    "brief_hash": {"$ref": "#/$defs/hash"},
+    "where": {"type": ["string", "null"]},
+    "resolved": {"type": ["object", "null"], "additionalProperties": true},
+    "started": {"$ref": "#/$defs/time"},
+    "finished": {"type": ["string", "null"]},
+    "state": {"type": "string", "minLength": 1, "description": "otwarte; ziarno: running, paused, done, failed"},
+    "summary": {"type": ["string", "null"]},
+    "steps": {"type": "array", "items": {"$ref": "#/$defs/step"}},
+    "commits": {"type": "array"},
+    "cards": {"type": "array"},
+    "escalations": {"type": "array"},
+    "advisories": {"type": "array"},
+    "original_ideas": {"type": "array"},
+    "events": {"type": "array", "items": {"$ref": "#/$defs/event"}},
+    "receipt": {"type": "array", "items": {"$ref": "#/$defs/receipt"}},
+    "decisions": {"type": "array", "items": {"$ref": "#/$defs/decision"}},
+    "markers_applied": {"type": "array"},
+    "spec": {"type": "array", "items": {"type": "string"}},
+    "provenance": {"type": "object", "additionalProperties": true, "description": "skąd rekord, np. import ze spec_runs (P1) albo z karty single-package"}
+  }
+}
