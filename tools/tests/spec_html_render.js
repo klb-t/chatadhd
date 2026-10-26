@@ -37,7 +37,6 @@ function findPlaywright() {
     if (opt.stubDb) {
       await page.addInitScript(initial => {
         window.__adds = [];
-        const docs = initial.map((d, i) => ({ id: 'd' + i, data: () => d }));
         // stubDb: lista dokumentów spec_inbox albo {kolekcja: [dokumenty]}; zapisy (add/set) trafiają do window.__adds z nazwą kolekcji w __coll
         const byName = Array.isArray(initial) ? { spec_inbox: initial } : initial;
         const mk = name => {
@@ -48,9 +47,10 @@ function findPlaywright() {
             doc: id => ({ get: async () => { const d = (byName[name] || []).find(x => x.__id === id); return { exists: !!d, data: () => d }; },
                           set: async e => { window.__adds.push({ __coll: name, __id: id, ...e }); } }) };
         };
-        window.claude = { use: async name => name === 'db' ? { collection: mk } : (name === 'user' ? { can: async () => true, id: 'owner' } : null) };
+        window.claude = { use: async name => name === 'db' ? { collection: mk } : (name === 'user' ? { can: async () => true, isOwner: async () => window.__owner !== false } : null) };
       }, opt.stubDb);
     }
+    if (opt.notOwner) await page.addInitScript(() => { window.__owner = false; });
     if (opt.probe) await page.addInitScript(p => { window.__probe = p; }, opt.probe);
     if (opt.noStorage) await page.setContent(doc, { waitUntil: 'domcontentloaded' });
     else await page.goto('https://spec.test/', { waitUntil: 'domcontentloaded' });
@@ -65,6 +65,7 @@ function findPlaywright() {
       await page.click('.qitem [data-send]:visible');
       await page.waitForTimeout(300);
     }
+    if (opt.clickSel) { await page.click(opt.clickSel); await page.waitForTimeout(200); }
     if (opt.search !== undefined) { await page.fill('#q', opt.search); await page.waitForTimeout(200); }
     const out = await page.evaluate(() => {
       const t = s => { const e = document.querySelector(s); return e ? e.textContent.trim() : null; };
@@ -84,6 +85,7 @@ function findPlaywright() {
         countsLine: t('#counts'), newInTree: document.querySelectorAll('details.node .chip.new:not([hidden])').length,
         qNew: t('#q-new'), dbNote: document.getElementById('q-dbnote') ? !document.getElementById('q-dbnote').hidden : null,
         adds: window.__adds || null,
+        w9Items: Array.from(document.querySelectorAll('#w9 li')).map(li => ({ text: li.textContent.trim(), hidden: li.hidden })),
       };
     });
     out.errors = errors;

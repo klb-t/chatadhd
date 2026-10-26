@@ -1,0 +1,92 @@
+{
+ "schema": "loom.places/1",
+ "_comment": "Mapa miejsc v1 (IW-4, 2026-10-26): statyczna tabela miejsc, sesji i usług. Każde pole stanu to DATOWANA OBSERWACJA (observed_at + source), nie ograniczenie (R59/R60). Listy miejsc, stanów, walut i pól są otwarte. Stany to presety słownika `state_labels`; nieznany stan = jego nazwa. Odświeża: ręcznie albo rutyna vm.heartbeat/vm.recon (IW-8). Strona spec liczy z tego jeden wiersz („miejsca: N żyją · …”) bez modelu.",
+ "_history": [
+  {"at": "2026-10-26", "by": "IW-4 (Opus, sesja na VM)", "what": "ziarno: §2.7 INTERFEJS_WSPOLPRACY_v2, VM_DEPLOY_2026-10-23 (stan 2026-10-25), obserwacja na VM 2026-10-26 17:2x UTC (tmux, systemctl, curl, df)"}
+ ],
+ "state_labels": {"alive": {"one": "żyje", "few": "żyją", "many": "żyje"}, "sleeps": {"one": "śpi", "few": "śpią", "many": "śpi"}, "not_deployed": "nie postawiono", "unknown": {"one": "nieznany", "few": "nieznane", "many": "nieznanych"}, "stopped": "zatrzymane"},
+ "summary_order": ["alive", "sleeps", "not_deployed", "unknown"],
+ "places": [
+  {
+   "id": "vm:devbox-20260923",
+   "kind": "vm",
+   "title": "S1-VM devbox-20260923 (GCP, europe-west4-c, e2)",
+   "currency": ["godziny VM × stawka (jego pieniądze)", "dysk"],
+   "idle_policy": "Spot; po wywłaszczeniu spot-guard przywraca jako Standard tylko gdy zostały zadania (work.sh pending), wraca na Spot po bezczynności (VM_DEPLOY)",
+   "stop_channel": "flaga w repo czytana przez tętno (IW-8, jeszcze nie ma) / gcloud compute instances stop",
+   "holds_owner_data": false,
+   "state": "alive",
+   "observed_at": "2026-10-26T17:25Z",
+   "source": "obserwacja z sesji na VM (hostname devbox-20260923…internal)",
+   "facts": [
+    {"text": "dysk / 61 GB, zajęte 46 GB (74 %), wolne 16 GB", "observed_at": "2026-10-26T17:25Z", "source": "df -h /"},
+    {"text": "8 vCPU, 31 GB RAM", "observed_at": "2026-10-26T17:25Z", "source": "nproc, free -g"},
+    {"text": "stały adres devbox-ip 34.158.117.249; publicznie 80/443 (Caddy) i 22", "observed_at": "2026-10-25", "source": "docs/ops/VM_DEPLOY_2026-10-23.md"},
+    {"text": "brak /dev/kvm (emulator Androida zostaje w chmurze S2)", "observed_at": "2026-10-23", "source": "docs/ops/VM_RECON_2026-10-23.md §3"}
+   ],
+   "sessions": [
+    {"id": "gcp", "title": "sesja Claude „gcp” (koordynator S1-VM, Remote Control)", "where": "tmux rc, okno 0 (claude)", "session": "session_01G2FdF1sSV9SQ9kbRg7tTdx", "state": "alive", "observed_at": "2026-10-26T17:25Z", "source": "tmux list-windows -t rc; TELEPORT_S1.md", "restart": "nie wstaje sama po wywłaszczeniu, dopóki nie ma claude-rc.service (VM_DEPLOY)"},
+    {"id": "watchdog", "title": "sesja Claude projektu WatchDog", "where": "tmux rc, okno 1", "state": "alive", "observed_at": "2026-10-26T17:25Z", "source": "tmux list-windows -t rc"},
+    {"id": "ageds", "title": "sesja Claude projektu AGEDS", "where": "tmux rc, okno 2", "state": "alive", "observed_at": "2026-10-26T17:25Z", "source": "tmux list-windows -t rc"},
+    {"id": "chatadhd", "title": "sesja Claude projektu ChatADHD", "where": "tmux rc, okno 3", "state": "alive", "observed_at": "2026-10-26T17:25Z", "source": "tmux list-windows -t rc"}
+   ],
+   "services": [
+    {"id": "chatadhd", "title": "ChatADHD (serwer Loom + web)", "url": "https://chat.34-158-117-249.sslip.io", "unit": "chatadhd.service", "data": "/var/lib/chatadhd (pusty)", "holds_owner_data": false, "state": "alive", "observed_at": "2026-10-26T17:25Z", "source": "systemctl is-active chatadhd = active; HTTPS 200", "reversal": "sudo systemctl disable --now chatadhd"},
+    {"id": "watchdog", "title": "WatchDog-JH16", "url": "https://watchdog.34-158-117-249.sslip.io", "unit": "watchdog.service", "data": "/var/lib/watchdog", "holds_owner_data": null, "state": "alive", "observed_at": "2026-10-26T17:25Z", "source": "systemctl is-active watchdog = active; HTTPS 401 (hasło Caddy)", "reversal": "sudo systemctl disable --now watchdog"},
+    {"id": "ageds", "title": "AGEDS", "url": "https://ageds.34-158-117-249.sslip.io", "unit": "docker compose -p ageds", "data": "/var/lib/ageds (pusty)", "holds_owner_data": false, "state": "alive", "observed_at": "2026-10-26T17:25Z", "source": "HTTPS 401 (hasło Caddy, za nim usługa); docker ps niedostępne bez uprawnień", "reversal": "cd ~/AGEDS && sudo docker compose -p ageds down"},
+    {"id": "desktop", "title": "Pulpit (noVNC)", "url": "https://desktop.34-158-117-249.sslip.io", "unit": "watchdog-novnc.service", "holds_owner_data": false, "state": "alive", "observed_at": "2026-10-26T17:25Z", "source": "systemctl is-active watchdog-novnc = active", "reversal": "sudo systemctl disable --now watchdog-novnc"},
+    {"id": "caddy", "title": "Caddy (TLS, hasło)", "unit": "caddy.service", "holds_owner_data": false, "state": "alive", "observed_at": "2026-10-26T17:25Z", "source": "systemctl is-active caddy = active"}
+   ]
+  },
+  {
+   "id": "cloud:s1",
+   "kind": "cloud-session",
+   "title": "chmura S1 (session_015yMVYJqXDd8sNSZdYq3gu5)",
+   "currency": ["punkty konta", "dysk kontenera (~95 % = restart)"],
+   "stop_channel": "interrupt / send_message",
+   "state": "sleeps",
+   "observed_at": "2026-10-23",
+   "source": "TELEPORT_S1.md: koordynacja przeszła na VM, w chmurze nic nie usunięte"
+  },
+  {
+   "id": "cloud:s2",
+   "kind": "cloud-session",
+   "title": "S2 (session_01Armc9PkDiTDzjFBgXAMCjR) — smoke na emulatorze (GitHub Actions)",
+   "currency": ["punkty konta"],
+   "stop_channel": "send_message",
+   "state": "alive",
+   "observed_at": "2026-10-23",
+   "source": "INTERFEJS_WSPOLPRACY_v2 §2.7 (działa od 13.10)"
+  },
+  {
+   "id": "task:secretary",
+   "kind": "scheduled-task",
+   "title": "zadanie „Sekretarz spec (R88)” — co godzinę o :23",
+   "currency": ["prefiks per odpalenie (≈ 39 tys. tokenów)"],
+   "stop_channel": "wyłączenie zadania",
+   "state": "unknown",
+   "observed_at": "2026-10-23",
+   "source": "ZADANIA_ZAPLANOWANE_2026-10-23.md; zadania nie jadą same przy przeprowadzce (do sprawdzenia po stronie sesji)"
+  },
+  {
+   "id": "page:spec",
+   "kind": "artifact",
+   "title": "strona specyfikacji + baza (spec_inbox, spec_visits)",
+   "url": "https://claude.ai/artifact/MfbrGaubViGGhsp2Z4ZEm7",
+   "currency": ["0 tokenów"],
+   "state": "alive",
+   "observed_at": "2026-10-23",
+   "source": "ZADANIA_ZAPLANOWANE_2026-10-23.md"
+  },
+  {
+   "id": "ci:github",
+   "kind": "ci",
+   "title": "GitHub CI (loom.yml, python.yml na main)",
+   "currency": ["minuty CI"],
+   "stop_channel": "gh run cancel",
+   "state": "alive",
+   "observed_at": "2026-10-23",
+   "source": "INTERFEJS_WSPOLPRACY_v2 §2.7"
+  }
+ ]
+}

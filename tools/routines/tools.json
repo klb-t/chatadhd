@@ -2,7 +2,8 @@
   "schema": "loom.tool_catalog/1",
   "_comment": "Katalog narzędzi (IW-2, INTERFEJS_WSPOLPRACY_v2 §2.5). Jedno działanie na narzędzie. Każda lista otwarta: rodzaje efektów, klasy kosztu, miejsca, stany dostępności to ziarna. Dostępność = DATOWANA OBSERWACJA ze źródłem (R60), nie ograniczenie. Kolejność wpisów to preset. Czyta i sprawdza: tools/context_pack.py tools [--place P] / check.",
   "_history": [
-    {"at": "2026-10-26", "by": "IW-2 (Opus)", "what": "ziarno: TELEPORT_S1.md §5 (narzędzia sesji) + skrypty repo tools/; obserwacje z QUEUE_S1.md, VM_RECON_2026-10-23.md i z biegu IW-2 na VM"}
+    {"at": "2026-10-26", "by": "IW-2 (Opus)", "what": "ziarno: TELEPORT_S1.md §5 (narzędzia sesji) + skrypty repo tools/; obserwacje z QUEUE_S1.md, VM_RECON_2026-10-23.md i z biegu IW-2 na VM"},
+    {"at": "2026-10-26", "by": "IW-3/IW-4 (Opus, VM)", "what": "spec: podkomendy shown/silent/reopen/inbox i flagi pytania; spec_html: sekcje IW-3/IW-4; nowe page_counters"}
   ],
   "presets": {
     "unknown_effects": "worst_case",
@@ -17,10 +18,12 @@
      "availability": {"vm": {"state": "available", "observed": "2026-10-26", "source": "IW-1, testy tools/tests/test_run_record.py"}}},
     {"id": "context_pack", "does": "pakiet kontekstu → prefiks briefu z hashem; sprawdzenie briefu (spec:, hash); katalog narzędzi", "run": "python3 tools/context_pack.py <komenda>", "params": ["render <pakiet>", "hash <pakiet>", "check-brief <plik>", "tools [--place]", "list"], "effects": ["reads_only"], "cost_class": "zero",
      "availability": {"vm": {"state": "available", "observed": "2026-10-26", "source": "IW-2, testy tools/tests/test_context_pack.py"}}},
-    {"id": "spec", "does": "wymagania właściciela jako dane: show/list/cite/add/propose/approve/correct/build/html", "run": "python3 tools/spec.py <komenda>", "params": ["show <id>", "cite <brief> [--full]", "add --id R.. --quote-file", "propose|approve|correct <id>"], "effects": ["writes_repo"], "cost_class": "zero",
+    {"id": "spec", "does": "wymagania właściciela jako dane: show/list/cite/add/propose/approve/correct/build/html", "run": "python3 tools/spec.py <komenda>", "params": ["show <id>", "cite <brief> [--full]", "add --id R.. --quote-file", "propose|approve|correct <id>", "propose|correct <id> --ask-after --criteria --class --if-silent --cost-to-reverse", "shown <id>", "silent [--now] [--run-id]", "reopen <id>", "inbox <plik.json>"], "effects": ["writes_repo"], "cost_class": "zero",
      "availability": {"cloud": {"state": "available", "observed": "2026-10-23", "source": "sekretarz R88 v1 (zadanie zaplanowane)"}, "vm": {"state": "available", "observed": "2026-10-26", "source": "IW-2: spec.py cite w context_pack.py check-brief"}}},
     {"id": "spec_html", "does": "żywy, zwijany widok spec → docs/spec/SPEC.html (publikowany jako artefakt)", "run": "python3 tools/spec_html.py", "effects": ["writes_repo"], "cost_class": "zero",
-     "availability": {"cloud": {"state": "available", "observed": "2026-10-23", "source": "QUEUE_S1.md R88 v1"}}},
+     "availability": {"cloud": {"state": "available", "observed": "2026-10-23", "source": "QUEUE_S1.md R88 v1"}, "vm": {"state": "available", "observed": "2026-10-26", "source": "IW-3/IW-4: testy e2e 400 px na VM (Playwright doinstalowany w scratchpad, Chromium /opt/pw-browsers)"}}},
+    {"id": "page_counters", "does": "liczniki W1 (suma counter_delta z zapisów biegów), zdarzenia do „Od Twojego wyjścia”, słowa do niego z paragonów, mapa miejsc z docs/ops/places.json — ten sam JSON co na stronie spec", "run": "python3 tools/page_counters.py [--now ISO]", "params": ["--root", "--now"], "effects": ["reads_only"], "cost_class": "zero",
+     "availability": {"vm": {"state": "available", "observed": "2026-10-26", "source": "IW-4, testy tools/tests/test_page_counters.py"}}},
     {"id": "gate", "does": "pełna bramka checkoutu: build dev + ctest + JNI smoke + web build + e2e", "run": "bash tools/gate.sh <repo> [label]", "effects": ["long_running", "writes_repo"], "cost_class": "disk", "notes": "≥ 5 GB wolnego, jedna bramka na maszynę naraz (CLAUDE.md)",
      "availability": {"cloud": {"state": "available", "observed": "2026-10-23", "source": "QUEUE_S1.md bramka r67c"}, "vm": {"state": "available", "observed": "2026-10-25", "source": "QUEUE_S1.md bramka m1w1-shards2 (Chromium przez PLAYWRIGHT_HOST_PLATFORM_OVERRIDE)"}}},
     {"id": "clang_inc_check", "does": "clang -fsyntax-only dla źródeł z wygenerowanym .inc", "run": "python3 tools/clang_inc_check.py", "effects": ["reads_only"], "cost_class": "minutes",

@@ -1,0 +1,115 @@
+{
+ "schema": "loom.routine_run/1",
+ "run_id": "r_309d4a487b8c",
+ "routine": {
+  "id": "package.run",
+  "version": null,
+  "hash": null
+ },
+ "params": {
+  "id": "IW-3"
+ },
+ "context_pack_hash": "sha256:daeeacccdddd2a1e3a29da50e328f6914f45fd30722b8f23f8f1e849d2578457",
+ "brief_hash": "sha256:cd8815a58acf7927adb276399741011ea2b3010be93dee74dd923d3298fa136f",
+ "where": "vm:devbox-20260923",
+ "resolved": {
+  "role": "wykonawca pakietu",
+  "model": "opus-5.5",
+  "place": "vm:devbox-20260923"
+ },
+ "started": "2026-10-26T17:08:47.676627Z",
+ "finished": "2026-10-26T17:16:02.565877Z",
+ "state": "done",
+ "summary": "IW-3: spec.py ask_after/criteria/class/first_shown + silent/reopen/inbox; strona: kryteria i czas; dopisek sekretarza; 98 testów zielone (e2e 400 px z Playwright w scratchpad)",
+ "steps": [
+  {
+   "id": "spec-cli",
+   "clock": {
+    "started": "2026-10-26T17:13:06.584736Z",
+    "updated": "2026-10-26T17:13:06.584736Z",
+    "ended": "2026-10-26T17:13:06.584736Z"
+   },
+   "state": "done",
+   "commit": "8921b296"
+  },
+  {
+   "id": "page-docs",
+   "clock": {
+    "started": "2026-10-26T17:16:01.712547Z",
+    "updated": "2026-10-26T17:16:01.712547Z",
+    "ended": "2026-10-26T17:16:01.712547Z"
+   },
+   "state": "done",
+   "commit": "db0da09f"
+  }
+ ],
+ "commits": [],
+ "cards": [],
+ "escalations": [],
+ "advisories": [],
+ "original_ideas": [],
+ "events": [
+  {
+   "at": "2026-10-26T17:08:47.676627Z",
+   "kind": "started",
+   "counter_delta": {
+    "w_toku": 1
+   }
+  },
+  {
+   "at": "2026-10-26T17:16:01.894265Z",
+   "kind": "decision",
+   "text": "first_shown = chwila propose (preset); nowy tekst = nowe pokazanie; spec.py shown poprawia"
+  },
+  {
+   "at": "2026-10-26T17:16:02.113391Z",
+   "kind": "decision",
+   "text": "bez ask_after milczenie niczego nie rozstrzyga (question.default_ask_after = null); niskie koszty: low/tani/niski/cheap; limit 5 na bieg"
+  },
+  {
+   "at": "2026-10-26T17:16:02.341658Z",
+   "kind": "decision",
+   "text": "żywy prompt sekretarza nie zmieniony; dopisek IW-3 w docs/ops/ZADANIA_ZAPLANOWANE do wklejenia przy update_trigger"
+  },
+  {
+   "at": "2026-10-26T17:16:02.565877Z",
+   "kind": "finished",
+   "text": "IW-3: spec.py ask_after/criteria/class/first_shown + silent/reopen/inbox; strona: kryteria i czas; dopisek sekretarza; 98 testów zielone (e2e 400 px z Playwright w scratchpad)",
+   "counter_delta": {
+    "w_toku": -1,
+    "zrobione": 1
+   }
+  }
+ ],
+ "receipt": [],
+ "decisions": [
+  {
+   "text": "first_shown = chwila propose (preset); nowy tekst = nowe pokazanie; spec.py shown poprawia",
+   "reversal": "przestawić w _und_cmd; pole opcjonalne",
+   "cost_to_reverse": "low",
+   "by": "wykonawca IW-3",
+   "at": "2026-10-26T17:16:01.894265Z"
+  },
+  {
+   "text": "bez ask_after milczenie niczego nie rozstrzyga (question.default_ask_after = null); niskie koszty: low/tani/niski/cheap; limit 5 na bieg",
+   "reversal": "docs/spec/config.json question.*",
+   "cost_to_reverse": "low",
+   "by": "wykonawca IW-3",
+   "at": "2026-10-26T17:16:02.113391Z"
+  },
+  {
+   "text": "żywy prompt sekretarza nie zmieniony; dopisek IW-3 w docs/ops/ZADANIA_ZAPLANOWANE do wklejenia przy update_trigger",
+   "reversal": "usunąć dopisek",
+   "cost_to_reverse": "low",
+   "by": "wykonawca IW-3",
+   "at": "2026-10-26T17:16:02.341658Z"
+  }
+ ],
+ "markers_applied": [],
+ "spec": [
+  "R88",
+  "R89",
+  "R90"
+ ],
+ "updated": "2026-10-26T17:16:19.414779Z"
+}

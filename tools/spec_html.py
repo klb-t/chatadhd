@@ -133,7 +133,7 @@ def _recent(node: dict, since: _dt.date) -> bool:
 
 
 def build_html(spec: dict, focus: list[str], recent_hours: int, now: _dt.datetime, out_name: str,
-               queue_first: list[str] | None = None, question: dict | None = None) -> str:
+               queue_first: list[str] | None = None, question: dict | None = None, w1: dict | None = None) -> str:
     since = (now - _dt.timedelta(hours=recent_hours)).date()
     focus_set = {f.strip() for f in focus if f.strip()}
     nodes = spec["nodes"]
@@ -173,6 +173,7 @@ def build_html(spec: dict, focus: list[str], recent_hours: int, now: _dt.datetim
         "status_policy": spec.get("status_policy"),
         "sources": spec.get("sources"),
         "out": out_name,
+        "w1": w1,  # IW-4: liczniki z zapisów biegów + mapa miejsc (tools/page_counters.py); None = sekcji nie ma
     }
     data = json.dumps(payload, ensure_ascii=False).replace("</", "<\\/")
     return TEMPLATE.replace("__DATA__", data)
@@ -215,6 +216,11 @@ button.primary { background: var(--accent); color: var(--accent-fg); border-colo
 button:focus-visible, input:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .counts { display: flex; flex-wrap: wrap; gap: .4rem .9rem; font-size: .85rem; color: var(--muted); margin-top: .4rem; font-variant-numeric: tabular-nums; }
 .counts b { color: var(--fg); font-weight: 600; }
+section.w1 { margin: .8rem 0; font-size: .9rem; } section.w1 .wl { display: flex; flex-wrap: wrap; gap: .25rem .9rem; }
+section.w1 .wl b { font-variant-numeric: tabular-nums; } section.w1 details { margin-top: .3rem; } section.w1 summary { cursor: pointer; }
+section.w1 .pl { margin: .2rem 0 0 .4rem; } section.w1 .pl div { overflow-wrap: anywhere; } section.w1 .src { color: var(--muted); font-size: .8rem; }
+section.w9 { margin: 1rem 0; padding: .7rem .9rem; background: var(--card); border: 1px solid var(--line); border-left: 4px solid var(--muted); border-radius: .4rem; }
+section.w9 h2 { margin: 0 0 .3rem; font-family: var(--serif); font-size: 1.05rem; } section.w9 ul { margin: .3rem 0 0 1.1rem; padding: 0; } section.w9 li { overflow-wrap: anywhere; }
 section.queue { margin: 1rem 0; padding: .7rem .9rem; background: var(--card); border: 1px solid var(--accent); border-left-width: 4px; border-radius: .4rem; }
 .qitem .crit { margin: .3rem 0 0; font-size: .9rem; } .qitem .crit ul { margin: .1rem 0 0 1.1rem; padding: 0; } .qitem .crit li { overflow-wrap: anywhere; }
 .qitem .qtime { margin-top: .25rem; font-size: .85rem; color: var(--muted, #777); overflow-wrap: anywhere; }
@@ -291,6 +297,8 @@ blockquote { margin: .2rem 0; padding: .4rem .7rem; background: var(--card); bor
   </div>
   <div class="counts" id="counts"></div>
 </header>
+<section class="w1" id="w1" hidden></section>
+<section class="w9" id="w9" hidden></section>
 <section class="queue" id="queue" hidden></section>
 <section class="recent" id="recent"></section>
 <div id="inbox-banner" hidden></div>
@@ -320,6 +328,47 @@ blockquote { margin: .2rem 0; padding: .4rem .7rem; background: var(--card); bor
   if (prevVisit == null) markVisit();
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') markVisit(); });
   window.addEventListener('pagehide', markVisit);
+  // --- IW-4: liczniki W1, „Od Twojego wyjścia” (W9), mapa miejsc. Liczby z danych (tools/page_counters.py; skrzynka z bazy). ---
+  const W = D.w1 || null;
+  const INBOX = { waiting: null, escalated: null, since: [] };
+  function renderW1() {
+    const el = document.getElementById('w1'); if (!W) { el.hidden = true; return; }
+    const parts = W.counters.map(c => `<span>${esc(c.label)} <b>${esc(c.value)}</b></span>`);
+    parts.push(`<span>biegi <b>${esc(W.runs)}</b>${Object.keys(W.run_states).length ? ' (' + Object.entries(W.run_states).map(([k, v]) => esc(k) + ' ' + esc(v)).join(', ') + ')' : ''}</span>`);
+    parts.push(`<span>dziś do Ciebie: <b>${esc(W.words_today)}</b> słów${W.words_receipts ? '' : ' <span class="src">(brak paragonów ze słowami)</span>'}</span>`);
+    if (INBOX.waiting != null) parts.push(`<span>skrzynka: <b>${INBOX.waiting}</b> czeka na sekretarza · <b>${INBOX.escalated}</b> u koordynatora</span>`);
+    let h = `<div class="wl" id="w1-line">${parts.join('')}</div>`;
+    const P = W.places;
+    if (P && P.line) {
+      h += `<details id="w1-places"><summary>${esc(P.line)}</summary><div class="pl">` + P.items.map(it =>
+        `<div>${it.level === 'place' ? '<b>' + esc(it.title) + '</b>' : '— ' + esc(it.title)}: ${esc((P.labels || {})[it.state] || it.state)} <span class="src">(obserwacja ${esc(it.observed_at || '?')}${it.source ? ', ' + esc(it.source) : ''})</span></div>`).join('') +
+        `<div class="src">Źródło: ${esc(P.file)} — statyczna tabela z datami, nie stan na żywo.</div></div></details>`;
+    }
+    el.innerHTML = h; el.hidden = false;
+  }
+  function renderW9() {
+    const el = document.getElementById('w9');
+    const hrs = W ? W.preset.w9_after_hours : null;
+    if (!W || prevVisit == null || hrs == null || (Date.now() - prevVisit) <= hrs * 3600000) { el.hidden = true; return; }
+    const evs = W.events.filter(e => { const t = Date.parse(e.at || ''); return !isNaN(t) && t > prevVisit; });
+    const sum = {};
+    for (const e of evs) for (const [k, v] of Object.entries(e.delta || {})) if (typeof v === 'number') sum[k] = (sum[k] || 0) + v;
+    const lab = Object.fromEntries(W.counters.map(c => [c.key, c.label]));
+    const sumTxt = Object.entries(sum).filter(([, v]) => v).map(([k, v]) => `${esc(lab[k] || k)} ${v > 0 ? '+' : ''}${v}`).join(' · ');
+    const items = evs.map(e => `${esc(String(e.at).slice(0, 16).replace('T', ' '))} — ${esc(e.title || e.run_id)}: ${esc(e.kind)}${e.text ? ' — ' + esc(e.text) : ''}`)
+      .concat(INBOX.since.map(x => `${esc(String(x.at || '').slice(0, 16).replace('T', ' '))} — skrzynka ${esc(x.alias || x.node)}: ${esc(x.verdict || x.state)}${x.why ? ' — ' + esc(x.why) : ''}`));
+    const k = W.preset.w9_visible;
+    const fresh = D.nodes.filter(isNew).length;
+    let h = `<h2>Od Twojego wyjścia <span class="src">(${esc(fmtVisit(prevVisit))})</span></h2>`;
+    h += `<div id="w9-sum">${sumTxt || 'liczniki bez zmian'} · w kolejce nowe: ${qRows.filter(r => D.nodes.some(n => n.id === r.id && isNew(n))).length} · zmienione pozycje spec: ${fresh}</div>`;
+    if (items.length) {
+      h += '<ul id="w9-list">' + items.map((t, i) => `<li${k != null && i >= k ? ' hidden data-fold' : ''}>${t}</li>`).join('') + '</ul>';
+      if (k != null && items.length > k) h += `<button type="button" class="link" id="w9-more">${items.length - k} zwiniętych — pokaż</button>`;
+    } else h += '<div class="src">Żadnych zdarzeń z licznikiem od tamtej chwili.</div>';
+    el.innerHTML = h; el.hidden = false;
+    const more = document.getElementById('w9-more');
+    if (more) more.onclick = () => { el.querySelectorAll('[data-fold]').forEach(x => { x.hidden = false; }); more.remove(); };
+  }
   const isNew = n => prevVisit != null && (n._dates || []).some(d => dateMs(d) > prevVisit);
   const byTheme = {};
   for (const n of D.nodes) { const t = n.theme || 'none'; (byTheme[t] = byTheme[t] || []).push(n); }
@@ -491,6 +540,7 @@ blockquote { margin: .2rem 0; padding: .4rem .7rem; background: var(--card); bor
   window.addEventListener('resize', fitMore);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitMore);
   renderQueue();
+  renderW1(); renderW9();
   function openHash() { const id = (location.hash || '').slice(1); if (!id) return; const d = document.getElementById(id); if (!d) return; d.open = true; const t = d.closest('details.theme'); if (t) t.open = true; d.scrollIntoView({ block: 'start' }); }
   window.addEventListener('hashchange', openHash); openHash();
 
@@ -572,6 +622,21 @@ blockquote { margin: .2rem 0; padding: .4rem .7rem; background: var(--card); bor
     } catch (e) { /* render without history */ }
     renderQueue();
     for (const nid of Object.keys(DB.byNode)) renderInbox(nid);
+    // IW-4: liczniki skrzynki i znacznik ostatniej wizyty jako dokument bazy strony (preset: zapisuje tylko właściciel)
+    INBOX.waiting = waiting;
+    INBOX.escalated = Object.values(DB.byNode).flat().filter(x => x.state === 'escalated').length;
+    try {
+      const who = W ? W.preset.visit_marker_who : 'none';
+      const ref = db.collection('spec_visits').doc('owner');
+      const snap = await ref.get();
+      const at = snap && snap.exists ? Date.parse((snap.data() || {}).at || '') : NaN;
+      if (!isNaN(at)) prevVisit = at;  // znacznik z bazy (wszystkie urządzenia) ma pierwszeństwo przed pamięcią przeglądarki
+      INBOX.since = prevVisit == null ? [] : Object.values(DB.byNode).flat().filter(x => x.verdict && Date.parse(x.verdict_at || x.at || '') > prevVisit);
+      let mayWrite = who === 'anyone' ? canWrite : false;
+      if (who === 'owner' && user && typeof user.isOwner === 'function') mayWrite = !!(await user.isOwner());
+      if (mayWrite) await ref.set({ at: new Date().toISOString(), page_generated: D.generated });
+    } catch (e) { /* bez znacznika w bazie: zostaje pamięć przeglądarki */ }
+    refreshNew(); renderW1(); renderW9();
     const banner = document.getElementById('inbox-banner');
     banner.hidden = false;
     banner.textContent = waiting ? `Skrzynka: ${waiting} Twoich decyzji czeka na sekretarza (zapisuje je do spec co godzinę; nietypowe trafiają do koordynatora).` : 'Skrzynka pusta: przy każdej pozycji możesz zatwierdzić parafrazę, poprawić ją swoimi słowami albo dopisać uwagę — sekretarz zapisze to do spec.';
@@ -596,13 +661,16 @@ def main(argv=None) -> int:
     ap.add_argument("--queue-first", nargs="*", default=None, metavar="KOSZT",
                     help="koszty odwrotu na początku kolejki „Czeka na Ciebie” (preset: high; bez wartości = bez pierwszeństwa)")
     ap.add_argument("--now", help="UTC ISO (testy)")
+    ap.add_argument("--no-counters", action="store_true", help="bez sekcji liczników W1/W9 i mapy miejsc (IW-4)")
     a = ap.parse_args(argv)
     spec = json.loads(Path(a.spec).read_text(encoding="utf-8"))
     now = _dt.datetime.fromisoformat(a.now) if a.now else _dt.datetime.utcnow()
     out = Path(a.out)
     root = Path(a.spec).resolve().parents[2] if Path(a.spec).resolve().parent.name == "spec" else REPO
     qcfg = spec_mod.load_config(root)["question"]  # presety pytania + docs/spec/config.json
-    out.write_text(build_html(spec, a.focus, a.recent_hours, now, out.name, a.queue_first, question=qcfg), encoding="utf-8")
+    import page_counters
+    w1 = None if a.no_counters else page_counters.collect(root, now.replace(tzinfo=_dt.timezone.utc) if now.tzinfo is None else now)
+    out.write_text(build_html(spec, a.focus, a.recent_hours, now, out.name, a.queue_first, question=qcfg, w1=w1), encoding="utf-8")
     n = len(spec["nodes"])
     print(f"zapisano {out} ({out.stat().st_size // 1024} KB, {n} pozycji; rozwinięte: zmienione od {a.recent_hours} h" + (f", w edycji {', '.join(a.focus)}" if a.focus else "") + ")")
     return 0

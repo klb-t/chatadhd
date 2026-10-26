@@ -178,3 +178,16 @@ Skrzynka: wpis strony ma teraz `class` (z `kind` przez preset `class_by_kind`; l
 (`approve_words`, np. „Zatwierdzam”), a resztę eskaluje; wypisuje werdykty do zapisania z powrotem. Testy:
 `tools/tests/test_spec_question.py`. Odwrót pakietu: nowe pola są opcjonalne; usunięcie podkomend nie zmienia danych.
 
+
+**Liczniki W1, „Od Twojego wyjścia” (W9) i mapa miejsc v1 (IW-4, 2026-10-26; progi to presety w `tools/page_counters.py` → `PRESET`).**
+Nad kolejką strona pokazuje wiersz liczników: suma `counter_delta` zdarzeń ze wszystkich zapisów biegów (`docs/reports/runs/`,
+indeks `runs.jsonl`; liczniki i ich lista z danych, np. w toku / zrobione / nie wyszło / oryginalne), stany biegów, „dziś do Ciebie:
+N słów” (paragony walut `words_currencies`; brak paragonów jest napisany wprost) i po połączeniu z bazą stan skrzynki. Pod nim
+jeden wiersz „miejsca: N żyją · …” z `docs/ops/places.json` (statyczna tabela miejsc, sesji i usług; każdy stan z datą
+obserwacji i źródłem), rozwijany do listy. Sekcja „Od Twojego wyjścia” rysuje się, gdy od ostatniej wizyty minęło więcej niż
+`w9_after_hours` (preset 6 h): przyrost liczników od tamtej chwili, zdarzenia (pierwsze `w9_visible`, reszta „N zwiniętych —
+pokaż”), nowe w kolejce, werdykty skrzynki. Ostatnia wizyta: dokument `spec_visits/owner` w bazie strony (zapisuje go tylko
+właściciel — preset `visit_marker_who`: owner / anyone / none), a bez bazy pamięć przeglądarki jak dotąd. Żadnej liczby nie
+liczy model: `python3 tools/page_counters.py` wypisuje ten sam JSON, który dostaje strona; `spec.py html` dołącza go sam
+(`spec_html.py --no-counters` wyłącza). Testy: `tools/tests/test_page_counters.py` (zgodność z rekordami, W9 po symulowanej
+przerwie w Chromium na 400 px). Odwrót: `--no-counters` albo usunięcie sekcji; `places.json` nic poza stroną nie czyta.
