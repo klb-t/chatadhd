@@ -1,0 +1,7 @@
+{
+  "schema": "loom.shots_compare/1",
+  "note": "W1 (OKNA §9): screenshots of the same e2e script before and after a change are compared pixel by pixel. A preset, not a rule: raise the numbers for a change that is allowed to move pixels.",
+  "channel_tolerance": 0,
+  "max_diff_pixels": 0,
+  "max_diff_ratio": 0
+}
