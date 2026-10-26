@@ -1,0 +1,63 @@
+{
+ "schema": "loom.roles/1",
+ "_comment": "Tabela rola → model → miejsce (IW-6, INTERFEJS_WSPOLPRACY_v2 §2.3, §4). Wszystko tu to PRESETY, nie reguły: role, modele, miejsca, łańcuchy zastępstw i progi są listami otwartymi; nowa rola = nowy wpis. Obserwacje (`observations`) to DATOWANE fakty o świecie (R59/R60) z oknem ważności i źródłem — dają advisory i wybór zastępstwa, nigdy twardy stop (wyłącza je --ignore-observations). Czyta: tools/start_gate.py. Zmiana = edycja wpisu + linia w `_history` (odwrót: przywróć wartość z historii).",
+ "_history": [
+  {"at": "2026-10-26", "by": "IW-6 (Opus, VM)", "what": "ziarno z §2.3 (sekretarz Sonnet, koordynator Fable — ustawił właściciel, wykonawca Sonnet, kontroler Haiku, start_gate skrypt) + obserwacja: Fable niedostępny do resetu tygodnia"}
+ ],
+ "presets": {
+  "default_role": "package_executor",
+  "inherit_label": "model sesji (dziedziczony)",
+  "plan_calls": 50,
+  "on_unavailable": "fallback",
+  "on_unavailable_examples": ["fallback", "wait", "ask", "ignore"],
+  "verdict_examples": ["start", "start_with_advisories", "wait", "owner"],
+  "min_free_disk_gb_for_build": 5,
+  "x10_ratio": 10,
+  "over_cap_class": {"fable": "owner", "_default": "wait", "_note": "Fable po 100 % przechodzi na kredyty (jego pieniądze, pace_plan caps._note) → czeka na Ciebie; reszta po capie → czekaj. Preset."},
+  "r63_slack": {
+   "_comment": "Luz R63: silniejszy model może poluzować reguły proceduralne (filozofia zostaje). Tu jako parametr: czy wolno podmienić model roli na silniejszy bez advisory, i o ile stopni.",
+   "allow_stronger_without_advisory": false,
+   "max_steps_up": 1
+  }
+ },
+ "models": {
+  "_comment": "Siła (`rank`) służy tylko do opisu luzu R63 i kolejności zastępstw; to preset. `cap` = klucz w pace_plan.json caps (brak = all_models). `cost_key` = klucz w pace_plan.json cost_per_package (null → default).",
+  "fable": {"name": "Claude Fable 5.1", "rank": 4, "cap": "fable", "cost_key": "fable"},
+  "opus": {"name": "Claude Opus 5.5", "rank": 3, "cap": "all_models", "cost_key": "opus"},
+  "sonnet": {"name": "Claude Sonnet 5.5", "rank": 2, "cap": "all_models", "cost_key": "sonnet"},
+  "haiku": {"name": "Claude Haiku 5.5", "rank": 1, "cap": "all_models", "cost_key": "haiku"}
+ },
+ "roles": {
+  "secretary": {"title": "sekretarz = operator v1", "model": "sonnet", "place": "cloud", "fallback": ["haiku"], "needs_build": false, "since": "2026-10-23", "why": "§2.3: stosuje gesty bez osądu; co godzinę o :23"},
+  "coordinator": {"title": "koordynator", "model": "fable", "place": "vm:devbox-20260923", "fallback": ["opus", "sonnet"], "needs_build": false, "since": "2026-10-23", "why": "ustawił właściciel (CLAUDE.md, Thread style: „jesteś Fable”)"},
+  "package_executor": {"title": "wykonawca pakietu", "model": "sonnet", "place": "vm:devbox-20260923", "fallback": ["opus", "haiku"], "needs_build": false, "since": "2026-10-23", "why": "§2.3 preset roli; §4 kolumna modelu"},
+  "native_package_executor": {"title": "wykonawca pakietu z buildem natywnym", "model": "sonnet", "place": "vm:devbox-20260923", "fallback": ["opus"], "needs_build": true, "since": "2026-10-26", "why": "jak wykonawca, plus dysk ≥ preset przed buildem (CLAUDE.md, restart kontenera przy ~95 %)"},
+  "designer": {"title": "etap projektowy", "model": "fable", "place": "vm:devbox-20260923", "fallback": ["opus"], "needs_build": false, "since": "2026-10-21", "why": "CLAUDE.md waste control 5: Fable tylko dla etapów projektowych"},
+  "checker": {"title": "kontroler przed użyciem", "model": "haiku", "place": "cloud", "fallback": ["sonnet"], "needs_build": false, "since": "2026-10-23", "why": "CLAUDE.md check before use (Haiku, 4 antywzorce + R60)"},
+  "log_reader": {"title": "czytanie logów / CI", "model": "haiku", "place": "cloud", "fallback": ["sonnet"], "needs_build": false, "since": "2026-10-21", "why": "CLAUDE.md waste control 5"},
+  "start_gate": {"title": "start_gate", "model": null, "place": "any", "fallback": [], "needs_build": false, "since": "2026-10-26", "why": "skrypt, 0 tokenów (model null = nie woła modelu)"}
+ },
+ "observations": [
+  {
+   "id": "obs_fable_weekly_2026-10-26",
+   "model": "fable",
+   "state": "unavailable",
+   "until": "2026-10-27T10:00:00Z",
+   "observed_at": "2026-10-26",
+   "source": "koordynator, brief IW-5/IW-6 (2026-10-26): „Fable niedostępny do resetu tygodnia (27.10 ~10:00 UTC)”",
+   "reliability": "coordinator_report",
+   "note": "DATOWANA OBSERWACJA, nie ograniczenie: po `until` przestaje działać sama; --ignore-observations ją pomija"
+  },
+  {
+   "id": "obs_r91_caps_2026-10-23",
+   "model": "*",
+   "state": "cap",
+   "caps_ref": "tools/pace_plan.json caps",
+   "observed_at": "2026-10-23T20:44Z",
+   "until": "2026-10-27T10:00:00Z",
+   "source": "R91 (właściciel 2026-10-23 20:4x): „limit się tylko na fabla kończy. jego możesz do samego końca dojechać, resztę do 90”",
+   "reliability": "owner_words",
+   "note": "jego słowa → preset caps w pace_plan.json (all_models 90, fable 100); start_gate je czyta stamtąd"
+  }
+ ]
+}

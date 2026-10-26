@@ -23,11 +23,19 @@ export const meta = {
 //                named in context_pack into context_prefix + its sha256; the prompt STARTS with the prefix byte for byte
 //                (same pack = same bytes = cacheable prefix), the per-package part follows. Check first (advisory):
 //                `python3 tools/context_pack.py check-brief <filled.json>`
+//  start_gate    (IW-6) the card printed by `python3 tools/start_gate.py --role <role> --used <%> --json [--run-id <run_id>]`
+//                (0 tokens), run by the coordinator BEFORE this workflow; its model.model is used when `model` is absent,
+//                its verdict and advisories go into the brief; with neither `model` nor a card the agent inherits the
+//                session model and the workflow logs an advisory (no stop)
 //  spec          (IW-2) list of spec ids the package implements (spec:<id>, read with `python3 tools/spec.py show <id>`)
 const A = args
+const GATE = A.start_gate || null
+const MODEL = A.model || (GATE && GATE.model && GATE.model.model) || null
+if (!MODEL) log(`advisory: ${A.id}: no model and no start_gate card - the agent inherits the session model (run tools/start_gate.py first to record the resolved model)`)
+if (GATE && GATE.verdict && !String(GATE.verdict).startsWith('start')) log(`advisory: ${A.id}: start_gate verdict ${GATE.verdict} (${(GATE.exceeds || []).map(x => x.what).join('; ')}) - the coordinator started it anyway`)
 const MODEL_NAMES = { fable: 'Claude Fable 5.1', opus: 'Claude Opus 5.5', sonnet: 'Claude Sonnet 5.5', haiku: 'Claude Haiku 5.5' }
 // The trailer names the model the AGENT runs on (the model override, else the session default Sonnet), not the coordinator.
-const TRAILER = `Co-Authored-By: ${MODEL_NAMES[A.model] || MODEL_NAMES.sonnet} <noreply@anthropic.com>\nClaude-Session: https://claude.ai/code/session_015yMVYJqXDd8sNSZdYq3gu5`
+const TRAILER = `Co-Authored-By: ${MODEL_NAMES[MODEL] || MODEL_NAMES.sonnet} <noreply@anthropic.com>\nClaude-Session: https://claude.ai/code/session_015yMVYJqXDd8sNSZdYq3gu5`
 const PUSH = A.remote_branch
   ? `Push with: git push origin HEAD:${A.remote_branch} (never force; if it is not a fast-forward, fetch and merge first).${A.ci_workflow ? ` After a push read the CI run for your commit (workflow ${A.ci_workflow}; GitHub MCP tools via ToolSearch select:mcp__github__actions_list,mcp__github__actions_get,mcp__github__get_job_logs); if it fails, fix and push again, at most 3 pushes.` : ''}`
   : 'Do not push.'
@@ -37,6 +45,7 @@ const RUNREC = A.run_id
   : ''
 // The shared prefix goes first and is never interpolated with per-package values (its hash proves identical bytes).
 const PREFIX = A.context_prefix ? `${A.context_prefix}\n` : ''
+const GATE_TXT = GATE ? `START GATE (IW-6): role ${GATE.role} -> model ${MODEL || 'inherited'} -> place ${(GATE.place && GATE.place.id) || '?'}; estimate ${(GATE.estimate && GATE.estimate.points) ?? '?'} pts; verdict ${GATE.verdict}${(GATE.advisories || []).length ? `; advisories: ${GATE.advisories.join(' | ').slice(0, 600)}` : ''}.` : ''
 const SPEC = (A.spec && A.spec.length)
   ? `Spec items this package implements: ${A.spec.map(s => `spec:${String(s).replace(/^spec:/, '')}`).join(' ')} — read each with python3 tools/spec.py show <id> before deciding; cite them in commits and the card.`
   : ''
@@ -55,10 +64,10 @@ phase('Package')
 const cards = []
 for (let attempt = 1; attempt <= 2; attempt++) {
   const earlier = cards.map(c => `done=${c.done}; commits ${c.commits.join(', ') || '-'}; CI ${c.ci}; ${String(c.summary).slice(0, 500)} | NOT DONE: ${c.not_done.join('; ').slice(0, 500)}`).join('\n')
-  const card = await agent(`${PREFIX}You implement one small work package. ${RULES}\n\n${DISCIPLINE}${RUNREC ? `\n\n${RUNREC}` : ''}\n\nPACKAGE ${A.id}${attempt > 1 ? ' — continuation: the previous agent stopped early; read its card below and git log, finish only what is NOT DONE' : ''}\nScope: ${A.scope}\nAcceptance: ${A.accept}\n${SPEC ? `${SPEC}\n` : ''}${A.context_pack_hash ? `Context pack hash (copy into the card): ${A.context_pack_hash}\n` : ''}${earlier ? `\nPrevious card:\n${earlier}\n` : ''}\nReturn the resume card.`, { label: `${A.id}${attempt > 1 ? ':c1' : ''}`, phase: 'Package', schema: CARD, ...(A.model ? { model: A.model } : {}) })
+  const card = await agent(`${PREFIX}You implement one small work package. ${RULES}\n\n${DISCIPLINE}${RUNREC ? `\n\n${RUNREC}` : ''}\n\nPACKAGE ${A.id}${attempt > 1 ? ' — continuation: the previous agent stopped early; read its card below and git log, finish only what is NOT DONE' : ''}\nScope: ${A.scope}\nAcceptance: ${A.accept}\n${SPEC ? `${SPEC}\n` : ''}${GATE_TXT ? `${GATE_TXT}\n` : ''}${A.context_pack_hash ? `Context pack hash (copy into the card): ${A.context_pack_hash}\n` : ''}${earlier ? `\nPrevious card:\n${earlier}\n` : ''}\nReturn the resume card.`, { label: `${A.id}${attempt > 1 ? ':c1' : ''}`, phase: 'Package', schema: CARD, ...(MODEL ? { model: MODEL } : {}) })
   if (!card) { log(`${A.id}: agent returned nothing (attempt ${attempt})`); continue }
   cards.push(card)
   log(`${A.id} attempt ${attempt}: done=${card.done}, CI ${card.ci}`)
   if (card.done) break
 }
-return { id: A.id, done: cards.some(c => c.done), cards }
+return { id: A.id, done: cards.some(c => c.done), cards, resolved_model: MODEL || 'inherited' }
