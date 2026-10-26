@@ -15,6 +15,11 @@ Podkomendy:
   cite FILE  sprawdza, czy brief cytuje istniejace numery (spec:<numer>); --full wypisuje je z cytatami
   add        dopisuje NOWA wypowiedz wlasciciela (sekcja R/D w rejestrze + wezel)
   propose / approve / correct   rozumienie pozycji (regula R61) - nigdy automatycznie
+             (IW-3: --ask-after, --criteria, --class, --first-shown: pytanie w pelnym ksztalcie W3)
+  shown      chwila pierwszego pokazania pytania
+  silent     if_silent po ask_after, tylko przy niskim koszcie odwrotu (preset), z rekordem decyzji i odwrotem
+  reopen     odwrot: pozycja wraca do proposed
+  inbox      wpisy skrzynki strony (klasa otwarta) -> werdykty; approval/correction bez modelu
 
 Numer kanoniczny jest nieprzezroczysty (s_ + 12 znakow hex), przydzielony RAZ i
 zapisany w ids.json; dawne kody (UI12, GR38, R56 ...) sa aliasami i tez dzialaja.
@@ -78,6 +83,24 @@ DEFAULT_CONFIG = {
         "NIEAKTUALNE": "nieaktualne", "SPRZECZNE": "sprzeczne",
     },
     "understanding_states": ["none", "proposed", "approved", "corrected"],
+    # IW-3 (2026-10-26): pytanie w pełnym kształcie (W3) i skrzynka z klasą. Wszystko to PRESETY: każdy napis
+    # kosztu, klasy i słowa jest dozwolony, a liczby są do zmiany w docs/spec/config.json albo flagą.
+    "question": {
+        # koszty odwrotu, przy których `silent` wykonuje if_silent sam (bez czuwania); każdy inny napis = eskalacja
+        "low_cost_to_reverse": ["low", "tani", "niski", "cheap", "taniej", "bardzo tani"],
+        # twardy limit pytań rozstrzyganych milczeniem w jednym biegu (preset; null = bez limitu)
+        "max_silent_per_run": 5,
+        # ask_after, gdy pozycja nie ma własnego (null = bez własnego czasu milczenie niczego nie rozstrzyga)
+        "default_ask_after": None,
+        # tekst if_silent, gdy pozycja nie ma własnego (ten sam co domyślny na stronie, R75)
+        "default_if_silent": "przyjmuję wstępnie i jadę dalej; odwrót tani (R75)",
+        # skrzynka: klasa wpisu, gdy strona zapisała tylko dawne pole kind (lista otwarta; nieznana = sama nazwa)
+        "class_by_kind": {"approve": "approval", "correct": "correction", "remark": "remark"},
+        # klasy stosowane bez modelu (klasa -> komenda spec.py); reszta idzie do koordynatora z powodem
+        "apply_classes": {"approval": "approve", "correction": "correct"},
+        # słowa, które w tekście dowolnej klasy znaczą zatwierdzenie (porównanie po fold(), cały tekst albo pierwsze słowo)
+        "approve_words": ["zatwierdzam", "zatwierdzam parafrazę", "zatwierdzone", "approve", "approved"],
+    },
     "extra_themes": {
         "addenda": "Uzupełnienia (wypowiedzi bez numeru)",
         "owner_requirements": "Rejestr wymagań R/D",
@@ -1207,6 +1230,15 @@ def show_node(n: dict, spec: dict, cfg: dict) -> str:
         L.append(f"  propozycja ({u.get('by')}, {u.get('date')}): {u['text']}")
     if u.get("corrected_text"):
         L.append(f"  poprawka ({u.get('by')}, {u.get('date')}): {u['corrected_text']}")
+    for fld, lab in (("class", "klasa pytania"), ("first_shown", "pokazane"), ("ask_after", "milczenie rozstrzyga po"),
+                     ("if_silent", "bez odpowiedzi"), ("cost_to_reverse", "koszt odwrotu")):
+        if u.get(fld):
+            L.append(f"  {lab}: {u[fld]}")
+    for c in u.get("criteria") or []:
+        L.append(f"  kryterium: {c}")
+    if u.get("decision"):
+        d = u["decision"]
+        L.append(f"  decyzja ({d.get('by')}, {d.get('at')}): {d.get('text')} — odwrót: {d.get('reversal')}")
     for i, q in enumerate(n["quotes"], 1):
         flag = " [wtórny: relacja agenta / zapis asystenta / zasada z bazy]" if q.get("secondary") else ""
         L.append(f"cytat {i} — {q['src']}{flag}")
@@ -1389,8 +1421,11 @@ def _und_cmd(root, cfg, args, action):
     if action in ("propose", "correct"):
         # R89 P2: pola opcjonalne dla kolejki "Czeka na Ciebie"; wartosci otwarte (dowolny napis).
         # Brak flagi = zostaje poprzednia wartosc; pusty napis ("") usuwa pole.
+        # IW-3: ask_after (od first_shown), class pytania; criteria to lista (powtarzalna flaga; jedno "" czyści).
         for fld, val in (("if_silent", getattr(args, "if_silent", None)),
-                         ("cost_to_reverse", getattr(args, "cost_to_reverse", None))):
+                         ("cost_to_reverse", getattr(args, "cost_to_reverse", None)),
+                         ("ask_after", getattr(args, "ask_after", None)),
+                         ("class", getattr(args, "question_class", None))):
             if val is None:
                 continue
             if val.strip():
@@ -1398,13 +1433,28 @@ def _und_cmd(root, cfg, args, action):
                 extra[fld] = val.strip()
             else:
                 cur.pop(fld, None)
+        crit = getattr(args, "criteria", None)
+        if crit is not None:
+            crit = [c.strip() for c in crit if c.strip()]
+            if crit:
+                cur["criteria"] = crit
+                extra["criteria"] = crit
+            else:
+                cur.pop("criteria", None)
+        if cur.get("ask_after") and parse_duration(cur["ask_after"]) is None and parse_when(cur["ask_after"]) is None:
+            print(f"uwaga (advisory): ask_after „{cur['ask_after']}” nie jest czasem ani okresem, który `silent` rozumie "
+                  "(przykłady: 24h, 2d, 90m, 1d12h, PT6H, 2026-10-27T09:00Z) — pytanie nie rozstrzygnie się milczeniem", file=sys.stderr)
     if action == "propose":
+        # nowe pytanie (albo nowy tekst) = pokazane od teraz; --first-shown nadpisuje, `shown` poprawia później
+        if getattr(args, "first_shown", None) or cur.get("text") != args.text or not cur.get("first_shown"):
+            cur["first_shown"] = getattr(args, "first_shown", None) or now_utc()
         cur.update(state="proposed", text=args.text, by=by, date=date)
         cur.pop("corrected_text", None)
+        cur.pop("decision", None)
     elif action == "correct":
         cur.update(state="corrected", corrected_text=args.text, by=by, date=date)
     elif action == "approve":
-        if cur.get("state") not in ("proposed", "corrected"):
+        if cur.get("state") not in ("proposed", "corrected") and not (cur.get("state") == "approved" and cur.get("by") == "silence"):
             raise SystemExit("odmowa: nie ma czego zatwierdzić (brak propozycji ani poprawki); najpierw propose")
         cur.update(state="approved", by=by, date=date)
     cur["history"].append({k: v for k, v in {"state": cur["state"], "by": by, "date": date,
@@ -1416,6 +1466,263 @@ def _und_cmd(root, cfg, args, action):
     write_outputs(root, cfg, spec2, reg, changed)
     print(f"{n['aliases'][0]} ({n['id']}): rozumienie = {cur['state']} ({by}, {date})")
     return 0
+
+
+# ------------------------------------------------- IW-3: pytanie, milczenie, skrzynka (0 tokenów, bez modelu)
+
+DUR_RE = re.compile(r"(\d+(?:[.,]\d+)?)\s*(dni|dzień|dzien|days?|d|godz|h|hours?|min|m|minutes?|s|sec|w|tyg)", re.I)
+DUR_UNIT = {"d": 86400, "dni": 86400, "dzień": 86400, "dzien": 86400, "day": 86400, "days": 86400,
+            "h": 3600, "godz": 3600, "hour": 3600, "hours": 3600, "m": 60, "min": 60, "minute": 60, "minutes": 60,
+            "s": 1, "sec": 1, "w": 604800, "tyg": 604800}
+
+
+def now_utc() -> str:
+    return _dt.datetime.now(_dt.timezone.utc).replace(microsecond=0).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def parse_when(s) -> _dt.datetime | None:
+    """Chwila ISO (z Z albo bez strefy = UTC; sama data = północ UTC) albo None."""
+    if not s:
+        return None
+    t = str(s).strip().replace("Z", "+00:00").replace(" ", "T")
+    try:
+        d = _dt.datetime.fromisoformat(t)
+    except ValueError:
+        return None
+    return d if d.tzinfo else d.replace(tzinfo=_dt.timezone.utc)
+
+
+def parse_duration(s) -> _dt.timedelta | None:
+    """Okres w otwartym zapisie: 24h, 2d, 90m, 1d12h, „3 dni”, PT6H, P1D, sama liczba = godziny. Nierozpoznany = None."""
+    if s is None:
+        return None
+    t = str(s).strip()
+    if re.fullmatch(r"\d+(?:[.,]\d+)?", t):
+        return _dt.timedelta(hours=float(t.replace(",", ".")))
+    m = re.fullmatch(r"P(?:(\d+)W)?(?:(\d+)D)?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?)?", t.upper())
+    if m and t.upper() not in ("P", "PT"):
+        w, d, h, mi, se = (int(x or 0) for x in m.groups())
+        return _dt.timedelta(weeks=w, days=d, hours=h, minutes=mi, seconds=se)
+    parts = DUR_RE.findall(t)
+    if not parts or DUR_RE.sub("", t).strip(" ,+") != "":
+        return None
+    sec = sum(float(v.replace(",", ".")) * DUR_UNIT[u.lower()] for v, u in parts)
+    return _dt.timedelta(seconds=sec)
+
+
+def question_due(u: dict, qcfg: dict) -> _dt.datetime | None:
+    """Kiedy milczenie rozstrzyga: first_shown + ask_after (okres) albo ask_after jako chwila. None = nigdy."""
+    aa = u.get("ask_after") or qcfg.get("default_ask_after")
+    if not aa:
+        return None
+    when = parse_when(aa) if not parse_duration(aa) else None
+    if when:
+        return when
+    dur = parse_duration(aa)
+    base = parse_when(u.get("first_shown")) or parse_when(u.get("date"))
+    if dur is None or base is None:
+        return None
+    return base + dur
+
+
+def is_low_cost(u: dict, qcfg: dict, low: list[str] | None = None) -> bool:
+    words = {fold(str(x)).strip() for x in (qcfg.get("low_cost_to_reverse") if low is None else low) or []}
+    return fold(str(u.get("cost_to_reverse") or "")).strip() in words
+
+
+def _fmt(d: _dt.datetime) -> str:
+    return d.astimezone(_dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def _record_decision(root: Path, run_id: str | None, text: str, reversal: str, cost, by: str, at: str) -> None:
+    if not run_id:
+        return
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    import run_record
+    rcfg = run_record.load_config()
+    run_record.add_decision(root, rcfg, run_id, text, reversal=reversal, cost_to_reverse=cost, by=by, at=at)
+
+
+def _rebuild(root, cfg) -> None:
+    spec2, reg, changed = build_model(root, cfg, allocate=True)
+    write_outputs(root, cfg, spec2, reg, changed)
+
+
+def cmd_shown(root, cfg, args):
+    """Zapisuje chwilę pierwszego pokazania pytania (np. gdy strona naprawdę je pokazała); --force nadpisuje."""
+    spec = load_spec(root, cfg)
+    und = load_und(root, cfg)
+    at = args.at or now_utc()
+    for key in args.ids:
+        n = resolve(spec, key)
+        if n is None:
+            raise SystemExit(f"nie ma pozycji: {key}")
+        cur = und.get(n["id"])
+        if not cur or cur.get("state") != "proposed":
+            print(f"{key}: nie czeka (stan {cur.get('state') if cur else 'none'}) — pomijam")
+            continue
+        if cur.get("first_shown") and not args.force:
+            print(f"{key}: first_shown już jest ({cur['first_shown']})")
+            continue
+        cur["first_shown"] = at
+        print(f"{key}: first_shown = {at}")
+    save_und(root, cfg, und)
+    _rebuild(root, cfg)
+    return 0
+
+
+def cmd_silent(root, cfg, args):
+    """Wykonuje if_silent pytań, którym minął ask_after od first_shown, gdy koszt odwrotu jest niski (preset);
+    resztę wypisuje jako eskalację. Bez modelu. Wynik: JSON {applied, escalated, waiting, skipped_limit}."""
+    q = cfg["question"]
+    now = parse_when(args.now) if args.now else _dt.datetime.now(_dt.timezone.utc)
+    if now is None:
+        raise SystemExit(f"zła chwila --now: {args.now}")
+    limit = q.get("max_silent_per_run") if args.limit is None else (None if args.limit < 0 else args.limit)
+    spec = load_spec(root, cfg)
+    byid = {n["id"]: n for n in spec["nodes"]}
+    und = load_und(root, cfg)
+    out = {"now": _fmt(now), "applied": [], "escalated": [], "waiting": [], "skipped_limit": []}
+    for nid in sorted(und, key=lambda i: (question_due(und[i], q) or now, i)):
+        u = und[nid]
+        if u.get("state") != "proposed":
+            continue
+        alias = (byid.get(nid, {}).get("aliases") or [nid])[0]
+        due = question_due(u, q)
+        row = {"id": nid, "alias": alias, "cost_to_reverse": u.get("cost_to_reverse") or "",
+               "due": _fmt(due) if due else None, "if_silent": u.get("if_silent") or q.get("default_if_silent")}
+        if due is None or due > now:
+            out["waiting"].append(row)
+            continue
+        if not is_low_cost(u, q, args.low):
+            row["why"] = (f"koszt odwrotu „{row['cost_to_reverse'] or '(brak)'}” nie jest na liście niskich "
+                          f"({', '.join(args.low if args.low is not None else q.get('low_cost_to_reverse') or [])}) — decyzja należy do koordynatora/właściciela")
+            out["escalated"].append(row)
+            continue
+        if limit is not None and len(out["applied"]) >= limit:
+            row["why"] = f"twardy limit {limit} rozstrzygnięć milczeniem na bieg (preset question.max_silent_per_run)"
+            out["skipped_limit"].append(row)
+            continue
+        at = _fmt(now)
+        reversal = f"python3 tools/spec.py reopen {alias}"
+        decision = {"text": f"{alias}: milczenie po {u.get('ask_after') or q.get('default_ask_after')} od pokazania "
+                            f"({u.get('first_shown') or u.get('date')}); wykonane if_silent: {row['if_silent']}",
+                    "if_silent": row["if_silent"], "reversal": reversal, "cost_to_reverse": row["cost_to_reverse"],
+                    "by": args.by, "at": at, "basis": "ask_after"}
+        row["decision"] = decision
+        out["applied"].append(row)
+        if args.dry_run:
+            continue
+        u.update(state="approved", by="silence", date=at[:10], decision=decision)
+        u.setdefault("history", []).append({"state": "approved", "by": "silence", "date": at[:10], "at": at,
+                                            "decision": decision})
+        _record_decision(root, args.run_id, decision["text"], reversal, row["cost_to_reverse"], args.by, at)
+    if out["applied"] and not args.dry_run:
+        save_und(root, cfg, und)
+        _rebuild(root, cfg)
+    print(json.dumps(out, ensure_ascii=False, indent=1))
+    return 0
+
+
+def cmd_reopen(root, cfg, args):
+    """Odwrót: pozycja wraca do proposed z poprzednią parafrazą (np. po rozstrzygnięciu milczeniem)."""
+    spec = load_spec(root, cfg)
+    n = resolve(spec, args.id)
+    if n is None:
+        raise SystemExit(f"nie ma pozycji: {args.id}")
+    und = load_und(root, cfg)
+    cur = und.get(n["id"])
+    if not cur or cur.get("state") == "none" or not cur.get("text"):
+        raise SystemExit("odmowa: nie ma czego otworzyć ponownie (brak parafrazy)")
+    at = args.at or now_utc()
+    prev = {k: cur.get(k) for k in ("state", "by", "date")}
+    cur.update(state="proposed", by=args.by, date=at[:10], first_shown=at)
+    reversed_dec = cur.pop("decision", None)
+    h = {"state": "proposed", "by": args.by, "date": at[:10], "at": at, "reopened_from": prev}
+    if reversed_dec:
+        h["reverses"] = reversed_dec
+    if args.why:
+        h["why"] = args.why
+    cur.setdefault("history", []).append(h)
+    save_und(root, cfg, und)
+    _rebuild(root, cfg)
+    _record_decision(root, args.run_id, f"{n['aliases'][0]}: odwrót ({prev['state']} → proposed)" + (f" — {args.why}" if args.why else ""),
+                     f"python3 tools/spec.py approve {n['aliases'][0]}", cur.get("cost_to_reverse"), args.by, at)
+    print(f"{n['aliases'][0]} ({n['id']}): rozumienie = proposed (odwrót z {prev['state']})")
+    return 0
+
+
+def inbox_class(entry: dict, qcfg: dict) -> str:
+    c = entry.get("class")
+    if c and str(c).strip():
+        return str(c).strip()
+    k = str(entry.get("kind") or "").strip()
+    return (qcfg.get("class_by_kind") or {}).get(k, k or "statement")
+
+
+def says_approve(text: str, qcfg: dict) -> bool:
+    t = fold(text or "").strip().strip(".!,; ")
+    if not t:
+        return False
+    words = {fold(w).strip() for w in qcfg.get("approve_words") or []}
+    return t in words or t.split()[0].strip(".!,;:") in words
+
+
+def cmd_inbox(root, cfg, args):
+    """Wpisy skrzynki spec_inbox (eksport JSON: lista albo {docs: [...]}, każdy z id) → werdykty, bez modelu.
+    Klasy z apply_classes stosuje (approve/correct), tekst będący słowem zatwierdzenia = approve w każdej klasie,
+    resztę eskaluje z powodem. Wypisuje JSON werdyktów do zapisania z powrotem w bazie strony (state + verdict)."""
+    q = cfg["question"]
+    raw = json.loads((sys.stdin.read() if args.file == "-" else Path(args.file).read_text(encoding="utf-8")))
+    entries = raw.get("docs", raw) if isinstance(raw, dict) else raw
+    verdicts = []
+    for e in entries:
+        if not isinstance(e, dict):
+            continue
+        data = e.get("data") if isinstance(e.get("data"), dict) else e
+        if (data.get("state") or "new") != "new":
+            continue
+        klass = inbox_class(data, q)
+        node = data.get("node") or data.get("alias")
+        text = (data.get("text") or "").strip()
+        v = {"doc_id": e.get("id") or data.get("id"), "node": node, "class": klass, "at": args.at or now_utc()}
+        action = (q.get("apply_classes") or {}).get(klass)
+        if action != "correct" and says_approve(text, q):
+            action = "approve"
+        if action == "correct" and not text:
+            action = None
+        if not node or not action:
+            v.update(state="escalated", verdict="escalated",
+                     why=("wpis bez pozycji" if not node else f"klasa „{klass}” wymaga osądu (nie ma jej w question.apply_classes)"))
+            verdicts.append(v)
+            continue
+        argv = [action, node, "--by", args.by]
+        if action == "correct":
+            argv += ["--text", text]
+        v["command"] = "python3 tools/spec.py " + " ".join(json.dumps(a, ensure_ascii=False) if " " in a else a for a in argv)
+        if args.dry_run:
+            v.update(state="applied", verdict="would-apply")
+        else:
+            try:
+                with _quiet():
+                    main(["--root", str(root), *argv])
+                v.update(state="applied", verdict="applied")
+            except SystemExit as ex:
+                v.update(state="rejected", verdict="rejected", why=str(ex))
+        verdicts.append(v)
+    print(json.dumps({"verdicts": verdicts}, ensure_ascii=False, indent=1))
+    return 0
+
+
+class _quiet:
+    def __enter__(self):
+        import io
+        self._o = sys.stdout
+        sys.stdout = io.StringIO()
+
+    def __exit__(self, *a):
+        sys.stdout = self._o
+        return False
 
 
 def main(argv=None) -> int:
@@ -1456,11 +1763,41 @@ def main(argv=None) -> int:
                        help="co zrobie bez Twojej odpowiedzi (pokazane na stronie w kolejce; pusty napis usuwa; brak = bez zmian)")
         p.add_argument("--cost-to-reverse", dest="cost_to_reverse", metavar="TEKST",
                        help="koszt odwrotu, wartosc otwarta (przyklady: low, normal, high; strona domyslnie stawia 'high' na poczatku kolejki)")
+        p.add_argument("--ask-after", dest="ask_after", metavar="OKRES",
+                       help="po jakim czasie od pierwszego pokazania milczenie rozstrzyga (przyklady: 24h, 2d, 90m, PT6H, albo chwila ISO); pusty napis usuwa")
+        p.add_argument("--criteria", action="append", metavar="TEKST",
+                       help="kryterium rozstrzygniecia (powtarzalne; lista zastepuje poprzednia; jedno puste usuwa)")
+        p.add_argument("--class", dest="question_class", metavar="KLASA",
+                       help="klasa pytania, lista otwarta (przyklady: understanding, money, private-data, x10, product-direction)")
+        if name == "propose":
+            p.add_argument("--first-shown", dest="first_shown", metavar="ISO", help="chwila pierwszego pokazania (preset: teraz)")
     p = sub.add_parser("approve")
     p.add_argument("id")
     p.add_argument("--by", default="owner")
     p.add_argument("--date")
     p.set_defaults(text=None)
+    sh = sub.add_parser("shown", help="IW-3: zapisz chwile pierwszego pokazania pytan (first_shown)")
+    sh.add_argument("ids", nargs="+")
+    sh.add_argument("--at")
+    sh.add_argument("--force", action="store_true")
+    si = sub.add_parser("silent", help="IW-3: wykonaj if_silent pytan po ask_after (tylko niski koszt odwrotu; reszta = eskalacja); bez modelu")
+    si.add_argument("--now", help="chwila ISO (testy; preset: teraz)")
+    si.add_argument("--low", nargs="*", default=None, metavar="KOSZT", help="koszty odwrotu uznane za niskie (preset: question.low_cost_to_reverse)")
+    si.add_argument("--limit", type=int, default=None, help="twardy limit na bieg (preset: question.max_silent_per_run; -1 = bez limitu)")
+    si.add_argument("--by", default="secretary")
+    si.add_argument("--run-id", help="zapis biegu (tools/run_record.py), do ktorego trafia rekord decyzji")
+    si.add_argument("--dry-run", action="store_true")
+    ro = sub.add_parser("reopen", help="IW-3: odwrot - pozycja wraca do proposed (np. po rozstrzygnieciu milczeniem)")
+    ro.add_argument("id")
+    ro.add_argument("--by", default="owner")
+    ro.add_argument("--at")
+    ro.add_argument("--why")
+    ro.add_argument("--run-id")
+    ib = sub.add_parser("inbox", help="IW-3: wpisy spec_inbox (JSON) -> werdykty; approval/correction bez modelu, reszta eskalowana")
+    ib.add_argument("file", help="plik JSON z wpisami albo - dla stdin")
+    ib.add_argument("--by", default="owner (strona)")
+    ib.add_argument("--at")
+    ib.add_argument("--dry-run", action="store_true")
     h = sub.add_parser("html", help="żywy, zwijany widok drzewa (R73) -> docs/spec/SPEC.html; publikowany jako artefakt")
     h.add_argument("--focus", nargs="*", default=[], help="pozycje w edycji (id/alias): rozwinięte i podświetlone")
     h.add_argument("--recent-hours", type=int, default=48)
@@ -1482,6 +1819,8 @@ def main(argv=None) -> int:
         return cmd_cite(root, cfg, args)
     if args.cmd == "add":
         return cmd_add(root, cfg, args)
+    if args.cmd in ("shown", "silent", "reopen", "inbox"):
+        return {"shown": cmd_shown, "silent": cmd_silent, "reopen": cmd_reopen, "inbox": cmd_inbox}[args.cmd](root, cfg, args)
     if args.cmd == "html":
         sys.path.insert(0, str(Path(__file__).resolve().parent))
         import spec_html
