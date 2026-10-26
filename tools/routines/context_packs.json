@@ -1,0 +1,48 @@
+{
+  "schema": "loom.context_packs/1",
+  "_comment": "Pakiety kontekstu (IW-2, INTERFEJS_WSPOLPRACY_v2 §2.2 K3, §2.4). Pakiet = lista odwołań; tools/context_pack.py render <pakiet> robi z niego prefiks briefu, bajt w bajt powtarzalny, z hashem (sha256 tekstu) — tani dowód identycznego prefiksu dwóch briefów. Trzy pakiety niżej to PRZYKŁADY (jego przykład R90: „przy starcie nowego podwykonawcy całą filozofię mu zapodać do kontekstu. przypominam przykład to jest”); zestawy odwołań to presety. Rodzaje odwołań (otwarte, dopisywane w kodzie): file, section, lines, spec, tools, text. Tryb odwołania: full (treść) albo pointer (ścieżka + hash, gdy treść i tak dociera inną drogą, np. CLAUDE.md wstrzykiwany każdemu agentowi). more: allowed + recorded = agent może czytać więcej, zapisuje to jako krok biegu.",
+  "_history": [
+    {"at": "2026-10-26", "by": "IW-2 (Opus)", "what": "pierwsze trzy pakiety; CLAUDE.md w trybie pointer w podwykonawcy (harness wstrzykuje go każdemu agentowi; odwrót: mode full)"}
+  ],
+  "presets": {
+    "header": "=== PAKIET KONTEKSTU {pack} (loom.context_packs/1) — część wspólna briefu; hash prefiksu w karcie i w zapisie biegu ===",
+    "ref_header": "--- {kind}: {label} ({ref_hash}) ---",
+    "pointer": "[treść nie wklejona: {path}, {ref_hash}; czytaj sam, jeśli nie masz jej w kontekście]",
+    "footer": "=== KONIEC PAKIETU {pack}; dalej część własna pakietu ===",
+    "more": {"allowed": true, "recorded": true}
+  },
+  "packs": {
+    "podwykonawca": {
+      "for": "wykonawca pakietu (agent w worktree)",
+      "refs": [
+        {"kind": "file", "path": "CLAUDE.md", "mode": "pointer", "label": "reguły właściciela i repozytorium"},
+        {"kind": "spec", "ids": ["R58", "R59", "R60", "R83", "R84"], "label": "jego słowa: przykłady to przykłady, silnik obsługuje każdą konfigurację"},
+        {"kind": "section", "path": "CLAUDE.md", "heading": "## Examples are examples; the engine handles every configuration (owner, 2026-10-23)", "label": "filozofia (wycinek)"},
+        {"kind": "file", "path": "loom/data/philosophy/principles.json", "mode": "pointer", "label": "zasady jako dane"},
+        {"kind": "file", "path": "tools/routines/schemas/routine_run.schema.json", "mode": "pointer", "label": "schemat zapisu biegu"},
+        {"kind": "text", "label": "jak cytować i zapisywać", "text": "Pozycje spec cytuj jako spec:<numer> i czytaj przez `python3 tools/spec.py show <numer>`. Bieg zapisuje `python3 tools/run_record.py` (0 tokenów). Katalog narzędzi: `python3 tools/context_pack.py tools`."}
+      ],
+      "more": {"allowed": true, "recorded": true}
+    },
+    "kontroler": {
+      "for": "kontrola przed użyciem (tylko odczyt)",
+      "refs": [
+        {"kind": "section", "path": "CLAUDE.md", "heading": "## Examples are examples; the engine handles every configuration (owner, 2026-10-23)", "label": "reguły kontroli"},
+        {"kind": "spec", "ids": ["R58", "R59", "R60"], "label": "jego słowa"},
+        {"kind": "text", "label": "antywzorce (ziarno, lista otwarta)", "text": "A wybór zapisany jako wymaganie; B przypisane właścicielowi bez dosłownego cytatu; C opcja zdegradowana z powodu kosztu albo małej użyteczności; D fakt o teraźniejszości jako ograniczenie; E fakt niesprawdzony podany jako fakt; F zamknięta lista albo liczba jako lista. Plus pytanie R60."}
+      ],
+      "more": {"allowed": true, "recorded": true}
+    },
+    "sesja": {
+      "for": "nowa sesja koordynatora (teleport, przejęcie)",
+      "refs": [
+        {"kind": "file", "path": "CLAUDE.md", "mode": "pointer", "label": "reguły"},
+        {"kind": "file", "path": "docs/ops/TELEPORT_S1.md", "mode": "full", "label": "karta teleportu"},
+        {"kind": "lines", "path": "docs/reports/QUEUE_S1.md", "match": "^## ", "max_matches": 8, "label": "głowa kolejki (preset: 8 najnowszych nagłówków)"},
+        {"kind": "spec", "ids": ["R88", "R89", "R90", "R92"], "label": "jego słowa o interfejsie i VM"},
+        {"kind": "tools", "label": "katalog narzędzi z dostępnością per miejsce"}
+      ],
+      "more": {"allowed": true, "recorded": true}
+    }
+  }
+}

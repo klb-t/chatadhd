@@ -19,9 +19,9 @@
   "where": "vm"
  },
  "started": "2026-10-26T16:40:00Z",
- "finished": null,
- "state": "running",
- "summary": null,
+ "finished": "2026-10-26T17:07:19.798177Z",
+ "state": "done",
+ "summary": "schemat loom.routine_run/1, tools/run_record.py, 77 biegów sekretarza ze spec_runs, single-package z run_id; prompt żywego zadania sekretarza NIE zmieniony (dopisek w ZADANIA_ZAPLANOWANE)",
  "steps": [
   {
    "id": "schema+script+tests",
@@ -31,9 +31,21 @@
     "ended": "2026-10-26T17:03:10.807644Z"
    },
    "state": "done"
+  },
+  {
+   "id": "single-package-run_id+secretary-snippet",
+   "clock": {
+    "started": "2026-10-26T17:07:19.012921Z",
+    "updated": "2026-10-26T17:07:19.012921Z",
+    "ended": "2026-10-26T17:07:19.012921Z"
+   },
+   "state": "done",
+   "commit": "687ceb91"
   }
  ],
- "commits": [],
+ "commits": [
+  "687ceb91"
+ ],
  "cards": [],
  "escalations": [],
  "advisories": [],
@@ -46,14 +58,40 @@
    "counter_delta": {
     "w_toku": 1
    }
+  },
+  {
+   "at": "2026-10-26T17:07:19.434041Z",
+   "kind": "original_ideas",
+   "text": "pusty bieg (finish --quiet) zostaje w rekordzie bez linii statusu; indeks dopisywany = scalanie dwóch maszyn bez konfliktu",
+   "counter_delta": {
+    "oryginalne": 1
+   }
+  },
+  {
+   "at": "2026-10-26T17:07:19.798177Z",
+   "kind": "finished",
+   "text": "schemat loom.routine_run/1, tools/run_record.py, 77 biegów sekretarza ze spec_runs, single-package z run_id; prompt żywego zadania sekretarza NIE zmieniony (dopisek w ZADANIA_ZAPLANOWANE)",
+   "counter_delta": {
+    "w_toku": -1,
+    "zrobione": 1
+   }
   }
  ],
- "receipt": [],
+ "receipt": [
+  {
+   "currency": "calls",
+   "value": 45.0,
+   "unit": "wywołań (szacunek)",
+   "source": "agent, liczone ręcznie",
+   "at": "2026-10-26T17:07:19.629565Z",
+   "reliability": null
+  }
+ ],
  "decisions": [],
  "markers_applied": [],
  "spec": [
   "R90",
   "R89"
  ],
- "updated": "2026-10-26T17:03:10.807644Z"
+ "updated": "2026-10-26T17:07:19.798177Z"
 }

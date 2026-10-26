@@ -1,0 +1,11 @@
+{
+  "_comment": "Brief IW-3 (projekt, zapisany przez pakiet IW-2 2026-10-26 jako pierwszy brief z pakietem kontekstu i spec:). Przed startem: python3 tools/context_pack.py fill-brief tools/workflows/briefs/iw3_brief.json -o <scratch>/iw3_filled.json; python3 tools/context_pack.py check-brief <scratch>/iw3_filled.json; RID=$(python3 tools/run_record.py start --routine package.run --param id=IW-3 --context-pack-hash <hash> --brief-file tools/workflows/briefs/iw3_brief.json); dopisać run_id=RID do args. wt/branch/remote_branch ustawia koordynator.",
+  "wt": "<worktree>",
+  "branch": "<lokalna gałąź>",
+  "remote_branch": "claude/chataddhd-cpp-loom-core-IRGRN",
+  "id": "IW-3",
+  "context_pack": "podwykonawca",
+  "spec": ["R88", "R89", "R90"],
+  "scope": "Pytanie w pełnym kształcie + jedna skrzynka z klasą + if_silent bez czuwania, jak w docs/architecture/INTERFEJS_WSPOLPRACY_v2_2026-10-23.md §4 wiersz IW-3 (wartości w wierszu to przykłady): spec.py propose/correct --ask-after --criteria; spec_html.py renderuje kryteria i czas od first_shown; spec_inbox.class (otwarte) z verdict; tekst dopisku do promptu sekretarza (wykonuje if_silent niskiego kosztu odwrotu, eskaluje resztę, zakłada run_once_at na ask_after) w docs/ops/ZADANIA_ZAPLANOWANE_2026-10-23.md; limit jako preset. Bieg zapisuj przez tools/run_record.py.",
+  "accept": "Testy tools/tests zielone; jedno pytanie rozstrzygnięte milczeniem w teście z rekordem decyzji i odwrotem; „Zatwierdzam” → approve bez modelu; test e2e strony spec przy 400 px."
+}

@@ -1,0 +1,88 @@
+{
+ "schema": "loom.routine_run/1",
+ "run_id": "r_755ff5a833db",
+ "routine": {
+  "id": "package.run",
+  "version": null,
+  "hash": null
+ },
+ "params": {
+  "id": "IW-2",
+  "title": "IW-2 Katalog narzędzi + pakiet kontekstu"
+ },
+ "context_pack_hash": "sha256:daeeacccdddd2a1e3a29da50e328f6914f45fd30722b8f23f8f1e849d2578457",
+ "brief_hash": null,
+ "where": "vm",
+ "resolved": {
+  "role": "wykonawca pakietu",
+  "model": "opus"
+ },
+ "started": "2026-10-26T17:07:23.859121Z",
+ "finished": "2026-10-26T17:07:30.532437Z",
+ "state": "done",
+ "summary": "tools/routines/tools.json (27 narzędzi, dostępność per miejsce z datą), context_packs.json (podwykonawca, kontroler, sesja), tools/context_pack.py (render/hash/fill-brief/check-brief/tools), single-package.js: prefiks bajt w bajt + spec: + hash w karcie; brief iw3_brief.json",
+ "steps": [
+  {
+   "id": "tools.json+context_packs+context_pack.py+single-package+tests",
+   "clock": {
+    "started": "2026-10-26T17:07:29.868660Z",
+    "updated": "2026-10-26T17:07:29.868660Z",
+    "ended": "2026-10-26T17:07:29.868660Z"
+   },
+   "state": "done"
+  }
+ ],
+ "commits": [],
+ "cards": [],
+ "escalations": [],
+ "advisories": [],
+ "original_ideas": [],
+ "events": [
+  {
+   "at": "2026-10-26T17:07:23.859121Z",
+   "kind": "started",
+   "counter_delta": {
+    "w_toku": 1
+   }
+  },
+  {
+   "at": "2026-10-26T17:07:30.108596Z",
+   "kind": "decision",
+   "text": "CLAUDE.md w pakiecie podwykonawca jako pointer (ścieżka + hash), bo harness wstrzykuje go każdemu agentowi"
+  },
+  {
+   "at": "2026-10-26T17:07:30.532437Z",
+   "kind": "finished",
+   "text": "tools/routines/tools.json (27 narzędzi, dostępność per miejsce z datą), context_packs.json (podwykonawca, kontroler, sesja), tools/context_pack.py (render/hash/fill-brief/check-brief/tools), single-package.js: prefiks bajt w bajt + spec: + hash w karcie; brief iw3_brief.json",
+   "counter_delta": {
+    "w_toku": -1,
+    "zrobione": 1
+   }
+  }
+ ],
+ "receipt": [
+  {
+   "currency": "calls",
+   "value": 20.0,
+   "unit": "wywołań (szacunek)",
+   "source": "agent",
+   "at": "2026-10-26T17:07:30.323434Z",
+   "reliability": null
+  }
+ ],
+ "decisions": [
+  {
+   "text": "CLAUDE.md w pakiecie podwykonawca jako pointer (ścieżka + hash), bo harness wstrzykuje go każdemu agentowi",
+   "reversal": "mode: full w tools/routines/context_packs.json",
+   "cost_to_reverse": "jedna linia",
+   "by": null,
+   "at": "2026-10-26T17:07:30.108596Z"
+  }
+ ],
+ "markers_applied": [],
+ "spec": [
+  "R90",
+  "R89"
+ ],
+ "updated": "2026-10-26T17:07:30.532437Z"
+}
