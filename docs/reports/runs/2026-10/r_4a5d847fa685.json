@@ -1,0 +1,138 @@
+{
+ "schema": "loom.routine_run/1",
+ "run_id": "r_4a5d847fa685",
+ "routine": {
+  "id": "start.gate",
+  "version": "1",
+  "hash": "sha256:f0b5491db099b40b7cf1fc326b89eab222cdb384c6f691397be9e993ba9e2dbd"
+ },
+ "params": {
+  "role": "package_executor",
+  "used": "",
+  "parent_run": "r_486700b9a361",
+  "where": ""
+ },
+ "context_pack_hash": null,
+ "brief_hash": null,
+ "where": null,
+ "resolved": {
+  "role": "package_executor",
+  "model": "sonnet",
+  "inherited": false,
+  "place": "vm:devbox-20260923",
+  "via": "start_gate",
+  "at": "2026-10-26T18:07:35Z",
+  "verdict": "start_with_advisories",
+  "estimate_points": 0.5,
+  "advisories": 1
+ },
+ "started": "2026-10-26T18:07:35.276827Z",
+ "finished": "2026-10-26T18:07:35.363460Z",
+ "state": "done",
+ "summary": "start.gate@1: kroki wykonane",
+ "steps": [
+  {
+   "id": "_preconditions",
+   "clock": {
+    "started": "2026-10-26T18:07:35.363460Z",
+    "updated": "2026-10-26T18:07:35.363460Z",
+    "ended": "2026-10-26T18:07:35.363460Z"
+   },
+   "state": "done"
+  },
+  {
+   "id": "gate",
+   "clock": {
+    "started": "2026-10-26T18:07:35.363460Z",
+    "updated": "2026-10-26T18:07:35.794259Z",
+    "ended": "2026-10-26T18:07:35.794259Z"
+   },
+   "state": "done",
+   "in_hash": "sha256:d80e4a6762d84f816dbe460e1083057691538141a007b3cae592a7767a857cdb",
+   "out_hash": "sha256:0575421463df72ee3821a2b807d2a775f96b0096f15984b70af20b2e6a980733",
+   "exit": 0,
+   "out": {
+    "schema": "loom.start_gate_card/1",
+    "at": "2026-10-26T18:07:35Z",
+    "role": "package_executor",
+    "model": {
+     "requested": null,
+     "role_preset": "sonnet",
+     "model": "sonnet",
+     "why": "preset roli",
+     "inherited": false,
+     "observations": [],
+     "name": "Claude Sonnet 5.5"
+    },
+    "place": {
+     "id": "vm:devbox-20260923",
+     "state": "alive",
+     "observed_at": "2026-10-26T17:25Z",
+     "source": "obserwacja z sesji na VM (hostname devbox-20260923…internal)",
+     "disk_source": "shutil.disk_usage(/home/kielbowicz_marcin/chatadhd/.claude/worktrees/agent-ae6f1c55172d9e195) teraz",
+     "disk_free_gb": 12.9,
+     "needs_build": false,
+     "disk_ok": true
+    },
+    "estimate": {
+     "points": 0.5,
+     "per_package": 0.5,
+     "plan_calls": 50.0,
+     "source": "cost_per_package.default (brak pomiaru dla modelu)"
+    },
+    "window": {
+     "cap_key": "all_models",
+     "cap": 90,
+     "used": null,
+     "inflight": 0,
+     "cap_ok": null,
+     "note": "brak odczytu zużycia dla tego limitu (--used / --used-model) — nie sprawdzono"
+    },
+    "exceeds": [],
+    "advisories": [
+     "koszt pakietu dla sonnet niezmierzony — estymata z default (0.5)"
+    ],
+    "verdict": "start_with_advisories",
+    "log_only": false
+   }
+  }
+ ],
+ "commits": [],
+ "cards": [],
+ "escalations": [],
+ "advisories": [],
+ "original_ideas": [],
+ "events": [
+  {
+   "at": "2026-10-26T18:07:35.276827Z",
+   "kind": "started",
+   "text": "brama startu bez osądu: rola → model → miejsce, estymata, okno (tools/start_gate.py); karta do zapisu biegu",
+   "counter_delta": {
+    "w_toku": 1
+   }
+  },
+  {
+   "at": "2026-10-26T18:07:35.363460Z",
+   "kind": "finished",
+   "text": "start.gate@1: kroki wykonane",
+   "counter_delta": {
+    "w_toku": -1,
+    "zrobione": 1
+   }
+  }
+ ],
+ "receipt": [
+  {
+   "currency": "punkty tygodnia",
+   "value": 0.5,
+   "unit": "pkt",
+   "source": "start_gate estymata (cost_per_package.default (brak pomiaru dla modelu))",
+   "at": "2026-10-26T18:07:35.681027Z",
+   "reliability": "estimate"
+  }
+ ],
+ "decisions": [],
+ "markers_applied": [],
+ "spec": [],
+ "updated": "2026-10-26T18:07:35.363460Z"
+}

@@ -1842,3 +1842,34 @@ hak wywłaszczenia czyta zapisy biegów, węzeł VM w `docs/ops/places.json` (sp
 
 Luki: L3 — `gcloud compute instances start` z chmury i baza strony z VM niesprawdzone (stan `unknown` w `tools[]`); 24 h tętna dopiero po instalacji timera;
 wywłaszczenie przeżyte tylko w teście (fałszywy gcloud), nie na żywo; `claude-rc.service` włączona, jeszcze nie przetestowana restartem.
+
+## S1 / IW-9 + IW-10 + IW-11 — kontrola emituje dane; operator = rozszerzony mandat sekretarza; handover — jeden rekord, rendery (2026-10-26, sesja na VM, bieg `r_9a5e4ecd3cca`)
+
+Co jest: `tools/check_data.py` (+ `tools/routines/check_data.json`): `<dok>.check.json` obok dokumentu (`loom.check_data/1`: decyzje,
+przykłady, dodatki, pomiary, znaleziska, R60, werdykt, `previous`), ekstrakcja bez modelu, `ingest` zwrotu `check-before-use.js`
+(teraz emituje te pola i zwraca `data`), diff decyzji (W6) w CLI i na stronie spec (sekcja `#checks`, pełny tekst o dotknięcie dalej;
+pierwszy dokument: `INTERFEJS_WSPOLPRACY_v2` względem `96ca991c`: +3 ~6 −3 =9), znacznik (`class=marker` ze skrzynki albo aktywny
+znacznik `words.py`) → znalezisko → bieg `addendum.apply`, który CZEKA (`waits_for`) na koniec biegu w toku o tym dokumencie.
+Rutyny: `check.before_use@2`, `addendum.apply@1`. Operator: `routine.py run <id> --as operator [--parent-run R]` uruchamia tylko
+rutyny z `operator_ok: true` (`start.gate`, `ci.read`, `ledger.sample`, `status.lines@2`, `teleport.refresh`, `tasks.recreate`,
+`operator.run` — przykłady; mandat = plik), reszta = `judgement` → propozycja w biegu nadrzędnym (kod 4, nic nie wykonane);
+`tools/operator_run.py` (list/stats/cadence/summary/prompt); zadania jako dane `tools/routines/scheduled_tasks.json`; prompt
+`tools/routines/operator_prompt.md` = tekst do wklejenia w `docs/ops/ZADANIA_ZAPLANOWANE_2026-10-23.md` (żywe zadania nietknięte).
+Handover: `tools/handover.py` (build/render/compare), presety `tools/routines/handover.json`, rekord `docs/ops/handover.json`
+(`supersedes`), render `docs/ops/TELEPORT_S1.generated.md`; porównanie z ręczną `TELEPORT_S1.md`: 7/7 sekcji, 46/78 faktów
+(brakujące to głównie datowany stan 23.10). Testy: `test_check_data.py`, `test_handover.py` (178/178 w `tools/tests`).
+
+| Decyzja (preset) | Odwrót |
+|---|---|
+| Dane kontroli obok dokumentu (`X.check.json`), nie w bazie | `sidecar_suffix`/ścieżka w `check_data.json` |
+| Ponowna kontrola nie cofa rozstrzygnięć znalezisk (stan po id = hash pochodzenia+cytatu) | `keep_states=False` |
+| Operator to ta sama rola co sekretarz (dopisek) albo osobne zadanie — oba warianty opisane, wybór przy wklejeniu | usunąć dopisek / wyłączyć zadanie |
+| Plik `tools/operator_run.py`, nie `operator.py` (zasłaniałby moduł standardowy `operator`, bo `tools/` trafia na `sys.path`) | — |
+| Kadencja: propozycja z pomiaru, nigdy zmiana; progi 0,8/0,2 i min. 24 biegi bez kalibracji | `presets.operator.cadence` w `operator.run` |
+| Teksty stałe karty teleportu jako dane z datą; stan, narzędzia, zadania, miejsca z plików | `static` w `handover.json` |
+
+Pomiary: 77/77 zaimportowanych biegów sekretarza puste (23.10 11:23 – 26.10 16:23) → operator proponuje `23 */2 * * *`
+(propozycja, nie zmiana). Pierwszy bieg operatora `r_486700b9a361`: 6 biegów podrzędnych `done`, 1 propozycja (vm.wake bez
+`operator_ok`), `ci.read` przez `gh`: ostatni `loom.yml` na main `dea6db5a` = failure (do odczytu przez koordynatora).
+Luki: `ledger.sample` i `tasks.recreate` sprawdzone tylko jako przekazanie (brak `list_events`/`list_triggers` w tej sesji);
+5 biegów operatora z zadania zaplanowanego — po wklejeniu promptu.

@@ -1,0 +1,104 @@
+{
+ "schema": "loom.routine_run/1",
+ "run_id": "r_4eae1e379cbd",
+ "routine": {
+  "id": "teleport.refresh",
+  "version": "1",
+  "hash": "sha256:e5c1b80df7b79156d3ee2107622de09b19811bc13f868a9cc1432ffba058bc34"
+ },
+ "params": {
+  "out": "docs/ops/TELEPORT_S1.generated.md",
+  "parent_run": "r_486700b9a361",
+  "where": ""
+ },
+ "context_pack_hash": null,
+ "brief_hash": null,
+ "where": null,
+ "resolved": null,
+ "started": "2026-10-26T18:07:37.199971Z",
+ "finished": "2026-10-26T18:07:37.272459Z",
+ "state": "done",
+ "summary": "teleport.refresh@1: kroki wykonane",
+ "steps": [
+  {
+   "id": "_preconditions",
+   "clock": {
+    "started": "2026-10-26T18:07:37.272459Z",
+    "updated": "2026-10-26T18:07:37.272459Z",
+    "ended": "2026-10-26T18:07:37.272459Z"
+   },
+   "state": "done"
+  },
+  {
+   "id": "record",
+   "clock": {
+    "started": "2026-10-26T18:07:37.272459Z",
+    "updated": "2026-10-26T18:07:37.570628Z",
+    "ended": "2026-10-26T18:07:37.570628Z"
+   },
+   "state": "done",
+   "in_hash": "sha256:4ef255b6c87c1e6aeceeaf571980089f198c162f68a98f6b757c406a32f90fb0",
+   "out_hash": "sha256:64fe2f46aba68a3c951113732f1530d3721af44f4c2bf2d7ed4eed39635677af",
+   "exit": 0
+  },
+  {
+   "id": "teleport",
+   "clock": {
+    "started": "2026-10-26T18:07:37.272459Z",
+    "updated": "2026-10-26T18:07:37.805895Z",
+    "ended": "2026-10-26T18:07:37.805895Z"
+   },
+   "state": "done",
+   "in_hash": "sha256:79660a4caa878958cba097c6fbdfd9400b8b8f0c25b9ea3c122aa394e8f71fa9",
+   "out_hash": "sha256:2101d3f0817d6ce397f636d617c327a9324aa71a5fe9eabf18044e78af5c0ac9",
+   "exit": 0
+  },
+  {
+   "id": "compare",
+   "clock": {
+    "started": "2026-10-26T18:07:37.272459Z",
+    "updated": "2026-10-26T18:07:38.015346Z",
+    "ended": "2026-10-26T18:07:38.015346Z"
+   },
+   "state": "done",
+   "in_hash": "sha256:809181ecfc9e981db19c69458e2fe29af97c413e8da5a7929f61af073c61a354",
+   "out_hash": "sha256:ee54630b1788ec015b11f5ba647654f5d9e219475fdfc6307f1ec34aaeb7d1ba",
+   "exit": 0
+  }
+ ],
+ "commits": [],
+ "cards": [
+  {
+   "handover": "docs/ops/handover.json",
+   "hash": "sha256:bfc02322b5c916ddd475924743b14a2655e5bafaf33c7088265f5103fd405ecd",
+   "supersedes": null
+  }
+ ],
+ "escalations": [],
+ "advisories": [],
+ "original_ideas": [],
+ "events": [
+  {
+   "at": "2026-10-26T18:07:37.199971Z",
+   "kind": "started",
+   "text": "odśwież kartę teleportu i „Od Twojego wyjścia” z jednego rekordu handover (tools/handover.py)",
+   "counter_delta": {
+    "w_toku": 1
+   }
+  },
+  {
+   "at": "2026-10-26T18:07:37.272459Z",
+   "kind": "finished",
+   "text": "teleport.refresh@1: kroki wykonane",
+   "counter_delta": {
+    "w_toku": -1,
+    "zrobione": 1
+   }
+  }
+ ],
+ "receipt": [],
+ "decisions": [],
+ "markers_applied": [],
+ "spec": [],
+ "updated": "2026-10-26T18:07:37.272459Z"
+}

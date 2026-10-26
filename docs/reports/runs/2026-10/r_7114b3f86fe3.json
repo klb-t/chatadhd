@@ -1,0 +1,80 @@
+{
+ "schema": "loom.routine_run/1",
+ "run_id": "r_7114b3f86fe3",
+ "routine": {
+  "id": "tasks.recreate",
+  "version": "1",
+  "hash": "sha256:cf96f19017291191aef67b0e3cc247acc785c45cee13b95d9bc941f55bfa9e42"
+ },
+ "params": {
+  "tasks": "tools/routines/scheduled_tasks.json",
+  "parent_run": "r_486700b9a361",
+  "where": ""
+ },
+ "context_pack_hash": null,
+ "brief_hash": null,
+ "where": null,
+ "resolved": null,
+ "started": "2026-10-26T18:07:46.105073Z",
+ "finished": "2026-10-26T18:07:46.502752Z",
+ "state": "done",
+ "summary": "tasks.recreate@1: kroki wykonane",
+ "steps": [
+  {
+   "id": "_preconditions",
+   "clock": {
+    "started": "2026-10-26T18:07:46.186199Z",
+    "updated": "2026-10-26T18:07:46.186199Z",
+    "ended": "2026-10-26T18:07:46.186199Z"
+   },
+   "state": "done"
+  },
+  {
+   "id": "compare",
+   "clock": {
+    "started": "2026-10-26T18:07:46.186199Z",
+    "updated": "2026-10-26T18:07:46.502752Z",
+    "ended": "2026-10-26T18:07:46.186199Z"
+   },
+   "state": "done",
+   "text": "list_triggers → porównaj z tools/routines/scheduled_tasks.json (id, cron, model, przypięcie, prompt_ref); każdą różnicę zapisz: python3 tools/run_record.py add r_7114b3f86fe3 escalations '{\"kind\":\"judgement\",\"task\":\"<nazwa>\",\"why\":\"<różnica>\",\"proposal\":\"create_trigger/update_trigger …\"}'; NIE twórz i NIE zmieniaj zadań; potem resume r_7114b3f86fe3 --done compare",
+   "by": "resume --done"
+  }
+ ],
+ "commits": [],
+ "cards": [],
+ "escalations": [],
+ "advisories": [
+  "brak list_triggers w tej sesji (VM, agent pakietu) — porównanie przy biegu z zadania zaplanowanego"
+ ],
+ "original_ideas": [],
+ "events": [
+  {
+   "at": "2026-10-26T18:07:46.105073Z",
+   "kind": "started",
+   "text": "zadania zaplanowane: porównanie danych (tools/routines/scheduled_tasks.json) z żywymi; różnica = propozycja, nic nie tworzone",
+   "counter_delta": {
+    "w_toku": 1
+   }
+  },
+  {
+   "at": "2026-10-26T18:07:46.186199Z",
+   "kind": "handoff",
+   "text": "compare: list_triggers → porównaj z tools/routines/scheduled_tasks.json (id, cron, model, przypięcie, prompt_ref); każdą różnicę zapisz: python3 tools/run_record.py add r_7114b3f86fe3 escalations '{\"kind\":\"judgement\",\"task\":\"<nazwa>\",\"why\":\"<różnica>\",\"proposal\":\"create_trigger/update_trigger …\"}'; NIE twórz i NIE zmieniaj zadań; potem resume r_7114b3f86fe3 --done compare"
+  },
+  {
+   "at": "2026-10-26T18:07:46.502752Z",
+   "kind": "finished",
+   "text": "tasks.recreate@1: kroki wykonane",
+   "counter_delta": {
+    "w_toku": -1,
+    "zrobione": 1
+   }
+  }
+ ],
+ "receipt": [],
+ "decisions": [],
+ "markers_applied": [],
+ "spec": [],
+ "updated": "2026-10-26T18:07:46.502752Z"
+}

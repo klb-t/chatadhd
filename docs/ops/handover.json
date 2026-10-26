@@ -1,0 +1,1536 @@
+{
+ "schema": "loom.handover/1",
+ "at": "2026-10-26T18:09:44.253596Z",
+ "git": {
+  "head": "2fbf6691",
+  "branch": "worktree-agent-ae6f1c55172d9e195",
+  "remotes": {
+   "archive/2026-10-01/handoff-source": {
+    "sha": "af3c81a5",
+    "date": "2026-10-01T11:47:41+02:00"
+   },
+   "archive/2026-10-02/handoff-complete": {
+    "sha": "2878a0c8",
+    "date": "2026-10-02T12:37:40+02:00"
+   },
+   "archive/2026-10-03/chore/repo-hygiene-2026-09": {
+    "sha": "970ca283",
+    "date": "2026-09-16T19:16:58+02:00"
+   },
+   "archive/2026-10-03/claude/chataddhd-cpp-loom-core-IRGRN": {
+    "sha": "46066308",
+    "date": "2026-09-30T17:17:14Z"
+   },
+   "archive/2026-10-03/claude/restore-lost-features-adK74": {
+    "sha": "287bdc1d",
+    "date": "2026-03-06T12:31:50Z"
+   },
+   "archive/2026-10-03/codex/handoff-recovery-2026-10-02": {
+    "sha": "af3c81a5",
+    "date": "2026-10-01T11:47:41+02:00"
+   },
+   "archive/2026-10-03/codex/loom-handoff-2026-09-28": {
+    "sha": "81640672",
+    "date": "2026-09-28T19:26:53+02:00"
+   },
+   "archive/2026-10-03/gpt/continuity-audit-2026-09-30": {
+    "sha": "6828216b",
+    "date": "2026-09-30T23:31:53+02:00"
+   },
+   "archive/2026-10-03/gpt/integration-w1-w6-2026-10-01": {
+    "sha": "926072ce",
+    "date": "2026-10-01T01:23:34+02:00"
+   },
+   "archive/2026-10-03/gpt/night2-resources-2026-10-01": {
+    "sha": "6c883f36",
+    "date": "2026-10-01T01:55:31+02:00"
+   },
+   "archive/2026-10-03/gpt/offline-2026-09-29": {
+    "sha": "31f130cd",
+    "date": "2026-09-29T22:51:06+02:00"
+   },
+   "archive/2026-10-03/gpt/research-2026-09-30": {
+    "sha": "c19bac29",
+    "date": "2026-10-01T01:42:45+02:00"
+   },
+   "archive/2026-10-03/gpt/w1-active-task-2026-09-30": {
+    "sha": "803eb78a",
+    "date": "2026-10-01T04:23:28+02:00"
+   },
+   "archive/2026-10-03/gpt/w2-retrieval-2026-09-30": {
+    "sha": "f6b44f60",
+    "date": "2026-09-30T23:46:38+02:00"
+   },
+   "archive/2026-10-03/gpt/w3-model-recipes-2026-09-30": {
+    "sha": "078378d5",
+    "date": "2026-09-30T23:55:13+02:00"
+   },
+   "archive/2026-10-03/gpt/w4-graph-runtime-2026-09-30": {
+    "sha": "e7000a9b",
+    "date": "2026-09-30T23:44:29+02:00"
+   },
+   "archive/2026-10-03/gpt/w5-workspace-2026-09-30": {
+    "sha": "ecf6931b",
+    "date": "2026-10-01T00:34:14+02:00"
+   },
+   "archive/2026-10-03/gpt/w6-evidence-2026-09-30": {
+    "sha": "84b5a83c",
+    "date": "2026-10-01T00:01:20+02:00"
+   },
+   "archive/2026-10-03/wip/catalog-finish": {
+    "sha": "89e40933",
+    "date": "2026-09-29T17:25:37Z"
+   },
+   "archive/2026-10-03/wip/catalog-r3": {
+    "sha": "bf057541",
+    "date": "2026-09-29T22:25:57Z"
+   },
+   "archive/2026-10-03/wip/continuation-2026-09-30": {
+    "sha": "a7986283",
+    "date": "2026-09-30T21:21:20+02:00"
+   },
+   "archive/2026-10-03/wip/determinism-fix": {
+    "sha": "3486fd2e",
+    "date": "2026-09-29T22:05:37Z"
+   },
+   "archive/2026-10-03/wip/export-finish": {
+    "sha": "af6d3e89",
+    "date": "2026-09-29T20:30:49Z"
+   },
+   "archive/2026-10-03/wip/precision": {
+    "sha": "de3b9203",
+    "date": "2026-09-29T22:38:18Z"
+   },
+   "archive/2026-10-03/wip/resolve-finish": {
+    "sha": "bcc77fb2",
+    "date": "2026-09-29T21:05:29Z"
+   },
+   "archive/2026-10-03/wip/worktree-agent-a06d7260ba8b658cc": {
+    "sha": "2554bcc0",
+    "date": "2026-09-29T08:57:05Z"
+   },
+   "archive/2026-10-03/wip/worktree-agent-a382d0e063192b5ed": {
+    "sha": "90113a90",
+    "date": "2026-09-29T14:47:32Z"
+   },
+   "archive/2026-10-03/wip/worktree-agent-a436abbcd1b794a18": {
+    "sha": "819de58f",
+    "date": "2026-09-29T13:41:14Z"
+   },
+   "archive/2026-10-03/wip/worktree-agent-a56d696101c89a58c": {
+    "sha": "453207ae",
+    "date": "2026-09-29T13:41:08Z"
+   },
+   "archive/2026-10-03/wip/worktree-agent-a822af86e44b82241": {
+    "sha": "eae85871",
+    "date": "2026-09-27T10:27:49Z"
+   },
+   "archive/2026-10-03/wip/worktree-agent-a8df74a3ca608a703": {
+    "sha": "d14535a0",
+    "date": "2026-09-27T15:25:01Z"
+   },
+   "archive/2026-10-03/wip/worktree-agent-a90a2e07c062c7efc": {
+    "sha": "dccaf9bd",
+    "date": "2026-09-27T21:10:41Z"
+   },
+   "archive/2026-10-03/wip/worktree-agent-ab76c2dece93103a1": {
+    "sha": "2d8826fe",
+    "date": "2026-09-29T14:47:40Z"
+   },
+   "archive/2026-10-03/wip/worktree-agent-ac45c7e794faf4cb0": {
+    "sha": "2de5d16f",
+    "date": "2026-09-28T01:52:35Z"
+   },
+   "archive/2026-10-03/wip/worktree-agent-ace3dd50eb645ccb0": {
+    "sha": "da7b34f5",
+    "date": "2026-09-28T01:52:40Z"
+   },
+   "archive/2026-10-04/archive-import-before-main-refresh": {
+    "sha": "06eb8b30",
+    "date": "2026-10-04T18:14:57+02:00"
+   },
+   "archive/2026-10-04/archive-import-before-mixed-w2": {
+    "sha": "03cd52e3",
+    "date": "2026-10-04T19:01:36+02:00"
+   },
+   "archive/2026-10-04/catalog-dev-bias-negative": {
+    "sha": "f61c9442",
+    "date": "2026-10-04T21:13:16+02:00"
+   },
+   "archive/2026-10-04/catalog-nearest-seed-negative": {
+    "sha": "464f67cb",
+    "date": "2026-10-04T16:52:53+02:00"
+   },
+   "archive/2026-10-04/catalog-selection-integration-held": {
+    "sha": "e0caa3b7",
+    "date": "2026-10-04T17:45:20+02:00"
+   },
+   "archive/2026-10-04/integrator-baseline-timeouts": {
+    "sha": "4df4c569",
+    "date": "2026-10-04T17:38:38+02:00"
+   },
+   "archive/2026-10-04/integrator-import-checkpoint-replay": {
+    "sha": "d1ee988e",
+    "date": "2026-10-04T17:09:42+02:00"
+   },
+   "archive/2026-10-04/integrator-import-screenshot-replay": {
+    "sha": "6e4bf03d",
+    "date": "2026-10-04T19:55:15+02:00"
+   },
+   "archive/2026-10-04/integrator-packet-unresolved-replay": {
+    "sha": "ffab4337",
+    "date": "2026-10-04T16:43:09+02:00"
+   },
+   "archive/2026-10-04/integrator-readiness-orphan-response": {
+    "sha": "ba22b2b1",
+    "date": "2026-10-04T16:50:00+02:00"
+   },
+   "archive/2026-10-04/integrator-usage-cli-permission": {
+    "sha": "c1166c51",
+    "date": "2026-10-04T20:17:27+02:00"
+   },
+   "archive/2026-10-04/integrator-usage-policy-before-data": {
+    "sha": "125a043c",
+    "date": "2026-10-04T17:54:57+02:00"
+   },
+   "archive/2026-10-04/interface-2-before-usage-intake": {
+    "sha": "121ebce8",
+    "date": "2026-10-04T21:16:35+02:00"
+   },
+   "archive/2026-10-04/knowledge-precision-before-main-refresh": {
+    "sha": "f8672a58",
+    "date": "2026-10-04T18:19:46+02:00"
+   },
+   "archive/2026-10-04/knowledge-precision-before-usage-intake": {
+    "sha": "2d08797c",
+    "date": "2026-10-04T18:26:09+02:00"
+   },
+   "archive/2026-10-04/knowledge-precision-inline-method-graph-negative": {
+    "sha": "42a8ffa9",
+    "date": "2026-10-04T21:41:06+02:00"
+   },
+   "archive/2026-10-04/knowledge-precision-local-only-negative": {
+    "sha": "ede4c317",
+    "date": "2026-10-04T14:41:27+02:00"
+   },
+   "archive/2026-10-04/knowledge-precision-prompt-negatives": {
+    "sha": "3a4f8b6a",
+    "date": "2026-10-04T18:15:41+02:00"
+   },
+   "archive/2026-10-04/model-research-integration-held": {
+    "sha": "37295148",
+    "date": "2026-10-04T17:10:04+02:00"
+   },
+   "archive/2026-10-04/native-graph-packet-before-main-refresh": {
+    "sha": "b8f29bf7",
+    "date": "2026-10-04T18:06:41+02:00"
+   },
+   "archive/2026-10-04/native-graph-packet-before-usage-intake": {
+    "sha": "1377e20c",
+    "date": "2026-10-04T19:22:51+02:00"
+   },
+   "archive/2026-10-04/native-graph-packet-main-5893b1f": {
+    "sha": "f450b89c",
+    "date": "2026-10-04T18:18:06+02:00"
+   },
+   "archive/2026-10-04/usage-policy-before-final-main-rebase": {
+    "sha": "2b401d00",
+    "date": "2026-10-04T19:48:51+02:00"
+   },
+   "archive/2026-10-04/usage-policy-before-intake": {
+    "sha": "5a73a360",
+    "date": "2026-10-04T19:39:01+02:00"
+   },
+   "archive/2026-10-04/usage-policy-before-preset": {
+    "sha": "910a1d6b",
+    "date": "2026-10-04T18:01:52+02:00"
+   },
+   "archive/2026-10-04/usage-policy-final-rebase-checkpoint": {
+    "sha": "950bf2fe",
+    "date": "2026-10-04T19:53:04+02:00"
+   },
+   "archive/2026-10-04/usage-policy-rebase-checkpoint": {
+    "sha": "17f34a11",
+    "date": "2026-10-04T19:30:26+02:00"
+   },
+   "archive/2026-10-05/archive-import-2-resource-attempts": {
+    "sha": "ec18cdd3",
+    "date": "2026-10-05T16:21:51+02:00"
+   },
+   "archive/2026-10-05/data-profiles-before-main-30ad7d3": {
+    "sha": "d3488a6b",
+    "date": "2026-10-04T19:27:50+02:00"
+   },
+   "archive/2026-10-05/data-profiles-before-main-e4109df": {
+    "sha": "5ff18d15",
+    "date": "2026-10-05T15:40:21+02:00"
+   },
+   "archive/2026-10-05/data-profiles-current-blocked": {
+    "sha": "9a89e377",
+    "date": "2026-10-05T15:20:50+02:00"
+   },
+   "archive/2026-10-05/hygiene-before-intake": {
+    "sha": "9c47124f",
+    "date": "2026-10-05T15:27:06+02:00"
+   },
+   "archive/2026-10-05/import-before-intake": {
+    "sha": "5f0abd20",
+    "date": "2026-10-04T21:48:03+02:00"
+   },
+   "archive/2026-10-05/integrator-runtime-negatives": {
+    "sha": "424e5aee",
+    "date": "2026-10-05T18:01:01+02:00"
+   },
+   "archive/2026-10-05/interface-2-api-negatives": {
+    "sha": "51c4ae5c",
+    "date": "2026-10-05T17:09:01+02:00"
+   },
+   "archive/2026-10-05/interface-2-before-api-intake": {
+    "sha": "fa7538d6",
+    "date": "2026-10-05T12:41:19+02:00"
+   },
+   "archive/2026-10-05/knowledge-precision-2-build-infrastructure-negative": {
+    "sha": "d1c9c822",
+    "date": "2026-10-05T15:32:21+02:00"
+   },
+   "archive/2026-10-05/knowledge-precision-2-checkpoint": {
+    "sha": "dee3e877",
+    "date": "2026-10-05T15:43:37+02:00"
+   },
+   "archive/2026-10-05/native-graph-packet-2-before-final-selection": {
+    "sha": "cb1efe18",
+    "date": "2026-10-05T17:09:31+02:00"
+   },
+   "archive/2026-10-05/native-graph-packet-2-before-rebase": {
+    "sha": "edf338b3",
+    "date": "2026-10-05T17:03:42+02:00"
+   },
+   "archive/2026-10-05/native-graph-packet-2-bounded-cutoffs": {
+    "sha": "49f76027",
+    "date": "2026-10-05T16:08:49+02:00"
+   },
+   "archive/2026-10-05/native-graph-packet-2-review-negatives": {
+    "sha": "19d72fe1",
+    "date": "2026-10-05T16:01:59+02:00"
+   },
+   "archive/2026-10-05/onboarding-before-intake": {
+    "sha": "3c0bc365",
+    "date": "2026-10-04T21:49:07+02:00"
+   },
+   "archive/2026-10-05/packet-before-intake": {
+    "sha": "b302df25",
+    "date": "2026-10-04T21:42:58+02:00"
+   },
+   "archive/2026-10-05/precision-before-intake": {
+    "sha": "50e6bb9f",
+    "date": "2026-10-04T21:02:54+02:00"
+   },
+   "archive/2026-10-05/precision-intake-negative": {
+    "sha": "b5e0e0db",
+    "date": "2026-10-05T17:23:21+02:00"
+   },
+   "archive/2026-10-05/selector-before-intake": {
+    "sha": "03c670ca",
+    "date": "2026-10-04T20:00:08+02:00"
+   },
+   "archive/2026-10-12/claude/t10-edge-cases": {
+    "sha": "914eba2e",
+    "date": "2026-10-12T10:17:32Z"
+   },
+   "archive/2026-10-12/claude/t9-ecosystem-synthesis": {
+    "sha": "3b09738f",
+    "date": "2026-10-12T10:02:33Z"
+   },
+   "archive/2026-10-12/claude/wp-a-send-gate": {
+    "sha": "bba2aabb",
+    "date": "2026-10-10T20:34:08Z"
+   },
+   "archive/2026-10-12/gpt/application-profiles-2026-10-04": {
+    "sha": "161cc22d",
+    "date": "2026-10-04T14:04:54+02:00"
+   },
+   "archive/2026-10-12/gpt/archive-import-2-2026-10-05": {
+    "sha": "f494931d",
+    "date": "2026-10-05T16:31:21+02:00"
+   },
+   "archive/2026-10-12/gpt/archive-import-2026-10-04": {
+    "sha": "5f0abd20",
+    "date": "2026-10-04T21:48:03+02:00"
+   },
+   "archive/2026-10-12/gpt/catalog-selection-2-2026-10-05": {
+    "sha": "dab76dfc",
+    "date": "2026-10-05T16:31:43+02:00"
+   },
+   "archive/2026-10-12/gpt/catalog-selection-2026-10-04": {
+    "sha": "d9b29c50",
+    "date": "2026-10-04T21:36:40+02:00"
+   },
+   "archive/2026-10-12/gpt/chat-selector-2-2026-10-05": {
+    "sha": "2312d2cc",
+    "date": "2026-10-05T17:24:03+02:00"
+   },
+   "archive/2026-10-12/gpt/chat-selector-2026-10-04": {
+    "sha": "03c670ca",
+    "date": "2026-10-04T20:00:08+02:00"
+   },
+   "archive/2026-10-12/gpt/data-graph-engine-2026-10-09": {
+    "sha": "18a8428b",
+    "date": "2026-10-09T13:14:39Z"
+   },
+   "archive/2026-10-12/gpt/data-profiles-2026-10-04": {
+    "sha": "22873e04",
+    "date": "2026-10-05T16:37:46+02:00"
+   },
+   "archive/2026-10-12/gpt/ecosystem-agent-research-2026-10-01": {
+    "sha": "157762ef",
+    "date": "2026-10-01T06:36:19+02:00"
+   },
+   "archive/2026-10-12/gpt/ecosystem-audit-2026-10-09": {
+    "sha": "9f931da3",
+    "date": "2026-10-09T10:34:50+02:00"
+   },
+   "archive/2026-10-12/gpt/graph-perspectives-2026-10-09": {
+    "sha": "aa43fe03",
+    "date": "2026-10-09T12:57:22+02:00"
+   },
+   "archive/2026-10-12/gpt/graph-replies-2026-10-02": {
+    "sha": "d49e05fd",
+    "date": "2026-10-02T18:46:11+02:00"
+   },
+   "archive/2026-10-12/gpt/integrator-2026-10-04": {
+    "sha": "125a043c",
+    "date": "2026-10-04T17:54:57+02:00"
+   },
+   "archive/2026-10-12/gpt/integrator-queue-2026-10-05": {
+    "sha": "215563c8",
+    "date": "2026-10-05T17:45:46+02:00"
+   },
+   "archive/2026-10-12/gpt/integrator-state-2026-10-04": {
+    "sha": "b81f2732",
+    "date": "2026-10-05T17:15:06+02:00"
+   },
+   "archive/2026-10-12/gpt/interface-2-2026-10-04": {
+    "sha": "2fcb8228",
+    "date": "2026-10-05T17:44:01+02:00"
+   },
+   "archive/2026-10-12/gpt/knowledge-precision-2-2026-10-05": {
+    "sha": "e4109df7",
+    "date": "2026-10-05T15:04:58+02:00"
+   },
+   "archive/2026-10-12/gpt/knowledge-precision-2026-10-04": {
+    "sha": "50e6bb9f",
+    "date": "2026-10-04T21:02:54+02:00"
+   },
+   "archive/2026-10-12/gpt/model-research-2026-10-04": {
+    "sha": "ffe6443e",
+    "date": "2026-10-05T19:50:19+02:00"
+   },
+   "archive/2026-10-12/gpt/native-graph-packet-2-2026-10-05": {
+    "sha": "097859af",
+    "date": "2026-10-05T17:12:45+02:00"
+   },
+   "archive/2026-10-12/gpt/native-graph-packet-2026-10-04": {
+    "sha": "b302df25",
+    "date": "2026-10-04T21:42:58+02:00"
+   },
+   "archive/2026-10-12/gpt/night-development-2026-10-01": {
+    "sha": "33fb30a5",
+    "date": "2026-10-01T02:04:40+02:00"
+   },
+   "archive/2026-10-12/gpt/onboarding-2-2026-10-05": {
+    "sha": "374bab74",
+    "date": "2026-10-05T17:09:55+02:00"
+   },
+   "archive/2026-10-12/gpt/onboarding-2026-10-04": {
+    "sha": "3c0bc365",
+    "date": "2026-10-04T21:49:07+02:00"
+   },
+   "archive/2026-10-12/gpt/real-prompt-preparation-2026-10-05": {
+    "sha": "ffe6443e",
+    "date": "2026-10-05T19:50:19+02:00"
+   },
+   "archive/2026-10-12/gpt/real-source-intake-2026-10-05": {
+    "sha": "62d1b054",
+    "date": "2026-10-05T19:02:43+02:00"
+   },
+   "archive/2026-10-12/gpt/repo-hygiene-2026-10-04": {
+    "sha": "ced8f5a3",
+    "date": "2026-10-05T17:25:32+02:00"
+   },
+   "archive/2026-10-12/gpt/research-jev-validation-2026-10-05": {
+    "sha": "0f52ac5f",
+    "date": "2026-10-05T18:37:45+02:00"
+   },
+   "archive/2026-10-12/gpt/research-prompt-preferences-2026-10-05": {
+    "sha": "8e9d31ad",
+    "date": "2026-10-05T18:21:08+02:00"
+   },
+   "archive/2026-10-12/gpt/resource-graph-2026-10-09": {
+    "sha": "6ed509a4",
+    "date": "2026-10-09T10:06:00+02:00"
+   },
+   "archive/2026-10-12/gpt/thread7-real-2026-10-09": {
+    "sha": "0a051c3f",
+    "date": "2026-10-09T13:42:01+02:00"
+   },
+   "archive/2026-10-12/gpt/usage-policy-2026-10-04": {
+    "sha": "cc6a7587",
+    "date": "2026-10-04T20:00:12+02:00"
+   },
+   "archive/2026-10-12/wip/worktree-agent-a342fccb481c4116c": {
+    "sha": "5d85034e",
+    "date": "2026-09-29T13:41:17Z"
+   },
+   "archive/gpt/chat-selector-2-helper-negative-2026-10-05": {
+    "sha": "dbc4dd8d",
+    "date": "2026-10-05T16:51:39+02:00"
+   },
+   "archive/gpt/chat-selector-2-integrator-base-before-close-2026-10-05": {
+    "sha": "da415cc7",
+    "date": "2026-10-05T17:19:43+02:00"
+   },
+   "archive/gpt/chat-selector-2-positive-artifacts-2026-10-05": {
+    "sha": "67b18934",
+    "date": "2026-10-05T16:53:18+02:00"
+   },
+   "archive/gpt/chat-selector-before-r39-rebase-2026-10-04": {
+    "sha": "605b195f",
+    "date": "2026-10-04T19:49:17+02:00"
+   },
+   "archive/gpt/chat-selector-methods-negative-2026-10-04": {
+    "sha": "785dd52c",
+    "date": "2026-10-04T19:07:45+02:00"
+   },
+   "archive/gpt/chat-selector-pre-methods-2026-10-04": {
+    "sha": "1c4c8a10",
+    "date": "2026-10-04T18:02:30+02:00"
+   },
+   "archive/gpt/model-research-before-rebase-2026-10-05": {
+    "sha": "5753d2cf",
+    "date": "2026-10-04T17:34:28+02:00"
+   },
+   "archive/gpt/model-research-close-before-rebase-2026-10-05": {
+    "sha": "b172b59f",
+    "date": "2026-10-05T15:08:21+02:00"
+   },
+   "archive/gpt/model-research-followup-review-2026-10-04": {
+    "sha": "f14a4035",
+    "date": "2026-10-04T17:36:12+02:00"
+   },
+   "archive/gpt/model-research-prefreeze-2026-10-04": {
+    "sha": "19a65fea",
+    "date": "2026-10-04T16:43:14+02:00"
+   },
+   "archive/gpt/model-research-runner-review-2026-10-05": {
+    "sha": "3e21a049",
+    "date": "2026-10-05T17:09:13+02:00"
+   },
+   "archive/gpt/research-jev-validation-2026-10-05": {
+    "sha": "254c2ec2",
+    "date": "2026-10-05T18:12:54+02:00"
+   },
+   "archive/gpt/research-prompt-preferences-source-discovery-2026-10-05": {
+    "sha": "7b35923e",
+    "date": "2026-10-05T18:07:50+02:00"
+   },
+   "archive/gpt/research-prompt-preferences-synthetic-unexecuted-2026-10-05": {
+    "sha": "1a81ebff",
+    "date": "2026-10-05T18:20:28+02:00"
+   },
+   "archive/repo-hygiene-before-main-rebase-2026-10-05": {
+    "sha": "758aba64",
+    "date": "2026-10-04T20:10:35+02:00"
+   },
+   "archive/repo-hygiene-before-rebase-2026-10-04": {
+    "sha": "2544cf3a",
+    "date": "2026-10-04T17:26:52+02:00"
+   },
+   "archive/repo-hygiene-before-requirements-rebase-2026-10-04": {
+    "sha": "d75eaa04",
+    "date": "2026-10-04T20:02:14+02:00"
+   },
+   "archive/repo-hygiene-clang-fix-validation-2026-10-05": {
+    "sha": "20ddd8df",
+    "date": "2026-10-05T17:08:38+02:00"
+   },
+   "archive/repo-hygiene-w10-validation-2026-10-05": {
+    "sha": "b31b4d43",
+    "date": "2026-10-05T15:20:53+02:00"
+   },
+   "ccr-d25c3cb3-qgbhql": {
+    "sha": "7cb85233",
+    "date": "2026-10-17T08:13:17Z"
+   },
+   "claude/chataddhd-cpp-loom-core-IRGRN": {
+    "sha": "f0c114bb",
+    "date": "2026-10-26T17:52:21Z"
+   },
+   "claude/fix-asan-k1": {
+    "sha": "59de144c",
+    "date": "2026-10-21T23:16:25Z"
+   },
+   "claude/fix-login-drop": {
+    "sha": "76d3bbaa",
+    "date": "2026-10-21T05:56:15Z"
+   },
+   "claude/m1-d0": {
+    "sha": "335af7af",
+    "date": "2026-10-16T21:30:21Z"
+   },
+   "claude/m1-d1": {
+    "sha": "3f3b784b",
+    "date": "2026-10-17T06:25:21Z"
+   },
+   "claude/m1-k0": {
+    "sha": "a1c46a20",
+    "date": "2026-10-17T13:47:45Z"
+   },
+   "claude/m1-w0": {
+    "sha": "94872898",
+    "date": "2026-10-23T06:48:24Z"
+   },
+   "claude/m1-w1": {
+    "sha": "d611bd34",
+    "date": "2026-10-26T17:05:17Z"
+   },
+   "claude/p21-context-guardian": {
+    "sha": "3d655b7b",
+    "date": "2026-10-14T21:28:06Z"
+   },
+   "claude/p33-plus-menu": {
+    "sha": "fbc15980",
+    "date": "2026-10-16T13:19:36Z"
+   },
+   "claude/p38-archive-extract": {
+    "sha": "9600a65b",
+    "date": "2026-10-17T07:47:12Z"
+   },
+   "claude/p39-design": {
+    "sha": "bbdaca7f",
+    "date": "2026-10-21T02:02:47Z"
+   },
+   "claude/r35-android": {
+    "sha": "c0d01690",
+    "date": "2026-10-16T08:01:14Z"
+   },
+   "claude/s2-parallel": {
+    "sha": "f025ed34",
+    "date": "2026-10-23T18:39:49Z"
+   },
+   "claude/t10-edge-cases": {
+    "sha": "914eba2e",
+    "date": "2026-10-12T10:17:32Z"
+   },
+   "claude/t9-ecosystem-synthesis": {
+    "sha": "3b09738f",
+    "date": "2026-10-12T10:02:33Z"
+   },
+   "claude/wp-a-send-gate": {
+    "sha": "bba2aabb",
+    "date": "2026-10-10T20:34:08Z"
+   },
+   "claude/xport-android": {
+    "sha": "e150c3aa",
+    "date": "2026-10-21T04:15:45Z"
+   },
+   "eval/real-holdout-key": {
+    "sha": "0fcf2402",
+    "date": "2026-09-27T15:26:20Z"
+   },
+   "gpt/application-profiles-2026-10-04": {
+    "sha": "161cc22d",
+    "date": "2026-10-04T14:04:54+02:00"
+   },
+   "gpt/archive-import-2-2026-10-05": {
+    "sha": "f494931d",
+    "date": "2026-10-05T16:31:21+02:00"
+   },
+   "gpt/archive-import-2026-10-04": {
+    "sha": "5f0abd20",
+    "date": "2026-10-04T21:48:03+02:00"
+   },
+   "gpt/catalog-selection-2-2026-10-05": {
+    "sha": "dab76dfc",
+    "date": "2026-10-05T16:31:43+02:00"
+   },
+   "gpt/catalog-selection-2026-10-04": {
+    "sha": "d9b29c50",
+    "date": "2026-10-04T21:36:40+02:00"
+   },
+   "gpt/chat-selector-2-2026-10-05": {
+    "sha": "2312d2cc",
+    "date": "2026-10-05T17:24:03+02:00"
+   },
+   "gpt/chat-selector-2026-10-04": {
+    "sha": "03c670ca",
+    "date": "2026-10-04T20:00:08+02:00"
+   },
+   "gpt/data-graph-engine-2026-10-09": {
+    "sha": "c269b930",
+    "date": "2026-10-13T18:40:34Z"
+   },
+   "gpt/data-profiles-2026-10-04": {
+    "sha": "22873e04",
+    "date": "2026-10-05T16:37:46+02:00"
+   },
+   "gpt/ecosystem-agent-research-2026-10-01": {
+    "sha": "157762ef",
+    "date": "2026-10-01T06:36:19+02:00"
+   },
+   "gpt/ecosystem-audit-2026-10-09": {
+    "sha": "9f931da3",
+    "date": "2026-10-09T10:34:50+02:00"
+   },
+   "gpt/graph-perspectives-2026-10-09": {
+    "sha": "aa43fe03",
+    "date": "2026-10-09T12:57:22+02:00"
+   },
+   "gpt/graph-replies-2026-10-02": {
+    "sha": "d49e05fd",
+    "date": "2026-10-02T18:46:11+02:00"
+   },
+   "gpt/implicit-structures-2026-10-14": {
+    "sha": "04d58c6a",
+    "date": "2026-10-16T02:28:37Z"
+   },
+   "gpt/integrator-2026-10-04": {
+    "sha": "125a043c",
+    "date": "2026-10-04T17:54:57+02:00"
+   },
+   "gpt/integrator-queue-2026-10-05": {
+    "sha": "215563c8",
+    "date": "2026-10-05T17:45:46+02:00"
+   },
+   "gpt/integrator-state-2026-10-04": {
+    "sha": "b81f2732",
+    "date": "2026-10-05T17:15:06+02:00"
+   },
+   "gpt/interface-2-2026-10-04": {
+    "sha": "2fcb8228",
+    "date": "2026-10-05T17:44:01+02:00"
+   },
+   "gpt/knowledge-precision-2-2026-10-05": {
+    "sha": "e4109df7",
+    "date": "2026-10-05T15:04:58+02:00"
+   },
+   "gpt/knowledge-precision-2026-10-04": {
+    "sha": "50e6bb9f",
+    "date": "2026-10-04T21:02:54+02:00"
+   },
+   "gpt/model-research-2026-10-04": {
+    "sha": "ffe6443e",
+    "date": "2026-10-05T19:50:19+02:00"
+   },
+   "gpt/native-graph-packet-2-2026-10-05": {
+    "sha": "097859af",
+    "date": "2026-10-05T17:12:45+02:00"
+   },
+   "gpt/native-graph-packet-2026-10-04": {
+    "sha": "b302df25",
+    "date": "2026-10-04T21:42:58+02:00"
+   },
+   "gpt/night-development-2026-10-01": {
+    "sha": "33fb30a5",
+    "date": "2026-10-01T02:04:40+02:00"
+   },
+   "gpt/onboarding-2-2026-10-05": {
+    "sha": "374bab74",
+    "date": "2026-10-05T17:09:55+02:00"
+   },
+   "gpt/onboarding-2026-10-04": {
+    "sha": "3c0bc365",
+    "date": "2026-10-04T21:49:07+02:00"
+   },
+   "gpt/real-prompt-preparation-2026-10-05": {
+    "sha": "ffe6443e",
+    "date": "2026-10-05T19:50:19+02:00"
+   },
+   "gpt/real-source-intake-2026-10-05": {
+    "sha": "62d1b054",
+    "date": "2026-10-05T19:02:43+02:00"
+   },
+   "gpt/repo-hygiene-2026-10-04": {
+    "sha": "ced8f5a3",
+    "date": "2026-10-05T17:25:32+02:00"
+   },
+   "gpt/research-jev-validation-2026-10-05": {
+    "sha": "0f52ac5f",
+    "date": "2026-10-05T18:37:45+02:00"
+   },
+   "gpt/research-prompt-preferences-2026-10-05": {
+    "sha": "8e9d31ad",
+    "date": "2026-10-05T18:21:08+02:00"
+   },
+   "gpt/resource-graph-2026-10-09": {
+    "sha": "6ed509a4",
+    "date": "2026-10-09T10:06:00+02:00"
+   },
+   "gpt/thread7-real-2026-10-09": {
+    "sha": "0a051c3f",
+    "date": "2026-10-09T13:42:01+02:00"
+   },
+   "gpt/usage-policy-2026-10-04": {
+    "sha": "cc6a7587",
+    "date": "2026-10-04T20:00:12+02:00"
+   },
+   "main": {
+    "sha": "d611bd34",
+    "date": "2026-10-26T17:05:17Z"
+   },
+   "s2/r35-imports": {
+    "sha": "a3816c6b",
+    "date": "2026-10-16T09:41:58Z"
+   },
+   "s2/r35-storage": {
+    "sha": "39c6b45b",
+    "date": "2026-10-16T04:53:45Z"
+   },
+   "s2/r35-texts": {
+    "sha": "8dcc0afb",
+    "date": "2026-10-16T04:55:17Z"
+   },
+   "wip/worktree-agent-a342fccb481c4116c": {
+    "sha": "5d85034e",
+    "date": "2026-09-29T13:41:17Z"
+   }
+  }
+ },
+ "runs": {
+  "total": 92,
+  "live": [],
+  "recent": [
+   {
+    "run_id": "r_9a5e4ecd3cca",
+    "routine": "package.run",
+    "title": "package.run",
+    "state": "done",
+    "where": "vm:devbox-20260923",
+    "started": "2026-10-26T17:53:16.103443Z",
+    "finished": "2026-10-26T18:09:39.851293Z",
+    "summary": "IW-9 kontrola→dane+addendum, IW-10 operator (mandat jako dane, 1 bieg), IW-11 handover (teleport równoważny ręcznemu 7/7)",
+    "last_event": {
+     "kind": "finished",
+     "at": "2026-10-26T18:09:39.851293Z",
+     "text": "IW-9 kontrola→dane+addendum, IW-10 operator (mandat jako dane, 1 bieg), IW-11 handover (teleport równoważny ręcznemu 7/7)"
+    }
+   },
+   {
+    "run_id": "r_486700b9a361",
+    "routine": "operator.run",
+    "title": "operator IW-10 (pierwszy bieg, pakiet)",
+    "state": "done",
+    "where": "vm:devbox-20260923",
+    "started": "2026-10-26T18:07:23.715205Z",
+    "finished": "2026-10-26T18:07:50.878127Z",
+    "summary": "operator.run@1: kroki wykonane",
+    "last_event": {
+     "kind": "finished",
+     "at": "2026-10-26T18:07:50.878127Z",
+     "text": "operator.run@1: kroki wykonane"
+    }
+   },
+   {
+    "run_id": "r_7114b3f86fe3",
+    "routine": "tasks.recreate",
+    "title": "tasks.recreate",
+    "state": "done",
+    "where": null,
+    "started": "2026-10-26T18:07:46.105073Z",
+    "finished": "2026-10-26T18:07:46.502752Z",
+    "summary": "tasks.recreate@1: kroki wykonane",
+    "last_event": {
+     "kind": "finished",
+     "at": "2026-10-26T18:07:46.502752Z",
+     "text": "tasks.recreate@1: kroki wykonane"
+    }
+   },
+   {
+    "run_id": "r_11a4a707374d",
+    "routine": "ledger.sample",
+    "title": "ledger.sample",
+    "state": "done",
+    "where": null,
+    "started": "2026-10-26T18:07:45.544912Z",
+    "finished": "2026-10-26T18:07:45.912870Z",
+    "summary": "ledger.sample@1: kroki wykonane",
+    "last_event": {
+     "kind": "finished",
+     "at": "2026-10-26T18:07:45.912870Z",
+     "text": "ledger.sample@1: kroki wykonane"
+    }
+   },
+   {
+    "run_id": "r_4eae1e379cbd",
+    "routine": "teleport.refresh",
+    "title": "teleport.refresh",
+    "state": "done",
+    "where": null,
+    "started": "2026-10-26T18:07:37.199971Z",
+    "finished": "2026-10-26T18:07:37.272459Z",
+    "summary": "teleport.refresh@1: kroki wykonane",
+    "last_event": {
+     "kind": "finished",
+     "at": "2026-10-26T18:07:37.272459Z",
+     "text": "teleport.refresh@1: kroki wykonane"
+    }
+   },
+   {
+    "run_id": "r_ebe515f131f2",
+    "routine": "status.lines",
+    "title": "status.lines",
+    "state": "done",
+    "where": null,
+    "started": "2026-10-26T18:07:36.927965Z",
+    "finished": "2026-10-26T18:07:37.006890Z",
+    "summary": "status.lines@2: kroki wykonane",
+    "last_event": {
+     "kind": "finished",
+     "at": "2026-10-26T18:07:37.006890Z",
+     "text": "status.lines@2: kroki wykonane"
+    }
+   },
+   {
+    "run_id": "r_d572a4231767",
+    "routine": "ci.read",
+    "title": "ci.read",
+    "state": "done",
+    "where": null,
+    "started": "2026-10-26T18:07:35.891512Z",
+    "finished": "2026-10-26T18:07:35.964297Z",
+    "summary": "ci.read@1: kroki wykonane",
+    "last_event": {
+     "kind": "finished",
+     "at": "2026-10-26T18:07:35.964297Z",
+     "text": "ci.read@1: kroki wykonane"
+    }
+   },
+   {
+    "run_id": "r_4a5d847fa685",
+    "routine": "start.gate",
+    "title": "start.gate",
+    "state": "done",
+    "where": null,
+    "started": "2026-10-26T18:07:35.276827Z",
+    "finished": "2026-10-26T18:07:35.363460Z",
+    "summary": "start.gate@1: kroki wykonane",
+    "last_event": {
+     "kind": "finished",
+     "at": "2026-10-26T18:07:35.363460Z",
+     "text": "start.gate@1: kroki wykonane"
+    }
+   },
+   {
+    "run_id": "r_cf02eb70ab29",
+    "routine": "package.run",
+    "title": "package.run",
+    "state": "done",
+    "where": "vm:devbox-20260923",
+    "started": "2026-10-26T17:48:21.231980Z",
+    "finished": "2026-10-26T17:49:55.197327Z",
+    "summary": "package.run@1: kroki wykonane",
+    "last_event": {
+     "kind": "finished",
+     "at": "2026-10-26T17:49:55.434284Z",
+     "text": "IW-7: routines.json (7 rutyn loom.routine/1), schematy routine/brief, tools/routine.py (run/resume bez stanu, brief render/split), pakiet jadro, K2c-1 rozłożony (1957 znaków części własnej). IW-8: tools/vm_place.py (sync/preempt/heartbeat/wake/resume-list), bieg running where: vm ⇒ work-pending dla spot-guard, hak wywłaszczenia czyta zapisy biegów, timer tętna (niezainstalowany), places.json węzeł VM z datowanymi polami. Testy z fałszywym gcloud."
+    }
+   },
+   {
+    "run_id": "r_17dfe7992e02",
+    "routine": "package.run",
+    "title": "IW-7+IW-8",
+    "state": "done",
+    "where": "vm:devbox-20260923",
+    "started": "2026-10-26T17:34:49.198603Z",
+    "finished": "2026-10-26T17:49:55.763009Z",
+    "summary": "pakiet przeprowadzony runnerem jako r_cf02eb70ab29 (package.run); ten rekord = ręczne kroki tej samej sesji",
+    "last_event": {
+     "kind": "finished",
+     "at": "2026-10-26T17:49:55.763009Z",
+     "text": "pakiet przeprowadzony runnerem jako r_cf02eb70ab29 (package.run); ten rekord = ręczne kroki tej samej sesji"
+    }
+   },
+   {
+    "run_id": "r_485cead34b25",
+    "routine": "package.run",
+    "title": "IW-5+IW-6",
+    "state": "done",
+    "where": "vm:devbox-20260923",
+    "started": "2026-10-26T17:24:46.649826Z",
+    "finished": "2026-10-26T17:32:01.494289Z",
+    "summary": null,
+    "last_event": {
+     "kind": "finished",
+     "at": "2026-10-26T17:32:01.494289Z",
+     "text": null
+    }
+   },
+   {
+    "run_id": "r_f0f6df9ab822",
+    "routine": "package.run",
+    "title": "IW-4",
+    "state": "done",
+    "where": "vm:devbox-20260923",
+    "started": "2026-10-26T17:16:47.960543Z",
+    "finished": "2026-10-26T17:22:30.778259Z",
+    "summary": "IW-4: page_counters.py + places.json (VM devbox z sesjami gcp/watchdog/ageds/chatadhd) + W1/W9 na stronie spec; 96 testów zielone z e2e 400 px; strona nie opublikowana (robi to sekretarz/koordynator)",
+    "last_event": {
+     "kind": "finished",
+     "at": "2026-10-26T17:22:30.778259Z",
+     "text": "IW-4: page_counters.py + places.json (VM devbox z sesjami gcp/watchdog/ageds/chatadhd) + W1/W9 na stronie spec; 96 testów zielone z e2e 400 px; strona nie opublikowana (robi to sekretarz/koordynator)"
+    }
+   }
+  ],
+  "escalations_open": []
+ },
+ "queue_head": [
+  {
+   "line": 3,
+   "heading": "main = 88ebe1f4 (FF 2026-10-25, koordynator gcp): W2b-2a z wątku chatadhd (params akcji z jądra, inference.confirm/reject, attrs.previous, memory.forget po query); bramka w2b2a2 zielona poza `test:m1-context-menu` (wyścig etykiety po selectOption(\"\"), ponowio…"
+  },
+  {
+   "line": 5,
+   "heading": "CI na main 106a5699 ZIELONE (2026-10-25 14:07 UTC): shardy asan a 52 min, b 65 min, rest 29 min (cały bieg 65 min zamiast ≥ 150); shards-cover-manifest zielony; `server.security` (400 zamiast 413 pod ASan w CI 285) tym razem przeszedł — obserwować jako możliw…"
+  },
+  {
+   "line": 7,
+   "heading": "VM 2026-10-25 ≈ 15:30 UTC (gcp, koordynator R92): wątki per projekt działają (RC: watchdog, ageds, chatadhd). Shardy asan `106a5699` na m1-w1 (Sonnet); bramka 1: ctest 264/264 zielony, czerwień środowiskowa (clang21 `-c`+`-fsyntax-only` → poprawione w `tools/…"
+  },
+  {
+   "line": 9,
+   "heading": "ZAŁATWIONE 11:52 UTC: właściciel podał klucz SerpApi (konto ma 3023 wyszukiwań: 250 z darmowego planu w tym miesiącu plus dokupione), zapisany w `~/.config/chatadhd/keys.env`, sesja WatchDog powiadomiona. Wcześniej: (2026-10-25, od sesji WatchDog JH16, zadani…"
+  },
+  {
+   "line": 11,
+   "heading": "Później (właściciel 2026-10-24, nie priorytet): dopasować VM do zużycia, gdy przez tygodnie nie używamy połowy mocy albo spot-guard często awansuje na Standard; dane do decyzji zbiera się samo (sysstat, log spot-guard), research dopiero wtedy. Kredyty: `docs/…"
+  },
+  {
+   "line": 13,
+   "heading": "S2 2026-10-23 22:54 UTC: APK v5 ready - package.yml run 40033660848 on main 51315dd6 = success (22:26-22:42); artifacts: chatadhd-android-apk-TEST-KEY (18.4 MB), chatadhd-0.10.00-ci.27.51315dd (50.2 MB), chatadhd-server-linux-x64, chatadhd-server-linux-arm64,…"
+  },
+  {
+   "line": 15,
+   "heading": "S2 2026-10-23 22:27 UTC: APK v5 dispatched - package.yml run 40033660848 on main 51315dd6 (= f025ed34 + asan timeout 240; android/server/first_steps, arm64-v8a, Release); emulator proof = android-smoke 40011129193 on f025ed34, 47/0/0 x3 (app code identical); …"
+  },
+  {
+   "line": 17,
+   "heading": "Log asan z CI 284 odczytany (22:35 UTC, Haiku, job 120610852512): **`unit.test_address` Passed 25,99 s, `server.chat_active_task` Passed 111,16 s pod ASan/UBSan** — obie dzisiejsze naprawy potwierdzone sanitizerem; 262/263 testów ukończonych, wszystkie Passed…"
+  },
+  {
+   "line": 19,
+   "heading": "CI 284 na `f025ed34` = „cancelled” (21:53 UTC) = **limit jobu asan** (150 min): krok testów biegł 140 min po ~10 min budowy; dev/vendored/libcxx zielone; żadnego czerwonego testu (S2 odczytała). To ten sam wzorzec co dev przy 45 min (CI 281). Naprawa: `loom.y…"
+  },
+  {
+   "line": 21,
+   "heading": "S2 2026-10-23 22:24 UTC: loom.yml run 284 on main f025ed34 = cancelled, not green: dev, vendored and libcxx passed, asan (g++) hit its 150-min job limit inside \"Test\" (19:33-21:53) - a timeout, no test failure reported; APK v5 NOT built (waits for a green CI)…"
+  }
+ ],
+ "spec_waiting": [
+  {
+   "id": "s_0f91742a0b1c",
+   "alias": "R56",
+   "title": "The first screen is a standard chat app; windows and the workbench are configurable views of it",
+   "understanding": "proposed"
+  },
+  {
+   "id": "s_64e0a794ea00",
+   "alias": "R64",
+   "title": "Windows (panels): dockable, floating, maximizable; the standard interface is one maximized window; the union of functionality and the style alternatives of popular apps",
+   "understanding": "proposed"
+  },
+  {
+   "id": "s_d70418b3948e",
+   "alias": "R67",
+   "title": "No mock-ups, placeholders, fakes or temporary bridges - only full functionality; the context of an API call is inferred from the wide, multi-dimensional context (history, teleology, perspective...); depth and width are optional arguments, inferred by default, passable as absolute or modifying parameters",
+   "understanding": "proposed"
+  },
+  {
+   "id": "s_5a8666c3f7e4",
+   "alias": "R68",
+   "title": "Move the coordinator to GCP: code there and deploy at once; prepare for the move, possibly tomorrow",
+   "understanding": "proposed"
+  },
+  {
+   "id": "s_9d68f9c43c49",
+   "alias": "R69",
+   "title": "Depth and width as arguments of a function: a context selector that takes a graph node corresponding to ... (continuation of R67; the sentence breaks off)",
+   "understanding": "proposed"
+  },
+  {
+   "id": "s_728a73b626a0",
+   "alias": "R71",
+   "title": "Write the bootstrap: one command to paste over ssh (kept in the repo for now), so he does not have to look up all the names again",
+   "understanding": "proposed"
+  },
+  {
+   "id": "s_cbb8ed66f13d",
+   "alias": "R73",
+   "title": "Żywy, hierarchiczny widok specyfikacji i ustaleń (zwijany; edytowana gałązka rozwinięta); pytanie o środowisko testowe GUI",
+   "understanding": "proposed"
+  },
+  {
+   "id": "s_0f005a5e98e8",
+   "alias": "R74",
+   "title": "0 i −1 to współrzędne względne w perspektywie kolejnych wiadomości, nie etykiety; ten sam mechanizm w każdym wymiarze (np. wersje); składnia to tylko przykład",
+   "understanding": "proposed"
+  },
+  {
+   "id": "s_c3819e63f872",
+   "alias": "R75",
+   "title": "Gdy brak decyzji właściciela blokuje: ostrożna decyzja wstępna, tania do wycofania; jechać do przodu z pomyślunkiem",
+   "understanding": "proposed"
+  },
+  {
+   "id": "s_f375473e2c9d",
+   "alias": "R88",
+   "title": "Praca na jednej specyfikacji w ustalonym formacie zamiast długich tekstów w czacie; tani interfejs konwersacyjny, żonglerka modelami wg złożoności korekty, rola „sekretarza” ustalającego, co faktycznie ustalono — idea, nie schemat",
+   "understanding": "proposed"
+  },
+  {
+   "id": "s_160738d2ad00",
+   "alias": "R89",
+   "title": "Dedykowany interfejs do naszej wspólnej pracy (poza CLI/web/Android): wspólny dostęp do dokumentów i schematów, Fable kieruje, Sonnet rozmawia; research w sieci o oszczędzaniu tokenów przez kilku agentów, relewantność, synteza Fable przez pryzmat filozofii; wolna ręka",
+   "understanding": "proposed"
+  },
+  {
+   "id": "s_8d5c047ecfb2",
+   "alias": "ON05",
+   "title": "Widok „co aplikacja o mnie wie”: pochodzenie każdej informacji, poprawianie i usuwanie z historią; propozycje modelu przyjmowane według ustawienia",
+   "understanding": "proposed"
+  }
+ ],
+ "places": {
+  "file": "docs/ops/places.json",
+  "items": [
+   {
+    "id": "vm:devbox-20260923",
+    "level": "place",
+    "title": "S1-VM devbox-20260923 (GCP, europe-west4-c, e2)",
+    "state": "alive",
+    "observed_at": "2026-10-26T17:25Z",
+    "source": "obserwacja z sesji na VM (hostname devbox-20260923…internal)",
+    "url": null
+   },
+   {
+    "id": "vm:devbox-20260923/gcp",
+    "level": "session",
+    "parent": "vm:devbox-20260923",
+    "title": "sesja Claude „gcp” (koordynator S1-VM, Remote Control)",
+    "state": "alive",
+    "observed_at": "2026-10-26T17:25Z",
+    "source": "tmux list-windows -t rc; TELEPORT_S1.md",
+    "url": null
+   },
+   {
+    "id": "vm:devbox-20260923/watchdog",
+    "level": "session",
+    "parent": "vm:devbox-20260923",
+    "title": "sesja Claude projektu WatchDog",
+    "state": "alive",
+    "observed_at": "2026-10-26T17:25Z",
+    "source": "tmux list-windows -t rc",
+    "url": null
+   },
+   {
+    "id": "vm:devbox-20260923/ageds",
+    "level": "session",
+    "parent": "vm:devbox-20260923",
+    "title": "sesja Claude projektu AGEDS",
+    "state": "alive",
+    "observed_at": "2026-10-26T17:25Z",
+    "source": "tmux list-windows -t rc",
+    "url": null
+   },
+   {
+    "id": "vm:devbox-20260923/chatadhd",
+    "level": "session",
+    "parent": "vm:devbox-20260923",
+    "title": "sesja Claude projektu ChatADHD",
+    "state": "alive",
+    "observed_at": "2026-10-26T17:25Z",
+    "source": "tmux list-windows -t rc",
+    "url": null
+   },
+   {
+    "id": "vm:devbox-20260923/chatadhd",
+    "level": "service",
+    "parent": "vm:devbox-20260923",
+    "title": "ChatADHD (serwer Loom + web)",
+    "state": "alive",
+    "observed_at": "2026-10-26T17:25Z",
+    "source": "systemctl is-active chatadhd = active; HTTPS 200",
+    "url": "https://chat.34-158-117-249.sslip.io"
+   },
+   {
+    "id": "vm:devbox-20260923/watchdog",
+    "level": "service",
+    "parent": "vm:devbox-20260923",
+    "title": "WatchDog-JH16",
+    "state": "alive",
+    "observed_at": "2026-10-26T17:25Z",
+    "source": "systemctl is-active watchdog = active; HTTPS 401 (hasło Caddy)",
+    "url": "https://watchdog.34-158-117-249.sslip.io"
+   },
+   {
+    "id": "vm:devbox-20260923/ageds",
+    "level": "service",
+    "parent": "vm:devbox-20260923",
+    "title": "AGEDS",
+    "state": "alive",
+    "observed_at": "2026-10-26T17:25Z",
+    "source": "HTTPS 401 (hasło Caddy, za nim usługa); docker ps niedostępne bez uprawnień",
+    "url": "https://ageds.34-158-117-249.sslip.io"
+   },
+   {
+    "id": "vm:devbox-20260923/desktop",
+    "level": "service",
+    "parent": "vm:devbox-20260923",
+    "title": "Pulpit (noVNC)",
+    "state": "alive",
+    "observed_at": "2026-10-26T17:25Z",
+    "source": "systemctl is-active watchdog-novnc = active",
+    "url": "https://desktop.34-158-117-249.sslip.io"
+   },
+   {
+    "id": "vm:devbox-20260923/caddy",
+    "level": "service",
+    "parent": "vm:devbox-20260923",
+    "title": "Caddy (TLS, hasło)",
+    "state": "alive",
+    "observed_at": "2026-10-26T17:25Z",
+    "source": "systemctl is-active caddy = active",
+    "url": null
+   },
+   {
+    "id": "cloud:s1",
+    "level": "place",
+    "title": "chmura S1 (session_015yMVYJqXDd8sNSZdYq3gu5)",
+    "state": "sleeps",
+    "observed_at": "2026-10-23",
+    "source": "TELEPORT_S1.md: koordynacja przeszła na VM, w chmurze nic nie usunięte",
+    "url": null
+   },
+   {
+    "id": "cloud:s2",
+    "level": "place",
+    "title": "S2 (session_01Armc9PkDiTDzjFBgXAMCjR) — smoke na emulatorze (GitHub Actions)",
+    "state": "alive",
+    "observed_at": "2026-10-23",
+    "source": "INTERFEJS_WSPOLPRACY_v2 §2.7 (działa od 13.10)",
+    "url": null
+   },
+   {
+    "id": "task:secretary",
+    "level": "place",
+    "title": "zadanie „Sekretarz spec (R88)” — co godzinę o :23",
+    "state": "unknown",
+    "observed_at": "2026-10-23",
+    "source": "ZADANIA_ZAPLANOWANE_2026-10-23.md; zadania nie jadą same przy przeprowadzce (do sprawdzenia po stronie sesji)",
+    "url": null
+   },
+   {
+    "id": "page:spec",
+    "level": "place",
+    "title": "strona specyfikacji + baza (spec_inbox, spec_visits)",
+    "state": "alive",
+    "observed_at": "2026-10-23",
+    "source": "ZADANIA_ZAPLANOWANE_2026-10-23.md",
+    "url": "https://claude.ai/artifact/MfbrGaubViGGhsp2Z4ZEm7"
+   },
+   {
+    "id": "ci:github",
+    "level": "place",
+    "title": "GitHub CI (loom.yml, python.yml na main)",
+    "state": "alive",
+    "observed_at": "2026-10-23",
+    "source": "INTERFEJS_WSPOLPRACY_v2 §2.7",
+    "url": null
+   }
+  ],
+  "counts": {
+   "alive": 13,
+   "sleeps": 1,
+   "unknown": 1
+  },
+  "order": [
+   "alive",
+   "sleeps",
+   "unknown"
+  ],
+  "labels": {
+   "alive": "żyje",
+   "sleeps": "śpi",
+   "unknown": "nieznany"
+  },
+  "line": "miejsca: 13 żyje · 1 śpi · 1 nieznany",
+  "oldest_observation": "2026-10-23",
+  "places": [
+   {
+    "id": "vm:devbox-20260923",
+    "kind": "vm",
+    "title": "S1-VM devbox-20260923 (GCP, europe-west4-c, e2)",
+    "state": "alive",
+    "observed_at": "2026-10-26T17:25Z",
+    "stop_channel": "prośba „stop” w docs/spec/gestures_state.json (gest words.py) czytana przez tętno: biegi running na tym miejscu → paused z odwrotem `routine.py resume` (tools/vm_place.py, IW-8) / gcloud compute instances stop"
+   },
+   {
+    "id": "cloud:s1",
+    "kind": "cloud-session",
+    "title": "chmura S1 (session_015yMVYJqXDd8sNSZdYq3gu5)",
+    "state": "sleeps",
+    "observed_at": "2026-10-23",
+    "stop_channel": "interrupt / send_message"
+   },
+   {
+    "id": "cloud:s2",
+    "kind": "cloud-session",
+    "title": "S2 (session_01Armc9PkDiTDzjFBgXAMCjR) — smoke na emulatorze (GitHub Actions)",
+    "state": "alive",
+    "observed_at": "2026-10-23",
+    "stop_channel": "send_message"
+   },
+   {
+    "id": "task:secretary",
+    "kind": "scheduled-task",
+    "title": "zadanie „Sekretarz spec (R88)” — co godzinę o :23",
+    "state": "unknown",
+    "observed_at": "2026-10-23",
+    "stop_channel": "wyłączenie zadania"
+   },
+   {
+    "id": "page:spec",
+    "kind": "artifact",
+    "title": "strona specyfikacji + baza (spec_inbox, spec_visits)",
+    "state": "alive",
+    "observed_at": "2026-10-23",
+    "url": "https://claude.ai/artifact/MfbrGaubViGGhsp2Z4ZEm7"
+   },
+   {
+    "id": "ci:github",
+    "kind": "ci",
+    "title": "GitHub CI (loom.yml, python.yml na main)",
+    "state": "alive",
+    "observed_at": "2026-10-23",
+    "stop_channel": "gh run cancel"
+   }
+  ]
+ },
+ "tasks": [
+  {
+   "name": "Sekretarz spec (R88)",
+   "trigger_id": "trig_01VyHbcN2o8DQhwKq6D9iNaU",
+   "cron": "23 * * * *",
+   "model": "sonnet",
+   "session": "fresh",
+   "prompt_ref": "docs/ops/ZADANIA_ZAPLANOWANE_2026-10-23.md#sekretarz-spec-r88 (+ dopiski IW-1, IW-3, IW-5/IW-6, IW-10)",
+   "routine": "secretary.run",
+   "state": "alive",
+   "observed_at": "2026-10-23",
+   "source": "TELEPORT_S1.md §7 (sesja S1 w chmurze)"
+  },
+  {
+   "name": "Przegląd gałęzi GPT",
+   "trigger_id": "trig_01QjSRmsb9M7eo8NP6r31d75",
+   "cron": "6 */6 * * *",
+   "model": "session",
+   "session": "pinned:S1-cloud",
+   "prompt_ref": "docs/ops/ZADANIA_ZAPLANOWANE_2026-10-23.md#przegląd-gałęzi-gpt",
+   "routine": null,
+   "state": "alive",
+   "observed_at": "2026-10-23",
+   "source": "TELEPORT_S1.md §7"
+  },
+  {
+   "name": "Operator (IW-10)",
+   "trigger_id": null,
+   "cron": "23 * * * *",
+   "model": "sonnet",
+   "session": "fresh",
+   "prompt_ref": "tools/routines/operator_prompt.md",
+   "routine": "operator.run",
+   "state": "proposed",
+   "observed_at": "2026-10-26",
+   "source": "IW-10: tekst do wklejenia jako dopisek do zadania sekretarza (to samo zadanie, rozszerzony mandat) albo jako osobne zadanie — wybór koordynatora"
+  }
+ ],
+ "session_tools": [
+  {
+   "id": "workflow_single_package",
+   "does": "jeden pakiet agenta z kartą (brief = args)",
+   "run": "Workflow({scriptPath: 'tools/workflows/single-package.js', args})",
+   "availability": {
+    "cloud": {
+     "state": "available",
+     "observed": "2026-10-23",
+     "source": "TELEPORT_S1.md §5"
+    },
+    "vm": {
+     "state": "unknown",
+     "observed": "2026-10-23",
+     "source": "TELEPORT_S1.md §5: nic nie było sprawdzone na VM",
+     "substitute": "Agent (subagent) z tym samym briefem"
+    }
+   }
+  },
+  {
+   "id": "agent_subagent",
+   "does": "subagent z briefem w worktree",
+   "run": "narzędzie Agent",
+   "availability": {
+    "vm": {
+     "state": "available",
+     "observed": "2026-10-26",
+     "source": "ten pakiet (IW-1/IW-2) biegnie jako subagent na VM"
+    }
+   }
+  },
+  {
+   "id": "scheduled_tasks",
+   "does": "zadania zaplanowane (create_trigger, send_later)",
+   "run": "narzędzia sesji",
+   "availability": {
+    "cloud": {
+     "state": "available",
+     "observed": "2026-10-23",
+     "source": "ZADANIA_ZAPLANOWANE_2026-10-23.md"
+    },
+    "vm": {
+     "state": "unknown",
+     "observed": "2026-10-23",
+     "source": "TELEPORT_S1.md §5",
+     "substitute": "cron + claude -p \"…\" w katalogu repo"
+    }
+   }
+  },
+  {
+   "id": "send_message",
+   "does": "wiadomość do innej sesji",
+   "run": "narzędzie sesji send_message",
+   "availability": {
+    "cloud": {
+     "state": "refused",
+     "observed": "2026-10-23",
+     "source": "QUEUE_S1.md 18:2x / 21:5x: chmura→VM odmówione (karta zaufania)",
+     "substitute": "docs/ops/VM_INBOX.md przez repo",
+     "recheck": "po nadaniu karty zaufania"
+    },
+    "vm": {
+     "state": "available",
+     "observed": "2026-10-23",
+     "source": "QUEUE_S1.md 18:48: VM→S1 działa"
+    }
+   }
+  },
+  {
+   "id": "github_mcp",
+   "does": "CI, APK, PR przez GitHub MCP",
+   "run": "mcp__github__*",
+   "availability": {
+    "cloud": {
+     "state": "available",
+     "observed": "2026-10-23",
+     "source": "TELEPORT_S1.md §5"
+    },
+    "vm": {
+     "state": "unknown",
+     "observed": "2026-10-23",
+     "source": "TELEPORT_S1.md §5",
+     "substitute": "gh run list/view/watch, gh workflow run"
+    }
+   }
+  },
+  {
+   "id": "rate_limit_events",
+   "does": "próbki limitów (rate_limit_event) do LIMITS_LEDGER",
+   "run": "list_events kinds=[rate_limit_event]",
+   "availability": {
+    "cloud": {
+     "state": "available",
+     "observed": "2026-10-23",
+     "source": "TELEPORT_S1.md §5"
+    },
+    "vm": {
+     "state": "unknown",
+     "observed": "2026-10-23",
+     "source": "TELEPORT_S1.md §5",
+     "substitute": "procent z aplikacji Claude, wpis ręczny"
+    }
+   }
+  },
+  {
+   "id": "artifact_db",
+   "does": "odczyt/zapis bazy strony spec (spec_inbox, spec_runs)",
+   "run": "narzędzie ArtifactData",
+   "availability": {
+    "cloud": {
+     "state": "available",
+     "observed": "2026-10-23",
+     "source": "sekretarz R88 v1"
+    },
+    "vm": {
+     "state": "available",
+     "observed": "2026-10-26",
+     "source": "IW-1: odczyt 77 wierszy spec_runs z VM"
+    }
+   }
+  }
+ ],
+ "static": {
+  "who": {
+   "since": "2026-10-23",
+   "title": "Kim jesteś",
+   "text": "Koordynator S1 projektu ChatADHD/Loom. Zasady: `CLAUDE.md` (filozofia właściciela — wszystko konfigurowalne, domyślne to presety, przykłady to przykłady, żadnych wymyślonych ograniczeń; styl wątku: sprawozdania pełnymi zdaniami, bez skrótów (R93), bez powtarzania oczywistości (R95); droga praca po zatwierdzonej parafrazie, a gdy właściciel nieobecny — parafraza `proposed` i działanie). Decyzje techniczne są Twoje, zapisywane w `docs/reports/INDEX.md` z odwrotem. Pytania do właściciela tylko: jego pieniądze, jego prywatne dane u nowego dostawcy, sprzeczność z wymaganiami — jako tak/nie (klasy z CLAUDE.md to przykłady listy)."
+  },
+  "read_order": {
+   "since": "2026-10-26",
+   "title": "Czytaj w tej kolejności",
+   "items": [
+    "`CLAUDE.md` (dostajesz automatycznie)",
+    "ten plik (render rekordu `docs/ops/handover.json`)",
+    "`docs/reports/QUEUE_S1.md` — pierwsze 10 sekcji (log od najnowszego)",
+    "`docs/reports/INDEX.md` — ostatnie wpisy",
+    "`python3 tools/spec.py list --understanding proposed` i ostatnie słowa w spec",
+    "`python3 tools/run_record.py list` — biegi; `python3 tools/routine.py list` — rutyny",
+    "`docs/STATE.md` (stan projektu, liczby)",
+    "`tools/workflows/README.md` + `tools/workflows/briefs/`"
+   ]
+  },
+  "first_commands": {
+   "since": "2026-10-23",
+   "title": "Pierwsze komendy (mierz czasy i zapisz w biegu)",
+   "code": "git fetch origin && python3 tools/start_gate.py --role coordinator --json\npython3 tools/handover.py build && python3 tools/handover.py render since_you_left\ndu -sh /home/user/wt/*/loom/build /home/user/.ccache   # jeden katalog buildu naraz, ≥ 5 GB wolne\nGATE_OUT=/tmp/gate bash tools/gate.sh <worktree> <etykieta>   # pełna bramka w tle",
+   "note": "Warsztat: bramka (`tools/gate.sh`), e2e w Chromium (`loom/web/e2e/*.mjs`), kontrola clang (`tools/clang_inc_check.py`), strażnik ASan (`tools/lint_asan_range_for.py`), spec (`tools/spec.py`), brama startu (`tools/start_gate.py`), zapis biegu (`tools/run_record.py`), rutyny (`tools/routine.py`)."
+  },
+  "reversal": {
+   "since": "2026-10-23",
+   "title": "Odwrót",
+   "text": "Źródłem prawdy jest git: wszystko wypchnięte. Przy każdej niespodziance praca wraca do poprzedniej sesji; nic tam nie zostało usunięte."
+  },
+  "takeover": {
+   "since": "2026-10-23",
+   "title": "Przejęcie przez S1-VM (R92)",
+   "quote": "„w ogóle tą sesję powoli by trzeba było zakończyć i wszystko przenieść na gcp, nie? bo myślałem żeby administrator maszyny był standardowym punktem kontaktowym ze mną, jedyny w przypadku braku powodu, żeby inaczej było. wszystko co mamy wdrażamy ale dane, importy, to sam będę robił, najprędzej Zobaczę jak coś będzie nie tak.”",
+   "text": "Sesja na VM (`session_01G2FdF1sSV9SQ9kbRg7tTdx`, „gcp”) to standardowy punkt kontaktu z właścicielem; S1 chmurowa przechodzi w czuwanie (zadania zaplanowane). Kanał S1 → VM: `docs/ops/VM_INBOX.md`. Wdrożenia: wszystko, co mamy, bez danych właściciela (`docs/ops/VM_DEPLOY_2026-10-23.md`). Odwrót: S1 chmurowa wraca do roli koordynatora jednym zdaniem właściciela."
+  }
+ },
+ "receipt": [
+  {
+   "currency": "tokens",
+   "value": [
+    200000,
+    460000
+   ],
+   "unit": "range",
+   "what": "odbudowa kontekstu: 1 żywych kontekstów",
+   "source": "CLAUDE.md (pomiar 2026-10-10: re-cache 0,2–0,46 mln na żywy kontekst)",
+   "reliability": "measured once",
+   "at": "2026-10-26T18:09:44.253596Z"
+  }
+ ],
+ "switch": {
+  "ok": true,
+  "blocking_runs": [],
+  "predicate": "przełączenie tylko między pakietami: bez biegu `running` i bez bramki w toku (PRZEPROWADZKA_GCP_2026-10-23.md §5)"
+ },
+ "supersedes": "sha256:bfc02322b5c916ddd475924743b14a2655e5bafaf33c7088265f5103fd405ecd",
+ "hash": "sha256:60576d2f6f22262d0186d935a7c00e769eff19ca2ae181106bcfdbc5b0d30de9"
+}

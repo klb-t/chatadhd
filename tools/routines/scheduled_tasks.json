@@ -1,0 +1,45 @@
+{
+ "schema": "loom.scheduled_tasks/1",
+ "_comment": "Zadania zaplanowane jako dane (IW-10; źródło: docs/ops/ZADANIA_ZAPLANOWANE_2026-10-23.md). Każde pole stanu to DATOWANA OBSERWACJA (observed_at, source), nie ograniczenie. Rutyna tasks.recreate porównuje to z żywymi zadaniami (list_triggers) i różnice zapisuje jako propozycje do koordynatora; nic nie tworzy. Lista zadań otwarta.",
+ "_history": [
+  {"at": "2026-10-26", "by": "IW-10 (Opus, sesja na VM)", "what": "ziarno z ZADANIA_ZAPLANOWANE_2026-10-23.md i TELEPORT_S1.md §7; operator jako proponowane rozszerzenie sekretarza (żywe zadanie NIE zmienione)"}
+ ],
+ "tasks": [
+  {
+   "name": "Sekretarz spec (R88)",
+   "trigger_id": "trig_01VyHbcN2o8DQhwKq6D9iNaU",
+   "cron": "23 * * * *",
+   "model": "sonnet",
+   "session": "fresh",
+   "prompt_ref": "docs/ops/ZADANIA_ZAPLANOWANE_2026-10-23.md#sekretarz-spec-r88 (+ dopiski IW-1, IW-3, IW-5/IW-6, IW-10)",
+   "routine": "secretary.run",
+   "state": "alive",
+   "observed_at": "2026-10-23",
+   "source": "TELEPORT_S1.md §7 (sesja S1 w chmurze)"
+  },
+  {
+   "name": "Przegląd gałęzi GPT",
+   "trigger_id": "trig_01QjSRmsb9M7eo8NP6r31d75",
+   "cron": "6 */6 * * *",
+   "model": "session",
+   "session": "pinned:S1-cloud",
+   "prompt_ref": "docs/ops/ZADANIA_ZAPLANOWANE_2026-10-23.md#przegląd-gałęzi-gpt",
+   "routine": null,
+   "state": "alive",
+   "observed_at": "2026-10-23",
+   "source": "TELEPORT_S1.md §7"
+  },
+  {
+   "name": "Operator (IW-10)",
+   "trigger_id": null,
+   "cron": "23 * * * *",
+   "model": "sonnet",
+   "session": "fresh",
+   "prompt_ref": "tools/routines/operator_prompt.md",
+   "routine": "operator.run",
+   "state": "proposed",
+   "observed_at": "2026-10-26",
+   "source": "IW-10: tekst do wklejenia jako dopisek do zadania sekretarza (to samo zadanie, rozszerzony mandat) albo jako osobne zadanie — wybór koordynatora"
+  }
+ ]
+}

@@ -1,0 +1,117 @@
+{
+ "schema": "loom.routine_run/1",
+ "run_id": "r_d572a4231767",
+ "routine": {
+  "id": "ci.read",
+  "version": "1",
+  "hash": "sha256:6e04614f59a29ccdfae5834792989bc86abacd711ccca42f6d1e291a38191cea"
+ },
+ "params": {
+  "workflow": "loom.yml",
+  "branch": "main",
+  "limit": "3",
+  "parent_run": "r_486700b9a361",
+  "where": ""
+ },
+ "context_pack_hash": null,
+ "brief_hash": null,
+ "where": null,
+ "resolved": null,
+ "started": "2026-10-26T18:07:35.891512Z",
+ "finished": "2026-10-26T18:07:35.964297Z",
+ "state": "done",
+ "summary": "ci.read@1: kroki wykonane",
+ "steps": [
+  {
+   "id": "_preconditions",
+   "clock": {
+    "started": "2026-10-26T18:07:35.964297Z",
+    "updated": "2026-10-26T18:07:35.964297Z",
+    "ended": "2026-10-26T18:07:35.964297Z"
+   },
+   "state": "done"
+  },
+  {
+   "id": "gh_runs",
+   "clock": {
+    "started": "2026-10-26T18:07:35.964297Z",
+    "updated": "2026-10-26T18:07:36.812296Z",
+    "ended": "2026-10-26T18:07:36.812296Z"
+   },
+   "state": "done",
+   "in_hash": "sha256:1a5ed9a89b25b8dfc9a7a10470a5657505a8a4e7377359a387916ba884d515e2",
+   "out_hash": "sha256:bdf1f1bdd1383b9f60370a4bba197def07700e60574a8cd8cf5e2ef95fcaca4d",
+   "exit": 0,
+   "out": [
+    {
+     "conclusion": "failure",
+     "createdAt": "2026-10-26T05:51:09Z",
+     "databaseId": 40276473994,
+     "displayTitle": "server: a client that stalls past the read timeout mid-upload gets 40…",
+     "headSha": "dea6db5a06b64cc2549285a2efce9bceee90249f",
+     "status": "completed",
+     "updatedAt": "2026-10-26T06:43:13Z",
+     "url": "https://github.com/klb-t/chatadhd/actions/runs/40276473994"
+    },
+    {
+     "conclusion": "failure",
+     "createdAt": "2026-10-26T04:41:28Z",
+     "databaseId": 40270355215,
+     "displayTitle": "W2b-2g: e2e 7d closes the panel before opening the conversation",
+     "headSha": "f1c69303ef4da149a148174d3419b0adb7d73156",
+     "status": "completed",
+     "updatedAt": "2026-10-26T05:49:17Z",
+     "url": "https://github.com/klb-t/chatadhd/actions/runs/40270355215"
+    },
+    {
+     "conclusion": "failure",
+     "createdAt": "2026-10-26T02:59:27Z",
+     "databaseId": 40261810956,
+     "displayTitle": "W2b-2f: card, test list",
+     "headSha": "597f92ba67f39f38918b03a4f812bb70151c9c91",
+     "status": "completed",
+     "updatedAt": "2026-10-26T04:06:35Z",
+     "url": "https://github.com/klb-t/chatadhd/actions/runs/40261810956"
+    }
+   ]
+  },
+  {
+   "id": "via_session",
+   "clock": {
+    "started": "2026-10-26T18:07:35.964297Z",
+    "updated": "2026-10-26T18:07:35.964297Z",
+    "ended": "2026-10-26T18:07:35.964297Z"
+   },
+   "state": "skipped"
+  }
+ ],
+ "commits": [],
+ "cards": [],
+ "escalations": [],
+ "advisories": [],
+ "original_ideas": [],
+ "events": [
+  {
+   "at": "2026-10-26T18:07:35.891512Z",
+   "kind": "started",
+   "text": "odczyt CI bez osądu: ostatnie biegi workflow na gałęzi (gh); bez gh = przekazanie do narzędzi GitHub sesji",
+   "counter_delta": {
+    "w_toku": 1
+   }
+  },
+  {
+   "at": "2026-10-26T18:07:35.964297Z",
+   "kind": "finished",
+   "text": "ci.read@1: kroki wykonane",
+   "counter_delta": {
+    "w_toku": -1,
+    "zrobione": 1
+   }
+  }
+ ],
+ "receipt": [],
+ "decisions": [],
+ "markers_applied": [],
+ "spec": [],
+ "updated": "2026-10-26T18:07:35.964297Z"
+}

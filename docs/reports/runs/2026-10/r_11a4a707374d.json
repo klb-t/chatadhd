@@ -1,0 +1,79 @@
+{
+ "schema": "loom.routine_run/1",
+ "run_id": "r_11a4a707374d",
+ "routine": {
+  "id": "ledger.sample",
+  "version": "1",
+  "hash": "sha256:0d36d1f5b6a84fbc989b8f6a8829d22d5365ce056914f5879b310db7157d006d"
+ },
+ "params": {
+  "parent_run": "r_486700b9a361",
+  "where": ""
+ },
+ "context_pack_hash": null,
+ "brief_hash": null,
+ "where": null,
+ "resolved": null,
+ "started": "2026-10-26T18:07:45.544912Z",
+ "finished": "2026-10-26T18:07:45.912870Z",
+ "state": "done",
+ "summary": "ledger.sample@1: kroki wykonane",
+ "steps": [
+  {
+   "id": "_preconditions",
+   "clock": {
+    "started": "2026-10-26T18:07:45.623548Z",
+    "updated": "2026-10-26T18:07:45.623548Z",
+    "ended": "2026-10-26T18:07:45.623548Z"
+   },
+   "state": "done"
+  },
+  {
+   "id": "sample",
+   "clock": {
+    "started": "2026-10-26T18:07:45.623548Z",
+    "updated": "2026-10-26T18:07:45.912870Z",
+    "ended": "2026-10-26T18:07:45.623548Z"
+   },
+   "state": "done",
+   "text": "list_events kinds [\"rate_limit_event\"] (ostatnie zdarzenie): dopisz wiersz do docs/reports/LIMITS_LEDGER.md (czas UTC, five_hour, seven_day, resetsAt, źródło: operator) i python3 tools/run_record.py receipt r_11a4a707374d --currency window_pct --value <seven_day> --source rate_limit_event; bez narzędzia: python3 tools/run_record.py add r_11a4a707374d advisories '\"brak list_events w tym miejscu\"'; potem resume r_11a4a707374d --done sample",
+   "by": "resume --done"
+  }
+ ],
+ "commits": [],
+ "cards": [],
+ "escalations": [],
+ "advisories": [
+  "brak list_events w tej sesji (VM, agent pakietu)"
+ ],
+ "original_ideas": [],
+ "events": [
+  {
+   "at": "2026-10-26T18:07:45.544912Z",
+   "kind": "started",
+   "text": "próbka okna (rate_limit_event) do księgi dnia — bez osądu, z datą i źródłem",
+   "counter_delta": {
+    "w_toku": 1
+   }
+  },
+  {
+   "at": "2026-10-26T18:07:45.623548Z",
+   "kind": "handoff",
+   "text": "sample: list_events kinds [\"rate_limit_event\"] (ostatnie zdarzenie): dopisz wiersz do docs/reports/LIMITS_LEDGER.md (czas UTC, five_hour, seven_day, resetsAt, źródło: operator) i python3 tools/run_record.py receipt r_11a4a707374d --currency window_pct --value <seven_day> --source rate_limit_event; bez narzędzia: python3 tools/run_record.py add r_11a4a707374d advisories '\"brak list_events w tym miejscu\"'; potem resume r_11a4a707374d --done sample"
+  },
+  {
+   "at": "2026-10-26T18:07:45.912870Z",
+   "kind": "finished",
+   "text": "ledger.sample@1: kroki wykonane",
+   "counter_delta": {
+    "w_toku": -1,
+    "zrobione": 1
+   }
+  }
+ ],
+ "receipt": [],
+ "decisions": [],
+ "markers_applied": [],
+ "spec": [],
+ "updated": "2026-10-26T18:07:45.912870Z"
+}

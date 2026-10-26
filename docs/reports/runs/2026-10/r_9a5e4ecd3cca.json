@@ -14,9 +14,9 @@
  "where": "vm:devbox-20260923",
  "resolved": null,
  "started": "2026-10-26T17:53:16.103443Z",
- "finished": null,
- "state": "running",
- "summary": null,
+ "finished": "2026-10-26T18:09:39.851293Z",
+ "state": "done",
+ "summary": "IW-9 kontrola→dane+addendum, IW-10 operator (mandat jako dane, 1 bieg), IW-11 handover (teleport równoważny ręcznemu 7/7)",
  "steps": [
   {
    "id": "IW-9",
@@ -27,13 +27,35 @@
    },
    "state": "done",
    "out": "tools/check_data.py, check-before-use.js data, routines check.before_use@2 + addendum.apply@1, page diff section"
+  },
+  {
+   "id": "IW-10",
+   "clock": {
+    "started": "2026-10-26T18:09:30.463531Z",
+    "updated": "2026-10-26T18:09:30.463531Z",
+    "ended": "2026-10-26T18:09:30.463531Z"
+   },
+   "state": "done",
+   "out": "operator_ok + routine.py --as operator, operator_run.py, scheduled_tasks.json, operator_prompt.md, bieg r_486700b9a361"
+  },
+  {
+   "id": "IW-11",
+   "clock": {
+    "started": "2026-10-26T18:09:30.651167Z",
+    "updated": "2026-10-26T18:09:30.651167Z",
+    "ended": "2026-10-26T18:09:30.651167Z"
+   },
+   "state": "done",
+   "out": "handover.py, handover.json, TELEPORT_S1.generated.md, compare 7/7 sekcji 46/78 faktow"
   }
  ],
  "commits": [],
  "cards": [],
  "escalations": [],
  "advisories": [],
- "original_ideas": [],
+ "original_ideas": [
+  "pomiar pustego biegu sekretarza 77/77 = operator sam proponuje rzadszą kadencję (propozycja, nie zmiana)"
+ ],
  "events": [
   {
    "at": "2026-10-26T17:53:16.103443Z",
@@ -41,6 +63,20 @@
    "text": "IW-9 kontrola→dane, IW-10 operator, IW-11 handover",
    "counter_delta": {
     "w_toku": 1
+   }
+  },
+  {
+   "at": "2026-10-26T18:07:23Z",
+   "kind": "vm_sync",
+   "text": "spot-guard: work-pending=true"
+  },
+  {
+   "at": "2026-10-26T18:09:39.851293Z",
+   "kind": "finished",
+   "text": "IW-9 kontrola→dane+addendum, IW-10 operator (mandat jako dane, 1 bieg), IW-11 handover (teleport równoważny ręcznemu 7/7)",
+   "counter_delta": {
+    "w_toku": -1,
+    "zrobione": 1
    }
   }
  ],
@@ -50,6 +86,6 @@
  "spec": [
   "R90"
  ],
- "updated": "2026-10-26T18:00:21.787438Z",
+ "updated": "2026-10-26T18:09:39.851293Z",
  "title": "IW-9+IW-10+IW-11"
 }

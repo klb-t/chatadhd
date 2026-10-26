@@ -554,6 +554,22 @@ STEP_KINDS = {"cmd": Runner.step_cmd, "brief.render": Runner.step_brief, "render
 
 # ---------------------------------------------------------------- CLI
 
+def operator_gate(root: Path, cat: dict, ref: str, parent_run: str | None, at: str | None = None) -> dict | None:
+    """IW-10: operator (sekretarz z rozszerzonym mandatem) uruchamia tylko rutyny z `operator_ok: true`. Każda inna to
+    `judgement` → propozycja do koordynatora w biegu nadrzędnym (eskalacja); nic nie jest wykonane. None = wolno."""
+    r = find_routine(cat, ref)
+    if r.get("operator_ok") is True:
+        return None
+    prop = {"kind": "judgement", "routine": f"{r['id']}@{r.get('version')}", "at": at or rr.now_iso(),
+            "why": "rutyna bez operator_ok — propozycja do koordynatora, nic nie wykonane (IW-10)",
+            "proposal": f"python3 tools/routine.py run {r['id']}@{r.get('version')}"}
+    if parent_run:
+        cfg = rr.load_config()
+        rr.add_to_list(root, cfg, parent_run, "escalations", prop, at=at)
+        rr.add_event(root, cfg, parent_run, "escalation", text=f"propozycja: {r['id']} (bez operator_ok)", at=at)
+    return prop
+
+
 def _kv(items) -> dict:
     return rr.parse_kv(items)
 
@@ -574,6 +590,9 @@ def main(argv=None) -> int:
     r.add_argument("--where")
     r.add_argument("--yes", action="store_true", help="bramki confirm przechodzą (jego tak z góry)")
     r.add_argument("--dry-run", action="store_true")
+    r.add_argument("--as", dest="as_role", default="",
+                   help="operator: tylko rutyny z operator_ok; reszta = propozycja do koordynatora (nic nie wykonane, IW-10)")
+    r.add_argument("--parent-run", default="", help="bieg nadrzędny (np. operator.run): tam trafia propozycja/eskalacja")
     rs = sub.add_parser("resume")
     rs.add_argument("run_id")
     rs.add_argument("--done", action="append", default=[])
@@ -641,7 +660,16 @@ def main(argv=None) -> int:
             return 0
         runner = Runner(root, cat, yes=getattr(a, "yes", False), dry=getattr(a, "dry_run", False))
         if a.cmd == "run":
-            rec = runner.start(a.ref, _kv(a.param), where=a.where, at=a.at)
+            if a.as_role == "operator":
+                prop = operator_gate(root, cat, a.ref, a.parent_run or None, at=a.at)
+                if prop is not None:
+                    print(json.dumps(prop, ensure_ascii=False))
+                    return 4
+                runner.yes = False  # operator nie odpowiada „tak” za niego; bramki confirm zostają eskalacjami (mandat działa)
+            params = _kv(a.param)
+            if a.parent_run:
+                params.setdefault("parent_run", a.parent_run)
+            rec = runner.start(a.ref, params, where=a.where, at=a.at)
         else:
             params = _kv(a.param)
             done = list(a.done)

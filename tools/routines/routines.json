@@ -148,6 +148,119 @@
    "steps": [
     {"id": "wake", "do": "cmd", "argv": ["python3", "{repo}/tools/vm_place.py", "--root", "{root}", "wake", "--place", "{params.place}", "{params.dry_run}"]}
    ]
+  },
+  {
+   "schema": "loom.routine/1",
+   "id": "status.lines",
+   "version": 2,
+   "since": "2026-10-26",
+   "supersedes": 1,
+   "operator_ok": true,
+   "title": "linie statusu z zapisów biegów (render zdarzeń z niezerową deltą); w mandacie operatora",
+   "changelog": [{"version": 2, "at": "2026-10-26", "what": "IW-10: operator_ok (kroki bez zmian)"}],
+   "params": {"since": {"default": ""}},
+   "steps": [
+    {"id": "render", "do": "render", "what": "status-lines", "since": "{params.since}"}
+   ]
+  },
+  {
+   "schema": "loom.routine/1",
+   "id": "start.gate",
+   "version": 1,
+   "since": "2026-10-26",
+   "operator_ok": true,
+   "title": "brama startu bez osądu: rola → model → miejsce, estymata, okno (tools/start_gate.py); karta do zapisu biegu",
+   "changelog": [{"version": 1, "at": "2026-10-26", "what": "IW-10: start_gate jako rutyna w mandacie operatora"}],
+   "params": {"role": {"default": "package_executor"}, "used": {"default": ""}},
+   "steps": [
+    {"id": "gate", "do": "cmd", "argv": ["python3", "{repo}/tools/start_gate.py", "--role", "{params.role}", "--json", "--run-id", "{run_id}", "--runs-root", "{root}"], "capture": "gate", "json": true, "ok_codes": [0, 1, 2, 3]}
+   ]
+  },
+  {
+   "schema": "loom.routine/1",
+   "id": "ci.read",
+   "version": 1,
+   "since": "2026-10-26",
+   "operator_ok": true,
+   "title": "odczyt CI bez osądu: ostatnie biegi workflow na gałęzi (gh); bez gh = przekazanie do narzędzi GitHub sesji",
+   "changelog": [{"version": 1, "at": "2026-10-26", "what": "IW-10: pierwsza wersja"}],
+   "params": {"workflow": {"default": "loom.yml"}, "branch": {"default": "main"}, "limit": {"default": "3"}},
+   "steps": [
+    {"id": "gh_runs", "do": "cmd", "argv": ["gh", "run", "list", "--workflow", "{params.workflow}", "--branch", "{params.branch}", "--limit", "{params.limit}", "--json", "databaseId,status,conclusion,headSha,createdAt,updatedAt,url,displayTitle"], "capture": "gh_runs", "json": true, "continue_on_fail": true, "timeout_s": 120},
+    {"id": "via_session", "do": "handoff", "when": {"path": "out.gh_runs", "op": "falsy"}, "text": "gh niedostępne albo bez uprawnień: odczytaj ostatnie biegi {params.workflow} na {params.branch} narzędziami GitHub sesji (actions_list) i zapisz: python3 tools/run_record.py add {run_id} cards '<JSON biegów>'; potem python3 tools/routine.py resume {run_id} --done via_session"}
+   ]
+  },
+  {
+   "schema": "loom.routine/1",
+   "id": "ledger.sample",
+   "version": 1,
+   "since": "2026-10-26",
+   "operator_ok": true,
+   "title": "próbka okna (rate_limit_event) do księgi dnia — bez osądu, z datą i źródłem",
+   "changelog": [{"version": 1, "at": "2026-10-26", "what": "IW-10: pierwsza wersja; próbkę czyta sesja (list_events), skrypt jej nie widzi"}],
+   "params": {},
+   "steps": [
+    {"id": "sample", "do": "handoff", "text": "list_events kinds [\"rate_limit_event\"] (ostatnie zdarzenie): dopisz wiersz do docs/reports/LIMITS_LEDGER.md (czas UTC, five_hour, seven_day, resetsAt, źródło: operator) i python3 tools/run_record.py receipt {run_id} --currency window_pct --value <seven_day> --source rate_limit_event; bez narzędzia: python3 tools/run_record.py add {run_id} advisories '\"brak list_events w tym miejscu\"'; potem resume {run_id} --done sample"}
+   ]
+  },
+  {
+   "schema": "loom.routine/1",
+   "id": "teleport.refresh",
+   "version": 1,
+   "since": "2026-10-26",
+   "operator_ok": true,
+   "title": "odśwież kartę teleportu i „Od Twojego wyjścia” z jednego rekordu handover (tools/handover.py)",
+   "changelog": [{"version": 1, "at": "2026-10-26", "what": "IW-10/IW-11: pierwsza wersja"}],
+   "params": {"out": {"default": "docs/ops/TELEPORT_S1.generated.md"}},
+   "steps": [
+    {"id": "record", "do": "cmd", "argv": ["python3", "{repo}/tools/handover.py", "--root", "{root}", "build", "--save", "--run-id", "{run_id}"]},
+    {"id": "teleport", "do": "cmd", "argv": ["python3", "{repo}/tools/handover.py", "--root", "{root}", "render", "teleport", "-o", "{params.out}"]},
+    {"id": "compare", "do": "cmd", "argv": ["python3", "{repo}/tools/handover.py", "--root", "{root}", "compare", "docs/ops/TELEPORT_S1.md"], "ok_codes": [0, 1]}
+   ]
+  },
+  {
+   "schema": "loom.routine/1",
+   "id": "tasks.recreate",
+   "version": 1,
+   "since": "2026-10-26",
+   "operator_ok": true,
+   "title": "zadania zaplanowane: porównanie danych (tools/routines/scheduled_tasks.json) z żywymi; różnica = propozycja, nic nie tworzone",
+   "changelog": [{"version": 1, "at": "2026-10-26", "what": "IW-10: pierwsza wersja; odtworzenie zadania to judgement → koordynator"}],
+   "params": {"tasks": {"default": "tools/routines/scheduled_tasks.json"}},
+   "steps": [
+    {"id": "compare", "do": "handoff", "text": "list_triggers → porównaj z {params.tasks} (id, cron, model, przypięcie, prompt_ref); każdą różnicę zapisz: python3 tools/run_record.py add {run_id} escalations '{\"kind\":\"judgement\",\"task\":\"<nazwa>\",\"why\":\"<różnica>\",\"proposal\":\"create_trigger/update_trigger …\"}'; NIE twórz i NIE zmieniaj zadań; potem resume {run_id} --done compare"}
+   ]
+  },
+  {
+   "schema": "loom.routine/1",
+   "id": "operator.run",
+   "version": 1,
+   "since": "2026-10-26",
+   "operator_ok": true,
+   "title": "operator = sekretarz z rozszerzonym mandatem: rutyny operator_ok bez osądu, judgement → propozycja do koordynatora",
+   "changelog": [{"version": 1, "at": "2026-10-26", "what": "IW-10: pierwsza wersja; prompt zadania: tools/routines/operator_prompt.md"}],
+   "params": {"role": {"default": "package_executor"}},
+   "presets": {
+    "operator": {
+     "routines": ["start.gate", "ci.read", "ledger.sample", "status.lines", "teleport.refresh", "tasks.recreate"],
+     "measure_routines": ["secretary.run", "operator.run"],
+     "cadence": {"cron": "23 * * * *", "slower_cron": "23 */2 * * *", "faster_cron": "23,53 * * * *", "min_runs": 24,
+                 "empty_share_slower": 0.8, "empty_share_faster": 0.2,
+                 "rule": "propozycja z pomiaru pustego biegu (tools/operator_run.py cadence); zmiana kadencji = judgement koordynatora"},
+     "_history": [{"at": "2026-10-26", "by": "IW-10", "what": "kadencja sekretarza (co godzinę o :23, działa od 23.10) jako ziarno; progi pustego biegu bez pomiaru — presety do kalibracji po ≥ 24 biegach"}]
+    },
+    "_history": []
+   },
+   "steps": [
+    {"id": "secretary", "do": "handoff", "text": "część sekretarza bez zmian (prompt zadania „Sekretarz spec”: skrzynka, spec.py inbox/silent, words.py inbox); potem resume {run_id} --done secretary"},
+    {"id": "start.gate", "do": "cmd", "argv": ["python3", "{repo}/tools/routine.py", "--root", "{root}", "run", "start.gate", "--as", "operator", "--parent-run", "{run_id}", "--param", "role={params.role}"], "ok_codes": [0, 1, 4], "continue_on_fail": true},
+    {"id": "ci.read", "do": "cmd", "argv": ["python3", "{repo}/tools/routine.py", "--root", "{root}", "run", "ci.read", "--as", "operator", "--parent-run", "{run_id}"], "ok_codes": [0, 1, 4], "continue_on_fail": true},
+    {"id": "status.lines", "do": "cmd", "argv": ["python3", "{repo}/tools/routine.py", "--root", "{root}", "run", "status.lines", "--as", "operator", "--parent-run", "{run_id}"], "ok_codes": [0, 1, 4], "continue_on_fail": true},
+    {"id": "teleport.refresh", "do": "cmd", "argv": ["python3", "{repo}/tools/routine.py", "--root", "{root}", "run", "teleport.refresh", "--as", "operator", "--parent-run", "{run_id}"], "ok_codes": [0, 1, 4], "continue_on_fail": true},
+    {"id": "cadence", "do": "cmd", "argv": ["python3", "{repo}/tools/operator_run.py", "--root", "{root}", "cadence"], "capture": "cadence", "json": true},
+    {"id": "session_parts", "do": "handoff", "text": "rutyny z narzędziami sesji: python3 tools/routine.py run ledger.sample --as operator --parent-run {run_id} i python3 tools/routine.py run tasks.recreate --as operator --parent-run {run_id} (każda zatrzyma się na swoim przekazaniu — wykonaj je i resume); potem resume {run_id} --done session_parts"},
+    {"id": "card", "do": "cmd", "argv": ["python3", "{repo}/tools/operator_run.py", "--root", "{root}", "summary", "{run_id}"], "capture": "card", "json": true}
+   ]
   }
  ]
 }

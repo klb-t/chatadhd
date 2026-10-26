@@ -1,0 +1,31 @@
+{
+ "schema": "loom.handover_presets/1",
+ "_comment": "Presety rekordu `handover` (IW-11, INTERFEJS_WSPOLPRACY_v2 §2.8): jeden rekord, wiele renderów. Teksty stałe niżej to ziarno z ręcznej karty docs/ops/TELEPORT_S1.md (23.10) — dane do zmiany, nie reguły; każda część ma datę. Rendery (teleport, start_prompt, package_card, secretary, since_you_left, owner_status) to przykłady z otwartej listy; nieznany render = JSON rekordu z uwagą. Liczby (koszt odbudowy kontekstu, progi) to presety.",
+ "_history": [
+  {"at": "2026-10-26", "by": "IW-11 (Opus, sesja na VM)", "what": "ziarno: TELEPORT_S1.md §1, §2, §4, §6, §7 (teksty stałe), §3/§5 jako dane z repo"}
+ ],
+ "out_file": "docs/ops/handover.json",
+ "queue_file": "docs/reports/QUEUE_S1.md",
+ "queue_head_sections": 10,
+ "queue_heading_chars": 260,
+ "recent_runs": 12,
+ "since_you_left_hours": 6,
+ "spec_understanding_waiting": ["proposed"],
+ "tasks_file": "tools/routines/scheduled_tasks.json",
+ "tools_file": "tools/routines/tools.json",
+ "session_tools": ["workflow_single_package", "agent_subagent", "scheduled_tasks", "send_message", "github_mcp", "rate_limit_events", "artifact_db"],
+ "rebuild_cost": {"currency": "tokens", "per_live_context_min": 200000, "per_live_context_max": 460000, "source": "CLAUDE.md (pomiar 2026-10-10: re-cache 0,2–0,46 mln na żywy kontekst)", "reliability": "measured once"},
+ "switch_predicate": {"text": "przełączenie tylko między pakietami: bez biegu `running` i bez bramki w toku (PRZEPROWADZKA_GCP_2026-10-23.md §5)", "running_states": ["running"]},
+ "static": {
+  "who": {"since": "2026-10-23", "title": "Kim jesteś", "text": "Koordynator S1 projektu ChatADHD/Loom. Zasady: `CLAUDE.md` (filozofia właściciela — wszystko konfigurowalne, domyślne to presety, przykłady to przykłady, żadnych wymyślonych ograniczeń; styl wątku: sprawozdania pełnymi zdaniami, bez skrótów (R93), bez powtarzania oczywistości (R95); droga praca po zatwierdzonej parafrazie, a gdy właściciel nieobecny — parafraza `proposed` i działanie). Decyzje techniczne są Twoje, zapisywane w `docs/reports/INDEX.md` z odwrotem. Pytania do właściciela tylko: jego pieniądze, jego prywatne dane u nowego dostawcy, sprzeczność z wymaganiami — jako tak/nie (klasy z CLAUDE.md to przykłady listy)."},
+  "read_order": {"since": "2026-10-26", "title": "Czytaj w tej kolejności", "items": ["`CLAUDE.md` (dostajesz automatycznie)", "ten plik (render rekordu `docs/ops/handover.json`)", "`docs/reports/QUEUE_S1.md` — pierwsze 10 sekcji (log od najnowszego)", "`docs/reports/INDEX.md` — ostatnie wpisy", "`python3 tools/spec.py list --understanding proposed` i ostatnie słowa w spec", "`python3 tools/run_record.py list` — biegi; `python3 tools/routine.py list` — rutyny", "`docs/STATE.md` (stan projektu, liczby)", "`tools/workflows/README.md` + `tools/workflows/briefs/`"]},
+  "first_commands": {"since": "2026-10-23", "title": "Pierwsze komendy (mierz czasy i zapisz w biegu)", "code": "git fetch origin && python3 tools/start_gate.py --role coordinator --json\npython3 tools/handover.py build && python3 tools/handover.py render since_you_left\ndu -sh /home/user/wt/*/loom/build /home/user/.ccache   # jeden katalog buildu naraz, ≥ 5 GB wolne\nGATE_OUT=/tmp/gate bash tools/gate.sh <worktree> <etykieta>   # pełna bramka w tle", "note": "Warsztat: bramka (`tools/gate.sh`), e2e w Chromium (`loom/web/e2e/*.mjs`), kontrola clang (`tools/clang_inc_check.py`), strażnik ASan (`tools/lint_asan_range_for.py`), spec (`tools/spec.py`), brama startu (`tools/start_gate.py`), zapis biegu (`tools/run_record.py`), rutyny (`tools/routine.py`)."},
+  "reversal": {"since": "2026-10-23", "title": "Odwrót", "text": "Źródłem prawdy jest git: wszystko wypchnięte. Przy każdej niespodziance praca wraca do poprzedniej sesji; nic tam nie zostało usunięte."},
+  "takeover": {"since": "2026-10-23", "title": "Przejęcie przez S1-VM (R92)", "quote": "„w ogóle tą sesję powoli by trzeba było zakończyć i wszystko przenieść na gcp, nie? bo myślałem żeby administrator maszyny był standardowym punktem kontaktowym ze mną, jedyny w przypadku braku powodu, żeby inaczej było. wszystko co mamy wdrażamy ale dane, importy, to sam będę robił, najprędzej Zobaczę jak coś będzie nie tak.”", "text": "Sesja na VM (`session_01G2FdF1sSV9SQ9kbRg7tTdx`, „gcp”) to standardowy punkt kontaktu z właścicielem; S1 chmurowa przechodzi w czuwanie (zadania zaplanowane). Kanał S1 → VM: `docs/ops/VM_INBOX.md`. Wdrożenia: wszystko, co mamy, bez danych właściciela (`docs/ops/VM_DEPLOY_2026-10-23.md`). Odwrót: S1 chmurowa wraca do roli koordynatora jednym zdaniem właściciela."}
+ },
+ "compare": {
+  "heading_map": {"Kim jesteś": "who", "Czytaj": "read_order", "Stan": "state", "Pierwsze komendy": "first_commands", "Narzędzia sesji": "tools", "Odwrót": "reversal", "Przejęcie": "takeover"},
+  "fact_re": "`([^`\\n]{3,80})`",
+  "fact_min_share": 0.5
+ }
+}

@@ -1,0 +1,73 @@
+{
+ "schema": "loom.routine_run/1",
+ "run_id": "r_ebe515f131f2",
+ "routine": {
+  "id": "status.lines",
+  "version": "2",
+  "hash": "sha256:51fe0239ab02fa5a64b99c9b46b2398dc3cece0613966454e0bc129d4da06f81"
+ },
+ "params": {
+  "since": "",
+  "parent_run": "r_486700b9a361",
+  "where": ""
+ },
+ "context_pack_hash": null,
+ "brief_hash": null,
+ "where": null,
+ "resolved": null,
+ "started": "2026-10-26T18:07:36.927965Z",
+ "finished": "2026-10-26T18:07:37.006890Z",
+ "state": "done",
+ "summary": "status.lines@2: kroki wykonane",
+ "steps": [
+  {
+   "id": "_preconditions",
+   "clock": {
+    "started": "2026-10-26T18:07:37.006890Z",
+    "updated": "2026-10-26T18:07:37.006890Z",
+    "ended": "2026-10-26T18:07:37.006890Z"
+   },
+   "state": "done"
+  },
+  {
+   "id": "render",
+   "clock": {
+    "started": "2026-10-26T18:07:37.006890Z",
+    "updated": "2026-10-26T18:07:37.006890Z",
+    "ended": "2026-10-26T18:07:37.006890Z"
+   },
+   "state": "done",
+   "out_hash": "sha256:178df144d7a0977370f658e38a4fea7f0764b4ab48d66b09930d170b70d89a04",
+   "lines": 24
+  }
+ ],
+ "commits": [],
+ "cards": [],
+ "escalations": [],
+ "advisories": [],
+ "original_ideas": [],
+ "events": [
+  {
+   "at": "2026-10-26T18:07:36.927965Z",
+   "kind": "started",
+   "text": "linie statusu z zapisów biegów (render zdarzeń z niezerową deltą); w mandacie operatora",
+   "counter_delta": {
+    "w_toku": 1
+   }
+  },
+  {
+   "at": "2026-10-26T18:07:37.006890Z",
+   "kind": "finished",
+   "text": "status.lines@2: kroki wykonane",
+   "counter_delta": {
+    "w_toku": -1,
+    "zrobione": 1
+   }
+  }
+ ],
+ "receipt": [],
+ "decisions": [],
+ "markers_applied": [],
+ "spec": [],
+ "updated": "2026-10-26T18:07:37.006890Z"
+}
