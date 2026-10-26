@@ -59,6 +59,21 @@ Questions that wait (if_silent without watching): run
   If create_trigger is unavailable here, the hourly run picks it up (preset; say so in the run summary).
 ```
 
+**Dopisek IW-5/IW-6 (2026-10-26) — do wklejenia po dopisku IW-3** (żywy prompt nie został zmieniony; tabela słów i progi to
+presety w `tools/routines/words.json`, role i modele w `tools/routines/roles.json`):
+```
+Control words (0 tokens, no judgement): after spec.py inbox, run on the same file
+  python3 tools/words.py inbox <file> --run-id $RID
+  It recognises the owner's control words (table tools/routines/words.json, ASR variants) in entries of the classes listed
+  in presets.inbox_classes and applies effects whose cost is under the threshold (mandate, stop request with the sunk cost of
+  running runs, marker, preference, request). "needs_confirm", "weak" and "escalated" results go to the coordinator as
+  escalations with their "why"; do not apply them yourself. Every use is logged with its origin; reversal:
+  python3 tools/words.py reverse <use_id>.
+Before starting any routine or agent: python3 tools/start_gate.py --role <role> --json --run-id <its run id>
+  (role → model → place, estimate, window; dated observations such as "Fable unavailable until the weekly reset" give an
+  advisory and a substitute, never a stop). Verdict "owner" = waits for the owner; "wait" = do not start now.
+```
+
 ## Jednorazowe żywe w chwili zapisu (wygasną same)
 - `CI check (main 94872898)` — 08:55 UTC, sesja S1: czy loom.yml na 94872898 zielony → APK v4.
 - `Read android-smoke 32c7a401` — 08:33 UTC, sesja S2 (nie moja): odczyt smoke sterownika.

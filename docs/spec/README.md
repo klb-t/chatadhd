@@ -191,3 +191,19 @@ właściciel — preset `visit_marker_who`: owner / anyone / none), a bez bazy p
 liczy model: `python3 tools/page_counters.py` wypisuje ten sam JSON, który dostaje strona; `spec.py html` dołącza go sam
 (`spec_html.py --no-counters` wyłącza). Testy: `tools/tests/test_page_counters.py` (zgodność z rekordami, W9 po symulowanej
 przerwie w Chromium na 400 px). Odwrót: `--no-counters` albo usunięcie sekcji; `places.json` nic poza stroną nie czyta.
+
+**Słowa sterujące i gesty (IW-5, 2026-10-26).** Jedna tabela `tools/routines/words.json` (rekord gestu `{gesture, patterns,
+effect, cost, reversal, since, render}`; ziarno: 8 słów z cytatów — „stop” i „tutaj masz wolną rękę” R89, „rób to co wiesz” i
+„mogę iść spać” R75, „podkręć” R62, „nie gadaj tyle” CLAUDE.md, „odpal” R90, „co pamiętasz” R73 — oraz gesty z §0 punkt 3;
+lista otwarta, dopisuje się jednym poleceniem `tools/words.py add`). `tools/words.py apply "<tekst>"` rozpoznaje słowa (bez
+polskich znaków, interpunkcji, wielkości liter) i stosuje skutek bez modelu, gdy koszt ≤ próg (preset); stan (mandaty, prośby
+„stop” z listą biegów w toku i ich kosztem z `receipt[]`, znaczniki, preferencje, obecność) w `docs/spec/gestures_state.json`,
+każde użycie w `docs/reports/runs/words_uses.jsonl`; krótkie słowo w długim zdaniu (np. „odruchowo stop nacisnąłem…”) jest
+trafieniem słabym: zapisane, niezastosowane. Odwrót: `words.py reverse <use_id>`. Miary: `words.py stats`.
+
+**start_gate (IW-6, 2026-10-26).** `tools/start_gate.py --role <rola>` rozwiązuje rola → model → miejsce z `tools/routines/roles.json`
+(presety z `_history`; luz R63 jako parametr), liczy estymatę z `pace_plan.json`, sprawdza cap modelu (R91: Fable 100, reszta 90 —
+preset), tempo (reguły `pace.py`), dysk i stan miejsca, ×10; karta JSON z werdyktem `start` / `start_with_advisories` / `wait` /
+`owner`. Datowane obserwacje (np. „Fable niedostępny do 27.10 ~10:00 UTC”) dają advisory i zastępstwo z łańcucha roli, po swojej
+dacie przestają działać same. `--log-only` nie blokuje; `--run-id` zapisuje `resolved` i estymatę w biegu; `single-package.js`
+bierze model z karty (`args.start_gate`), a bez modelu i karty loguje advisory (dziedziczony model sesji).
