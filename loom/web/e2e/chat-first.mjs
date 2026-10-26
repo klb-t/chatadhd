@@ -225,7 +225,7 @@ try {
       await page.reload({ waitUntil: "domcontentloaded" });
       await page.getByTestId("shell-menu-toggle").click();
       assert.match(await page.getByTestId("shell-menu-workshop").innerText(), /Warsztat/);
-      assert.deepEqual(await page.getByRole("menuitem").allInnerTexts(), ["Graf", "Ustawienia", "Ty", "Ta rozmowa w grafie", "Widoki i okna", "Analiza w tle", "Diagnostyka", "Warsztat (narzędzia zaawansowane)"]);
+      assert.deepEqual(await page.getByRole("menuitem").allInnerTexts(), ["Graf", "Ustawienia", "Ty", "Ta rozmowa w grafie", "Okna", "Widoki i okna", "Analiza w tle", "Diagnostyka", "Warsztat (narzędzia zaawansowane)"]);
       // R67: the text audit of Diagnostyka (the explanatory words are Polish; its ids, checksums and raw traces are marked as technical detail)
       await page.getByTestId("shell-menu-diagnostics").click();
       await page.locator("[data-testid=diagnostics]").waitFor();
