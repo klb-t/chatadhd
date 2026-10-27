@@ -3,7 +3,9 @@
 
 #include <cmath>
 #include <filesystem>
+#include <random>
 
+#include "loom/advisory.h"
 #include "loom/db.h"
 #include "loom/effective_view.h"
 #include "loom/util/fs.h"
@@ -100,6 +102,26 @@ Json legacy_scale_declaration() {
                               el("e_hue_cat", "encoding", {{"channel", "hue"}, {"measure", "kindm"}}),
                               el("e_badge", "encoding", {{"channel", "badge"}, {"measure", "divergence"}}),
                               el("e_blur", "encoding", {{"channel", "blur"}, {"measure", "divergence"}, {"scale", Json{{"invert", true}, {"domain", Json::array({1, 1})}}}})}));
+}
+
+// element label -> the element (for the G3 tests)
+const Json* by_label(const Json& model, const std::string& label) {
+  for (const auto& e : model.at("elements"))
+    if (e.value("label", std::string()) == label) return &e;
+  return nullptr;
+}
+double chan(const Json& model, const std::string& label, const std::string& channel) {
+  const Json* e = by_label(model, label);
+  REQUIRE_MESSAGE(e, label);
+  const Json chs = e->value("channels", Json::object());
+  REQUIRE_MESSAGE(chs.contains(channel), (label + " " + channel));
+  return chs.at(channel).get<double>();
+}
+std::vector<Json> advisories_of(const Json& model, const std::string& code) {
+  std::vector<Json> out;
+  for (const auto& a : model.value("advisories", Json::array()))
+    if (a.value("code", std::string()) == code) out.push_back(a);
+  return out;
 }
 
 }  // namespace
@@ -389,5 +411,254 @@ TEST_SUITE("view_engine") {
     check_same_by_label(channels_by_label(unwrap(eng.evaluate_declaration(f.ctx(), legacy_scale_declaration(), Json{{"focus", f.v2}}))), golden["legacy"]);
     check_same_by_label(channels_by_label(unwrap(eng.evaluate(f.ctx(), "history_cone", Json{{"focus", f.v2}}))), golden["history_cone"]);
     check_same_by_label(channels_by_label(unwrap(eng.evaluate(f.ctx(), "age_lanes", Json{{"focus", f.v2}}))), golden["age_lanes"]);
+  }
+  TEST_CASE("G3, a labelled EXAMPLE (owner, 2026-10-23), not the scope: older versions turn transparent, smaller, more distant, redder, less green, blue pushed away from 128 in a direction that follows from another measure") {
+    // przykład: one measure (age) on six channels of the same element under the same modifiers, the blue push signed per element by
+    // branch divergence (another measure); the engine handles it as one configuration among all others (see the generative test below)
+    Fixture f;
+    auto eng = unwrap(views::ViewEngine::open(f.td.path()));
+    Json d = history(Json::array({el("e_alpha", "encoding", {{"channel", "alpha"}, {"measure", "age"}, {"scale", Json{{"invert", true}}}}),
+                                  el("e_size", "encoding", {{"channel", "size"}, {"measure", "age"}, {"scale", Json{{"invert", true}}}}),
+                                  el("e_depth", "encoding", {{"channel", "depth"}, {"measure", "age"}}),
+                                  el("e_red", "encoding", {{"channel", "red"}, {"measure", "age"}}),
+                                  el("e_green", "encoding", {{"channel", "green"}, {"measure", "age"}, {"scale", Json{{"invert", true}}}}),
+                                  el("e_blue", "encoding", {{"channel", "blue"}, {"measure", "age"},
+                                                            {"scale", Json{{"reference", 128}, {"range", Json::array({0, 127})},
+                                                                           {"direction", Json{{"measure", "divergence"}, {"reference", 0.5}}}}}})}),
+                     false);
+    const Json m = unwrap(eng.evaluate_declaration(f.ctx(), d, Json{{"focus", f.v2}}));
+    CHECK(m["unsupported"].empty());
+    // v1 is older than v3 (both on the main line)
+    CHECK(chan(m, "v1", "alpha") < chan(m, "v3", "alpha"));
+    CHECK(chan(m, "v1", "size") < chan(m, "v3", "size"));
+    CHECK(chan(m, "v1", "depth") > chan(m, "v3", "depth"));
+    CHECK(chan(m, "v1", "red") > chan(m, "v3", "red"));
+    CHECK(chan(m, "v1", "green") < chan(m, "v3", "green"));
+    // blue: the distance from 128 grows with age; its side follows the sign of (divergence - 0.5), per element
+    for (const char* lbl : {"v1", "v2", "v3", "v4", "b1", "b2"}) {
+      const double div = by_label(m, lbl)->at("measures").at("divergence").get<double>();
+      const double blue = chan(m, lbl, "blue");
+      if (div > 0.5) CHECK_MESSAGE(blue >= 128, lbl);
+      else CHECK_MESSAGE(blue <= 128, lbl);
+    }
+    const double dv1 = std::abs(chan(m, "v1", "blue") - 128), dv3 = std::abs(chan(m, "v3", "blue") - 128);
+    CHECK(dv1 > dv3);
+    // moving the reference of the direction measure above every value puts every element on the other side
+    Json d2 = d;
+    d2["elements"].back()["scale"]["direction"]["reference"] = 100;
+    const Json m2 = unwrap(eng.evaluate_declaration(f.ctx(), d2, Json{{"focus", f.v2}}));
+    for (const char* lbl : {"v1", "v3", "b1"}) CHECK_MESSAGE(chan(m2, lbl, "blue") <= 128, lbl);
+  }
+
+  TEST_CASE("G3: several encodings of the same measure on the same channel with the same modifiers are all applied; combine composes them") {
+    Fixture f;
+    auto eng = unwrap(views::ViewEngine::open(f.td.path()));
+    Json d = history(Json::array({el("a1", "encoding", {{"channel", "alpha"}, {"measure", "age"}}), el("a2", "encoding", {{"channel", "alpha"}, {"measure", "age"}})}), false);
+    const Json m = unwrap(eng.evaluate_declaration(f.ctx(), d, Json{{"focus", f.v2}}));
+    const Json* v1 = by_label(m, "v1");
+    REQUIRE(v1->contains("channel_parts"));
+    CHECK(v1->at("channel_parts").at("alpha").size() == 2);
+    CHECK(advisories_of(m, "duplicate_encoding").size() == 1);
+    CHECK(advisories_of(m, "encoding_overridden").empty());  // the duplicate already says it
+    for (const char* op : {"add", "multiply", "min", "max", "mean"}) {
+      Json dc = history(Json::array({el("s1", "encoding", {{"channel", "size"}, {"measure", "age"}}),
+                                     el("s2", "encoding", {{"channel", "size"}, {"measure", "doi"}, {"combine", op}})}), false);
+      const Json mc = unwrap(eng.evaluate_declaration(f.ctx(), dc, Json{{"focus", f.v2}}));
+      int seen = 0;
+      for (const auto& e : mc["elements"]) {
+        if (!e.contains("channel_parts")) continue;
+        const Json parts = e["channel_parts"]["size"];
+        REQUIRE(parts.size() == 2);
+        ++seen;
+        const double a = parts[0]["value"].get<double>(), b = parts[1]["value"].get<double>(), got = e["channels"]["size"].get<double>();
+        const std::string o = op;
+        const double want = o == "add" ? a + b : o == "multiply" ? a * b : o == "min" ? std::min(a, b) : o == "max" ? std::max(a, b) : (a + b) / 2;
+        CHECK_MESSAGE(std::abs(got - want) < 1e-5, o);
+      }
+      CHECK(seen > 0);
+    }
+    // a replace hides the earlier encoding: kept in parts, advised
+    Json dr = history(Json::array({el("s1", "encoding", {{"channel", "size"}, {"measure", "age"}}), el("s2", "encoding", {{"channel", "size"}, {"measure", "doi"}})}), false);
+    const Json mr = unwrap(eng.evaluate_declaration(f.ctx(), dr, Json{{"focus", f.v2}}));
+    REQUIRE(advisories_of(mr, "encoding_overridden").size() == 1);
+    CHECK(advisories_of(mr, "encoding_overridden")[0]["params"]["hidden"] == "s1");
+  }
+
+  TEST_CASE("G3 generative: random scale specs never crash, every element with a value gets one, order follows the declared direction and flips with it") {
+    Fixture f;
+    auto eng = unwrap(views::ViewEngine::open(f.td.path()));
+    std::mt19937 rng(20261027);
+    std::uniform_real_distribution<double> U(-300, 300);
+    const std::vector<std::string> channels{"alpha", "size", "depth", "red", "green", "blue", "lightness", "saturation", "blur", "hue", "position"};
+    const std::vector<std::string> measures{"distance", "age", "divergence", "doi"};
+    const std::vector<std::string> combines{"add", "max", "mean", "nope"};
+    auto pick = [&](const std::vector<std::string>& v) { return v[std::uniform_int_distribution<std::size_t>(0, v.size() - 1)(rng)]; };
+    auto coin = [&]() { return std::uniform_int_distribution<int>(0, 1)(rng) == 1; };
+    int checked_pairs = 0, flipped_pairs = 0;
+    for (int iter = 0; iter < 150; ++iter) {
+      const std::string channel = pick(channels), measure = pick(measures);
+      Json scale = Json::object();
+      double lo = 0, hi = 1;
+      if (channel == "hue") { lo = 0; hi = 300; }
+      else if (channel == "size") { lo = 4; hi = 28; }
+      else if (channel == "red" || channel == "green" || channel == "blue") { lo = 0; hi = 255; }
+      else if (channel == "saturation") { lo = 0.15; hi = 1; }
+      else if (channel == "lightness") { lo = 0.25; hi = 0.85; }
+      else if (channel == "alpha") { lo = 0.2; hi = 1; }
+      else if (channel == "blur") { lo = 0; hi = 6; }
+      if (coin()) { lo = U(rng); hi = U(rng); scale["range"] = Json::array({lo, hi}); }
+      const bool invert = coin();
+      if (invert) scale["invert"] = true;
+      if (coin()) scale["exponent"] = std::uniform_real_distribution<double>(0.2, 5)(rng);
+      if (coin()) scale["reference"] = U(rng);
+      const bool data_dir = coin();
+      double d = 1;
+      if (data_dir) scale["direction"] = Json{{"measure", pick(measures)}, {"reference", U(rng) / 100}};
+      else if (coin()) { d = coin() ? -1 : 1; scale["direction"] = d; }
+      if (coin() && !data_dir) scale["clamp"] = Json::array({U(rng), U(rng)});
+      Json encs = Json::array({el("g", "encoding", {{"channel", channel}, {"measure", measure}, {"scale", scale}})});
+      if (coin()) encs.push_back(el("g2", "encoding", {{"channel", channel}, {"measure", pick(measures)}, {"combine", pick(combines)}}));
+      const Json decl = history(encs, false);
+      auto r = eng.evaluate_declaration(f.ctx(), decl, Json{{"focus", f.v2}});
+      REQUIRE_MESSAGE(r.has_value(), json::dump(scale));
+      const Json m = *r;
+      std::vector<std::pair<double, double>> vo;  // (measure value, the value of encoding g)
+      for (const auto& e : m["elements"]) {
+        const Json mv = e["measures"];
+        if (!mv.contains(measure) || !mv[measure].is_number()) continue;
+        const Json chs = e["channels"];
+        CHECK_MESSAGE(chs.contains(channel), json::dump(scale));  // every element with a value gets one
+        if (!chs.contains(channel)) continue;
+        double own = chs[channel].get<double>();
+        if (e.contains("channel_parts")) own = e["channel_parts"][channel][0]["value"].get<double>();
+        vo.emplace_back(mv[measure].get<double>(), own);
+      }
+      if (data_dir || channel == "hue") continue;  // per-element directions have no global order
+      // the declared order: sign of d(out)/d(value) = sign(hi - lo) * (invert ? -1 : 1) * sign(d)
+      const double s = (hi >= lo ? 1 : -1) * (invert ? -1 : 1) * (d < 0 ? -1 : 1);
+      for (std::size_t i = 0; i < vo.size(); ++i)
+        for (std::size_t j = 0; j < vo.size(); ++j)
+          if (vo[i].first < vo[j].first) {
+            CHECK_MESSAGE(s * (vo[j].second - vo[i].second) >= -1e-6, json::dump(scale));
+            ++checked_pairs;
+          }
+      if (scale.contains("clamp")) continue;  // a clamp may flatten one side
+      // reversing the direction flips the order (strict pairs stay strict)
+      Json flipped = decl;
+      flipped["elements"][5]["scale"]["direction"] = -d;
+      const Json mf = unwrap(eng.evaluate_declaration(f.ctx(), flipped, Json{{"focus", f.v2}}));
+      std::map<std::string, double> a, b;
+      auto own_of = [&](const Json& e) { return e.contains("channel_parts") ? e["channel_parts"][channel][0]["value"].get<double>() : e["channels"][channel].get<double>(); };
+      for (const auto& e : m["elements"])
+        if (e["channels"].contains(channel)) a[e["label"].get<std::string>()] = own_of(e);
+      for (const auto& e : mf["elements"])
+        if (e["channels"].contains(channel)) b[e["label"].get<std::string>()] = own_of(e);
+      for (const auto& [x, ax] : a)
+        for (const auto& [y, ay] : a)
+          if (ax < ay - 1e-6 && b.count(x) && b.count(y)) {
+            CHECK_MESSAGE(b[x] > b[y] - 1e-6, json::dump(scale));
+            ++flipped_pairs;
+          }
+    }
+    CHECK(checked_pairs > 100);
+    CHECK(flipped_pairs > 50);
+  }
+
+  TEST_CASE("G3 advisories: degenerate results and configurations of little use are reported with evidence, never blocked") {
+    Fixture f;
+    auto eng = unwrap(views::ViewEngine::open(f.td.path()));
+    auto eval = [&](Json encs) { return unwrap(eng.evaluate_declaration(f.ctx(), history(encs, false), Json{{"focus", f.v2}})); };
+    const Json m1 = eval(Json::array({el("z", "encoding", {{"channel", "alpha"}, {"measure", "age"}, {"scale", Json{{"range", Json::array({0, 0})}}}})}));
+    REQUIRE(advisories_of(m1, "nothing_visible").size() == 1);
+    const Json a = advisories_of(m1, "nothing_visible")[0];
+    CHECK(a["schema"] == "loom.advisory/1");
+    CHECK(a["level"] == "advisory");
+    CHECK(a["params"]["invisible"] == a["params"]["total"]);
+    CHECK_FALSE(a["text"]["pl"].get<std::string>().empty());
+    CHECK(a["text"]["en"].get<std::string>().find("alpha") != std::string::npos);
+    CHECK_FALSE(a["ask"]["question"]["pl"].get<std::string>().empty());
+    CHECK(a["ask"]["choices"].size() >= 2);
+    CHECK(a["ask"]["asking"] == true);
+    CHECK(a["ask"]["state"] == "ask");
+    CHECK(a["ask"]["fingerprint"].get<std::string>().size() == 16);
+    CHECK(chan(m1, "v1", "alpha") == 0.0);  // never blocked: the asked value is there
+    CHECK(advisories_of(m1, "marks_identical").size() == 1);
+    CHECK(advisories_of(eval(Json::array({el("z", "encoding", {{"channel", "size"}, {"measure", "age"}, {"scale", Json{{"range", Json::array({0, 0})}}}})})), "nothing_visible").size() == 1);
+    // a few invisible marks are not "nothing visible" under the preset share (1 = all)
+    CHECK(advisories_of(eval(Json::array({el("z", "encoding", {{"channel", "alpha"}, {"measure", "age"}, {"scale", Json{{"range", Json::array({0, 1})}}}})})), "nothing_visible").empty());
+    const Json m3 = eval(Json::array({el("r", "encoding", {{"channel", "red"}, {"measure", "age"}, {"scale", Json{{"range", Json::array({-50, 400})}}}})}));
+    REQUIRE(advisories_of(m3, "values_outside_valid").size() == 1);
+    CHECK(advisories_of(m3, "values_outside_valid")[0]["params"]["outside"].get<int>() >= 2);
+    CHECK(advisories_of(eval(Json::array({el("b", "encoding", {{"channel", "blue"}, {"measure", "age"}, {"scale", Json{{"direction", Json{{"measure", "nosuch"}}}}}})})), "direction_missing").size() == 1);
+    CHECK(advisories_of(eval(Json::array({el("b", "encoding", {{"channel", "blue"}, {"measure", "age"}, {"combine", "xor"}})})), "combine_unknown").size() == 1);
+    // a sensible view raises none of the degenerate ones
+    const Json ok = eval(Json::array({el("s", "encoding", {{"channel", "size"}, {"measure", "doi"}})}));
+    CHECK(advisories_of(ok, "nothing_visible").empty());
+    CHECK(advisories_of(ok, "marks_identical").empty());
+    // the share is a preset: a view may ask about a single invisible mark
+    Json d6 = history(Json::array({el("z", "encoding", {{"channel", "alpha"}, {"measure", "age"}, {"scale", Json{{"range", Json::array({0, 1})}}}}),
+                                   el("r", "rules", {{"advisories", Json{{"degenerate_share", 0.01}}}})}), false);
+    CHECK(advisories_of(unwrap(eng.evaluate_declaration(f.ctx(), d6, Json{{"focus", f.v2}})), "nothing_visible").size() == 1);
+  }
+
+  TEST_CASE("G3 advisory_ack: don't ask is remembered per code + configuration fingerprint, reversible, with a how-often policy up to never") {
+    Fixture f;
+    auto eng = unwrap(views::ViewEngine::open(f.td.path()));
+    const Json enc = el("z", "encoding", {{"channel", "alpha"}, {"measure", "age"}, {"scale", Json{{"range", Json::array({0, 0})}}}});
+    auto eval = [&](Json extra = Json::array(), Json req = Json::object()) {
+      Json encs = Json::array({enc});
+      for (const auto& x : extra) encs.push_back(x);
+      req["focus"] = f.v2;
+      const Json model = unwrap(eng.evaluate_declaration(f.ctx(), history(encs, false), req));
+      return advisories_of(model, "nothing_visible").at(0);
+    };
+    const Json first = eval();
+    const std::string fp = first["ask"]["fingerprint"];
+    {
+      auto store = advisory::AckStore::open(f.td.path());
+      LOOM_REQUIRE_OK(store.acknowledge("nothing_visible", fp, "dont_ask", Json{{"view", "test"}}, "2026-10-27T10:00:00Z"));
+    }
+    CHECK(std::filesystem::exists(f.td.path() / advisory::kAckStoreFile));
+    const Json second = eval();
+    CHECK(second["ask"]["asking"] == false);
+    CHECK(second["ask"]["state"] == "acknowledged");
+    CHECK(second["ask"]["ack"]["choice"] == "dont_ask");
+    // another configuration (another measure) asks again
+    const Json other_model = unwrap(eng.evaluate_declaration(
+        f.ctx(), history(Json::array({el("z", "encoding", {{"channel", "alpha"}, {"measure", "doi"}, {"scale", Json{{"range", Json::array({0, 0})}}}})}), false), Json{{"focus", f.v2}}));
+    const Json other = advisories_of(other_model, "nothing_visible").at(0);
+    CHECK(other["ask"]["fingerprint"] != fp);
+    CHECK(other["ask"]["asking"] == true);
+    // remember_days: the answer expires
+    {
+      auto store = advisory::AckStore::open(f.td.path());
+      LOOM_REQUIRE_OK(store.set_policy(Json{{"remember_days", 1}}));
+    }
+    CHECK(eval(Json::array(), Json{{"now", "2026-10-27T20:00:00Z"}})["ask"]["asking"] == false);
+    const Json expired = eval(Json::array(), Json{{"now", "2026-10-29T10:00:00Z"}});
+    CHECK(expired["ask"]["asking"] == true);
+    CHECK(expired["ask"]["ack_expired"] == true);
+    // never ask: per code (store), per view (rules element)
+    {
+      auto store = advisory::AckStore::open(f.td.path());
+      LOOM_REQUIRE_OK(store.set_policy(Json{{"remember_days", nullptr}, {"codes", Json{{"nothing_visible", Json{{"ask", false}}}}}}));
+    }
+    CHECK(eval()["ask"]["state"] == "muted");
+    {
+      auto store = advisory::AckStore::open(f.td.path());
+      LOOM_REQUIRE_OK(store.set_policy(Json{{"codes", Json{{"nothing_visible", nullptr}}}}));
+      CHECK(unwrap(store.forget("nothing_visible", fp)) == 1);
+    }
+    CHECK(eval()["ask"]["asking"] == true);  // reversed: asks again
+    CHECK(eval(Json::array({el("r", "rules", {{"advisories", Json{{"ask", false}}}})}))["ask"]["state"] == "muted");
+    // an unreadable store never fails the view: every advisory asks, the issue says why
+    LOOM_REQUIRE_OK(fsutil::write_file(f.td.path() / advisory::kAckStoreFile, "not json"));
+    const Json m = unwrap(eng.evaluate_declaration(f.ctx(), history(Json::array({enc}), false), Json{{"focus", f.v2}}));
+    bool reported = false;
+    for (const auto& i : m["issues"]) reported = reported || i["code"] == "advisory_ack_unreadable";
+    CHECK(reported);
+    CHECK(advisories_of(m, "nothing_visible").at(0)["ask"]["asking"] == true);
+    // the fingerprint ignores key order
+    CHECK(advisory::fingerprint(Json{{"a", 1}, {"b", Json{{"x", 1}, {"y", 2}}}}) == advisory::fingerprint(Json{{"b", Json{{"y", 2}, {"x", 1}}}, {"a", 1}}));
   }
 }
