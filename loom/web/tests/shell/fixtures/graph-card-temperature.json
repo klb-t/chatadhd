@@ -443,6 +443,36 @@
       "decision": "applicable",
       "label": "Poprzednie okno",
       "implementation": "planned"
+    },
+    {
+      "id": "layout.save",
+      "decision": "applicable",
+      "label": "Zapisz układ",
+      "implementation": "planned"
+    },
+    {
+      "id": "layout.apply",
+      "decision": "applicable",
+      "label": "Wróć do układu",
+      "implementation": "planned"
+    },
+    {
+      "id": "layout.undo",
+      "decision": "applicable",
+      "label": "Cofnij układ",
+      "implementation": "planned"
+    },
+    {
+      "id": "layout.redo",
+      "decision": "applicable",
+      "label": "Ponów układ",
+      "implementation": "planned"
+    },
+    {
+      "id": "layout.reset",
+      "decision": "applicable",
+      "label": "Układ jak w aplikacji",
+      "implementation": "planned"
     }
   ],
   "breadcrumbs": [

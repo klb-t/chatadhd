@@ -1267,7 +1267,9 @@
             "layout_receipt_redo": "The change of the layout is redone.",
             "layout_receipt_nothing_undo": "Nothing to undo in the layout.",
             "layout_receipt_nothing_redo": "Nothing to redo in the layout.",
-            "layout_receipt_reset": "The layout is as shipped: {{name}}"
+            "layout_receipt_reset": "The layout is as shipped: {{name}}",
+            "device_class_phone": "phone",
+            "device_class_desktop": "computer"
           },
           "pl": {
             "menu_open": "Menu",
@@ -1726,7 +1728,9 @@
             "layout_receipt_redo": "Zmiana układu ponowiona.",
             "layout_receipt_nothing_undo": "Nie ma czego cofnąć w układzie.",
             "layout_receipt_nothing_redo": "Nie ma czego ponowić w układzie.",
-            "layout_receipt_reset": "Układ jak w aplikacji: {{name}}"
+            "layout_receipt_reset": "Układ jak w aplikacji: {{name}}",
+            "device_class_phone": "telefon",
+            "device_class_desktop": "komputer"
           }
         }
       }

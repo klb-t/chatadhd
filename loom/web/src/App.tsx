@@ -222,14 +222,15 @@ export default function App() {
   // A window that is gone drops out of the journal (closed from the switcher or by a sentence).
   useEffect(() => { setVisits(v => { const left = v.filter(id => win.layout.windows.some(w => w.id === id)); return left.length === v.length ? v : left.length > 1 ? left : []; }); }, [win.layout]);
   // W5: the journal (undo/redo) is written to window_layout_journal of this device class, a moment after the last change
-  const lastJournal = useRef("");
   useEffect(() => {
     if (!journalReady.current) return;
     const timer = setTimeout(() => {
-      const value = writeJournal(configRef.current.window_layout_journal, deviceClassOf(window.innerWidth), win);
-      const text = JSON.stringify(value);
-      if (text === lastJournal.current || text === JSON.stringify(configRef.current.window_layout_journal ?? null)) { lastJournal.current = text; return; }
-      lastJournal.current = text;
+      // written only when this class's journal differs from the stored one (a start with an empty journal writes nothing)
+      const cls = deviceClassOf(window.innerWidth);
+      const stored = configRef.current.window_layout_journal;
+      const value = writeJournal(stored, cls, win);
+      const before = stored && typeof stored === "object" ? (stored as Record<string, unknown>)[cls] : undefined;
+      if (JSON.stringify(value[cls]) === JSON.stringify(before ?? { past: [], future: [] })) return;
       saveSetting("window_layout_journal", value);
     }, 600);
     return () => clearTimeout(timer);

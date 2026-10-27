@@ -27,6 +27,9 @@ export default function LayoutsSheet({ layouts, done }: { layouts: ShellLayouts;
   const [newLabel, setNewLabel] = useState("");
   const [asking, setAsking] = useState<string | null>(null);
   const [note, setNote] = useState("");
+  // the device class in words of the shell (data: device_class_<id>); a class without words (an overlay's own) is shown by its id
+  const classKey = `device_class_${layouts.deviceClass}`;
+  const classWords = t(classKey) === classKey ? layouts.deviceClass : t(classKey);
   return (
     <div data-testid="layouts-sheet" data-device-class={layouts.deviceClass}>
       <form className="shell-row" style={{ display: "flex", gap: 8 }} onSubmit={(e) => {
@@ -65,7 +68,7 @@ export default function LayoutsSheet({ layouts, done }: { layouts: ShellLayouts;
             ) : (
               <button className="shell-row" style={{ flex: 1, textAlign: "start", border: 0, background: "transparent" }} data-testid="layouts-apply"
                 aria-current={l.active ? "true" : undefined} onClick={() => { layouts.apply(l.id); done(); }}>
-                {l.label}{l.active ? ` · ${t("layouts_active", { cls: layouts.deviceClass })}` : ""}
+                {l.label}{l.active ? ` · ${t("layouts_active", { cls: classWords })}` : ""}
               </button>
             )}
             {renaming !== l.id && <button data-testid="layouts-rename" onClick={() => { setRenaming(l.id); setNewLabel(l.label); }}>{t("layouts_rename")}</button>}
