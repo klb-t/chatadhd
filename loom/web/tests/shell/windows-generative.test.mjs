@@ -46,7 +46,8 @@ function randOp(r, s) {
   const l = s.layout; const wid = () => r() < 0.12 ? 'ghost' : l.windows.length ? pick(r, l.windows).id : 'ghost';
   const leaf = () => r() < 0.1 ? 'Lghost' : pick(r, M.leafIds(l.tree));
   const rect = () => r() < 0.5 ? undefined : { x: pick(r, [r(), -2, 5, NaN, Infinity]), y: r(), w: pick(r, [0, r(), 3, -1]), h: r() };
-  switch (Math.floor(r() * 14)) {
+  switch (Math.floor(r() * 15)) {
+    case 14: return { op: 'ratio', path: pick(r, ['', 'a', 'b', 'ab', 'ba', 'aab', 'x', 7]), ratio: pick(r, [0, 0.3, 0.5, 1, -1, 2, NaN, '0.5']) };
     case 0: return { op: 'open', kind: r() < 0.1 ? 'unknown_kind_x' : pick(r, KINDS), node: 'n' + Math.floor(r() * 3), placement: pick(r, ['maximize', 'beside', 'below', 'float', 'tab', 'shelf', 'weird']) };
     case 1: return { op: 'close', id: wid() };
     case 2: return { op: 'close', all_except: l.windows.filter(() => r() < 0.4).map(w => w.id) };
