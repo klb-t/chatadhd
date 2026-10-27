@@ -65,6 +65,9 @@ export function closePanels(s: WState, ctx: Ctx = WINDOW_CTX): WState {
 /** Opens a panel as a window over the layout (preset placement: maximize). One panel at a time, as before W1: the shown one is closed
  *  first (W2: windows opened by a sentence or the switcher and now waiting in the switcher stay). */
 export function openPanel(s: WState, panel: string, ctx: Ctx = WINDOW_CTX, data: PanelData = DATA): WState {
+  // W4: a panel already drawn as a docked or floating window is focused there, not opened a second time over the layout
+  const drawn = overlays(s.layout).find((w) => w.params.panel === panel && (w.dock || w.mode === "floating"));
+  if (drawn) return oneStep(s, apply(s, { op: "focus", id: drawn.id }, ctx).state, "focus");
   const top = visibleOverlay(s.layout);
   const before = top ? [top] : [];
   const over = before.map((w) => w.params.over).find((id) => typeof id === "string") ?? s.layout.windows.find((w) => w.mode === "maximized")?.id ?? null;

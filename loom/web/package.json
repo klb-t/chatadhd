@@ -55,6 +55,7 @@
     "test:windows-dock": "node tests/shell/windows-dock.test.mjs",
     "test:windows": "npm run test:windows-model && npm run test:windows-registry && npm run test:windows-generative && npm run test:windows-session && npm run test:windows-ops && npm run test:windows-dock",
     "test:windows-w2": "node e2e/windows-w2-native.mjs",
+    "test:windows-w4": "node e2e/windows-w4-native.mjs",
     "test:theme": "node tests/shell/theme.test.mjs",
     "test:context-trace-rows": "node tests/shell/context-trace-rows.test.mjs",
     "test:diagnostics-rows": "node tests/shell/diagnostics-rows.test.mjs",
