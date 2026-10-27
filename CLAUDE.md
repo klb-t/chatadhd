@@ -28,6 +28,8 @@ yes/no question.
 
 **Budget for 2026-10-25 only (owner):** „dzisiaj … śmiało możesz wziąć 3 € z open router jak trzeba, z Google tam gdzie są kredyty to po 10% każdego możesz wziąć, a tam gdzie trzeba będzie zapłacić 5 € możesz rachunek nabić”. Today: OpenRouter up to 3 €; Google credits up to 10 % of each credit (≈ 6 € of the €59.97 pool, ≈ 85 € of the €855 GenAI App Builder credit); paid charges up to 5 €. From 2026-10-26 the standing rule (≤ 1 €/day, ≤ 3 €/week) applies again.
 
+**Credits are separate (owner, 2026-10-27):** „to 1 dziennie to się nie tyczy tych kredytów które tam mamy tamte to 10% do wykorzystania bez pytania a na ageds nawet więcej jak trzeba”. The ≤ 1 €/day, ≤ 3 €/week rule covers paid charges only; Google credits may be used up to 10 % of each credit without asking (standing, not only 25.10), and AGEDS may use more than 10 % when needed (report the amount).
+
 **Data to Google Vertex (owner, 2026-10-25, R100):** all his data may be sent to Vertex AI, on the condition that it is not made public and not used for training (Vertex does not train on customer data by default; keep it that way). Vertex caching stays ON (cost); do not disable it.
 
 **Before a question (owner, 2026-10-23):** „upewniając się że dobrze rozumiesz to zanim zaczniesz mi
