@@ -176,14 +176,12 @@ TEST_SUITE("action_runner") {
     CHECK(unwrap(f.runner().run(Json{{"action", "settings.set"}, {"args", Json{{"key", "chat_context_order"}, {"value", ""}}}})).at("status") == "completed");
     CHECK(f.rt->config().get("chat_context_order") == "");
     CHECK(unwrap(f.runner().run(Json{{"action", "settings.set"}, {"args", Json{{"key", "chat_context_order"}, {"value", "stable_first"}}}})).at("status") == "completed");
-    // a planned value whose reader degrades (on_set: warn) is stored, and the step says it is planned, with the reason in both languages
+    // `windows` was planned (on_set: warn) until the window system drew the grid from its dock tree (M1-OKNA-W3): it is a listed
+    // value now, stored without a warning (the planned-and-warn path is exercised on a value of its own in test_settings_fields)
     const Json windows = unwrap(f.runner().run(Json{{"action", "settings.set"}, {"args", Json{{"key", "layout_mode"}, {"value", "windows"}}}}));
     REQUIRE(windows.at("status") == "completed");
     CHECK(f.rt->config().get("layout_mode") == "windows");
-    const Json warning = windows.at("result").at("data").at("warning");
-    CHECK(warning.at("status") == "planned");
-    CHECK_FALSE(warning.at("reason").at("pl").get<std::string>().empty());
-    CHECK_FALSE(warning.at("reason").at("en").get<std::string>().empty());
+    CHECK_FALSE(windows.at("result").at("data").contains("warning"));
     // outside a closed list whose reader falls back (on_unlisted: warn): stored, the warning names the list
     const Json other = unwrap(f.runner().run(Json{{"action", "settings.set"}, {"args", Json{{"key", "layout_mode"}, {"value", "tiles"}}}}));
     REQUIRE(other.at("status") == "completed");
