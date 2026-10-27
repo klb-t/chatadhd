@@ -96,6 +96,30 @@ test('active layout at the installation level (D19): phone A applies „praca”
   assert.deepEqual(P.mergePatch('u_old', N.activePatch('u_old', 'phone', 'x', 'inst-A')), { any: 'u_old', installations: { 'inst-A': { phone: 'x' } }, phone: 'x' });
 });
 
+test('named layouts (window_layouts) as id → layout merged on the host: two tabs save from stale copies, both survive; delete vs rename', () => {
+  const lay = S.openPanel(czat(), 'navigator').layout;
+  // a W5 list on the host: the first write migrates it whole
+  let host = N.saveNamed([], 'stare', lay, t(0)).list;
+  const seenA = clone(host), seenB = clone(host);
+  const a1 = N.saveNamed(N.readNamed(seenA), 'praca', lay, t(1)).list;
+  host = P.mergePatch(host, N.namedPatch(seenA, N.readNamed(seenA), a1));
+  assert.equal(N.isNamedMap(host), true);
+  const b1 = N.saveNamed(N.readNamed(seenB), 'dom', lay, t(2)).list;   // B still has the list form: its patch carries every layout it knows
+  host = P.mergePatch(host, N.namedPatch(seenB, N.readNamed(seenB), b1));
+  assert.deepEqual(N.readNamed(host).map(x => x.label).sort(), ['dom', 'praca', 'stare']);
+  // both tabs now hold the map, but stale ones: A deletes „praca”, B renames „dom” and saves „kuchnia”
+  const sA = clone(host), sB = clone(host);
+  host = P.mergePatch(host, N.namedPatch(sA, N.readNamed(sA), N.deleteNamed(N.readNamed(sA), 'u_praca')));
+  const renamed = N.renameNamed(N.readNamed(sB), 'u_dom', 'dom 2').list;
+  const b2 = N.saveNamed(renamed, 'kuchnia', lay, t(3)).list;
+  host = P.mergePatch(host, N.namedPatch(sB, N.readNamed(sB), b2));
+  assert.deepEqual(N.readNamed(host).map(x => x.label).sort(), ['dom 2', 'kuchnia', 'stare']);
+  assert.equal(N.findNamed(N.readNamed(host), 'praca'), undefined, 'the delete of A stays deleted (B never touched it)');
+  // the patch of an unchanged list is empty; an empty host is not a migration
+  assert.deepEqual(N.namedPatch(host, N.readNamed(host), N.readNamed(host)), {});
+  assert.deepEqual(Object.keys(N.namedPatch(undefined, [], N.saveNamed([], 'x', lay, t(4)).list)), ['u_x']);
+});
+
 test('generative: random interleavings of 2-5 tabs on 1-2 installations and 2 classes, stale copies - nothing is lost', () => {
   let seed = 5;
   const rnd = (n) => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed % n; };

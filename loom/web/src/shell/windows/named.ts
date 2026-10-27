@@ -39,11 +39,14 @@ function validLayout(v: unknown): v is WLayout {
 /** `window_layouts`: a list of `loom.window_layout/2` documents (or `{layouts: [...]}`, or its JSON text). Unreadable entries are skipped. */
 export function readNamed(value: unknown): NamedLayout[] {
   const v = parse(value);
-  const list = Array.isArray(v) ? v : isObj(v) && Array.isArray(v.layouts) ? v.layouts : [];
+  // W5b: the stored form is an object id → layout (written by merge patches, so two tabs never drop each other's layouts); the W5
+  // list (and `{layouts: [...]}`) is still read
+  const pairs: [string | null, unknown][] = Array.isArray(v) ? v.map(e => [null, e]) : isObj(v) && Array.isArray(v.layouts) ? (v.layouts as unknown[]).map(e => [null, e])
+    : isObj(v) ? Object.entries(v) : [];
   const out: NamedLayout[] = [];
-  for (const e of list) {
+  for (const [key, e] of pairs) {
     if (!isObj(e) || typeof e.label !== "string" || !e.label.trim() || !validLayout(e.layout)) continue;
-    const id = typeof e.id === "string" && e.id ? e.id : slug(e.label);
+    const id = typeof e.id === "string" && e.id ? e.id : key ?? slug(e.label);
     if (out.some((x) => x.id === id)) continue;
     out.push({ schema: NAMED_SCHEMA, id, label: e.label, layout: e.layout, saved: typeof e.saved === "string" ? e.saved : "",
       ...(typeof e.device_class === "string" ? { device_class: e.device_class } : {}) });
@@ -81,6 +84,25 @@ export function renameNamed(list: NamedLayout[], id: string, label: string): { l
   return { list: list.map((x) => (x.id === id ? { ...x, label: clean } : x)) };
 }
 export const deleteNamed = (list: NamedLayout[], id: string): NamedLayout[] => list.filter((x) => x.id !== id);
+/** True when the stored value already has the W5b form (an object id → layout), not the W5 list, its JSON text or `{layouts}`. */
+export function isNamedMap(value: unknown): boolean {
+  const v = parse(value);
+  return isObj(v) && !Array.isArray(v.layouts);
+}
+/** W5b: the merge patch of `window_layouts` from what this tab read (`before`) to what it wants (`after`): changed or new layouts as
+ *  members, deleted ones as null; the layouts this tab never saw (saved meanwhile by another tab) are not in the patch, so they stay.
+ *  A stored W5 list is migrated by the first write: the patch then carries every layout (it replaces the list as a whole, nothing is
+ *  dropped - a layout removed in this very write is the only one missing). */
+export function namedPatch(stored: unknown, before: NamedLayout[], after: NamedLayout[]): Record<string, unknown> {
+  const patch: Record<string, unknown> = {};
+  const migrate = !isNamedMap(stored) && parse(stored) != null && parse(stored) !== "";
+  for (const e of after) {
+    const was = before.find((x) => x.id === e.id);
+    if (migrate || !was || JSON.stringify(was) !== JSON.stringify(e)) patch[e.id] = e;
+  }
+  if (!migrate) for (const e of before) if (!after.some((x) => x.id === e.id)) patch[e.id] = null;
+  return patch;
+}
 
 /** `window_layout_active`: `{<device class>: <layout id>}` (or its JSON text, or a bare id = every class). */
 export function readActive(value: unknown, cls: string, installation?: string): string | null {

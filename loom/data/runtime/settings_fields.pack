@@ -918,9 +918,9 @@
         "key": "window_layouts",
         "scope": "config",
         "group": "ui",
-        "type": "array",
+        "type": "object",
         "has_default": false,
-        "description": "The named window layouts of the person (OKNA §2.5): a list of loom.window_layout/2 documents {id, label, layout (the windows and the dock tree, as the page's window model has them), saved, device_class}. Written by ⋮ › Układ ▾ › Zapisz jako and by the action layout.save; read by the sheet, by layout.apply and at the start (window_layout_active, layout_mode=windows). A JSON text of the same list is read too; unreadable entries are skipped, never refused.",
+        "description": "The named window layouts of the person (OKNA §2.5): a list of loom.window_layout/2 documents {id, label, layout (the windows and the dock tree, as the page's window model has them), saved, device_class}. Written by ⋮ › Układ ▾ › Zapisz jako and by the action layout.save; read by the sheet, by layout.apply and at the start (window_layout_active, layout_mode=windows). A JSON text of the same list is read too; unreadable entries are skipped, never refused. M1-OKNA-W5b: stored as an object id → layout document, written as a merge patch on the host (PATCH /api/config/window_layouts: a changed layout is a member, a deleted one null), so two tabs saving or deleting at once never drop each other's layouts; the W5 list form is still read and is migrated whole by the first write (nothing dropped).",
         "status": {
           "state": "implemented",
           "by": "M1-OKNA-W5",

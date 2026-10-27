@@ -34,7 +34,7 @@ import { DEFAULT_LAYOUT, JOURNAL_LIMIT, LAYOUTS, START_VIEW_PRESET, layoutOfMode
 import WindowHost from "./shell/windows/WindowHost";
 import { activePanelOf, baseWindow, layoutState, panelKind, restoreFront, setPanel, switchLayout, visibleOverlay } from "./shell/windows/session";
 import { createState, redo as redoLayout, undo as undoLayout, type WState, type Win } from "./shell/windows/model";
-import { activePatch, deleteNamed, deviceClassOf, findNamed, journalPatch, labelOf, lastOwn, readActive, readNamed, readWriterJournal, renameNamed, replaceLayout, resetTarget, saveNamed, shippedId, type JournalWho } from "./shell/windows/named";
+import { activePatch, deleteNamed, namedPatch, deviceClassOf, findNamed, journalPatch, labelOf, lastOwn, readActive, readNamed, readWriterJournal, renameNamed, replaceLayout, resetTarget, saveNamed, shippedId, type JournalWho } from "./shell/windows/named";
 import { mergePatch } from "./api/merge-patch";
 import { clientIdentity, installationIdentity } from "./context/client-session";
 import { layoutIdOfMode } from "./shell/windows/migrate";
@@ -266,6 +266,8 @@ export default function App() {
   const layoutOps = useMemo(() => {
     const cls = () => deviceClassOf(window.innerWidth);
     const named = () => readNamed(configRef.current.window_layouts);
+    // W5b: only the layouts this tab changed go out (a merge patch, null = deleted): another tab's layouts saved meanwhile stay
+    const writeNamed = (after: ReturnType<typeof named>) => mergeSetting("window_layouts", namedPatch(configRef.current.window_layouts, named(), after));
     const setActive = (id: string | null) => {
       setOwnActive(id);
       const inst = journalWhoRef.current.installation;
@@ -275,7 +277,7 @@ export default function App() {
       save(label: string): string | null {
         if (!label.trim()) return null;
         const r = saveNamed(named(), label, winRef.current.layout, new Date().toISOString(), cls());
-        saveSetting("window_layouts", r.list);
+        writeNamed(r.list);
         setActive(r.entry.id);
         return r.entry.label;
       },
@@ -291,11 +293,11 @@ export default function App() {
       rename(id: string, label: string): string | null {
         const r = renameNamed(named(), id, label);
         if (r.conflict) return r.conflict;
-        saveSetting("window_layouts", r.list);
+        writeNamed(r.list);
         return null;
       },
       remove(id: string) {
-        saveSetting("window_layouts", deleteNamed(named(), id));
+        writeNamed(deleteNamed(named(), id));
         if (readActive(configRef.current.window_layout_active, cls(), journalWhoRef.current.installation) === id) setActive(null);
       },
       undo(): boolean { const r = undoLayout(winRef.current); if (r.applied) moveTo(r.state); return r.applied; },

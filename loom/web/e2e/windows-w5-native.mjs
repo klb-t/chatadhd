@@ -36,7 +36,8 @@ let browser, failed = false, dump = async () => "";
 const step = async (name, fn) => { if (failed) return; try { await fn(); console.log(`[windows-w5] PASS ${name}`); } catch (e) { failed = true; console.error(`[windows-w5] FAIL ${name}\n${e.stack}\n--- the screen says:\n${await dump().catch(() => "")}`); } };
 const api = async (m, p, b) => { const r = await fetch(base + p, { method: m, headers: { "content-type": "application/json" }, body: b ? JSON.stringify(b) : undefined }); assert.ok(r.ok, `${m} ${p}: ${r.status}`); return r.json().catch(() => ({})); };
 const config = async () => { const c = await api("GET", "/api/config"); return c.config ?? c; };
-const until = async (fn, what, ms = 10000) => { for (const end = Date.now() + ms; Date.now() < end;) { if (await fn()) return; await new Promise(r => setTimeout(r, 150)); } throw new Error("never: " + what + " " + (globalThis.__dbg ?? "")); };
+const named = c => { const v = c.window_layouts; return Array.isArray(v) ? v : v && typeof v === "object" ? Object.values(v).filter(Boolean) : []; };   // W5b: id → layout
+const until = async (fn, what, ms = 10000) => { for (const end = Date.now() + ms; Date.now() < end;) { if (await fn()) return; await new Promise(r => setTimeout(r, 150)); } throw new Error("never: " + what); };
 
 try {
   await waitUp(`${base}/api/healthz`);
@@ -86,10 +87,11 @@ try {
     await page.getByTestId("layouts-entry").waitFor();
     assert.equal(await page.getByTestId("layouts-entry").getAttribute("data-active"), "true");
     await shot(page, "w5-1-saved");
-    await until(async () => { const c = await config(); return Array.isArray(c.window_layouts) && c.window_layouts.length === 1 && c.window_layout_active?.phone === c.window_layouts[0].id; }, "window_layouts + window_layout_active.phone in the config");
+    await until(async () => { const c = await config(); return named(c).length === 1 && c.window_layout_active?.phone === named(c)[0].id; }, "window_layouts + window_layout_active.phone in the config");
     const c = await config();
-    assert.equal(c.window_layouts[0].label, "praca");
-    assert.equal(c.window_layouts[0].schema, "loom.window_layout/2");
+    assert.equal(named(c)[0].label, "praca");
+    assert.equal(named(c)[0].schema, "loom.window_layout/2");
+    assert.equal(Array.isArray(c.window_layouts), false, "W5b: stored as id → layout");
     await back(page);
     await page.getByTestId("layouts-sheet").waitFor({ state: "detached" });
   });
@@ -164,7 +166,7 @@ try {
     assert.equal(await page.getByTestId("layouts-entry").count(), 2, "nothing deleted before the answer");
     await page.getByTestId("layouts-delete-yes").click();
     await until(async () => (await page.getByTestId("layouts-entry").count()) === 1, "one layout left");
-    await until(async () => (await config()).window_layouts?.length === 1, "deleted in the config");
+    await until(async () => named(await config()).length === 1, "deleted in the config");
     await shot(page, "w5-6-deleted");
   });
 
@@ -187,7 +189,7 @@ try {
     await page.reload();
     await page.getByTestId("chat-input").waitFor();
     await say(page, "wróć do układu «praca»", /Układ: praca/);
-    await until(async () => { const a = (await config()).window_layout_active ?? {}; const ids = Object.values(a.installations ?? {}).map(x => x?.phone).filter(Boolean); globalThis.__dbg = JSON.stringify(a); return new Set(ids).size === 2 && !!readPraca(a); }, "two installations, two active layouts");
+    await until(async () => { const a = (await config()).window_layout_active ?? {}; const ids = Object.values(a.installations ?? {}).map(x => x?.phone).filter(Boolean); return new Set(ids).size === 2 && !!readPraca(a); }, "two installations, two active layouts");
     await b.reload();
     await b.getByTestId("chat-input").waitFor();
     assert.ok((await activeEntry(b)).includes("dom"), "phone B keeps „dom”");
@@ -224,6 +226,13 @@ try {
     await undoInMenu(tab2);
     assert.equal(await windowsCount(tab2), 1, "tab 2: undo takes back its „praca” (the graph it closed before)");
     await shot(tab2, "w5b-8-tab2-undo");
+    // both tabs save a layout from their own (stale) list: both are kept (a whole-list write would drop one)
+    const saveAs = async (p, name) => { await menu(p, "layouts", "layouts-sheet"); await p.getByTestId("layouts-save-name").fill(name); await p.getByTestId("layouts-save").click(); await p.locator('[data-testid="layouts-entry"]', { hasText: name }).waitFor(); await back(p); await p.getByTestId("layouts-sheet").waitFor({ state: "detached" }); };
+    const n0 = named(await config()).length;
+    await saveAs(page, "karta1");
+    await saveAs(tab2, "karta2");
+    await until(async () => { const l = named(await config()).map(x => x.label); return l.includes("karta1") && l.includes("karta2"); }, "both tabs' layouts in window_layouts");
+    assert.equal(named(await config()).length, n0 + 2);
     await tab2.close();
   });
 
