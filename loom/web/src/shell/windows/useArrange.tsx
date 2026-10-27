@@ -92,6 +92,7 @@ export function useArrange(win: WState, winRef: { current: WState }, commit: (s:
       commit(setRatio(from, path, ratio));
     },
     dropEdge: num(ARRANGE.drop_edge, 0.25),
+    floatDropEdge: num(ARRANGE.float_drop_edge, 0.08),
     dragThreshold: num(ARRANGE.drag_threshold_px, 8),
     closeLabel: (t) => (lang === "pl" ? `Zamknij: ${t}` : `Close: ${t}`),
     menuLabel: (t) => (lang === "pl" ? `Ułóż okno: ${t}` : `Arrange window: ${t}`),

@@ -357,6 +357,7 @@
     "offscreen_fraction": 0.5,
     "keyboard_min_px": 80,
     "drop_edge": 0.25,
+    "float_drop_edge": 0.08,
     "drag_threshold_px": 8,
     "split_grip_px": 24,
     "float_rect": {

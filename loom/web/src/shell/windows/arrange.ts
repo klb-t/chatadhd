@@ -10,7 +10,7 @@ import { dockView, leafBoxes, type Box, type Zone } from "./dock";
 
 type Words = { pl?: string; en?: string };
 export interface ArrangeData {
-  min_useful_width?: number; offscreen_fraction?: number; keyboard_min_px?: number; drop_edge?: number; drag_threshold_px?: number; split_grip_px?: number;
+  min_useful_width?: number; offscreen_fraction?: number; keyboard_min_px?: number; drop_edge?: number; float_drop_edge?: number; drag_threshold_px?: number; split_grip_px?: number;
   float_rect?: Partial<Rect>; advisory_button_order?: string[];
   advisories?: Record<string, { text?: Words; fix?: { id: string; label: Words } }>;
   question?: Words; choices?: { id: string; label: Words }[];
