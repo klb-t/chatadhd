@@ -231,7 +231,7 @@ export default function GraphNavigator({ profileHost, convId, language, initialF
         </Disclosure>}
         {result && <Disclosure testId="nav-map-disclosure" className="gnav-disclosure" labels={meMode ? { show: t("me.map.show"), hide: t("me.map.hide") } : { show: t("map.show"), hide: t("map.hide") }}
           open={meMode ? meOpen.map : open.map} onToggle={v => meMode ? setMeOpen(o => ({ ...o, map: v })) : setOpen(o => ({ ...o, map: v }))}>
-          <NavigatorMap result={result} open={meMode ? meOpen.map : open.map} t={t} onCard={showCard} onDrill={drill} />
+          <NavigatorMap result={result} open={meMode ? meOpen.map : open.map} t={t} language={language} onCard={showCard} onDrill={drill} />
         </Disclosure>}
         {card && <NodeCard key={card.address} address={card.address} label={card.label} language={language} convId={convId} t={t} receiptT={receiptT} section={cardSection}
           onClose={() => setCard(null)} onNavigate={(address, label) => drill({ address, label })} />}

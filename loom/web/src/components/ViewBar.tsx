@@ -8,7 +8,8 @@ import { dataLabel, useShellText } from "../shell/text";
 import { answerRequest, barState } from "../view-engine/view-bar";
 import type { BarChip } from "../view-engine/view-bar";
 
-export default function ViewBar({ model, language }: { model: ViewModel; language: string }) {
+/** compact: only the advisories (a view whose encodings are the page's own, e.g. the navigator map); nothing is drawn when there is no chip. */
+export default function ViewBar({ model, language, compact = false }: { model: ViewModel; language: string; compact?: boolean }) {
   const t = useShellText();
   const [answered, setAnswered] = useState<Set<string>>(() => new Set());
   const [error, setError] = useState("");
@@ -28,13 +29,14 @@ export default function ViewBar({ model, language }: { model: ViewModel; languag
     }
   };
 
+  if (compact && state.chips.length === 0 && !error) return <span data-testid="view-bar" data-chips="0" data-hidden={String(state.hidden)} hidden />;
   const words = state.encodings.map(e => t("vbar_encoding", { channel: e.channel, measure: e.measure }));
   return (
     <div data-testid="view-bar" role="region" aria-label={t("vbar_title")} data-chips={String(state.chips.length)} data-hidden={String(state.hidden)}
       style={{ border: "1px solid var(--border)", borderRadius: "var(--radius)", padding: "0.4em 0.6em", margin: "0.4em 0", fontSize: "0.9em" }}>
-      <strong>{t("vbar_title")}</strong>{" "}
-      <span data-testid="view-bar-encodings">{words.length ? t("vbar_shows", { list: words.join(", ") }) : t("vbar_no_encodings")}</span>
-      {state.composed.map(c => (
+      {!compact && <><strong>{t("vbar_title")}</strong>{" "}
+      <span data-testid="view-bar-encodings">{words.length ? t("vbar_shows", { list: words.join(", ") }) : t("vbar_no_encodings")}</span></>}
+      {!compact && state.composed.map(c => (
         <div key={c.channel} data-testid={`view-bar-composed-${c.channel}`} style={{ color: "var(--dim)" }}>
           {t("vbar_composed", { channel: c.channel, encodings: c.encodings.join(", "), how: c.combines.join(", "), count: String(c.elements) })}
         </div>

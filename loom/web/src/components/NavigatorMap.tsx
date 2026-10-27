@@ -12,12 +12,16 @@ import { chipText, countText } from "./navigator-state";
 import { CAMERA_HOME, HIT_SIZE_PRESET, LABEL_FONT_PX_PRESET, MAP_HEIGHT_PRESET, MAP_MARGIN_PRESET, TAP_SLOP_PRESET, ZOOM_STEP_PRESET, elementIdOf, exclusionRects, nearestMark, panBy,
   pinch, placeLabels, sameRects, screenOf, viewModelFor, zoomBy, type Camera, type Point, type Rect } from "./navigator-map";
 import PersonText from "./PersonText";
+import ViewBar from "./ViewBar";
+import { useNavigatorAdvisories } from "./use-navigator-advisories";
 
 interface Props {
   result: GraphNavigateResult;
   /** Whether the disclosure around the map is open (a folded map reports no exclusion rectangle). */
   open: boolean;
   t: ShellT;
+  /** The language of the words (for the advisories of the map). */
+  language?: string;
   /** The same as a tap on a list row's ⋯. */
   onCard: (row: Pick<GraphNodeRow, "address" | "label">) => void;
   /** The same as a tap on a list row with children. */
@@ -38,7 +42,7 @@ function personIn(row: { label?: string; person_values?: string[] } | undefined)
   return !!row?.label && !!row.person_values?.some(v => v !== "" && row.label!.includes(v));
 }
 
-export default function NavigatorMap({ result, open, t, onCard, onDrill }: Props) {
+export default function NavigatorMap({ result, open, t, language = "pl", onCard, onDrill }: Props) {
   const box = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(0);
   const [cam, setCam] = useState<Camera>(CAMERA_HOME);
@@ -79,7 +83,8 @@ export default function NavigatorMap({ result, open, t, onCard, onDrill }: Props
   useEffect(() => { reportExclusion(reported); }, [reported]);
   useEffect(() => () => reportExclusion([]), []);
 
-  const model = useMemo(() => viewModelFor(result, t("root")), [result, t]);
+  const baseModel = useMemo(() => viewModelFor(result, t("root")), [result, t]);
+  const model = useNavigatorAdvisories(baseModel);   // G3c: the generic advisories of the map, answered like the "Widok" bar's
   const projection = useMemo(() => width > 0 ? project(model, { width, height, margin: MAP_MARGIN_PRESET }) : null, [model, width, height]);
   const rowsById = useMemo(() => {
     const m = new Map<string, Pick<GraphNodeRow, "address" | "label" | "has_children"> & Partial<GraphNodeRow>>();
@@ -148,6 +153,7 @@ export default function NavigatorMap({ result, open, t, onCard, onDrill }: Props
 
   return (
     <div className="gnav-map-wrap" data-testid="nav-map-wrap">
+      <ViewBar model={model} language={language} compact />
       <div ref={box} className="gnav-map" data-testid="nav-map" data-zoom={cam.zoom.toFixed(3)} data-marks={marks.length}
         data-exclusion={JSON.stringify(reported)} data-system={projection?.system ?? ""} style={{ height }}
         onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerCancel={onPointerUp}>

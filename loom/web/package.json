@@ -70,6 +70,7 @@
     "test:node-card-state": "node tests/shell/node-card-state.test.mjs",
     "test:navigator-receipt": "node tests/shell/navigator-receipt.test.mjs",
     "test:navigator-map": "node tests/shell/navigator-map.test.mjs",
+    "test:navigator-advisory": "node tests/shell/navigator-advisory.test.mjs",
     "test:settings-human": "node tests/shell/settings-human-state.test.mjs",
     "test:role-card": "node tests/shell/role-card-state.test.mjs",
     "test:context-receipt": "node tests/shell/context-receipt-state.test.mjs",
