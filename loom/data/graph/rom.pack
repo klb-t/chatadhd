@@ -372,6 +372,9 @@
           "path": "loom/data/runtime/import_formats.pack"
         },
         {
+          "path": "loom/data/runtime/import_graph.pack"
+        },
+        {
           "path": "loom/data/runtime/intent_routing.pack"
         },
         {

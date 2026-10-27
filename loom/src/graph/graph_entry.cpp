@@ -181,6 +181,11 @@ void register_builtin(Providers& p) {
     return only(grouped(c, "links", "json_extract(metadata,'$.level')",
                         "link_type='derived_from' AND json_extract(metadata,'$.relation')='duplicate_of'"));
   });
+  // Import as graph nodes (P1): the nodes the importer wrote, by their class (metadata.import_graph.class).
+  p.add("db.imports", [](const Context& c, const Json&) {
+    return only(grouped(c, "nodes", "json_extract(metadata,'$.import_graph.class')",
+                        "json_valid(metadata) AND json_type(metadata,'$.import_graph') = 'object'"));
+  });
   p.add("db.nodes_by_kind", [](const Context& c, const Json&) { return only(grouped(c, "nodes", "kind")); });
   p.add("db.provenance", [](const Context& c, const Json&) {
     return only(grouped(c, "loom_provenance", "subject_kind"));

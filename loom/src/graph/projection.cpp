@@ -2329,6 +2329,89 @@ Result<Read> read_also(Impl& c, const Json& src, const std::string&, const Json&
   return r;
 }
 
+// The nodes the importer wrote (IMPORT_JAKO_PLIKI_W_GRAFIE P1, src/import/import_graph.h): rows of the nodes table whose metadata carries
+// params.metadata_key. Each node keeps its own class (metadata.<key>.class); the tree follows metadata.<key>.nav_parent (empty = a root
+// under the area); the links between these nodes are the edges; a conversation node is the same node as the conversation it describes.
+Result<Read> read_imports(Impl& c, const Json& src, const std::string&, const Json&) {
+  if (!c.env.db) return Error(Errc::Unavailable, "database_unavailable");
+  const Json params = src.value("params", Json::object());
+  const std::string mkey = json::get_string(params, "metadata_key", "import_graph");
+  const std::string db_prefix = json::get_string(params, "same_as_prefix", "n_");
+  const std::string prefix = json::get_string(src, "prefix");
+  const Json* conv_src = c.source("conv");
+  const std::string conv_prefix = conv_src ? json::get_string(*conv_src, "prefix") : std::string("conv:");
+  const std::string conv_db = conv_src ? json::get_string(*conv_src, "same_as_prefix", "c_") : std::string("c_");
+  struct Row {
+    std::string id, label, created;
+    Json block;
+  };
+  std::vector<Row> rows;
+  struct LinkRow {
+    std::string src, dst, type;
+  };
+  std::vector<LinkRow> links;
+  {
+    auto lock = c.env.db->lock();
+    auto& conn = c.env.db->conn();
+    const std::string path = "$." + mkey;
+    LOOM_TRY_ASSIGN(auto st, conn.prepare("SELECT id, label, created, json_extract(metadata, ?) FROM nodes WHERE json_valid(metadata) AND "
+                                          "json_type(metadata, ?) = 'object' ORDER BY rowid"));
+    st.bind(1, path).bind(2, path);
+    while (true) {
+      LOOM_TRY_ASSIGN(bool more, st.step());
+      if (!more) break;
+      rows.push_back(Row{st.get_text(0), st.get_text(1), st.get_text(2), json::parse_or(st.get_text(3), Json::object())});
+    }
+    LOOM_TRY_ASSIGN(auto ls, conn.prepare("SELECT src, dst, link_type FROM links WHERE json_valid(metadata) AND json_extract(metadata, '$.by') = 'import_graph'"));
+    while (true) {
+      LOOM_TRY_ASSIGN(bool more, ls.step());
+      if (!more) break;
+      links.push_back(LinkRow{ls.get_text(0), ls.get_text(1), ls.get_text(2)});
+    }
+  }
+  std::set<std::string> ids;
+  std::map<std::string, std::int64_t> kids;
+  for (const auto& row : rows) ids.insert(row.id);
+  for (const auto& row : rows) {
+    const std::string up = json::get_string(row.block, "nav_parent");
+    if (!up.empty() && ids.count(up)) ++kids[up];
+  }
+  const std::string area = c.parent_of(src);
+  Read r;
+  for (const auto& row : rows) {
+    const std::string address = address_of_db(row.id, db_prefix, prefix);
+    const std::string up = json::get_string(row.block, "nav_parent");
+    const std::string parent = !up.empty() && ids.count(up) ? address_of_db(up, db_prefix, prefix) : area;
+    Json n = c.make(src, address, row.label.empty() ? row.id : row.label, parent, "db", row.id, "import:graph", row.created);
+    const std::string cls = json::get_string(row.block, "class");
+    if (!cls.empty()) n["kind"] = cls;
+    n["same_as"] = Json::array({row.id});
+    const auto k = kids.find(row.id);
+    n["has_children"] = k != kids.end();
+    if (k != kids.end()) n["count"] = k->second;
+    Json attrs = row.block.value("attrs", Json::object());
+    if (!attrs.is_object()) attrs = Json::object();
+    attrs["id"] = row.id;
+    attrs["class"] = cls;
+    if (const Json* f = json::find(row.block, "facets"); f && f->is_array() && !f->empty()) attrs["facets"] = *f;
+    const Json conv_ids = attrs.value("conv_ids", Json::array());
+    if (conv_ids.is_array())
+      for (const auto& cid : conv_ids)
+        if (cid.is_string() && starts_with(cid.get<std::string>(), conv_db)) {
+          const std::string conv_address = address_of_db(cid.get<std::string>(), conv_db, conv_prefix);
+          n["same_as"].push_back(conv_address);
+          r.edges.push_back(Json{{"src", address}, {"dst", conv_address}, {"kind", "same_as"}});
+        }
+    n["attrs"] = std::move(attrs);
+    r.nodes.push_back(std::move(n));
+  }
+  for (const auto& l : links)
+    if (ids.count(l.src) && ids.count(l.dst))
+      r.edges.push_back(Json{{"src", address_of_db(l.src, db_prefix, prefix)}, {"dst", address_of_db(l.dst, db_prefix, prefix)}, {"kind", l.type}});
+  r.total = static_cast<std::int64_t>(r.nodes.size());
+  return r;
+}
+
 }  // namespace
 
 const std::map<std::string, Impl::Reader>& Impl::readers() {
@@ -2339,7 +2422,7 @@ const std::map<std::string, Impl::Reader>& Impl::readers() {
       {"user.privacy", read_privacy},     {"db.topics", read_topics}, {"db.learned", read_learned},       {"memory.notes", read_memory},     {"db.conversations", read_conversations},
       {"db.messages", read_messages},     {"db.units", read_units},         {"actions.catalogue", read_flows}, {"actions.steps", read_steps},
       {"static.nodes", read_static},      {"automations.declared", read_automations}, {"db.tasks", read_tasks}, {"calibration.items", read_calibration},
-      {"nodes.also", read_also}, {"party.subgraphs", read_subgraphs}};
+      {"nodes.also", read_also}, {"party.subgraphs", read_subgraphs}, {"db.imports", read_imports}};
   return r;
 }
 

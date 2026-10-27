@@ -1241,6 +1241,47 @@
           }
         },
         "description": "Nodes that live elsewhere (the flows of the agent and of the tool sources, the settings of the agent's loop) shown here too: the same address, the same node; its own place stays its parent (breadcrumbs)."
+      },
+      {
+        "id": "imp",
+        "prefix": "imp:",
+        "class": "file",
+        "reader": "db.imports",
+        "label": {
+          "en": "Imports",
+          "pl": "Importy"
+        },
+        "parent": {
+          "area": "imports"
+        },
+        "contain_edge": "part_of",
+        "edges": [
+          {
+            "kind": "part_of",
+            "to": "import node"
+          },
+          {
+            "kind": "derived_from",
+            "to": "import node"
+          },
+          {
+            "kind": "same_as",
+            "to": "conv:<conversation>"
+          }
+        ],
+        "epistemic_default": {
+          "class": "observed",
+          "confidence": 1.0
+        },
+        "params": {
+          "same_as_prefix": "n_",
+          "metadata_key": "import_graph"
+        },
+        "node_why": {
+          "en": "Written by the import (IMPORT_JAKO_PLIKI_W_GRAFIE P1): the file, the export, its entries, conversations and attachments; each node keeps where it was read from.",
+          "pl": "Zapisane przez import (IMPORT_JAKO_PLIKI_W_GRAFIE P1): plik, eksport, jego wpisy, rozmowy i załączniki; każdy węzeł pamięta, skąd go przeczytano."
+        },
+        "description": "The nodes the importer writes for every import (any mode, copy included): rows of the nodes table whose metadata carries import_graph; the class of each node is its own (metadata.import_graph.class, data/graph/classes.pack). The tree under the area follows metadata.import_graph.nav_parent (export -> file -> entries; export -> conversations -> attachments); the links part_of / derived_from are the graph's own record."
       }
     ],
     "identity": {

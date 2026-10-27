@@ -1382,7 +1382,17 @@ std::string_view(R"loom_onboard(                "empty_title": "How can I help?"
                 "src_kind_unknown": "Unknown source block",
                 "src_refkind_attachment": "attachment",
                 "src_refkind_citation": "citation",
-                "src_refkind_media_pointer": "media pointer"
+                "src_refkind_media_pointer": "media pointer",
+                "menu_windows": "Windows",
+                "windows_title": "Open windows",
+                "windows_close": "Close: {{screen}}",
+                "windows_active": "in front",
+                "window_chat": "Chat",
+                "window_receipt_open": "Opened: {{screen}}",
+                "window_receipt_placement": "On this screen “{{asked}}” means the next window; the windows are in ⋮ › Windows.",
+                "window_receipt_close": "Closed: {{count}}",
+                "window_receipt_focus": "In front: {{screen}}",
+                "window_receipt_none": "No such window: {{word}}"
               },
               "pl": {
                 "menu_open": "Menu",
@@ -1789,7 +1799,17 @@ std::string_view(R"loom_onboard(                "empty_title": "How can I help?"
                 "src_kind_unknown": "Nieznany blok źródła",
                 "src_refkind_attachment": "załącznik",
                 "src_refkind_citation": "cytat",
-                "src_refkind_media_pointer": "wskaźnik multimediów"
+                "src_refkind_media_pointer": "wskaźnik multimediów",
+                "menu_windows": "Okna",
+                "windows_title": "Otwarte okna",
+                "windows_close": "Zamknij: {{screen}}",
+                "windows_active": "na wierzchu",
+                "window_chat": "Czat",
+                "window_receipt_open": "Otwarte: {{screen}}",
+                "window_receipt_placement": "Na tym ekranie „{{asked}}” to kolejne okno; okna są w ⋮ › Okna.",
+                "window_receipt_close": "Zamknięte: {{count}}",
+                "window_receipt_focus": "Na wierzchu: {{screen}}",
+                "window_receipt_none": "Nie ma takiego okna: {{word}}"
               }
             }
           }
@@ -1882,7 +1902,8 @@ std::string_view(R"loom_onboard(                "empty_title": "How can I help?"
                 "items": [
                   {
                     "id": "wider",
-                    "label": "cm_wider",
+)loom_onboard", 59982),
+std::string_view(R"loom_onboard(                    "label": "cm_wider",
                     "kind": "step",
                     "step": "wider"
                   },
@@ -1918,8 +1939,7 @@ std::string_view(R"loom_onboard(                "empty_title": "How can I help?"
                   },
                   {
                     "id": "preview_request",
-)loom_onboard", 59976),
-std::string_view(R"loom_onboard(                    "label": "cm_preview_request",
+                    "label": "cm_preview_request",
                     "kind": "preview",
                     "help": "cm_preview_help"
                   },
@@ -2763,7 +2783,8 @@ std::string_view(R"loom_onboard(                    "label": "cm_preview_request
                 "me.details.loading": "Wczytuję szczegóły…",
                 "me.details.error": "Nie udało się wczytać szczegółów ({{reason}}).",
                 "me.details.reason": "Dlaczego tak: {{reason}}",
-                "me.details.in_level": "To pytanie mieści się w wybranym poziomie szczegółowości.",
+)loom_onboard", 59909),
+std::string_view(R"loom_onboard(                "me.details.in_level": "To pytanie mieści się w wybranym poziomie szczegółowości.",
                 "me.details.provenance": "Pochodzenie: {{words}}",
                 "me.action.profile.set": "Popraw",
                 "me.action.rules.set": "Popraw na poziomie",
@@ -2784,8 +2805,7 @@ std::string_view(R"loom_onboard(                    "label": "cm_preview_request
                 "me.confirm.ask_plain": "{{action}}. Na pewno?",
                 "me.confirm.yes": "Tak",
                 "me.confirm.no": "Nie",
-)loom_onboard", 59960),
-std::string_view(R"loom_onboard(                "me.confirm.declined": "Nic nie zmieniłem — odmówiłeś.",
+                "me.confirm.declined": "Nic nie zmieniłem — odmówiłeś.",
                 "me.confirm.done": "Gotowe: {{action}}.",
                 "me.confirm.failed": "Nie udało się ({{reason}}).",
                 "me.result.title": "Odpowiedź:",
@@ -3658,7 +3678,8 @@ std::string_view(R"loom_onboard(                "me.confirm.declined": "Nic nie 
             "value.raw_identifier": "{{id}}",
             "layer.missing": "No current default or user value exists for this key.",
             "layer.excluded": "A durable user exclusion blocks this stable id across pack updates.",
-            "layer.disabled": "The user retained this default but disabled its use.",
+)loom_onboard", 59954),
+std::string_view(R"loom_onboard(            "layer.disabled": "The user retained this default but disabled its use.",
             "layer.user": "An explicit user value overrides the built-in graph layer.",
             "layer.proposal": "This new default touches an excluded area and awaits user acceptance.",
             "layer.builtin": "The built-in graph default applies because no user suppression or override exists.",
@@ -3681,8 +3702,7 @@ std::string_view(R"loom_onboard(                "me.confirm.declined": "Nic nie 
             "layer_name.builtin": "builtin",
             "layer_name.user": "user",
             "layer_name.user_exclusion": "user_exclusion",
-)loom_onboard", 59982),
-std::string_view(R"loom_onboard(            "layer_name.user_disabled": "user_disabled",
+            "layer_name.user_disabled": "user_disabled",
             "layer_name.pack_proposal": "pack_proposal",
             "layer_name.none": "none",
             "option.true": "True",
@@ -4966,7 +4986,8 @@ std::string_view(R"loom_onboard(            "layer_name.user_disabled": "user_di
             "definition_define_group": "Grupa „{{id}}” dla tego, co mają wspólnego Twoje klasy (Twoja własna nakładka: {{overlay}})",
             "rule_replaces": "Zastępuje regułę, którą ustawiłeś wcześniej w tej samej sprawie",
             "offer": "Wyślij moje zdanie jako wiadomość",
-            "offer_hint": "Nic nie poszło do modelu. Twoje zdanie może jeszcze do niego trafić jako zwykła wiadomość.",
+)loom_onboard", 59894),
+std::string_view(R"loom_onboard(            "offer_hint": "Nic nie poszło do modelu. Twoje zdanie może jeszcze do niego trafić jako zwykła wiadomość.",
             "offer_sent": "Twoje zdanie poszło jako wiadomość",
             "offer_declined": "Twoje zdanie zostaje niewysłane",
             "offer_failed": "Nie udało się wysłać zdania ({{reason}}).",
@@ -4985,8 +5006,7 @@ std::string_view(R"loom_onboard(            "layer_name.user_disabled": "user_di
             "guardian_scope_message": "tej wiadomości",
             "guardian_scope_conversation": "tej rozmowy",
             "guardian_scope_task_kind": "tego rodzaju zadań",
-)loom_onboard", 59944),
-std::string_view(R"loom_onboard(            "guardian_scope_person": "wszystkiego, co robisz",
+            "guardian_scope_person": "wszystkiego, co robisz",
             "guardian_scope_global": "wszędzie",
             "guardian_exceptions": "Wyjątki: {{list}}",
             "guardian_instruction": "Jedno polecenie w miejsce serii doprecyzowań (Twoje wiadomości zostają bez zmian): {{instruction}}",
@@ -5841,7 +5861,17 @@ std::string_view(R"loom_onboard(            "guardian_scope_person": "wszystkieg
             "src_kind_unknown": "Unknown source block",
             "src_refkind_attachment": "attachment",
             "src_refkind_citation": "citation",
-            "src_refkind_media_pointer": "media pointer"
+            "src_refkind_media_pointer": "media pointer",
+            "menu_windows": "Windows",
+            "windows_title": "Open windows",
+            "windows_close": "Close: {{screen}}",
+            "windows_active": "in front",
+            "window_chat": "Chat",
+            "window_receipt_open": "Opened: {{screen}}",
+            "window_receipt_placement": "On this screen “{{asked}}” means the next window; the windows are in ⋮ › Windows.",
+            "window_receipt_close": "Closed: {{count}}",
+            "window_receipt_focus": "In front: {{screen}}",
+            "window_receipt_none": "No such window: {{word}}"
           },
           "pl": {
             "menu_open": "Menu",
@@ -5970,7 +6000,8 @@ std::string_view(R"loom_onboard(            "guardian_scope_person": "wszystkieg
             "interaction_lock_zoom": "powiększenie ×{{factor}}",
             "interaction_lock_nothing": "bez przypisania",
             "interaction_locks_inferred": "Stan blokad {{locks}} jest liczony z naciśnięć klawiszy: przeglądarka nie udostępnia go wiarygodnie (getModifierState), więc blokada włączona przed wejściem na stronę może być pokazana błędnie.",
-            "interaction_locks_no_api": "Ta przeglądarka nie ma getModifierState: stan wszystkich blokad jest liczony z naciśnięć klawiszy.",
+)loom_onboard", 59866),
+std::string_view(R"loom_onboard(            "interaction_locks_no_api": "Ta przeglądarka nie ma getModifierState: stan wszystkich blokad jest liczony z naciśnięć klawiszy.",
             "interaction_conflict": "Konflikt przypisań: {{ids}}. Działa ostatnie; żadne nie jest zablokowane.",
             "interaction_last": "Ostatnie działanie: {{label}}",
             "interaction_recorded": "Zapisane tylko jako dane (głos, inne urządzenia): {{count}}",
@@ -5995,8 +6026,7 @@ std::string_view(R"loom_onboard(            "guardian_scope_person": "wszystkieg
             "ve3d_counts": "{{nodes}} węzłów w 3D, widocznych etykiet: {{labels}}",
             "scene_hint_title": "Sterowanie (3D, {{mode}})",
             "scene_hint_select": "Wybór: {{what}}",
-)loom_onboard", 59982),
-std::string_view(R"loom_onboard(            "scene_hint_held": "Trzymaj: {{what}}",
+            "scene_hint_held": "Trzymaj: {{what}}",
             "scene_hint_stick": "Drążek teraz: {{what}}",
             "scene_hint_coarse": "Duże gesty (tylko zgrubne ruchy sceny): {{what}}",
             "scene_hint_recorded": "Zapisane tylko jako dane (głos, bez obsługi): {{count}}",
@@ -6249,7 +6279,17 @@ std::string_view(R"loom_onboard(            "scene_hint_held": "Trzymaj: {{what}
             "src_kind_unknown": "Nieznany blok źródła",
             "src_refkind_attachment": "załącznik",
             "src_refkind_citation": "cytat",
-            "src_refkind_media_pointer": "wskaźnik multimediów"
+            "src_refkind_media_pointer": "wskaźnik multimediów",
+            "menu_windows": "Okna",
+            "windows_title": "Otwarte okna",
+            "windows_close": "Zamknij: {{screen}}",
+            "windows_active": "na wierzchu",
+            "window_chat": "Czat",
+            "window_receipt_open": "Otwarte: {{screen}}",
+            "window_receipt_placement": "Na tym ekranie „{{asked}}” to kolejne okno; okna są w ⋮ › Okna.",
+            "window_receipt_close": "Zamknięte: {{count}}",
+            "window_receipt_focus": "Na wierzchu: {{screen}}",
+            "window_receipt_none": "Nie ma takiego okna: {{word}}"
           }
         }
       }
@@ -6911,7 +6951,8 @@ std::string_view(R"loom_onboard(            "scene_hint_held": "Trzymaj: {{what}
             "actions.no_focus": "Działania są na karcie węzła: otwórz wiersz przez ⋯ albo wejdź w jeden.",
             "loading": "Wczytuję…",
             "error": "Nie udało się odczytać grafu: {{reason}}",
-            "error.no_actions": "aplikacja nie ma połączenia z działaniami silnika (nie dał go ani serwer, ani powłoka Android)",
+)loom_onboard", 59877),
+std::string_view(R"loom_onboard(            "error.no_actions": "aplikacja nie ma połączenia z działaniami silnika (nie dał go ani serwer, ani powłoka Android)",
             "chip.rom": "Preset (ROM)",
             "status.present": "jest w aplikacji",
             "status.partial": "częściowo w aplikacji",
@@ -6961,8 +7002,7 @@ std::string_view(R"loom_onboard(            "scene_hint_held": "Trzymaj: {{what}
             "evidence.declared": "preset ROM",
             "evidence.observed": "powiedziałeś lub zrobiłeś",
             "evidence.said": "powiedziałeś to",
-)loom_onboard", 59973),
-std::string_view(R"loom_onboard(            "evidence.derived": "wyprowadzone",
+            "evidence.derived": "wyprowadzone",
             "evidence.inferred": "wniosek modelu (pewność {{confidence}})",
             "evidence.inferred_unknown": "wniosek modelu (pewność nieznana)",
             "evidence.extrapolated": "ekstrapolowane",
@@ -7772,7 +7812,8 @@ std::string_view(R"loom_onboard(            "evidence.derived": "wyprowadzone",
           }
         }
       }
-    },
+)loom_onboard", 59998),
+std::string_view(R"loom_onboard(    },
     {
       "id": "presentation.interview/v1",
       "key": "presentation.interview",
@@ -7790,8 +7831,7 @@ std::string_view(R"loom_onboard(            "evidence.derived": "wyprowadzone",
             "en": "The empty chat shows the card “Let us get to know each other” (setting onboarding_card = show, while the interview has not started): Start opens the interview conversation, Later hides the card until the next launch, Never ask hides it for good. In the interview conversation the first question is three level cards (minimal, usual, detailed) with a preview: what I will ask, what I will write down, what the model will see; tapping a card sends the level's name as your answer. Under a question there are quick replies (Skip, Not now, Never, Summary, How many left) — they send the control word as an ordinary message. A remark like “do not ask about health” gives a proposal “This is what I understood” with Yes and No. Above the conversation a line “A conversation without a model — a form only” shows the number of questions left. No model is called."
           },
           "reason": {
-)loom_onboard", 59898),
-std::string_view(R"loom_onboard(            "pl": "Ekran „Ty” (podgrafy, stany pól, Popraw/Zapomnij), jednostki i przycisk „Poznaj mnie” w menu to osobna paczka (W2b); wywiad z modelem nie istnieje (jądro odrzuca go z powodem).",
+            "pl": "Ekran „Ty” (podgrafy, stany pól, Popraw/Zapomnij), jednostki i przycisk „Poznaj mnie” w menu to osobna paczka (W2b); wywiad z modelem nie istnieje (jądro odrzuca go z powodem).",
             "en": "The “You” screen (subgraphs, slot states, Correct/Forget), units and the “Get to know me” menu entry are a separate package (W2b); an interview with a model does not exist (the kernel refuses it with a reason)."
           }
         },
@@ -8040,7 +8080,7 @@ std::string_view(R"loom_onboard(            "pl": "Ekran „Ty” (podgrafy, sta
   },
   "presentation_key": "presentation.onboarding"
 }
-)loom_onboard", 9272)};
+)loom_onboard", 11907)};
 static constexpr std::string_view kOnboardingScenario[] = {
 std::string_view(R"loom_onboard({
   "schema": "loom.onboarding.scenario/1",

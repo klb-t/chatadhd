@@ -1,0 +1,320 @@
+{
+  "schema": "loom.runtime_profile/1",
+  "domain": "import_graph",
+  "revision": 1,
+  "description": "Import as graph nodes (IMPORT_JAKO_PLIKI_W_GRAFIE_2026-10-23 §3.3, package P1). Every import, in every mode (copy included), writes nodes of the existing nodes table (no new table or column, schema_version stays 4): the imported file (its container class by format), an export node with its facets (by provider), the archive entries, the conversations and the attachments, linked part_of / derived_from (relations of graph/classes.pack). A node's id is derived from a key built from the source's blob hash, so importing the same bytes again finds the same nodes instead of making new ones. The summary sentence is built from the templates below in the language preset (pl), with the other language kept beside it; no raw JSON is ever put in it. Everything is a preset of the person: enabled false writes no import nodes (the import itself is unchanged); classes, facets, words and templates are data and an overlay <data_dir>/profiles/import_graph.pack changes them. The lists are examples and open: an unknown format falls back to the class file, an unknown provider to the facet export, an unknown disposition to its own token.",
+  "defaults": {
+    "enabled": true,
+    "language": "pl",
+    "kind_prefix": "import:",
+    "metadata_key": "import_graph",
+    "container_class_by_format": {
+      "zip": "zip_archive",
+      "json": "json_file",
+      "jsonl": "jsonl_file",
+      "html": "html_file",
+      "mht": "html_file",
+      "sqlite": "sqlite_file",
+      "markdown": "text_file",
+      "text": "text_file",
+      "screenshot": "image_file"
+    },
+    "default_container_class": "file",
+    "member_class_by_extension": {
+      "json": "json_file",
+      "jsonl": "jsonl_file",
+      "html": "html_file",
+      "htm": "html_file",
+      "txt": "text_file",
+      "md": "text_file",
+      "db": "sqlite_file",
+      "sqlite": "sqlite_file",
+      "zip": "zip_in_zip",
+      "png": "image_file",
+      "jpg": "image_file",
+      "jpeg": "image_file",
+      "webp": "image_file",
+      "gif": "image_file"
+    },
+    "export_facets_by_provider": {
+      "openai": [
+        "export.openai",
+        "export.openai.chatgpt"
+      ],
+      "anthropic": [
+        "export.anthropic",
+        "export.anthropic.claude"
+      ],
+      "google": [
+        "export.google",
+        "export.google.gemini"
+      ],
+      "xai": [
+        "export.xai",
+        "export.xai.grok"
+      ],
+      "loom": [
+        "export.loom"
+      ]
+    },
+    "entity_class_by_kind": {
+      "export:account": "account",
+      "export:project": "project",
+      "export:project_doc": "document",
+      "export:memory": "memory_note",
+      "export:artifact": "document",
+      "export:feedback": "observation",
+      "export:shared_link": "graph_link"
+    },
+    "links": {
+      "contains": "part_of",
+      "read_from": "derived_from"
+    },
+    "words": {
+      "provider": {
+        "openai": {
+          "en": "ChatGPT (OpenAI) export",
+          "pl": "Eksport ChatGPT (OpenAI)"
+        },
+        "anthropic": {
+          "en": "Claude (Anthropic) export",
+          "pl": "Eksport Claude (Anthropic)"
+        },
+        "google": {
+          "en": "Gemini (Google) export",
+          "pl": "Eksport Gemini (Google)"
+        },
+        "xai": {
+          "en": "Grok (xAI) export",
+          "pl": "Eksport Grok (xAI)"
+        },
+        "loom": {
+          "en": "Loom export",
+          "pl": "Eksport Loom"
+        },
+        "unknown": {
+          "en": "Export of an unrecognised provider",
+          "pl": "Eksport nierozpoznanego dostawcy"
+        }
+      },
+      "plain_file": {
+        "en": "File",
+        "pl": "Plik"
+      },
+      "disposition": {
+        "offline_viewer_skipped": {
+          "en": "offline viewer, not read (the conversations come from the JSON files)",
+          "pl": "przeglądarka offline, nie wczytana (rozmowy pochodzą z plików JSON)"
+        },
+        "unknown": {
+          "en": "not recognised, kept as a node",
+          "pl": "nierozpoznany, zachowany jako węzeł"
+        },
+        "empty": {
+          "en": "empty",
+          "pl": "pusty"
+        }
+      },
+      "export_label": {
+        "en": "{{what}}: {{file}}",
+        "pl": "{{what}}: {{file}}"
+      },
+      "class": {
+        "account": {
+          "en": "accounts",
+          "pl": "konta"
+        },
+        "project": {
+          "en": "projects",
+          "pl": "projekty"
+        },
+        "document": {
+          "en": "documents",
+          "pl": "dokumenty"
+        },
+        "memory_note": {
+          "en": "memories",
+          "pl": "wspomnienia"
+        },
+        "observation": {
+          "en": "feedback",
+          "pl": "opinie"
+        },
+        "graph_link": {
+          "en": "shared links",
+          "pl": "udostępnione łącza"
+        }
+      }
+    },
+    "read_dispositions": [
+      "conversations",
+      "asset",
+      "record"
+    ],
+    "summary": {
+      "parts": [
+        {
+          "text": {
+            "en": "{{what}} from the file “{{file}}”.",
+            "pl": "{{what}} z pliku „{{file}}”."
+          }
+        },
+        {
+          "text": {
+            "en": "Conversations: {{conversations}}, messages: {{messages}}.",
+            "pl": "Rozmowy: {{conversations}}, wiadomości: {{messages}}."
+          }
+        },
+        {
+          "when": "branches",
+          "text": {
+            "en": "Branches: {{branches}}.",
+            "pl": "Gałęzie: {{branches}}."
+          }
+        },
+        {
+          "when": "attachments",
+          "text": {
+            "en": "Attachments: {{attachments}} (found in the archive: {{attachments_linked}}; the rest are names and descriptions only).",
+            "pl": "Załączniki: {{attachments}} (odnalezione w archiwum: {{attachments_linked}}; pozostałe to tylko nazwy i opisy)."
+          }
+        },
+        {
+          "when": "entities",
+          "text": {
+            "en": "Also described: {{entities_text}}.",
+            "pl": "Opisane także: {{entities_text}}."
+          }
+        },
+        {
+          "when": "members",
+          "text": {
+            "en": "Archive entries: {{members}}.",
+            "pl": "Wpisy archiwum: {{members}}."
+          }
+        },
+        {
+          "when": "skipped",
+          "text": {
+            "en": "Not read as conversations: {{skipped_text}}.",
+            "pl": "Nie wczytane jako rozmowy: {{skipped_text}}."
+          }
+        },
+        {
+          "when": "already_imported",
+          "text": {
+            "en": "These bytes were imported before; the same nodes were found again.",
+            "pl": "Te same bajty były już importowane; odnaleziono te same węzły."
+          }
+        },
+        {
+          "text": {
+            "en": "In the graph: {{nodes_created}} new nodes, {{nodes_reused}} already there — open the area “Imports”.",
+            "pl": "W grafie: nowe węzły {{nodes_created}}, już istniejące {{nodes_reused}} — zobacz obszar „Importy”."
+          }
+        }
+      ],
+      "separator": " ",
+      "list_separator": ", ",
+      "entity_item": {
+        "en": "{{label}}: {{count}}",
+        "pl": "{{label}}: {{count}}"
+      },
+      "skipped_item": {
+        "en": "{{name}} ({{why}})",
+        "pl": "{{name}} ({{why}})"
+      }
+    }
+  },
+  "value_schema": {
+    "type": "object",
+    "required": [
+      "enabled",
+      "language",
+      "kind_prefix",
+      "metadata_key",
+      "container_class_by_format",
+      "default_container_class",
+      "export_facets_by_provider",
+      "links",
+      "words",
+      "summary"
+    ],
+    "additionalProperties": true,
+    "properties": {
+      "enabled": {
+        "type": "boolean",
+        "x-setting": "/enabled",
+        "x-consumer": "loom::import_graph::project (src/import/import_graph.cpp)",
+        "description": "false: no import nodes are written; the import itself is unchanged."
+      },
+      "language": {
+        "type": "string",
+        "minLength": 1,
+        "x-setting": "/language",
+        "x-consumer": "loom::import_graph::project",
+        "description": "The language of the summary sentence (a preset; every language the templates carry is also returned)."
+      },
+      "kind_prefix": {
+        "type": "string",
+        "x-setting": "/kind_prefix",
+        "x-consumer": "loom::import_graph::project"
+      },
+      "metadata_key": {
+        "type": "string",
+        "minLength": 1,
+        "x-setting": "/metadata_key",
+        "x-consumer": "loom::import_graph::project, projection reader db.imports"
+      },
+      "container_class_by_format": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "string"
+        },
+        "x-setting": "/container_class_by_format",
+        "x-consumer": "loom::import_graph::project"
+      },
+      "default_container_class": {
+        "type": "string",
+        "x-setting": "/default_container_class",
+        "x-consumer": "loom::import_graph::project"
+      },
+      "member_class_by_extension": {
+        "type": "object",
+        "x-setting": "/member_class_by_extension",
+        "x-consumer": "loom::import_graph::project"
+      },
+      "export_facets_by_provider": {
+        "type": "object",
+        "x-setting": "/export_facets_by_provider",
+        "x-consumer": "loom::import_graph::project"
+      },
+      "entity_class_by_kind": {
+        "type": "object",
+        "x-setting": "/entity_class_by_kind",
+        "x-consumer": "loom::import_graph::project"
+      },
+      "links": {
+        "type": "object",
+        "x-setting": "/links",
+        "x-consumer": "loom::import_graph::project"
+      },
+      "words": {
+        "type": "object",
+        "x-setting": "/words",
+        "x-consumer": "loom::import_graph::project"
+      },
+      "read_dispositions": {
+        "type": "array",
+        "x-setting": "/read_dispositions",
+        "x-consumer": "loom::import_graph::project",
+        "description": "Member dispositions that count as read; any other one is named in the summary with its words (or its own token)."
+      },
+      "summary": {
+        "type": "object",
+        "x-setting": "/summary",
+        "x-consumer": "loom::import_graph::project"
+      }
+    }
+  }
+}

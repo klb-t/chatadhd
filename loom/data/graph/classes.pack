@@ -340,6 +340,125 @@
         "en": "A node of the environment layer (environment, capability, access, vault); references only, never secrets or bytes.",
         "pl": "Węzeł warstwy środowisk (środowisko, zdolność, dostęp, sejf); tylko odniesienia, nigdy sekrety ani bajty."
       }
+    },
+    "has_members": {
+      "label": {
+        "en": "Has members",
+        "pl": "Ma elementy"
+      },
+      "description": "Contains entries of its own (an archive, a directory, an export)."
+    },
+    "container": {
+      "label": {
+        "en": "Container",
+        "pl": "Pojemnik"
+      },
+      "description": "Holds other files; what is inside is listed as nodes linked part_of."
+    },
+    "zip": {
+      "label": {
+        "en": "ZIP",
+        "pl": "ZIP"
+      },
+      "description": "A ZIP container (entries compressed one by one; one entry can be read without the others)."
+    },
+    "nested": {
+      "label": {
+        "en": "Nested",
+        "pl": "Zagnieżdżony"
+      },
+      "description": "A container inside another container (ZIP in ZIP)."
+    },
+    "on_disk": {
+      "label": {
+        "en": "On disk",
+        "pl": "Na dysku"
+      },
+      "description": "An unpacked tree that exists on the disk."
+    },
+    "has_locator": {
+      "label": {
+        "en": "Has locator",
+        "pl": "Ma lokalizator"
+      },
+      "description": "Says where its bytes are inside the source (member, index, JSON pointer)."
+    },
+    "has_provenance": {
+      "label": {
+        "en": "Has provenance",
+        "pl": "Ma pochodzenie"
+      },
+      "description": "Records where it came from (file, hash, source id)."
+    },
+    "export": {
+      "label": {
+        "en": "Export",
+        "pl": "Eksport"
+      },
+      "description": "An export of data from an application or a provider."
+    },
+    "vendor:openai": {
+      "label": {
+        "en": "From OpenAI",
+        "pl": "Od OpenAI"
+      },
+      "description": "Made by an OpenAI product (example of a vendor trait; the list is open)."
+    },
+    "vendor:anthropic": {
+      "label": {
+        "en": "From Anthropic",
+        "pl": "Od Anthropic"
+      },
+      "description": "Made by an Anthropic product (example of a vendor trait; the list is open)."
+    },
+    "vendor:google": {
+      "label": {
+        "en": "From Google",
+        "pl": "Od Google"
+      },
+      "description": "Made by a Google product (example of a vendor trait; the list is open)."
+    },
+    "vendor:xai": {
+      "label": {
+        "en": "From xAI",
+        "pl": "Od xAI"
+      },
+      "description": "Made by an xAI product (example of a vendor trait; the list is open)."
+    },
+    "vendor:loom": {
+      "label": {
+        "en": "From Loom",
+        "pl": "Od Loom"
+      },
+      "description": "Made by this application (its own export)."
+    },
+    "tree:mapping": {
+      "label": {
+        "en": "Message tree (mapping)",
+        "pl": "Drzewo wiadomości (mapping)"
+      },
+      "description": "Conversations stored as a tree of nodes keyed by id (ChatGPT `mapping`)."
+    },
+    "layout": {
+      "label": {
+        "en": "Layout",
+        "pl": "Układ"
+      },
+      "description": "One observed layout (version) of an export; its stable id is the hash of its fingerprint, the label is only a name."
+    },
+    "activity_log": {
+      "label": {
+        "en": "Activity log",
+        "pl": "Dziennik aktywności"
+      },
+      "description": "Entries of activity that are grouped into conversations by a rule (a hypothesis, data)."
+    },
+    "attachment": {
+      "label": {
+        "en": "Attachment",
+        "pl": "Załącznik"
+      },
+      "description": "A file or a reference to a file attached to a message (resolved or not, with the reason)."
     }
   },
   "groups": {
@@ -1476,6 +1595,338 @@
         "en": "Link to a node shown elsewhere",
         "pl": "Odnośnik do węzła z innego miejsca"
       }
+    },
+    "archive": {
+      "label": {
+        "en": "Archive",
+        "pl": "Archiwum"
+      },
+      "parent": "file",
+      "traits": [
+        "has_members",
+        "container"
+      ],
+      "description": "A file that holds other files (import as graph nodes, IMPORT_JAKO_PLIKI_W_GRAFIE §2.2; example, the list is open)."
+    },
+    "zip_archive": {
+      "label": {
+        "en": "ZIP archive",
+        "pl": "Archiwum ZIP"
+      },
+      "parent": "archive",
+      "traits": [
+        "zip"
+      ],
+      "description": "A ZIP archive (import as graph nodes, IMPORT_JAKO_PLIKI_W_GRAFIE §2.2; example, the list is open)."
+    },
+    "zip_in_zip": {
+      "label": {
+        "en": "ZIP in ZIP",
+        "pl": "ZIP w ZIP-ie"
+      },
+      "parent": "zip_archive",
+      "traits": [
+        "nested"
+      ],
+      "description": "A ZIP archive inside another one (import as graph nodes, IMPORT_JAKO_PLIKI_W_GRAFIE §2.2; example, the list is open)."
+    },
+    "directory_tree": {
+      "label": {
+        "en": "Directory tree",
+        "pl": "Drzewo katalogów"
+      },
+      "parent": "archive",
+      "traits": [
+        "on_disk"
+      ],
+      "description": "An unpacked tree on the disk; the tree is this node (import as graph nodes, IMPORT_JAKO_PLIKI_W_GRAFIE §2.2; example, the list is open)."
+    },
+    "archive_member": {
+      "label": {
+        "en": "Archive entry",
+        "pl": "Wpis archiwum"
+      },
+      "parent": "archive_item",
+      "traits": [
+        "has_locator",
+        "has_hash"
+      ],
+      "description": "One entry of an archive: name, sizes, method, CRC, hash (import as graph nodes, IMPORT_JAKO_PLIKI_W_GRAFIE §2.2; example, the list is open)."
+    },
+    "json_file": {
+      "label": {
+        "en": "JSON file",
+        "pl": "Plik JSON"
+      },
+      "parent": "file",
+      "description": "A JSON document (import as graph nodes, IMPORT_JAKO_PLIKI_W_GRAFIE §2.2; example, the list is open)."
+    },
+    "jsonl_file": {
+      "label": {
+        "en": "JSON Lines file",
+        "pl": "Plik JSON Lines"
+      },
+      "parent": "file",
+      "description": "One JSON value per line (import as graph nodes, IMPORT_JAKO_PLIKI_W_GRAFIE §2.2; example, the list is open)."
+    },
+    "html_file": {
+      "label": {
+        "en": "HTML file",
+        "pl": "Plik HTML"
+      },
+      "parent": "file",
+      "traits": [
+        "has_text"
+      ],
+      "description": "An HTML (or MHT) page (import as graph nodes, IMPORT_JAKO_PLIKI_W_GRAFIE §2.2; example, the list is open)."
+    },
+    "sqlite_file": {
+      "label": {
+        "en": "SQLite file",
+        "pl": "Plik SQLite"
+      },
+      "parent": "file",
+      "traits": [
+        "has_table"
+      ],
+      "description": "An SQLite database (import as graph nodes, IMPORT_JAKO_PLIKI_W_GRAFIE §2.2; example, the list is open)."
+    },
+    "text_file": {
+      "label": {
+        "en": "Text file",
+        "pl": "Plik tekstowy"
+      },
+      "parent": "file",
+      "traits": [
+        "has_text"
+      ],
+      "description": "Plain text or Markdown (import as graph nodes, IMPORT_JAKO_PLIKI_W_GRAFIE §2.2; example, the list is open)."
+    },
+    "image_file": {
+      "label": {
+        "en": "Image file",
+        "pl": "Plik obrazu"
+      },
+      "parent": "file",
+      "traits": [
+        "has_image"
+      ],
+      "description": "An image (a screenshot read by OCR) (import as graph nodes, IMPORT_JAKO_PLIKI_W_GRAFIE §2.2; example, the list is open)."
+    },
+    "binary_file": {
+      "label": {
+        "en": "Binary file",
+        "pl": "Plik binarny"
+      },
+      "parent": "file",
+      "description": "Bytes no reader interprets (import as graph nodes, IMPORT_JAKO_PLIKI_W_GRAFIE §2.2; example, the list is open)."
+    },
+    "export": {
+      "label": {
+        "en": "Export",
+        "pl": "Eksport"
+      },
+      "traits": [
+        "export",
+        "has_provenance",
+        "has_members"
+      ],
+      "description": "An export of data (content axis; a node has a container class and export facets, D2-1) (import as graph nodes, IMPORT_JAKO_PLIKI_W_GRAFIE §2.2; example, the list is open)."
+    },
+    "export.openai": {
+      "label": {
+        "en": "OpenAI export",
+        "pl": "Eksport OpenAI"
+      },
+      "parent": "export",
+      "traits": [
+        "vendor:openai"
+      ],
+      "description": "Exports of one vendor (import as graph nodes, IMPORT_JAKO_PLIKI_W_GRAFIE §2.2; example, the list is open)."
+    },
+    "export.anthropic": {
+      "label": {
+        "en": "Anthropic export",
+        "pl": "Eksport Anthropic"
+      },
+      "parent": "export",
+      "traits": [
+        "vendor:anthropic"
+      ],
+      "description": "Exports of one vendor (import as graph nodes, IMPORT_JAKO_PLIKI_W_GRAFIE §2.2; example, the list is open)."
+    },
+    "export.google": {
+      "label": {
+        "en": "Google export",
+        "pl": "Eksport Google"
+      },
+      "parent": "export",
+      "traits": [
+        "vendor:google"
+      ],
+      "description": "Exports of one vendor (import as graph nodes, IMPORT_JAKO_PLIKI_W_GRAFIE §2.2; example, the list is open)."
+    },
+    "export.xai": {
+      "label": {
+        "en": "xAI export",
+        "pl": "Eksport xAI"
+      },
+      "parent": "export",
+      "traits": [
+        "vendor:xai"
+      ],
+      "description": "Exports of one vendor (import as graph nodes, IMPORT_JAKO_PLIKI_W_GRAFIE §2.2; example, the list is open)."
+    },
+    "export.loom": {
+      "label": {
+        "en": "Loom export",
+        "pl": "Eksport Loom"
+      },
+      "parent": "export",
+      "traits": [
+        "vendor:loom"
+      ],
+      "description": "Exports of one vendor (import as graph nodes, IMPORT_JAKO_PLIKI_W_GRAFIE §2.2; example, the list is open)."
+    },
+    "export.openai.chatgpt": {
+      "label": {
+        "en": "ChatGPT export",
+        "pl": "Eksport ChatGPT"
+      },
+      "parent": "export.openai",
+      "traits": [
+        "tree:mapping"
+      ],
+      "description": "ChatGPT data export: conversation shards, HTML twin, assets (import as graph nodes, IMPORT_JAKO_PLIKI_W_GRAFIE §2.2; example, the list is open)."
+    },
+    "export.openai.chatgpt/single-2023": {
+      "label": {
+        "en": "ChatGPT layout: single file, 2023",
+        "pl": "Układ ChatGPT: pojedynczy plik, 2023"
+      },
+      "parent": "export.openai.chatgpt",
+      "traits": [
+        "layout"
+      ],
+      "description": "An example layout label; the real id of a layout is the hash of its fingerprint (import as graph nodes, IMPORT_JAKO_PLIKI_W_GRAFIE §2.2; example, the list is open)."
+    },
+    "export.openai.chatgpt/single-2025": {
+      "label": {
+        "en": "ChatGPT layout: single file, 2025",
+        "pl": "Układ ChatGPT: pojedynczy plik, 2025"
+      },
+      "parent": "export.openai.chatgpt",
+      "traits": [
+        "layout"
+      ],
+      "description": "An example layout label; the real id of a layout is the hash of its fingerprint (import as graph nodes, IMPORT_JAKO_PLIKI_W_GRAFIE §2.2; example, the list is open)."
+    },
+    "export.openai.chatgpt/sharded-2026": {
+      "label": {
+        "en": "ChatGPT layout: sharded, 2026",
+        "pl": "Układ ChatGPT: podział na pliki, 2026"
+      },
+      "parent": "export.openai.chatgpt",
+      "traits": [
+        "layout"
+      ],
+      "description": "An example layout label; the real id of a layout is the hash of its fingerprint (import as graph nodes, IMPORT_JAKO_PLIKI_W_GRAFIE §2.2; example, the list is open)."
+    },
+    "export.openai.chatgpt/privacy-portal-2026": {
+      "label": {
+        "en": "ChatGPT layout: privacy portal, 2026",
+        "pl": "Układ ChatGPT: portal prywatności, 2026"
+      },
+      "parent": "export.openai.chatgpt",
+      "traits": [
+        "layout"
+      ],
+      "description": "An example layout label; the real id of a layout is the hash of its fingerprint (import as graph nodes, IMPORT_JAKO_PLIKI_W_GRAFIE §2.2; example, the list is open)."
+    },
+    "export.anthropic.claude": {
+      "label": {
+        "en": "Claude export",
+        "pl": "Eksport Claude"
+      },
+      "parent": "export.anthropic",
+      "description": "Claude.ai data export (import as graph nodes, IMPORT_JAKO_PLIKI_W_GRAFIE §2.2; example, the list is open)."
+    },
+    "export.anthropic.claude/2024-text": {
+      "label": {
+        "en": "Claude layout: text, 2024",
+        "pl": "Układ Claude: tekst, 2024"
+      },
+      "parent": "export.anthropic.claude",
+      "traits": [
+        "layout"
+      ],
+      "description": "An example layout label (import as graph nodes, IMPORT_JAKO_PLIKI_W_GRAFIE §2.2; example, the list is open)."
+    },
+    "export.anthropic.claude/2026-full": {
+      "label": {
+        "en": "Claude layout: full, 2026",
+        "pl": "Układ Claude: pełny, 2026"
+      },
+      "parent": "export.anthropic.claude",
+      "traits": [
+        "layout"
+      ],
+      "description": "An example layout label (import as graph nodes, IMPORT_JAKO_PLIKI_W_GRAFIE §2.2; example, the list is open)."
+    },
+    "export.anthropic.claude_code": {
+      "label": {
+        "en": "Claude Code export",
+        "pl": "Eksport Claude Code"
+      },
+      "parent": "export.anthropic",
+      "description": "Claude Code sessions (import as graph nodes, IMPORT_JAKO_PLIKI_W_GRAFIE §2.2; example, the list is open)."
+    },
+    "export.google.gemini": {
+      "label": {
+        "en": "Gemini export",
+        "pl": "Eksport Gemini"
+      },
+      "parent": "export.google",
+      "description": "Gemini activity from Google Takeout (import as graph nodes, IMPORT_JAKO_PLIKI_W_GRAFIE §2.2; example, the list is open)."
+    },
+    "export.google.gemini/takeout-myactivity": {
+      "label": {
+        "en": "Gemini layout: Takeout MyActivity",
+        "pl": "Układ Gemini: Takeout MyActivity"
+      },
+      "parent": "export.google.gemini",
+      "traits": [
+        "layout",
+        "activity_log"
+      ],
+      "description": "An example layout label (import as graph nodes, IMPORT_JAKO_PLIKI_W_GRAFIE §2.2; example, the list is open)."
+    },
+    "export.xai.grok": {
+      "label": {
+        "en": "Grok export",
+        "pl": "Eksport Grok"
+      },
+      "parent": "export.xai",
+      "description": "Grok data export (import as graph nodes, IMPORT_JAKO_PLIKI_W_GRAFIE §2.2; example, the list is open)."
+    },
+    "attachment": {
+      "label": {
+        "en": "Attachment",
+        "pl": "Załącznik"
+      },
+      "traits": [
+        "attachment",
+        "has_locator"
+      ],
+      "description": "A file attached to a message: resolved to bytes or unresolved with the reason (import as graph nodes, IMPORT_JAKO_PLIKI_W_GRAFIE §2.2; example, the list is open)."
+    },
+    "account": {
+      "label": {
+        "en": "Account",
+        "pl": "Konto"
+      },
+      "parent": "party",
+      "description": "An account described by an export (user.json) (import as graph nodes, IMPORT_JAKO_PLIKI_W_GRAFIE §2.2; example, the list is open)."
     }
   }
 }

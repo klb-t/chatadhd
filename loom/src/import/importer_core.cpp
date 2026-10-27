@@ -10,6 +10,7 @@
 #include "importer_internal.h"
 #include "import_preset_identity.h"
 #include "import/import_recognition.h"
+#include "import/import_graph.h"
 #include "loom/event_bus.h"
 #include "loom/log.h"
 #include "loom/provenance.h"
@@ -39,6 +40,7 @@ Json ImportResult::to_json() const {
   if (!export_report.is_null()) out["export_report"] = export_report;
   if (!recognition.is_null()) out["recognition"] = recognition;
   if (!duplicates.is_null()) out["duplicates"] = duplicates;
+  if (!import_graph.is_null()) out["import_graph"] = import_graph;
   return out;
 }
 
@@ -673,6 +675,17 @@ Result<ImportResult> ConversationImporter::import_file(const fs::path& path, con
   ledger_ = &ledger;
   auto result = import_file_as(path, opts, "file");
   if (result) ledger.finish(*result);
+  // Import as graph nodes (P1): every mode, cache hits included; idempotent by blob hash. A failure here never
+  // undoes the import: it is reported as a warning and the import stands.
+  if (result && !result->cancelled) {
+    auto projected = import_graph::project(db_, path, *result);
+    if (!projected) {
+      log::warn(kLog, "import graph projection failed: {}", projected.error().message);
+      result->warnings.push_back("import graph nodes not written: " + projected.error().message);
+    } else if (!projected->is_null()) {
+      result->import_graph = std::move(*projected);
+    }
+  }
   if (result && opts.completed) opts.completed(*result);
   return result;
 }

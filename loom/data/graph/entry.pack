@@ -572,6 +572,31 @@
           "focus": "area:experiments"
         }
       }
+    },
+    "imports": {
+      "order": 23,
+      "label": {
+        "en": "Imports",
+        "pl": "Importy"
+      },
+      "why": {
+        "en": "Every imported file as a node: the export, its entries, conversations and attachments, with what was read from where.",
+        "pl": "Każdy zaimportowany plik jako węzeł: eksport, jego wpisy, rozmowy i załączniki, z tym, co skąd przeczytano."
+      },
+      "axes": {
+        "about": "world",
+        "kind": "data",
+        "time": "history"
+      },
+      "bindings": [
+        "db.imports"
+      ],
+      "expand": {
+        "view": "graph.navigate",
+        "params": {
+          "focus": "area:imports"
+        }
+      }
     }
   },
   "bindings": {
@@ -823,6 +848,9 @@
     "calibration.items": {
       "provider": "calibration.items",
       "as": "calibration_items"
+    },
+    "db.imports": {
+      "provider": "db.imports"
     }
   },
   "seed": {

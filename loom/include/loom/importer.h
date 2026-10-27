@@ -198,6 +198,10 @@ struct ImportResult {
   // R50: {"policy","count","items":[{level,...,proposal}]}; null when nothing
   // was detected as a duplicate.
   Json duplicates = nullptr;
+  // Import as graph nodes (IMPORT_JAKO_PLIKI_W_GRAFIE P1, src/import/import_graph.h): {"nodes":{class:n},
+  // "created","reused","file_node","export_node","summary":{"lang","text","texts":{lang:text}}}; null when the
+  // projection is disabled by its preset (runtime/import_graph.pack enabled:false) or did not run.
+  Json import_graph = nullptr;
   // {"conversations":[...],"format","source_id","blob_hash","messages","cancelled","warnings","already_imported"}
   // (+ "export_report" when set)
   Json to_json() const;
