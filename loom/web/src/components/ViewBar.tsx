@@ -49,7 +49,7 @@ export default function ViewBar({ model, language, compact = false }: { model: V
               <span data-testid="view-advisory-text">{dataLabel(chip.text, language, chip.code)}</span>{" "}
               <em data-testid="view-advisory-question">{t("vbar_question")}</em>{" "}
               {chip.choices.map(c => (
-                <button key={c.id} type="button" data-testid={`view-advisory-choice-${c.id}`} onClick={() => void answer(chip, c.id)} style={{ marginLeft: "0.3em" }}>
+                <button key={c.id} type="button" data-testid={`view-advisory-choice-${c.id}`} onClick={() => void answer(chip, c.id)} style={{ marginLeft: "0.3em", minHeight: 44, minWidth: 44 }}>
                   {dataLabel(c.label, language, c.id)}
                 </button>
               ))}
