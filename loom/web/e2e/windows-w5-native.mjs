@@ -4,7 +4,10 @@
 // a reload opens „praca” (both windows); the graph closed from ⋮ › Okna, the sentence „wróć do układu «praca»” brings it back; closed
 // again, „cofnij układ” undoes the close; after a reload the journal (window_layout_journal) still has the change, so „Cofnij” is
 // enabled. Desktop 1280x800 (another device: its own browser storage): „praca” is listed but not active there; a layout saved on the
-// desktop becomes the desktop's active one, the phone keeps „praca”. With M1_SHOTS_DIR=<dir> the screenshots go there.
+// desktop becomes the desktop's active one, the phone keeps „praca”. W5b (no journal loss, installation level D19): a second phone
+// (another browser = another installation) keeps its own active layout while the first applies „praca”; two tabs of one phone make
+// interleaved changes, both are reloaded, and „Cofnij” in each brings back that tab's own last step (the journal is one record per tab,
+// merged on the server, not one value the last tab overwrites). With M1_SHOTS_DIR=<dir> the screenshots go there.
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
 import { existsSync, mkdtempSync } from "node:fs";
@@ -33,7 +36,7 @@ let browser, failed = false, dump = async () => "";
 const step = async (name, fn) => { if (failed) return; try { await fn(); console.log(`[windows-w5] PASS ${name}`); } catch (e) { failed = true; console.error(`[windows-w5] FAIL ${name}\n${e.stack}\n--- the screen says:\n${await dump().catch(() => "")}`); } };
 const api = async (m, p, b) => { const r = await fetch(base + p, { method: m, headers: { "content-type": "application/json" }, body: b ? JSON.stringify(b) : undefined }); assert.ok(r.ok, `${m} ${p}: ${r.status}`); return r.json().catch(() => ({})); };
 const config = async () => { const c = await api("GET", "/api/config"); return c.config ?? c; };
-const until = async (fn, what, ms = 10000) => { for (const end = Date.now() + ms; Date.now() < end;) { if (await fn()) return; await new Promise(r => setTimeout(r, 150)); } throw new Error("never: " + what); };
+const until = async (fn, what, ms = 10000) => { for (const end = Date.now() + ms; Date.now() < end;) { if (await fn()) return; await new Promise(r => setTimeout(r, 150)); } throw new Error("never: " + what + " " + (globalThis.__dbg ?? "")); };
 
 try {
   await waitUp(`${base}/api/healthz`);
@@ -109,7 +112,7 @@ try {
     await closeGraph(page);
     await say(page, "cofnij układ", /Zmiana układu cofnięta/);
     assert.equal(await windowsCount(page), 2);
-    await until(async () => { const j = (await config()).window_layout_journal; return (j?.phone?.past?.length ?? 0) > 0 && (j?.phone?.future?.length ?? 0) > 0; }, "window_layout_journal.phone saved with past and future");
+    await until(async () => { const w = Object.values((await config()).window_layout_journal?.writers ?? {}); return w.some(r => (r?.phone?.past?.length ?? 0) > 0 && (r?.phone?.future?.length ?? 0) > 0); }, "window_layout_journal.writers.<this tab>.phone saved with past and future");
     await page.reload();
     await page.getByTestId("chat-input").waitFor();
     await menu(page, "layouts", "layouts-sheet");
@@ -165,7 +168,66 @@ try {
     await shot(page, "w5-6-deleted");
   });
 
-  await step("7 no page errors", async () => { assert.deepEqual(errors, []); });
+  const readPraca = a => Object.values(a.installations ?? {}).map(x => x?.phone).find(id => typeof id === "string" && id.includes("praca"));
+  const activeEntry = async p => { await menu(p, "layouts", "layouts-sheet"); const loc = p.locator('[data-testid="layouts-entry"][data-active="true"]'); const t = (await loc.count()) ? await loc.innerText() : ""; await back(p); await p.getByTestId("layouts-sheet").waitFor({ state: "detached" }); return t; };
+  await step("7 two phones (two installations): B keeps its own active layout while A applies „praca” (D19)", async () => {
+    const phoneB = await browser.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
+    const b = await phoneB.newPage();
+    trackRequests(b);
+    b.on("pageerror", e => errors.push(String(e)));
+    await b.goto(base + "/");
+    await b.getByTestId("chat-input").waitFor();
+    await menu(b, "layouts", "layouts-sheet");
+    await b.getByTestId("layouts-save-name").fill("dom");
+    await b.getByTestId("layouts-save").click();
+    await until(async () => (await b.getByTestId("layouts-entry").count()) === 2, "two own layouts on B");
+    await back(b);
+    await b.getByTestId("layouts-sheet").waitFor({ state: "detached" });
+    await until(async () => Object.keys((await config()).window_layout_active?.installations ?? {}).length >= 2, "B's own value at the installation level");
+    await page.reload();
+    await page.getByTestId("chat-input").waitFor();
+    await say(page, "wróć do układu «praca»", /Układ: praca/);
+    await until(async () => { const a = (await config()).window_layout_active ?? {}; const ids = Object.values(a.installations ?? {}).map(x => x?.phone).filter(Boolean); globalThis.__dbg = JSON.stringify(a); return new Set(ids).size === 2 && !!readPraca(a); }, "two installations, two active layouts");
+    await b.reload();
+    await b.getByTestId("chat-input").waitFor();
+    assert.ok((await activeEntry(b)).includes("dom"), "phone B keeps „dom”");
+    await page.reload();
+    await page.getByTestId("chat-input").waitFor();
+    assert.ok((await activeEntry(page)).includes("praca"), "phone A has „praca”");
+    await shot(b, "w5b-7-phone-b");
+    await phoneB.close();
+  });
+
+  await step("8 two tabs of one phone: interleaved changes, both reloaded, „Cofnij” in each brings back its own step", async () => {
+    const undoInMenu = async p => { await menu(p, "layouts", "layouts-sheet"); await p.getByTestId("layouts-undo").click(); await back(p); await p.getByTestId("layouts-sheet").waitFor({ state: "detached" }); };
+    const recs = async () => Object.values((await config()).window_layout_journal?.writers ?? {}).length;
+    const before = await recs();
+    const tab2 = await phone.newPage();
+    trackRequests(tab2);
+    tab2.on("pageerror", e => errors.push(String(e)));
+    await tab2.goto(base + "/");
+    await tab2.getByTestId("chat-input").waitFor();
+    assert.equal(await windowsCount(tab2), 2, "the second tab opens „praca” too");
+    assert.equal(await windowsCount(page), 2);
+    await closeGraph(page);                                     // tab 1: close (its last step)
+    await closeGraph(tab2);                                     // tab 2: close …
+    await say(tab2, "wróć do układu «praca»", /Układ: praca/);  // … then apply „praca” (its last step)
+    await until(async () => (await recs()) >= Math.max(before, 1) + 1, "a journal record per tab");
+    await new Promise(r => setTimeout(r, 1500));                // both 600 ms writes are done
+    const writers = (await config()).window_layout_journal.writers;
+    const lens = Object.values(writers).map(r => r?.phone?.past?.length ?? 0);
+    assert.ok(lens.filter(n => n > 0).length >= 2, `both tabs' journals are stored: ${JSON.stringify(lens)}`);
+    await page.reload(); await tab2.reload();
+    await page.getByTestId("chat-input").waitFor(); await tab2.getByTestId("chat-input").waitFor();
+    await undoInMenu(page);
+    assert.equal(await windowsCount(page), 2, "tab 1: undo brings back its closed graph");
+    await undoInMenu(tab2);
+    assert.equal(await windowsCount(tab2), 1, "tab 2: undo takes back its „praca” (the graph it closed before)");
+    await shot(tab2, "w5b-8-tab2-undo");
+    await tab2.close();
+  });
+
+  await step("9 no page errors", async () => { assert.deepEqual(errors, []); });
 } catch (e) {
   failed = true;
   console.error(`[windows-w5] FAIL setup\n${e.stack}`);
