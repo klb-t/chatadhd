@@ -165,15 +165,22 @@ export default function GraphNavigator({ profileHost, convId, language, initialF
     } catch (failure) { setViewNote(t("view.save_error", { reason: failure instanceof Error ? failure.message : String(failure) })); }
   };
   // G3d: a mapping choice redraws the map at once and is saved as yours (settings.set navigator_mapping, an object; {} = the shipped default)
-  const chooseMapping = async (next: Record<string, unknown>, said: string) => {
+  // Two quick choices must reach the kernel in the order they were made (the second write holds both): the saves run one after another, and
+  // only the last one says what happened.
+  const mappingSaves = useRef<{ chain: Promise<void>; seq: number }>({ chain: Promise.resolve(), seq: 0 });
+  const chooseMapping = (next: Record<string, unknown>, said: string) => {
     setMapping(next); setViewNote(null);
-    const actions = api.actions;
-    if (!actions) { setViewNote(t("view.save_error", { reason: t("error.no_actions") })); return; }
-    try {
-      const run = await actions.run({ action: "settings.set", args: { key: "navigator_mapping", value: next } });
-      if (runOutcome(run, t).ok) { setViewNote(said); onSetting?.("navigator_mapping", JSON.stringify(next)); }
-      else setViewNote(t("view.save_error", { reason: String(run.error?.message ?? run.error?.code ?? run.status) }));
-    } catch (failure) { setViewNote(t("view.save_error", { reason: failure instanceof Error ? failure.message : String(failure) })); }
+    const seq = ++mappingSaves.current.seq;
+    const note = (text: string) => { if (seq === mappingSaves.current.seq) setViewNote(text); };
+    mappingSaves.current.chain = mappingSaves.current.chain.then(async () => {
+      const actions = api.actions;
+      if (!actions) { note(t("view.save_error", { reason: t("error.no_actions") })); return; }
+      try {
+        const run = await actions.run({ action: "settings.set", args: { key: "navigator_mapping", value: next } });
+        if (runOutcome(run, t).ok) { note(said); if (seq === mappingSaves.current.seq) onSetting?.("navigator_mapping", JSON.stringify(next)); }   // an older save never pulls the screen back
+        else note(t("view.save_error", { reason: String(run.error?.message ?? run.error?.code ?? run.status) }));
+      } catch (failure) { note(t("view.save_error", { reason: failure instanceof Error ? failure.message : String(failure) })); }
+    });
   };
   const focus = focusOf(state);
   const crumbs = [{ address: "", label: t("root") }, ...state.path];

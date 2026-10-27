@@ -651,7 +651,7 @@ try {
       await page.getByTestId("nav-row-area:rom").tap();
       await page.waitForFunction(() => document.querySelector('[data-testid="graph-navigator"]')?.dataset.focus === "area:rom");
       await page.getByTestId("nav-loading").waitFor({ state: "detached" });
-      await page.getByTestId("nav-map-mark").first().waitFor();
+      await page.waitForFunction(() => document.querySelector('[data-testid="nav-map"]')?.dataset.marks === "14");   // the focus + 13 rom_item, not the root still on screen
     };
     const listCalls = [];
     page.on("request", r => { if (r.method() === "POST" && r.url().endsWith("/api/actions/run") && /"advisory\.list"/.test(r.postData() ?? "")) listCalls.push(1); });
@@ -670,7 +670,7 @@ try {
     assert.deepEqual((await api("GET", "/api/config")).navigator_mapping, { size: "age" }, "saved in config.json by the control");
     await page.getByTestId("nav-bar-view").tap();   // the menu folds; the map stays
     const chips = page.getByTestId("view-advisory-chip");
-    await chips.first().waitFor();
+    await chips.filter({ hasText: "13" }).first().waitFor();   // the ROM level drawn (the root's 26 marks may still be on screen for a moment after the tap)
     const codes = await chips.evaluateAll(els => els.map(el => `${el.dataset.code}|${el.dataset.fingerprint}`));
     assert.deepEqual(codes, ["measure_missing|navigator_level|size|age"], "only the changed channel asks (no ROM row has an age: one chip says it, not two)");
     const sentence = await chips.first().innerText();
