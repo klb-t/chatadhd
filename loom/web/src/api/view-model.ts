@@ -13,7 +13,36 @@ export interface ViewElement {
   coords: Record<string, Record<string, unknown>>;
   /** channel -> value: hue deg, saturation / lightness / alpha 0..1, size px, blur px, badge text, position/depth 0..1. */
   channels: Record<string, number | string>;
+  /** G3: a channel set by more than one encoding keeps every contribution (encoding id, its value, how it combines); one-encoding channels are absent. */
+  channel_parts?: Record<string, ViewChannelPart[]>;
   sources: string[];
+}
+export interface ViewChannelPart { encoding: string; value: number | string; combine?: string }
+/** A choice of an advisory (preset "keep" / "dont_ask"; an open list in data). */
+export interface ViewAdvisoryChoice { id: string; label?: ViewText }
+/** A non-blocking advisory (R58, loom/advisory.h, shape loom.advisory/1): what looks of little use and why, the question and the remembered answer. */
+export interface ViewAdvisory {
+  schema?: "loom.advisory/1";
+  code: string;
+  level: string;
+  text: ViewText;
+  params?: Record<string, unknown>;
+  evidence?: Record<string, unknown>;
+  subject?: unknown;
+  ask?: {
+    key?: string;
+    question?: ViewText;
+    fingerprint?: string;
+    choices?: ViewAdvisoryChoice[];
+    /** false = the person said "don't ask" for this configuration (acknowledged) or the policy never asks for this code (muted). */
+    asking?: boolean;
+    state?: "ask" | "acknowledged" | "muted" | string;
+    policy?: { ask?: boolean; remember_days?: number | null };
+    ack?: { code: string; fingerprint: string; choice: string; ack_at: string; context?: Record<string, unknown> };
+    ack_expired?: boolean;
+    /** the last answer was a transient one ("keep" this time): recorded, and the advisory asks again. */
+    answered?: boolean;
+  };
 }
 export interface ViewEdge { src: string; dst: string; type: string; kind?: string; source: string }
 export interface ViewGroup {
@@ -34,6 +63,7 @@ export interface ViewEncoding {
   rank?: number;
   position?: boolean;
   reasons: ViewReason[];
+  combine?: string;
 }
 export interface ViewUnsupported { element: string; kind: string; reason: ViewReason }
 export interface ViewCoordinateSystem { id: string; system: string; axes: string[]; bind: Record<string, string>; supported: boolean; settings?: Record<string, unknown> }
@@ -51,6 +81,8 @@ export interface ViewModel {
   unsupported: ViewUnsupported[];
   budget: { max_nodes: number | null; elements: number; collapsed: number; reason?: ViewReason };
   issues: Array<{ code: string; text: ViewText }>;
+  /** G3: advisories about the configuration or a degenerate result; never blocking (absent in models built by a client, e.g. the navigator map). */
+  advisories?: ViewAdvisory[];
 }
 export interface ViewDeclarationInfo { id: string; entry?: { label?: ViewText | string; meaning?: ViewText; elements?: unknown[] }; origin?: string }
 /** A renderer of the view model (P28 step 3), data in the effective view `view_renderers`: which engine draws it, the modes (screen / WebXR session) and the settings. */
@@ -84,6 +116,7 @@ export interface InteractionBinding {
   shadowed?: boolean;
   shadowed_by?: string;
   reasons: ViewReason[];
+  combine?: string;
 }
 export interface InteractionConflict { key: string; input: Record<string, unknown>; ids: string[]; winner: string; message: ViewText }
 export interface InteractionActionInfo {
@@ -103,4 +136,6 @@ export interface InteractionBindings {
   disabled: string[];
   unsupported: Array<{ binding: string; device: string; reason: ViewReason }>;
   issues: Array<{ code: string; text: ViewText }>;
+  /** G3: advisories about the configuration or a degenerate result; never blocking (absent in models built by a client, e.g. the navigator map). */
+  advisories?: ViewAdvisory[];
 }

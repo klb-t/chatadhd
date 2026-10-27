@@ -2460,8 +2460,8 @@
       "advisory_policy": {
         "kind": "advisory_policy",
         "meaning": {
-          "en": "How the view engine asks about a configuration that looks of little use or gives a degenerate result (a preset, never a rule; R58). ask: false = never ask; remember_days: null = a \"don't ask\" answer holds forever, a number = it expires after that many days (0 = always ask); degenerate_share: the share of elements that must be invisible for nothing_visible (1 = all); codes: the same keys per advisory code. The person's answers and own policy live in <data_dir>/advisory_ack.json (loom/advisory.h) and win over this preset; a view can override it in its rules element (advisories).",
-          "pl": "Jak silnik widoku pyta o konfigurację, która wygląda na mało użyteczną albo daje zdegenerowany wynik (preset, nigdy reguła; R58). ask: false = nigdy nie pytaj; remember_days: null = odpowiedź „nie pytaj” obowiązuje na zawsze, liczba = wygasa po tylu dniach (0 = pytaj zawsze); degenerate_share: jaka część elementów musi być niewidoczna, by zgłosić nothing_visible (1 = wszystkie); codes: te same klucze dla kodu podpowiedzi. Odpowiedzi osoby i jej własna polityka są w <data_dir>/advisory_ack.json (loom/advisory.h) i wygrywają z tym presetem; widok może go nadpisać w elemencie rules (advisories)."
+          "en": "How the view engine asks about a configuration that looks of little use or gives a degenerate result (a preset, never a rule; R58). ask: false = never ask; remember_days: null = a \"don't ask\" answer holds forever, a number = it expires after that many days (0 = always ask); degenerate_share: the share of elements that must be invisible for nothing_visible (1 = all); codes: the same keys per advisory code. The person's answers and own policy live in <data_dir>/advisory_ack.json (loom/advisory.h) and win over this preset; a view can override it in its rules element (advisories). transient_choices: answers that are recorded but keep the advisory asking (\"keep it this time\"); forget_answers: answers of advisory.answer that remove the remembered one; answer_aliases: other words for a choice (open lists, G3b).",
+          "pl": "Jak silnik widoku pyta o konfigurację, która wygląda na mało użyteczną albo daje zdegenerowany wynik (preset, nigdy reguła; R58). ask: false = nigdy nie pytaj; remember_days: null = odpowiedź „nie pytaj” obowiązuje na zawsze, liczba = wygasa po tylu dniach (0 = pytaj zawsze); degenerate_share: jaka część elementów musi być niewidoczna, by zgłosić nothing_visible (1 = wszystkie); codes: te same klucze dla kodu podpowiedzi. Odpowiedzi osoby i jej własna polityka są w <data_dir>/advisory_ack.json (loom/advisory.h) i wygrywają z tym presetem; widok może go nadpisać w elemencie rules (advisories). transient_choices: odpowiedzi zapisywane, po których podpowiedź dalej pyta („zostaw tym razem”); forget_answers: odpowiedzi advisory.answer, które usuwają zapamiętaną; answer_aliases: inne słowa na wybór (listy otwarte, G3b)."
         },
         "ask": true,
         "remember_days": null,
@@ -2482,6 +2482,15 @@
             }
           }
         ],
+        "transient_choices": [
+          "keep"
+        ],
+        "forget_answers": [
+          "forget"
+        ],
+        "answer_aliases": {
+          "keep_dont_ask": "dont_ask"
+        },
         "codes": {}
       }
     },

@@ -15982,6 +15982,265 @@
           "en": "The previous window is in front.",
           "pl": "Poprzednie okno jest na wierzchu."
         }
+      },
+      "advisory.answer": {
+        "id": "advisory.answer",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Answer an advisory",
+        "description": "Answers a non-blocking advisory (R58) of the view engine or any engine that uses loom/advisory.h: keep (recorded, it asks again next time), dont_ask (remembered for this code and configuration fingerprint under the advisory policy: remember_days, ask) or forget (removes the remembered answer; reversal of the other two). Without a fingerprint the answer is about the code itself: dont_ask turns asking off for the code (policy codes.<code>.ask false), forget puts the code back to the preset. Answers are open words; the preset lists which ones are transient, which forget and their aliases (graph_views view_rules advisory_policy). Nothing is blocked and nothing in the view changes.",
+        "why": {
+          "pl": "Odpowiada na niewiążącą podpowiedź: zostaw (zapisane, następnym razem pyta znowu), nie pytaj (zapamiętane dla tego kodu i konfiguracji wg polityki) albo zapomnij (cofa zapamiętaną odpowiedź)."
+        },
+        "labels": {
+          "pl": "Odpowiedz na podpowiedź"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "code",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "The advisory code (e.g. nothing_visible)",
+              "pl": "Kod podpowiedzi (np. nothing_visible)"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "fingerprint",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The configuration fingerprint the advisory carries (ask.fingerprint); empty = the code in every configuration",
+              "pl": "Odcisk konfiguracji z podpowiedzi (ask.fingerprint); puste = kod w każdej konfiguracji"
+            },
+            "has_default": true,
+            "edit": "free_text",
+            "default": ""
+          },
+          {
+            "name": "answer",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "keep, dont_ask (keep_dont_ask), forget - an open word",
+              "pl": "keep, dont_ask (keep_dont_ask), forget — słowo otwarte"
+            },
+            "has_default": true,
+            "edit": "free_text",
+            "default": "dont_ask"
+          },
+          {
+            "name": "context",
+            "type": "object",
+            "required": false,
+            "description": {
+              "en": "Optional JSON object kept with the answer (view, text shown)",
+              "pl": "Opcjonalny obiekt JSON zapisany z odpowiedzią (widok, pokazany tekst)"
+            },
+            "has_default": true,
+            "edit": "json",
+            "default": {}
+          }
+        ],
+        "phrases": {
+          "en": [
+            "don't ask again about",
+            "do not ask again about"
+          ],
+          "pl": [
+            "nie pytaj więcej o",
+            "nie pytaj już o"
+          ]
+        },
+        "examples": {
+          "en": [
+            "don't ask again about nothing_visible"
+          ],
+          "pl": [
+            "nie pytaj więcej o nothing_visible"
+          ]
+        },
+        "positional_arg": "code"
+      },
+      "advisory.list": {
+        "id": "advisory.list",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Show remembered advisory answers",
+        "description": "Lists the remembered answers to advisories (<data_dir>/advisory_ack.json: code, fingerprint, choice, when, context) with the person's policy, the preset and the effective policy. Reads only.",
+        "why": {
+          "pl": "Pokazuje zapamiętane odpowiedzi na podpowiedzi i politykę pytania (preset i własną)."
+        },
+        "labels": {
+          "pl": "Zapamiętane odpowiedzi"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "params": [],
+        "phrases": {
+          "en": [
+            "show remembered advisory answers",
+            "remembered advisory answers"
+          ],
+          "pl": [
+            "pokaż zapamiętane odpowiedzi na podpowiedzi",
+            "zapamiętane odpowiedzi na podpowiedzi"
+          ]
+        },
+        "examples": {
+          "en": [
+            "show remembered advisory answers"
+          ],
+          "pl": [
+            "pokaż zapamiętane odpowiedzi na podpowiedzi"
+          ]
+        }
+      },
+      "advisory.policy": {
+        "id": "advisory.policy",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Set how often advisories ask",
+        "description": "Sets the person's advisory policy over the preset: ask (false = never ask), remember_days (a number of days an answer holds, 0 = always ask, forever = no expiry), for every advisory or one code; reset removes the person's values so the preset applies again (the reversal).",
+        "why": {
+          "pl": "Ustawia, jak często pytają podpowiedzi: ask (nie = nigdy), remember_days (liczba dni, zawsze = bez wygasania), dla wszystkich albo jednego kodu; reset przywraca preset."
+        },
+        "labels": {
+          "pl": "Polityka podpowiedzi"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "remember_days",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Days an answer is remembered (a number, or forever)",
+              "pl": "Ile dni pamiętać odpowiedź (liczba albo zawsze)"
+            },
+            "has_default": true,
+            "edit": "free_text",
+            "default": ""
+          },
+          {
+            "name": "ask",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Whether advisories ask at all (yes / no)",
+              "pl": "Czy podpowiedzi w ogóle pytają (tak / nie)"
+            },
+            "has_default": true,
+            "edit": "free_text",
+            "default": ""
+          },
+          {
+            "name": "code",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "One advisory code; empty = every advisory",
+              "pl": "Jeden kod podpowiedzi; puste = wszystkie"
+            },
+            "has_default": true,
+            "edit": "free_text",
+            "default": ""
+          },
+          {
+            "name": "reset",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "yes = remove the person's values (the preset applies again)",
+              "pl": "tak = usuń własne wartości (wraca preset)"
+            },
+            "has_default": true,
+            "edit": "free_text",
+            "default": ""
+          }
+        ],
+        "phrases": {
+          "en": [
+            "remember advisory answers for"
+          ],
+          "pl": [
+            "pamiętaj odpowiedzi na podpowiedzi przez"
+          ]
+        },
+        "examples": {
+          "en": [
+            "remember advisory answers for 30 days"
+          ],
+          "pl": [
+            "pamiętaj odpowiedzi na podpowiedzi przez 30 dni"
+          ]
+        },
+        "positional_arg": "remember_days"
       }
     }
   },

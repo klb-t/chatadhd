@@ -6,6 +6,8 @@
 #include <filesystem>
 
 #include "loom/action_runner.h"
+#include "loom/advisory.h"
+#include "loom/view_engine.h"
 #include "loom/chat_route.h"
 #include "loom/config.h"
 #include "loom/db.h"
@@ -169,5 +171,84 @@ TEST_SUITE("views_actions") {
       }
     const auto missing = f.say_and_confirm("bind nonsense to zoom", "interaction.rebind");
     CHECK(f.text_of(missing).find("nonsense") != std::string::npos);
+  }
+
+  TEST_CASE("G3b: an advisory is answered through the action runner - keep is recorded and asks again, dont_ask is remembered, forget reverses it; the policy is a preset the person edits") {
+    Fixture f;
+    auto run = [&](const std::string& action, const Json& args) {
+      const Json r = unwrap(f.rt->actions().run(Json{{"action", action}, {"args", args}}));
+      INFO(action << " " << r.dump());
+      CHECK(r.at("status") == "completed");
+      return r;
+    };
+    const std::string fp = advisory::fingerprint(Json{{"encodings", Json::array({Json{{"id", "z"}, {"channel", "alpha"}}})}});
+    const Json record{{"code", "nothing_visible"}, {"ask", Json::object()}};
+    auto state = [&]() {
+      const auto store = advisory::AckStore::open(f.td.path());
+      const auto eng = unwrap(views::ViewEngine::open(f.td.path()));
+      return store.annotate(record, fp, eng.advisory_preset())["ask"];
+    };
+    CHECK(state()["state"] == "ask");
+    // keep: recorded (shown) but asks again; no confirmation is needed (reversible, writes only the person's answers)
+    run("advisory.answer", Json{{"code", "nothing_visible"}, {"fingerprint", fp}, {"answer", "keep"}, {"context", Json{{"view", "test"}}}});
+    Json s = state();
+    CHECK(s["asking"] == true);
+    CHECK(s["ack"]["choice"] == "keep");
+    CHECK(s["ack"]["context"]["view"] == "test");
+    CHECK(s["answered"] == true);
+    // keep_dont_ask is an alias of the preset choice dont_ask: remembered for this code + fingerprint
+    const Json r = run("advisory.answer", Json{{"code", "nothing_visible"}, {"fingerprint", fp}, {"answer", "keep_dont_ask"}});
+    CHECK(r["result"]["data"]["answer"] == "dont_ask");
+    s = state();
+    CHECK(s["asking"] == false);
+    CHECK(s["state"] == "acknowledged");
+    CHECK(s["ack"]["choice"] == "dont_ask");
+    // the list (settings view): the answer, the person's policy, the preset and the effective policy
+    const Json list = run("advisory.list", Json::object());
+    const Json data = list["result"]["data"];
+    REQUIRE(data["acks"].size() == 1);
+    CHECK(data["acks"][0]["fingerprint"] == fp);
+    CHECK(data["preset"]["transient_choices"] == Json::array({"keep"}));
+    CHECK(data["effective"]["ask"] == true);
+    // forget = the reversal: the advisory asks again
+    const Json forgot = run("advisory.answer", Json{{"code", "nothing_visible"}, {"fingerprint", fp}, {"answer", "forget"}});
+    CHECK(forgot["result"]["data"]["removed"] == 1);
+    s = state();
+    CHECK(s["state"] == "ask");
+    CHECK_FALSE(s.contains("ack"));
+    CHECK(run("advisory.answer", Json{{"code", "nothing_visible"}, {"fingerprint", fp}, {"answer", "forget"}})["result"]["data"]["removed"] == 0);
+    // without a fingerprint the answer is about the code in every configuration (policy codes.<code>.ask false) and forget puts the preset back
+    run("advisory.answer", Json{{"code", "nothing_visible"}, {"answer", "dont_ask"}});
+    CHECK(state()["state"] == "muted");
+    run("advisory.answer", Json{{"code", "nothing_visible"}, {"answer", "forget"}});
+    CHECK(state()["state"] == "ask");
+    // the policy: remember_days (a number said with words around it, or "forever"), ask, reset back to the preset
+    run("advisory.policy", Json{{"remember_days", "30 dni"}});
+    CHECK(advisory::AckStore::open(f.td.path()).document()["policy"]["remember_days"] == 30.0);
+    CHECK(state()["policy"]["remember_days"] == 30.0);
+    run("advisory.policy", Json{{"remember_days", "zawsze"}});
+    CHECK_FALSE(advisory::AckStore::open(f.td.path()).document()["policy"].contains("remember_days"));
+    run("advisory.policy", Json{{"ask", "nie"}});
+    CHECK(state()["state"] == "muted");
+    run("advisory.policy", Json{{"ask", false}, {"code", "marks_identical"}});
+    CHECK(advisory::AckStore::open(f.td.path()).document()["policy"]["codes"]["marks_identical"]["ask"] == false);
+    run("advisory.policy", Json{{"reset", true}});
+    CHECK(state()["state"] == "ask");
+    const Json bad = unwrap(f.rt->actions().run(Json{{"action", "advisory.policy"}, {"args", Json{{"remember_days", "kiedyś"}}}}));
+    CHECK(bad.at("status") == "failed");
+    const Json no_code = unwrap(f.rt->actions().run(Json{{"action", "advisory.answer"}, {"args", Json{{"answer", "keep"}}}}));
+    CHECK(no_code.at("status") == "failed");
+
+    // the sentences (Polish and English) reach the same actions
+    const auto pl = f.say_and_confirm("nie pytaj więcej o nothing_visible", "advisory.answer", "tak");
+    INFO(f.text_of(pl));
+    CHECK(f.text_of(pl).find("nothing_visible") != std::string::npos);
+    CHECK(state()["state"] == "muted");
+    f.say_and_confirm("don't ask again about marks_identical", "advisory.answer");
+    const auto shown = f.say_and_confirm("pokaż zapamiętane odpowiedzi na podpowiedzi", "advisory.list", "tak");
+    INFO(f.text_of(shown));
+    const auto days = f.say_and_confirm("remember advisory answers for 30 days", "advisory.policy");
+    INFO(f.text_of(days));
+    CHECK(f.text_of(days).find("30") != std::string::npos);
   }
 }

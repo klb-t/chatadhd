@@ -62,6 +62,8 @@ class Collector {
 //   ask: {key, question{pl,en}, fingerprint, choices: [{id, label{pl,en}}], asking: bool, state: "ask" | "acknowledged" | "muted", ack?}
 //   asking false = the person said "don't ask" for this code + fingerprint (state acknowledged, ack = the entry) or the policy never
 //   asks for this code (state muted). The record is listed either way: nothing is hidden from the data; a client decides what to show.
+//   An answer whose choice is in the policy's `transient_choices` (preset ["keep"]: "keep it this time") is recorded and shown (ask.ack,
+//   ask.answered true) but the advisory keeps asking (G3b, 2026-10-27; reversal: an empty transient_choices list = every answer silences).
 //   (`key` stays "advisory.<code>.ask_every": the per-code policy in the store, policy.codes[<code>].)
 //
 // Store "loom.advisory_ack/1" = <data_dir>/advisory_ack.json (level `person`: it travels with the data directory):

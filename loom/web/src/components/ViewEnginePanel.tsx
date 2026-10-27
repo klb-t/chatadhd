@@ -9,6 +9,7 @@ import type { Lock, LockModel, Mod, Mods, Request } from "../view-engine/interac
 import { buildXrHint, heldFromButtons, isModifierButton, matchXr } from "../view-engine/xr-input";
 import { sceneHintLines } from "../view-engine/scene-hint";
 import type { HintContext } from "./ViewScene3D";
+import ViewBar from "./ViewBar";
 import type { XrPayload } from "../view-engine/scene3d";
 
 // the 3D renderer (three.js) is a separate chunk: it is fetched only when a renderer of engine "three" is chosen
@@ -263,6 +264,7 @@ export default function ViewEnginePanel() {
       {model && projection && (
         <div data-testid="ve-result">
           <div className="pill" data-testid="ve-counts">{t("view_engine_counts", { elements: String(model.elements.length), edges: String(model.edges.length) })}</div>
+          <ViewBar model={model} language={language} />
           {model.budget.collapsed > 0 && model.budget.reason && <p className="pill" data-testid="ve-budget-note">{reasonText(model.budget.reason, language)}</p>}
           {is3d && renderer ? (
             <Suspense fallback={<p className="pill" data-testid="ve3d-loading">{t("ve3d_loading")}</p>}>

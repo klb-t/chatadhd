@@ -3,6 +3,7 @@ import { api } from "../api";
 import type { ConfigMap, ModelInfo } from "../api/types";
 import SettingsFields from "./SettingsFields";
 import UsagePolicyPanel from "./UsagePolicyPanel";
+import AdvisorySettings from "./AdvisorySettings";
 
 function errorText(error: unknown) { return error instanceof Error ? error.message : String(error); }
 const credentialName = /^(?:api_key|.*_api_key|anthropic_batch_key|github_token|access_token|refresh_token|auth_token|bearer_token|password|client_secret|secret)$/i;
@@ -217,6 +218,8 @@ export default function SettingsPanel() {
         />
       </div>
       {saving && <div className="empty-state">Saving…</div>}
+
+      <AdvisorySettings />
 
       <section className="expert-config" data-testid="expert-config">
         <div className="section-title">Expert configuration</div>

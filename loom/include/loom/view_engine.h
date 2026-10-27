@@ -53,6 +53,10 @@ class ViewEngine {
   Result<Json> evaluate(const RenderContext& ctx, const std::string& declaration_id, const Json& request) const;
   Result<Json> evaluate_declaration(const RenderContext& ctx, const Json& declaration, const Json& request) const;
 
+  // The preset of how advisories ask (view_rules entries of kind advisory_policy, without kind/meaning; G3b): the bottom layer under the person's
+  // policy in <data_dir>/advisory_ack.json (loom/advisory.h). A view's own rules element (advisories) still overrides it during evaluation.
+  Json advisory_preset() const;
+
  private:
   Perspectives persp_;
   Effective declarations_, measures_, systems_, channels_, compositions_, combines_, rules_, renderers_;

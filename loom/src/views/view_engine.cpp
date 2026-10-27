@@ -730,10 +730,7 @@ struct Evaluator {
   Json advisory_preset = Json::object();
   std::optional<advisory::AckStore> acks;
   void load_advisory_policy() {
-    for (const auto* entry : eng.rules_.active())
-      if (json::get_string(entry->value, "kind") == "advisory_policy")
-        for (auto it = entry->value.begin(); it != entry->value.end(); ++it)
-          if (it.key() != "kind" && it.key() != "meaning") advisory_preset[it.key()] = it.value();
+    advisory_preset = eng.advisory_preset();
     for (const auto& r : rules_el) {
       const Json a = r.value("advisories", Json::object());
       if (a.is_object())
@@ -1288,6 +1285,15 @@ Result<Json> ViewEngine::evaluate_declaration(const RenderContext& ctx, const Js
   if (!decl.contains("_meta")) decl["_meta"] = Json{{"id", decl.value("id", std::string("inline"))}, {"origin", "request"}};
   Evaluator ev(*this, ctx, std::move(decl), request);
   return ev.run();
+}
+
+Json ViewEngine::advisory_preset() const {
+  Json out = Json::object();
+  for (const auto* entry : rules_.active())
+    if (json::get_string(entry->value, "kind") == "advisory_policy")
+      for (auto it = entry->value.begin(); it != entry->value.end(); ++it)
+        if (it.key() != "kind" && it.key() != "meaning") out[it.key()] = it.value();
+  return out;
 }
 
 }  // namespace loom::views

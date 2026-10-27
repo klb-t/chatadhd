@@ -2832,6 +2832,64 @@
           "en": "W2 of OKNA_SYSTEM: the page (or the Android shell) declares arranges_windows; the sentence runs at once (intent_routing execution.direct) as a client step the page carries out on its window state and answers with what it did (on a phone 'beside' becomes the next maximized window of the stack, reachable from the switcher; the placement is a preset in the page's data).",
           "pl": "W2 z OKNA_SYSTEM: strona (albo powłoka Androida) deklaruje arranges_windows; zdanie rusza od razu (intent_routing execution.direct) jako krok klienta, który strona wykonuje na swoim stanie okien i odpowiada, co zrobiła (na telefonie „obok” to kolejne zmaksymalizowane okno stosu, dostępne z przełącznika; umiejscowienie to preset w danych strony)."
         }
+      },
+      {
+        "id": "advisory_answer",
+        "title": {
+          "en": "Answer an advisory (keep, don't ask again, forget)",
+          "pl": "Odpowiedz na podpowiedź (zostaw, nie pytaj więcej, zapomnij)"
+        },
+        "via": "action",
+        "action": "advisory.answer",
+        "surfaces": {
+          "invoke": [
+            "actions.advisory.answer"
+          ]
+        },
+        "examples": {
+          "pl": "nie pytaj więcej o nothing_visible",
+          "en": "don't ask again about nothing_visible"
+        },
+        "note": {
+          "en": "The chips of the view bar send the same action through POST /api/actions/run with the fingerprint of the configuration.",
+          "pl": "Przyciski paska „Widok” wysyłają tę samą akcję przez POST /api/actions/run z odciskiem konfiguracji."
+        }
+      },
+      {
+        "id": "advisory_list",
+        "title": {
+          "en": "Show remembered advisory answers",
+          "pl": "Pokaż zapamiętane odpowiedzi na podpowiedzi"
+        },
+        "via": "action",
+        "action": "advisory.list",
+        "surfaces": {
+          "invoke": [
+            "actions.advisory.list"
+          ]
+        },
+        "examples": {
+          "pl": "pokaż zapamiętane odpowiedzi na podpowiedzi",
+          "en": "show remembered advisory answers"
+        }
+      },
+      {
+        "id": "advisory_policy",
+        "title": {
+          "en": "Set how often advisories ask",
+          "pl": "Ustaw, jak często pytają podpowiedzi"
+        },
+        "via": "action",
+        "action": "advisory.policy",
+        "surfaces": {
+          "invoke": [
+            "actions.advisory.policy"
+          ]
+        },
+        "examples": {
+          "pl": "pamiętaj odpowiedzi na podpowiedzi przez 30 dni",
+          "en": "remember advisory answers for 30 days"
+        }
       }
     ],
     "not_from_chat": [

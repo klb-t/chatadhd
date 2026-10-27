@@ -6,7 +6,9 @@
 //   2. the panel draws it: history ahead (up), callers left, dependencies right, the future behind (down), sectors as wedges, badges, depth fog;
 //   3. every encoding is promoted or allowed with its reason, and the panel shows what the kernel says;
 //   4. unknown kinds pass through to "unsupported" with a visible reason while the rest is drawn (declaration written to the user's overlay);
-//   5. the node budget (preset, overridable) collapses elements and says so; Polish labels from ui_language.
+//   5. the node budget (preset, overridable) collapses elements and says so; Polish labels from ui_language;
+//   6. G3b: a degenerate view raises a non-blocking advisory chip in the "Widok" bar; "Zostaw, nie pytaj więcej" is remembered across a reload,
+//      Settings -> Zapomnij brings the chip back; "Zostaw" is recorded and asks again.
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
 import { createServer } from "node:http";
@@ -25,7 +27,7 @@ const dist = path.join(webRoot, "dist");
 assert.ok(existsSync(serverBin), `Build loom-server first: ${serverBin}`);
 assert.ok(existsSync(path.join(dist, "index.html")), "Run npm run build first");
 const groups = [], pageErrors = [], dirs = [];
-const complete = suiteCompletionGuard("p28-view-engine-native", 5, groups);
+const complete = suiteCompletionGuard("p28-view-engine-native", 6, groups);
 let browser, child, serverLog = "", base = "";
 
 async function freePort() {
@@ -219,9 +221,77 @@ try {
     assert.match(await page.getByTestId("ve-counts").innerText(), /^Elementów: 4, krawędzi: \d+$/);
   });
 
+  await check("G3b: nothing_visible is a non-blocking chip in the Widok bar; 'nie pytaj więcej' survives a reload; Settings -> forget brings it back", async () => {
+    await api("POST", "/api/views/write", { overlay: "p28", op: { view: "view_declarations", op: "add", id: "invisible", entry: {
+      label: { en: "Invisible", pl: "Niewidoczny" },
+      elements: [
+        { id: "history", kind: "source", perspective: "version_history", weight: 1, depth: 4, role: "main" },
+        { id: "distance", kind: "measure", measure: "distance_from_focus" },
+        { id: "plane", kind: "coordinates", system: "sector", bind: { radius: "distance" }, sectors: [{ id: "past", sources: ["history"], center_deg: 0, width_deg: 90 }] },
+        { id: "fade", kind: "encoding", channel: "alpha", measure: "distance", scale: { range: [0, 0] } },
+      ] } } });
+    const workshop = async () => {
+      await page.locator('[data-testid="shell-menu-toggle"], [data-testid="nav-view-engine"]').first().waitFor();
+      if (await page.getByTestId("nav-view-engine").count() === 0) {
+        await page.getByTestId("shell-menu-toggle").click();
+        await page.getByTestId("shell-menu-workshop").click();
+      }
+    };
+    const showInvisible = async () => {
+      if (await page.getByTestId("close-panel").count()) await page.getByTestId("close-panel").click();
+      await page.getByTestId("nav-view-engine").click();
+      await page.getByTestId("ve-declaration").locator('option[value="invisible"]').waitFor({ state: "attached" });
+      await show({ declaration: "invisible" });
+      await page.getByTestId("view-bar").waitFor();
+    };
+    const chip = page.locator('[data-testid="view-advisory-chip"][data-code="nothing_visible"]');
+    await page.reload();
+    await workshop();
+    await showInvisible();
+    await chip.waitFor();
+    assert.ok(await page.locator('[data-testid="ve-mark"]').count() >= 1, "the view is drawn under the advisory (nothing blocks)");
+    assert.match(await page.getByTestId("view-bar-encodings").innerText(), /alpha z distance/);
+    assert.equal((await chip.getByTestId("view-advisory-question").innerText()).trim(), "Czy to celowe?");
+    assert.match(await chip.getByTestId("view-advisory-text").innerText(), /nic nie widać/);
+    assert.equal((await chip.getByTestId("view-advisory-choice-keep").innerText()).trim(), "Zostaw");
+    assert.equal((await chip.getByTestId("view-advisory-choice-dont_ask").innerText()).trim(), "Zostaw, nie pytaj więcej");
+    // "Zostaw": the chip goes for this page, the kernel records the answer and asks again
+    await chip.getByTestId("view-advisory-choice-keep").click();
+    await chip.waitFor({ state: "detached" });
+    const asked = async () => (await api("POST", "/api/view-model", { declaration: "invisible", focus: ids.v3 })).advisories.find(a => a.code === "nothing_visible");
+    for (let i = 0; i < 50 && (await asked()).ask.ack?.choice !== "keep"; i++) await new Promise(r => setTimeout(r, 100));
+    assert.equal((await asked()).ask.asking, true, "keep asks again next time");
+    await page.reload();
+    await workshop();
+    await showInvisible();
+    await chip.waitFor();
+    // "Zostaw, nie pytaj więcej": remembered under the code + fingerprint; after a reload there is no chip, the bar counts it as hidden
+    await chip.getByTestId("view-advisory-choice-dont_ask").click();
+    await chip.waitFor({ state: "detached" });
+    for (let i = 0; i < 50 && (await asked()).ask.asking !== false; i++) await new Promise(r => setTimeout(r, 100));
+    assert.equal((await asked()).ask.state, "acknowledged");
+    await page.reload();
+    await workshop();
+    await showInvisible();
+    assert.equal(await chip.count(), 0, "don't ask: no chip after a reload");
+    assert.ok(Number(await page.getByTestId("view-bar").getAttribute("data-hidden")) >= 1);
+    // Settings: the remembered answer is listed; forgetting it brings the chip back
+    await page.getByTestId("close-panel").click();
+    await page.getByTestId("nav-settings").click();
+    const row = page.locator('[data-testid="advisory-ack-row"][data-code="nothing_visible"]');
+    await row.waitFor();
+    assert.equal(await row.getAttribute("data-choice"), "dont_ask");
+    assert.match(await row.innerText(), /invisible/);
+    await row.getByTestId("advisory-forget").click();
+    await row.waitFor({ state: "detached" });
+    await showInvisible();
+    await chip.waitFor();
+    await api("POST", "/api/views/write", { overlay: "p28", remove: true, view: "view_declarations", id: "invisible" });
+  });
+
   assert.deepEqual(pageErrors, []);
   complete.complete();
-  console.log(`[p28-view-engine-native] ${groups.length}/5 groups passed`);
+  console.log(`[p28-view-engine-native] ${groups.length}/6 groups passed`);
 } catch (error) {
   console.error(serverLog.slice(-2000));
   throw error;

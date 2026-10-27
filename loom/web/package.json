@@ -25,6 +25,7 @@
     "test:graph-entry-browser": "node e2e/graph-entry-native.mjs",
     "test:p25-views": "node e2e/p25-views-native.mjs",
     "test:p28-project": "node tests/view-engine/project.test.mjs",
+    "test:p28-view-bar": "node tests/view-engine/view-bar.test.mjs",
     "test:p28-view-engine": "node e2e/p28-view-engine-native.mjs",
     "test:p28-interaction-unit": "node tests/view-engine/interaction.test.mjs",
     "test:p28-interaction": "node e2e/p28-interaction-native.mjs",

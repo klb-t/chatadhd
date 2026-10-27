@@ -21,6 +21,7 @@
 #include <sstream>
 
 #include "loom/action_overlay.h"
+#include "loom/advisory.h"
 #include "loom/action_runner.h"
 #include "loom/chat_engine.h"
 #include "loom/chat_route.h"
@@ -2688,6 +2689,138 @@ StepOutcome units_forget_op(Ctx& x) { return unit_run(x, units::forget, {"kind",
 StepOutcome conversation_set_unit_op(Ctx& x) { return unit_run(x, units::set_unit, {"conv_id", "kind", "id"}); }
 StepOutcome conversation_clear_unit_op(Ctx& x) { return unit_run(x, units::clear_unit, {"conv_id", "kind"}); }
 
+// ── answers to advisories (G3b): the remembered "keep" / "don't ask" of loom/advisory.h through the action runner ─────────────────────────────
+// The answers live in <data_dir>/advisory_ack.json; the preset policy is the view engine's (view_rules advisory_policy). Every write is reversible:
+// answer "forget" (an open list in the preset: forget_answers) removes a remembered answer; advisory.policy reset puts the preset back.
+
+Json advisory_preset_of(Ctx& x) {
+  auto engine = views::ViewEngine::open(x.rt.paths().root);
+  return engine ? engine->advisory_preset() : Json::object();
+}
+
+bool policy_lists(const Json& pol, const char* key, const std::string& value) {
+  if (!pol.contains(key) || !pol.at(key).is_array()) return false;
+  for (const auto& v : pol.at(key))
+    if (v.is_string() && v.get<std::string>() == value) return true;
+  return false;
+}
+
+// words of the run's language (a '|' list in chat_ops texts) — e.g. what "no" or "forever" is said with
+bool said_one_of(const Ctx& x, const std::string& words_id, const std::string& value) {
+  const std::string v = x.fold(trim_quotes(value));
+  std::stringstream ss(x.say(words_id));
+  for (std::string w; std::getline(ss, w, '|');)
+    if (!w.empty() && x.fold(w) == v) return true;
+  return false;
+}
+
+StepOutcome advisory_answer(Ctx& x) {
+  const std::string code = trim_quotes(x.str("code"));
+  if (code.empty()) return fail(Errc::InvalidArgument, x.say("adv_which_code"));
+  const std::string fp = trim_quotes(x.str("fingerprint"));
+  std::string choice = trim_quotes(x.str("answer", "dont_ask"));
+  if (choice.empty()) choice = "dont_ask";
+  const Json preset = advisory_preset_of(x);
+  auto store = advisory::AckStore::open(x.rt.paths().root);
+  const Json store_policy = store.document().at("policy");
+  const Json pol = advisory::effective_policy(preset, store_policy, code);
+  if (pol.contains("answer_aliases") && pol.at("answer_aliases").is_object() && pol.at("answer_aliases").contains(choice) &&
+      pol.at("answer_aliases").at(choice).is_string())
+    choice = pol.at("answer_aliases").at(choice).get<std::string>();
+  Json data{{"code", code}, {"fingerprint", fp}, {"answer", choice}};
+  const Json vars{{"code", code}};
+  if (policy_lists(pol, "forget_answers", choice)) {
+    if (fp.empty()) {  // no configuration named: the per-code "never ask" goes back to the layer below
+      auto st = store.set_policy(Json{{"codes", Json{{code, nullptr}}}});
+      if (!st) return fail(st.error());
+      data["policy"] = store.document().at("policy");
+      return answer(x.say("adv_forgot_code", vars), data);
+    }
+    auto n = store.forget(code, fp);
+    if (!n) return fail(n.error());
+    data["removed"] = *n;
+    return answer(x.say(*n ? "adv_forgot" : "adv_nothing_to_forget", vars), data);
+  }
+  const bool transient = policy_lists(pol, "transient_choices", choice);
+  data["transient"] = transient;
+  if (fp.empty()) {  // about the code itself: a silencing answer turns asking off for the code (reversible: answer forget, advisory.policy reset)
+    if (transient) return answer(x.say("adv_kept_once", vars), data);
+    auto st = store.set_policy(Json{{"codes", Json{{code, Json{{"ask", false}}}}}});
+    if (!st) return fail(st.error());
+    data["policy"] = store.document().at("policy");
+    return answer(x.say("adv_never_code", vars), data);
+  }
+  Json context = json_arg(x, "context");
+  if (!context.is_object()) context = Json::object();
+  auto st = store.acknowledge(code, fp, choice, context);
+  if (!st) return fail(st.error());
+  data["ack"] = store.find(code, fp);
+  return answer(x.say(transient ? "adv_kept_once" : "adv_remembered", vars), data);
+}
+
+StepOutcome advisory_list(Ctx& x) {
+  const Json preset = advisory_preset_of(x);
+  auto store = advisory::AckStore::open(x.rt.paths().root);
+  const Json doc = store.document();
+  const Json& stored = doc.at("acks");
+  std::vector<Json> rows;
+  for (auto it = stored.begin(); it != stored.end(); ++it) rows.push_back(it.value());
+  std::sort(rows.begin(), rows.end(), [](const Json& a, const Json& b) { return json::get_string(a, "ack_at") > json::get_string(b, "ack_at"); });
+  Json acks = Json::array();
+  std::vector<std::string> lines;
+  for (const auto& r : rows) {
+    acks.push_back(r);
+    lines.push_back("• " + x.say("adv_entry", Json{{"code", json::get_string(r, "code")}, {"choice", json::get_string(r, "choice")}, {"at", json::get_string(r, "ack_at")}}));
+  }
+  const Json& policy = doc.at("policy");
+  Json data{{"schema", "loom.advisory_answers/1"}, {"acks", acks}, {"policy", policy}, {"preset", preset},
+            {"effective", advisory::effective_policy(preset, policy, "")}, {"issues", store.issues()}};
+  std::string text = x.say(rows.empty() ? "adv_list_empty" : "adv_list_head", Json{{"count", rows.size()}});
+  if (!lines.empty()) text += "\n" + join_lines(lines);
+  return answer(text, data);
+}
+
+StepOutcome advisory_policy(Ctx& x) {
+  const std::string code = trim_quotes(x.str("code"));
+  Json patch = Json::object();
+  const Json reset = json_arg(x, "reset");
+  if ((reset.is_boolean() && reset.get<bool>()) || (reset.is_string() && !said_one_of(x, "adv_no_words", reset.get<std::string>()) && !reset.get<std::string>().empty())) {
+    patch["ask"] = nullptr;
+    patch["remember_days"] = nullptr;
+  }
+  if (x.has("ask")) {
+    const Json a = json_arg(x, "ask");
+    if (a.is_boolean()) patch["ask"] = a;
+    else if (a.is_number()) patch["ask"] = a.get<double>() != 0.0;
+    else patch["ask"] = !said_one_of(x, "adv_no_words", a.is_string() ? a.get<std::string>() : a.dump());
+  }
+  if (x.has("remember_days")) {
+    const Json d = json_arg(x, "remember_days");
+    if (d.is_number()) {
+      patch["remember_days"] = d;
+    } else {
+      const std::string said = trim_quotes(d.is_string() ? d.get<std::string>() : d.dump());
+      char* end = nullptr;
+      const double n = std::strtod(said.c_str(), &end);
+      if (end != said.c_str() && std::isfinite(n)) patch["remember_days"] = n;
+      else if (said_one_of(x, "adv_forever_words", said)) patch["remember_days"] = nullptr;
+      else return fail(Errc::InvalidArgument, x.say("adv_days_what", Json{{"value", said}}));
+    }
+  }
+  if (patch.empty()) return fail(Errc::InvalidArgument, x.say("adv_policy_what"));
+  auto store = advisory::AckStore::open(x.rt.paths().root);
+  auto st = store.set_policy(code.empty() ? patch : Json{{"codes", Json{{code, patch}}}});
+  if (!st) return fail(st.error());
+  const Json preset = advisory_preset_of(x);
+  const Json policy = store.document().at("policy");
+  const Json eff = advisory::effective_policy(preset, policy, code);
+  const Json days = eff.value("remember_days", Json(nullptr));
+  const Json vars{{"scope", code.empty() ? x.say("adv_scope_all") : code},
+                  {"ask", json::get_bool(eff, "ask", true) ? x.say("adv_ask_yes") : x.say("adv_ask_no")},
+                  {"days", days.is_number() ? json::dump(days) : x.say("adv_days_forever")}};
+  return answer(x.say("adv_policy_set", vars), Json{{"code", code}, {"patch", patch}, {"policy", policy}, {"preset", preset}, {"effective", eff}});
+}
+
 using Op = StepOutcome (*)(Ctx&);
 
 const std::map<std::string, Op>& table() {
@@ -2713,7 +2846,8 @@ const std::map<std::string, Op>& table() {
       {"profile.interview", profile_interview_op}, {"profile.restart", profile_restart_op}, {"profile.show", profile_show_op}, {"profile.set", profile_set_op}, {"profile.confirm", profile_confirm_op},
       {"inference.confirm", inference_confirm_op}, {"inference.reject", inference_reject_op},
       {"units.define", units_define_op}, {"units.list", units_list_op}, {"units.forget", units_forget_op},
-      {"conversation.set_unit", conversation_set_unit_op}, {"conversation.clear_unit", conversation_clear_unit_op}};
+      {"conversation.set_unit", conversation_set_unit_op}, {"conversation.clear_unit", conversation_clear_unit_op},
+      {"advisory.answer", advisory_answer}, {"advisory.list", advisory_list}, {"advisory.policy", advisory_policy}};
   return t;
 }
 

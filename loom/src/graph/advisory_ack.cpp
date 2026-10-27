@@ -169,7 +169,14 @@ Json AckStore::annotate(Json record, const std::string& fp, const Json& preset_p
         valid = at && t && std::chrono::duration<double>(*t - *at).count() < days.get<double>() * 86400.0;
       }
       ask["ack"] = ack;
-      if (valid) {
+      // a transient answer ("keep" this time: preset policy transient_choices, an open list) is recorded but does not stop the asking
+      bool transient = false;
+      if (pol.contains("transient_choices") && pol["transient_choices"].is_array())
+        for (const auto& c : pol["transient_choices"])
+          if (c.is_string() && c.get<std::string>() == json::get_string(ack, "choice")) transient = true;
+      if (transient) {
+        ask["answered"] = true;
+      } else if (valid) {
         asking = false;
         state = "acknowledged";
       } else {

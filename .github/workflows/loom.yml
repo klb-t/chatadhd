@@ -270,6 +270,7 @@ jobs:
           npm run test:node-card-state
           npm run test:navigator-receipt
           npm run test:navigator-map
+          npm run test:p28-view-bar
           npm run test:settings-human
           npm run test:role-card
           npm run test:context-receipt
@@ -285,6 +286,7 @@ jobs:
           npx playwright install --with-deps chromium
           npm run e2e
           npm run test:m1-navigator
+          npm run test:p28-view-engine
           npm run test:m1-settings
           npm run test:m1-context-sent
           npm run test:m1-context-menu
