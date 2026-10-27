@@ -106,15 +106,25 @@ try {
   });
 
   await step("menu ⋮ › Ustawienia: the eight groups of settings.resolved in the order of the data, each 'N pól · M Twoje'; the counts add up to the pack", async () => {
+    // W5: opening a panel is a change of the layout; the page persists its journal (window_layout_journal, a value on the person's level)
+    // a moment later. Settings are opened once so that write has happened, then again: the screen and the kernel are read after it.
+    const journal = page.waitForResponse(r => r.url().includes("/api/config/window_layout_journal"), { timeout: 15000 });
+    await page.getByTestId("shell-menu-settings").tap();
+    await page.getByTestId("panel-settings").waitFor();
+    await journal;
+    await page.evaluate(() => window.__loomBack && window.__loomBack());
+    await page.getByTestId("panel-settings").waitFor({ state: "detached" });
+    await page.getByTestId("shell-menu-toggle").tap();
     await page.getByTestId("shell-menu-settings").tap();
     await page.getByTestId("panel-settings").waitFor();
     await screen().waitFor();
     await page.getByTestId("shum-groups").waitFor();
+    const groupsNow = [...(await api("POST", "/api/settings/resolved", { lang: "pl" })).groups].sort((a, b) => a.order - b.order);
     const rows = await page.getByTestId("shum-groups").locator("li").evaluateAll(els => els.map(li => ({
       id: li.dataset.testid.replace("shum-group-", ""), fields: Number(li.dataset.fields), yours: Number(li.dataset.yours),
       label: li.querySelector(".gnav-label")?.textContent.trim(), count: li.querySelector('[data-testid^="shum-group-count-"]')?.textContent.trim() })));
     assert.deepEqual(rows.map(r => r.id), groupsApi.map(g => g.id), "the groups in the order of the data");
-    for (const g of groupsApi) {
+    for (const g of groupsNow) {
       const row = rows.find(r => r.id === g.id);
       assert.equal(row.label, g.label, `${g.id}: the Polish label of the kernel`);
       assert.equal(row.fields, g.fields.length, `${g.id}: field count`);
