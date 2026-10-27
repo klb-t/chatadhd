@@ -9,10 +9,11 @@ function moduleUrl(source) {
 }
 const typesUrl = moduleUrl(await readFile(new URL("../src/api/types.ts", import.meta.url), "utf8"));
 const graphEntryUrl = moduleUrl(await readFile(new URL("../src/api/graph-entry.ts", import.meta.url), "utf8"));
+const mergePatchUrl = moduleUrl(await readFile(new URL("../src/api/merge-patch.ts", import.meta.url), "utf8"));
 const source = (await readFile(new URL("../src/api/loom-jni.ts", import.meta.url), "utf8")).replace('from "./types";', `from "${typesUrl}";`);
 // The first './types' import is type-only and disappears. Replace the value
 // import as well, without relying on its order.
-const sourceWithTypes = source.replaceAll('from "./types";', `from "${typesUrl}";`).replaceAll('from "./graph-entry";', `from "${graphEntryUrl}";`);
+const sourceWithTypes = source.replaceAll('from "./types";', `from "${typesUrl}";`).replaceAll('from "./graph-entry";', `from "${graphEntryUrl}";`).replaceAll('from "./merge-patch";', `from "${mergePatchUrl}";`);
 const { LoomJniApi } = await import(moduleUrl(sourceWithTypes));
 const { isLoomError } = await import(typesUrl);
 
