@@ -230,7 +230,8 @@ export function couplingMenu(l: WLayout, id: string, lang: string, title: (w: Wi
           if (o.id === id || !paramsOfKind(kindOfWin(o), data).includes(param)) continue;
           const binding: Binding = { binding: "linked", from: { window: o.id, param }, dependency: { ...(t.dependency ?? { kind: "same" }) } };
           if (same(mine[param], binding)) continue;
-          out.push({ id: `bind:${param}:${o.id}:${JSON.stringify(t.dependency ?? {})}`, icon: data.icons?.linked, label: fill(say(data.words?.bind_linked, lang), { param: pw, dep: depWord(binding.dependency, lang, data), source: title(o) }), action: { op: "bind", param, binding } });
+          const depKey = Object.entries(binding.dependency ?? {}).map(([, x]) => (typeof x === "string" ? x : JSON.stringify(x))).join(":");
+          out.push({ id: `bind:${param}:${o.id}:${depKey}`, icon: data.icons?.linked, label: fill(say(data.words?.bind_linked, lang), { param: pw, dep: depWord(binding.dependency, lang, data), source: title(o) }), action: { op: "bind", param, binding } });
         }
       } else if (t.mode === "shared") {
         const channel = fill(t.channel ?? "{param}", { param });
