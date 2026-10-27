@@ -19,7 +19,7 @@ import ClientStepBlock from "./ClientStepBlock";
 import { CLIENT_STEP_FEATURE, type BlobLoader, type BlobUploader } from "../context/client-device";
 import { browserHost } from "../context/browser-host";
 import { clientIdentity, pageClientSession } from "../context/client-session";
-import { ACTION_PROPOSAL_FEATURE, answerRequest, offerRequest, offerState, messageLanguage, offerTexts, openOffer, pendingAnswer, producedText, producedView, proposalState, routeConfirmedRequest, undoCall, undoConfirmation, undoRequest, writtenView, type OfferView, type PendingAnswer, type WrittenView } from "../context/action-proposal";
+import { ACTION_PROPOSAL_FEATURE, answerRequest, offerRequest, offerState, messageLanguage, offerTexts, openOffer, pendingAnswer, carriesOutHere, producedText, producedView, proposalState, routeConfirmedRequest, undoCall, undoConfirmation, undoRequest, writtenView, type OfferView, type PendingAnswer, type WrittenView } from "../context/action-proposal";
 import { confirmedRequest, USAGE_PENDING_FEATURE, usageNoticeLines, type UsagePendingReceipt } from "../context/usage-pending";
 import { ROUTE_ISSUE_FEATURE, routeIssueNotes, routeIssues } from "../context/route-issue";
 import { OPEN_SETTINGS_FEATURE, SETTINGS_PANEL, openSettingsHint, openSettingsTexts, requestOpenPanel } from "../context/open-settings";
@@ -1303,6 +1303,8 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
                     receipt={{ ...(answer.usage ?? {}), receipt_id: answer.receiptId, operation_id: (m.metadata?.action_run as { pending?: { operation_id?: string | null } } | undefined)?.pending?.operation_id ?? null }}
                     onConfirm={() => void answerAction(answer, true)} onReject={() => void answerAction(answer, false)} />;
                 }
+                // W3: a step on the windows of the page that asked is that page's alone; here it is left (the message text still says it).
+                if (answer && answer.kind === "client" && answer.clientStep && !carriesOutHere(answer, clientSession.id)) return null;
                 if (answer && answer.kind === "client" && answer.clientStep) {
                   return <ClientStepBlock testId="chat-client-step" feature={featureInLanguage(clientStepCatalog.feature, spoken)} step={answer.clientStep} runId={answer.runId}
                     receiptId={answer.receiptId} host={clientHost} load={loadBlob} upload={uploadBlob} clientRef={"web:" + clientSession.id} busy={answering === answer.runId}

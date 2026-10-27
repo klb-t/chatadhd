@@ -624,6 +624,7 @@ TEST_SUITE("client_devices_chat") {
     CHECK(meta.at("status") == "awaiting_client");
     CHECK(meta.at("pending").at("kind") == "client_step");
     CHECK(meta.at("pending").at("client_step").at("action") == "device.record_audio");
+    CHECK(meta.at("client_id") == "web-1");  // W3: the page that asked is named, so a step for its own windows is done by that page alone
     const std::string run_id = meta.at("run_id");
     CHECK(f.message(proposed.assistant_message_id).at("metadata").at("action_proposal").at("status") == "waiting");
     CHECK(f.transport->requests().empty());

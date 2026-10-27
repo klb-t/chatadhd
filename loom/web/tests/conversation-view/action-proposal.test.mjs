@@ -438,3 +438,16 @@ test('a proposal of the context guardian renders in the same block, with its cla
   const plain = renderToStaticMarkup(createElement(block.default, { feature, answer: a.pendingAnswer({ action_proposal: proposal }), testId: 'g3', onConfirm: () => undefined, onReject: () => undefined }));
   assert.ok(!plain.includes('guardian'));
 });
+
+test('W3: a step on the windows of the asking page is carried out by that page alone; other steps and unnamed askers stay as before', () => {
+  const step = (action, clientId) => a.pendingAnswer({ action_run: { run_id: 'ar_w', status: 'awaiting_client', client_id: clientId,
+    pending: { kind: 'client_step', receipt_id: 'arr_w', client_step: { action, capability: 'arranges_windows' } } } });
+  const own = step('window.open', 'web-a');
+  assert.equal(own.clientId, 'web-a');
+  assert.equal(a.carriesOutHere(own, 'web-a'), true, 'the page that sent the sentence opens the window');
+  assert.equal(a.carriesOutHere(own, 'web-b'), false, 'another page showing the conversation leaves it');
+  assert.equal(a.carriesOutHere(step('window.close', undefined), 'web-b'), true, 'no named asker: as before W3');
+  assert.equal(a.carriesOutHere(step('device.record_audio', 'web-a'), 'web-b'), true, 'device steps are not narrowed by this rule');
+  assert.equal(a.carriesOutHere(step('device.record_audio', 'web-a'), 'web-b', ['device.']), false, 'the prefix list is data, open');
+  assert.equal(a.carriesOutHere(a.pendingAnswer({ action_proposal: proposal }), 'web-b'), true, 'a proposal is not a client step');
+});

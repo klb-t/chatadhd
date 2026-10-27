@@ -2287,6 +2287,8 @@ Report report_of(Runtime& rt, const Data& d, const Json& run, const std::string&
     if (prompt.empty()) prompt = spec.value("title", "");
     r.text = say(d.cfg, lang, "result_client", Json{{"prompt", prompt}});
     r.meta["pending"] = run.value("pending", Json(nullptr));
+    // W3 gap A: which client asked (its id from the run); a step only that client carries out (window.*) is ignored by the other pages.
+    if (const std::string client = json::get_string(run.value("client", Json::object()), "client_id"); !client.empty()) r.meta["client_id"] = client;
   } else {
     r.text = say(d.cfg, lang, "result_waiting", Json{{"kind", run.value("pending", Json::object()).value("kind", status)}});
     r.meta["pending"] = run.value("pending", Json(nullptr));

@@ -53,7 +53,7 @@ export interface ActionRunPending {
 }
 /** What a completed run left in the graph: the form nodes of its result, the content node they express, the run node. */
 export interface ProducedMeta { target?: string; forms?: string[]; content?: string | null; run_node?: string | null }
-export interface ActionRunMeta { run_id?: string; status?: string; lang?: string; pending?: ActionRunPending | null; produced?: ProducedMeta | null }
+export interface ActionRunMeta { run_id?: string; status?: string; lang?: string; pending?: ActionRunPending | null; produced?: ProducedMeta | null; client_id?: string }
 
 /** What the context guardian adds to a proposal of its own (metadata.guardian): the claim, its scope and weight, the evidence, the exceptions and,
  *  for a run of clarifications, the one instruction that would stand in for it. */
@@ -76,6 +76,21 @@ export interface PendingAnswer {
   clientStep: ClientStepSpec | null;
   /** The guardian's own details of the proposal (kind proposal only), or null. */
   guardian: GuardianMeta | null;
+  /** W3: the client whose sentence started the run (kind client only; "" when the kernel did not name one). */
+  clientId?: string;
+}
+
+/** Steps only the asking client carries out (W3 gap A): its own windows. A preset - a prefix of the action id, the list is open. */
+export const ASKING_CLIENT_ONLY = ["window."];
+
+/** W3: whether this page carries out the step of the answer. A step on the asking client's own windows is done by that client alone: another
+ *  page showing the same conversation (another device, another tab) leaves it. A step without a named client, or any other step, stays as before. */
+export function carriesOutHere(answer: PendingAnswer, ownClientId: string, only: readonly string[] = ASKING_CLIENT_ONLY): boolean {
+  if (answer.kind !== "client" || !answer.clientStep) return true;
+  const action = typeof answer.clientStep.action === "string" ? answer.clientStep.action : "";
+  if (!only.some((prefix) => action.startsWith(prefix))) return true;
+  const asker = answer.clientId ?? "";
+  return asker === "" || asker === ownClientId;
 }
 
 function text(value: unknown): string {
@@ -97,7 +112,8 @@ export function pendingAnswer(metadata: Meta | undefined): PendingAnswer | null 
       return { kind: "usage", runId: text(run.run_id), receiptId: text(pending.receipt_id), proposal: null, usage: pending.usage_pending ?? null, clientStep: null, guardian: null };
     }
     if (pending.kind === "client_step" && pending.client_step) {
-      return { kind: "client", runId: text(run.run_id), receiptId: text(pending.receipt_id), proposal: null, usage: null, clientStep: pending.client_step, guardian: null };
+      return { kind: "client", runId: text(run.run_id), receiptId: text(pending.receipt_id), proposal: null, usage: null, clientStep: pending.client_step, guardian: null,
+        clientId: text(run.client_id) };
     }
     return { kind: "confirmation", runId: text(run.run_id), receiptId: text(pending.receipt_id), proposal: null, usage: null, clientStep: null, guardian: null };
   }
