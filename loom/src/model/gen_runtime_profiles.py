@@ -240,7 +240,9 @@ def literal_entries(name, documents):
         # Independent elements do not form an overlength concatenated literal.
         # Split Unicode characters, never UTF-8 bytes (at most 16000 bytes each).
         for i in range(0, len(text), 4000):
-            lines.append('  R"LPROFILE(' + text[i:i + 4000] + ')LPROFILE",')
+            # explicit byte length: clang's constexpr strlen hits its step limit on a long table (CLAUDE.md, CI 262)
+            part = text[i:i + 4000]
+            lines.append('  std::string_view(R"LPROFILE(' + part + ')LPROFILE", ' + str(len(part.encode('utf-8'))) + '),')
         lines.append('};')
         entries.append('  {"' + domain + '", ' + chunks + '},')
     # Each span refers to a namespace-scope constexpr array with static lifetime.

@@ -16,7 +16,7 @@ export default function AdvisorySettings() {
   const run = useCallback(async (action: string, args: Record<string, unknown> = {}) => {
     const actions = api.actions;
     if (!actions) throw new Error("actions_unavailable");
-    const r = await actions.run({ action, args });
+    const r = await actions.run({ action, element: { class: "application" }, args });
     if (r.status !== "completed") throw new Error(r.error?.message ?? r.status);
     return r.result?.data as unknown;
   }, []);

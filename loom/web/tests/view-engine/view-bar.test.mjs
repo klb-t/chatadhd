@@ -72,7 +72,7 @@ await check('an advisory without choices still gets the preset ones; one without
 
 await check('the answer is the catalogue action advisory.answer with the code, fingerprint, the choice and the context', async () => {
   const [chip] = barState(model({ advisories: [adv('nothing_visible', 'f1')] })).chips;
-  assert.deepEqual(answerRequest(chip, 'dont_ask', 'v', 'tekst'), { action: 'advisory.answer', args: { code: 'nothing_visible', fingerprint: 'f1', answer: 'dont_ask', context: { view: 'v', text: 'tekst' } } });
+  assert.deepEqual(answerRequest(chip, 'dont_ask', 'v', 'tekst'), { action: 'advisory.answer', element: { class: 'application' }, args: { code: 'nothing_visible', fingerprint: 'f1', answer: 'dont_ask', context: { view: 'v', text: 'tekst' } } });
 });
 
 await check('generative: random advisories and answered sets - chips + hidden = advisories, no chip is answered or not asking', async () => {

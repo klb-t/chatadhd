@@ -43,6 +43,6 @@ export function barState(model: ViewModel | null, answered: ReadonlySet<string> 
 }
 
 /** The request of the catalogue action that answers a chip (POST /api/actions/run): the kernel remembers it under the code + fingerprint. */
-export function answerRequest(chip: BarChip, choice: string, view: string, text: string): { action: string; args: Record<string, unknown> } {
-  return { action: "advisory.answer", args: { code: chip.code, fingerprint: chip.fingerprint, answer: choice, context: { view, text } } };
+export function answerRequest(chip: BarChip, choice: string, view: string, text: string): { action: string; element: { class: string }; args: Record<string, unknown> } {
+  return { action: "advisory.answer", element: { class: "application" }, args: { code: chip.code, fingerprint: chip.fingerprint, answer: choice, context: { view, text } } };
 }

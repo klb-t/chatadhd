@@ -2841,11 +2841,6 @@
         },
         "via": "action",
         "action": "advisory.answer",
-        "surfaces": {
-          "invoke": [
-            "actions.advisory.answer"
-          ]
-        },
         "examples": {
           "pl": "nie pytaj więcej o nothing_visible",
           "en": "don't ask again about nothing_visible"
@@ -2863,11 +2858,6 @@
         },
         "via": "action",
         "action": "advisory.list",
-        "surfaces": {
-          "invoke": [
-            "actions.advisory.list"
-          ]
-        },
         "examples": {
           "pl": "pokaż zapamiętane odpowiedzi na podpowiedzi",
           "en": "show remembered advisory answers"
@@ -2881,11 +2871,6 @@
         },
         "via": "action",
         "action": "advisory.policy",
-        "surfaces": {
-          "invoke": [
-            "actions.advisory.policy"
-          ]
-        },
         "examples": {
           "pl": "pamiętaj odpowiedzi na podpowiedzi przez 30 dni",
           "en": "remember advisory answers for 30 days"

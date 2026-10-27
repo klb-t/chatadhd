@@ -176,7 +176,7 @@ TEST_SUITE("views_actions") {
   TEST_CASE("G3b: an advisory is answered through the action runner - keep is recorded and asks again, dont_ask is remembered, forget reverses it; the policy is a preset the person edits") {
     Fixture f;
     auto run = [&](const std::string& action, const Json& args) {
-      const Json r = unwrap(f.rt->actions().run(Json{{"action", action}, {"args", args}}));
+      const Json r = unwrap(f.rt->actions().run(Json{{"action", action}, {"element", Json{{"class", "application"}}}, {"args", args}}));
       INFO(action << " " << r.dump());
       CHECK(r.at("status") == "completed");
       return r;
@@ -234,9 +234,9 @@ TEST_SUITE("views_actions") {
     CHECK(advisory::AckStore::open(f.td.path()).document()["policy"]["codes"]["marks_identical"]["ask"] == false);
     run("advisory.policy", Json{{"reset", true}});
     CHECK(state()["state"] == "ask");
-    const Json bad = unwrap(f.rt->actions().run(Json{{"action", "advisory.policy"}, {"args", Json{{"remember_days", "kiedyś"}}}}));
+    const Json bad = unwrap(f.rt->actions().run(Json{{"action", "advisory.policy"}, {"element", Json{{"class", "application"}}}, {"args", Json{{"remember_days", "kiedyś"}}}}));
     CHECK(bad.at("status") == "failed");
-    const Json no_code = unwrap(f.rt->actions().run(Json{{"action", "advisory.answer"}, {"args", Json{{"answer", "keep"}}}}));
+    const Json no_code = unwrap(f.rt->actions().run(Json{{"action", "advisory.answer"}, {"element", Json{{"class", "application"}}}, {"args", Json{{"answer", "keep"}}}}));
     CHECK(no_code.at("status") == "failed");
 
     // the sentences (Polish and English) reach the same actions
