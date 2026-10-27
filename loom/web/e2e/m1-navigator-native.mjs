@@ -641,7 +641,7 @@ try {
     assert.deepEqual(errors, [], "no page errors");
   });
 
-  await step("G3c: the map of a level whose marks look alike (13 rom_item, no counts) advises like the Widok bar; Zostaw, nie pytaj więcej is remembered by the kernel and survives a reload", async () => {
+  await step("G3c: the shipped default mapping asks nothing on ROM (no chip, no advisory.list); a mapping the person changed (navigator_mapping) makes the map advise like the Widok bar; Zostaw, nie pytaj więcej is remembered by the kernel and survives a reload", async () => {
     if (await nav().count()) { await page.getByTestId("close-panel").tap(); await nav().waitFor({ state: "detached" }); }   // an earlier step may leave the screen open
     const openRom = async () => {
       await page.getByTestId("shell-menu-toggle").tap();
@@ -651,33 +651,42 @@ try {
       await page.getByTestId("nav-row-area:rom").tap();
       await page.waitForFunction(() => document.querySelector('[data-testid="graph-navigator"]')?.dataset.focus === "area:rom");
       await page.getByTestId("nav-loading").waitFor({ state: "detached" });
+      await page.getByTestId("nav-map-mark").first().waitFor();
     };
     const listCalls = [];
     page.on("request", r => { if (r.method() === "POST" && r.url().endsWith("/api/actions/run") && /"advisory\.list"/.test(r.postData() ?? "")) listCalls.push(1); });
+    // 1. the app's own default: 13 rom_item look alike, but nobody chose that mapping - no question, no request
+    await openRom();
+    await page.waitForTimeout(500);
+    assert.equal(await page.getByTestId("view-advisory-chip").count(), 0, "the default mapping raises no chip");
+    assert.equal(listCalls.length, 0, "no advisory.list request while there is nothing to advise");
+    await page.getByTestId("close-panel").tap();
+    await nav().waitFor({ state: "detached" });
+    // 2. the person changes the size channel's mapping (setting navigator_mapping; the Widok menu holds only the layout, no mapping control yet)
+    await api("PUT", "/api/config/navigator_mapping", { value: JSON.stringify({ size: "age" }) });
+    await page.reload();
+    await page.getByTestId("chat-shell").waitFor();
     await openRom();
     const chips = page.getByTestId("view-advisory-chip");
     await chips.first().waitFor();
     const codes = await chips.evaluateAll(els => els.map(el => `${el.dataset.code}|${el.dataset.fingerprint}`));
-    assert.equal(codes.length, 4, `hue, saturation, lightness and size are identical on the 13 marks: ${codes.join(" ")}`);
-    assert.ok(codes.every(c => c.startsWith("marks_identical|navigator_level|")), codes.join(" "));
+    assert.deepEqual(codes, ["marks_identical|navigator_level|size|age"], "only the changed channel asks");
     assert.ok((await chips.first().innerText()).includes("Wszystkie 13 znaczniki"), "the sentence says how many marks");
     assert.equal(listCalls.length, 1, "the remembered answers are read once, when there is something to advise");
     assert.equal(await page.getByTestId("nav-map-mark").count() > 0, true, "the map is still drawn: an advisory blocks nothing");
     await layoutFits();
-    const first = codes[0];
+    await shot("g3c-navigator-advisories");
     await chips.first().getByTestId("view-advisory-choice-dont_ask").tap();
-    await page.waitForFunction(n => document.querySelectorAll('[data-testid="view-advisory-chip"]').length === n, 3);
+    await page.waitForFunction(() => document.querySelectorAll('[data-testid="view-advisory-chip"]').length === 0);
     await page.waitForTimeout(300);   // the answer reaches the kernel (advisory.answer) before the page goes away
     await page.reload();
     await page.getByTestId("chat-shell").waitFor();
     await openRom();
-    await page.getByTestId("view-advisory-chip").first().waitFor();
-    const after = await page.getByTestId("view-advisory-chip").evaluateAll(els => els.map(el => `${el.dataset.code}|${el.dataset.fingerprint}`));
-    assert.equal(after.length, 3, "the remembered 'nie pytaj więcej' hides its chip after a reload; the others ask");
-    assert.ok(!after.includes(first), `${first} stays quiet`);
-    await shot("g3c-navigator-advisories");
+    await page.waitForTimeout(500);
+    assert.equal(await page.getByTestId("view-advisory-chip").count(), 0, "the remembered 'nie pytaj więcej' keeps the chip away after a reload");
     await page.getByTestId("close-panel").tap();
     await nav().waitFor({ state: "detached" });
+    await api("PUT", "/api/config/navigator_mapping", { value: "" });
     assert.deepEqual(errors, [], "no page errors");
   });
 

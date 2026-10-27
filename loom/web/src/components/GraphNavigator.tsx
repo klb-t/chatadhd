@@ -44,6 +44,8 @@ interface Props {
   initialPerspectives?: string[];
   /** The setting navigator_layout as loaded (both | list | map); anything else is the preset both. */
   layout?: unknown;
+  /** The setting navigator_mapping as loaded (channel -> what it shows); only a mapping that differs from the shipped one raises advisories on the map. */
+  mapping?: unknown;
   /** The setting navigator_help_open as loaded: whether the help "Co tu widzę?" starts open (preset closed). */
   helpSetting?: unknown;
   /** The app learns a setting this screen saved (so the next opening starts as the person left it). */
@@ -61,7 +63,7 @@ function StepLayer({ index, onClose }: { index: number; onClose: (index: number)
   return null;
 }
 
-export default function GraphNavigator({ profileHost, convId, language, initialFocus = "", initialPerspectives, layout: layoutSetting, helpSetting, onSetting, meOpenSetting, meInferredOpacity, onOpenConversation }: Props) {
+export default function GraphNavigator({ profileHost, convId, language, initialFocus = "", initialPerspectives, layout: layoutSetting, mapping: mappingSetting, helpSetting, onSetting, meOpenSetting, meInferredOpacity, onOpenConversation }: Props) {
   const words = usePresentationFeature(profileHost, "graph_screen");
   const t = useMemo(() => shellTranslator(words.feature, language), [words.feature, language]);
   const receiptT = useReceiptWords(profileHost, language);   // the words of "Co wysłaliśmy": the reason of a sent element is said in them (K1c-4)
@@ -231,7 +233,7 @@ export default function GraphNavigator({ profileHost, convId, language, initialF
         </Disclosure>}
         {result && <Disclosure testId="nav-map-disclosure" className="gnav-disclosure" labels={meMode ? { show: t("me.map.show"), hide: t("me.map.hide") } : { show: t("map.show"), hide: t("map.hide") }}
           open={meMode ? meOpen.map : open.map} onToggle={v => meMode ? setMeOpen(o => ({ ...o, map: v })) : setOpen(o => ({ ...o, map: v }))}>
-          <NavigatorMap result={result} open={meMode ? meOpen.map : open.map} t={t} language={language} onCard={showCard} onDrill={drill} />
+          <NavigatorMap result={result} open={meMode ? meOpen.map : open.map} t={t} language={language} mapping={mappingSetting} onCard={showCard} onDrill={drill} />
         </Disclosure>}
         {card && <NodeCard key={card.address} address={card.address} label={card.label} language={language} convId={convId} t={t} receiptT={receiptT} section={cardSection}
           onClose={() => setCard(null)} onNavigate={(address, label) => drill({ address, label })} />}

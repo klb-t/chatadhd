@@ -8,6 +8,8 @@ import { FALLBACK_CHOICES } from "../view-engine/view-bar";
 
 export interface NavAdvisoryData {
   declaration: string;
+  advise_on_defaults?: boolean;
+  default_mapping?: Record<string, string>;
   min_elements: number;
   channels: Record<string, { invisible_at_or_below?: number; shows?: ViewText }>;
   texts: Record<string, ViewText>;
@@ -27,20 +29,32 @@ const fill = (t: ViewText | undefined, params: Record<string, unknown>): ViewTex
 };
 
 /** The configuration fingerprint: the declaration + the channel (the mapping, not the data), so "don't ask" holds on any level. */
-export const navFingerprint = (channel: string, d: NavAdvisoryData = NAV_ADVISORY): string => `${d.declaration}|${channel}`;
+export const navFingerprint = (channel: string, d: NavAdvisoryData = NAV_ADVISORY, measure = ""): string => `${d.declaration}|${channel}${measure ? `|${measure}` : ""}`;
+
+/** The mapping the person set (setting navigator_mapping: an object or its JSON text; channel -> what it shows); anything unreadable is "no mapping". */
+export function readMapping(raw: unknown): Record<string, string> {
+  let v = raw;
+  if (typeof v === "string") { try { v = JSON.parse(v); } catch { return {}; } }
+  if (!v || typeof v !== "object" || Array.isArray(v)) return {};
+  return Object.fromEntries(Object.entries(v as Record<string, unknown>).filter(([, x]) => typeof x === "string") as [string, string][]);
+}
 
 /** The generic checks over the marks of the level (the children; the focus is the anchor, not a data mark). Advisories only; nothing is refused. */
-export function navigatorAdvisories(model: Pick<ViewModel, "elements">, d: NavAdvisoryData = NAV_ADVISORY): ViewAdvisory[] {
+export function navigatorAdvisories(model: Pick<ViewModel, "elements">, d: NavAdvisoryData = NAV_ADVISORY, mapping: Record<string, string> = {}): ViewAdvisory[] {
   const marks = (model.elements ?? []).filter(e => !(e as { focus?: boolean }).focus);
   const out: ViewAdvisory[] = [];
   for (const [channel, def] of Object.entries(d.channels)) {
+    const shipped = d.default_mapping?.[channel];
+    const measure = mapping[channel] ?? shipped ?? "";
+    // the app's own default is not a question to the person: with advise_on_defaults false only a changed mapping is checked
+    if (!d.advise_on_defaults && measure === (shipped ?? "")) continue;
     const vals = marks.map(e => (e.channels as Record<string, unknown> | undefined)?.[channel]).filter(v => v !== undefined);
     if (vals.length === 0) continue;
-    const base = { channel, total: vals.length, shows: def.shows };
+    const base = { channel, total: vals.length, shows: mapping[channel] ?? def.shows };
     const make = (code: string, params: Record<string, unknown>): ViewAdvisory => ({
       schema: "loom.advisory/1", code, level: "advisory", text: fill(d.texts[code], params), params, evidence: params,
       subject: { kind: "channel", id: channel },
-      ask: { fingerprint: navFingerprint(channel, d), question: d.texts.question, choices: FALLBACK_CHOICES, asking: true, state: "ask" },
+      ask: { fingerprint: navFingerprint(channel, d, mapping[channel] !== undefined && mapping[channel] !== shipped ? mapping[channel] : ""), question: d.texts.question, choices: FALLBACK_CHOICES, asking: true, state: "ask" },
     });
     const inv = def.invisible_at_or_below;
     if (typeof inv === "number") {

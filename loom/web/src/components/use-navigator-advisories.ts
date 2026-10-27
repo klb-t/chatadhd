@@ -3,11 +3,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { api } from "../api";
 import type { ViewModel } from "../api/view-model";
-import { navigatorAdvisories, resolveAsk } from "./navigator-advisory";
+import { navigatorAdvisories, readMapping, resolveAsk } from "./navigator-advisory";
 import { rememberedKeys } from "../shell/windows/arrange";
 
-export function useNavigatorAdvisories(model: ViewModel): ViewModel {
-  const raw = useMemo(() => navigatorAdvisories(model), [model]);
+export function useNavigatorAdvisories(model: ViewModel, mappingSetting?: unknown): ViewModel {
+  const mappingKey = typeof mappingSetting === "string" ? mappingSetting : JSON.stringify(mappingSetting ?? null);
+  const raw = useMemo(() => navigatorAdvisories(model, undefined, readMapping(mappingSetting)), [model, mappingKey]); // eslint-disable-line react-hooks/exhaustive-deps
   const [state, setState] = useState<{ remembered: Set<string>; ask: boolean } | null>(null);
   const needed = raw.length > 0;
   useEffect(() => {

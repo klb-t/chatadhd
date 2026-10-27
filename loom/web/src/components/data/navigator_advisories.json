@@ -1,12 +1,40 @@
 {
-  "navigator_advisories_note": "G3c: the generic degenerate checks of the navigator map (the view model is built in the browser, so the kernel's view engine cannot evaluate it): the same codes and the same loom.advisory/1 shape as the kernel's (nothing_visible, marks_identical). All presets, any value works: min_elements = how many marks a channel needs before 'all identical' is said (0 or 1 = even a single mark; a huge number = never); invisible_at_or_below per channel (absent = the channel cannot vanish); channels = which channels of a mark are checked and which data they show (words for the sentence). The fingerprint is the declaration id + channel (the mapping is the configuration, not the data), so 'don't ask' holds for this mapping on any level. Reverse: delete a channel here = it is no longer checked.",
+  "navigator_advisories_note": "G3c: the generic degenerate checks of the navigator map (the view model is built in the browser, so the kernel's view engine cannot evaluate it): the same codes and the same loom.advisory/1 shape as the kernel's (nothing_visible, marks_identical). All presets, any value works: min_elements = how many marks a channel needs before 'all identical' is said (0 or 1 = even a single mark; a huge number = never); invisible_at_or_below per channel (absent = the channel cannot vanish); channels = which channels of a mark are checked and which data they show (words for the sentence). The fingerprint is the declaration id + channel (the mapping is the configuration, not the data), so 'don't ask' holds for this mapping on any level. Reverse: delete a channel here = it is no longer checked. advise_on_defaults (preset false): false = a channel is checked only when its mapping (setting navigator_mapping: channel -> what it shows) differs from default_mapping, i.e. the person or a profile changed it - the app's own default is not a question to the person; true = every channel is checked. default_mapping is the shipped mapping. Reverse: set advise_on_defaults true.",
   "declaration": "navigator_level",
+  "advise_on_defaults": false,
+  "default_mapping": {
+    "hue": "kind",
+    "saturation": "kind",
+    "lightness": "kind",
+    "size": "count"
+  },
   "min_elements": 2,
   "channels": {
-    "hue": { "shows": { "pl": "rodzaj", "en": "kind" } },
-    "saturation": { "shows": { "pl": "rodzaj", "en": "kind" } },
-    "lightness": { "shows": { "pl": "rodzaj", "en": "kind" } },
-    "size": { "invisible_at_or_below": 0, "shows": { "pl": "liczba pod spodem", "en": "count below" } }
+    "hue": {
+      "shows": {
+        "pl": "rodzaj",
+        "en": "kind"
+      }
+    },
+    "saturation": {
+      "shows": {
+        "pl": "rodzaj",
+        "en": "kind"
+      }
+    },
+    "lightness": {
+      "shows": {
+        "pl": "rodzaj",
+        "en": "kind"
+      }
+    },
+    "size": {
+      "invisible_at_or_below": 0,
+      "shows": {
+        "pl": "liczba pod spodem",
+        "en": "count below"
+      }
+    }
   },
   "texts": {
     "nothing_visible": {
@@ -17,6 +45,9 @@
       "en": "All {total} marks get the same value {value} on the channel '{channel}', so it tells them apart by nothing (it shows: {shows}).",
       "pl": "Wszystkie {total} znaczniki mają na kanale '{channel}' tę samą wartość {value}, więc niczym ich nie rozróżnia (pokazuje: {shows})."
     },
-    "question": { "en": "Is this intended?", "pl": "Czy tak ma być?" }
+    "question": {
+      "en": "Is this intended?",
+      "pl": "Czy tak ma być?"
+    }
   }
 }

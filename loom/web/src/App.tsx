@@ -333,7 +333,7 @@ export default function App() {
   const panelContent = (p: PanelId, kind: string | null): ReactNode => (<>
                 {p === "graph" && <GraphView convId={activeConvId} profileHost={userProfileHost} helpSetting={config.graph_view_help_open} onSetting={rememberSetting} />}
                 {p === "graph-entry" && <GraphEntryPanel profileHost={userProfileHost} openers={entryOpeners} />}
-                {p === "navigator" && <GraphNavigator profileHost={userProfileHost} convId={activeConvId} language={uiLanguage} initialFocus={navigatorFocus} initialPerspectives={navigatorPerspectives} layout={config.navigator_layout} helpSetting={config.navigator_help_open} onSetting={rememberSetting}
+                {p === "navigator" && <GraphNavigator profileHost={userProfileHost} convId={activeConvId} language={uiLanguage} initialFocus={navigatorFocus} initialPerspectives={navigatorPerspectives} layout={config.navigator_layout} mapping={config.navigator_mapping} helpSetting={config.navigator_help_open} onSetting={rememberSetting}
                   meOpenSetting={config.me_open_sections} meInferredOpacity={config.me_inferred_opacity} onOpenConversation={id => { onConversationCreated(id); closePanel(); }} />}
                 {p === "perspectives" && <PerspectivesPanel convId={activeConvId} />}
                 {p === "view-engine" && <ViewEnginePanel />}

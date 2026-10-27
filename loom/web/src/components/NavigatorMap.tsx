@@ -22,6 +22,8 @@ interface Props {
   t: ShellT;
   /** The language of the words (for the advisories of the map). */
   language?: string;
+  /** The setting navigator_mapping (channel -> what it shows) as loaded; absent = the shipped default. */
+  mapping?: unknown;
   /** The same as a tap on a list row's ⋯. */
   onCard: (row: Pick<GraphNodeRow, "address" | "label">) => void;
   /** The same as a tap on a list row with children. */
@@ -42,7 +44,7 @@ function personIn(row: { label?: string; person_values?: string[] } | undefined)
   return !!row?.label && !!row.person_values?.some(v => v !== "" && row.label!.includes(v));
 }
 
-export default function NavigatorMap({ result, open, t, language = "pl", onCard, onDrill }: Props) {
+export default function NavigatorMap({ result, open, t, language = "pl", mapping, onCard, onDrill }: Props) {
   const box = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(0);
   const [cam, setCam] = useState<Camera>(CAMERA_HOME);
@@ -84,7 +86,7 @@ export default function NavigatorMap({ result, open, t, language = "pl", onCard,
   useEffect(() => () => reportExclusion([]), []);
 
   const baseModel = useMemo(() => viewModelFor(result, t("root")), [result, t]);
-  const model = useNavigatorAdvisories(baseModel);   // G3c: the generic advisories of the map, answered like the "Widok" bar's
+  const model = useNavigatorAdvisories(baseModel, mapping);   // G3c: the generic advisories of the map, answered like the "Widok" bar's
   const projection = useMemo(() => width > 0 ? project(model, { width, height, margin: MAP_MARGIN_PRESET }) : null, [model, width, height]);
   const rowsById = useMemo(() => {
     const m = new Map<string, Pick<GraphNodeRow, "address" | "label" | "has_children"> & Partial<GraphNodeRow>>();
