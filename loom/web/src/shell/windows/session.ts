@@ -103,7 +103,8 @@ export function restoreFront(restored: WState, presetFront: string | undefined, 
     const w = state.layout.windows.find((x) => x.id === presetFront);
     if (w && !(w.mode === "maximized" && !visibleOverlay(state.layout))) state = apply(state, { op: "maximize", id: presetFront }, ctx).state;
   } else {
-    for (const w of overlays(state.layout)) if (w.mode === "maximized") state = apply(state, { op: "restore", id: w.id }, ctx).state;
+    // W4: they wait in the switcher (minimized); a `restore` without a remembered place would dock them into the first leaf, drawn since W4
+    for (const w of overlays(state.layout)) if (w.mode === "maximized") state = apply(state, { op: "minimize", id: w.id }, ctx).state;
   }
   return { ...state, past: [], future: [] };
 }

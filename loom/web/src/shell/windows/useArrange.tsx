@@ -55,20 +55,23 @@ export function useArrange(win: WState, winRef: { current: WState }, commit: (s:
   const [remembered, setRemembered] = useState<Set<string>>(new Set());
   const [ask, setAsk] = useState(true);
   const [kept, setKept] = useState<Set<string>>(new Set());
+  // the remembered answers are read only when an arrangement has something to advise (a page that never advises sends no request)
+  const [loaded, setLoaded] = useState<"idle" | "loading" | "done">("idle");
   const load = useCallback(async () => {
     try {
       const d = await runAction("advisory.list") as { acks?: { code: string; fingerprint?: string; choice?: string }[]; effective?: { ask?: boolean } };
       setRemembered(rememberedKeys(d)); setAsk(d?.effective?.ask !== false);
     } catch { /* no kernel actions (a static page): every advisory asks */ }
+    setLoaded("done");
   }, []);
-  useEffect(() => { void load(); }, [load]);
 
   const deviceClass = scr.area.w < 600 ? "phone" : "desktop";
   const env: Env = useMemo(() => ({ area: scr.area, keyboard: scr.keyboard, deviceClass, title: (w) => title(w.id) }), [scr, deviceClass, title]);
   const all = useMemo(() => windowAdvisories(win.layout, env), [win.layout, env]);
   // a "keep" lasts while its arrangement lasts: when the advisory is gone, the same arrangement made again asks again
   useEffect(() => { setKept((k) => { const live = new Set(all.map((a) => `${a.code}|${a.fingerprint}`)); const n = new Set([...k].filter((x) => live.has(x))); return n.size === k.size ? k : n; }); }, [all]);
-  const chips = visibleChips(all, remembered, kept, ask);
+  useEffect(() => { if (all.length && loaded === "idle") { setLoaded("loading"); void load(); } }, [all, loaded, load]);
+  const chips = loaded === "done" ? visibleChips(all, remembered, kept, ask) : [];
 
   const base = useRef<WState | null>(null);
   const handlers: ArrangeHandlers = useMemo(() => ({
@@ -105,6 +108,9 @@ export function useArrange(win: WState, winRef: { current: WState }, commit: (s:
       const combo = [e.ctrlKey || e.metaKey ? "ctrl" : "", e.altKey ? "alt" : "", e.shiftKey ? "shift" : "", e.key.toLowerCase()].filter(Boolean).join("+");
       const how = keys[combo];
       if (!how) return;
+      // in a text field the same keys edit the text (select words, undo typing): the field keeps them
+      const t = e.target as HTMLElement | null;
+      if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
       const focus = winRef.current.layout.focus;
       if (!focus && how !== "undo" && how !== "redo") return;
       e.preventDefault();

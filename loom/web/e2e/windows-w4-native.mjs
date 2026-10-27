@@ -59,10 +59,8 @@ try {
   const box = async loc => (await loc.boundingBox()) ?? { x: 0, y: 0, width: 0, height: 0 };
   const listLoaded = () => page.waitForResponse(r => r.url().includes("/api/actions/run") && r.request().postData()?.includes("advisory.list"), { timeout: 15000 });
 
-  let loaded = listLoaded();
   await page.goto(base + "/");
   await page.getByTestId("chat-input").waitFor();
-  await loaded;
 
   await step("1 phone: ⋮ › Graf, ⋯ › Dokuj z prawej → graph docked next to the chat, both narrow, chip dock_narrow asks „Czy to celowe?”", async () => {
     await menu("graph");
@@ -103,12 +101,12 @@ try {
   });
 
   await step("4 after a reload: docking the same way again asks nothing (the answer is the kernel's)", async () => {
-    loaded = listLoaded();
     await page.reload();
     await page.getByTestId("chat-input").waitFor();
-    await loaded;
     await menu("graph");
+    const loaded = listLoaded();   // the page reads the remembered answers when the arrangement first has something to advise
     await arrangeOpen("navigator", "right");
+    await loaded;
     await page.getByTestId("window-navigator").waitFor();
     await sleep(400);
     assert.equal(await chip("dock_narrow").count(), 0);
