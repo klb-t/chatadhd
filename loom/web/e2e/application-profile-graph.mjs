@@ -34,7 +34,8 @@ const { LoomHttpApi } = await import(moduleUrl(transpile("../src/api/loom-http.t
   .replaceAll('from "./graph-entry"', `from "${graphEntryUrl}"`)
   .replaceAll('from "./operations"', `from "${operationsUrl}"`)
   .replaceAll('from "./auth"', `from "${authUrl}"`)));
-const { LoomJniApi } = await import(moduleUrl(transpile("../src/api/loom-jni.ts").replaceAll('from "./types"', `from "${typesUrl}"`).replaceAll('from "./graph-entry"', `from "${graphEntryUrl}"`)));
+const mergePatchUrl = moduleUrl(transpile("../src/api/merge-patch.ts"));
+const { LoomJniApi } = await import(moduleUrl(transpile("../src/api/loom-jni.ts").replaceAll('from "./types"', `from "${typesUrl}"`).replaceAll('from "./graph-entry"', `from "${graphEntryUrl}"`).replaceAll('from "./merge-patch"', `from "${mergePatchUrl}"`)));
 
 const groups = [], nativeRequests = [], persisted = [];
 const originalFetch = globalThis.fetch;
