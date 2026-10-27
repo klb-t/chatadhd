@@ -42,6 +42,8 @@ import { cssVariables, mergeData } from "./shell/animation";
 import { glyphVariables } from "./shell/disclosure-glyphs";
 import { PANEL_LABELS, PANEL_TEXT_IDS, type PanelId } from "./shell/panels";
 import { useLayer } from "./shell/use-layer";
+import { useArrange } from "./shell/windows/useArrange";
+import { ARRANGE, arrangeWindow } from "./shell/windows/arrange";
 
 type Theme = "dark" | "amoled";
 // The panels are one list (shell/panels.ts): the + menu checks the panel an entry names against it.
@@ -305,12 +307,18 @@ export default function App() {
     return {
       entries: switcherEntries(win.layout).map(w => ({ id: w.id, label: windowLabel(w.id), front: w.id === front, closable: typeof w.params?.panel === "string" })),
       focus: (id: string) => moveTo(focusWindow(winRef.current, id)),
+      arrangeMenu: (ARRANGE.menu ?? []).map(m => ({ id: m.id, label: (uiLanguage === "pl" ? m.label.pl : m.label.en) ?? m.id, icon: m.icon })),
+      arrange: (id: string, how: string) => moveTo(arrangeWindow(winRef.current, id, how)),
       close: (id: string) => {
         const w = winRef.current.layout.windows.find(x => x.id === id);
         if (w && typeof w.params?.panel === "string") moveTo(closeWindows(winRef.current, { target: { panel: String(w.params.panel) } }).state);
       },
     };
-  }, [win.layout, windowLabel, moveTo]);
+  }, [win.layout, windowLabel, moveTo, uiLanguage]);
+  // W4: docking and floating (menu ⋯, drag, split grips, keys) and the advisory chips of the arrangement
+  const arranged = useArrange(win, winRef, moveTo, uiLanguage, windowLabel);
+  const [panelMenu, setPanelMenu] = useState(false);
+  useEffect(() => { if (activePanel === null) setPanelMenu(false); }, [activePanel]);
   // the layout shows one window full-screen (the plain chat app is that case); a grid of docks (the former Workshop) is not
   const fullWindow = layout !== null && baseWindow(win.layout) !== null;
   useLayer("knowledge-sheet", knowledgeOpen && fullWindow, () => setKnowledgeOpen(false));
@@ -321,36 +329,26 @@ export default function App() {
 
   const panelTitle = activePanel ? (PANEL_TEXT_IDS[activePanel] ? t(PANEL_TEXT_IDS[activePanel]!) : PANEL_LABELS[activePanel]) : "";
   const topKind = visibleOverlay(win.layout)?.kind ?? null;   // the kind decides the component (settings = SettingsHuman, settings_fields = SettingsPanel)
-  const panels = activePanel && (
-
-          <>
-            <div className="drawer-backdrop" onClick={closePanel} data-testid="drawer-backdrop" />
-            <div className="drawer" data-testid={`panel-${activePanel}`} ref={panelRef} role="dialog" aria-modal="true" aria-label={panelTitle} tabIndex={-1}>
-              <div className="drawer-header">
-                <h2>{panelTitle}</h2>
-                <button className="icon-btn" aria-label={t("panel_close", { screen: panelTitle })} onClick={closePanel} data-testid="close-panel">
-                  ×
-                </button>
-              </div>
-              <div className="drawer-body">
-                {activePanel === "graph" && <GraphView convId={activeConvId} profileHost={userProfileHost} helpSetting={config.graph_view_help_open} onSetting={rememberSetting} />}
-                {activePanel === "graph-entry" && <GraphEntryPanel profileHost={userProfileHost} openers={entryOpeners} />}
-                {activePanel === "navigator" && <GraphNavigator profileHost={userProfileHost} convId={activeConvId} language={uiLanguage} initialFocus={navigatorFocus} initialPerspectives={navigatorPerspectives} layout={config.navigator_layout} helpSetting={config.navigator_help_open} onSetting={rememberSetting}
+  // W4: the content of a panel, the same in the drawer (maximized), in a dock leaf and in a floating window
+  const panelContent = (p: PanelId, kind: string | null): ReactNode => (<>
+                {p === "graph" && <GraphView convId={activeConvId} profileHost={userProfileHost} helpSetting={config.graph_view_help_open} onSetting={rememberSetting} />}
+                {p === "graph-entry" && <GraphEntryPanel profileHost={userProfileHost} openers={entryOpeners} />}
+                {p === "navigator" && <GraphNavigator profileHost={userProfileHost} convId={activeConvId} language={uiLanguage} initialFocus={navigatorFocus} initialPerspectives={navigatorPerspectives} layout={config.navigator_layout} helpSetting={config.navigator_help_open} onSetting={rememberSetting}
                   meOpenSetting={config.me_open_sections} meInferredOpacity={config.me_inferred_opacity} onOpenConversation={id => { onConversationCreated(id); closePanel(); }} />}
-                {activePanel === "perspectives" && <PerspectivesPanel convId={activeConvId} />}
-                {activePanel === "view-engine" && <ViewEnginePanel />}
-                {activePanel === "memory" && <MemoryPanel />}
-                {activePanel === "import" && <ImportPanel onImported={() => setConvRefreshKey((k) => k + 1)} />}
-                {activePanel === "context" && <ContextSlider convId={activeConvId} />}
-                {activePanel === "settings" && topKind === "settings_fields" && <SettingsPanel />}
-                {activePanel === "settings" && topKind !== "settings_fields" && <SettingsHuman profileHost={userProfileHost} convId={activeConvId} language={uiLanguage} view={settingsView}
+                {p === "perspectives" && <PerspectivesPanel convId={activeConvId} />}
+                {p === "view-engine" && <ViewEnginePanel />}
+                {p === "memory" && <MemoryPanel />}
+                {p === "import" && <ImportPanel onImported={() => setConvRefreshKey((k) => k + 1)} />}
+                {p === "context" && <ContextSlider convId={activeConvId} />}
+                {p === "settings" && kind === "settings_fields" && <SettingsPanel />}
+                {p === "settings" && kind !== "settings_fields" && <SettingsHuman profileHost={userProfileHost} convId={activeConvId} language={uiLanguage} view={settingsView}
                   onNavigate={address => { setNavigatorFocus(address); setActivePanel("navigator"); }} />}
-                {activePanel === "logs" && <LogPanel />}
-                {activePanel === "methods" && <MethodsPanel transport={api} />}
-                {activePanel === "analysis" && <AnalysisPanel />}
-                {activePanel === "onboarding" && <UserProfilePanel view="onboarding" host={userProfileHost} />}
-                {activePanel === "user-knowledge" && <UserProfilePanel view="knowledge" host={userProfileHost} />}
-                {activePanel === "operations" && <OperationsPanel operations={api.operations}
+                {p === "logs" && <LogPanel />}
+                {p === "methods" && <MethodsPanel transport={api} />}
+                {p === "analysis" && <AnalysisPanel />}
+                {p === "onboarding" && <UserProfilePanel view="onboarding" host={userProfileHost} />}
+                {p === "user-knowledge" && <UserProfilePanel view="knowledge" host={userProfileHost} />}
+                {p === "operations" && <OperationsPanel operations={api.operations}
                   profiles={primaryProfile ? [primaryProfile] : []} graphPacketStore={api.graphPacketStore?.bind(api)}
                   adapterEvidence={(primaryProfile?.actions ?? []).filter(action => {
                     const gaps = installedProfile ? profileAvailability(installedProfile, installedAdapters) : null;
@@ -359,6 +357,25 @@ export default function App() {
                     operation: action.operation, capability: action.capability, status: "native" as const,
                     detail: "Installed Loom adapter; source-service equivalence unverified.", evidence: ["host profile registry"],
                   }))} />}
+  </>);
+  const panels = activePanel && (
+
+          <>
+            <div className="drawer-backdrop" onClick={closePanel} data-testid="drawer-backdrop" />
+            <div className="drawer" data-testid={`panel-${activePanel}`} ref={panelRef} role="dialog" aria-modal="true" aria-label={panelTitle} tabIndex={-1}>
+              <div className="drawer-header">
+                <h2>{panelTitle}</h2>
+                <button className="icon-btn" aria-label={arranged.handlers.menuLabel(panelTitle)} aria-expanded={panelMenu} data-testid="panel-arrange-menu" onClick={() => setPanelMenu(v => !v)}>⋯</button>
+                <button className="icon-btn" aria-label={t("panel_close", { screen: panelTitle })} onClick={closePanel} data-testid="close-panel">
+                  ×
+                </button>
+              </div>
+              {panelMenu && <div className="win-menu" role="menu" data-testid="panel-arrange-list">
+                {arranged.handlers.menu.map(m => <button key={m.id} type="button" role="menuitem" data-testid={`panel-arrange-${m.id}`}
+                  onClick={() => { setPanelMenu(false); const id = visibleOverlay(winRef.current.layout)?.id; if (id) arranged.handlers.onArrange(id, m.id); }}>{m.icon ? `${m.icon} ` : ""}{m.label}</button>)}
+              </div>}
+              <div className="drawer-body">
+                {panelContent(activePanel, topKind)}
               </div>
             </div>
           </>
@@ -368,6 +385,14 @@ export default function App() {
   // W3 (OKNA §3.1): the former Workshop is the layout `siatka` drawn from its dock tree (WindowHost → DockTree). Its header is gone: the
   // buttons it had are the entries of the switcher bar (switcher.style "bar" in layouts.json) - the panels as tabs, the list handle,
   // knowledge, theme, account. An open panel is a modal window over the layout: the bar and the docked windows behind it are inert.
+  // W4: a layout whose preset shows one window full-screen (czat) and now draws its dock tree (a panel docked next to the chat) has no
+  // switcher bar: the chat keeps its own bar and menu.
+  const presetFront = LAYOUTS[win.layout.id]?.windows.find(w => w.mode === "maximized")?.id;
+  const grid = (body: ReactNode, overlay: ReactNode) => presetFront ? (
+    <div className="app-root dock-root" data-layout={win.layout.id} data-testid="dock-root">
+      <div className="app-layout">{body}{overlay}</div>
+    </div>
+  ) : workshop(body, overlay);
   const workshop = (body: ReactNode, overlay: ReactNode) => (
     <div className="app-root" data-sidebar-side={primaryProfile?.presentation.sidebar.side ?? "left"} data-layout={win.layout.id}
       style={primaryProfile ? profileStyle(primaryProfile) : undefined}>
@@ -427,6 +452,7 @@ export default function App() {
       <aside className={`sidebar${sidebarOpen ? "" : " collapsed"}`} data-testid="sidebar" {...inertAttr(activePanel !== null)}>
         <ConversationList key={convRefreshKey} activeConvId={activeConvId} onSelect={onSelectConversation} onCreated={onConversationCreated} onActivity={sidebarActivity} />
       </aside>);
+    if (w.kind === "chat" && w.id === presetFront) return <div className="chat-host dock-chat" data-window={w.id}>{renderMain(w)}</div>;
     if (w.kind === "chat") return (
       <div className="chat-host main-panel" data-window={w.id} hidden={knowledgeOpen && !chatVisible} {...inertAttr(activePanel !== null)}>
         <ApplicationProfiles profileHost={userProfileHost} convId={activeConvId} onConversationCreated={onConversationCreated}
@@ -441,10 +467,12 @@ export default function App() {
     return null;   // a kind without a docked view yet (W4+): its leaf is drawn empty, the advisory is the model's
   };
   const dockShown = (w: Win) => !w.collapsed && (w.kind !== "knowledge" || knowledgeOpen);
-  const host = <WindowHost state={win} renderOverlay={() => panels} grid={workshop} renderDocked={docked} shown={dockShown} title={(w) => windowLabel(w.id)} renderWindow={w => w.kind !== "chat" ? null : (
+  function renderMain(w: Win): ReactNode { return w.kind !== "chat" ? null : (
       <ChatShell profileHost={userProfileHost} convId={activeConvId} onSelect={setActiveConvId} onCreated={onConversationCreated} onShowInGraph={openNavigator}
         refreshKey={convRefreshKey} onMessagesChanged={onMessagesChanged} windows={shellWindows} behindOverlay={activePanel !== null || knowledgeOpen}
-        actions={{ panel: (id) => { if (id === "settings") setSettingsView(""); setActivePanel(id as PanelId); }, navigator: (focus) => { setNavigatorFocus(focus); setActivePanel("navigator"); }, knowledge: () => setKnowledgeOpen(true), workshop: () => setLayout("workshop") }} />)} />;
+        actions={{ panel: (id) => { if (id === "settings") setSettingsView(""); setActivePanel(id as PanelId); }, navigator: (focus) => { setNavigatorFocus(focus); setActivePanel("navigator"); }, knowledge: () => setKnowledgeOpen(true), workshop: () => setLayout("workshop") }} />); }
+  const host = <WindowHost state={win} renderOverlay={() => panels} grid={grid} renderDocked={docked} shown={dockShown} title={(w) => windowLabel(w.id)} renderWindow={renderMain}
+    renderPanel={w => panelContent(String(w.params.panel) as PanelId, w.kind)} arrange={arranged.handlers} chips={arranged.chips} />;
   return (
     <ShellText.Provider value={t}><ShellLanguage.Provider value={uiLanguage}>
       {host}

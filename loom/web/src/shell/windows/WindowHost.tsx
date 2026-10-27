@@ -3,11 +3,30 @@
 // Windows opened over the layout (panels, §3.3) are drawn after it, the top one visible. A layout without a maximized window is a grid of
 // docks: W3 draws its dock tree (DockTree) and hands it to `grid` - the frame around it (the switcher bar of the former Workshop) - with
 // the overlay to place inside it.
-import type { ReactNode } from "react";
-import type { WState, Win } from "./model";
+// W4 (OKNA §2.2, §6.3): a panel docked next to the layout's windows is drawn in its leaf inside a window frame (title bar, menu ⋯ with
+// every arrangement, close); floating windows are drawn over everything else in the order of `z`. Dragging a title bar shows the drop
+// zones of the leaf under the pointer (edges dock to that side, the middle makes a tab; outside any leaf the window floats); a floating
+// window dragged moves (near a leaf's edge it docks). Every drag ends in ONE operation of the page (one journal entry); the preview while
+// dragging is computed from the state the drag started from. Everything a drag does is also in the menu ⋯ and on the keys (accessibility).
+import { useEffect, useRef, useState, type CSSProperties, type PointerEvent, type ReactNode } from "react";
+import type { Rect, WState, Win } from "./model";
 import { baseWindow, visibleOverlay } from "./session";
 import DockTree from "./DockTree";
-import { dockView } from "./dock";
+import { dockView, dropZone, type Box, type Zone } from "./dock";
+
+export interface ArrangeHandlers {
+  /** The entries of the menu ⋯ of a window (data: layouts.json → window_arrange.menu). */
+  menu: { id: string; label: string; icon?: string }[];
+  onArrange: (id: string, how: string, opts?: { of?: string; rect?: Partial<Rect> }) => void;
+  onClose: (id: string) => void;
+  onMove: (id: string, rect: Partial<Rect>, commit: boolean) => void;
+  onRatio: (path: string, ratio: number, commit: boolean) => void;
+  dropEdge?: number;
+  floatDropEdge?: number;
+  dragThreshold?: number;
+  closeLabel: (title: string) => string;
+  menuLabel: (title: string) => string;
+}
 
 export interface WindowHostProps {
   state: WState;
@@ -24,19 +43,134 @@ export interface WindowHostProps {
   /** W3: the title of a window on a tab of its leaf; activating a tab. */
   title?: (w: Win) => string;
   onActivate?: (w: Win) => void;
+  /** W4: the content of a panel window docked or floating (the drawer shows only the maximized one). */
+  renderPanel?: (w: Win) => ReactNode;
+  /** W4: the arrangement handlers (drag, menu, split grips). Without them nothing is draggable (the W3 drawing). */
+  arrange?: ArrangeHandlers;
+  /** W4: the advisory chips (non-blocking), drawn over the layout. */
+  chips?: ReactNode;
 }
 
-export default function WindowHost({ state, renderWindow, renderOverlay, grid, renderDocked, shown, title, onActivate }: WindowHostProps) {
+type DragStart = (w: Win, e: PointerEvent<HTMLDivElement>) => void;
+const isPanel = (w: Win) => typeof w.params?.panel === "string";
+const viewport = (): Box => ({ x: 0, y: 0, w: window.innerWidth, h: window.innerHeight });
+interface Drop { leaf: string; zone: Zone; box: Box }
+const zoneBox = (d: Drop): Box => {
+  const b = d.box;
+  if (d.zone === "left") return { ...b, w: b.w / 2 };
+  if (d.zone === "right") return { ...b, x: b.x + b.w / 2, w: b.w / 2 };
+  if (d.zone === "top") return { ...b, h: b.h / 2 };
+  if (d.zone === "bottom") return { ...b, y: b.y + b.h / 2, h: b.h / 2 };
+  return b;
+};
+function leafBoxesOnScreen(fallbackLeaf: string | undefined): { leaf: string; box: Box }[] {
+  const out: { leaf: string; box: Box }[] = [];
+  document.querySelectorAll<HTMLElement>(".dock-leaf[data-leaf]").forEach((el) => {
+    const r = el.getBoundingClientRect();
+    if (r.width > 0 && r.height > 0) out.push({ leaf: el.dataset.leaf!, box: { x: r.left, y: r.top, w: r.width, h: r.height } });
+  });
+  if (!out.length && fallbackLeaf) out.push({ leaf: fallbackLeaf, box: viewport() });
+  return out;
+}
+
+function WindowFrame({ w, title, a, children, floating, onDrag }: { w: Win; title: string; a?: ArrangeHandlers; children: ReactNode; floating: boolean; onDrag: DragStart }) {
+  const [open, setOpen] = useState(false);
+  const key = String(w.params?.panel ?? w.kind);
+  return (
+    <section className={floating ? "win-frame win-floating" : "win-frame"} role="region" aria-label={title} data-testid={`window-${key}`} data-window={w.id} data-mode={w.mode}>
+      <div className="win-titlebar" data-testid={`window-titlebar-${key}`} onPointerDown={(e) => { if (!(e.target as HTMLElement).closest("button")) onDrag(w, e); }}>
+        <span className="win-title">{title}</span>
+        {a && <button type="button" className="icon-btn" aria-label={a.menuLabel(title)} aria-expanded={open} data-testid={`window-menu-${key}`} onClick={() => setOpen((v) => !v)}>⋯</button>}
+        {a && <button type="button" className="icon-btn" aria-label={a.closeLabel(title)} data-testid={`window-close-${key}`} onClick={() => a.onClose(w.id)}>×</button>}
+      </div>
+      {open && a && (
+        <div className="win-menu" role="menu" data-testid={`window-menu-list-${key}`}>
+          {a.menu.map((m) => (
+            <button key={m.id} type="button" role="menuitem" data-testid={`window-arrange-${m.id}`} onClick={() => { setOpen(false); a.onArrange(w.id, m.id); }}>
+              {m.icon ? `${m.icon} ` : ""}{m.label}
+            </button>
+          ))}
+        </div>
+      )}
+      <div className="win-body">{children}</div>
+    </section>
+  );
+}
+
+export default function WindowHost({ state, renderWindow, renderOverlay, grid, renderDocked, shown, title, onActivate, renderPanel, arrange, chips }: WindowHostProps) {
   const l = state.layout;
+  const name = title ?? ((w: Win) => w.kind);
+  const [drop, setDrop] = useState<Drop | null>(null);
+  const drag = useRef<{ off: () => void } | null>(null);
+  useEffect(() => () => drag.current?.off(), []);
   // W2: the overlay in front (maximized); others opened over the layout wait in the switcher (sheet „Okna”) and are not drawn.
   // One node, not a keyed list: the overlay element stays the same DOM node when one panel replaces another, as before W1
   const top = visibleOverlay(l);
   const overlay = top ? renderOverlay(top) : null;
   const base = baseWindow(l);
+
+  const startDrag: DragStart = (w, e) => {
+    const a = arrange; if (!a || e.button > 0) return;
+    drag.current?.off();
+    const x0 = e.clientX, y0 = e.clientY, area = viewport(), r0 = w.rect;
+    const threshold = a.dragThreshold ?? 8;
+    let moving = false, target: Drop | null = null, rect: Partial<Rect> | null = null;
+    const find = (x: number, y: number, edge: number): Drop | null => {
+      for (const { leaf, box } of leafBoxesOnScreen(base?.dock?.leaf)) {
+        const zone = dropZone(box, x, y, edge);
+        if (zone) return { leaf, zone, box };
+      }
+      return null;
+    };
+    const move = (ev: globalThis.PointerEvent) => {
+      if (!moving && Math.hypot(ev.clientX - x0, ev.clientY - y0) < threshold) return;
+      moving = true; ev.preventDefault();
+      if (w.mode === "floating" && r0) {
+        const dx = ev.clientX - x0, dy = ev.clientY - y0;
+        rect = r0.unit === "px" ? { x: r0.x + dx, y: r0.y + dy } : { x: r0.x + dx / area.w, y: r0.y + dy / area.h };
+        a.onMove(w.id, rect, false);
+        const t = find(ev.clientX, ev.clientY, a.floatDropEdge ?? 0.08);
+        target = t && t.zone !== "center" ? t : null;
+      } else target = find(ev.clientX, ev.clientY, a.dropEdge ?? 0.25);
+      setDrop(target);
+    };
+    const off = () => { window.removeEventListener("pointermove", move); window.removeEventListener("pointerup", up); window.removeEventListener("pointercancel", cancel); drag.current = null; setDrop(null); };
+    const up = (ev: globalThis.PointerEvent) => {
+      off();
+      if (!moving) return;
+      if (target) a.onArrange(w.id, target.zone === "center" ? "tab" : target.zone, { of: target.leaf });
+      else if (w.mode === "floating") { if (rect) a.onMove(w.id, rect, true); }
+      else {
+        const fr = r0 && r0.unit === "fraction" ? r0 : { w: 0.88, h: 0.6 };
+        a.onArrange(w.id, "float", { rect: { x: Math.max(0, Math.min(1 - fr.w, ev.clientX / area.w - fr.w / 2)), y: Math.max(0, Math.min(1 - fr.h, ev.clientY / area.h)), w: fr.w, h: fr.h, unit: "fraction" } });
+      }
+    };
+    const cancel = () => { off(); if (moving && w.mode === "floating" && r0) a.onMove(w.id, r0, true); };
+    window.addEventListener("pointermove", move); window.addEventListener("pointerup", up); window.addEventListener("pointercancel", cancel);
+    drag.current = { off };
+  };
+
+  const framed = (w: Win, content: ReactNode, floating: boolean) => (
+    <WindowFrame w={w} title={name(w)} a={arrange} floating={floating} onDrag={startDrag}>{content}</WindowFrame>
+  );
+  const docked = (w: Win): ReactNode => isPanel(w) ? framed(w, renderPanel?.(w) ?? null, false) : (renderDocked ?? renderWindow)(w);
+  const floats = l.windows.filter((w) => w.mode === "floating" && w.rect).sort((a, b) => a.z - b.z);
+  const floatLayer = floats.length ? (
+    <div className="win-float-layer" data-testid="window-float-layer">
+      {floats.map((w) => {
+        const r = w.rect!; const u = r.unit === "px" ? "px" : "%"; const k = r.unit === "px" ? 1 : 100;
+        const style: CSSProperties = { left: `${r.x * k}${u}`, top: `${r.y * k}${u}`, width: `${Math.max(0, r.w) * k}${u}`, height: `${Math.max(0, r.h) * k}${u}`, zIndex: w.z + 1 };
+        return <div key={w.id} className="win-float" style={style} data-z={w.z}>{framed(w, isPanel(w) ? renderPanel?.(w) ?? null : (renderDocked ?? renderWindow)(w), true)}</div>;
+      })}
+    </div>
+  ) : null;
+  const zone = drop ? zoneBox(drop) : null;
+  const dropNode = zone && drop ? <div className="win-drop" data-testid="drop-zone" data-zone={drop.zone} data-leaf={drop.leaf} style={{ left: zone.x, top: zone.y, width: zone.w, height: zone.h }} /> : null;
+  const extras = <>{floatLayer}{dropNode}{chips}</>;
   if (!base) {
     const tree = dockView(l, shown);
-    const body = tree ? <DockTree node={tree} renderWindow={renderDocked ?? renderWindow} title={title ?? ((w) => w.kind)} onActivate={onActivate} /> : null;
-    return <>{grid(body, overlay)}</>;
+    const body = tree ? <DockTree node={tree} renderWindow={docked} title={name} onActivate={onActivate} onRatio={arrange?.onRatio} /> : null;
+    return <>{grid(body, <>{overlay}{extras}</>)}</>;
   }
-  return <>{renderWindow(base)}{overlay}</>;
+  return <>{renderWindow(base)}{overlay}{extras}</>;
 }

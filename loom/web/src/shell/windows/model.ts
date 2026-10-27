@@ -41,7 +41,9 @@ export type Op =
   | { op: "dock"; id: string; target: Target }
   | { op: "float"; id: string; rect?: Partial<Rect> }
   | { op: "split"; leaf: string; dir: "h" | "v"; ratio?: number; new_first?: boolean }
-  | { op: "move"; id: string; rect?: Partial<Rect>; dx?: number; dy?: number; leaf?: string; index?: number };
+  | { op: "move"; id: string; rect?: Partial<Rect>; dx?: number; dy?: number; leaf?: string; index?: number }
+  /** W4: the ratio of one split, addressed by its path from the root ("" = root, "a"/"b" = a side, "ab" = side b of side a). */
+  | { op: "ratio"; path: string; ratio: number };
 export interface Result { state: WState; advisories: Advisory[]; applied: boolean }
 
 const ADV_TEXT: Record<string, string> = {
@@ -50,7 +52,7 @@ const ADV_TEXT: Record<string, string> = {
   empty_leaf_collapsed: "Pusty panel został usunięty. Czy tak ma być?", ratio_clamped: "Proporcja podziału poza zakresem 0..1, przycięto.",
   zero_size: "Okno ma zerowy rozmiar. Czy to celowe?", dock_onto_self: "Okno jest już jedyne w tym panelu.", focus_hidden: "Okno ma fokus, ale jest zasłonięte.",
   rect_invalid: "Prostokąt okna był nieprawidłowy, użyto domyślnego.", nothing_to_undo: "Nie ma czego cofnąć.", nothing_to_redo: "Nie ma czego ponowić.",
-  dock_narrow: "Panel jest wąski. Czy tak ma być?", not_movable: "To okno nie ma gdzie się przesunąć w tym stanie.", no_windows: "Brak okien.",
+  dock_narrow: "Panel jest wąski. Czy tak ma być?", unknown_split: "Nie ma takiego podziału.", not_movable: "To okno nie ma gdzie się przesunąć w tym stanie.", no_windows: "Brak okien.",
 };
 const adv = (id: string, evidence: Record<string, unknown> = {}, window?: string): Advisory => ({ id, evidence, text: ADV_TEXT[id] ?? id, ...(window ? { window } : {}) });
 
@@ -143,7 +145,9 @@ function setActive(l: WLayout, w: Win) { if (w.dock && l.leaves[w.dock.leaf]) l.
 function remember(w: Win): Restore { return { mode: w.mode, ...(w.dock ? { dock: { ...w.dock } } : {}), ...(w.rect ? { rect: { ...w.rect } } : {}) }; }
 function demoteMaximized(l: WLayout, except?: string) {
   for (const w of l.windows) if (w.mode === "maximized" && w.id !== except) {
-    if (w.dock) w.mode = "docked"; else { w.mode = w.restore?.mode === "minimized" ? "minimized" : "floating"; w.rect ??= w.restore?.rect ?? defaultRect(l.windows.length); }
+    // W4: a maximized window without a dock goes back to floating only when it floated before; otherwise it waits in the switcher
+    // (minimized) - the stack of maximized windows of §4.1, where a covered panel is not drawn over the one in front.
+    if (w.dock) w.mode = "docked"; else if (w.restore?.mode === "floating") { w.mode = "floating"; w.rect ??= w.restore?.rect ?? defaultRect(l.windows.length); } else w.mode = "minimized";
   }
 }
 function topZ(l: WLayout, w: Win) { w.z = Math.max(-1, ...l.windows.filter((x) => x.mode === "floating" && x !== w).map((x) => x.z)) + 1; }
@@ -267,6 +271,21 @@ function run(l: WLayout, op: Op, ctx: Ctx, out: Advisory[]): boolean {
       else { out.push(adv("bad_op", { reason: "move needs rect, dx/dy or leaf" })); return false; }
       return true;
     }
+    case "ratio": {
+      if (typeof op.path !== "string" || /[^ab]/.test(op.path)) { out.push(adv("bad_op", { field: "path" })); return false; }
+      const r = clamp01(op.ratio, NaN); if (Number.isNaN(r.v)) { out.push(adv("bad_op", { field: "ratio" })); return false; }
+      if (r.changed) out.push(adv("ratio_clamped", { ratio: op.ratio }));
+      const set = (t: Tree, rest: string): Tree | null => {
+        if (isLeaf(t)) return null;
+        if (!rest) return { ...t, ratio: r.v };
+        const sub = set(rest[0] === "a" ? t.a : t.b, rest.slice(1));
+        return sub && (rest[0] === "a" ? { ...t, a: sub } : { ...t, b: sub });
+      };
+      const t = set(l.tree, op.path);
+      if (!t) { out.push(adv("unknown_split", { path: op.path })); return false; }
+      if (r.v === 0 || r.v === 1) out.push(adv("zero_size", { ratio: r.v, path: op.path }));
+      l.tree = t; return true;
+    }
     default: out.push(adv("bad_op", { op: (op as { op?: unknown }).op })); return false;
   }
 }
@@ -354,6 +373,12 @@ export function isPlainChatApp(l: WLayout): boolean {
 }
 export interface Area { w: number; h: number }
 /** Size in pixels of each leaf for an area (a ratio of 0 or 1 gives a leaf of 0 px, which is shown, not refused). */
+/** W4: the split at a path ("" = root), or null. */
+export function splitAt(t: Tree, path: string): Split | null {
+  let n: Tree = t;
+  for (const c of path) { if (isLeaf(n)) return null; n = c === "a" ? n.a : c === "b" ? n.b : (null as unknown as Tree); if (!n) return null; }
+  return isLeaf(n) ? null : n;
+}
 export function leafSizes(t: Tree, area: Area): Record<string, Area> {
   if (isLeaf(t)) return { [t.leaf]: { ...area } };
   const h = t.split === "h";

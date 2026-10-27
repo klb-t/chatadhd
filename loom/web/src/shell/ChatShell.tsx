@@ -24,6 +24,9 @@ export interface ShellWindows {
   entries: { id: string; label: string; front: boolean; closable: boolean }[];
   focus(id: string): void;
   close(id: string): void;
+  /** W4: every arrangement without dragging (dock left/right/top/bottom, tab, float, maximize) - entries from data. */
+  arrangeMenu?: { id: string; label: string; icon?: string }[];
+  arrange?(id: string, how: string): void;
 }
 interface Props {
   profileHost: UserProfileHost;
@@ -89,6 +92,11 @@ export default function ChatShell({ profileHost, convId, onSelect, onCreated, re
       <button className="shell-row" style={{ flex: 1, textAlign: "start", border: 0, background: "transparent" }} aria-current={w.front ? "true" : undefined} data-testid="windows-entry-focus"
         onClick={() => { setSheet(null); windows?.focus(w.id); }}>{w.label}{w.front ? ` · ${t("windows_active")}` : ""}</button>
       {w.closable && <button className="icon-btn" aria-label={t("windows_close", { screen: w.label })} data-testid="windows-entry-close" onClick={() => windows?.close(w.id)}>×</button>}
+      {windows?.arrange && (windows.arrangeMenu ?? []).length > 0 && <select className="windows-arrange" aria-label={w.label} data-testid="windows-entry-arrange" value=""
+        onChange={e => { const how = e.target.value; if (how) { setSheet(null); windows.arrange!(w.id, how); } }}>
+        <option value="">⋯</option>
+        {(windows.arrangeMenu ?? []).map(m => <option key={m.id} value={m.id}>{m.icon ? `${m.icon} ` : ""}{m.label}</option>)}
+      </select>}
     </div>)}
   </div>;
   if (sheet === "semantic") sheetBody = <SemanticStatus profileHost={profileHost} />;

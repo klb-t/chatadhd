@@ -31,6 +31,7 @@ export function baseWindow(l: WLayout): Win | null {
   const own = l.windows.filter((w) => typeof w.params?.panel !== "string");
   const max = own.find((w) => w.mode === "maximized");
   if (max) return max;
+  if (overlays(l).some((w) => w.dock)) return null;   // W4: a panel docked next to the layout's windows: the dock tree is drawn
   const top = visibleOverlay(l);
   const covered = (top ? [top] : overlays(l)).map((w) => w.params.over).find((id) => typeof id === "string");
   return own.find((w) => w.id === covered) ?? null;

@@ -257,3 +257,29 @@ textarea { resize: vertical; }
 .dock-tabs { display: flex; gap: 2px; border-bottom: 1px solid var(--border); overflow-x: auto; flex-shrink: 0; }
 .window-switcher [data-tab] { border-radius: 6px 6px 0 0; border-bottom-width: 2px; }
 .window-switcher [data-tab][aria-pressed="true"] { border-color: var(--accent); color: var(--accent); }
+
+/* W4 (OKNA §2.2, §6.3): window frames of docked/floating panels, floating layer, drop zone, split grips, advisory chips */
+.dock-root { height: 100vh; height: 100dvh; display: flex; flex-direction: column; }
+.dock-root > .app-layout { height: 100%; }
+.dock-leaf > .dock-chat { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.dock-leaf > .dock-chat > .shell-root { height: 100%; }
+.win-frame { display: flex; flex-direction: column; flex: 1; min-height: 0; min-width: 0; background: var(--card); border-left: 1px solid var(--border); position: relative; }
+.win-floating { height: 100%; border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 8px 28px rgba(0,0,0,0.45); overflow: hidden; }
+.win-titlebar { display: flex; align-items: center; gap: 4px; padding: 0 4px 0 10px; min-height: 44px; border-bottom: 1px solid var(--border); cursor: grab; touch-action: none; user-select: none; flex-shrink: 0; }
+.win-title { flex: 1; min-width: 0; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.win-body { flex: 1; min-height: 0; overflow: auto; }
+.win-menu { display: flex; flex-direction: column; padding: 4px; border-bottom: 1px solid var(--border); background: var(--card); }
+.win-menu > button { text-align: start; min-height: 44px; }
+.win-float-layer { position: fixed; inset: 0; pointer-events: none; z-index: 16; }
+.win-float { position: absolute; pointer-events: auto; display: flex; }
+.win-drop { position: fixed; z-index: 30; pointer-events: none; background: color-mix(in srgb, var(--accent, #4a8cff) 25%, transparent); border: 2px solid var(--accent, #4a8cff); border-radius: 6px; }
+.dock-grip { flex: 0 0 6px; background: var(--border); position: relative; touch-action: none; z-index: 1; }
+.dock-grip[data-dir="h"] { cursor: col-resize; }
+.dock-grip[data-dir="v"] { cursor: row-resize; }
+.dock-grip::before { content: ""; position: absolute; inset: 0 -9px; }
+.dock-grip[data-dir="v"]::before { inset: -9px 0; }
+.dock-grip:focus-visible { outline: 2px solid var(--accent, #4a8cff); }
+.win-chips { position: fixed; left: 8px; right: 8px; bottom: 88px; z-index: 40; display: flex; flex-direction: column; gap: 6px; pointer-events: none; }
+.win-chip { pointer-events: auto; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 8px 10px; border-radius: 10px; background: var(--card); border: 1px solid var(--border); box-shadow: 0 4px 16px rgba(0,0,0,0.35); font-size: 14px; }
+.win-chip-buttons { display: flex; flex-wrap: wrap; gap: 6px; }
+.win-chip-buttons > button { min-height: 44px; }

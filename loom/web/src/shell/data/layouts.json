@@ -351,5 +351,156 @@
   "window_restore_last": true,
   "window_restore_last_note": "W2: the start view `last_saved` restores the windows of the last session (window_layout_last in localStorage loom.shell.last.v2), not only the layout id. false = only the layout id, as in W1.",
   "window_restore_front": "layout",
-  "window_restore_front_note": "W2: which window is in front after a start that restored window_layout_last: layout (preset: the window the layout's preset maximizes, the chat; the restored others wait in the switcher - a start looks as before W2) | saved (the window that was in front when the page was left)."
+  "window_restore_front_note": "W2: which window is in front after a start that restored window_layout_last: layout (preset: the window the layout's preset maximizes, the chat; the restored others wait in the switcher - a start looks as before W2) | saved (the window that was in front when the page was left).",
+  "window_arrange": {
+    "min_useful_width": 240,
+    "offscreen_fraction": 0.5,
+    "keyboard_min_px": 80,
+    "drop_edge": 0.25,
+    "drag_threshold_px": 8,
+    "split_grip_px": 24,
+    "float_rect": {
+      "x": 0.06,
+      "y": 0.12,
+      "w": 0.88,
+      "h": 0.6,
+      "unit": "fraction"
+    },
+    "advisory_button_order": [
+      "keep",
+      "dont_ask",
+      "fix"
+    ],
+    "advisories": {
+      "dock_narrow": {
+        "text": {
+          "pl": "Zadokowane okna mają tu mniej niż {min} px szerokości ({widths}).",
+          "en": "Docked windows are narrower than {min} px here ({widths})."
+        },
+        "fix": {
+          "id": "maximize",
+          "label": {
+            "pl": "Zmaksymalizuj",
+            "en": "Maximize"
+          }
+        }
+      },
+      "float_offscreen": {
+        "text": {
+          "pl": "Okno «{title}» jest w większości poza ekranem.",
+          "en": "The window «{title}» is mostly off the screen."
+        },
+        "fix": {
+          "id": "snap",
+          "label": {
+            "pl": "Przyciągnij",
+            "en": "Snap back"
+          }
+        }
+      },
+      "float_under_keyboard": {
+        "text": {
+          "pl": "Klawiatura zakrywa okno «{title}».",
+          "en": "The keyboard covers the window «{title}»."
+        },
+        "fix": {
+          "id": "above_keyboard",
+          "label": {
+            "pl": "Przesuń nad",
+            "en": "Move above"
+          }
+        }
+      }
+    },
+    "question": {
+      "pl": "Czy to celowe?",
+      "en": "Is this intended?"
+    },
+    "choices": [
+      {
+        "id": "keep",
+        "label": {
+          "pl": "Zostaw",
+          "en": "Keep it"
+        }
+      },
+      {
+        "id": "dont_ask",
+        "label": {
+          "pl": "Zostaw, nie pytaj więcej",
+          "en": "Keep it, don't ask again"
+        }
+      }
+    ],
+    "menu": [
+      {
+        "id": "left",
+        "label": {
+          "pl": "Dokuj z lewej",
+          "en": "Dock left"
+        },
+        "icon": "⇤"
+      },
+      {
+        "id": "right",
+        "label": {
+          "pl": "Dokuj z prawej",
+          "en": "Dock right"
+        },
+        "icon": "⇥"
+      },
+      {
+        "id": "top",
+        "label": {
+          "pl": "Dokuj u góry",
+          "en": "Dock top"
+        },
+        "icon": "⤒"
+      },
+      {
+        "id": "bottom",
+        "label": {
+          "pl": "Dokuj na dole",
+          "en": "Dock bottom"
+        },
+        "icon": "⤓"
+      },
+      {
+        "id": "tab",
+        "label": {
+          "pl": "Jako zakładka",
+          "en": "As a tab"
+        },
+        "icon": "▭"
+      },
+      {
+        "id": "float",
+        "label": {
+          "pl": "Pływające",
+          "en": "Floating"
+        },
+        "icon": "⧉"
+      },
+      {
+        "id": "maximize",
+        "label": {
+          "pl": "Zmaksymalizuj",
+          "en": "Maximize"
+        },
+        "icon": "⤢"
+      }
+    ],
+    "keymap": {
+      "ctrl+shift+arrowleft": "left",
+      "ctrl+shift+arrowright": "right",
+      "ctrl+shift+arrowup": "top",
+      "ctrl+shift+arrowdown": "bottom",
+      "ctrl+shift+f": "float",
+      "ctrl+shift+m": "maximize",
+      "ctrl+shift+t": "tab",
+      "ctrl+shift+z": "undo",
+      "ctrl+shift+y": "redo"
+    }
+  },
+  "window_arrange_note": "W4 (OKNA §4.4, §6.3): presets of docking and floating - thresholds of the advisories dock_narrow (min_useful_width px of a drawn leaf), float_offscreen (fraction of a floating rect outside the area), float_under_keyboard (on-screen keyboard at least keyboard_min_px tall); drop_edge = the fraction of a leaf near its edge that docks to that side (the middle makes a tab); the menu entries and keys reach every arrangement without dragging. All examples; any value works, also degenerate ones (0 = never narrow)."
 }
