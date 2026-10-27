@@ -128,6 +128,12 @@ try {
     const graphLine = await text("import-graph-summary");
     assert.match(graphLine, /Eksport Claude \(Anthropic\) z pliku „anthropic_2026_full\.zip”\. Rozmowy: 2, wiadomości: \d+\./);
     assert.match(graphLine, /Importy/);
+    // G2-P2: the layout of the export in words, as the kernel chose it (the wire carries the fingerprint with its alternatives)
+    const layoutPl = wire.import_graph?.layout?.chosen?.label?.pl;
+    assert.ok(layoutPl, "the kernel sends the chosen layout");
+    assert.ok(graphLine.includes(`Układ eksportu: ${layoutPl}`), "the summary names the layout");
+    // the person's file name is marked as their content (the audit skips exactly it), the words around it are the app's
+    assert.equal(await page.getByTestId("import-graph-summary").locator("[data-person-content]").first().innerText(), "anthropic_2026_full.zip");
     assert.ok(!/[{}\[\]"]/.test(graphLine), "no raw JSON in the graph summary");
     REPORT.graphSummary = graphLine;
     assert.ok(!/Imported \d+ messages/.test(await page.getByTestId("import-result").innerText()), "the English line is gone");

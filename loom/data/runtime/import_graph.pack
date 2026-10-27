@@ -804,7 +804,9 @@
             {
               "d": "member_absent",
               "arg": "^memories\\.json$",
-              "claim": "claim:claude-no-memories-before-2025"
+              "claim": "claim:claude-no-memories-before-2025",
+              "weight": 0,
+              "note": "excluder only: memories.json is optional in 2026 too, so its absence is no evidence for this layout"
             },
             {
               "d": "member_present",

@@ -286,14 +286,14 @@ TEST_SUITE("import_layout") {
 
   TEST_CASE("a new provider is data only: a synthetic profile in the person's overlay is picked up by the import") {
     Fx fx;
-    const Json overlay = Json::parse(R"({"layout_fingerprint": {
+    const Json overlay = Json::parse(R"({"schema": "loom.runtime_profile_overlay/1", "domain": "import_graph", "overrides": {"layout_fingerprint": {
       "claims": {"claim:acme-layout": {"alpha": 9, "beta": 1, "tier": "C", "observed": "2026-10-27", "sources": ["test overlay"]}},
       "layouts": {"acme-export-2027": {"class": "export.acme", "class_id": "export.acme/2027",
         "label": {"pl": "Acme, eksport 2027", "en": "Acme export 2027"},
         "descriptors": [{"d": "container", "arg": "^zip$", "claim": "claim:acme-layout"},
                         {"d": "member_present", "arg": "^export\\.json$", "claim": "claim:acme-layout"},
                         {"d": "member_present", "arg": "^readme\\.md$", "claim": "claim:acme-layout"},
-                        {"d": "member_present", "arg": "^files/", "claim": "claim:acme-layout", "optional": true}]}}}})");
+                        {"d": "member_present", "arg": "^files/", "claim": "claim:acme-layout", "optional": true}]}}}}})");
     std::filesystem::create_directories(fx.td.path() / "profiles");
     std::ofstream(fx.td.path() / "profiles" / "import_graph.pack") << overlay.dump(2);
     const ImportResult r = fx.run(xfix("unknown_provider.zip"));
@@ -324,7 +324,8 @@ TEST_SUITE("import_layout") {
     const Json block = node->metadata["import_graph"];
     CHECK(json::get_string(block["attrs"]["layout"], "state") == "uncertain");
     CHECK(block["attrs"]["layout"]["alternatives"].size() >= 1);
-    CHECK(block["person_content"] == Json::array({"label", "attrs.file"}));
+    CHECK(block["person_content"] == Json::array({"attrs.file"}));  // the label "Eksport Claude …: <file>" only contains it
+    CHECK(block["person_values"] == Json::array({"anthropic_legacy.zip"}));
     // a confident layout becomes a facet of the export node (the class of graph/classes.pack)
     Fx fx2;
     const ImportResult s = fx2.run(xfix("openai_2026_sharded.zip"));

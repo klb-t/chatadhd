@@ -103,18 +103,27 @@ struct Writer {
   std::set<std::string> touched;
   std::vector<std::string> person_fields;  // preset person_content.node_fields ("label", "attrs.<name>")
 
-  // The fields of this node whose values are the person's own content (file names, titles, e-mail ...).
-  Json person_content(const std::string& label, const Json& block) const {
-    Json out = Json::array();
-    const Json* attrs = json::find(block, "attrs");
+  // The fields of this node whose values are the person's own content (file names, titles, e-mail ...) and those values
+  // (exact strings: a label that only contains one, like "Eksport Claude: plik.zip", is split by the web around it).
+  void mark_person_content(const std::string& label, Json& block, bool label_is_person) const {
+    Json fields = Json::array(), values = Json::array();
+    std::set<std::string> seen;
+    const auto add = [&](const std::string& f, const std::string& v) {
+      fields.push_back(f);
+      if (seen.insert(v).second) values.push_back(v);
+    };
+    const Json attrs = block.value("attrs", Json::object());
     for (const auto& f : person_fields) {
       if (f == "label") {
-        if (!label.empty()) out.push_back(f);
-      } else if (f.rfind("attrs.", 0) == 0 && attrs && attrs->is_object()) {
-        if (const Json* v = json::find(*attrs, f.substr(6)); v && v->is_string() && !v->get<std::string>().empty()) out.push_back(f);
+        if (label_is_person && !label.empty()) add(f, label);
+      } else if (f.rfind("attrs.", 0) == 0 && attrs.is_object()) {
+        if (const Json* v = json::find(attrs, f.substr(6)); v && v->is_string() && !v->get<std::string>().empty())
+          add(f, v->get<std::string>());
       }
     }
-    return out;
+    if (fields.empty()) return;
+    block["person_content"] = std::move(fields);
+    block["person_values"] = std::move(values);
   }
 
   static std::string id_for(const std::string& key) { return "n_" + Sha256::hex(key).substr(0, 12); }
@@ -127,13 +136,13 @@ struct Writer {
   // Writes the node of `key` or finds it again. `block` is the import description (class, facets, nav_parent,
   // attrs ...); arrays attrs.conv_ids / attrs.source_ids are united with what the node already had.
   Result<std::string> node(const std::string& cls, const std::string& key, const std::string& label, Json block,
-                           const std::string& content = std::string()) {
+                           const std::string& content = std::string(), bool label_is_person = true) {
     const std::string id = id_for(key);
     block["class"] = cls;
     block["key"] = key;
     block["blob_hash"] = blob;
     if (!block.contains("facets")) block["facets"] = Json::array();
-    if (Json pc = person_content(label, block); !pc.empty()) block["person_content"] = std::move(pc);
+    mark_person_content(label, block, label_is_person);
     std::optional<std::string> prior;
     {
       auto lock = db.lock();
@@ -263,7 +272,8 @@ Result<Json> project_with(Database& db, const fs::path& path, const ImportResult
       }
     }
     LOOM_TRY_ASSIGN(export_id, w.node("export", w.blob + "/export", label,
-                                      Json{{"facets", facets}, {"nav_parent", ""}, {"attrs", attrs}}));
+                                      Json{{"facets", facets}, {"nav_parent", ""}, {"attrs", attrs}}, std::string(),
+                                      /*label_is_person=*/false));
   }
   Json file_attrs{{"name", file_name}, {"format", result.format}, {"sha256", w.blob}, {"source_ids", source_ids},
                   {"path", path.string()}};
@@ -393,18 +403,18 @@ Result<Json> project_with(Database& db, const fs::path& path, const ImportResult
   std::int64_t entity_total = 0;
   if (is_export && !result.source_id.empty()) {
     const Json by_kind = preset.value("entity_class_by_kind", Json::object());
-    struct Ent { std::string id, kind, metadata; };
+    struct Ent { std::string id, kind, metadata, label; };
     std::vector<Ent> ents;
     {
       auto lock = db.lock();
       LOOM_TRY_ASSIGN(auto st, db.conn().prepare(
-          "SELECT id, kind, metadata FROM nodes WHERE kind LIKE 'export:%' AND json_valid(metadata) "
+          "SELECT id, kind, metadata, label FROM nodes WHERE kind LIKE 'export:%' AND json_valid(metadata) "
           "AND json_extract(metadata,'$.export.source_id')=? ORDER BY rowid"));
       st.bind(1, result.source_id);
       while (true) {
         LOOM_TRY_ASSIGN(bool more, st.step());
         if (!more) break;
-        ents.push_back(Ent{st.get_text(0), st.get_text(1), st.get_text(2)});
+        ents.push_back(Ent{st.get_text(0), st.get_text(1), st.get_text(2), st.get_text(3)});
       }
     }
     for (const auto& e : ents) {
@@ -412,9 +422,9 @@ Result<Json> project_with(Database& db, const fs::path& path, const ImportResult
       if (cls.empty()) continue;  // kinds without a class (export:member: the entries above describe them)
       Json meta = json::parse_or(e.metadata, Json::object());
       if (!meta.is_object()) continue;
-      const Json block{{"class", cls}, {"facets", Json::array()}, {"key", w.blob + "/entity/" + e.id},
-                       {"blob_hash", w.blob}, {"nav_parent", export_id}, {"attrs", Json{{"kind", e.kind}}},
-                       {"person_content", Json::array({"label"})}};
+      Json block{{"class", cls}, {"facets", Json::array()}, {"key", w.blob + "/entity/" + e.id},
+                 {"blob_hash", w.blob}, {"nav_parent", export_id}, {"attrs", Json{{"kind", e.kind}}}};
+      w.mark_person_content(e.label, block, true);
       if (meta.value(w.mkey, Json()) != block) {
         meta[w.mkey] = block;
         NodePatch patch;

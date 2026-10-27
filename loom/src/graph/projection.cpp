@@ -2388,6 +2388,7 @@ Result<Read> read_imports(Impl& c, const Json& src, const std::string&, const Js
     n["same_as"] = Json::array({row.id});
     // the fields whose values are the person's own content (file names, titles, e-mail): the web shows them as content
     if (const Json* pc = json::find(row.block, "person_content"); pc && pc->is_array() && !pc->empty()) n["person_content"] = *pc;
+    if (const Json* pv = json::find(row.block, "person_values"); pv && pv->is_array() && !pv->empty()) n["person_values"] = *pv;
     const auto k = kids.find(row.id);
     n["has_children"] = k != kids.end();
     if (k != kids.end()) n["count"] = k->second;
@@ -3039,7 +3040,8 @@ namespace {
 
 const std::set<std::string> kRowKeys = {"address", "label", "kind", "value", "value_human", "count", "count_unknown_reason", "provenance", "evidence",
                                         "evidence_overrides", "has_children", "status", "why", "order", "same_as", "source", "empty_reason", "no_translation",
-                                        "shown_also_in", "count_unknown_human", "value_unknown_reason", "derived", "derived_note", "receipt", "actions", "state"};
+                                        "shown_also_in", "count_unknown_human", "value_unknown_reason", "derived", "derived_note", "receipt", "actions", "state",
+                                        "person_content", "person_values"};
 
 Json row_of(const Json& n) {
   Json r = Json::object();
@@ -3560,6 +3562,8 @@ Result<Json> navigate(const Env& env, const Json& request) {
            {"limit", Json{{"value", limit}, {"from", request.contains("limit") ? "request" : "navigator_children_limit"}}},
            {"hops", hops},
            {"resolver_opens", cat.resolver_opens()}};
+  // the person's own values inside the focus label (a file name ...): the web shows them as content (import_graph person_content)
+  if (const Json* pv = json::find(*focus, "person_values"); pv && pv->is_array() && !pv->empty()) out["focus"]["person_values"] = *pv;
   if (!handed_from.empty()) out["handed_from"] = handed_from;
   if (!perspective_info.empty()) out["perspectives"] = perspective_info;
   if (receipt_render) receipt_info = receipt_summary(*receipt_render);

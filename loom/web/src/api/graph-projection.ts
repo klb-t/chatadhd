@@ -62,6 +62,8 @@ export interface GraphNodeRow {
   same_as?: string[];
   /** Fields whose values are the person's own content ("label", "attrs.name" ...): shown as content, skipped by the words audit. */
   person_content?: string[];
+  /** The person's own values themselves (exact strings; a label may only contain one, e.g. "Eksport Claude: plik.zip"). */
+  person_values?: string[];
   depth?: number;
   /** An area row: the graph entry counters of the area, each with its name and, when unknown, its reason in words. */
   counts?: Record<string, { known: boolean; value?: number; by?: Record<string, number>; reason?: string; name?: string; reason_human?: string }>;

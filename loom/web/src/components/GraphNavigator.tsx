@@ -17,6 +17,7 @@ import { isMeFocus } from "./me-view-state";
 import { featureInLanguage } from "../onboarding/presentation.mjs";
 import { api } from "../api";
 import type { GraphNavigateResult, GraphNodeRow } from "../api/graph-projection";
+import PersonText from "./PersonText";
 import type { UserProfileHost } from "../api/onboarding-host";
 import Disclosure from "../shell/Disclosure";
 import GraphHelp from "./GraphHelp";
@@ -129,7 +130,7 @@ export default function GraphNavigator({ profileHost, convId, language, initialF
   }, [perspMenu, perspList, language, state.perspectives.length]);
 
   const closeStep = (index: number) => { setState(s => goBack(s, index)); setCard(null); };
-  const drill = (row: Pick<GraphNodeRow, "address" | "label" | "person_content">) => { setState(s => drillInto(s, row)); setCard(null); setDraft(""); setSearchOpen(false); };
+  const drill = (row: Pick<GraphNodeRow, "address" | "label" | "person_values">) => { setState(s => drillInto(s, row)); setCard(null); setDraft(""); setSearchOpen(false); };
   const openCard = (row: Pick<GraphNodeRow, "address" | "label">) => { setCardSection(null); setCard(c => c?.address === row.address ? null : { address: row.address, label: row.label }); };
   const showCard = (row: Pick<GraphNodeRow, "address" | "label">) => { setCardSection(null); setCard({ address: row.address, label: row.label }); };
   const effectiveLimit = result?.limit.value ?? 0, effectiveHops = result?.hops ?? 1, shown = result?.counts.shown ?? 0;
@@ -174,7 +175,7 @@ export default function GraphNavigator({ profileHost, convId, language, initialF
           {crumbs.map((step, i) => <span key={`${i}-${step.address}`} className="gnav-crumb-item">
             {i > 0 && <span className="gnav-sep" aria-hidden>›</span>}
             <button className="gnav-crumb" data-testid={`nav-crumb-${i}`} aria-current={i === crumbs.length - 1 ? "page" : undefined}
-              onClick={() => closeStep(i)}><span data-person-content={"person" in step && step.person ? "" : undefined}>{step.label || step.address}</span></button>
+              onClick={() => closeStep(i)}>{"person" in step && step.person ? <PersonText text={step.label || step.address} person={step.person} /> : step.label || step.address}</button>
           </span>)}
         </div>
         <button className="gnav-search-toggle" data-testid="nav-search-toggle" aria-expanded={searchOpen} aria-label={searchOpen ? t("search.close") : t("search")}
@@ -203,7 +204,7 @@ export default function GraphNavigator({ profileHost, convId, language, initialF
                 <button className="gnav-row-main" data-testid={`nav-row-${row.address}`} data-has-children={row.has_children}
                   onClick={() => row.has_children ? drill(row) : openCard(row)}>
                   <span className="gnav-row-top">
-                    <span className="gnav-label" data-person-content={row.person_content?.includes("label") ? "" : undefined}>{row.label}</span>
+                    <span className="gnav-label"><PersonText text={row.label} person={row.person_values ?? []} /></span>
                     {count && <span className={`gnav-count${typeof row.count === "number" ? "" : " gnav-count-unknown"}`} data-testid="nav-count"
                       data-known={typeof row.count === "number"}>{count}</span>}
                     {row.has_children && <span className="gnav-chevron" aria-hidden>›</span>}

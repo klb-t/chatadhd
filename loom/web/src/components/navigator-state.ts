@@ -6,8 +6,8 @@ import type { GraphNavigateRequest, GraphNavigateResult, GraphNodeRow } from "..
 import type { ShellT } from "../shell/text";
 import { countPhrase } from "../shell/plural";
 
-/** `person`: the label is the person's own content (a file name, a title), marked by the kernel (person_content), shown as content. */
-export interface PathStep { address: string; label: string; person?: boolean }
+/** `person`: the person's own values inside the label (a file name, a title), marked by the kernel (person_values), shown as content. */
+export interface PathStep { address: string; label: string; person?: string[] }
 export interface NavigatorState {
   /** The steps taken from the root; the last one is the focus. Each step is one history layer (shell/history.ts). */
   path: PathStep[];
@@ -57,9 +57,9 @@ export function actionsTarget(s: NavigatorState, focusLabel: string): { address:
 }
 
 /** A tap on a row with children: one step deeper; the search of the old level does not carry over. */
-export function drillInto(s: NavigatorState, row: Pick<GraphNodeRow, "address" | "label"> & { person_content?: string[] }): NavigatorState {
+export function drillInto(s: NavigatorState, row: Pick<GraphNodeRow, "address" | "label"> & { person_values?: string[] }): NavigatorState {
   if (focusOf(s) === row.address) return s;
-  const step: PathStep = row.person_content?.includes("label") ? { address: row.address, label: row.label, person: true } : { address: row.address, label: row.label };
+  const step: PathStep = row.person_values?.length ? { address: row.address, label: row.label, person: row.person_values } : { address: row.address, label: row.label };
   return { ...s, path: [...s.path, step], query: "" };
 }
 /** Back to the step at `length` (0 = the root): a tap on a crumb, the ‹ button, Back / popstate closing the last step. */

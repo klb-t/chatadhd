@@ -11,6 +11,7 @@ import { project } from "../view-engine/project";
 import { chipText, countText } from "./navigator-state";
 import { CAMERA_HOME, HIT_SIZE_PRESET, LABEL_FONT_PX_PRESET, MAP_HEIGHT_PRESET, MAP_MARGIN_PRESET, TAP_SLOP_PRESET, ZOOM_STEP_PRESET, elementIdOf, exclusionRects, nearestMark, panBy,
   pinch, placeLabels, sameRects, screenOf, viewModelFor, zoomBy, type Camera, type Point, type Rect } from "./navigator-map";
+import PersonText from "./PersonText";
 
 interface Props {
   result: GraphNavigateResult;
@@ -29,6 +30,12 @@ type Gesture = { kind: "pan"; from: Point; cam: Camera; moved: boolean } | { kin
 function reportExclusion(rects: Rect[]): void {
   const bridge = (window as unknown as { LoomBridge?: { setGestureExclusion?: (json: string) => void } }).LoomBridge;
   bridge?.setGestureExclusion?.(JSON.stringify(rects));
+}
+
+// A label on the plane is cut to fit ("anthropic_2…"), so it cannot be split around the person's values: a label that contains one is marked
+// as content as a whole (the line under the map shows the whole label, split exactly).
+function personIn(row: { label?: string; person_values?: string[] } | undefined): boolean {
+  return !!row?.label && !!row.person_values?.some(v => v !== "" && row.label!.includes(v));
 }
 
 export default function NavigatorMap({ result, open, t, onCard, onDrill }: Props) {
@@ -76,7 +83,7 @@ export default function NavigatorMap({ result, open, t, onCard, onDrill }: Props
   const projection = useMemo(() => width > 0 ? project(model, { width, height, margin: MAP_MARGIN_PRESET }) : null, [model, width, height]);
   const rowsById = useMemo(() => {
     const m = new Map<string, Pick<GraphNodeRow, "address" | "label" | "has_children"> & Partial<GraphNodeRow>>();
-    m.set(elementIdOf(result.focus.address), { address: result.focus.address, label: result.focus.label || t("root"), has_children: true, kind: result.focus.kind, provenance: result.focus.provenance, evidence: result.focus.evidence });
+    m.set(elementIdOf(result.focus.address), { address: result.focus.address, label: result.focus.label || t("root"), has_children: true, person_values: (result.focus as Partial<GraphNodeRow>).person_values, kind: result.focus.kind, provenance: result.focus.provenance, evidence: result.focus.evidence });
     for (const row of result.children) m.set(elementIdOf(row.address), row);
     return m;
   }, [result, t]);
@@ -149,11 +156,11 @@ export default function NavigatorMap({ result, open, t, onCard, onDrill }: Props
           {marks.map(m => <g key={m.id} data-testid="nav-map-mark" data-id={m.id} data-focus={m.focus ? "true" : "false"} data-selected={selected === m.id ? "true" : "false"}>
             <circle cx={m.screen.x} cy={m.screen.y} r={m.rScreen} fill={m.fill} stroke="currentColor" strokeWidth={m.focus || selected === m.id ? 2 : 0} />
           </g>)}
-          {labels.map(l => <text key={l.id} data-testid="nav-map-label" data-id={l.id} x={l.x} y={l.y} fontSize={LABEL_FONT_PX_PRESET} fill="currentColor" opacity={0.85}
+          {labels.map(l => <text key={l.id} data-testid="nav-map-label" data-id={l.id} data-person-content={personIn(rowsById.get(l.id)) ? "" : undefined} x={l.x} y={l.y} fontSize={LABEL_FONT_PX_PRESET} fill="currentColor" opacity={0.85}
             textAnchor={l.anchor}>{l.text}</text>)}
         </svg>}
         {marks.filter(m => inside(m.screen)).map(m => <button key={m.id} type="button" className="gnav-map-hit" data-testid={`nav-map-node-${m.id}`}
-          aria-label={m.label} aria-pressed={selected === m.id}
+          aria-label={m.label} aria-pressed={selected === m.id} data-person-content={personIn(rowsById.get(m.id)) ? "" : undefined}
           style={{ left: m.screen.x - HIT_SIZE_PRESET / 2, top: m.screen.y - HIT_SIZE_PRESET / 2, width: HIT_SIZE_PRESET, height: HIT_SIZE_PRESET }}
           onClick={(e) => tapAt(e, m.id)} />)}
       </div>
@@ -164,7 +171,7 @@ export default function NavigatorMap({ result, open, t, onCard, onDrill }: Props
         <span className="gnav-map-zoom-value" data-testid="nav-map-zoom-value">{Math.round(cam.zoom * 100)}%</span>
       </div>
       {selectedRow ? <div className="gnav-map-selected" data-testid="nav-map-selected" data-address={selectedRow.address}>
-        <span className="gnav-label">{selectedRow.label}</span>
+        <span className="gnav-label"><PersonText text={selectedRow.label} person={selectedRow.person_values ?? []} /></span>
         {selectedRow.provenance && selectedRow.evidence && selectedRow.address && <span className="gnav-count">{countText(selectedRow as GraphNodeRow, t) ?? ""}</span>}
         {selectedRow.provenance && <span className="gnav-chip">{chipText(selectedRow as GraphNodeRow, t)}</span>}
         {selectedRow.has_children && selectedRow.address && <button type="button" className="gnav-map-btn gnav-map-enter" data-testid="nav-map-enter"
