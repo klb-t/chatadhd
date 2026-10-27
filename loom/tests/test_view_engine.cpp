@@ -74,6 +74,25 @@ Json history(Json extra_elements = Json::array(), bool with_encodings = true) {
   return Json{{"label", "test"}, {"elements", elements}};
 }
 
+
+// label -> channels of every element (ids are random; labels are stable in the fixture), for golden comparisons.
+Json channels_by_label(const Json& model) {
+  Json out = Json::object();
+  for (const auto& e : model.at("elements")) out[e.value("label", std::string())] = e.value("channels", Json::object());
+  return out;
+}
+
+// The scale specs that existed before G3 (range / domain / type / invert): their output is pinned by a golden (G3 must keep it identical).
+Json legacy_scale_declaration() {
+  return history(Json::array({el("kindm", "measure", {{"measure", "node_kind"}}),
+                              el("e_alpha_inv", "encoding", {{"channel", "alpha"}, {"measure", "age"}, {"scale", Json{{"invert", true}}}}),
+                              el("e_light_rng", "encoding", {{"channel", "lightness"}, {"measure", "distance"}, {"scale", Json{{"range", Json::array({0.1, 0.9})}}}}),
+                              el("e_sat_dom", "encoding", {{"channel", "saturation"}, {"measure", "age"}, {"scale", Json{{"domain", Json::array({0, 40})}, {"range", Json::array({1, 0})}}}}),
+                              el("e_hue_cat", "encoding", {{"channel", "hue"}, {"measure", "kindm"}}),
+                              el("e_badge", "encoding", {{"channel", "badge"}, {"measure", "divergence"}}),
+                              el("e_blur", "encoding", {{"channel", "blur"}, {"measure", "divergence"}, {"scale", Json{{"invert", true}, {"domain", Json::array({1, 1})}}}})}));
+}
+
 }  // namespace
 
 TEST_SUITE("view_engine") {
@@ -351,5 +370,15 @@ TEST_SUITE("view_engine") {
     CHECK(m["groups"].size() == 4);
     CHECK(m["encodings"].size() >= 5);
     for (const auto& e : m["encodings"]) CHECK_MESSAGE((e["status"] == "promoted" || e["status"] == "allowed"), e["id"].get<std::string>());
+  }
+
+  TEST_CASE("G3: scale specs from before G3 (range / domain / type / invert) and the shipped presets give the identical output (golden)") {
+    // captured on 6a89adc3 before the general scale; any difference here is a regression of backward compatibility
+    const Json golden = Json::parse(R"GOLDEN({"legacy":{"b2":{"size":4.0,"alpha":0.84,"lightness":0.9,"saturation":1.0,"hue":0.0,"badge":"1","blur":3.0},"v3":{"size":16.0,"alpha":0.733333,"lightness":0.5,"saturation":1.0,"hue":0.0,"badge":"1","blur":3.0},"v1":{"size":10.0,"alpha":0.2,"lightness":0.5,"saturation":0.75,"hue":0.0,"badge":"1","blur":3.0},"b1":{"size":16.0,"alpha":0.573333,"lightness":0.5,"saturation":1.0,"hue":0.0,"badge":"1","blur":3.0},"v2":{"size":28.0,"alpha":0.466667,"lightness":0.1,"saturation":1.0,"hue":0.0,"badge":"0","blur":3.0},"v4":{"size":4.0,"alpha":1.0,"lightness":0.9,"saturation":1.0,"hue":0.0,"badge":"1","blur":3.0}},"history_cone":{"b2":{"hue":225.0,"saturation":1.0,"lightness":0.7,"size":4.0,"badge":"version"},"v3":{"hue":225.0,"saturation":1.0,"lightness":0.625,"size":12.0,"badge":"version"},"caller()":{"hue":0.0,"lightness":0.83125,"size":5.333332,"badge":"function"},"v1":{"hue":225.0,"saturation":1.0,"lightness":0.25,"size":8.0,"badge":"version"},"b1":{"hue":225.0,"saturation":1.0,"lightness":0.5125,"size":12.0,"badge":"version"},"be fast":{"hue":150.0,"lightness":0.85,"size":4.0,"badge":"goal"},"v2":{"hue":75.0,"saturation":0.15,"lightness":0.4375,"size":28.0,"badge":"version"},"v4":{"hue":225.0,"saturation":1.0,"lightness":0.8125,"size":4.0,"badge":"version"}},"age_lanes":{"b2":{"size":4.0},"v3":{"size":16.0},"v1":{"size":10.0},"b1":{"size":16.0},"v2":{"size":28.0},"v4":{"size":4.0}}})GOLDEN");
+    Fixture f;
+    auto eng = unwrap(views::ViewEngine::open(f.td.path()));
+    CHECK(channels_by_label(unwrap(eng.evaluate_declaration(f.ctx(), legacy_scale_declaration(), Json{{"focus", f.v2}}))) == golden["legacy"]);
+    CHECK(channels_by_label(unwrap(eng.evaluate(f.ctx(), "history_cone", Json{{"focus", f.v2}}))) == golden["history_cone"]);
+    CHECK(channels_by_label(unwrap(eng.evaluate(f.ctx(), "age_lanes", Json{{"focus", f.v2}}))) == golden["age_lanes"]);
   }
 }
