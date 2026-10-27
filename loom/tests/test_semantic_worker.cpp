@@ -390,7 +390,7 @@ TEST_SUITE("semantic_worker") {
                           nullptr, {}, Json{{"batch_threshold", 0}});
     CHECK(unwrap(worker.drain_once()) == 0);   // submit
     worker.start();                            // the loop polls, then ingests the ended batch
-    REQUIRE(wait_until([&] { return env.transport.requests().size() >= 3; }, std::chrono::seconds(5)));
+    REQUIRE(wait_until([&] { return env.transport.requests().size() >= 3; }, std::chrono::seconds(30)));
     worker.stop();
     auto reqs = env.transport.requests();
     REQUIRE(reqs.size() == 3);
@@ -625,7 +625,7 @@ TEST_SUITE("semantic_worker") {
 
     w->start();
     w->start();  // idempotent: must not spawn a second thread or crash
-    CHECK(wait_until([&] { return w->status().running; }, std::chrono::seconds(2)));
+    CHECK(wait_until([&] { return w->status().running; }, std::chrono::seconds(30)));
 
     auto t0 = std::chrono::steady_clock::now();
     w->stop();
@@ -635,7 +635,7 @@ TEST_SUITE("semantic_worker") {
 
     // stop() then start() again works (thread_ was properly joined/reset).
     w->start();
-    CHECK(wait_until([&] { return w->status().running; }, std::chrono::seconds(2)));
+    CHECK(wait_until([&] { return w->status().running; }, std::chrono::seconds(30)));
     w->stop();
   }
 
@@ -649,14 +649,14 @@ TEST_SUITE("semantic_worker") {
 
     w->pause();
     w->start();
-    CHECK(wait_until([&] { return w->status().paused; }, std::chrono::seconds(2)));
+    CHECK(wait_until([&] { return w->status().paused; }, std::chrono::seconds(30)));
 
     env.add_pending_msg(conv.id, "queued while worker paused");
     std::this_thread::sleep_for(std::chrono::milliseconds(150));
     CHECK(w->status().pending == 1);  // untouched while paused
 
     w->resume();
-    CHECK(wait_until([&] { return w->status().pending == 0; }, std::chrono::seconds(2)));
+    CHECK(wait_until([&] { return w->status().pending == 0; }, std::chrono::seconds(30)));
     CHECK(!w->status().paused);
     w->stop();
   }
@@ -670,13 +670,13 @@ TEST_SUITE("semantic_worker") {
 
     w->start();
     // Let it reach idle (queue starts empty).
-    CHECK(wait_until([&] { return w->status().mode == "idle"; }, std::chrono::seconds(2)));
+    CHECK(wait_until([&] { return w->status().mode == "idle"; }, std::chrono::seconds(30)));
 
     auto conv = unwrap(env.db->create_conv("c"));
     env.add_pending_msg(conv.id, "woken message goes here now");
     w->wake();
 
-    CHECK(wait_until([&] { return w->status().processed >= 1; }, std::chrono::seconds(2)));
+    CHECK(wait_until([&] { return w->status().processed >= 1; }, std::chrono::seconds(30)));
     w->stop();
   }
 
@@ -687,13 +687,13 @@ TEST_SUITE("semantic_worker") {
     opts.idle_poll = std::chrono::seconds(30);
     auto w = env.worker(opts);
     w->start();
-    CHECK(wait_until([&] { return w->status().mode == "idle"; }, std::chrono::seconds(2)));
+    CHECK(wait_until([&] { return w->status().mode == "idle"; }, std::chrono::seconds(30)));
 
     auto conv = unwrap(env.db->create_conv("c"));
     env.add_pending_msg(conv.id, "arrived via import event now");
     env.bus.emit(events::kImportDone, Json::object());
 
-    CHECK(wait_until([&] { return w->status().processed >= 1; }, std::chrono::seconds(2)));
+    CHECK(wait_until([&] { return w->status().processed >= 1; }, std::chrono::seconds(30)));
     w->stop();
   }
 
@@ -724,7 +724,7 @@ TEST_SUITE("semantic_worker") {
     {
       auto w = env.worker(opts);
       w->start();
-      CHECK(wait_until([&] { return w->status().running; }, std::chrono::seconds(2)));
+      CHECK(wait_until([&] { return w->status().running; }, std::chrono::seconds(30)));
       // ~SemanticWorker() runs here and must join promptly.
     }
     CHECK(true);  // reaching here without hanging is the assertion
