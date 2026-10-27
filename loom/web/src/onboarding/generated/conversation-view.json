@@ -1739,6 +1739,16 @@
             "layout_receipt_nothing_undo": "Nie ma czego cofnąć w układzie.",
             "layout_receipt_nothing_redo": "Nie ma czego ponowić w układzie.",
             "layout_receipt_reset": "Układ jak w aplikacji: {{name}}",
+            "window_receipt_arranged": "Ułożone: {{screen}} ({{how}})",
+            "window_receipt_noside": "Nie znam takiej strony ani kierunku: {{word}}",
+            "window_receipt_bound": "Powiązane, {{param}}: {{screen}}",
+            "window_receipt_unbound": "Rozwiązane, {{param}}: {{screen}}",
+            "window_receipt_noparam": "Żadne okno tutaj nie śledzi parametru: {{word}}",
+            "window_receipt_fewer": "Do powiązania parametru {{param}} trzeba co najmniej dwóch otwartych okien, które go śledzą; otwarte: {{count}}",
+            "window_announce": "Okno: {{screen}}",
+            "layout_receipt_renamed": "Zmieniona nazwa układu: {{name}} → {{label}}",
+            "layout_receipt_deleted": "Usunięty układ: {{name}}",
+            "layout_receipt_shipped": "Układu aplikacji nie da się usunąć ani przemianować: {{name}}",
             "device_class_phone": "telefon",
             "device_class_desktop": "komputer"
           }

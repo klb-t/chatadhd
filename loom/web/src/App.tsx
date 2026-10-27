@@ -625,13 +625,11 @@ export default function App() {
   const grid = (body: ReactNode, overlay: ReactNode) => presetFront ? (
     <div className="app-root dock-root" data-layout={win.layout.id} data-testid="dock-root">
       <div className="app-layout">{body}{overlay}</div>
-      {announce}
     </div>
   ) : workshop(body, overlay);
   const workshop = (body: ReactNode, overlay: ReactNode) => (
     <div className="app-root" data-sidebar-side={primaryProfile?.presentation.sidebar.side ?? "left"} data-layout={win.layout.id}
       style={primaryProfile ? profileStyle(primaryProfile) : undefined}>
-      {announce}
       <div className="app-header window-switcher" role="toolbar" aria-label={shellText("menu_label")} data-testid="window-switcher"
         onKeyDown={(event) => { if (event.key === "Escape") setNavOpen(false); }} {...inertAttr(activePanel !== null)}>
         <button
@@ -712,6 +710,7 @@ export default function App() {
   return (
     <ShellText.Provider value={t}><ShellLanguage.Provider value={uiLanguage}>
       {host}
+      {announce}
       {fullWindow && knowledgeOpen && <>
         <div className="drawer-backdrop" onClick={() => setKnowledgeOpen(false)} />
         <div className="drawer" style={{ width: "min(960px, 100vw)" }} data-testid="panel-knowledge-sheet" ref={knowledgeRef} role="dialog" aria-modal="true" aria-label={t("menu_knowledge")} tabIndex={-1}>
