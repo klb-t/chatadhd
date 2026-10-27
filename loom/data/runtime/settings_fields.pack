@@ -3860,6 +3860,51 @@
         "on_unlisted": "refuse"
       },
       {
+        "key": "navigator_mapping",
+        "scope": "config",
+        "group": "ui",
+        "type": "object",
+        "has_default": false,
+        "description": "What each channel of the graph navigator's map shows: {channel: measure} or {channel: {measure, range?, missing?, curve?, base?, gain?}}. Channels (an open list, the presets in web components/data/navigator_mapping.json): hue, saturation, lightness, size, alpha; measures: kind, count, age, order, depth, evidence, confidence, layer, source, status, none, or any dotted path into a navigator row (e.g. receipt.tokens_est). A channel the map does not draw or a measure no row has is drawn with the preset and said by a non-blocking advisory, never refused. Not set or {} = the shipped mapping: hue, saturation and lightness from the kind, size from the count (the map as in M1-W0).",
+        "status": {
+          "state": "implemented",
+          "by": "M1-G3d",
+          "reader": "web GraphNavigator",
+          "reason": {
+            "pl": "Mapa nawigatora grafu (web GraphNavigator / NavigatorMap, M1-G3d) rysuje każdy kanał z tego pola; wartość ma czytelnika i działa.",
+            "en": "The map of the graph navigator (web GraphNavigator / NavigatorMap, M1-G3d) draws every channel from this field; the value has a reader and works."
+          },
+          "today": {
+            "pl": "Mapa nawigatora (menu ⋮ › Graf) bierze barwę, nasycenie, jasność, rozmiar i krycie kółek z miar wskazanych tutaj; Widok ▾ › „Co pokazuje mapa” zmienia je słowami i zapisuje, „Domyślne” wraca do rodzaju i liczby. Zmiana na mierze, której węzły nie mają, daje podpowiedź, nie błąd.",
+            "en": "The navigator's map (menu ⋮ › Graph) takes the hue, saturation, lightness, size and opacity of the circles from the measures named here; Widok ▾ › “What the map shows” changes them in words and saves them, “Default” returns to kind and count. A measure the nodes do not have gives an advisory, not an error."
+          }
+        },
+        "human": {
+          "label": {
+            "pl": "Co pokazuje mapa nawigatora",
+            "en": "What the navigator map shows"
+          },
+          "why": {
+            "pl": "Kolor, rozmiar i krycie kółek na mapie mogą pokazywać różne cechy węzła: rodzaj, liczbę pod spodem, wiek, kolejność, rodzaj dowodu…",
+            "en": "The colour, size and opacity of the circles on the map can show different traits of a node: its kind, the count below it, its age, its order, its evidence class…"
+          },
+          "effect": {
+            "pl": "Zmienia tylko rysunek mapy; lista, graf i ścieżka zostają te same. Puste = rodzaj i liczba (domyślne).",
+            "en": "Changes only the drawing of the map; the list, the graph and the path stay the same. Empty = kind and count (the default)."
+          },
+          "levels": [
+            "person"
+          ],
+          "group": "interfejs",
+          "subgroup": "nawigator",
+          "flows": [],
+          "when_unset": {
+            "pl": "barwa, nasycenie i jasność z rodzaju, rozmiar z liczby pod spodem",
+            "en": "hue, saturation and lightness from the kind, size from the count below"
+          }
+        }
+      },
+      {
         "key": "perspective_composition",
         "scope": "config",
         "group": "ui",

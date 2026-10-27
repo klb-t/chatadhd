@@ -662,16 +662,18 @@ try {
     assert.equal(listCalls.length, 0, "no advisory.list request while there is nothing to advise");
     await page.getByTestId("close-panel").tap();
     await nav().waitFor({ state: "detached" });
-    // 2. the person changes the size channel's mapping (setting navigator_mapping; the Widok menu holds only the layout, no mapping control yet)
-    await api("PUT", "/api/config/navigator_mapping", { value: JSON.stringify({ size: "age" }) });
-    await page.reload();
-    await page.getByTestId("chat-shell").waitFor();
+    // 2. G3d: the person changes the size channel's mapping with the real control (Widok ▾ › "Co pokazuje mapa"; settings.set navigator_mapping)
     await openRom();
+    await page.getByTestId("nav-bar-view").tap();
+    await page.getByTestId("nav-mapping-size").selectOption("age");
+    await page.getByTestId("nav-view-note").waitFor();
+    assert.deepEqual((await api("GET", "/api/config")).navigator_mapping, { size: "age" }, "saved in config.json by the control");
+    await page.getByTestId("nav-bar-view").tap();   // the menu folds; the map stays
     const chips = page.getByTestId("view-advisory-chip");
     await chips.first().waitFor();
     const codes = await chips.evaluateAll(els => els.map(el => `${el.dataset.code}|${el.dataset.fingerprint}`));
-    assert.deepEqual(codes, ["marks_identical|navigator_level|size|age"], "only the changed channel asks");
-    assert.ok((await chips.first().innerText()).includes("Wszystkie 13 znaczniki"), "the sentence says how many marks");
+    assert.deepEqual(codes, ["measure_missing|navigator_level|size|age"], "only the changed channel asks (no ROM row has an age: one chip says it, not two)");
+    assert.ok((await chips.first().innerText()).includes("żaden z 13 znaczników"), "the sentence says how many marks");
     assert.equal(listCalls.length, 1, "the remembered answers are read once, when there is something to advise");
     assert.equal(await page.getByTestId("nav-map-mark").count() > 0, true, "the map is still drawn: an advisory blocks nothing");
     await layoutFits();
@@ -684,9 +686,61 @@ try {
     await openRom();
     await page.waitForTimeout(500);
     assert.equal(await page.getByTestId("view-advisory-chip").count(), 0, "the remembered 'nie pytaj więcej' keeps the chip away after a reload");
+    assert.equal(await page.getByTestId("nav-map").getAttribute("data-mapping"), JSON.stringify({ size: "age" }), "the saved mapping is read again after a reload");
+    await page.getByTestId("nav-bar-view").tap();
+    assert.equal(await page.getByTestId("nav-mapping-size").inputValue(), "age", "the control shows the saved choice");
+    await page.getByTestId("nav-mapping-default").tap();
+    await page.waitForFunction(() => document.querySelector('[data-testid="nav-map"]')?.dataset.mapping === "{}");
     await page.getByTestId("close-panel").tap();
     await nav().waitFor({ state: "detached" });
-    await api("PUT", "/api/config/navigator_mapping", { value: "" });
+    assert.deepEqual(errors, [], "no page errors");
+  });
+
+  await step("G3d: the map draws from navigator_mapping - size by order differs from size by count, hue by order recolours, several channels on one measure, Domyślne restores the exact picture; the control speaks in words", async () => {
+    await page.getByTestId("shell-menu-toggle").tap();
+    await page.getByTestId("shell-menu-graph").tap();
+    await nav().waitFor();
+    await page.getByTestId("nav-loading").waitFor({ state: "detached" });
+    await page.getByTestId("nav-map-mark").first().waitFor();
+    const picture = () => page.locator('[data-testid="nav-map-mark"] circle').evaluateAll(els => els.map(c => `${c.closest("g").dataset.id}:${c.getAttribute("r")}:${c.getAttribute("fill")}`));
+    const radii = async () => (await picture()).map(x => x.split(":").slice(-2, -1)[0]);
+    const fills = async () => (await picture()).map(x => x.split(":").slice(-1)[0]);
+    const before = await picture();
+    assert.equal(await page.getByTestId("nav-map").getAttribute("data-mapping"), "{}", "the shipped mapping (after G3c's Domyślne)");
+    await page.getByTestId("nav-bar-view").tap();
+    await page.getByTestId("nav-mapping").waitFor();
+    assert.equal(await page.getByTestId("nav-mapping-default").isDisabled(), true, "Domyślne is the state already");
+    // words, no raw ids: every option says something other than its value; the channel rows are words too
+    const options = await page.locator('[data-testid^="nav-mapping-"] option').evaluateAll(els => els.map(o => [o.value, o.textContent]));
+    assert.ok(options.length >= 20 && options.every(([v, txt]) => txt && txt !== v), `options in words: ${JSON.stringify(options.slice(0, 4))}`);
+    assert.ok(options.some(([v, txt]) => v === "count" && txt.includes("domyślne")), "the default measure of a channel is marked");
+    await layoutFits();
+    await shot("g3d-navigator-mapping-control");
+    // size by order: the radii change (the root has 25 areas in order 0..24 and only some counts)
+    await page.getByTestId("nav-mapping-size").selectOption("order");
+    await page.waitForFunction(() => document.querySelector('[data-testid="nav-map"]')?.dataset.mapping === JSON.stringify({ size: "order" }));
+    const bySize = await picture();
+    assert.notDeepEqual(await radii(), before.map(x => x.split(":").slice(-2, -1)[0]), "size by order differs from size by count");
+    assert.deepEqual(await fills(), before.map(x => x.split(":").slice(-1)[0]), "the colours stay (only size was changed)");
+    // hue by the same measure: two channels on one measure, the colours change now
+    await page.getByTestId("nav-mapping-hue").selectOption("order");
+    await page.waitForFunction(() => JSON.parse(document.querySelector('[data-testid="nav-map"]')?.dataset.mapping ?? "{}").hue === "order");
+    assert.notDeepEqual(await fills(), bySize.map(x => x.split(":").slice(-1)[0]), "hue by order recolours the marks");
+    await page.getByTestId("nav-view-note").filter({ hasText: "barwa" }).waitFor();   // the save is asynchronous; the note says it in words
+    assert.deepEqual((await api("GET", "/api/config")).navigator_mapping, { size: "order", hue: "order" });
+    assert.equal(await page.getByTestId("view-advisory-chip").count(), 0, "a working mapping asks nothing");
+    await page.getByTestId("nav-bar-view").tap();
+    await page.getByTestId("nav-map").scrollIntoViewIfNeeded();
+    await shot("g3d-navigator-size-hue-by-order");
+    // Domyślne: the exact picture of before, and {} in config
+    await page.getByTestId("nav-bar-view").tap();
+    await page.getByTestId("nav-mapping-default").tap();
+    await page.waitForFunction(() => document.querySelector('[data-testid="nav-map"]')?.dataset.mapping === "{}");
+    assert.deepEqual(await picture(), before, "Domyślne restores every radius and colour exactly");
+    await page.getByTestId("nav-view-note").filter({ hasText: "Przywrócone" }).waitFor();
+    assert.deepEqual((await api("GET", "/api/config")).navigator_mapping, {}, "the default is {} in config.json");
+    await page.getByTestId("close-panel").tap();
+    await nav().waitFor({ state: "detached" });
     assert.deepEqual(errors, [], "no page errors");
   });
 
