@@ -30,6 +30,8 @@ LOOM_API const char* loom_import_file_ex(LoomContext* ctx, const char* path, con
       const Json& v = it.value();
       if (k == "title" && (v.is_string() || v.is_null())) {
         if (v.is_string() && !v.get<std::string>().empty()) opts.title = v.get<std::string>();
+      } else if (k == "display_name" && (v.is_string() || v.is_null())) {
+        if (v.is_string() && !v.get<std::string>().empty()) opts.display_name = v.get<std::string>();
       } else if (k == "force" && v.is_boolean()) {
         opts.force = v.get<bool>();
       } else if (k == "duplicate_policy" && v.is_string() && is_duplicate_policy(v.get<std::string>())) {

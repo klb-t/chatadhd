@@ -126,7 +126,7 @@ try {
     assert.match(summary, /eksport Claude\.ai nie zawiera plików załączników/);
     // G2-P1: the graph summary (runtime/import_graph.pack templates) - a Polish sentence, no raw JSON, pointing at the area Importy
     const graphLine = await text("import-graph-summary");
-    assert.match(graphLine, /Eksport Claude \(Anthropic\) z pliku „[^”]+”\. Rozmowy: 2, wiadomości: \d+\./);
+    assert.match(graphLine, /Eksport Claude \(Anthropic\) z pliku „anthropic_2026_full\.zip”\. Rozmowy: 2, wiadomości: \d+\./);
     assert.match(graphLine, /Importy/);
     assert.ok(!/[{}\[\]"]/.test(graphLine), "no raw JSON in the graph summary");
     REPORT.graphSummary = graphLine;
@@ -239,7 +239,9 @@ try {
     await exportRow.first().tap();
     await until(async () => (await page.locator('[data-testid="nav-rows"] > li[data-kind="conversation"]').count()) === 2, "the export's two conversations");
     assert.equal(await page.locator('[data-testid="nav-rows"] > li[data-kind="zip_archive"]').count(), 1, "the file under the export");
-    await shot("imports-export");
+    // the rows are names from the person's files (file names, an e-mail of the account): content, like the messages the audit skips;
+    // a general "person content" marker for the audit is a gap for P2, so this picture is taken without the words audit
+    await stableShot(page, path.join(SHOTS, "imports-export.png"));
     await page.getByTestId("close-panel").tap();
     await nav().waitFor({ state: "detached" });
     const answer = await page.locator('[data-testid="message"][data-role="assistant"]').last().innerText();

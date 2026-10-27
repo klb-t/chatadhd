@@ -137,7 +137,7 @@ struct Writer {
 
 }  // namespace
 
-Result<Json> project(Database& db, const fs::path& path, const ImportResult& result) {
+Result<Json> project(Database& db, const fs::path& path, const ImportResult& result, const std::string& display_name) {
   auto profile = RuntimeProfile::load("import_graph", db.path().parent_path());
   if (!profile) {
     log::warn(kLog, "import_graph profile not readable from the data directory ({}); the builtin is used",
@@ -146,10 +146,11 @@ Result<Json> project(Database& db, const fs::path& path, const ImportResult& res
   }
   if (!profile) return profile.error();
   const Json preset = profile->values();
-  return project_with(db, path, result, preset);
+  return project_with(db, path, result, preset, display_name);
 }
 
-Result<Json> project_with(Database& db, const fs::path& path, const ImportResult& result, const Json& preset) {
+Result<Json> project_with(Database& db, const fs::path& path, const ImportResult& result, const Json& preset,
+                          const std::string& display_name) {
   if (!json::get_bool(preset, "enabled", true)) return Json(nullptr);
   const std::string lang = json::get_string(preset, "language", "pl");
   const Json links = preset.value("links", Json::object());
@@ -165,7 +166,7 @@ Result<Json> project_with(Database& db, const fs::path& path, const ImportResult
     auto hashed = sha256_file_hex(path);
     w.blob = hashed ? *hashed : "path:" + path.string();
   }
-  const std::string file_name = path.filename().string();
+  const std::string file_name = !display_name.empty() ? fs::path(display_name).filename().string() : path.filename().string();
   const Json& report = result.export_report;
   const bool is_export = report.is_object();
   const std::string provider = is_export ? json::get_string(report, "provider", "unknown") : std::string();

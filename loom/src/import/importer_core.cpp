@@ -678,7 +678,7 @@ Result<ImportResult> ConversationImporter::import_file(const fs::path& path, con
   // Import as graph nodes (P1): every mode, cache hits included; idempotent by blob hash. A failure here never
   // undoes the import: it is reported as a warning and the import stands.
   if (result && !result->cancelled) {
-    auto projected = import_graph::project(db_, path, *result);
+    auto projected = import_graph::project(db_, path, *result, opts.display_name.value_or(""));
     if (!projected) {
       log::warn(kLog, "import graph projection failed: {}", projected.error().message);
       result->warnings.push_back("import graph nodes not written: " + projected.error().message);

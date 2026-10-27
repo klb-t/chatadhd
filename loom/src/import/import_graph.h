@@ -29,10 +29,12 @@ namespace loom::import_graph {
 // Writes (or finds again) the nodes and links of one finished import and builds the summary sentence. Returns
 // null when the preset disables the projection. Reads the preset from the runtime profile "import_graph" (the
 // person's overlay in the data directory of `db`, else the builtin).
-Result<Json> project(Database& db, const std::filesystem::path& path, const ImportResult& result);
+// `display_name`: the person's name for the file when `path` is a temporary copy ("" = the file name of `path`).
+Result<Json> project(Database& db, const std::filesystem::path& path, const ImportResult& result,
+                     const std::string& display_name = std::string());
 
 // The same with an explicit preset (tests, tools).
 Result<Json> project_with(Database& db, const std::filesystem::path& path, const ImportResult& result,
-                          const Json& preset);
+                          const Json& preset, const std::string& display_name = std::string());
 
 }  // namespace loom::import_graph

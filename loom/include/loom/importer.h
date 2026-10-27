@@ -132,6 +132,9 @@ struct FragmentRecord;  // same header
 
 struct ImportOptions {
   std::optional<std::string> title;
+  // The person's name for the file (an upload's original file name) when `path` is a temporary copy; shown in the
+  // import-graph nodes and summary instead of the temporary name. Not part of source identity.
+  std::optional<std::string> display_name;
   ExportMode export_mode = ExportMode::Auto;
   ImportProgressFn progress;
   const CancelToken* cancel = nullptr;

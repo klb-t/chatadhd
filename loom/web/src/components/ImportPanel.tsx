@@ -24,7 +24,8 @@ interface Props {
 }
 
 // Import as graph nodes (P1): the kernel's summary sentence (runtime/import_graph.pack templates), in the reader's language when the
-// kernel carries it, else in its preset language. Words only: the kernel never puts raw JSON in it.
+// kernel carries it, else in its preset language. Words only: the kernel never puts raw JSON in it (test_import_graph.cpp). It names the
+// person's file (content, like a message), so the words audit skips it; the words themselves are the pack's.
 function graphSummary(result: Record<string, unknown>, language: string): string | null {
   const graph = result.import_graph as { summary?: { text?: unknown; texts?: Record<string, unknown> } } | undefined;
   const summary = graph?.summary;
@@ -145,7 +146,7 @@ export default function ImportPanel({ onImported }: Props) {
         return (
           <div style={{ marginTop: 12 }} data-testid="import-result" data-truth={view.hasTruth}>
             <div className={`pill import-summary ${view.allSaved ? "ok" : "warn"}`} data-testid="import-summary" role="status">{view.summary ?? view.legacyLine}</div>
-            {graphSummary(result, language) && <p className="import-graph-summary" data-testid="import-graph-summary">{graphSummary(result, language)}</p>}
+            {graphSummary(result, language) && <p className="import-graph-summary" data-testid="import-graph-summary" data-audit-skip>{graphSummary(result, language)}</p>}
             {view.rows.length > 0 && (
               <table className="import-truth" data-testid="import-truth-table" aria-label={t("import_table")}>
                 <thead><tr><th scope="col">{t("import_col_kind")}</th><th scope="col">{t("import_col_found")}</th><th scope="col">{t("import_col_saved")}</th></tr></thead>

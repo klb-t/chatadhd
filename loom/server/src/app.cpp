@@ -1226,7 +1226,9 @@ void App::route_import_export() {
     json options = json::object();
     if (!title_copy.empty()) options["title"] = title_copy;
     if (!duplicate_policy.empty()) options["duplicate_policy"] = duplicate_policy;
-    std::string options_json = options.dump();
+    // G2-P1: the person's file name for the import-graph nodes and summary (the path is a temporary copy).
+    if (!up.filename.empty()) options["display_name"] = fs::path(up.filename).filename().string();
+    std::string options_json = options.dump(-1, ' ', false, json::error_handler_t::replace);
     auto thread_ptr = std::make_shared<std::thread>([ctx, path_str, options_json, queue]() {
       const char* result = loom_import_file_ex(
           ctx, path_str.c_str(), options_json.c_str(),
