@@ -308,7 +308,19 @@ try {
   const cardOf = () => api("POST", "/api/graph/card", { lang: "pl", address: "setting:temperature", conv_id: conv });
   // The kernel's real card as a fixture of the unit test (tests/shell/node-card-state.test.mjs): the chip, the chain and Ustawienia agree.
   // The id of the conversation is fresh in every run: the fixture keeps a fixed placeholder (the unit test reads no id from it), so a run does not dirty the tree.
-  writeFileSync(path.join(here, "../tests/shell/fixtures/graph-card-temperature.json"), JSON.stringify(await cardOf(), null, 2).split(conv).join("c_000000000000") + "\n");
+  // The card is written to a temp dir and compared with the committed fixture: equal = pass; different = fail, unless LOOM_UPDATE_FIXTURES=1
+  // (then the fixture is rewritten in place, deliberately). A run never dirties the tree by itself.
+  {
+    const fixture = path.join(here, "../tests/shell/fixtures/graph-card-temperature.json");
+    const fresh = JSON.stringify(await cardOf(), null, 2).split(conv).join("c_000000000000") + "\n";
+    const tmp = path.join(mkdtempSync(path.join(tmpdir(), "loom-m1-card-")), "graph-card-temperature.json");
+    writeFileSync(tmp, fresh);
+    const committed = existsSync(fixture) ? readFileSync(fixture, "utf8") : "";
+    if (fresh !== committed) {
+      if (process.env.LOOM_UPDATE_FIXTURES === "1") { writeFileSync(fixture, fresh); console.log(`[m1-navigator] fixture rewritten (LOOM_UPDATE_FIXTURES=1): ${fixture}`); }
+      else { failed = true; console.error(`[m1-navigator] FAIL the kernel's card differs from the committed fixture ${fixture} (fresh card: ${tmp}); run with LOOM_UPDATE_FIXTURES=1 to rewrite it deliberately`); }
+    }
+  }
   const chainOnScreen = () => page.getByTestId("card-chain-rows").locator("li").evaluateAll(els => els.map(li => ({
     level: li.dataset.testid.replace("card-chain-", ""), winning: li.dataset.winning === "true", role: li.dataset.role,
     value: li.querySelector(".ncard-chain-value")?.textContent ?? "" })));

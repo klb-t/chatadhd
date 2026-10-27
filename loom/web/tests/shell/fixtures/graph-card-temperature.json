@@ -473,6 +473,78 @@
       "decision": "applicable",
       "label": "Układ jak w aplikacji",
       "implementation": "planned"
+    },
+    {
+      "id": "window.maximize",
+      "decision": "applicable",
+      "label": "Zmaksymalizuj okno",
+      "implementation": "planned"
+    },
+    {
+      "id": "window.restore",
+      "decision": "applicable",
+      "label": "Przywróć okno",
+      "implementation": "planned"
+    },
+    {
+      "id": "window.minimize",
+      "decision": "applicable",
+      "label": "Zminimalizuj okno",
+      "implementation": "planned"
+    },
+    {
+      "id": "window.dock",
+      "decision": "applicable",
+      "label": "Zadokuj okno",
+      "implementation": "planned"
+    },
+    {
+      "id": "window.float",
+      "decision": "applicable",
+      "label": "Odepnij okno",
+      "implementation": "planned"
+    },
+    {
+      "id": "window.tab",
+      "decision": "applicable",
+      "label": "Okno jako zakładka",
+      "implementation": "planned"
+    },
+    {
+      "id": "window.move",
+      "decision": "applicable",
+      "label": "Przesuń okno",
+      "implementation": "planned"
+    },
+    {
+      "id": "window.resize",
+      "decision": "applicable",
+      "label": "Zmień rozmiar okna",
+      "implementation": "planned"
+    },
+    {
+      "id": "window.bind",
+      "decision": "applicable",
+      "label": "Powiąż parametr okien",
+      "implementation": "planned"
+    },
+    {
+      "id": "window.unbind",
+      "decision": "applicable",
+      "label": "Rozwiąż parametr okien",
+      "implementation": "planned"
+    },
+    {
+      "id": "layout.rename",
+      "decision": "applicable",
+      "label": "Zmień nazwę układu",
+      "implementation": "planned"
+    },
+    {
+      "id": "layout.delete",
+      "decision": "applicable",
+      "label": "Usuń układ",
+      "implementation": "planned"
     }
   ],
   "breadcrumbs": [
