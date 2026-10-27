@@ -3,6 +3,7 @@ import { api } from "../api";
 import type { ImportChunk } from "../api/types";
 import { dataLabel, useShellLanguage, useShellText } from "../shell/text";
 import Disclosure from "../shell/Disclosure";
+import PersonText from "./PersonText";
 import { absentLine, importView } from "./import-truth-state";
 import "./import-truth.css";
 
@@ -26,13 +27,14 @@ interface Props {
 // Import as graph nodes (P1): the kernel's summary sentence (runtime/import_graph.pack templates), in the reader's language when the
 // kernel carries it, else in its preset language. Words only: the kernel never puts raw JSON in it (test_import_graph.cpp). It names the
 // person's file (content, like a message), so the words audit skips it; the words themselves are the pack's.
-function graphSummary(result: Record<string, unknown>, language: string): string | null {
-  const graph = result.import_graph as { summary?: { text?: unknown; texts?: Record<string, unknown> } } | undefined;
+function graphSummary(result: Record<string, unknown>, language: string): { text: string; person: string[] } | null {
+  const graph = result.import_graph as { summary?: { text?: unknown; texts?: Record<string, unknown>; person_content?: unknown } } | undefined;
   const summary = graph?.summary;
   if (!summary) return null;
+  const person = Array.isArray(summary.person_content) ? summary.person_content.filter((v): v is string => typeof v === "string" && v !== "") : [];
   const mine = summary.texts?.[language];
-  if (typeof mine === "string" && mine) return mine;
-  return typeof summary.text === "string" && summary.text ? summary.text : null;
+  if (typeof mine === "string" && mine) return { text: mine, person };
+  return typeof summary.text === "string" && summary.text ? { text: summary.text, person } : null;
 }
 
 export default function ImportPanel({ onImported }: Props) {
@@ -146,7 +148,7 @@ export default function ImportPanel({ onImported }: Props) {
         return (
           <div style={{ marginTop: 12 }} data-testid="import-result" data-truth={view.hasTruth}>
             <div className={`pill import-summary ${view.allSaved ? "ok" : "warn"}`} data-testid="import-summary" role="status">{view.summary ?? view.legacyLine}</div>
-            {graphSummary(result, language) && <p className="import-graph-summary" data-testid="import-graph-summary" data-audit-skip>{graphSummary(result, language)}</p>}
+            {(() => { const g = graphSummary(result, language); return g && <p className="import-graph-summary" data-testid="import-graph-summary"><PersonText text={g.text} person={g.person} /></p>; })()}
             {view.rows.length > 0 && (
               <table className="import-truth" data-testid="import-truth-table" aria-label={t("import_table")}>
                 <thead><tr><th scope="col">{t("import_col_kind")}</th><th scope="col">{t("import_col_found")}</th><th scope="col">{t("import_col_saved")}</th></tr></thead>

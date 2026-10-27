@@ -1,6 +1,8 @@
 // Import as graph nodes (P1): see import_graph.h.
 #include "import/import_graph.h"
 
+#include <cmath>
+
 #include <map>
 #include <optional>
 #include <set>
@@ -11,6 +13,7 @@
 #include "loom/runtime_profile.h"
 #include "loom/sqlite.h"
 #include "loom/util/sha256.h"
+#include "import/layout_fingerprint.h"
 
 namespace loom::import_graph {
 
@@ -64,6 +67,31 @@ Json union_strings(const Json& a, const Json& b) {
   return out;
 }
 
+// The part of a layout fingerprint kept on the export node: the state, the chosen layout and the alternatives.
+Json layout_brief(const Json& layout, const Json& config) {
+  const double min_share = json::get_number(config, "list_min_share", 0.01);
+  const std::int64_t max_alt = json::get_int(config, "max_alternatives", 3);
+  const Json& chosen = layout["chosen"];
+  const std::string chosen_key = chosen.is_object() ? json::get_string(chosen, "key") : std::string();
+  Json alternatives = Json::array();
+  const Json cands = layout.value("candidates", Json::array());
+  for (const auto& c : cands) {
+    if (json::get_bool(c, "excluded", true) || json::get_string(c, "key") == chosen_key) continue;
+    if (json::get_number(c, "share", 0.0) < min_share) continue;
+    if (static_cast<std::int64_t>(alternatives.size()) >= max_alt) break;
+    alternatives.push_back(Json{{"key", c["key"]}, {"class_id", c.value("class_id", Json(""))}, {"label", c["label"]},
+                                {"share", c["share"]}});
+  }
+  Json out{{"state", layout["state"]}, {"tie", layout["tie"]}, {"unknown_share", layout["unknown_share"]},
+           {"alternatives", alternatives}};
+  if (chosen.is_object())
+    out["chosen"] = Json{{"key", chosen["key"]}, {"id", chosen["id"]}, {"class_id", chosen.value("class_id", Json(""))},
+                         {"label", chosen["label"]}, {"share", chosen["share"]}};
+  return out;
+}
+
+int percent(double share) { return static_cast<int>(std::lround(share * 100.0)); }
+
 struct Writer {
   explicit Writer(Database& d) : db(d) {}
   Database& db;
@@ -73,6 +101,21 @@ struct Writer {
   Json by_class = Json::object();
   std::int64_t created = 0, reused = 0;
   std::set<std::string> touched;
+  std::vector<std::string> person_fields;  // preset person_content.node_fields ("label", "attrs.<name>")
+
+  // The fields of this node whose values are the person's own content (file names, titles, e-mail ...).
+  Json person_content(const std::string& label, const Json& block) const {
+    Json out = Json::array();
+    const Json* attrs = json::find(block, "attrs");
+    for (const auto& f : person_fields) {
+      if (f == "label") {
+        if (!label.empty()) out.push_back(f);
+      } else if (f.rfind("attrs.", 0) == 0 && attrs && attrs->is_object()) {
+        if (const Json* v = json::find(*attrs, f.substr(6)); v && v->is_string() && !v->get<std::string>().empty()) out.push_back(f);
+      }
+    }
+    return out;
+  }
 
   static std::string id_for(const std::string& key) { return "n_" + Sha256::hex(key).substr(0, 12); }
 
@@ -90,6 +133,7 @@ struct Writer {
     block["key"] = key;
     block["blob_hash"] = blob;
     if (!block.contains("facets")) block["facets"] = Json::array();
+    if (Json pc = person_content(label, block); !pc.empty()) block["person_content"] = std::move(pc);
     std::optional<std::string> prior;
     {
       auto lock = db.lock();
@@ -162,6 +206,13 @@ Result<Json> project_with(Database& db, const fs::path& path, const ImportResult
   w.prefix = json::get_string(preset, "kind_prefix", "import_graph:");
   w.mkey = json::get_string(preset, "metadata_key", "import_graph");
   w.blob = result.blob_hash;
+  {
+    const Json pc = preset.value("person_content", Json::object());
+    const Json fields = pc.is_object() ? pc.value("node_fields", Json::array()) : Json::array();
+    if (fields.is_array())
+      for (const auto& f : fields)
+        if (f.is_string()) w.person_fields.push_back(f.get<std::string>());
+  }
   if (w.blob.empty()) {
     auto hashed = sha256_file_hex(path);
     w.blob = hashed ? *hashed : "path:" + path.string();
@@ -187,6 +238,7 @@ Result<Json> project_with(Database& db, const fs::path& path, const ImportResult
 
   // The root shown under the area: the export (when the provider-export path ran), else the file itself.
   std::string export_id;
+  Json layout = nullptr;  // the layout fingerprint of the export (null when not an export or disabled)
   const std::string what = is_export ? pick(words.value("provider", Json::object()).value(provider, Json(provider)), lang)
                                      : pick(words.value("plain_file", Json("File")), lang);
   if (is_export) {
@@ -201,6 +253,15 @@ Result<Json> project_with(Database& db, const fs::path& path, const ImportResult
     Json attrs{{"provider", provider}, {"file", file_name}, {"format", result.format}, {"source_ids", source_ids},
                {"counts", report_counts}, {"member_count", json::get_int(report, "member_count", 0)},
                {"partial", json::get_bool(report, "partial", false)}};
+    const Json fp_config = preset.value("layout_fingerprint", Json::object());
+    if (fp_config.is_object() && json::get_bool(fp_config, "enabled", true)) {
+      layout = fingerprint_layout(layout_evidence(path, display_name, fp_config), fp_config);
+      attrs["layout"] = layout_brief(layout, fp_config);
+      if (json::get_string(layout, "state") == "confident") {
+        const std::string layout_class = json::get_string(layout["chosen"], "class_id");
+        if (!layout_class.empty()) facets.push_back(layout_class);
+      }
+    }
     LOOM_TRY_ASSIGN(export_id, w.node("export", w.blob + "/export", label,
                                       Json{{"facets", facets}, {"nav_parent", ""}, {"attrs", attrs}}));
   }
@@ -352,7 +413,8 @@ Result<Json> project_with(Database& db, const fs::path& path, const ImportResult
       Json meta = json::parse_or(e.metadata, Json::object());
       if (!meta.is_object()) continue;
       const Json block{{"class", cls}, {"facets", Json::array()}, {"key", w.blob + "/entity/" + e.id},
-                       {"blob_hash", w.blob}, {"nav_parent", export_id}, {"attrs", Json{{"kind", e.kind}}}};
+                       {"blob_hash", w.blob}, {"nav_parent", export_id}, {"attrs", Json{{"kind", e.kind}}},
+                       {"person_content", Json::array({"label"})}};
       if (meta.value(w.mkey, Json()) != block) {
         meta[w.mkey] = block;
         NodePatch patch;
@@ -395,6 +457,32 @@ Result<Json> project_with(Database& db, const fs::path& path, const ImportResult
       if (!item) return item.error();
       skipped_text += (skipped_text.empty() ? "" : list_sep) + *item;
     }
+    // the layout in words: the chosen one (confident or probable), the alternatives with their shares, or "unknown"
+    std::string layout_label, alternatives_text;
+    std::int64_t layout_percent = 0;
+    const std::string layout_state = layout.is_object() ? json::get_string(layout, "state") : std::string();
+    if (layout.is_object()) {
+      const Json brief = layout_brief(layout, preset.value("layout_fingerprint", Json::object()));
+      if (const Json* c = json::find(brief, "chosen"); c && c->is_object()) {
+        layout_label = pick(c->value("label", Json()), L);
+        layout_percent = percent(json::get_number(*c, "share", 0.0));
+      }
+      const Json alts = brief.value("alternatives", Json::array());
+      const std::string alt_tmpl = pick(summary.value("alternative_item", Json("{{label}} ({{percent}} %)")), L);
+      for (const auto& a : alts) {
+        auto item = render_profile_template(alt_tmpl, Json{{"label", pick(a.value("label", Json()), L)},
+                                                           {"percent", percent(json::get_number(a, "share", 0.0))}});
+        if (!item) return item.error();
+        alternatives_text += (alternatives_text.empty() ? "" : list_sep) + *item;
+      }
+      const double unknown_share = json::get_number(brief, "unknown_share", 0.0);
+      if (layout_state != "unknown" && unknown_share >= json::get_number(preset.value("layout_fingerprint", Json::object()), "list_min_share", 0.01)) {
+        auto item = render_profile_template(alt_tmpl, Json{{"label", pick(words.value("unknown_layout", Json("unknown layout")), L)},
+                                                           {"percent", percent(unknown_share)}});
+        if (!item) return item.error();
+        alternatives_text += (alternatives_text.empty() ? "" : list_sep) + *item;
+      }
+    }
     const std::string what_l = is_export ? pick(words.value("provider", Json::object()).value(provider, Json(provider)), L)
                                          : pick(words.value("plain_file", Json("File")), L);
     const Json vars{{"what", what_l},
@@ -409,6 +497,12 @@ Result<Json> project_with(Database& db, const fs::path& path, const ImportResult
                     {"members", members},
                     {"skipped", static_cast<std::int64_t>(skipped.size())},
                     {"skipped_text", skipped_text},
+                    {"layout", layout_label},
+                    {"layout_percent", layout_percent},
+                    {"layout_confident", layout_state == "confident"},
+                    {"layout_uncertain", layout_state == "uncertain"},
+                    {"layout_unknown", layout_state == "unknown"},
+                    {"layout_alternatives", alternatives_text},
                     {"already_imported", result.already_imported},
                     {"nodes_created", w.created},
                     {"nodes_reused", w.reused}};
@@ -426,6 +520,22 @@ Result<Json> project_with(Database& db, const fs::path& path, const ImportResult
     }
     texts[L] = text;
   }
+  // the values of the summary that are the person's own content (the web shows them as content; the audit skips them)
+  Json person_values = Json::array();
+  {
+    std::set<std::string> seen;
+    const auto add = [&](const std::string& v) {
+      if (!v.empty() && seen.insert(v).second) person_values.push_back(v);
+    };
+    const Json pc = preset.value("person_content", Json::object());
+    const Json vars = pc.is_object() ? pc.value("summary_vars", Json::array()) : Json::array();
+    for (const auto& v : vars) {
+      if (!v.is_string()) continue;
+      if (v.get<std::string>() == "file") add(file_name);
+      if (v.get<std::string>() == "skipped_names")
+        for (const auto& sk : skipped) add(json::get_string(sk, "name"));
+    }
+  }
   const std::string chosen = texts.contains(lang) ? lang : texts.contains("en") ? std::string("en") : *langs.begin();
 
   Json out{{"nodes", w.by_class},
@@ -435,7 +545,9 @@ Result<Json> project_with(Database& db, const fs::path& path, const ImportResult
            {"export_node", export_id},
            {"root_node", root_id},
            {"entities", entities},
-           {"summary", Json{{"lang", chosen}, {"text", texts.value(chosen, std::string())}, {"texts", texts}}}};
+           {"summary", Json{{"lang", chosen}, {"text", texts.value(chosen, std::string())}, {"texts", texts},
+                            {"person_content", person_values}}},
+           {"layout", layout}};
   return out;
 }
 

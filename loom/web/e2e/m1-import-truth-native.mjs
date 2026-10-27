@@ -239,9 +239,9 @@ try {
     await exportRow.first().tap();
     await until(async () => (await page.locator('[data-testid="nav-rows"] > li[data-kind="conversation"]').count()) === 2, "the export's two conversations");
     assert.equal(await page.locator('[data-testid="nav-rows"] > li[data-kind="zip_archive"]').count(), 1, "the file under the export");
-    // the rows are names from the person's files (file names, an e-mail of the account): content, like the messages the audit skips;
-    // a general "person content" marker for the audit is a gap for P2, so this picture is taken without the words audit
-    await stableShot(page, path.join(SHOTS, "imports-export.png"));
+    // the rows are names from the person's files (file names, an e-mail of the account): the kernel marks them person_content and the
+    // words audit skips exactly them (P2); the words of the app on this screen are audited like on every other one
+    await shot("imports-export");
     await page.getByTestId("close-panel").tap();
     await nav().waitFor({ state: "detached" });
     const answer = await page.locator('[data-testid="message"][data-role="assistant"]').last().innerText();

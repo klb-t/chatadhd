@@ -1,7 +1,7 @@
 {
   "schema": "loom.runtime_profile/1",
   "domain": "import_graph",
-  "revision": 1,
+  "revision": 2,
   "description": "Import as graph nodes (IMPORT_JAKO_PLIKI_W_GRAFIE_2026-10-23 §3.3, package P1). Every import, in every mode (copy included), writes nodes of the existing nodes table (no new table or column, schema_version stays 4): the imported file (its container class by format), an export node with its facets (by provider), the archive entries, the conversations and the attachments, linked part_of / derived_from (relations of graph/classes.pack). Kinds are \"import_graph:<class>\" (kept apart from the recognition kinds import:*). A node's id is derived from a key built from the source's blob hash, so importing the same bytes again finds the same nodes instead of making new ones. The summary sentence is built from the templates below in the language preset (pl), with the other language kept beside it; no raw JSON is ever put in it. Everything is a preset of the person: enabled false writes no import nodes (the import itself is unchanged); classes, facets, words and templates are data and an overlay <data_dir>/profiles/import_graph.pack changes them. The lists are examples and open: an unknown format falls back to the class file, an unknown provider to the facet export, an unknown disposition to its own token.",
   "defaults": {
     "enabled": true,
@@ -144,6 +144,10 @@
           "en": "shared links",
           "pl": "udostępnione łącza"
         }
+      },
+      "unknown_layout": {
+        "pl": "nieznany układ",
+        "en": "unknown layout"
       }
     },
     "read_dispositions": [
@@ -163,6 +167,34 @@
           "text": {
             "en": "Conversations: {{conversations}}, messages: {{messages}}.",
             "pl": "Rozmowy: {{conversations}}, wiadomości: {{messages}}."
+          }
+        },
+        {
+          "when": "layout_confident",
+          "text": {
+            "pl": "Układ eksportu: {{layout}}.",
+            "en": "Export layout: {{layout}}."
+          }
+        },
+        {
+          "when": "layout_uncertain",
+          "text": {
+            "pl": "Układ eksportu: prawdopodobnie {{layout}} (pewność {{layout_percent}} %).",
+            "en": "Export layout: probably {{layout}} (confidence {{layout_percent}} %)."
+          }
+        },
+        {
+          "when": "layout_unknown",
+          "text": {
+            "pl": "Układ eksportu: nieznany — żaden opisany układ nie pasuje dość dobrze.",
+            "en": "Export layout: unknown — no described layout fits well enough."
+          }
+        },
+        {
+          "when": "layout_alternatives",
+          "text": {
+            "pl": "Inne możliwości: {{layout_alternatives}}.",
+            "en": "Other possibilities: {{layout_alternatives}}."
           }
         },
         {
@@ -223,11 +255,699 @@
       "skipped_item": {
         "en": "{{name}} ({{why}})",
         "pl": "{{name}} ({{why}})"
+      },
+      "alternative_item": {
+        "pl": "{{label}} ({{percent}} %)",
+        "en": "{{label}} ({{percent}} %)"
       }
     },
     "archive_formats": [
       "zip"
-    ]
+    ],
+    "layout_fingerprint": {
+      "enabled": true,
+      "strip_common_root": true,
+      "read_prefix_bytes": 262144,
+      "max_content_members": 32,
+      "json_key_depth": 4,
+      "unknown_evidence": 2.0,
+      "confident_at": 0.8,
+      "tie_within": 0.02,
+      "list_min_share": 0.01,
+      "max_alternatives": 3,
+      "claims": {
+        "claim:export-is-zip": {
+          "alpha": 9,
+          "beta": 1,
+          "tier": "B",
+          "sources": [
+            "7 parsers of ChatGPT exports",
+            "osteele",
+            "lordjabez"
+          ],
+          "observed": "2026-10-23",
+          "note": "provider exports arrive as one ZIP archive"
+        },
+        "claim:openai-single-conversations-json": {
+          "alpha": 8,
+          "beta": 1,
+          "tier": "B",
+          "sources": [
+            "mohamed-chs/convoviz",
+            "portable-ai-memory"
+          ],
+          "observed": "2026-10-23",
+          "note": "one conversations.json at the top",
+          "valid": {
+            "from": "2023-04",
+            "until": "2026-02"
+          }
+        },
+        "claim:shards-NNN": {
+          "alpha": 8,
+          "beta": 1,
+          "tier": "A/B",
+          "sources": [
+            "help.openai.com 9106926 (search summary only, page not fetched)",
+            "mohamed-chs/convoviz",
+            "portable-ai-memory"
+          ],
+          "observed": "2026-10-23",
+          "note": "conversations-000.json, -001 ...; conversations.json absent",
+          "valid": {
+            "from": "2026-02",
+            "until": null
+          }
+        },
+        "claim:openai-mapping-tree": {
+          "alpha": 9,
+          "beta": 1,
+          "tier": "B",
+          "sources": [
+            "mohamed-chs/convoviz",
+            "oa-chat",
+            "loom export_openai.cpp (our reader)"
+          ],
+          "observed": "2026-10-23",
+          "note": "conversations carry a mapping tree with current_node"
+        },
+        "claim:chat-html-jsondata": {
+          "alpha": 7,
+          "beta": 1,
+          "tier": "B",
+          "sources": [
+            "7 independent parsers"
+          ],
+          "observed": "2026-10-23",
+          "note": "chat.html embeds var jsonData = [...] then var assetsJson = {...}"
+        },
+        "claim:chat-html-ships-in-sharded": {
+          "alpha": 3,
+          "beta": 2,
+          "tier": "B",
+          "sources": [
+            "CRT-GroundCheck-SSE README (inferred from sizes)",
+            "datamoat"
+          ],
+          "observed": "2026-10-23",
+          "note": "a sharded export still has chat.html"
+        },
+        "claim:openai-user-json": {
+          "alpha": 6,
+          "beta": 2,
+          "tier": "B",
+          "sources": [
+            "mohamed-chs/convoviz"
+          ],
+          "observed": "2026-10-23",
+          "note": "user.json with the account"
+        },
+        "claim:openai-2025-extra-files": {
+          "alpha": 2,
+          "beta": 1,
+          "tier": "C",
+          "sources": [
+            "our fixture generator (assumption, not a provider source)"
+          ],
+          "observed": "2026-10-23",
+          "note": "shared_conversations.json and model_comparisons.json beside conversations.json; distinguishes 2025 from 2023 only weakly"
+        },
+        "claim:manifest-2026": {
+          "alpha": 2,
+          "beta": 2,
+          "tier": "B-",
+          "sources": [
+            "Nexus",
+            "ChatGPT-Wrapped",
+            "datamoat"
+          ],
+          "observed": "2026-10-23",
+          "note": "export_manifest.json; no OpenAI source, two tools generate a file of that name (mimic loop possible)"
+        },
+        "claim:privacy-portal-zip-in-zip": {
+          "alpha": 1,
+          "beta": 1,
+          "tier": "D",
+          "sources": [
+            "temnoon/openai_export_parser"
+          ],
+          "observed": "2026-10-23",
+          "note": "privacy portal: one ZIP inside the ZIP"
+        },
+        "claim:privacy-portal-dat": {
+          "alpha": 1,
+          "beta": 1,
+          "tier": "D",
+          "sources": [
+            "temnoon/openai_export_parser"
+          ],
+          "observed": "2026-10-23",
+          "note": "media as .dat without an extension"
+        },
+        "claim:claude-conversations-json": {
+          "alpha": 8,
+          "beta": 1,
+          "tier": "B",
+          "sources": [
+            "osteele",
+            "lordjabez",
+            "waggle-os (first-hand check 2026-04-22)"
+          ],
+          "observed": "2026-10-23",
+          "note": "conversations.json at the top"
+        },
+        "claim:claude-users-json": {
+          "alpha": 7,
+          "beta": 1,
+          "tier": "B",
+          "sources": [
+            "osteele",
+            "lordjabez",
+            "waggle-os"
+          ],
+          "observed": "2026-10-23",
+          "note": "users.json beside conversations.json"
+        },
+        "claim:claude-chat-messages": {
+          "alpha": 9,
+          "beta": 1,
+          "tier": "B",
+          "sources": [
+            "osteele",
+            "lordjabez",
+            "loom export_anthropic.cpp (our reader)"
+          ],
+          "observed": "2026-10-23",
+          "note": "conversations carry chat_messages"
+        },
+        "claim:claude-projects-json": {
+          "alpha": 6,
+          "beta": 2,
+          "tier": "B",
+          "sources": [
+            "osteele",
+            "waggle-os"
+          ],
+          "observed": "2026-10-23",
+          "note": "projects.json"
+        },
+        "claim:claude-memories-2026": {
+          "alpha": 4,
+          "beta": 1,
+          "tier": "B",
+          "sources": [
+            "waggle-os (one first-hand check 2026-04-22)"
+          ],
+          "observed": "2026-10-23",
+          "note": "memories.json (optional) in 2026 exports",
+          "valid": {
+            "from": "2025",
+            "until": null
+          }
+        },
+        "claim:claude-no-memories-before-2025": {
+          "alpha": 3,
+          "beta": 1,
+          "tier": "B",
+          "sources": [
+            "osteele (older exports)"
+          ],
+          "observed": "2026-10-23",
+          "note": "older exports have no memories.json",
+          "valid": {
+            "from": null,
+            "until": "2025"
+          }
+        },
+        "claim:claude-design-chats-2026": {
+          "alpha": 2,
+          "beta": 1,
+          "tier": "B",
+          "sources": [
+            "waggle-os"
+          ],
+          "observed": "2026-10-23",
+          "note": "design_chats/<uuid>.json; unverified (design doc Annex B p. 5)"
+        },
+        "claim:gemini-myactivity-path": {
+          "alpha": 4,
+          "beta": 1,
+          "tier": "B",
+          "sources": [
+            "4 parsers of Takeout My Activity"
+          ],
+          "observed": "2026-10-23",
+          "note": "Takeout: My Activity/Gemini Apps/MyActivity.json or .html"
+        },
+        "claim:gemini-myactivity-keys": {
+          "alpha": 3,
+          "beta": 1,
+          "tier": "B/A",
+          "sources": [
+            "4 parsers",
+            "generic My Activity schema (search summary)"
+          ],
+          "observed": "2026-10-23",
+          "note": "entries with header, title, time, products"
+        }
+      },
+      "layouts": {
+        "openai-single-2023": {
+          "class": "export.openai.chatgpt",
+          "class_id": "export.openai.chatgpt/single-2023",
+          "source_level": "B",
+          "label": {
+            "pl": "ChatGPT, jeden plik rozmów (2023–2024)",
+            "en": "ChatGPT, one conversations file (2023–2024)"
+          },
+          "observed": {
+            "from": "2023-04",
+            "until": "2026-02",
+            "on": "2026-10-23",
+            "basis": [
+              "claim:openai-single-conversations-json"
+            ]
+          },
+          "descriptors": [
+            {
+              "d": "container",
+              "arg": "^zip$",
+              "claim": "claim:export-is-zip"
+            },
+            {
+              "d": "member_present",
+              "arg": "^conversations\\.json$",
+              "claim": "claim:openai-single-conversations-json"
+            },
+            {
+              "d": "member_absent",
+              "arg": "^conversations-[0-9]+\\.json$",
+              "claim": "claim:openai-single-conversations-json"
+            },
+            {
+              "d": "json_keys",
+              "member": "^conversations\\.json$",
+              "mode": "all",
+              "keys": [
+                "mapping"
+              ],
+              "claim": "claim:openai-mapping-tree"
+            },
+            {
+              "d": "member_present",
+              "arg": "^user\\.json$",
+              "optional": true,
+              "claim": "claim:openai-user-json"
+            },
+            {
+              "d": "js_marker",
+              "arg": "var jsonData = [",
+              "member": "^chat\\.html$",
+              "optional": true,
+              "claim": "claim:chat-html-jsondata"
+            }
+          ],
+          "unknowns": [
+            "the exact release that added each side file"
+          ],
+          "reader": "chatgpt"
+        },
+        "openai-single-2025": {
+          "class": "export.openai.chatgpt",
+          "class_id": "export.openai.chatgpt/single-2025",
+          "source_level": "B/C",
+          "label": {
+            "pl": "ChatGPT, jeden plik rozmów z plikami dodatkowymi (2025)",
+            "en": "ChatGPT, one conversations file with side files (2025)"
+          },
+          "observed": {
+            "from": "2025",
+            "until": "2026-02",
+            "on": "2026-10-23",
+            "basis": [
+              "claim:openai-single-conversations-json",
+              "claim:openai-2025-extra-files"
+            ]
+          },
+          "descriptors": [
+            {
+              "d": "container",
+              "arg": "^zip$",
+              "claim": "claim:export-is-zip"
+            },
+            {
+              "d": "member_present",
+              "arg": "^conversations\\.json$",
+              "claim": "claim:openai-single-conversations-json"
+            },
+            {
+              "d": "member_absent",
+              "arg": "^conversations-[0-9]+\\.json$",
+              "claim": "claim:openai-single-conversations-json"
+            },
+            {
+              "d": "json_keys",
+              "member": "^conversations\\.json$",
+              "mode": "all",
+              "keys": [
+                "mapping"
+              ],
+              "claim": "claim:openai-mapping-tree"
+            },
+            {
+              "d": "member_present",
+              "arg": "^user\\.json$",
+              "optional": true,
+              "claim": "claim:openai-user-json"
+            },
+            {
+              "d": "js_marker",
+              "arg": "var jsonData = [",
+              "member": "^chat\\.html$",
+              "optional": true,
+              "claim": "claim:chat-html-jsondata"
+            },
+            {
+              "d": "member_present",
+              "arg": "^(shared_conversations|model_comparisons)\\.json$",
+              "optional": true,
+              "claim": "claim:openai-2025-extra-files"
+            }
+          ],
+          "unknowns": [
+            "what really distinguishes 2025 from 2023 (no provider source)"
+          ],
+          "reader": "chatgpt"
+        },
+        "openai-sharded-2026": {
+          "class": "export.openai.chatgpt",
+          "class_id": "export.openai.chatgpt/sharded-2026",
+          "source_level": "A/B",
+          "label": {
+            "pl": "ChatGPT, rozmowy podzielone na pliki (2026)",
+            "en": "ChatGPT, conversations split into shards (2026)"
+          },
+          "observed": {
+            "from": "2026-02",
+            "until": null,
+            "on": "2026-10-23",
+            "basis": [
+              "claim:shards-NNN"
+            ]
+          },
+          "descriptors": [
+            {
+              "d": "container",
+              "arg": "^zip$",
+              "claim": "claim:export-is-zip"
+            },
+            {
+              "d": "member_present",
+              "arg": "^conversations-[0-9]+\\.json$",
+              "claim": "claim:shards-NNN"
+            },
+            {
+              "d": "member_absent",
+              "arg": "^conversations\\.json$",
+              "claim": "claim:shards-NNN"
+            },
+            {
+              "d": "json_keys",
+              "member": "^conversations-[0-9]+\\.json$",
+              "mode": "all",
+              "keys": [
+                "mapping"
+              ],
+              "claim": "claim:openai-mapping-tree"
+            },
+            {
+              "d": "member_present",
+              "arg": "^user\\.json$",
+              "optional": true,
+              "claim": "claim:openai-user-json"
+            },
+            {
+              "d": "member_present",
+              "arg": "^chat\\.html$",
+              "optional": true,
+              "claim": "claim:chat-html-ships-in-sharded"
+            },
+            {
+              "d": "js_marker",
+              "arg": "var jsonData = [",
+              "member": "^chat\\.html$",
+              "optional": true,
+              "claim": "claim:chat-html-jsondata"
+            },
+            {
+              "d": "member_present",
+              "arg": "^export_manifest\\.json$",
+              "optional": true,
+              "claim": "claim:manifest-2026"
+            }
+          ],
+          "unknowns": [
+            "split rule",
+            "jsonData identity with the shards",
+            "assetsJson key semantics"
+          ],
+          "reader": "chatgpt"
+        },
+        "openai-privacy-portal-2026": {
+          "class": "export.openai.chatgpt",
+          "class_id": "export.openai.chatgpt/privacy-portal-2026",
+          "source_level": "D",
+          "label": {
+            "pl": "ChatGPT z portalu prywatności (ZIP w ZIP-ie, 2026)",
+            "en": "ChatGPT from the privacy portal (ZIP in a ZIP, 2026)"
+          },
+          "observed": {
+            "from": "2026",
+            "until": null,
+            "on": "2026-10-23",
+            "basis": [
+              "claim:privacy-portal-zip-in-zip"
+            ]
+          },
+          "descriptors": [
+            {
+              "d": "container",
+              "arg": "^zip$",
+              "claim": "claim:export-is-zip"
+            },
+            {
+              "d": "member_count",
+              "arg": "\\.zip$",
+              "min": 1,
+              "max": 1,
+              "claim": "claim:privacy-portal-zip-in-zip"
+            },
+            {
+              "d": "member_absent",
+              "arg": "^conversations(-[0-9]+)?\\.json$",
+              "claim": "claim:privacy-portal-zip-in-zip"
+            },
+            {
+              "d": "member_present",
+              "arg": "\\.dat$",
+              "optional": true,
+              "claim": "claim:privacy-portal-dat"
+            }
+          ],
+          "unknowns": [
+            "one source only; the inner archive is not read by the fingerprint yet"
+          ],
+          "reader": "chatgpt"
+        },
+        "anthropic-2024-text": {
+          "class": "export.anthropic.claude",
+          "class_id": "export.anthropic.claude/2024-text",
+          "source_level": "B",
+          "label": {
+            "pl": "Claude, rozmowy i projekty bez wspomnień (do 2025)",
+            "en": "Claude, conversations and projects without memories (until 2025)"
+          },
+          "observed": {
+            "from": "2024",
+            "until": "2025",
+            "on": "2026-10-23",
+            "basis": [
+              "claim:claude-conversations-json",
+              "claim:claude-no-memories-before-2025"
+            ]
+          },
+          "descriptors": [
+            {
+              "d": "container",
+              "arg": "^zip$",
+              "claim": "claim:export-is-zip"
+            },
+            {
+              "d": "member_present",
+              "arg": "^conversations\\.json$",
+              "claim": "claim:claude-conversations-json"
+            },
+            {
+              "d": "member_present",
+              "arg": "^users\\.json$",
+              "claim": "claim:claude-users-json"
+            },
+            {
+              "d": "json_keys",
+              "member": "^conversations\\.json$",
+              "mode": "all",
+              "keys": [
+                "chat_messages"
+              ],
+              "claim": "claim:claude-chat-messages"
+            },
+            {
+              "d": "member_absent",
+              "arg": "^memories\\.json$",
+              "claim": "claim:claude-no-memories-before-2025"
+            },
+            {
+              "d": "member_present",
+              "arg": "^projects\\.json$",
+              "optional": true,
+              "claim": "claim:claude-projects-json"
+            }
+          ],
+          "unknowns": [
+            "memories.json is optional in 2026 too: without it the two Claude layouts are not told apart"
+          ],
+          "reader": "claude"
+        },
+        "anthropic-2026-full": {
+          "class": "export.anthropic.claude",
+          "class_id": "export.anthropic.claude/2026-full",
+          "source_level": "B",
+          "label": {
+            "pl": "Claude, pełny eksport ze wspomnieniami (2026)",
+            "en": "Claude, full export with memories (2026)"
+          },
+          "observed": {
+            "from": "2025",
+            "until": null,
+            "on": "2026-10-23",
+            "basis": [
+              "claim:claude-memories-2026"
+            ]
+          },
+          "descriptors": [
+            {
+              "d": "container",
+              "arg": "^zip$",
+              "claim": "claim:export-is-zip"
+            },
+            {
+              "d": "member_present",
+              "arg": "^conversations\\.json$",
+              "claim": "claim:claude-conversations-json"
+            },
+            {
+              "d": "member_present",
+              "arg": "^users\\.json$",
+              "claim": "claim:claude-users-json"
+            },
+            {
+              "d": "json_keys",
+              "member": "^conversations\\.json$",
+              "mode": "all",
+              "keys": [
+                "chat_messages"
+              ],
+              "claim": "claim:claude-chat-messages"
+            },
+            {
+              "d": "member_present",
+              "arg": "^projects\\.json$",
+              "optional": true,
+              "claim": "claim:claude-projects-json"
+            },
+            {
+              "d": "member_present",
+              "arg": "^memories\\.json$",
+              "optional": true,
+              "claim": "claim:claude-memories-2026"
+            },
+            {
+              "d": "member_present",
+              "arg": "^design_chats/[^/]+\\.json$",
+              "optional": true,
+              "claim": "claim:claude-design-chats-2026"
+            }
+          ],
+          "unknowns": [
+            "design_chats/ unverified",
+            "attachment bytes absent (dated observation)"
+          ],
+          "reader": "claude"
+        },
+        "gemini-takeout-myactivity": {
+          "class": "export.google.gemini",
+          "class_id": "export.google.gemini/takeout-myactivity",
+          "source_level": "B",
+          "label": {
+            "pl": "Gemini z Google Takeout (Moja aktywność)",
+            "en": "Gemini from Google Takeout (My Activity)"
+          },
+          "observed": {
+            "from": "2024",
+            "until": null,
+            "on": "2026-10-23",
+            "basis": [
+              "claim:gemini-myactivity-path"
+            ]
+          },
+          "descriptors": [
+            {
+              "d": "container",
+              "arg": "^zip$",
+              "claim": "claim:export-is-zip"
+            },
+            {
+              "d": "member_present",
+              "arg": "(^|/)(My Activity|Moja aktywność)/(Gemini Apps|Aplikacje Gemini)/MyActivity\\.(json|html)$",
+              "weight": 1.5,
+              "claim": "claim:gemini-myactivity-path"
+            },
+            {
+              "d": "json_keys",
+              "member": "(^|/)MyActivity\\.json$",
+              "mode": "all",
+              "keys": [
+                "header",
+                "title",
+                "time"
+              ],
+              "optional": true,
+              "claim": "claim:gemini-myactivity-keys"
+            }
+          ],
+          "unknowns": [
+            "no conversation id: a flat log",
+            "localised folder names other than pl/en"
+          ],
+          "reader": "gemini_activity"
+        }
+      }
+    },
+    "person_content": {
+      "node_fields": [
+        "label",
+        "attrs.name",
+        "attrs.file",
+        "attrs.title",
+        "attrs.title_original",
+        "attrs.path",
+        "attrs.member"
+      ],
+      "summary_vars": [
+        "file",
+        "skipped_names"
+      ]
+    }
   },
   "value_schema": {
     "type": "object",
@@ -326,6 +1046,18 @@
         "x-setting": "/archive_formats",
         "x-consumer": "loom::import_graph::project",
         "description": "Formats whose members are written as archive_member nodes; a bare file is its own single member and gets no entry node (open list)."
+      },
+      "layout_fingerprint": {
+        "type": "object",
+        "x-setting": "/layout_fingerprint",
+        "x-consumer": "loom::import_graph::fingerprint_layout (src/import/layout_fingerprint.cpp)",
+        "description": "The layout fingerprint as data (design §2.3-2.4): claims with Beta reliabilities (alpha/beta are hand-set priors, dated observations with a source tier, never constraints) and layout profiles = conjunctions of descriptors of a closed dictionary. A new provider or version is a new entry here or in the overlay. Thresholds are presets."
+      },
+      "person_content": {
+        "type": "object",
+        "x-setting": "/person_content",
+        "x-consumer": "loom::import_graph::project, projection reader db.imports, web audit",
+        "description": "Which values are the person's own content (file names, titles, e-mail): node fields and summary variables. The web shows them as content and the words audit skips exactly them."
       }
     }
   }

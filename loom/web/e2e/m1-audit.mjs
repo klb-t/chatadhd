@@ -1,6 +1,7 @@
 // M1-K1c4: an audit of the text a Polish screen shows (used by the m1-*-native e2e scripts at every screenshot). It lists the visible lines (and the
 // aria-label / placeholder / title attributes) that look like developer text instead of words: a raw key (dotted or snake_case: "chip.record",
-// "context_receipt_store") or an English phrase. The person's own messages, the text of messages in the graph ("Ty: ...") and the folds "Szczegóły techniczne" (where the raw
+// "context_receipt_store") or an English phrase. Values the kernel marks as the person's own content (person_content: file names, titles, an e-mail;
+// rendered with data-person-content) are skipped exactly, the words of the app around them are still read. The person's own messages, the text of messages in the graph ("Ty: ...") and the folds "Szczegóły techniczne" (where the raw
 // names of settings may be) are content or technical detail, not the words of the app, and are skipped. A line the kernel writes in English into the record at send time must not reach the screen unchanged (see whyWords).
 const STOP = new Set(["the", "of", "and", "to", "in", "a", "an", "for", "was", "is", "are", "from", "by", "that", "this", "with", "on", "it", "as", "or", "be", "not", "no", "your", "you", "what", "when", "which"]);
 const KEY = /\b[a-z][a-z0-9]*(?:[._][a-z0-9]+)+\b/;
@@ -21,7 +22,7 @@ export function looksLikeDeveloperText(line) {
 /** The suspicious lines of what the page shows now: [{ line, where, why }]. */
 export async function auditPage(page) {
   const lines = await page.evaluate(() => {
-    const skip = "[data-testid='message'], [data-testid='streaming-message'], textarea, input, script, style, [data-kind='message'] .gnav-label, [data-audit-skip], [data-testid='card-unset-technical'], details:not([open]) > :not(summary)";
+    const skip = "[data-testid='message'], [data-testid='streaming-message'], textarea, input, script, style, [data-kind='message'] .gnav-label, [data-audit-skip], [data-person-content], [data-testid='card-unset-technical'], details:not([open]) > :not(summary)";
     const seen = new Set(), out = [];
     const where = (el, attr) => { const id = el.closest("[data-testid]"); return (attr ? attr + " of " : "") + el.tagName.toLowerCase() + (el.getAttribute("data-testid") ? "[" + el.getAttribute("data-testid") + "]" : id ? " in [" + id.getAttribute("data-testid") + "]" : ""); };
     const add = (s, el, attr) => { const t = (s ?? "").replace(/\s+/g, " ").trim(); if (t && !seen.has(t)) { seen.add(t); out.push({ line: t, where: where(el, attr) }); } };

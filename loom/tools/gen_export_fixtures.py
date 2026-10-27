@@ -464,8 +464,8 @@ def openai_zip_members_2026():
         ("sora.json", dumps({})),
         ("export_manifest.json", dumps({"hypothetical": True, "note": "not a confirmed OpenAI file; tests unknown-member handling",
                                         "generated": "2026-01-01T00:00:00Z", "files": 3})),
-        ("chat.html", "<!doctype html><html><head><title>ChatGPT Data Export</title></head><body><script>var jsonData = "
-                      + dumps(c0["conversations"][0], ascii_=True) + ";</script><div id=\"root\"></div></body></html>"),
+        ("chat.html", chat_html(c0["conversations"] + c1, {"file-A1b2C3d4E5f6G7h8": "file-A1b2C3d4E5f6G7h8-schemat.png",
+                                                           "file-RealId77": "file-RealId77-raport-q3.pdf"})),
         ("textdocs/7f3c9a10-0000-4000-8000-000000000001.json",
          dumps({"id": "7f3c9a10-0000-4000-8000-000000000001", "name": "plan-migracji", "type": "document",
                 "content": "# Plan\n1. Schemat\n2. Dane\n3. Weryfikacja", "conversation_id": "c1-0000-aaaa", "future": {"rev": 2}})),
@@ -487,6 +487,29 @@ def openai_zip_members_2026():
     return members
 
 
+
+def chat_html(conversations, assets):
+    """The offline viewer as the 7 independent parsers [B] read it (design §1.5, observation 2026-10-23): a title
+    "ChatGPT Data Export", then `var jsonData = [...]` (an ARRAY of the conversations), then `var assetsJson = {...}`,
+    then the viewer's JavaScript (a stub here). `</` is escaped as `<\\/` so the JSON cannot close the script element."""
+    data = dumps(conversations, ascii_=True).replace("</", "<\\/")
+    html = ("<!doctype html><html><head><meta charset=\"utf-8\"><title>ChatGPT Data Export</title></head><body>"
+            "<div id=\"root\"></div><script>\nvar jsonData = " + data + ";\n"
+            "var assetsJson = " + dumps(assets, ascii_=True) + ";\n"
+            "function render() { /* viewer stub: the real file renders jsonData here */ }\nrender();\n</script></body></html>")
+    check_chat_html(html, conversations)
+    return html
+
+
+def check_chat_html(html, conversations):
+    """The parsers' recipe: raw_decode after `var jsonData = ` gives a list with the same conversations; assetsJson follows."""
+    i = html.index("var jsonData = ") + len("var jsonData = ")
+    obj, end = json.JSONDecoder().raw_decode(html[i:])
+    assert isinstance(obj, list) and len(obj) == len(conversations), "chat.html jsonData must be the array of conversations"
+    j = html.index("var assetsJson = ", i + end) + len("var assetsJson = ")
+    assets, _ = json.JSONDecoder().raw_decode(html[j:])
+    assert isinstance(assets, dict), "chat.html assetsJson must be an object"
+
 def openai_zip_members_legacy():
     convs = [legacy_conv("L1", "Pierwsza rozmowa", T0 - 9e7, [("user", "Cześć!"), ("assistant", "Witaj, w czym mogę pomóc?"),
                                                                 ("user", "Napisz haiku o zimie."), ("assistant", "Śnieg cicho pada\nna dachy uśpionych miast\nzima oddycha.")]),
@@ -499,7 +522,7 @@ def openai_zip_members_legacy():
         ("message_feedback.json", dumps([{"id": "fbl", "conversation_id": "L1", "message_id": "L1-1", "rating": "thumbs_up"}])),
         ("shared_conversations.json", dumps([])),
         ("model_comparisons.json", dumps([])),
-        ("chat.html", "<html><body>legacy viewer</body></html>"),
+        ("chat.html", chat_html(convs, {})),
     ]
 
 

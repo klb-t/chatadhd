@@ -1,6 +1,7 @@
 // Platform table loaded from the compiled import preset (see loom/platforms.h).
 #include "loom/platforms.h"
 
+#include <regex>
 #include <stdexcept>
 
 #include "import/import_preset.h"
@@ -30,6 +31,7 @@ std::vector<PlatformSpec> load() {
     p.id_field = text_of(e, "id_field");
     p.id_literal = text_of(e, "id_literal");
     p.shard_prefix = text_of(e, "shard_prefix");
+    p.shard_pattern = text_of(e, "shard_pattern");
     if (const Json* m = json::find(e, "match"); m && m->is_array()) {
       for (const auto& group : *m) {
         std::vector<std::string> keys;
@@ -106,7 +108,14 @@ const PlatformSpec* platform_for_unit(std::string_view unit_kind, std::string_vi
 
 const PlatformSpec* platform_for_shard(std::string_view base) {
   for (const auto& p : import_platforms())
-    if (!p.shard_prefix.empty() && base.rfind(p.shard_prefix, 0) == 0) return &p;
+    if (!p.shard_prefix.empty() && base.rfind(p.shard_prefix, 0) == 0) {
+      if (p.shard_pattern.empty()) return &p;
+      try {
+        if (std::regex_search(std::string(base), std::regex(p.shard_pattern))) return &p;
+      } catch (const std::regex_error&) {
+        return &p;  // an invalid pattern in data falls back to the prefix alone
+      }
+    }
   return nullptr;
 }
 

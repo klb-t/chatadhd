@@ -2386,6 +2386,8 @@ Result<Read> read_imports(Impl& c, const Json& src, const std::string&, const Js
     const std::string cls = json::get_string(row.block, "class");
     if (!cls.empty()) n["kind"] = cls;
     n["same_as"] = Json::array({row.id});
+    // the fields whose values are the person's own content (file names, titles, e-mail): the web shows them as content
+    if (const Json* pc = json::find(row.block, "person_content"); pc && pc->is_array() && !pc->empty()) n["person_content"] = *pc;
     const auto k = kids.find(row.id);
     n["has_children"] = k != kids.end();
     if (k != kids.end()) n["count"] = k->second;

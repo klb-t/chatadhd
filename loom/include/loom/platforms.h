@@ -26,6 +26,7 @@ struct PlatformSpec {
   std::string id_field;    // element field holding the external id
   std::string id_literal;  // fixed external id (overrides id_field)
   std::string shard_prefix;                        // "<prefix>NNN.json" conversation shards
+  std::string shard_pattern;                       // regex of a shard name ("" = any name starting with shard_prefix)
   std::vector<std::vector<std::string>> match;     // AND over groups, each group an OR of present keys
   std::map<std::string, std::string> shape;        // key -> "object" | "array" (type required for lossless parse)
 

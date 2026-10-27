@@ -21,6 +21,7 @@
       "walker": "mapping",
       "id_field": "id",
       "shard_prefix": "conversations-",
+      "shard_pattern": "^conversations-[0-9]+\\.json$",
       "match": [["mapping"]],
       "shape": {"mapping": "object"}
     },
