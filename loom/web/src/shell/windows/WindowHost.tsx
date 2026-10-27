@@ -26,6 +26,11 @@ export interface ArrangeHandlers {
   dragThreshold?: number;
   closeLabel: (title: string) => string;
   menuLabel: (title: string) => string;
+  /** W6: entries of the menu ⋯ that depend on the window (coupling: bind / unbind a parameter), and what choosing one does. */
+  extraMenu?: (w: Win) => { id: string; label: string; icon?: string }[];
+  onExtra?: (id: string, entry: string) => void;
+  /** W6: the chain on the title bar - the bound parameters said with words (null = nothing bound, no icon). */
+  chain?: (w: Win) => { icon: string; lines: string[]; title: string } | null;
 }
 
 export interface WindowHostProps {
@@ -76,10 +81,15 @@ function leafBoxesOnScreen(fallbackLeaf: string | undefined): { leaf: string; bo
 function WindowFrame({ w, title, a, children, floating, onDrag }: { w: Win; title: string; a?: ArrangeHandlers; children: ReactNode; floating: boolean; onDrag: DragStart }) {
   const [open, setOpen] = useState(false);
   const key = String(w.params?.panel ?? w.kind);
+  const chain = a?.chain?.(w) ?? null;
+  const extra = open && a?.extraMenu ? a.extraMenu(w) : [];
   return (
     <section className={floating ? "win-frame win-floating" : "win-frame"} role="region" aria-label={title} data-testid={`window-${key}`} data-window={w.id} data-mode={w.mode}>
       <div className="win-titlebar" data-testid={`window-titlebar-${key}`} onPointerDown={(e) => { if (!(e.target as HTMLElement).closest("button")) onDrag(w, e); }}>
         <span className="win-title">{title}</span>
+        {chain && <span className="win-chain" role="note" aria-label={`${chain.title}: ${chain.lines.join("; ")}`} title={chain.lines.join("\n")} data-testid={`window-chain-${key}`}>
+          <span aria-hidden="true">{chain.icon}</span> <span className="win-chain-words">{chain.lines.join("; ")}</span>
+        </span>}
         {a && <button type="button" className="icon-btn" aria-label={a.menuLabel(title)} aria-expanded={open} data-testid={`window-menu-${key}`} onClick={() => setOpen((v) => !v)}>⋯</button>}
         {a && <button type="button" className="icon-btn" aria-label={a.closeLabel(title)} data-testid={`window-close-${key}`} onClick={() => a.onClose(w.id)}>×</button>}
       </div>
@@ -87,6 +97,11 @@ function WindowFrame({ w, title, a, children, floating, onDrag }: { w: Win; titl
         <div className="win-menu" role="menu" data-testid={`window-menu-list-${key}`}>
           {a.menu.map((m) => (
             <button key={m.id} type="button" role="menuitem" data-testid={`window-arrange-${m.id}`} onClick={() => { setOpen(false); a.onArrange(w.id, m.id); }}>
+              {m.icon ? `${m.icon} ` : ""}{m.label}
+            </button>
+          ))}
+          {extra.map((m) => (
+            <button key={m.id} type="button" role="menuitem" data-testid="window-couple" data-entry={m.id} onClick={() => { setOpen(false); a.onExtra?.(w.id, m.id); }}>
               {m.icon ? `${m.icon} ` : ""}{m.label}
             </button>
           ))}

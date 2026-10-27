@@ -12,6 +12,7 @@ import type { ArrangeHandlers } from "./WindowHost";
 import { ARRANGE, applyFix, arrangeWindow, moveFloating, num, rememberedKeys, setRatio, visibleChips, windowAdvisories, type Env, type WinAdvisory } from "./arrange";
 import type { Box } from "./dock";
 import { LAYOUTS } from "../start-view";
+import { applyCouplingFix } from "./coupling";
 
 type Lang = "pl" | "en" | string;
 const say = (w: { pl?: string; en?: string } | undefined, lang: Lang) => (lang === "pl" ? w?.pl ?? w?.en : w?.en ?? w?.pl) ?? "";
@@ -45,7 +46,9 @@ function settle(s: WState): WState {
 
 export interface ArrangeHook { handlers: ArrangeHandlers; chips: ReactNode; advisories: WinAdvisory[] }
 
-export function useArrange(win: WState, winRef: { current: WState }, commit: (s: WState) => void, lang: Lang, title: (id: string) => string): ArrangeHook {
+const NO_EXTRA: WinAdvisory[] = [];
+/** `extra`: advisories of other parts of the window system shown and answered the same way (W6: coupling_cycle and the broken bindings). */
+export function useArrange(win: WState, winRef: { current: WState }, commit: (s: WState) => void, lang: Lang, title: (id: string) => string, extra: WinAdvisory[] = NO_EXTRA): ArrangeHook {
   const [scr, setScr] = useState(screen);
   useEffect(() => {
     const on = () => setScr(screen());
@@ -67,7 +70,7 @@ export function useArrange(win: WState, winRef: { current: WState }, commit: (s:
 
   const deviceClass = scr.area.w < 600 ? "phone" : "desktop";
   const env: Env = useMemo(() => ({ area: scr.area, keyboard: scr.keyboard, deviceClass, title: (w) => title(w.id) }), [scr, deviceClass, title]);
-  const all = useMemo(() => windowAdvisories(win.layout, env), [win.layout, env]);
+  const all = useMemo(() => [...windowAdvisories(win.layout, env), ...extra], [win.layout, env, extra]);
   // a "keep" lasts while its arrangement lasts: when the advisory is gone, the same arrangement made again asks again
   useEffect(() => { setKept((k) => { const live = new Set(all.map((a) => `${a.code}|${a.fingerprint}`)); const n = new Set([...k].filter((x) => live.has(x))); return n.size === k.size ? k : n; }); }, [all]);
   useEffect(() => { if (all.length && loaded === "idle") { setLoaded("loading"); void load(); } }, [all, loaded, load]);
@@ -83,7 +86,9 @@ export function useArrange(win: WState, winRef: { current: WState }, commit: (s:
     onClose: (id) => {
       const s = winRef.current; const w = s.layout.windows.find((x) => x.id === id);
       if (!w) return;
-      const closed = isPanel(w) ? closeWindows(s, { target: { panel: String(w.params.panel) } }).state : apply(s, { op: "close", id }, WINDOW_CTX).state;
+      // W6: a panel with a second window of it ("open another one beside") closes by its id, not by the panel (that would close the first one)
+      const twin = isPanel(w) && s.layout.windows.filter((x) => x.params?.panel === w.params.panel).length > 1;
+      const closed = isPanel(w) && !twin ? closeWindows(s, { target: { panel: String(w.params.panel) } }).state : apply(s, { op: "close", id }, WINDOW_CTX).state;
       commit(settle(closed));
     },
     onMove: (id, rect: Partial<Rect>, done) => {
@@ -133,7 +138,7 @@ export function useArrange(win: WState, winRef: { current: WState }, commit: (s:
       {chips.map((a) => {
         const buttons: ReactNode[] = [];
         for (const id of order) {
-          if (id === "fix") { if (a.fix) buttons.push(<button key="fix" type="button" data-testid="window-advisory-fix" data-fix={a.fix.id} onClick={() => commit(applyFix(winRef.current, a, env))}>{say(a.fix.label, lang)}</button>); continue; }
+          if (id === "fix") { if (a.fix) buttons.push(<button key="fix" type="button" data-testid="window-advisory-fix" data-fix={a.fix.id} onClick={() => commit(a.fix?.id === "unbind" ? applyCouplingFix(winRef.current, a) : applyFix(winRef.current, a, env))}>{say(a.fix.label, lang)}</button>); continue; }
           const c = choices.find((x) => x.id === id);
           if (c) buttons.push(<button key={id} type="button" data-testid={`window-advisory-${id}`} onClick={() => answer(a, id)}>{say(c.label, lang)}</button>);
         }

@@ -14,6 +14,7 @@ import { CAMERA_HOME, HIT_SIZE_PRESET, LABEL_FONT_PX_PRESET, MAP_HEIGHT_PRESET, 
 import PersonText from "./PersonText";
 import ViewBar from "./ViewBar";
 import { useNavigatorAdvisories } from "./use-navigator-advisories";
+import { useWindowParam } from "../shell/windows/WindowParams";
 
 interface Props {
   result: GraphNavigateResult;
@@ -65,6 +66,22 @@ export default function NavigatorMap({ result, open, t, language = "pl", mapping
     observer?.observe(node);
     return () => observer?.disconnect();
   }, []);
+  // W6 (OKNA §5): zoom and pan are parameters of the window the map is drawn in. The map reports its own changes and follows a value
+  // the coupling of windows gives it (a binding ×2 to another graph window, a shared channel...). The value is honoured as given (not
+  // clamped: a binding asking for an unusual zoom is shown as asked). Without a window (no provider) nothing changes.
+  const zoomParam = useWindowParam("zoom"), panParam = useWindowParam("pan");
+  useEffect(() => {
+    const z = zoomParam.value;
+    if (typeof z === "number" && Number.isFinite(z) && z > 0 && Math.abs(z - cam.zoom) > 1e-9) setCam(c => ({ ...c, zoom: z }));
+  }, [zoomParam.value]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { zoomParam.set(cam.zoom); }, [cam.zoom]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    const p = panParam.value as { x?: unknown; y?: unknown } | undefined;
+    if (p && typeof p.x === "number" && typeof p.y === "number" && Number.isFinite(p.x) && Number.isFinite(p.y) && (p.x !== cam.panX || p.y !== cam.panY)) {
+      const x = p.x, y = p.y; setCam(c => ({ ...c, panX: x, panY: y }));
+    }
+  }, [panParam.value]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { panParam.set({ x: cam.panX, y: cam.panY }); }, [cam.panX, cam.panY]); // eslint-disable-line react-hooks/exhaustive-deps
   // A new level: the camera goes home and the selection is dropped (the rows are different ones).
   useEffect(() => { setCam(CAMERA_HOME); setSelected(null); }, [result.focus.address]);
 

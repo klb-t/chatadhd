@@ -267,6 +267,7 @@ textarea { resize: vertical; }
 .win-floating { height: 100%; border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 8px 28px rgba(0,0,0,0.45); overflow: hidden; }
 .win-titlebar { display: flex; align-items: center; gap: 4px; padding: 0 4px 0 10px; min-height: 44px; border-bottom: 1px solid var(--border); cursor: grab; touch-action: none; user-select: none; flex-shrink: 0; }
 .win-title { flex: 1; min-width: 0; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.win-chain { flex: 0 1 auto; min-width: 0; max-width: 55%; font-size: 0.8em; color: var(--muted, inherit); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .win-body { flex: 1; min-height: 0; overflow: auto; }
 .win-menu { display: flex; flex-direction: column; padding: 4px; border-bottom: 1px solid var(--border); background: var(--card); }
 .win-menu > button { text-align: start; min-height: 44px; }

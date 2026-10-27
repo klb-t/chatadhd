@@ -48,6 +48,7 @@ import { glyphVariables } from "./shell/disclosure-glyphs";
 import { PANEL_LABELS, PANEL_TEXT_IDS, type PanelId } from "./shell/panels";
 import { useLayer } from "./shell/use-layer";
 import { useArrange } from "./shell/windows/useArrange";
+import { useCoupling } from "./shell/windows/useCoupling";
 import { ARRANGE, arrangeWindow } from "./shell/windows/arrange";
 
 type Theme = "dark" | "amoled";
@@ -416,7 +417,11 @@ export default function App() {
     const w = winRef.current.layout.windows.find(x => x.id === id);
     const panel = w && typeof w.params?.panel === "string" ? w.params.panel as PanelId : null;
     if (!panel) return w?.kind === "chat" ? t("window_chat") : (w?.title_override ?? w?.kind ?? id);
-    return PANEL_TEXT_IDS[panel] ? t(PANEL_TEXT_IDS[panel]!) : (PANEL_LABELS[panel] ?? panel);
+    const name = PANEL_TEXT_IDS[panel] ? t(PANEL_TEXT_IDS[panel]!) : (PANEL_LABELS[panel] ?? panel);
+    // W6: the second window of a panel ("open another one beside") is numbered, so its chain and menu name the right one
+    const twins = winRef.current.layout.windows.filter(x => x.params?.panel === panel);
+    const n = twins.findIndex(x => x.id === id);
+    return twins.length > 1 && n > 0 ? `${name} ${n + 1}` : name;
   }, [t]);
   useEffect(() => {
     const known = (id: string) => Object.prototype.hasOwnProperty.call(PANEL_LABELS, id);
@@ -487,7 +492,10 @@ export default function App() {
     };
   }, [win.layout, windowLabel, moveTo, uiLanguage, shellLayouts]);
   // W4: docking and floating (menu ⋯, drag, split grips, keys) and the advisory chips of the arrangement
-  const arranged = useArrange(win, winRef, moveTo, uiLanguage, windowLabel);
+  // W6: coupling of window parameters (bindings in the layout, values at runtime, chips with the arrangement ones)
+  const coupling = useCoupling(win, winRef, moveTo, uiLanguage, windowLabel);
+  const arrangedRaw = useArrange(win, winRef, moveTo, uiLanguage, windowLabel, coupling.advisories);
+  const arranged = useMemo(() => ({ ...arrangedRaw, handlers: { ...arrangedRaw.handlers, extraMenu: coupling.extraMenu, onExtra: coupling.onExtra, chain: coupling.chain } }), [arrangedRaw, coupling]);
   const [panelMenu, setPanelMenu] = useState(false);
   useEffect(() => { if (activePanel === null) setPanelMenu(false); }, [activePanel]);
   // the layout shows one window full-screen (the plain chat app is that case); a grid of docks (the former Workshop) is not
@@ -546,7 +554,7 @@ export default function App() {
                   onClick={() => { setPanelMenu(false); const id = visibleOverlay(winRef.current.layout)?.id; if (id) arranged.handlers.onArrange(id, m.id); }}>{m.icon ? `${m.icon} ` : ""}{m.label}</button>)}
               </div>}
               <div className="drawer-body">
-                {panelContent(activePanel, topKind)}
+                {(() => { const top = visibleOverlay(win.layout); const body = panelContent(activePanel, topKind); return top ? coupling.provide(top, body) : body; })()}
               </div>
             </div>
           </>
@@ -643,7 +651,7 @@ export default function App() {
         refreshKey={convRefreshKey} onMessagesChanged={onMessagesChanged} windows={shellWindows} behindOverlay={activePanel !== null || knowledgeOpen}
         actions={{ panel: (id) => { if (id === "settings") setSettingsView(""); setActivePanel(id as PanelId); }, navigator: (focus) => { setNavigatorFocus(focus); setActivePanel("navigator"); }, knowledge: () => setKnowledgeOpen(true), workshop: () => pickLayout("workshop") }} />); }
   const host = <WindowHost state={win} renderOverlay={() => panels} grid={grid} renderDocked={docked} shown={dockShown} title={(w) => windowLabel(w.id)} renderWindow={renderMain}
-    renderPanel={w => panelContent(String(w.params.panel) as PanelId, w.kind)} arrange={arranged.handlers} chips={arranged.chips} />;
+    renderPanel={w => coupling.provide(w, panelContent(String(w.params.panel) as PanelId, w.kind))} arrange={arranged.handlers} chips={arranged.chips} />;
   return (
     <ShellText.Provider value={t}><ShellLanguage.Provider value={uiLanguage}>
       {host}
