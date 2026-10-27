@@ -33,6 +33,8 @@ import ContextPlanEditor from "./ContextPlanEditor";
 import { buildRetrievalPlan } from "../context/retrieval-plan";
 import { shouldSubmit, type ApplicationProfile } from "../profiles/runtime";
 import ImportedMessageContent from "./ImportedMessageContent";
+import ArtifactFrame from "../shell/artifacts/ArtifactFrame";
+import { splitArtifacts } from "../shell/artifacts/artifacts";
 import { projectImportedMessage } from "../content/imported-message";
 import ConversationBranches, { conversationBranchPath } from "./ConversationBranches";
 import { parseCandidateChannels, readChatSettings, storedPlan, writeChatSettings } from "../context/chat-settings";
@@ -91,6 +93,16 @@ function renderMarkdown(text: string): { __html: string } {
     FORBID_TAGS: ["style"],
   });
   return { __html: clean };
+}
+
+/** W8 (OKNA §7.1, UI08): an assistant's answer with its fenced blocks in frames (Kopiuj / Otwórz w oknie / Zapisz); an answer
+ *  without a block renders exactly as before (one Markdown body). */
+function AnswerBody({ text, message }: { text: string; message: string }) {
+  const segments = useMemo(() => splitArtifacts(text, message), [text, message]);
+  if (!segments.some(s => s.kind === "artifact")) return <div className="body" dangerouslySetInnerHTML={renderMarkdown(text)} />;
+  return <div className="body" data-testid="answer-with-artifacts">{segments.map((s, i) => s.kind === "text"
+    ? <div key={i} dangerouslySetInnerHTML={renderMarkdown(s.text)} />
+    : <ArtifactFrame key={i} artifact={s.artifact} />)}</div>;
 }
 
 interface Props {
@@ -1269,7 +1281,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
                   <InterviewLevelCards t={interviewT} levels={levelCards(m.metadata)} disabled={!!stream} onPick={level => sayInInterview(level.label)} />
                 </div>
               ) : (
-                <div className="body" dangerouslySetInnerHTML={renderMarkdown(m.role === "assistant" ? nativeGraphDisplayText(graphReply, m.text) : m.text)} />
+                m.role === "assistant" ? <AnswerBody text={nativeGraphDisplayText(graphReply, m.text)} message={m.id} /> : <div className="body" dangerouslySetInnerHTML={renderMarkdown(m.text)} />
               )}
               {repliesUnder?.messageId === m.id && <InterviewChips t={interviewT} idle={repliesUnder.idle} disabled={!!stream} onSay={sayInInterview} />}
               {m.role === "assistant" && (() => {

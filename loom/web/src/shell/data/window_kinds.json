@@ -253,16 +253,14 @@
    "label": {
     "pl": "Artefakt"
    },
-   "component": null,
+   "component": "ArtifactWindow",
    "params": [
     "message",
     "artifact",
     "format"
    ],
-   "status": "planned",
-   "reason": {
-    "pl": "UI08: ramka z przyciskami; dziś artefakty importu to zwykła sekcja treści wiadomości"
-   }
+   "status": "present",
+   "note": "W8: a fenced block of an assistant's answer (code, HTML, SVG, Markdown, JSON… — open list in shell/data/artifacts.json) opened by „Otwórz w oknie”; the block travels in params.artifact; HTML/SVG preview in an iframe sandbox without scripts unless artifact_html_scripts"
   },
   {
    "id": "request_inspector",

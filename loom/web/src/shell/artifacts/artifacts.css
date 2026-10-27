@@ -1,0 +1,13 @@
+/* W8: the frame of a block of an answer and the artifact window */
+.artifact-frame { border: 1px solid var(--border); border-radius: 6px; margin: 8px 0; overflow: hidden; }
+.artifact-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px; padding: 4px 8px; background: var(--surface, transparent); border-bottom: 1px solid var(--border); font-size: 0.85em; }
+.artifact-actions, .artifact-tabs { display: flex; flex-wrap: wrap; gap: 4px; }
+.artifact-actions button, .artifact-tabs button { min-height: 32px; padding: 2px 10px; }
+.artifact-tabs button[aria-pressed="true"] { font-weight: 600; }
+.artifact-code { margin: 0; padding: 8px; overflow: auto; white-space: pre; max-width: 100%; }
+.artifact-window { display: flex; flex-direction: column; height: 100%; min-height: 0; overflow: auto; }
+.artifact-window .artifact-code { flex: 1; }
+.artifact-preview { flex: 1; width: 100%; min-height: 240px; border: 0; background: #fff; }
+.artifact-preview.body { background: transparent; padding: 8px; }
+.artifact-advisory { margin: 4px 8px; font-size: 0.8em; opacity: 0.8; }
+.artifact-advisory.warn { opacity: 1; border-left: 3px solid var(--warn, #c80); padding-left: 6px; }

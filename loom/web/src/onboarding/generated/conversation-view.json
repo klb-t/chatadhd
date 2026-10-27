@@ -1279,7 +1279,16 @@
             "layout_receipt_deleted": "Layout deleted: {{name}}",
             "layout_receipt_shipped": "A layout of the application cannot be deleted or renamed: {{name}}",
             "device_class_phone": "phone",
-            "device_class_desktop": "computer"
+            "device_class_desktop": "computer",
+            "artifact_open": "Open in a window",
+            "artifact_save": "Save",
+            "artifact_frame": "{{format}} block",
+            "artifact_window": "Artifact: {{format}}",
+            "artifact_scripts_on": "Scripts in this page are on (setting artifact_html_scripts): a page from a model's reply runs its own code here, in a sandbox without access to the app. Is that intended?",
+            "artifact_scripts_off": "Shown without scripts (sandbox); scripts can be turned on with the setting artifact_html_scripts.",
+            "artifact_source": "Source",
+            "artifact_preview": "Preview",
+            "artifact_empty": "This window shows no artifact (its content is not in the layout any more)."
           },
           "pl": {
             "menu_open": "Menu",
@@ -1750,7 +1759,16 @@
             "layout_receipt_deleted": "Usunięty układ: {{name}}",
             "layout_receipt_shipped": "Układu aplikacji nie da się usunąć ani przemianować: {{name}}",
             "device_class_phone": "telefon",
-            "device_class_desktop": "komputer"
+            "device_class_desktop": "komputer",
+            "artifact_open": "Otwórz w oknie",
+            "artifact_save": "Zapisz",
+            "artifact_frame": "Blok {{format}}",
+            "artifact_window": "Artefakt: {{format}}",
+            "artifact_scripts_on": "Skrypty tej strony są włączone (ustawienie artifact_html_scripts): strona z odpowiedzi modelu wykonuje tu swój kod, w piaskownicy bez dostępu do aplikacji. Czy to celowe?",
+            "artifact_scripts_off": "Pokazane bez skryptów (piaskownica); skrypty włącza ustawienie artifact_html_scripts.",
+            "artifact_source": "Źródło",
+            "artifact_preview": "Podgląd",
+            "artifact_empty": "To okno nie pokazuje artefaktu (jego treści nie ma już w układzie)."
           }
         }
       }

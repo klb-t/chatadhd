@@ -1446,7 +1446,16 @@ std::string_view(R"loom_onboard(                "empty_title": "How can I help?"
                 "layout_receipt_deleted": "Layout deleted: {{name}}",
                 "layout_receipt_shipped": "A layout of the application cannot be deleted or renamed: {{name}}",
                 "device_class_phone": "phone",
-                "device_class_desktop": "computer"
+                "device_class_desktop": "computer",
+                "artifact_open": "Open in a window",
+                "artifact_save": "Save",
+                "artifact_frame": "{{format}} block",
+                "artifact_window": "Artifact: {{format}}",
+                "artifact_scripts_on": "Scripts in this page are on (setting artifact_html_scripts): a page from a model's reply runs its own code here, in a sandbox without access to the app. Is that intended?",
+                "artifact_scripts_off": "Shown without scripts (sandbox); scripts can be turned on with the setting artifact_html_scripts.",
+                "artifact_source": "Source",
+                "artifact_preview": "Preview",
+                "artifact_empty": "This window shows no artifact (its content is not in the layout any more)."
               },
               "pl": {
                 "menu_open": "Menu",
@@ -1860,7 +1869,8 @@ std::string_view(R"loom_onboard(                "empty_title": "How can I help?"
                 "src_kind_code": "Kod",
                 "src_kind_media": "Odnośnik do multimediów",
                 "src_kind_document": "Dokument",
-                "src_kind_transcript": "Transkrypcja",
+)loom_onboard", 59960),
+std::string_view(R"loom_onboard(                "src_kind_transcript": "Transkrypcja",
                 "src_kind_context": "Kontekst z eksportu",
                 "src_kind_quote": "Cytat",
                 "src_kind_browse": "Wynik przeglądania sieci",
@@ -1874,8 +1884,7 @@ std::string_view(R"loom_onboard(                "empty_title": "How can I help?"
                 "windows_close": "Zamknij: {{screen}}",
                 "windows_active": "na wierzchu",
                 "window_chat": "Czat",
-)loom_onboard", 59944),
-std::string_view(R"loom_onboard(                "window_receipt_open": "Otwarte: {{screen}}",
+                "window_receipt_open": "Otwarte: {{screen}}",
                 "window_receipt_placement": "Na tym ekranie „{{asked}}” to kolejne okno; okna są w ⋮ › Okna.",
                 "window_receipt_close": "Zamknięte: {{count}}",
                 "window_receipt_focus": "Na wierzchu: {{screen}}",
@@ -1918,7 +1927,16 @@ std::string_view(R"loom_onboard(                "window_receipt_open": "Otwarte:
                 "layout_receipt_deleted": "Usunięty układ: {{name}}",
                 "layout_receipt_shipped": "Układu aplikacji nie da się usunąć ani przemianować: {{name}}",
                 "device_class_phone": "telefon",
-                "device_class_desktop": "komputer"
+                "device_class_desktop": "komputer",
+                "artifact_open": "Otwórz w oknie",
+                "artifact_save": "Zapisz",
+                "artifact_frame": "Blok {{format}}",
+                "artifact_window": "Artefakt: {{format}}",
+                "artifact_scripts_on": "Skrypty tej strony są włączone (ustawienie artifact_html_scripts): strona z odpowiedzi modelu wykonuje tu swój kod, w piaskownicy bez dostępu do aplikacji. Czy to celowe?",
+                "artifact_scripts_off": "Pokazane bez skryptów (piaskownica); skrypty włącza ustawienie artifact_html_scripts.",
+                "artifact_source": "Źródło",
+                "artifact_preview": "Podgląd",
+                "artifact_empty": "To okno nie pokazuje artefaktu (jego treści nie ma już w układzie)."
               }
             }
           }
@@ -2765,7 +2783,8 @@ std::string_view(R"loom_onboard(                "window_receipt_open": "Otwarte:
                 "evidence.method.analysis": "wniosek z analizy wiadomości",
                 "evidence.method.model_inferred": "wniosek modelu",
                 "evidence.method.role_resolution": "model, który daje rola",
-                "evidence.method.description": "opisane w katalogu",
+)loom_onboard", 59997),
+std::string_view(R"loom_onboard(                "evidence.method.description": "opisane w katalogu",
                 "evidence.method.profile_value": "wartość profilu działania",
                 "evidence.method.not_recorded": "brak zapisu, skąd to jest",
                 "evidence.method.code_preset": "co kod robi bez wartości",
@@ -2790,8 +2809,7 @@ std::string_view(R"loom_onboard(                "window_receipt_open": "Otwarte:
                 "evidence.method.task": "zapisane przez zadanie w tle",
                 "reason.setting_absent": "tego ustawienia nie ma w opisie ustawień",
                 "card.close": "Zamknij kartę",
-)loom_onboard", 59977),
-std::string_view(R"loom_onboard(                "card.layers": "Warstwy: {{layers}}",
+                "card.layers": "Warstwy: {{layers}}",
                 "card.value": "Wartość:",
                 "card.value.none": "brak wartości",
                 "card.value.on": "włączone",
@@ -3628,7 +3646,8 @@ std::string_view(R"loom_onboard(                "card.layers": "Warstwy: {{layer
     {
       "id": "preference.adhd_needs/v1",
       "key": "preference.adhd_needs",
-      "area": "preferences/communication",
+)loom_onboard", 59961),
+std::string_view(R"loom_onboard(      "area": "preferences/communication",
       "revision": 1,
       "value": []
     },
@@ -3679,8 +3698,7 @@ std::string_view(R"loom_onboard(                "card.layers": "Warstwy: {{layer
             "knowledge.questions_suffix": " · questions: {{disposition}}",
             "field.legend": "{{label}} ({{status}}{{suffix}})",
             "candidate.legend": "{{field}} · {{provenance}} · {{review}}",
-)loom_onboard", 59956),
-std::string_view(R"loom_onboard(            "knowledge.legend": "{{label}} · {{status}}{{suffix}}",
+            "knowledge.legend": "{{label}} · {{status}}{{suffix}}",
             "default.legend": "{{label}} · {{area}}",
             "field.never": "Questions and inference are excluded for this field.",
             "field.declined": "You declined this question; the interview will not ask it again.",
@@ -4949,7 +4967,8 @@ std::string_view(R"loom_onboard(            "knowledge.legend": "{{label}} · {{
         "feature": "route_issue",
         "locales": {
           "en": {
-            "model_route_failed": "The model could not route this message ({{message}}); the local rules read it instead. Nothing was lost.",
+)loom_onboard", 59993),
+std::string_view(R"loom_onboard(            "model_route_failed": "The model could not route this message ({{message}}); the local rules read it instead. Nothing was lost.",
             "other": "Routing had a problem ({{code}}: {{message}}); the local rules read this message instead. Nothing was lost."
           },
           "pl": {
@@ -4985,8 +5004,7 @@ std::string_view(R"loom_onboard(            "knowledge.legend": "{{label}} · {{
       "key": "presentation.open_settings",
       "area": "presentation/open_settings",
       "revision": 1,
-)loom_onboard", 59931),
-std::string_view(R"loom_onboard(      "label": "Button under a message that asks the person to enter secrets (keys, tokens) in Settings: an action that connects a storage never takes them from the conversation; texts only",
+      "label": "Button under a message that asks the person to enter secrets (keys, tokens) in Settings: an action that connects a storage never takes them from the conversation; texts only",
       "value": {
         "schema": "loom.presentation_feature/1",
         "feature": "open_settings",
@@ -5952,7 +5970,8 @@ std::string_view(R"loom_onboard(      "label": "Button under a message that asks
             "src_intro": "Source blocks reflect the original import and remain separate from current message text.",
             "src_options": "Source display options",
             "src_show_blocks": "Show blocks",
-            "src_show_artifacts": "Show artifacts",
+)loom_onboard", 59958),
+std::string_view(R"loom_onboard(            "src_show_artifacts": "Show artifacts",
             "src_show_references": "Show references",
             "src_wrap": "Wrap code",
             "src_hidden": "Source visibility: hidden{{reasons}}.",
@@ -5978,8 +5997,7 @@ std::string_view(R"loom_onboard(      "label": "Button under a message that asks
             "src_kind_document": "Document",
             "src_kind_transcript": "Transcript",
             "src_kind_context": "Exported context",
-)loom_onboard", 59985),
-std::string_view(R"loom_onboard(            "src_kind_quote": "Quote",
+            "src_kind_quote": "Quote",
             "src_kind_browse": "Browsing result",
             "src_kind_error": "Source error",
             "src_kind_unknown": "Unknown source block",
@@ -6034,7 +6052,16 @@ std::string_view(R"loom_onboard(            "src_kind_quote": "Quote",
             "layout_receipt_deleted": "Layout deleted: {{name}}",
             "layout_receipt_shipped": "A layout of the application cannot be deleted or renamed: {{name}}",
             "device_class_phone": "phone",
-            "device_class_desktop": "computer"
+            "device_class_desktop": "computer",
+            "artifact_open": "Open in a window",
+            "artifact_save": "Save",
+            "artifact_frame": "{{format}} block",
+            "artifact_window": "Artifact: {{format}}",
+            "artifact_scripts_on": "Scripts in this page are on (setting artifact_html_scripts): a page from a model's reply runs its own code here, in a sandbox without access to the app. Is that intended?",
+            "artifact_scripts_off": "Shown without scripts (sandbox); scripts can be turned on with the setting artifact_html_scripts.",
+            "artifact_source": "Source",
+            "artifact_preview": "Preview",
+            "artifact_empty": "This window shows no artifact (its content is not in the layout any more)."
           },
           "pl": {
             "menu_open": "Menu",
@@ -6505,7 +6532,16 @@ std::string_view(R"loom_onboard(            "src_kind_quote": "Quote",
             "layout_receipt_deleted": "Usunięty układ: {{name}}",
             "layout_receipt_shipped": "Układu aplikacji nie da się usunąć ani przemianować: {{name}}",
             "device_class_phone": "telefon",
-            "device_class_desktop": "komputer"
+            "device_class_desktop": "komputer",
+            "artifact_open": "Otwórz w oknie",
+            "artifact_save": "Zapisz",
+            "artifact_frame": "Blok {{format}}",
+            "artifact_window": "Artefakt: {{format}}",
+            "artifact_scripts_on": "Skrypty tej strony są włączone (ustawienie artifact_html_scripts): strona z odpowiedzi modelu wykonuje tu swój kod, w piaskownicy bez dostępu do aplikacji. Czy to celowe?",
+            "artifact_scripts_off": "Pokazane bez skryptów (piaskownica); skrypty włącza ustawienie artifact_html_scripts.",
+            "artifact_source": "Źródło",
+            "artifact_preview": "Podgląd",
+            "artifact_empty": "To okno nie pokazuje artefaktu (jego treści nie ma już w układzie)."
           }
         }
       }
@@ -6902,7 +6938,8 @@ std::string_view(R"loom_onboard(            "src_kind_quote": "Quote",
             "reason.pointer_absent": "the profile has no such entry",
             "reason.layers_not_wired": "this host does not count these layers yet",
             "reason.action_catalogue_unavailable": "the catalogue of actions cannot be read",
-            "reason.area_not_configured": "the area is not configured",
+)loom_onboard", 59963),
+std::string_view(R"loom_onboard(            "reason.area_not_configured": "the area is not configured",
             "reason.binding_missing": "the counter is not defined",
             "reason.economy_mode_off": "the resource economy report is off",
             "reason.economy_report_unavailable": "the resource economy report cannot be made",
@@ -6941,8 +6978,7 @@ std::string_view(R"loom_onboard(            "src_kind_quote": "Quote",
             "evidence.method.model_inferred": "a model's inference",
             "evidence.method.role_resolution": "the model a role resolves to",
             "evidence.method.description": "described in the catalogue",
-)loom_onboard", 59975),
-std::string_view(R"loom_onboard(            "evidence.method.profile_value": "a value of a runtime profile",
+            "evidence.method.profile_value": "a value of a runtime profile",
             "evidence.method.not_recorded": "no record of where it came from",
             "evidence.method.code_preset": "what the code does without a value",
             "message.role.user": "You",
@@ -7780,7 +7816,8 @@ std::string_view(R"loom_onboard(            "evidence.method.profile_value": "a 
             "role.assistant": "Assistant",
             "role.system": "System",
             "dropped.source_off": "source switched off by the profile or a setting ({{count}})",
-            "dropped.command_traffic": "commands to the app (not to the model) left out ({{count}})",
+)loom_onboard", 59914),
+std::string_view(R"loom_onboard(            "dropped.command_traffic": "commands to the app (not to the model) left out ({{count}})",
             "dropped.replaced_by_task": "replaced by the task from the selected messages ({{count}})",
             "dropped.history_skip": "left out by a history rule ({{count}})",
             "dropped.other": "another reason ({{reason}}): {{count}}",
@@ -7823,8 +7860,7 @@ std::string_view(R"loom_onboard(            "evidence.method.profile_value": "a 
             "action.next_time.help": "Works for the next message only; once it is sent everything is back to the settings.",
             "action.profile_help": "The choice of a profile is for the next message only.",
             "action.profile_current": "the one of this message",
-)loom_onboard", 59977),
-std::string_view(R"loom_onboard(            "action.reset": "Take back the changes of the next message",
+            "action.reset": "Take back the changes of the next message",
             "modify.waiting": "Waits for the next message: {{what}}",
             "modify.failed": "The context could not be changed: {{reason}}",
             "modify.declined": "Left as it was.",
@@ -8296,7 +8332,7 @@ std::string_view(R"loom_onboard(            "action.reset": "Take back the chang
   },
   "presentation_key": "presentation.onboarding"
 }
-)loom_onboard", 25776)};
+)loom_onboard", 28755)};
 static constexpr std::string_view kOnboardingScenario[] = {
 std::string_view(R"loom_onboard({
   "schema": "loom.onboarding.scenario/1",

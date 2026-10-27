@@ -178,3 +178,16 @@ export function windowDataOf(config: Record<string, unknown>, data: WindowData =
   }
   return out;
 }
+
+/** W8 (OKNA §7.1): „Otwórz w oknie” on a block of an answer - a new window of the kind `artifact` with the block in its params, at the
+ *  placement of artifacts.json (preset float) mapped per device class by window_placements; one journal entry. The same block opened
+ *  again (same message and index) brings its window forward instead of a second copy. */
+export function openArtifactWindow(s: WState, artifact: { message?: string; index: number } & Record<string, unknown>, asked: string, deviceClass: string, ctx: Ctx = WINDOW_CTX, data: WindowData = WINDOW_DATA): { state: WState; receipt: WindowReceipt } {
+  const placementUsed = placementFor(asked || "float", deviceClass, data);
+  const base = { op: "open", placementAsked: asked || undefined, placementUsed };
+  const same = artifact.message ? s.layout.windows.find((w) => w.kind === "artifact" && (w.params?.artifact as { message?: string; index?: number } | undefined)?.message === artifact.message && (w.params?.artifact as { index?: number }).index === artifact.index) : undefined;
+  if (same) { const r = apply(s, { op: "focus", id: same.id }, ctx); return { state: r.applied ? { ...s, layout: r.state.layout } : s, receipt: { ...base, state: "ok", windows: [same.id] } }; }   // forward in its own mode, no journal entry
+  const r = apply(s, { op: "open", kind: "artifact", placement: placementUsed as Placement, params: { artifact, over: visibleId(s.layout) } }, ctx);
+  if (!r.applied) return { state: s, receipt: { ...base, state: "none", windows: [] } };
+  return { state: step(s, r.state, "open"), receipt: { ...base, state: "ok", windows: [r.state.layout.focus ?? ""] } };
+}

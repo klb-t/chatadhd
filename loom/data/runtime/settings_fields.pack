@@ -1190,6 +1190,96 @@
         }
       },
       {
+        "key": "coupling_max_iterations",
+        "scope": "config",
+        "group": "ui",
+        "type": "integer",
+        "has_default": false,
+        "description": "How many rounds the propagation of coupled window parameters (OKNA §5, shell/windows/coupling.ts) runs before a loop that does not settle stops with its last values and the advisory coupling_cycle. Any integer ≥ 0 (0 = no propagation: bound windows keep their own values). Unset = the preset of the page's coupling.json (8).",
+        "status": {
+          "state": "implemented",
+          "by": "M1-OKNA-W8",
+          "reader": "web shell/windows/useCoupling.tsx (coupling.ts propagate, maxIterations)",
+          "reason": {
+            "pl": "Strona czyta to pole przy każdej zmianie powiązanego parametru okna.",
+            "en": "The page reads this field at every change of a coupled window parameter."
+          },
+          "today": {
+            "pl": "Pętla powiązań, która się nie uzgadnia, staje po 8 przebiegach.",
+            "en": "A loop of bindings that does not settle stops after 8 rounds."
+          }
+        },
+        "human": {
+          "label": {
+            "pl": "Ile przebiegów uzgadniania powiązanych okien",
+            "en": "How many rounds to settle coupled windows"
+          },
+          "why": {
+            "pl": "Gdy okna są powiązane w kółko (np. przybliżenie ×2 w obie strony), wartości nigdy się nie uzgodnią; ta liczba mówi, kiedy przestać liczyć.",
+            "en": "When windows are bound in a loop (e.g. zoom ×2 both ways) the values never settle; this number says when to stop computing."
+          },
+          "effect": {
+            "pl": "Więcej przebiegów = pętla dłużej dochodzi do wartości; 0 = powiązania nie przeliczają niczego. Działa od następnej zmiany parametru.",
+            "en": "More rounds = a loop runs longer towards its values; 0 = bindings compute nothing. Takes effect at the next parameter change."
+          },
+          "levels": [
+            "person"
+          ],
+          "group": "interfejs",
+          "subgroup": "nawigator",
+          "flows": [],
+          "when_unset": {
+            "pl": "8 przebiegów",
+            "en": "8 rounds"
+          }
+        }
+      },
+      {
+        "key": "artifact_html_scripts",
+        "scope": "config",
+        "group": "ui",
+        "type": "boolean",
+        "has_default": false,
+        "description": "Whether an HTML block of a reply shown in an artifact window (OKNA §7.1, UI08) may run its scripts: false/unset = iframe sandbox without scripts; true = sandbox allow-scripts (still without same-origin: no access to the app, its storage or its API), with a non-blocking advisory in the window. Unset = false (the preset of shell/data/artifacts.json).",
+        "status": {
+          "state": "implemented",
+          "by": "M1-OKNA-W8",
+          "reader": "web shell/artifacts/ArtifactWindow.tsx (sandboxOf)",
+          "reason": {
+            "pl": "Okno artefaktu czyta to pole przy każdym pokazaniu strony HTML.",
+            "en": "The artifact window reads this field each time it shows an HTML page."
+          },
+          "today": {
+            "pl": "Strony HTML z odpowiedzi są pokazywane bez skryptów.",
+            "en": "HTML pages from replies are shown without scripts."
+          }
+        },
+        "human": {
+          "label": {
+            "pl": "Skrypty w stronach HTML z odpowiedzi",
+            "en": "Scripts in HTML pages from replies"
+          },
+          "why": {
+            "pl": "Strona z odpowiedzi modelu (np. mała gra albo wykres) może potrzebować skryptów, żeby działać; bez nich widać tylko jej wygląd.",
+            "en": "A page from a model's reply (e.g. a small game or a chart) may need scripts to work; without them only its look is shown."
+          },
+          "effect": {
+            "pl": "Włączone: okno artefaktu wykonuje skrypty strony w piaskownicy bez dostępu do aplikacji i pokazuje o tym podpowiedź. Działa od następnego otwarcia okna.",
+            "en": "On: the artifact window runs the page's scripts in a sandbox without access to the app and shows an advisory about it. Takes effect at the next opening of the window."
+          },
+          "levels": [
+            "person"
+          ],
+          "group": "interfejs",
+          "subgroup": "nawigator",
+          "flows": [],
+          "when_unset": {
+            "pl": "bez skryptów",
+            "en": "no scripts"
+          }
+        }
+      },
+      {
         "key": "window_restore_last",
         "scope": "config",
         "group": "ui",

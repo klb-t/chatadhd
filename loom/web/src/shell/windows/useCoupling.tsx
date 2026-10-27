@@ -3,7 +3,7 @@
 // answered the same way, advisory.answer with code + fingerprint). Bindings live in the layout (one journal entry per change).
 import { useCallback, useMemo, useRef, useState, type ReactNode } from "react";
 import type { WState, Win } from "./model";
-import { afterBind, beforeUnbind, bindParam, bindingsOf, paramsOfKind, chainOf, couplingAdvisories, couplingMenu, emptyValues, resolveParam, sayWords, setParam, unbindParam, COUPLING, type Values } from "./coupling";
+import { afterBind, beforeUnbind, bindParam, bindingsOf, paramsOfKind, chainOf, couplingAdvisories, couplingMenu, type CouplingData, emptyValues, resolveParam, sayWords, setParam, unbindParam, COUPLING, type Values } from "./coupling";
 import { WindowParams, type WindowParamsApi } from "./WindowParams";
 import type { WinAdvisory } from "./arrange";
 import { nextChainMode, oneEntry } from "./steps";
@@ -30,7 +30,9 @@ export interface CouplingHook {
 export const RESTORE_WAIT_MS = 5000;
 const sameValue = (a: unknown, b: unknown) => JSON.stringify(a) === JSON.stringify(b);
 
-export function useCoupling(win: WState, winRef: { current: WState }, commit: (s: WState) => void, lang: string, title: (id: string) => string): CouplingHook {
+export function useCoupling(win: WState, winRef: { current: WState }, commit: (s: WState) => void, lang: string, title: (id: string) => string, data: CouplingData = COUPLING): CouplingHook {
+  const dataRef = useRef(data); dataRef.current = data;
+  const opts = () => ({ data: dataRef.current });
   const [values, setValues] = useState<Values>(emptyValues);
   const valuesRef = useRef(values); valuesRef.current = values;
   const put = useCallback((v: Values) => { valuesRef.current = v; setValues(v); }, []);
@@ -60,7 +62,7 @@ export function useCoupling(win: WState, winRef: { current: WState }, commit: (s
     let a = apis.get(id);
     if (!a) {
       const l = win.layout, v = values;
-      a = { window: id, get: (p) => resolveParam(l, v, id, p), set: (p, x) => { if (admit(id, p, x)) put(setParam(winRef.current.layout, valuesRef.current, id, p, x).values); } };
+      a = { window: id, get: (p) => resolveParam(l, v, id, p), set: (p, x) => { if (admit(id, p, x)) put(setParam(winRef.current.layout, valuesRef.current, id, p, x, opts()).values); } };
       apis.set(id, a);
     }
     return a;
@@ -74,19 +76,19 @@ export function useCoupling(win: WState, winRef: { current: WState }, commit: (s
     if (m.action.op === "bind") {
       const next = bindParam(s, id, m.action.param, m.action.binding);
       commit(next);
-      put(afterBind(next.layout, valuesRef.current, id, m.action.param).values);
+      put(afterBind(next.layout, valuesRef.current, id, m.action.param, opts()).values);
     } else {
       put(beforeUnbind(s.layout, valuesRef.current, id, m.action.param));
       commit(unbindParam(s, id, m.action.param));
     }
   }, [winRef, lang, named, commit, put]);
   const chain = useCallback((w: Win) => { const c = chainOf(win.layout, w.id, lang, named); return c ? { ...c, title: sayWords(COUPLING.words?.chain_title, lang) } : null; }, [win.layout, lang, named]);
-  const advisories = useMemo(() => couplingAdvisories(win.layout, named, lang), [win.layout, named, lang]);
+  const advisories = useMemo(() => couplingAdvisories(win.layout, named, lang, data), [win.layout, named, lang, data]);
   const bindAll = useCallback((ids: string[], param: string) => {
     const s = winRef.current;
     let next = s, values = valuesRef.current;
     for (const id of ids) next = bindParam(next, id, param, { binding: "shared", channel: param });
-    for (const id of ids) values = afterBind(next.layout, values, id, param).values;
+    for (const id of ids) values = afterBind(next.layout, values, id, param, opts()).values;
     commit(oneEntry(s, next, "bind"));
     put(values);
   }, [winRef, commit, put]);
@@ -109,7 +111,7 @@ export function useCoupling(win: WState, winRef: { current: WState }, commit: (s
     const binding = mode === "linked" && source ? { binding: "linked", from: { window: source.id, param }, dependency: { kind: "same" } } : { binding: mode, channel: param };
     const next = bindParam(s, id, param, binding);
     commit(next);
-    put(afterBind(next.layout, valuesRef.current, id, param).values);
+    put(afterBind(next.layout, valuesRef.current, id, param, opts()).values);
   }, [winRef, commit, put]);
   return { provide, extraMenu, onExtra, chain, advisories, bindAll, unbindAll, cycleChain, values, restore };
 }

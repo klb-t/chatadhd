@@ -32,14 +32,14 @@ import { ShellLanguage, ShellText, shellTranslator } from "./shell/text";
 import { themeFromConfig } from "./shell/theme";
 import { DEFAULT_LAYOUT, JOURNAL_LIMIT, LAYOUTS, START_VIEW_PRESET, layoutOfMode, parseShellHash, readSaved, resolveLayoutId, resolveStartView, startViewOrder, writeSaved } from "./shell/start-view";
 import WindowHost from "./shell/windows/WindowHost";
-import { activePanelOf, baseWindow, layoutState, panelKind, restoreFront, setPanel, switchLayout, visibleOverlay } from "./shell/windows/session";
+import { WINDOW_CTX, activePanelOf, baseWindow, layoutState, panelKind, restoreFront, setPanel, switchLayout, visibleOverlay } from "./shell/windows/session";
 import { createState, redo as redoLayout, undo as undoLayout, type WState, type Win } from "./shell/windows/model";
 import { activePatch, deleteNamed, namedPatch, deviceClassOf, findNamed, journalPatch, labelOf, lastOwn, readActive, readNamed, readWriterJournal, renameNamed, replaceLayout, resetTarget, saveNamed, shippedId, type JournalWho } from "./shell/windows/named";
 import { mergePatch } from "./api/merge-patch";
 import { clientIdentity, installationIdentity } from "./context/client-session";
 import { layoutIdOfMode } from "./shell/windows/migrate";
 import type { ShellLayouts } from "./shell/LayoutsSheet";
-import { WINDOW_DATA, closeWindows, windowDataOf, focusWindow, resolveWord, runWindowStep, switcherEntries, visibleId, type WindowReceipt } from "./shell/windows/ops";
+import { WINDOW_DATA, openArtifactWindow, closeWindows, windowDataOf, focusWindow, resolveWord, runWindowStep, switcherEntries, visibleId, type WindowReceipt } from "./shell/windows/ops";
 import { WINDOW_STEP_EVENT, type WindowStepDetail } from "./context/browser-host";
 import { layerStack } from "./shell/history";
 import { shellLanguage } from "./shell/language";
@@ -49,6 +49,9 @@ import { PANEL_LABELS, PANEL_TEXT_IDS, type PanelId } from "./shell/panels";
 import { useLayer } from "./shell/use-layer";
 import { useArrange } from "./shell/windows/useArrange";
 import { useCoupling, type CouplingHook } from "./shell/windows/useCoupling";
+import { couplingDataOf } from "./shell/windows/coupling";
+import ArtifactWindow from "./shell/artifacts/ArtifactWindow";
+import { ARTIFACTS, OPEN_ARTIFACT_EVENT, artifactOf, scriptsOn } from "./shell/artifacts/artifacts";
 import { runArrangeStep, STEP_DATA } from "./shell/windows/steps";
 import { bindingsOf, paramOfWord, paramWord, paramsOfKind } from "./shell/windows/coupling";
 import { ARRANGE, arrangeWindow } from "./shell/windows/arrange";
@@ -323,6 +326,18 @@ export default function App() {
     for (const [k, v] of Object.entries(vars)) document.documentElement.style.setProperty(k, v);
   }, [config]);
 
+  // W8 (OKNA §7.1): „Otwórz w oknie” on a block of an answer - a window of the kind `artifact` (placement: artifacts.json, preset float)
+  useEffect(() => {
+    const onOpen = (event: Event) => {
+      const a = artifactOf((event as CustomEvent).detail?.artifact);
+      if (!a) return;
+      const r = openArtifactWindow(winRef.current, { ...a }, ARTIFACTS.placement ?? "float", deviceClass, WINDOW_CTX, { ...windowDataRef.current, window_placements: ARTIFACTS.placements ?? {} });
+      if (r.receipt.state === "ok") moveTo(r.state);
+    };
+    window.addEventListener(OPEN_ARTIFACT_EVENT, onOpen);
+    return () => window.removeEventListener(OPEN_ARTIFACT_EVENT, onOpen);
+  }, [moveTo, deviceClass]);
+
   // A message can ask for a panel (the secrets of a storage are entered in Settings): the page does not know the shell, it sends an event.
   useEffect(() => {
     const onRequest = (event: Event) => {
@@ -419,6 +434,7 @@ export default function App() {
   const windowLabel = useCallback((id: string) => {
     const w = winRef.current.layout.windows.find(x => x.id === id);
     const panel = w && typeof w.params?.panel === "string" ? w.params.panel as PanelId : null;
+    if (!panel && w?.kind === "artifact" && !w.title_override) { const a = artifactOf(w.params?.artifact); return t("artifact_window", { format: a?.lang || a?.format || "" }); }
     if (!panel) return w?.kind === "chat" ? t("window_chat") : (w?.title_override ?? w?.kind ?? id);
     const name = PANEL_TEXT_IDS[panel] ? t(PANEL_TEXT_IDS[panel]!) : (PANEL_LABELS[panel] ?? panel);
     // W6: the second window of a panel ("open another one beside") is numbered, so its chain and menu name the right one
@@ -545,7 +561,8 @@ export default function App() {
   }, [win.layout, windowLabel, moveTo, uiLanguage, shellLayouts]);
   // W4: docking and floating (menu ⋯, drag, split grips, keys) and the advisory chips of the arrangement
   // W6: coupling of window parameters (bindings in the layout, values at runtime, chips with the arrangement ones)
-  const coupling = useCoupling(win, winRef, moveTo, uiLanguage, windowLabel);
+  const couplingData = useMemo(() => couplingDataOf(config), [config.coupling_max_iterations]);   // eslint-disable-line react-hooks/exhaustive-deps
+  const coupling = useCoupling(win, winRef, moveTo, uiLanguage, windowLabel, couplingData);
   couplingRef.current = coupling;
   useEffect(() => { if (started && layout) writeSaved(localStorage, { layout, conversationId: activeConvId, windows: windowData.window_restore_last === false ? null : win.layout, own: ownActive, values: coupling.values }); }, [started, layout, activeConvId, win.layout, windowData, ownActive, coupling.values]);
   const arrangedRaw = useArrange(win, winRef, moveTo, uiLanguage, windowLabel, coupling.advisories);
@@ -684,6 +701,7 @@ export default function App() {
   );
   // W3: the docked windows of `siatka` by kind (the dock tree decides where and how big; the kind decides what).
   const docked = (w: Win): ReactNode => {
+    if (w.kind === "artifact") return <ArtifactWindow value={w.params?.artifact} scripts={scriptsOn(config)} />;
     if (w.kind === "conversation_list") return (
       <aside className={`sidebar${sidebarOpen ? "" : " collapsed"}`} data-testid="sidebar" {...inertAttr(activePanel !== null)}>
         <ConversationList key={convRefreshKey} activeConvId={activeConvId} onSelect={onSelectConversation} onCreated={onConversationCreated} onActivity={sidebarActivity} />

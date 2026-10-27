@@ -1,0 +1,99 @@
+{
+  "schema": "loom.artifacts/1",
+  "note": "W8 (OKNA §7.1, UI08): blocks of an assistant's answer shown in a frame with Kopiuj / Otwórz w oknie / Zapisz, opened as a window of the kind `artifact`. Everything here is a preset or an example list (CLAUDE.md): the formats, their fence words, the sniffing patterns, the file extensions, the placement, the minimum size of a block that gets a frame. A new format = an entry here; a fence word nobody listed falls to the format with the fence word \"*\" (code), never to nothing.",
+  "formats": [
+    {
+      "id": "html",
+      "fence": [
+        "html",
+        "htm",
+        "xhtml"
+      ],
+      "sniff": "^\\s*(<!doctype html|<html[\\s>])",
+      "preview": "html_sandbox",
+      "ext": "html",
+      "mime": "text/html"
+    },
+    {
+      "id": "svg",
+      "fence": [
+        "svg"
+      ],
+      "sniff": "^\\s*(<\\?xml[^>]*>\\s*)?<svg[\\s>]",
+      "preview": "html_sandbox",
+      "ext": "svg",
+      "mime": "image/svg+xml"
+    },
+    {
+      "id": "markdown",
+      "fence": [
+        "md",
+        "markdown"
+      ],
+      "preview": "markdown",
+      "ext": "md",
+      "mime": "text/markdown"
+    },
+    {
+      "id": "json",
+      "fence": [
+        "json",
+        "jsonc",
+        "json5"
+      ],
+      "ext": "json",
+      "mime": "application/json"
+    },
+    {
+      "id": "code",
+      "fence": [
+        "*"
+      ],
+      "ext": "txt",
+      "mime": "text/plain"
+    }
+  ],
+  "formats_note": "Open list, checked in order: a fence word listed in `fence` decides; a block without a fence word is sniffed (`sniff`, a regular expression, case-insensitive); the rest is the format with \"*\".",
+  "ext_by_lang": {
+    "python": "py",
+    "py": "py",
+    "javascript": "js",
+    "js": "js",
+    "typescript": "ts",
+    "ts": "ts",
+    "tsx": "tsx",
+    "jsx": "jsx",
+    "c": "c",
+    "cpp": "cpp",
+    "c++": "cpp",
+    "java": "java",
+    "kotlin": "kt",
+    "go": "go",
+    "rust": "rs",
+    "ruby": "rb",
+    "php": "php",
+    "bash": "sh",
+    "sh": "sh",
+    "shell": "sh",
+    "sql": "sql",
+    "css": "css",
+    "yaml": "yaml",
+    "yml": "yaml",
+    "toml": "toml",
+    "xml": "xml",
+    "csv": "csv"
+  },
+  "ext_by_lang_note": "Examples: the file extension „Zapisz” gives a code block by its fence word; an unlisted word gives the format's `ext`.",
+  "min_lines": 1,
+  "min_lines_note": "A fenced block with at least this many lines gets the frame (preset 1 = every block; 0 too). Any number.",
+  "placement": "float",
+  "placement_note": "Where „Otwórz w oknie” opens the window (float | beside | below | tab | shelf, the placements of the window model).",
+  "placements": {
+    "any": {}
+  },
+  "placements_note": "Per device class, like the settings field window_placements but for artifact windows only (that field's preset sends every panel placement to maximize, the drawer of W1; an artifact is not a panel). Example: {\"phone\": {\"float\": \"tab\"}}. Empty = the placement as asked everywhere.",
+  "html_scripts": false,
+  "html_scripts_note": "The preset of the settings field artifact_html_scripts: false = iframe sandbox without scripts. On = sandbox allow-scripts (never allow-same-origin) plus a non-blocking advisory in the window.",
+  "file_stem": "artefakt",
+  "file_stem_note": "The stem of the file name „Zapisz” proposes (then -<n>.<ext>)."
+}

@@ -27,6 +27,13 @@ export interface CouplingData {
 }
 export const COUPLING: CouplingData = couplingFile as CouplingData;
 export interface Values { windows: Record<string, Record<string, unknown>>; channels: Record<string, unknown> }
+/** W8 (W6 gap B): the settings field coupling_max_iterations (settings_fields.pack) overrides the preset of coupling.json; any integer
+ *  ≥ 0 (a number or a numeric text); anything else keeps the preset (the field's own check warns about it). */
+export function couplingDataOf(config: Record<string, unknown> | null | undefined, data: CouplingData = COUPLING): CouplingData {
+  const raw = config?.coupling_max_iterations;
+  const n = typeof raw === "number" ? raw : typeof raw === "string" && raw.trim() !== "" ? Number(raw) : NaN;
+  return Number.isFinite(n) && n >= 0 ? { ...data, max_iterations: Math.floor(n) } : data;
+}
 export const emptyValues = (): Values => ({ windows: {}, channels: {} });
 export const BIND_KEY = "bind";
 const KNOWN_MODES = new Set(["shared", "independent", "linked"]);
