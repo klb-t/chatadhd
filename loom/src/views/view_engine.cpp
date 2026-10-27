@@ -10,6 +10,7 @@
 #include <optional>
 #include <set>
 
+#include "loom/advisory.h"
 #include "loom/db.h"
 #include "loom/log.h"
 #include "loom/util/time.h"
@@ -100,9 +101,10 @@ struct Measure {
 };
 
 struct Encoding {
-  std::string id, channel, measure;
+  std::string id, channel, measure, combine = "replace";
   bool ok = false;
   Json scale = Json::object();
+  Json element = Json::object();  // the declared element (fingerprints of advisories)
   std::map<std::string, Json> values;  // element id -> channel value
 };
 
@@ -571,6 +573,56 @@ struct Evaluator {
   }
 
   // ── encodings: channel <- measure ──
+  // The scale is general and data (G3): t in [0,1] from the measure (domain or the measure's min/max; categories by position), then
+  //   exponent?   t = t^exponent (a monotonic curve; default 1)
+  //   invert?     t = 1 - t (static, as before G3)
+  //   direction?  a number, or {measure, reference?, magnitude?, map?, otherwise?}: a per-element value d from data (the sign of
+  //               measure - reference, or the difference itself with magnitude: true; a categorical measure through map; otherwise
+  //               when the element has no value). Without a reference d < 0 reverses t, d = 0 puts the element in the middle.
+  //   reference?  a point in the output space: out = reference + d * (lo + t * (hi - lo)) — a signed distance from it ("push away
+  //               from 128"); without one out = lo + t * (hi - lo) (range as before G3)
+  //   clamp?      [min, max] on the output (only when asked; the channel's own `valid` interval never changes a value, it advises)
+  // `combine` (on the encoding or in its scale) says how the value joins earlier encodings of the same channel on the same element:
+  // replace (default, as before G3) | add | multiply | min | max | mean; every contribution is kept in channel_parts.
+  struct Direction {
+    bool from_data = false;
+    double fixed = 1.0;
+    std::string measure;
+    double reference = 0.0, otherwise = 1.0;
+    bool magnitude = false;
+    Json map = Json::object();
+  };
+  Direction direction_of(const Json& scale) const {
+    Direction d;
+    if (!scale.contains("direction")) return d;
+    const Json& v = scale.at("direction");
+    if (v.is_number()) d.fixed = v.get<double>();
+    else if (v.is_object()) {
+      d.from_data = true;
+      d.measure = json::get_string(v, "measure");
+      d.reference = json::get_number(v, "reference", 0.0);
+      d.otherwise = json::get_number(v, "otherwise", 1.0);
+      d.magnitude = json::get_bool(v, "magnitude", false);
+      d.map = v.value("map", Json::object());
+    }
+    return d;
+  }
+  // nullopt = the element has no value for the direction (then `otherwise`)
+  std::optional<double> direction_value(const Direction& d, const Measure* dm, const std::string& id) const {
+    if (!d.from_data) return d.fixed;
+    if (!dm) return std::nullopt;
+    const auto it = dm->values.find(id);
+    if (it == dm->values.end()) return std::nullopt;
+    const Json& v = it->second;
+    if (v.is_number()) {
+      const double diff = v.get<double>() - d.reference;
+      return d.magnitude ? diff : (diff > 0 ? 1.0 : diff < 0 ? -1.0 : 0.0);
+    }
+    if (v.is_string() && d.map.is_object() && d.map.contains(v.get<std::string>()) && d.map.at(v.get<std::string>()).is_number())
+      return d.map.at(v.get<std::string>()).get<double>();
+    return std::nullopt;
+  }
+
   void compute_encodings() {
     for (const auto& el : enc_el) {
       Encoding e;
@@ -578,6 +630,8 @@ struct Evaluator {
       e.channel = json::get_string(el, "channel");
       e.measure = json::get_string(el, "measure");
       e.scale = el.value("scale", Json::object());
+      e.element = el;
+      e.combine = json::get_string(el, "combine", json::get_string(e.scale, "combine", "replace"));
       const EffectiveEntry* ch = eng.channels_.find(e.channel);
       if (!ch || ch->disabled) {
         unsupp(e.id, "encoding", "unsupported_channel", Json{{"channel", e.channel}});
@@ -597,6 +651,14 @@ struct Evaluator {
       const double lo = range.is_array() && range.size() > 0 && range[0].is_number() ? range[0].get<double>() : 0.0;
       const double hi = range.is_array() && range.size() > 1 && range[1].is_number() ? range[1].get<double>() : 1.0;
       const bool invert = json::get_bool(e.scale, "invert", false);
+      const double exponent = json::get_number(e.scale, "exponent", 1.0);
+      const bool has_ref = e.scale.contains("reference") && e.scale["reference"].is_number();
+      const double ref = has_ref ? e.scale["reference"].get<double>() : 0.0;
+      const Json clamp = e.scale.value("clamp", Json(nullptr));
+      const bool has_clamp = clamp.is_array() && clamp.size() == 2 && clamp[0].is_number() && clamp[1].is_number();
+      const Direction dir = direction_of(e.scale);
+      const Measure* dm = dir.from_data ? measure(dir.measure) : nullptr;
+      std::size_t dir_missing = 0, dir_total = 0;
       double dmin = m->stats.value("min", 0.0), dmax = m->stats.value("max", 0.0);
       const Json domain = e.scale.value("domain", Json::array());
       if (domain.is_array() && domain.size() == 2 && domain[0].is_number() && domain[1].is_number()) { dmin = domain[0].get<double>(); dmax = domain[1].get<double>(); }
@@ -618,10 +680,153 @@ struct Evaluator {
         } else {
           continue;
         }
+        if (exponent != 1.0 && exponent > 0 && std::isfinite(exponent)) t = std::pow(t, exponent);
         if (invert) t = 1.0 - t;
-        e.values[id] = round6(lo + t * (hi - lo));
+        ++dir_total;
+        std::optional<double> dv = direction_value(dir, dm, id);
+        if (!dv) { ++dir_missing; dv = dir.otherwise; }
+        double out;
+        if (has_ref) {
+          out = ref + *dv * (lo + t * (hi - lo));
+        } else {
+          if (*dv < 0) t = 1.0 - t;
+          else if (*dv == 0) t = 0.5;
+          out = lo + t * (hi - lo);
+        }
+        if (has_clamp) out = std::clamp(out, std::min(clamp[0].get<double>(), clamp[1].get<double>()), std::max(clamp[0].get<double>(), clamp[1].get<double>()));
+        if (!std::isfinite(out)) continue;
+        e.values[id] = round6(out);
       }
+      if (dir.from_data && dir_missing > 0)
+        advise("direction_missing", Json{{"encoding", e.id}, {"measure", dir.measure}, {"missing", dir_missing}, {"total", dir_total}, {"otherwise", dir.otherwise}},
+               Json{{"kind", "encoding"}, {"id", e.id}}, Json::array({el}));
+      static const std::set<std::string> kCombines{"replace", "add", "multiply", "min", "max", "mean"};
+      if (!kCombines.count(e.combine))
+        advise("combine_unknown", Json{{"encoding", e.id}, {"combine", e.combine}}, Json{{"kind", "encoding"}, {"id", e.id}}, Json::array({el}));
       encs.push_back(std::move(e));
+    }
+  }
+
+  // ── composition of encodings on one element: every encoding is applied, in the declared order; the parts are kept ──
+  static Json combine_values(const Json& prev, const Json& next, const std::string& op, const Json& parts) {
+    if (!prev.is_number() || !next.is_number() || op == "replace") return next;
+    const double a = prev.get<double>(), b = next.get<double>();
+    if (op == "add") return round6(a + b);
+    if (op == "multiply") return round6(a * b);
+    if (op == "min") return std::min(a, b);
+    if (op == "max") return std::max(a, b);
+    if (op == "mean") {
+      double sum = 0;
+      std::size_t n = 0;
+      for (const auto& p : parts)
+        if (p.contains("value") && p.at("value").is_number()) { sum += p.at("value").get<double>(); ++n; }
+      return n ? Json(round6(sum / static_cast<double>(n))) : next;
+    }
+    return next;  // an unknown combination replaces (combine_unknown advises)
+  }
+
+  // ── advisories (R58): non-blocking, with evidence and the remembered answer (loom/advisory.h) ──
+  Json advisories = Json::array();
+  Json advisory_preset = Json::object();
+  std::optional<advisory::AckStore> acks;
+  void load_advisory_policy() {
+    for (const auto* entry : eng.rules_.active())
+      if (json::get_string(entry->value, "kind") == "advisory_policy")
+        for (auto it = entry->value.begin(); it != entry->value.end(); ++it)
+          if (it.key() != "kind" && it.key() != "meaning") advisory_preset[it.key()] = it.value();
+    for (const auto& r : rules_el) {
+      const Json a = r.value("advisories", Json::object());
+      if (a.is_object())
+        for (auto it = a.begin(); it != a.end(); ++it) advisory_preset[it.key()] = it.value();
+    }
+    acks = advisory::AckStore::open(ctx.root);
+    for (const auto& i : acks->issues()) issue("advisory_ack_unreadable", Json{{"path", json::get_string(i, "path")}, {"error", json::get_string(i, "error")}});
+  }
+  void advise(const std::string& code, const Json& params, const Json& subject, const Json& configuration) {
+    Json rec{{"schema", "loom.advisory/1"}, {"code", code}, {"level", "advisory"}, {"text", say(code, params)}, {"params", params}, {"subject", subject},
+             {"evidence", params}, {"ask", Json{{"question", say("advisory_question")}}}};
+    const std::string fp = advisory::fingerprint(Json{{"code", code}, {"configuration", configuration}});
+    if (!acks) acks = advisory::AckStore::open(ctx.root);
+    advisories.push_back(acks->annotate(std::move(rec), fp, advisory_preset, json::get_string(request, "now")));
+  }
+  Json enc_elements(const std::vector<std::string>& ids) const {
+    Json out = Json::array();
+    for (const auto& e : encs)
+      if (std::find(ids.begin(), ids.end(), e.id) != ids.end()) out.push_back(e.element);
+    return out;
+  }
+  // configuration advisories (on the declared encodings) and result advisories (on the composed channels of the visible elements)
+  void check_advisories(const Json& elements) {
+    std::vector<const Encoding*> ok;
+    for (const auto& e : encs)
+      if (e.ok) ok.push_back(&e);
+    std::set<std::string> dup_reported;
+    for (std::size_t i = 0; i < ok.size(); ++i)
+      for (std::size_t j = i + 1; j < ok.size(); ++j) {
+        const Encoding& a = *ok[i];
+        const Encoding& b = *ok[j];
+        if (a.channel != b.channel) continue;
+        if (a.measure == b.measure && a.scale == b.scale && a.combine == b.combine) {
+          dup_reported.insert(a.id + "|" + b.id);
+          advise("duplicate_encoding", Json{{"channel", a.channel}, {"measure", a.measure}, {"encodings", Json::array({a.id, b.id})}},
+                 Json{{"kind", "encoding"}, {"id", b.id}, {"channel", a.channel}}, enc_elements({a.id, b.id}));
+        }
+      }
+    for (std::size_t i = 0; i < ok.size(); ++i) {
+      // the next encoding of the same channel that replaces it hides it
+      for (std::size_t j = i + 1; j < ok.size(); ++j) {
+        if (ok[j]->channel != ok[i]->channel) continue;
+        if (ok[j]->combine == "replace" && !dup_reported.count(ok[i]->id + "|" + ok[j]->id))
+          advise("encoding_overridden", Json{{"channel", ok[i]->channel}, {"hidden", ok[i]->id}, {"by", ok[j]->id}},
+                 Json{{"kind", "encoding"}, {"id", ok[i]->id}, {"channel", ok[i]->channel}}, enc_elements({ok[i]->id, ok[j]->id}));
+        break;
+      }
+    }
+    // per channel: the composed values on the visible elements
+    std::vector<std::string> channels;
+    std::map<std::string, std::vector<std::string>> by_channel;
+    for (const auto* e : ok) {
+      if (!by_channel.count(e->channel)) channels.push_back(e->channel);
+      by_channel[e->channel].push_back(e->id);
+    }
+    const double share = json::get_number(advisory_preset, "degenerate_share", 1.0);
+    for (const auto& c : channels) {
+      const EffectiveEntry* def = eng.channels_.find(c);
+      if (!def) continue;
+      std::vector<Json> vals;
+      for (const auto& el : elements) {
+        const Json chs = el.value("channels", Json::object());
+        if (chs.contains(c)) vals.push_back(chs.at(c));
+      }
+      if (vals.empty()) continue;
+      const Json encs_json = Json(by_channel[c]);
+      const Json cfg = enc_elements(by_channel[c]);
+      const Json subject{{"kind", "channel"}, {"id", c}, {"encodings", encs_json}};
+      const Json inv = def->value.value("invisible_at_or_below", Json(nullptr));
+      if (inv.is_number()) {
+        std::size_t n = 0;
+        for (const auto& v : vals) n += v.is_number() && v.get<double>() <= inv.get<double>();
+        if (n > 0 && static_cast<double>(n) >= share * static_cast<double>(vals.size()))
+          advise("nothing_visible", Json{{"channel", c}, {"invisible", n}, {"total", vals.size()}, {"threshold", inv}, {"encodings", encs_json}}, subject, cfg);
+      }
+      if (vals.size() >= 2 && std::all_of(vals.begin(), vals.end(), [&](const Json& v) { return v == vals.front(); }))
+        advise("marks_identical", Json{{"channel", c}, {"value", vals.front()}, {"total", vals.size()}, {"encodings", encs_json}}, subject, cfg);
+      const Json valid = def->value.value("valid", Json(nullptr));
+      if (valid.is_array() && valid.size() == 2 && valid[0].is_number() && valid[1].is_number()) {
+        std::size_t out = 0;
+        double mn = 0, mx = 0;
+        bool first = true;
+        for (const auto& v : vals) {
+          if (!v.is_number()) continue;
+          const double x = v.get<double>();
+          if (first) { mn = mx = x; first = false; }
+          mn = std::min(mn, x);
+          mx = std::max(mx, x);
+          out += x < valid[0].get<double>() || x > valid[1].get<double>();
+        }
+        if (out > 0)
+          advise("values_outside_valid", Json{{"channel", c}, {"outside", out}, {"total", vals.size()}, {"valid", valid}, {"min", mn}, {"max", mx}, {"encodings", encs_json}}, subject, cfg);
+      }
     }
   }
 
@@ -973,6 +1178,7 @@ struct Evaluator {
     // every measure is evaluated (the report lists them all), in the declared order; the ones others need come first by recursion
     for (const auto& m : meas_el) measure(json::get_string(m, "id"));
     compute_coordinates();
+    load_advisory_policy();
     compute_encodings();
     Json enc_report = encodings_report();
 
@@ -995,10 +1201,20 @@ struct Evaluator {
       const auto& hit = sector_of(id);
       if (hit.valid) el["sector"] = hit.primary;
       el["coords"] = coords.count(id) ? coords[id] : Json::object();
-      Json ch = Json::object();
-      for (const auto& e : encs)
-        if (e.ok && e.values.count(id)) ch[e.channel] = e.values.at(id);
+      Json ch = Json::object(), parts = Json::object();
+      for (const auto& e : encs) {
+        if (!e.ok || !e.values.count(id)) continue;
+        const Json& v = e.values.at(id);
+        if (!parts.contains(e.channel)) parts[e.channel] = Json::array();
+        parts[e.channel].push_back(Json{{"encoding", e.id}, {"value", v}, {"combine", e.combine}});
+        const Json prev = ch.contains(e.channel) ? ch[e.channel] : Json(nullptr);
+        ch[e.channel] = prev.is_null() ? v : combine_values(prev, v, e.combine, parts[e.channel]);
+      }
       el["channels"] = ch;
+      Json multi = Json::object();
+      for (auto it = parts.begin(); it != parts.end(); ++it)
+        if (it.value().size() > 1) multi[it.key()] = it.value();
+      if (!multi.empty()) el["channel_parts"] = multi;
       Json from = Json::array();
       for (const auto& s : srcs)
         if (s.ok && s.hops.count(id)) from.push_back(s.id);
@@ -1013,6 +1229,7 @@ struct Evaluator {
           if (!visible.count(a) || !visible.count(b)) continue;
           edges.push_back(Json{{"src", a}, {"dst", b}, {"type", json::get_string(e, "type")}, {"kind", json::get_string(e, "kind")}, {"source", s.id}});
         }
+    check_advisories(elements);
     Json groups = compose_groups(visible);
     for (auto& [gid, g] : collapsed) groups.push_back(g);
     Json stats = Json::object();
@@ -1028,7 +1245,7 @@ struct Evaluator {
     const Json meta = decl.value("_meta", Json::object());
     return Json{{"schema", "loom.view_model/1"}, {"declaration", meta}, {"focus", focus}, {"sources", src_report}, {"elements", elements}, {"edges", edges},
                 {"groups", groups}, {"measure_stats", stats}, {"coordinate_systems", coord_report}, {"encodings", enc_report}, {"unsupported", unsupported},
-                {"budget", budget}, {"issues", issues}};
+                {"budget", budget}, {"issues", issues}, {"advisories", advisories}};
   }
 };
 

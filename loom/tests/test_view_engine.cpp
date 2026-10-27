@@ -82,6 +82,15 @@ Json channels_by_label(const Json& model) {
   return out;
 }
 
+// Element order follows the (random) node ids; compare label by label.
+void check_same_by_label(const Json& got, const Json& want) {
+  CHECK(got.size() == want.size());
+  for (auto it = want.begin(); it != want.end(); ++it) {
+    REQUIRE_MESSAGE(got.contains(it.key()), it.key());
+    CHECK_MESSAGE(got.at(it.key()) == it.value(), it.key());
+  }
+}
+
 // The scale specs that existed before G3 (range / domain / type / invert): their output is pinned by a golden (G3 must keep it identical).
 Json legacy_scale_declaration() {
   return history(Json::array({el("kindm", "measure", {{"measure", "node_kind"}}),
@@ -377,8 +386,8 @@ TEST_SUITE("view_engine") {
     const Json golden = Json::parse(R"GOLDEN({"legacy":{"b2":{"size":4.0,"alpha":0.84,"lightness":0.9,"saturation":1.0,"hue":0.0,"badge":"1","blur":3.0},"v3":{"size":16.0,"alpha":0.733333,"lightness":0.5,"saturation":1.0,"hue":0.0,"badge":"1","blur":3.0},"v1":{"size":10.0,"alpha":0.2,"lightness":0.5,"saturation":0.75,"hue":0.0,"badge":"1","blur":3.0},"b1":{"size":16.0,"alpha":0.573333,"lightness":0.5,"saturation":1.0,"hue":0.0,"badge":"1","blur":3.0},"v2":{"size":28.0,"alpha":0.466667,"lightness":0.1,"saturation":1.0,"hue":0.0,"badge":"0","blur":3.0},"v4":{"size":4.0,"alpha":1.0,"lightness":0.9,"saturation":1.0,"hue":0.0,"badge":"1","blur":3.0}},"history_cone":{"b2":{"hue":225.0,"saturation":1.0,"lightness":0.7,"size":4.0,"badge":"version"},"v3":{"hue":225.0,"saturation":1.0,"lightness":0.625,"size":12.0,"badge":"version"},"caller()":{"hue":0.0,"lightness":0.83125,"size":5.333332,"badge":"function"},"v1":{"hue":225.0,"saturation":1.0,"lightness":0.25,"size":8.0,"badge":"version"},"b1":{"hue":225.0,"saturation":1.0,"lightness":0.5125,"size":12.0,"badge":"version"},"be fast":{"hue":150.0,"lightness":0.85,"size":4.0,"badge":"goal"},"v2":{"hue":75.0,"saturation":0.15,"lightness":0.4375,"size":28.0,"badge":"version"},"v4":{"hue":225.0,"saturation":1.0,"lightness":0.8125,"size":4.0,"badge":"version"}},"age_lanes":{"b2":{"size":4.0},"v3":{"size":16.0},"v1":{"size":10.0},"b1":{"size":16.0},"v2":{"size":28.0},"v4":{"size":4.0}}})GOLDEN");
     Fixture f;
     auto eng = unwrap(views::ViewEngine::open(f.td.path()));
-    CHECK(channels_by_label(unwrap(eng.evaluate_declaration(f.ctx(), legacy_scale_declaration(), Json{{"focus", f.v2}}))) == golden["legacy"]);
-    CHECK(channels_by_label(unwrap(eng.evaluate(f.ctx(), "history_cone", Json{{"focus", f.v2}}))) == golden["history_cone"]);
-    CHECK(channels_by_label(unwrap(eng.evaluate(f.ctx(), "age_lanes", Json{{"focus", f.v2}}))) == golden["age_lanes"]);
+    check_same_by_label(channels_by_label(unwrap(eng.evaluate_declaration(f.ctx(), legacy_scale_declaration(), Json{{"focus", f.v2}}))), golden["legacy"]);
+    check_same_by_label(channels_by_label(unwrap(eng.evaluate(f.ctx(), "history_cone", Json{{"focus", f.v2}}))), golden["history_cone"]);
+    check_same_by_label(channels_by_label(unwrap(eng.evaluate(f.ctx(), "age_lanes", Json{{"focus", f.v2}}))), golden["age_lanes"]);
   }
 }

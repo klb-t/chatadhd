@@ -1995,6 +1995,10 @@
         "range": [
           0,
           1
+        ],
+        "valid": [
+          0,
+          1
         ]
       },
       "depth": {
@@ -2004,6 +2008,10 @@
         },
         "type": "continuous",
         "range": [
+          0,
+          1
+        ],
+        "valid": [
           0,
           1
         ]
@@ -2028,6 +2036,10 @@
         "range": [
           0.15,
           1
+        ],
+        "valid": [
+          0,
+          1
         ]
       },
       "lightness": {
@@ -2039,6 +2051,10 @@
         "range": [
           0.25,
           0.85
+        ],
+        "valid": [
+          0,
+          1
         ]
       },
       "alpha": {
@@ -2049,6 +2065,11 @@
         "type": "continuous",
         "range": [
           0.2,
+          1
+        ],
+        "invisible_at_or_below": 0,
+        "valid": [
+          0,
           1
         ]
       },
@@ -2061,7 +2082,8 @@
         "range": [
           4,
           28
-        ]
+        ],
+        "invisible_at_or_below": 0
       },
       "blur": {
         "meaning": {
@@ -2080,6 +2102,51 @@
           "pl": "Znacznik z krótkim tekstem."
         },
         "type": "categorical"
+      },
+      "red": {
+        "meaning": {
+          "en": "Red component of the colour (0-255).",
+          "pl": "Składowa czerwona barwy (0-255)."
+        },
+        "type": "continuous",
+        "range": [
+          0,
+          255
+        ],
+        "valid": [
+          0,
+          255
+        ]
+      },
+      "green": {
+        "meaning": {
+          "en": "Green component of the colour (0-255).",
+          "pl": "Składowa zielona barwy (0-255)."
+        },
+        "type": "continuous",
+        "range": [
+          0,
+          255
+        ],
+        "valid": [
+          0,
+          255
+        ]
+      },
+      "blue": {
+        "meaning": {
+          "en": "Blue component of the colour (0-255).",
+          "pl": "Składowa niebieska barwy (0-255)."
+        },
+        "type": "continuous",
+        "range": [
+          0,
+          255
+        ],
+        "valid": [
+          0,
+          255
+        ]
       }
     },
     "composition_kinds": {
@@ -2351,8 +2418,71 @@
           "budget_applied": {
             "en": "{collapsed} elements were collapsed into group nodes to stay within the budget of {max} nodes.",
             "pl": "{collapsed} elementów zwinięto w węzły grupowe, by zmieścić się w budżecie {max} węzłów."
+          },
+          "advisory_question": {
+            "en": "Is this intended?",
+            "pl": "Czy tak ma być?"
+          },
+          "nothing_visible": {
+            "en": "Nothing is visible on the channel '{channel}': {invisible} of {total} elements are at or below {threshold} (encodings {encodings}).",
+            "pl": "Na kanale '{channel}' nic nie widać: {invisible} z {total} elementów ma wartość nie większą niż {threshold} (kodowania {encodings})."
+          },
+          "marks_identical": {
+            "en": "All {total} elements get the same value {value} on the channel '{channel}', so it tells them apart by nothing (encodings {encodings}).",
+            "pl": "Wszystkie {total} elementy mają na kanale '{channel}' tę samą wartość {value}, więc niczym ich nie rozróżnia (kodowania {encodings})."
+          },
+          "values_outside_valid": {
+            "en": "{outside} of {total} values on the channel '{channel}' fall outside {valid} (from {min} to {max}); a renderer may clip them (encodings {encodings}).",
+            "pl": "{outside} z {total} wartości na kanale '{channel}' wypada poza {valid} (od {min} do {max}); renderer może je przyciąć (kodowania {encodings})."
+          },
+          "duplicate_encoding": {
+            "en": "The encodings {encodings} put the same measure '{measure}' on the channel '{channel}' with the same scale: both are applied, the second adds nothing.",
+            "pl": "Kodowania {encodings} kładą tę samą miarę '{measure}' na kanał '{channel}' z tą samą skalą: obie są zastosowane, druga nic nie dodaje."
+          },
+          "encoding_overridden": {
+            "en": "The encoding '{hidden}' on the channel '{channel}' is replaced by '{by}' (combine: replace); its values are kept in channel_parts but not shown.",
+            "pl": "Kodowanie '{hidden}' na kanale '{channel}' jest zastąpione przez '{by}' (combine: replace); jego wartości są w channel_parts, ale nie są pokazane."
+          },
+          "direction_missing": {
+            "en": "The direction of the encoding '{encoding}' comes from '{measure}', which has no value for {missing} of {total} elements; they use {otherwise}.",
+            "pl": "Kierunek kodowania '{encoding}' wynika z '{measure}', które nie ma wartości dla {missing} z {total} elementów; użyto {otherwise}."
+          },
+          "combine_unknown": {
+            "en": "The encoding '{encoding}' asks for the combination '{combine}', which the engine does not know; it replaces the earlier value (the request is kept).",
+            "pl": "Kodowanie '{encoding}' prosi o złożenie '{combine}', którego silnik nie zna; zastępuje wcześniejszą wartość (prośba zostaje zachowana)."
+          },
+          "advisory_ack_unreadable": {
+            "en": "The remembered advisory answers ({path}) cannot be read: {error}; every advisory asks again.",
+            "pl": "Nie da się odczytać zapamiętanych odpowiedzi na podpowiedzi ({path}): {error}; każda podpowiedź pyta znowu."
           }
         }
+      },
+      "advisory_policy": {
+        "kind": "advisory_policy",
+        "meaning": {
+          "en": "How the view engine asks about a configuration that looks of little use or gives a degenerate result (a preset, never a rule; R58). ask: false = never ask; remember_days: null = a \"don't ask\" answer holds forever, a number = it expires after that many days (0 = always ask); degenerate_share: the share of elements that must be invisible for nothing_visible (1 = all); codes: the same keys per advisory code. The person's answers and own policy live in <data_dir>/advisory_ack.json (loom/advisory.h) and win over this preset; a view can override it in its rules element (advisories).",
+          "pl": "Jak silnik widoku pyta o konfigurację, która wygląda na mało użyteczną albo daje zdegenerowany wynik (preset, nigdy reguła; R58). ask: false = nigdy nie pytaj; remember_days: null = odpowiedź „nie pytaj” obowiązuje na zawsze, liczba = wygasa po tylu dniach (0 = pytaj zawsze); degenerate_share: jaka część elementów musi być niewidoczna, by zgłosić nothing_visible (1 = wszystkie); codes: te same klucze dla kodu podpowiedzi. Odpowiedzi osoby i jej własna polityka są w <data_dir>/advisory_ack.json (loom/advisory.h) i wygrywają z tym presetem; widok może go nadpisać w elemencie rules (advisories)."
+        },
+        "ask": true,
+        "remember_days": null,
+        "degenerate_share": 1.0,
+        "choices": [
+          {
+            "id": "keep",
+            "label": {
+              "en": "Keep it",
+              "pl": "Zostaw"
+            }
+          },
+          {
+            "id": "dont_ask",
+            "label": {
+              "en": "Keep it, don't ask again",
+              "pl": "Zostaw, nie pytaj więcej"
+            }
+          }
+        ],
+        "codes": {}
       }
     },
     "view_declarations": {
