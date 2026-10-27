@@ -40,6 +40,13 @@ ACTIONS = {
     'layout.delete': ('Delete a layout', 'Delete a named layout of the person (the shipped layouts stay). Asks first: a proposal and a yes.', 'Usuwa zapisany układ.', 'Usuń układ', ['delete the layout'], ['usuń układ', 'usun uklad'], [p('name', 'The name of the layout.', 'Nazwa układu.', True)], True),
 }
 
+RESULT = {
+    'window.bind': {'en': 'The parameter is bound.', 'pl': 'Parametr jest powiązany.'},
+    'window.unbind': {'en': 'The parameter is unbound.', 'pl': 'Parametr jest rozwiązany.'},
+    'layout.rename': {'en': 'The layout is renamed.', 'pl': 'Nazwa układu jest zmieniona.'},
+    'layout.delete': {'en': 'The layout is deleted.', 'pl': 'Układ jest usunięty.'},
+}
+
 def cmd(cid, action, lang, body, args, original=None, setv=None):
     c = {'id': cid, 'action': action, 'lang': lang, 'regex': P + body + S, 'args': args, 'original': original if original is not None else list(args)}
     if setv: c['set'] = setv
@@ -128,7 +135,7 @@ def main():
     tpl = acts['window.open']
     for aid, (title, desc, why, label, ph_en, ph_pl, params, irrev) in ACTIONS.items():
         e = json.loads(json.dumps(tpl))
-        e.pop('result_text', None)
+        e['result_text'] = RESULT.get(aid, {'en': 'The windows are arranged.', 'pl': 'Okna są ułożone.'})  # test_chat_route: both languages
         e.update({'id': aid, 'planned_reason': REASON, 'title': title, 'description': desc, 'why': {'pl': why}, 'labels': {'pl': label},
                   'phrases': {'en': ph_en, 'pl': ph_pl}, 'params': params})
         e['effects'] = dict(e['effects'], irreversible=irrev)

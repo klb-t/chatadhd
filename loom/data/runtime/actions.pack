@@ -16602,7 +16602,11 @@
               "pl": "Okno: rodzaj albo słowo, które go nazywa (graf, ustawienia, czat ...); puste = okno z fokusem."
             }
           }
-        ]
+        ],
+        "result_text": {
+          "en": "The windows are arranged.",
+          "pl": "Okna są ułożone."
+        }
       },
       "window.restore": {
         "id": "window.restore",
@@ -16664,7 +16668,11 @@
               "pl": "Okno: rodzaj albo słowo, które go nazywa (graf, ustawienia, czat ...); puste = okno z fokusem."
             }
           }
-        ]
+        ],
+        "result_text": {
+          "en": "The windows are arranged.",
+          "pl": "Okna są ułożone."
+        }
       },
       "window.minimize": {
         "id": "window.minimize",
@@ -16727,7 +16735,11 @@
               "pl": "Okno: rodzaj albo słowo, które go nazywa (graf, ustawienia, czat ...); puste = okno z fokusem."
             }
           }
-        ]
+        ],
+        "result_text": {
+          "en": "The windows are arranged.",
+          "pl": "Okna są ułożone."
+        }
       },
       "window.dock": {
         "id": "window.dock",
@@ -16797,7 +16809,11 @@
               "pl": "Strona: słowo takie jak lewa, prawa, góra, dół (klient mapuje słowa przez swoje dane)."
             }
           }
-        ]
+        ],
+        "result_text": {
+          "en": "The windows are arranged.",
+          "pl": "Okna są ułożone."
+        }
       },
       "window.float": {
         "id": "window.float",
@@ -16860,7 +16876,11 @@
               "pl": "Okno: rodzaj albo słowo, które go nazywa (graf, ustawienia, czat ...); puste = okno z fokusem."
             }
           }
-        ]
+        ],
+        "result_text": {
+          "en": "The windows are arranged.",
+          "pl": "Okna są ułożone."
+        }
       },
       "window.tab": {
         "id": "window.tab",
@@ -16921,7 +16941,11 @@
               "pl": "Okno: rodzaj albo słowo, które go nazywa (graf, ustawienia, czat ...); puste = okno z fokusem."
             }
           }
-        ]
+        ],
+        "result_text": {
+          "en": "The windows are arranged.",
+          "pl": "Okna są ułożone."
+        }
       },
       "window.move": {
         "id": "window.move",
@@ -17001,7 +17025,11 @@
               "pl": "Piksele (puste = krok z presetu)."
             }
           }
-        ]
+        ],
+        "result_text": {
+          "en": "The windows are arranged.",
+          "pl": "Okna są ułożone."
+        }
       },
       "window.resize": {
         "id": "window.resize",
@@ -17090,7 +17118,11 @@
               "pl": "Słowo takie jak powiększ, zmniejsz, poszerz, zwęź."
             }
           }
-        ]
+        ],
+        "result_text": {
+          "en": "The windows are arranged.",
+          "pl": "Okna są ułożone."
+        }
       },
       "window.bind": {
         "id": "window.bind",
@@ -17164,7 +17196,11 @@
               "pl": "Okno: rodzaj albo słowo, które go nazywa (graf, ustawienia, czat ...); puste = okno z fokusem."
             }
           }
-        ]
+        ],
+        "result_text": {
+          "en": "The parameter is bound.",
+          "pl": "Parametr jest powiązany."
+        }
       },
       "window.unbind": {
         "id": "window.unbind",
@@ -17238,7 +17274,11 @@
               "pl": "Okno: rodzaj albo słowo, które go nazywa (graf, ustawienia, czat ...); puste = okno z fokusem."
             }
           }
-        ]
+        ],
+        "result_text": {
+          "en": "The parameter is unbound.",
+          "pl": "Parametr jest rozwiązany."
+        }
       },
       "layout.rename": {
         "id": "layout.rename",
@@ -17309,7 +17349,11 @@
               "pl": "Nowa nazwa."
             }
           }
-        ]
+        ],
+        "result_text": {
+          "en": "The layout is renamed.",
+          "pl": "Nazwa układu jest zmieniona."
+        }
       },
       "layout.delete": {
         "id": "layout.delete",
@@ -17371,7 +17415,11 @@
               "pl": "Nazwa układu."
             }
           }
-        ]
+        ],
+        "result_text": {
+          "en": "The layout is deleted.",
+          "pl": "Układ jest usunięty."
+        }
       }
     }
   },
