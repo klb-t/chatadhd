@@ -525,10 +525,7 @@ TEST_SUITE("settings_fields") {
     CHECK(unwrap(check_config_patch(Json{{"chat_context_order", "stability"}})).empty());  // M1-D2 put the order into the data: no longer planned
     CHECK_FALSE(check_config_patch(Json{{"chat_context_order", "no_such_order"}}));
     CHECK_FALSE(check_config_patch(Json{{"_config_version", 9}}));
-    const Json windows = unwrap(check_config_patch(Json{{"layout_mode", "windows"}}));
-    REQUIRE(windows.size() == 1);
-    CHECK(windows[0]["key"] == "layout_mode");
-    CHECK(windows[0]["status"] == "planned");
+    CHECK(unwrap(check_config_patch(Json{{"layout_mode", "windows"}})).empty());  // W3 (OKNA §3.1): windows = the last own layout, no longer planned
     CHECK(unwrap(check_config_patch(Json{{"layout_mode", "tiles"}}))[0]["status"] == "unlisted");
     CHECK(unwrap(check_config_patch(Json{{"layout_mode", "views_grid"}, {"theme", "anything"}, {"not_described", 1}})).empty());
     CHECK(unwrap(check_config_patch(Json{{"chat_context_order", nullptr}})).empty());  // clearing = back to the preset
