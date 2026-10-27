@@ -189,6 +189,7 @@ export default function App() {
         // the last session's windows of the same own layout are newer than the saved layout itself
         const recent = resolved.source === "last_saved" && wd.window_restore_last !== false && last?.own === own.id && last.windows && last.windows.id === own.layout.id ? last.windows : own.layout;
         setWin(createState(recent, JOURNAL_LIMIT));
+        if (recent === last?.windows) couplingRef.current?.restore(last?.values, recent);
         setOwnActive(own.id);
       } else setLayout(resolved.layout ?? layoutOfMode(cfg.layout_mode));
       // W2: the last session's windows come back with its layout (window_layout_last; preset window_restore_last, false = the layout only)
@@ -200,6 +201,7 @@ export default function App() {
         const presetFront = LAYOUTS[saved.id]?.windows.find(w => w.mode === "maximized")?.id;
         restored = restoreFront(restored, presetFront, wd.window_restore_front ?? "layout");
         setWin(restored);
+        couplingRef.current?.restore(last?.values, restored.layout);   // W8: zoom/pan… as they were (wait for the first read)
       }
       // W5: the journal of layout changes of this device class (window_layout_journal) survives a reload
       const j = readWriterJournal(cfg.window_layout_journal, cls, journalWhoRef.current);
@@ -211,7 +213,6 @@ export default function App() {
     })();
     return () => { live = false; };
   }, []);
-  useEffect(() => { if (started && layout) writeSaved(localStorage, { layout, conversationId: activeConvId, windows: windowData.window_restore_last === false ? null : win.layout, own: ownActive }); }, [started, layout, activeConvId, win.layout, windowData, ownActive]);
 
   // W2 (OKNA §4.2): the journal of visits. A change of the window in front made by a window step or the switcher is a visit; each visit
   // above the first is one layer of the LayerStack (`visit:<n>`), so Back walks the windows back (window_back: visits | to_chat |
@@ -546,6 +547,7 @@ export default function App() {
   // W6: coupling of window parameters (bindings in the layout, values at runtime, chips with the arrangement ones)
   const coupling = useCoupling(win, winRef, moveTo, uiLanguage, windowLabel);
   couplingRef.current = coupling;
+  useEffect(() => { if (started && layout) writeSaved(localStorage, { layout, conversationId: activeConvId, windows: windowData.window_restore_last === false ? null : win.layout, own: ownActive, values: coupling.values }); }, [started, layout, activeConvId, win.layout, windowData, ownActive, coupling.values]);
   const arrangedRaw = useArrange(win, winRef, moveTo, uiLanguage, windowLabel, coupling.advisories);
   const arranged = useMemo(() => ({ ...arrangedRaw, handlers: { ...arrangedRaw.handlers, extraMenu: coupling.extraMenu, onExtra: coupling.onExtra, chain: coupling.chain, onChainTap: coupling.cycleChain } }), [arrangedRaw, coupling]);
   const [panelMenu, setPanelMenu] = useState(false);

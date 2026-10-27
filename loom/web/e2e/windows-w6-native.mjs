@@ -126,6 +126,19 @@ try {
     await shot("w6-3-unbound");
   });
 
+  await step("5b W8: the zoom of each map survives a reload with the layout (restored values wait for the first read)", async () => {
+    await graphs.nth(0).getByTestId("nav-map-zoom-in").click();
+    await graphs.nth(1).getByTestId("nav-map-zoom-out").click(); await graphs.nth(1).getByTestId("nav-map-zoom-out").click();
+    await sleep(300);
+    const z0 = await zoomOf(0), z1 = await zoomOf(1);
+    assert.ok(Math.abs(z0 - 1) > 0.01 && Math.abs(z1 - 1) > 0.01 && Math.abs(z0 - z1) > 0.01, `two different non-home zooms ${z0} ${z1}`);
+    await page.reload();
+    await page.getByTestId("chat-input").waitFor();
+    await page.waitForFunction(() => document.querySelectorAll('[data-testid="window-navigator"] [data-testid="nav-map"]').length === 2, null, { timeout: 15000 });
+    await sleep(1500);
+    near(await zoomOf(0), z0, "first map after reload"); near(await zoomOf(1), z1, "second map after reload");
+  });
+
   await step("6 no page errors", async () => { assert.deepEqual(errors, []); });
 } catch (e) {
   failed = true;

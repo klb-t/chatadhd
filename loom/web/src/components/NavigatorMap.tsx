@@ -83,7 +83,13 @@ export default function NavigatorMap({ result, open, t, language = "pl", mapping
   }, [panParam.value]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => { panParam.set({ x: cam.panX, y: cam.panY }); }, [cam.panX, cam.panY]); // eslint-disable-line react-hooks/exhaustive-deps
   // A new level: the camera goes home and the selection is dropped (the rows are different ones).
-  useEffect(() => { setCam(CAMERA_HOME); setSelected(null); }, [result.focus.address]);
+  // W8: not at mount - the camera starts home anyway, and a value the window restored (zoom/pan after a reload) must win over it.
+  const shownAddress = useRef(result.focus.address);
+  useEffect(() => {
+    if (shownAddress.current === result.focus.address) return;
+    shownAddress.current = result.focus.address;
+    setCam(CAMERA_HOME); setSelected(null);
+  }, [result.focus.address]);
 
   // The visible rectangle of the open map goes to the shell whenever it can change (fold, scroll, resize, a new level).
   useEffect(() => {
