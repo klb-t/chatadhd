@@ -219,3 +219,18 @@ test('default behaviour unchanged: the shipped layouts carry no bindings, nothin
     assert.deepEqual(r.changed, [`w:${w.id}:zoom`]);
   }
 });
+
+test('bindings persist with a named layout through the W5b merge patch; an unbind written the same way removes them (windows are an array: replaced whole)', async () => {
+  const N = await loader.load('src/shell/windows/named.ts');
+  const MP = await loader.load('src/api/merge-patch.ts');
+  let { s, g1, g2 } = twoGraphs();
+  s = C.bindParam(s, g2, 'zoom', scale2(g1));
+  const saved = N.saveNamed([], 'Dwa grafy', s.layout, '2026-10-27T00:00:00Z', 'desktop');
+  let stored = MP.mergePatch({}, N.namedPatch({}, [], saved.list));
+  const back = N.readNamed(stored)[0].layout;
+  assert.deepEqual(C.bindingsOf(back.windows.find(w => w.id === g2)).zoom, scale2(g1));
+  const un = C.unbindParam({ layout: back, past: [], future: [], limit: 50 }, g2, 'zoom');
+  const again = N.saveNamed(saved.list, 'Dwa grafy', un.layout, '2026-10-27T00:01:00Z', 'desktop');
+  stored = MP.mergePatch(stored, N.namedPatch(stored, saved.list, again.list));
+  assert.deepEqual(C.bindingsOf(N.readNamed(stored)[0].layout.windows.find(w => w.id === g2)), {});
+});
