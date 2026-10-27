@@ -19,7 +19,8 @@ test('siatka: list (own width) | chat over knowledge; knowledge drops out while 
   assert.equal(D.sideFlex(all.a, 'a', all.ratio, all.b), '0 0 auto', 'the list keeps its CSS width as in the former Workshop');
   assert.equal(D.sideFlex(all.b.a, 'a', all.b.ratio, all.b.b), '0 0 32.0000%');
   const closed = D.dockView(l, w => w.kind !== 'knowledge');
-  assert.equal(closed.b.type, 'leaf'); assert.equal(closed.b.active.kind, 'chat');
+  assert.equal(closed.b.type, 'split', 'the shape stays (no remount of the chat when knowledge opens/closes)');
+  assert.equal(closed.b.b.hidden, true); assert.equal(D.sideFlex(closed.b.a, 'a', closed.b.ratio, closed.b.b), '1 1 0', 'the chat takes the column');
   assert.deepEqual(D.dockedWindows(closed).map(w => w.kind), ['conversation_list', 'chat']);
   assert.equal(D.dockView(l, () => false), null, 'nothing shown: nothing to draw (the frame stays)');
   const raw = (layouts.default ?? layouts).layouts.siatka;
@@ -63,7 +64,7 @@ test('generative: any tree, ratio and shown set is drawable and loses no shown w
     const order = t => t.leaf !== undefined ? expected.push(...leaves[t.leaf].windows.filter(id => shown(windows.find(w => w.id === id)))) : (order(t.a), order(t.b));
     order(l.tree);
     assert.deepEqual(D.dockedWindows(v).map(w => w.id), expected, `run ${r}`);
-    const walk = x => { if (!x) return; if (x.type === 'split') { assert.ok(x.ratio >= 0 && x.ratio <= 1); D.sideFlex(x.a, 'a', x.ratio, x.b); walk(x.a); walk(x.b); } else assert.ok(x.windows.includes(x.active)); };
+    const walk = x => { if (!x) return; if (x.type === 'leaf' && x.hidden) { assert.equal(x.windows.length, 0); return; } if (x.type === 'split') { assert.ok(x.ratio >= 0 && x.ratio <= 1); D.sideFlex(x.a, 'a', x.ratio, x.b); walk(x.a); walk(x.b); } else assert.ok(x.windows.includes(x.active)); };
     walk(v);
   }
 });

@@ -31,13 +31,14 @@
 .profile-details pre { overflow: auto; max-height: 240px; white-space: pre-wrap; overflow-wrap: anywhere; }
 .app-root .sidebar { width: var(--profile-sidebar-width, 280px); min-width: var(--profile-sidebar-width, 280px); }
 .app-root .sidebar.collapsed { margin-left: calc(-1 * var(--profile-sidebar-width, 280px)); }
-.app-root[data-sidebar-side="right"] > .app-layout > .sidebar { order: 2; border-left: 1px solid var(--border); border-right: none; }
-.app-root[data-sidebar-side="right"] > .app-layout > .sidebar.collapsed { margin-left: 0; margin-right: calc(-1 * var(--profile-sidebar-width, 280px)); }
+.app-root[data-sidebar-side="right"] > .app-layout .sidebar { order: 2; border-left: 1px solid var(--border); border-right: none; }
+.app-root[data-sidebar-side="right"] > .app-layout .dock-leaf:has(> .sidebar) { order: 2; }   /* W3: the list leaf of the dock tree goes right with it */
+.app-root[data-sidebar-side="right"] > .app-layout .sidebar.collapsed { margin-left: 0; margin-right: calc(-1 * var(--profile-sidebar-width, 280px)); }
 @media (max-width: 720px) {
   .profile-workspace-controls span { display: none; }
   .application-profile-view { flex-basis: 100%; }
-  .app-root[data-sidebar-side="right"] > .app-layout > .sidebar { left: auto; right: 0; }
-  .app-root[data-sidebar-side="right"] > .app-layout > .sidebar.collapsed { margin-left: 0; margin-right: 0; transform: translateX(100%); }
+  .app-root[data-sidebar-side="right"] > .app-layout .sidebar { left: auto; right: 0; }
+  .app-root[data-sidebar-side="right"] > .app-layout .sidebar.collapsed { margin-left: 0; margin-right: 0; transform: translateX(100%); }
 }
 /* Beside the knowledge workbench the chat box is short (R43 phone use): keep the
    chat body visible and let the chat host be the single scroll container,

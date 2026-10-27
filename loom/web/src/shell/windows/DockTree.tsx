@@ -13,22 +13,22 @@ export interface DockTreeProps {
 
 function Node({ node, flex, props }: { node: DockNode; flex: string; props: DockTreeProps }) {
   if (node.type === "leaf") {
-    const style: CSSProperties = { display: "flex", flexDirection: "column", minWidth: 0, minHeight: 0, flex };
+    const style: CSSProperties = { display: node.hidden ? "none" : "flex", flexDirection: "column", minWidth: 0, minHeight: 0, flex };
     return (
-      <div className="dock-leaf" data-leaf={node.leaf} data-testid={`dock-leaf-${node.leaf}`} style={style}>
+      <div className="dock-leaf" data-leaf={node.leaf} data-testid={`dock-leaf-${node.leaf}`} style={style} hidden={node.hidden}>
         {node.windows.length > 1 && (
           <div className="dock-tabs" role="tablist" data-testid={`dock-tabs-${node.leaf}`}>
             {node.windows.map((w) => (
-              <button key={w.id} type="button" role="tab" aria-selected={w.id === node.active.id} data-testid={`dock-tab-${w.id}`}
+              <button key={w.id} type="button" role="tab" aria-selected={w.id === node.active?.id} data-testid={`dock-tab-${w.id}`}
                 onClick={() => props.onActivate?.(w)}>{props.title(w)}</button>
             ))}
           </div>
         )}
-        {props.renderWindow(node.active)}
+        {node.active && props.renderWindow(node.active)}
       </div>
     );
   }
-  const style: CSSProperties = { display: "flex", flexDirection: node.dir === "v" ? "column" : "row", minWidth: 0, minHeight: 0, flex };
+  const style: CSSProperties = { display: node.hidden ? "none" : "flex", flexDirection: node.dir === "v" ? "column" : "row", minWidth: 0, minHeight: 0, flex };
   return (
     <div className="dock-split" data-split={node.dir} style={style}>
       <Node node={node.a} flex={sideFlex(node.a, "a", node.ratio, node.b)} props={props} />
