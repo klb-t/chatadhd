@@ -374,6 +374,12 @@
    "reason": {
     "pl": "gospodarz okien (W1): rysuje aktywny układ i okna otwarte nad nim; sam nie jest widokiem, tylko ramą dla okien"
    }
+  },
+  {
+   "component": "LayoutsSheet",
+   "reason": {
+    "pl": "arkusz menu ⋮ › Układ ▾ (W5): zapis, przywrócenie, zmiana nazwy i usunięcie nazwanych układów, cofnij/ponów; warstwa (arkusz) nad czatem, nie okno — działa na układzie, nie jest jego częścią"
+   }
   }
  ]
 }

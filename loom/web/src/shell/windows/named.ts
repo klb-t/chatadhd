@@ -23,7 +23,7 @@ export function deviceClassOf(width: number, rules: DeviceClassRule[] = DATA.dev
 
 const parse = (v: unknown): unknown => {
   if (typeof v !== "string") return v;
-  try { return JSON.parse(v); } catch { return null; }
+  try { return JSON.parse(v); } catch { return v; }   // a bare word (a layout id) stays a word
 };
 const isObj = (v: unknown): v is Record<string, unknown> => !!v && typeof v === "object" && !Array.isArray(v);
 /** Folded form of a name: no case, no diacritics, no quotes around it („praca”, «praca», "praca" and Praca are one name). */
