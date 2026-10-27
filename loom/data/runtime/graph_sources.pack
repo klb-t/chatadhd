@@ -1744,7 +1744,6 @@
         "words": {
           "pl": [
             "import",
-            "importy",
             "zaimportowane",
             "zaimportowane dane",
             "dane",
@@ -1754,12 +1753,28 @@
           ],
           "en": [
             "import",
-            "imports",
             "imported",
             "imported data",
             "data",
             "corpora",
             "data and corpora"
+          ]
+        }
+      },
+      {
+        "address": "area:imports",
+        "words": {
+          "pl": [
+            "importy",
+            "zaimportowane pliki",
+            "pliki importu",
+            "eksport jako węzeł"
+          ],
+          "en": [
+            "imports",
+            "imported files",
+            "import files",
+            "export as a node"
           ]
         }
       },

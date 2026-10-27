@@ -124,7 +124,7 @@ TEST_SUITE("import_presets_binding") {
     REQUIRE(projected.conversations.size() == 1);
     CHECK(projected.conversations[0].id != legacy.conversations[0].id);
     CHECK(fixture.source_metadata(projected.source_id)["import_projection_hash"] == import_projection_hash(different));
-    CHECK(unwrap(fixture.db->conn().query_int("SELECT COUNT(*) FROM nodes WHERE label='opaque.json' AND content=''")) ==
+    CHECK(unwrap(fixture.db->conn().query_int("SELECT COUNT(*) FROM nodes WHERE label='opaque.json' AND content='' AND kind NOT LIKE 'import_graph:%'")) ==
       std::optional<std::int64_t>(1));
     const auto projected_cache = unwrap(fixture.importer.import_file(path, different));
     CHECK(projected_cache.already_imported);

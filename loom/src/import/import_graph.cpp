@@ -158,7 +158,7 @@ Result<Json> project_with(Database& db, const fs::path& path, const ImportResult
   const Json words = preset.value("words", Json::object());
 
   Writer w(db);
-  w.prefix = json::get_string(preset, "kind_prefix", "import:");
+  w.prefix = json::get_string(preset, "kind_prefix", "import_graph:");
   w.mkey = json::get_string(preset, "metadata_key", "import_graph");
   w.blob = result.blob_hash;
   if (w.blob.empty()) {

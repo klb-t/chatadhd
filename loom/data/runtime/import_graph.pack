@@ -2,11 +2,11 @@
   "schema": "loom.runtime_profile/1",
   "domain": "import_graph",
   "revision": 1,
-  "description": "Import as graph nodes (IMPORT_JAKO_PLIKI_W_GRAFIE_2026-10-23 §3.3, package P1). Every import, in every mode (copy included), writes nodes of the existing nodes table (no new table or column, schema_version stays 4): the imported file (its container class by format), an export node with its facets (by provider), the archive entries, the conversations and the attachments, linked part_of / derived_from (relations of graph/classes.pack). A node's id is derived from a key built from the source's blob hash, so importing the same bytes again finds the same nodes instead of making new ones. The summary sentence is built from the templates below in the language preset (pl), with the other language kept beside it; no raw JSON is ever put in it. Everything is a preset of the person: enabled false writes no import nodes (the import itself is unchanged); classes, facets, words and templates are data and an overlay <data_dir>/profiles/import_graph.pack changes them. The lists are examples and open: an unknown format falls back to the class file, an unknown provider to the facet export, an unknown disposition to its own token.",
+  "description": "Import as graph nodes (IMPORT_JAKO_PLIKI_W_GRAFIE_2026-10-23 §3.3, package P1). Every import, in every mode (copy included), writes nodes of the existing nodes table (no new table or column, schema_version stays 4): the imported file (its container class by format), an export node with its facets (by provider), the archive entries, the conversations and the attachments, linked part_of / derived_from (relations of graph/classes.pack). Kinds are \"import_graph:<class>\" (kept apart from the recognition kinds import:*). A node's id is derived from a key built from the source's blob hash, so importing the same bytes again finds the same nodes instead of making new ones. The summary sentence is built from the templates below in the language preset (pl), with the other language kept beside it; no raw JSON is ever put in it. Everything is a preset of the person: enabled false writes no import nodes (the import itself is unchanged); classes, facets, words and templates are data and an overlay <data_dir>/profiles/import_graph.pack changes them. The lists are examples and open: an unknown format falls back to the class file, an unknown provider to the facet export, an unknown disposition to its own token.",
   "defaults": {
     "enabled": true,
     "language": "pl",
-    "kind_prefix": "import:",
+    "kind_prefix": "import_graph:",
     "metadata_key": "import_graph",
     "container_class_by_format": {
       "zip": "zip_archive",

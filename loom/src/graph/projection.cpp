@@ -3239,9 +3239,14 @@ Result<std::string> find_address(const Env& env, const std::string& raw, bool ex
   const auto want = m.words(words);
   const std::string lang = env.lang.empty() ? std::string("en") : env.lang;
   // The words the data gives a node besides its name (aliases: rozmowy -> the conversations, role -> the model roles), in this language.
-  for (const auto& a : profile.values().value("aliases", Json::array()))
-    for (const auto& w : strings_in(a.value("words", Json::object()).value(lang, Json::array())))
-      if (m.same_words(m.words(w), want)) return json::get_string(a, "address");
+  // An alias said exactly wins over one that only matches by its ending (importy -> Importy, not import -> Dane i korpusy).
+  const Json aliases = profile.values().value("aliases", Json::array());
+  for (const bool exact : {true, false})
+    for (const auto& a : aliases) {
+      const auto alias_words = strings_in(a.value("words", Json::object()).value(lang, Json::array()));
+      for (const auto& w : alias_words)
+        if (exact ? m.words(w) == want : m.same_words(m.words(w), want)) return json::get_string(a, "address");
+    }
   // The pool: the areas (read from the entry profile, no counters), then every node of the sources read whole.
   std::vector<Json> pool;
   if (auto entry = RuntimeProfile::load("graph_entry", env.root)) {

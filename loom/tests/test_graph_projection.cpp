@@ -909,7 +909,9 @@ TEST_SUITE("graph_projection") {
     // the owner's own word for what he imported (2026-10-22): it opens the area that holds imported data today
     CHECK(unwrap(projection::find_address(f.env("pl"), "import")) == "area:data_corpora");
     CHECK(unwrap(projection::find_address(f.env("pl"), "zaimportowane")) == "area:data_corpora");
-    CHECK(unwrap(projection::find_address(f.env("en"), "imports")) == "area:data_corpora");
+    // G2-P1: the plural names the area Importy (every imported file as a node); the singular stays with Dane i korpusy
+    CHECK(unwrap(projection::find_address(f.env("en"), "imports")) == "area:imports");
+    CHECK(unwrap(projection::find_address(f.env("pl"), "importy")) == "area:imports");
     // an area is also found by its own label, whatever the language of the alias table
     for (const auto& a : entry.at("areas").items()) {
       const std::string label = a.value().at("label").at("pl").get<std::string>();

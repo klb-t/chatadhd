@@ -61,9 +61,13 @@ struct ResumeFixture {
     auto path = temporary.path() / name;
     LOOM_REQUIRE_OK(fsutil::write_file(path, bytes)); return path;
   }
+  // The rows the import itself wrote: the import-graph description (G2-P1, kinds import_graph:*, links by import_graph) is
+  // projected after every import and counted by tests/test_import_graph.cpp, not here.
   std::int64_t count(const std::string& table) {
     auto lock = db->lock();
-    return unwrap(db->conn().query_int("SELECT COUNT(*) FROM " + table)).value_or(0);
+    const std::string where = table == "nodes" ? " WHERE kind NOT LIKE 'import_graph:%'"
+                              : table == "links" ? " WHERE COALESCE(json_extract(metadata,'$.by'),'') <> 'import_graph'" : "";
+    return unwrap(db->conn().query_int("SELECT COUNT(*) FROM " + table + where)).value_or(0);
   }
 };
 void resume_zip(const std::filesystem::path& path, const std::map<std::string, std::string>& members) {

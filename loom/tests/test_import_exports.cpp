@@ -68,6 +68,16 @@ struct Fx {
 
 std::int64_t geti(const Json& j, const char* k) { return json::get_int(j, k, -12345); }
 
+// Links the export importer wrote for a node; the import-graph description (G2-P1: entity part_of export, by import_graph) is
+// checked in tests/test_import_graph.cpp.
+std::size_t own_links(Database& db, const std::string& id) {
+  std::size_t n = 0;
+  const auto links = unwrap(db.get_links(id));
+  for (const auto& l : links)
+    if (json::get_string(l.metadata, "by") != "import_graph") ++n;
+  return n;
+}
+
 // Tally of the DB contents in the shape of EXPECTED.json "counts".
 Json recount(Database& db, const std::vector<Conversation>& convs) {
   std::map<std::string, std::int64_t> t, bk;
@@ -460,8 +470,7 @@ TEST_SUITE("import_exports") {
     CHECK(unwrap(fx.db->list_nodes("export:account", 100)).size() == 1);
     auto fb = unwrap(fx.db->list_nodes("export:feedback", 100));
     REQUIRE(fb.size() == 2);
-    auto links = unwrap(fx.db->get_links(fb[0].id));
-    CHECK(links.size() + unwrap(fx.db->get_links(fb[1].id)).size() == 1);  // fb-2 points at a message that is not in the export
+    CHECK(own_links(*fx.db, fb[0].id) + own_links(*fx.db, fb[1].id) == 1);  // fb-2 points at a message that is not in the export
     bool warned = false;
     for (const auto& w : rep["warnings"]) warned = warned || w.get<std::string>().find("c2-MISSING") != std::string::npos;
     CHECK(warned);
@@ -538,7 +547,7 @@ TEST_SUITE("import_exports") {
     CHECK(unwrap(fx.db->list_nodes("export:project", 100)).size() == 2);
     auto docs = unwrap(fx.db->list_nodes("export:project_doc", 100));
     REQUIRE(docs.size() == 2);
-    CHECK(unwrap(fx.db->get_links(docs[0].id)).size() == 1);  // doc -> project
+    CHECK(own_links(*fx.db, docs[0].id) == 1);  // doc -> project
     auto mem = unwrap(fx.db->list_nodes("export:memory", 100));
     REQUIRE(mem.size() == 2);
     bool project_mem_linked = false;
