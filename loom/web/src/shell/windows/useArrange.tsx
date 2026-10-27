@@ -6,7 +6,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { api } from "../../api";
 import { apply, redo, undo, type Rect, type WState } from "./model";
-import { closeWindows } from "./ops";
+import { closeWindows, cycleWindow } from "./ops";
+import { KEYMAP, comboOf, keyOperation, oneEntry } from "./steps";
 import { WINDOW_CTX } from "./session";
 import type { ArrangeHandlers } from "./WindowHost";
 import { ARRANGE, applyFix, arrangeWindow, moveFloating, num, rememberedKeys, setRatio, visibleChips, windowAdvisories, type Env, type WinAdvisory } from "./arrange";
@@ -81,6 +82,8 @@ export function useArrange(win: WState, winRef: { current: WState }, commit: (s:
     menu: (ARRANGE.menu ?? []).map((m) => ({ id: m.id, label: say(m.label, lang), icon: m.icon })),
     onArrange: (id, how, opts) => {
       if (how === "undo" || how === "redo") { commit((how === "undo" ? undo : redo)(winRef.current).state); return; }
+      // W7: minimize / restore (keys, the double tap on a title bar) as one journal entry each
+      if (how === "minimize" || how === "restore") { const s = winRef.current; commit(oneEntry(s, apply(s, { op: how, id }, WINDOW_CTX).state, how)); return; }
       commit(arrangeWindow(winRef.current, id, how, opts ?? {}));
     },
     onClose: (id) => {
@@ -106,24 +109,24 @@ export function useArrange(win: WState, winRef: { current: WState }, commit: (s:
     menuLabel: (t) => (lang === "pl" ? `Ułóż okno: ${t}` : `Arrange window: ${t}`),
   }), [commit, lang, winRef]);
 
-  // the keys of the keymap (data): the focused window is arranged; undo/redo walk the journal
+  // W7: the keys of keymap.json (data): the focused window is arranged; undo/redo walk the journal, next/prev the switcher
   useEffect(() => {
-    const keys = ARRANGE.keymap ?? {};
     const on = (e: KeyboardEvent) => {
-      const combo = [e.ctrlKey || e.metaKey ? "ctrl" : "", e.altKey ? "alt" : "", e.shiftKey ? "shift" : "", e.key.toLowerCase()].filter(Boolean).join("+");
-      const how = keys[combo];
+      const how = keyOperation(comboOf(e));
       if (!how) return;
-      // in a text field the same keys edit the text (select words, undo typing): the field keeps them
+      // in a text field the same keys edit the text (select words, undo typing): the field keeps them (preset text_fields_keep_keys)
       const t = e.target as HTMLElement | null;
-      if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
-      const focus = winRef.current.layout.focus;
+      if (KEYMAP.text_fields_keep_keys !== false && t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
+      const s = winRef.current;
+      if (how === "next" || how === "prev") { e.preventDefault(); commit(cycleWindow(s, how === "next" ? 1 : -1).state); return; }
+      const focus = s.layout.focus;
       if (!focus && how !== "undo" && how !== "redo") return;
       e.preventDefault();
       handlers.onArrange(focus ?? "", how);
     };
     window.addEventListener("keydown", on);
     return () => window.removeEventListener("keydown", on);
-  }, [handlers, winRef]);
+  }, [handlers, winRef, commit]);
 
   const answer = useCallback((a: WinAdvisory, choice: string) => {
     const key = `${a.code}|${a.fingerprint}`;

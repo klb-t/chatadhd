@@ -16541,6 +16541,837 @@
           ]
         },
         "positional_arg": "remember_days"
+      },
+      "window.maximize": {
+        "id": "window.maximize",
+        "kind": "atomic",
+        "status": "planned",
+        "planned_reason": {
+          "en": "A window of the application belongs to the client that draws it (the web page or the Android shell); this runtime arranges no windows itself. Runnable for a client that declares arranges_windows (W7 of OKNA_SYSTEM); only the client that asked carries it out.",
+          "pl": "Okno aplikacji należy do klienta, który je rysuje (strony albo powłoki Androida); ten runtime sam nie układa okien. Wykonywalna dla klienta, który deklaruje arranges_windows (W7 z OKNA_SYSTEM); wykonuje ją tylko klient, który pytał."
+        },
+        "title": "Maximize a window",
+        "description": "Show a window full-screen over the layout (the others wait in the switcher); a window not open yet is opened first.",
+        "why": {
+          "pl": "Pokazuje okno na całym ekranie."
+        },
+        "labels": {
+          "pl": "Zmaksymalizuj okno"
+        },
+        "inputs": [],
+        "outputs": [],
+        "requires": [],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.1,
+        "confidence": 0.9,
+        "effects": {
+          "reads_only": false,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "client",
+        "client": {
+          "capability": "arranges_windows",
+          "prompt": {
+            "en": "Arrange the windows on this device.",
+            "pl": "Ułóż okna na tym urządzeniu."
+          },
+          "expects": []
+        },
+        "phrases": {
+          "en": [
+            "maximize",
+            "maximise"
+          ],
+          "pl": [
+            "zmaksymalizuj"
+          ]
+        },
+        "params": [
+          {
+            "name": "target",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The window: a kind or a word naming it (graph, settings, chat ...); empty = the focused window.",
+              "pl": "Okno: rodzaj albo słowo, które go nazywa (graf, ustawienia, czat ...); puste = okno z fokusem."
+            }
+          }
+        ]
+      },
+      "window.restore": {
+        "id": "window.restore",
+        "kind": "atomic",
+        "status": "planned",
+        "planned_reason": {
+          "en": "A window of the application belongs to the client that draws it (the web page or the Android shell); this runtime arranges no windows itself. Runnable for a client that declares arranges_windows (W7 of OKNA_SYSTEM); only the client that asked carries it out.",
+          "pl": "Okno aplikacji należy do klienta, który je rysuje (strony albo powłoki Androida); ten runtime sam nie układa okien. Wykonywalna dla klienta, który deklaruje arranges_windows (W7 z OKNA_SYSTEM); wykonuje ją tylko klient, który pytał."
+        },
+        "title": "Restore a window",
+        "description": "Bring a maximized or minimized window back to its place in the layout (its leaf, or floating).",
+        "why": {
+          "pl": "Przywraca okno na jego miejsce w układzie."
+        },
+        "labels": {
+          "pl": "Przywróć okno"
+        },
+        "inputs": [],
+        "outputs": [],
+        "requires": [],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.1,
+        "confidence": 0.9,
+        "effects": {
+          "reads_only": false,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "client",
+        "client": {
+          "capability": "arranges_windows",
+          "prompt": {
+            "en": "Arrange the windows on this device.",
+            "pl": "Ułóż okna na tym urządzeniu."
+          },
+          "expects": []
+        },
+        "phrases": {
+          "en": [
+            "restore the window"
+          ],
+          "pl": [
+            "przywróć okno",
+            "przywroc okno"
+          ]
+        },
+        "params": [
+          {
+            "name": "target",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The window: a kind or a word naming it (graph, settings, chat ...); empty = the focused window.",
+              "pl": "Okno: rodzaj albo słowo, które go nazywa (graf, ustawienia, czat ...); puste = okno z fokusem."
+            }
+          }
+        ]
+      },
+      "window.minimize": {
+        "id": "window.minimize",
+        "kind": "atomic",
+        "status": "planned",
+        "planned_reason": {
+          "en": "A window of the application belongs to the client that draws it (the web page or the Android shell); this runtime arranges no windows itself. Runnable for a client that declares arranges_windows (W7 of OKNA_SYSTEM); only the client that asked carries it out.",
+          "pl": "Okno aplikacji należy do klienta, który je rysuje (strony albo powłoki Androida); ten runtime sam nie układa okien. Wykonywalna dla klienta, który deklaruje arranges_windows (W7 z OKNA_SYSTEM); wykonuje ją tylko klient, który pytał."
+        },
+        "title": "Minimize a window",
+        "description": "Collapse a window to a handle on the shelf; it stays in the switcher.",
+        "why": {
+          "pl": "Zwija okno do uchwytu."
+        },
+        "labels": {
+          "pl": "Zminimalizuj okno"
+        },
+        "inputs": [],
+        "outputs": [],
+        "requires": [],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.1,
+        "confidence": 0.9,
+        "effects": {
+          "reads_only": false,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "client",
+        "client": {
+          "capability": "arranges_windows",
+          "prompt": {
+            "en": "Arrange the windows on this device.",
+            "pl": "Ułóż okna na tym urządzeniu."
+          },
+          "expects": []
+        },
+        "phrases": {
+          "en": [
+            "minimize",
+            "minimise"
+          ],
+          "pl": [
+            "zminimalizuj",
+            "zwiń"
+          ]
+        },
+        "params": [
+          {
+            "name": "target",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The window: a kind or a word naming it (graph, settings, chat ...); empty = the focused window.",
+              "pl": "Okno: rodzaj albo słowo, które go nazywa (graf, ustawienia, czat ...); puste = okno z fokusem."
+            }
+          }
+        ]
+      },
+      "window.dock": {
+        "id": "window.dock",
+        "kind": "atomic",
+        "status": "planned",
+        "planned_reason": {
+          "en": "A window of the application belongs to the client that draws it (the web page or the Android shell); this runtime arranges no windows itself. Runnable for a client that declares arranges_windows (W7 of OKNA_SYSTEM); only the client that asked carries it out.",
+          "pl": "Okno aplikacji należy do klienta, który je rysuje (strony albo powłoki Androida); ten runtime sam nie układa okien. Wykonywalna dla klienta, który deklaruje arranges_windows (W7 z OKNA_SYSTEM); wykonuje ją tylko klient, który pytał."
+        },
+        "title": "Dock a window",
+        "description": "Dock a window to a side (left, right, top, bottom - an open word the client maps through its data) of the window it opened over or of the focused one; a window not open yet is opened first.",
+        "why": {
+          "pl": "Dokuje okno do krawędzi."
+        },
+        "labels": {
+          "pl": "Zadokuj okno"
+        },
+        "inputs": [],
+        "outputs": [],
+        "requires": [],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.1,
+        "confidence": 0.9,
+        "effects": {
+          "reads_only": false,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "client",
+        "client": {
+          "capability": "arranges_windows",
+          "prompt": {
+            "en": "Arrange the windows on this device.",
+            "pl": "Ułóż okna na tym urządzeniu."
+          },
+          "expects": []
+        },
+        "phrases": {
+          "en": [
+            "dock"
+          ],
+          "pl": [
+            "zadokuj"
+          ]
+        },
+        "params": [
+          {
+            "name": "target",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The window: a kind or a word naming it (graph, settings, chat ...); empty = the focused window.",
+              "pl": "Okno: rodzaj albo słowo, które go nazywa (graf, ustawienia, czat ...); puste = okno z fokusem."
+            }
+          },
+          {
+            "name": "side",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The side: a word such as left, right, top, bottom (the client maps words through its data).",
+              "pl": "Strona: słowo takie jak lewa, prawa, góra, dół (klient mapuje słowa przez swoje dane)."
+            }
+          }
+        ]
+      },
+      "window.float": {
+        "id": "window.float",
+        "kind": "atomic",
+        "status": "planned",
+        "planned_reason": {
+          "en": "A window of the application belongs to the client that draws it (the web page or the Android shell); this runtime arranges no windows itself. Runnable for a client that declares arranges_windows (W7 of OKNA_SYSTEM); only the client that asked carries it out.",
+          "pl": "Okno aplikacji należy do klienta, który je rysuje (strony albo powłoki Androida); ten runtime sam nie układa okien. Wykonywalna dla klienta, który deklaruje arranges_windows (W7 z OKNA_SYSTEM); wykonuje ją tylko klient, który pytał."
+        },
+        "title": "Float a window",
+        "description": "Detach a window from the dock tree into a floating window (rect from the preset of the client).",
+        "why": {
+          "pl": "Odpina okno do pływającego."
+        },
+        "labels": {
+          "pl": "Odepnij okno"
+        },
+        "inputs": [],
+        "outputs": [],
+        "requires": [],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.1,
+        "confidence": 0.9,
+        "effects": {
+          "reads_only": false,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "client",
+        "client": {
+          "capability": "arranges_windows",
+          "prompt": {
+            "en": "Arrange the windows on this device.",
+            "pl": "Ułóż okna na tym urządzeniu."
+          },
+          "expects": []
+        },
+        "phrases": {
+          "en": [
+            "float",
+            "undock"
+          ],
+          "pl": [
+            "odepnij",
+            "w pływającym oknie"
+          ]
+        },
+        "params": [
+          {
+            "name": "target",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The window: a kind or a word naming it (graph, settings, chat ...); empty = the focused window.",
+              "pl": "Okno: rodzaj albo słowo, które go nazywa (graf, ustawienia, czat ...); puste = okno z fokusem."
+            }
+          }
+        ]
+      },
+      "window.tab": {
+        "id": "window.tab",
+        "kind": "atomic",
+        "status": "planned",
+        "planned_reason": {
+          "en": "A window of the application belongs to the client that draws it (the web page or the Android shell); this runtime arranges no windows itself. Runnable for a client that declares arranges_windows (W7 of OKNA_SYSTEM); only the client that asked carries it out.",
+          "pl": "Okno aplikacji należy do klienta, który je rysuje (strony albo powłoki Androida); ten runtime sam nie układa okien. Wykonywalna dla klienta, który deklaruje arranges_windows (W7 z OKNA_SYSTEM); wykonuje ją tylko klient, który pytał."
+        },
+        "title": "Put a window in a tab",
+        "description": "Dock a window as a tab of the leaf of the window it opened over or of the focused one.",
+        "why": {
+          "pl": "Wstawia okno jako zakładkę."
+        },
+        "labels": {
+          "pl": "Okno jako zakładka"
+        },
+        "inputs": [],
+        "outputs": [],
+        "requires": [],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.1,
+        "confidence": 0.9,
+        "effects": {
+          "reads_only": false,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "client",
+        "client": {
+          "capability": "arranges_windows",
+          "prompt": {
+            "en": "Arrange the windows on this device.",
+            "pl": "Ułóż okna na tym urządzeniu."
+          },
+          "expects": []
+        },
+        "phrases": {
+          "en": [
+            "as a tab"
+          ],
+          "pl": [
+            "jako zakładkę"
+          ]
+        },
+        "params": [
+          {
+            "name": "target",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The window: a kind or a word naming it (graph, settings, chat ...); empty = the focused window.",
+              "pl": "Okno: rodzaj albo słowo, które go nazywa (graf, ustawienia, czat ...); puste = okno z fokusem."
+            }
+          }
+        ]
+      },
+      "window.move": {
+        "id": "window.move",
+        "kind": "atomic",
+        "status": "planned",
+        "planned_reason": {
+          "en": "A window of the application belongs to the client that draws it (the web page or the Android shell); this runtime arranges no windows itself. Runnable for a client that declares arranges_windows (W7 of OKNA_SYSTEM); only the client that asked carries it out.",
+          "pl": "Okno aplikacji należy do klienta, który je rysuje (strony albo powłoki Androida); ten runtime sam nie układa okien. Wykonywalna dla klienta, który deklaruje arranges_windows (W7 z OKNA_SYSTEM); wykonuje ją tylko klient, który pytał."
+        },
+        "title": "Move a window",
+        "description": "Move a floating window by a step in a direction (a docked one floats first); the step is a preset of the client, a number in the sentence overrides it.",
+        "why": {
+          "pl": "Przesuwa pływające okno."
+        },
+        "labels": {
+          "pl": "Przesuń okno"
+        },
+        "inputs": [],
+        "outputs": [],
+        "requires": [],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.1,
+        "confidence": 0.9,
+        "effects": {
+          "reads_only": false,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "client",
+        "client": {
+          "capability": "arranges_windows",
+          "prompt": {
+            "en": "Arrange the windows on this device.",
+            "pl": "Ułóż okna na tym urządzeniu."
+          },
+          "expects": []
+        },
+        "phrases": {
+          "en": [
+            "move the window"
+          ],
+          "pl": [
+            "przesuń okno",
+            "przesun okno"
+          ]
+        },
+        "params": [
+          {
+            "name": "target",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The window: a kind or a word naming it (graph, settings, chat ...); empty = the focused window.",
+              "pl": "Okno: rodzaj albo słowo, które go nazywa (graf, ustawienia, czat ...); puste = okno z fokusem."
+            }
+          },
+          {
+            "name": "direction",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "A word such as left, right, up, down.",
+              "pl": "Słowo takie jak lewo, prawo, góra, dół."
+            }
+          },
+          {
+            "name": "amount",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Pixels (empty = the preset step).",
+              "pl": "Piksele (puste = krok z presetu)."
+            }
+          }
+        ]
+      },
+      "window.resize": {
+        "id": "window.resize",
+        "kind": "atomic",
+        "status": "planned",
+        "planned_reason": {
+          "en": "A window of the application belongs to the client that draws it (the web page or the Android shell); this runtime arranges no windows itself. Runnable for a client that declares arranges_windows (W7 of OKNA_SYSTEM); only the client that asked carries it out.",
+          "pl": "Okno aplikacji należy do klienta, który je rysuje (strony albo powłoki Androida); ten runtime sam nie układa okien. Wykonywalna dla klienta, który deklaruje arranges_windows (W7 z OKNA_SYSTEM); wykonuje ją tylko klient, który pytał."
+        },
+        "title": "Resize a window",
+        "description": "Give a floating window a size (width x height in px) or grow / shrink it by the preset factor of the client (a docked one floats first).",
+        "why": {
+          "pl": "Zmienia rozmiar okna."
+        },
+        "labels": {
+          "pl": "Zmień rozmiar okna"
+        },
+        "inputs": [],
+        "outputs": [],
+        "requires": [],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.1,
+        "confidence": 0.9,
+        "effects": {
+          "reads_only": false,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "client",
+        "client": {
+          "capability": "arranges_windows",
+          "prompt": {
+            "en": "Arrange the windows on this device.",
+            "pl": "Ułóż okna na tym urządzeniu."
+          },
+          "expects": []
+        },
+        "phrases": {
+          "en": [
+            "resize"
+          ],
+          "pl": [
+            "zmień rozmiar",
+            "zmien rozmiar"
+          ]
+        },
+        "params": [
+          {
+            "name": "target",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The window: a kind or a word naming it (graph, settings, chat ...); empty = the focused window.",
+              "pl": "Okno: rodzaj albo słowo, które go nazywa (graf, ustawienia, czat ...); puste = okno z fokusem."
+            }
+          },
+          {
+            "name": "w",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Width in px.",
+              "pl": "Szerokość w px."
+            }
+          },
+          {
+            "name": "h",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Height in px.",
+              "pl": "Wysokość w px."
+            }
+          },
+          {
+            "name": "how",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "A word such as grow, shrink, widen, narrow.",
+              "pl": "Słowo takie jak powiększ, zmniejsz, poszerz, zwęź."
+            }
+          }
+        ]
+      },
+      "window.bind": {
+        "id": "window.bind",
+        "kind": "atomic",
+        "status": "planned",
+        "planned_reason": {
+          "en": "A window of the application belongs to the client that draws it (the web page or the Android shell); this runtime arranges no windows itself. Runnable for a client that declares arranges_windows (W7 of OKNA_SYSTEM); only the client that asked carries it out.",
+          "pl": "Okno aplikacji należy do klienta, który je rysuje (strony albo powłoki Androida); ten runtime sam nie układa okien. Wykonywalna dla klienta, który deklaruje arranges_windows (W7 z OKNA_SYSTEM); wykonuje ją tylko klient, który pytał."
+        },
+        "title": "Bind a parameter of windows",
+        "description": "Couple a parameter (zoom, pan ... - a word the client maps through its coupling data) of every open window of a kind through a shared channel: changing it in one changes it in the others.",
+        "why": {
+          "pl": "Wiąże parametr okien jednego rodzaju."
+        },
+        "labels": {
+          "pl": "Powiąż parametr okien"
+        },
+        "inputs": [],
+        "outputs": [],
+        "requires": [],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.1,
+        "confidence": 0.9,
+        "effects": {
+          "reads_only": false,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "client",
+        "client": {
+          "capability": "arranges_windows",
+          "prompt": {
+            "en": "Arrange the windows on this device.",
+            "pl": "Ułóż okna na tym urządzeniu."
+          },
+          "expects": []
+        },
+        "phrases": {
+          "en": [
+            "link the",
+            "couple the"
+          ],
+          "pl": [
+            "powiąż",
+            "powiaz",
+            "połącz",
+            "polacz"
+          ]
+        },
+        "params": [
+          {
+            "name": "param",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "The parameter: a word such as zoom, pan.",
+              "pl": "Parametr: słowo takie jak przybliżenie, przesunięcie."
+            }
+          },
+          {
+            "name": "target",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The window: a kind or a word naming it (graph, settings, chat ...); empty = the focused window.",
+              "pl": "Okno: rodzaj albo słowo, które go nazywa (graf, ustawienia, czat ...); puste = okno z fokusem."
+            }
+          }
+        ]
+      },
+      "window.unbind": {
+        "id": "window.unbind",
+        "kind": "atomic",
+        "status": "planned",
+        "planned_reason": {
+          "en": "A window of the application belongs to the client that draws it (the web page or the Android shell); this runtime arranges no windows itself. Runnable for a client that declares arranges_windows (W7 of OKNA_SYSTEM); only the client that asked carries it out.",
+          "pl": "Okno aplikacji należy do klienta, który je rysuje (strony albo powłoki Androida); ten runtime sam nie układa okien. Wykonywalna dla klienta, który deklaruje arranges_windows (W7 z OKNA_SYSTEM); wykonuje ją tylko klient, który pytał."
+        },
+        "title": "Unbind a parameter of windows",
+        "description": "Make a parameter of every open window of a kind independent again; each keeps the value it shows now.",
+        "why": {
+          "pl": "Rozwiązuje wiązanie parametru."
+        },
+        "labels": {
+          "pl": "Rozwiąż parametr okien"
+        },
+        "inputs": [],
+        "outputs": [],
+        "requires": [],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.1,
+        "confidence": 0.9,
+        "effects": {
+          "reads_only": false,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "client",
+        "client": {
+          "capability": "arranges_windows",
+          "prompt": {
+            "en": "Arrange the windows on this device.",
+            "pl": "Ułóż okna na tym urządzeniu."
+          },
+          "expects": []
+        },
+        "phrases": {
+          "en": [
+            "unlink the",
+            "uncouple the"
+          ],
+          "pl": [
+            "rozwiąż",
+            "rozwiaz",
+            "rozłącz",
+            "rozlacz"
+          ]
+        },
+        "params": [
+          {
+            "name": "param",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "The parameter: a word such as zoom, pan.",
+              "pl": "Parametr: słowo takie jak przybliżenie, przesunięcie."
+            }
+          },
+          {
+            "name": "target",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The window: a kind or a word naming it (graph, settings, chat ...); empty = the focused window.",
+              "pl": "Okno: rodzaj albo słowo, które go nazywa (graf, ustawienia, czat ...); puste = okno z fokusem."
+            }
+          }
+        ]
+      },
+      "layout.rename": {
+        "id": "layout.rename",
+        "kind": "atomic",
+        "status": "planned",
+        "planned_reason": {
+          "en": "A window of the application belongs to the client that draws it (the web page or the Android shell); this runtime arranges no windows itself. Runnable for a client that declares arranges_windows (W7 of OKNA_SYSTEM); only the client that asked carries it out.",
+          "pl": "Okno aplikacji należy do klienta, który je rysuje (strony albo powłoki Androida); ten runtime sam nie układa okien. Wykonywalna dla klienta, który deklaruje arranges_windows (W7 z OKNA_SYSTEM); wykonuje ją tylko klient, który pytał."
+        },
+        "title": "Rename a layout",
+        "description": "Give a named layout of the person another name (a name already taken is answered, nothing is overwritten).",
+        "why": {
+          "pl": "Zmienia nazwę zapisanego układu."
+        },
+        "labels": {
+          "pl": "Zmień nazwę układu"
+        },
+        "inputs": [],
+        "outputs": [],
+        "requires": [],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.1,
+        "confidence": 0.9,
+        "effects": {
+          "reads_only": false,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "client",
+        "client": {
+          "capability": "arranges_windows",
+          "prompt": {
+            "en": "Arrange the windows on this device.",
+            "pl": "Ułóż okna na tym urządzeniu."
+          },
+          "expects": []
+        },
+        "phrases": {
+          "en": [
+            "rename the layout"
+          ],
+          "pl": [
+            "zmień nazwę układu",
+            "zmien nazwe ukladu"
+          ]
+        },
+        "params": [
+          {
+            "name": "name",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "The layout now.",
+              "pl": "Obecna nazwa układu."
+            }
+          },
+          {
+            "name": "label",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "The new name.",
+              "pl": "Nowa nazwa."
+            }
+          }
+        ]
+      },
+      "layout.delete": {
+        "id": "layout.delete",
+        "kind": "atomic",
+        "status": "planned",
+        "planned_reason": {
+          "en": "A window of the application belongs to the client that draws it (the web page or the Android shell); this runtime arranges no windows itself. Runnable for a client that declares arranges_windows (W7 of OKNA_SYSTEM); only the client that asked carries it out.",
+          "pl": "Okno aplikacji należy do klienta, który je rysuje (strony albo powłoki Androida); ten runtime sam nie układa okien. Wykonywalna dla klienta, który deklaruje arranges_windows (W7 z OKNA_SYSTEM); wykonuje ją tylko klient, który pytał."
+        },
+        "title": "Delete a layout",
+        "description": "Delete a named layout of the person (the shipped layouts stay). Asks first: a proposal and a yes.",
+        "why": {
+          "pl": "Usuwa zapisany układ."
+        },
+        "labels": {
+          "pl": "Usuń układ"
+        },
+        "inputs": [],
+        "outputs": [],
+        "requires": [],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.1,
+        "confidence": 0.9,
+        "effects": {
+          "reads_only": false,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": true,
+          "touches_private_data": false
+        },
+        "consumer": "client",
+        "client": {
+          "capability": "arranges_windows",
+          "prompt": {
+            "en": "Arrange the windows on this device.",
+            "pl": "Ułóż okna na tym urządzeniu."
+          },
+          "expects": []
+        },
+        "phrases": {
+          "en": [
+            "delete the layout"
+          ],
+          "pl": [
+            "usuń układ",
+            "usun uklad"
+          ]
+        },
+        "params": [
+          {
+            "name": "name",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "The name of the layout.",
+              "pl": "Nazwa układu."
+            }
+          }
+        ]
       }
     }
   },

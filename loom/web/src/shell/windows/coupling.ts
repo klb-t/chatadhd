@@ -212,6 +212,24 @@ export function depWord(dep: Binding["dependency"], lang: string, data: Coupling
   const t = say(data.dependencies?.[kind], lang);
   return t ? fill(t, Object.fromEntries(Object.entries(dep ?? {}).map(([k, x]) => [k, typeof x === "string" ? x : JSON.stringify(x)]))) : kind;
 }
+/** W7: a word of a sentence („przybliżenie”, „zoom”, „przesunięcia”) to a parameter id: the id itself, else the longest common start of
+ *  a folded word of the data (params pl/en) and the folded word, at least `min` letters (a Polish ending differs). Null = no parameter. */
+export function paramOfWord(word: string, data: CouplingData = COUPLING, min = 5): string | null {
+  const f = (t: string) => t.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ł/g, "l").toLowerCase().trim();
+  const w = f(word);
+  if (!w) return null;
+  if (data.params && Object.prototype.hasOwnProperty.call(data.params, w)) return w;
+  let best: string | null = null, bestLen = 0;
+  for (const [id, words] of Object.entries(data.params ?? {})) {
+    for (const t of [id, ...Object.values(words ?? {})]) {
+      const v = f(String(t ?? ""));
+      let n = 0; while (n < v.length && n < w.length && v[n] === w[n]) n++;
+      const enough = n === v.length && n === w.length ? true : n >= Math.min(min, v.length);
+      if (enough && n > bestLen) { best = id; bestLen = n; }
+    }
+  }
+  return best;
+}
 /** The parameters a window of a kind follows today (data; no fake controls: nothing else is offered). */
 export const paramsOfKind = (kind: string, data: CouplingData = COUPLING): string[] => data.kind_params?.[kind] ?? [];
 const kindOfWin = (w: Win) => String(w.params?.panel ?? w.kind);

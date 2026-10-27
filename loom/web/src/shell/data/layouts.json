@@ -503,18 +503,7 @@
         },
         "icon": "⧉+"
       }
-    ],
-    "keymap": {
-      "ctrl+shift+arrowleft": "left",
-      "ctrl+shift+arrowright": "right",
-      "ctrl+shift+arrowup": "top",
-      "ctrl+shift+arrowdown": "bottom",
-      "ctrl+shift+f": "float",
-      "ctrl+shift+m": "maximize",
-      "ctrl+shift+t": "tab",
-      "ctrl+shift+z": "undo",
-      "ctrl+shift+y": "redo"
-    }
+    ]
   },
   "window_arrange_note": "W4 (OKNA §4.4, §6.3): presets of docking and floating - thresholds of the advisories dock_narrow (min_useful_width px of a drawn leaf), float_offscreen (fraction of a floating rect outside the area), float_under_keyboard (on-screen keyboard at least keyboard_min_px tall); drop_edge = the fraction of a leaf near its edge that docks to that side (the middle makes a tab); the menu entries and keys reach every arrangement without dragging. All examples; any value works, also degenerate ones (0 = never narrow).",
   "device_classes": [
@@ -543,5 +532,47 @@
     "installation",
     "person"
   ],
-  "active_levels_note": "W5b (OKNA D19): where the page writes the active own layout of a device class (window_layout_active): `installation` = installations.<installation id>.<class> (this browser only; an empty id = no own layout here, which wins over the person value), `person` = <class> (the fallback of every installation that has no value of its own). Reading always tries this installation first, then the person value. An open list; the value's own `levels` overrides it."
+  "active_levels_note": "W5b (OKNA D19): where the page writes the active own layout of a device class (window_layout_active): `installation` = installations.<installation id>.<class> (this browser only; an empty id = no own layout here, which wins over the person value), `person` = <class> (the fallback of every installation that has no value of its own). Reading always tries this installation first, then the person value. An open list; the value's own `levels` overrides it.",
+  "window_sides": {
+    "lewej": "left",
+    "lewa": "left",
+    "lewo": "left",
+    "left": "left",
+    "prawej": "right",
+    "prawa": "right",
+    "prawo": "right",
+    "right": "right",
+    "gorze": "top",
+    "gory": "top",
+    "gore": "top",
+    "top": "top",
+    "up": "top",
+    "dole": "bottom",
+    "dolu": "bottom",
+    "dol": "bottom",
+    "bottom": "bottom",
+    "down": "bottom"
+  },
+  "window_sides_note": "W7: the words of a sentence for a side (window.dock) or a direction (window.move), folded (no diacritics, lower case), to left/right/top/bottom. An open list of examples: a language or a synonym is one more entry; a word not listed is answered (the receipt names it), nothing is guessed.",
+  "window_move_step_px": 80,
+  "window_resize_factor": {
+    "powieksz": 1.25,
+    "enlarge": 1.25,
+    "grow": 1.25,
+    "zmniejsz": 0.8,
+    "shrink": 0.8,
+    "poszerz": {
+      "w": 1.25
+    },
+    "widen": {
+      "w": 1.25
+    },
+    "zwez": {
+      "w": 0.8
+    },
+    "narrow": {
+      "w": 0.8
+    }
+  },
+  "window_step_note": "W7: presets of the sentences window.move (step in px when the sentence names no number) and window.resize (factor per word; a number scales both sides, {w,h} each side). Any value, also degenerate ones (0 = the window collapses to nothing, which the float_offscreen advisory then says)."
 }

@@ -12,6 +12,7 @@ import { useEffect, useRef, useState, type CSSProperties, type PointerEvent, typ
 import type { Rect, WState, Win } from "./model";
 import { baseWindow, visibleOverlay } from "./session";
 import DockTree from "./DockTree";
+import { GESTURES } from "./steps";
 import { dockView, dropZone, type Box, type Zone } from "./dock";
 
 export interface ArrangeHandlers {
@@ -31,6 +32,8 @@ export interface ArrangeHandlers {
   onExtra?: (id: string, entry: string) => void;
   /** W6: the chain on the title bar - the bound parameters said with words (null = nothing bound, no icon). */
   chain?: (w: Win) => { icon: string; lines: string[]; title: string } | null;
+  /** W7 (§5.3): a tap on the chain (gestures.json targets.chain.tap); a long press opens the menu ⋯ with the dependency choices. */
+  onChainTap?: (id: string) => void;
 }
 
 export interface WindowHostProps {
@@ -78,18 +81,37 @@ function leafBoxesOnScreen(fallbackLeaf: string | undefined): { leaf: string; bo
   return out;
 }
 
+// W7 (§5.3, §6.3): gestures as data (gestures.json): a tap and a long press on a target; the press time is a preset.
+const gestureOf = (target: string): Record<string, string> => GESTURES.targets?.[target] ?? {};
+interface Press { timer: ReturnType<typeof setTimeout> | null; long: boolean }
+function pressHandlers(p: Press, tap: () => void, longPress: () => void, g: Record<string, string>) {
+  const ms = typeof GESTURES.long_press_ms === "number" ? GESTURES.long_press_ms : 500;
+  const stop = () => { if (p.timer) clearTimeout(p.timer); p.timer = null; };
+  return {
+    onPointerDown: () => { p.long = false; stop(); if (g.long_press) p.timer = setTimeout(() => { p.long = true; longPress(); }, ms); },
+    onPointerUp: stop,
+    onPointerLeave: stop,
+    onClick: () => { if (!p.long && g.tap) tap(); p.long = false; },
+    onContextMenu: (e: { preventDefault: () => void }) => { if (g.long_press) { e.preventDefault(); p.long = true; longPress(); } },
+  };
+}
+
 function WindowFrame({ w, title, a, children, floating, onDrag }: { w: Win; title: string; a?: ArrangeHandlers; children: ReactNode; floating: boolean; onDrag: DragStart }) {
   const [open, setOpen] = useState(false);
+  const press = useRef<Press>({ timer: null, long: false });
   const key = String(w.params?.panel ?? w.kind);
   const chain = a?.chain?.(w) ?? null;
   const extra = open && a?.extraMenu ? a.extraMenu(w) : [];
   return (
     <section className={floating ? "win-frame win-floating" : "win-frame"} role="region" aria-label={title} data-testid={`window-${key}`} data-window={w.id} data-mode={w.mode}>
-      <div className="win-titlebar" data-testid={`window-titlebar-${key}`} onPointerDown={(e) => { if (!(e.target as HTMLElement).closest("button")) onDrag(w, e); }}>
+      <div className="win-titlebar" data-testid={`window-titlebar-${key}`}
+        onDoubleClick={(e) => { if (!(e.target as HTMLElement).closest("button") && a && gestureOf("title").double_tap === "maximize_toggle") a.onArrange(w.id, w.mode === "maximized" ? "restore" : "maximize"); }}
+        onPointerDown={(e) => { if (!(e.target as HTMLElement).closest("button")) onDrag(w, e); }}>
         <span className="win-title">{title}</span>
-        {chain && <span className="win-chain" role="note" aria-label={`${chain.title}: ${chain.lines.join("; ")}`} title={chain.lines.join("\n")} data-testid={`window-chain-${key}`}>
+        {chain && <button type="button" className="win-chain" aria-label={`${chain.title}: ${chain.lines.join("; ")}`} title={chain.lines.join("\n")} data-testid={`window-chain-${key}`}
+          {...pressHandlers(press.current, () => a?.onChainTap?.(w.id), () => setOpen(true), gestureOf("chain"))}>
           <span aria-hidden="true">{chain.icon}</span> <span className="win-chain-words">{chain.lines.join("; ")}</span>
-        </span>}
+        </button>}
         {a && <button type="button" className="icon-btn" aria-label={a.menuLabel(title)} aria-expanded={open} data-testid={`window-menu-${key}`} onClick={() => setOpen((v) => !v)}>⋯</button>}
         {a && <button type="button" className="icon-btn" aria-label={a.closeLabel(title)} data-testid={`window-close-${key}`} onClick={() => a.onClose(w.id)}>×</button>}
       </div>

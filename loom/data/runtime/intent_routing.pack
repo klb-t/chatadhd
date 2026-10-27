@@ -90,7 +90,18 @@
         "layout.apply",
         "layout.undo",
         "layout.redo",
-        "layout.reset"
+        "layout.reset",
+        "window.maximize",
+        "window.restore",
+        "window.minimize",
+        "window.dock",
+        "window.float",
+        "window.tab",
+        "window.move",
+        "window.resize",
+        "window.bind",
+        "window.unbind",
+        "layout.rename"
       ]
     },
     "on_reject": {
@@ -2444,6 +2455,419 @@
           "lang": "en",
           "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:reset\\s+(?:the\\s+)?(?:window\\s+)?layout|(?:restore|back\\s+to)\\s+the\\s+(?:default|shipped|original)\\s+(?:window\\s+)?layout)\\s*[.!?]*\\s*$",
           "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "window.bind.pl",
+          "action": "window.bind",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:powiaz|polacz|zwiaz|sprzez|zsynchronizuj)\\s+(.+?)\\s+(?:obu|obydwu|tych|wszystkich|dwoch|moich)\\s+(.+?)\\s*[.!?]*\\s*$",
+          "args": [
+            "param",
+            "target"
+          ],
+          "original": [
+            "param",
+            "target"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "window.bind.en",
+          "action": "window.bind",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:link|couple|bind|sync|synchroni[sz]e)\\s+(?:the\\s+)?(.+?)\\s+of\\s+(?:both|the|these|all|all\\s+the|all\\s+of\\s+the)\\s+(.+?)\\s*[.!?]*\\s*$",
+          "args": [
+            "param",
+            "target"
+          ],
+          "original": [
+            "param",
+            "target"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "window.unbind.pl",
+          "action": "window.unbind",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:rozwiaz|rozlacz|odwiaz|odlacz)\\s+(.+?)\\s+(?:obu|obydwu|tych|wszystkich|dwoch|moich)\\s+(.+?)\\s*[.!?]*\\s*$",
+          "args": [
+            "param",
+            "target"
+          ],
+          "original": [
+            "param",
+            "target"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "window.unbind.en",
+          "action": "window.unbind",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:unlink|uncouple|unbind|unsync)\\s+(?:the\\s+)?(.+?)\\s+of\\s+(?:both|the|these|all|all\\s+the|all\\s+of\\s+the)\\s+(.+?)\\s*[.!?]*\\s*$",
+          "args": [
+            "param",
+            "target"
+          ],
+          "original": [
+            "param",
+            "target"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "window.maximize.pl",
+          "action": "window.maximize",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:zmaksymalizuj|powieksz\\s+na\\s+caly\\s+ekran)(?:\\s+(?:okno\\s+)?(.+?))?\\s*[.!?]*\\s*$",
+          "args": [
+            "target"
+          ],
+          "original": [
+            "target"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "window.maximize.full.pl",
+          "action": "window.maximize",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?pokaz\\s+(?:okno\\s+)?(.+?)\\s+na\\s+calym\\s+ekranie\\s*[.!?]*\\s*$",
+          "args": [
+            "target"
+          ],
+          "original": [
+            "target"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "window.maximize.en",
+          "action": "window.maximize",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:maximi[sz]e|make\\s+full\\s*screen)(?:\\s+(?:the\\s+)?(.+?))?(?:\\s+window)?\\s*[.!?]*\\s*$",
+          "args": [
+            "target"
+          ],
+          "original": [
+            "target"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "window.restore.pl",
+          "action": "window.restore",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:przywroc|odmaksymalizuj)\\s+okno(?:\\s+(.+?))?\\s*[.!?]*\\s*$",
+          "args": [
+            "target"
+          ],
+          "original": [
+            "target"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "window.restore.en",
+          "action": "window.restore",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:restore|unmaximi[sz]e)\\s+(?:the\\s+)?(?:(.+?)\\s+)?window\\s*[.!?]*\\s*$",
+          "args": [
+            "target"
+          ],
+          "original": [
+            "target"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "window.minimize.pl",
+          "action": "window.minimize",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:zminimalizuj|zwin)\\s+(?:okno\\s+)?(.+?)\\s*[.!?]*\\s*$",
+          "args": [
+            "target"
+          ],
+          "original": [
+            "target"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "window.minimize.en",
+          "action": "window.minimize",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:minimi[sz]e|collapse)\\s+(?:the\\s+)?(.+?)(?:\\s+window)?\\s*[.!?]*\\s*$",
+          "args": [
+            "target"
+          ],
+          "original": [
+            "target"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "window.dock.pl",
+          "action": "window.dock",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:zadokuj|przypnij|dosun|przyklej)\\s+(?:okno\\s+)?(.+?)\\s+(?:po|do|na|u)\\s+(lewej|prawej|lewa|prawa|lewo|prawo|gorze|gory|gore|dole|dolu|dol)(?:\\s+(?:stronie|strony|krawedzi))?\\s*[.!?]*\\s*$",
+          "args": [
+            "target",
+            "side"
+          ],
+          "original": [
+            "target",
+            "side"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "window.dock.en",
+          "action": "window.dock",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:dock|pin|snap)\\s+(?:the\\s+)?(.+?)(?:\\s+window)?\\s+(?:on|to|at)\\s+(?:the\\s+)?(left|right|top|bottom)(?:\\s+(?:side|edge))?\\s*[.!?]*\\s*$",
+          "args": [
+            "target",
+            "side"
+          ],
+          "original": [
+            "target",
+            "side"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "window.float.pl",
+          "action": "window.float",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:odepnij|odlacz)\\s+(?:okno\\s+)?(.+?)\\s*[.!?]*\\s*$",
+          "args": [
+            "target"
+          ],
+          "original": [
+            "target"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "window.float.window.pl",
+          "action": "window.float",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:pokaz|otworz)\\s+(?:okno\\s+)?(.+?)\\s+w\\s+plywajacym\\s+oknie\\s*[.!?]*\\s*$",
+          "args": [
+            "target"
+          ],
+          "original": [
+            "target"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "window.float.en",
+          "action": "window.float",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:float|undock|detach)\\s+(?:the\\s+)?(.+?)(?:\\s+window)?\\s*[.!?]*\\s*$",
+          "args": [
+            "target"
+          ],
+          "original": [
+            "target"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "window.float.window.en",
+          "action": "window.float",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:show|open)\\s+(?:the\\s+)?(.+?)\\s+in\\s+a\\s+floating\\s+window\\s*[.!?]*\\s*$",
+          "args": [
+            "target"
+          ],
+          "original": [
+            "target"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "window.tab.pl",
+          "action": "window.tab",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:dodaj|wstaw|daj|przenies|otworz)\\s+(?:okno\\s+)?(.+?)\\s+(?:jako|do|w)\\s+zakladk\\w*\\s*[.!?]*\\s*$",
+          "args": [
+            "target"
+          ],
+          "original": [
+            "target"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "window.tab.en",
+          "action": "window.tab",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:put|move|open|add)\\s+(?:the\\s+)?(.+?)(?:\\s+window)?\\s+(?:in|into|as)\\s+a\\s+tab\\s*[.!?]*\\s*$",
+          "args": [
+            "target"
+          ],
+          "original": [
+            "target"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "window.move.pl",
+          "action": "window.move",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?przesun\\s+(?:okno\\s+)?(.+?)\\s+(?:w|na|do)\\s+(lewo|prawo|gore|dol)(?:\\s+o\\s+(\\d+)(?:\\s*(?:px|pikseli|piksele|piksel))?)?\\s*[.!?]*\\s*$",
+          "args": [
+            "target",
+            "direction",
+            "amount"
+          ],
+          "original": [
+            "target",
+            "direction",
+            "amount"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "window.move.en",
+          "action": "window.move",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?move\\s+(?:the\\s+)?(.+?)(?:\\s+window)?\\s+(left|right|up|down)(?:\\s+by\\s+(\\d+)(?:\\s*(?:px|pixels))?)?\\s*[.!?]*\\s*$",
+          "args": [
+            "target",
+            "direction",
+            "amount"
+          ],
+          "original": [
+            "target",
+            "direction",
+            "amount"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "window.resize.pl",
+          "action": "window.resize",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?zmien\\s+rozmiar\\s+(?:okna\\s+)?(.+?)\\s+na\\s+(\\d+)\\s*(?:x|na|×)\\s*(\\d+)(?:\\s*px)?\\s*[.!?]*\\s*$",
+          "args": [
+            "target",
+            "w",
+            "h"
+          ],
+          "original": [
+            "target",
+            "w",
+            "h"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "window.resize.how.pl",
+          "action": "window.resize",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(powieksz|zmniejsz|poszerz|zwez)\\s+okno\\s+(.+?)\\s*[.!?]*\\s*$",
+          "args": [
+            "how",
+            "target"
+          ],
+          "original": [
+            "how",
+            "target"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "window.resize.en",
+          "action": "window.resize",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?resize\\s+(?:the\\s+)?(.+?)(?:\\s+window)?\\s+to\\s+(\\d+)\\s*(?:x|by|×)\\s*(\\d+)(?:\\s*px)?\\s*[.!?]*\\s*$",
+          "args": [
+            "target",
+            "w",
+            "h"
+          ],
+          "original": [
+            "target",
+            "w",
+            "h"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "window.resize.how.en",
+          "action": "window.resize",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(enlarge|shrink|grow|widen|narrow)\\s+(?:the\\s+)?(.+?)\\s+window\\s*[.!?]*\\s*$",
+          "args": [
+            "how",
+            "target"
+          ],
+          "original": [
+            "how",
+            "target"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "layout.rename.pl",
+          "action": "layout.rename",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?zmien\\s+nazwe\\s+(?:zapisanego\\s+)?ukladu(?:\\s+okien)?\\s+(.+?)\\s+na\\s+(.+?)\\s*[.!?]*\\s*$",
+          "args": [
+            "name",
+            "label"
+          ],
+          "original": [
+            "name",
+            "label"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "layout.rename.en",
+          "action": "layout.rename",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?rename\\s+(?:the\\s+)?(?:saved\\s+)?(?:window\\s+)?layout\\s+(.+?)\\s+(?:to|as)\\s+(.+?)\\s*[.!?]*\\s*$",
+          "args": [
+            "name",
+            "label"
+          ],
+          "original": [
+            "name",
+            "label"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "layout.delete.pl",
+          "action": "layout.delete",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:usun|skasuj|wyrzuc)\\s+(?:zapisany\\s+)?uklad(?:\\s+okien)?\\s+(.+?)\\s*[.!?]*\\s*$",
+          "args": [
+            "name"
+          ],
+          "original": [
+            "name"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "layout.delete.en",
+          "action": "layout.delete",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:delete|remove|forget)\\s+(?:the\\s+)?(?:saved\\s+)?(?:window\\s+)?layout\\s+(.+?)\\s*[.!?]*\\s*$",
+          "args": [
+            "name"
+          ],
+          "original": [
+            "name"
+          ],
           "takes_scope": false
         },
         {

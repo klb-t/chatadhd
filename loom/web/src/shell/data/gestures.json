@@ -1,0 +1,30 @@
+{
+  "schema": "loom.shell_gestures/1",
+  "note": "W7 (OKNA §5.3, §6.3): gestures of the window system as data. Every entry is a preset and the lists are open examples: a target (chain icon, title bar) → for a gesture (tap, long_press, double_tap) the operation. Times in ms.",
+  "long_press_ms": 500,
+  "double_tap_ms": 350,
+  "targets": {
+    "chain": {
+      "tap": "cycle_mode",
+      "long_press": "choose_dependency"
+    },
+    "title": {
+      "double_tap": "maximize_toggle",
+      "long_press": "menu"
+    }
+  },
+  "chain_cycle": [
+    "shared",
+    "independent",
+    "linked"
+  ],
+  "chain_cycle_note": "The order a tap on the chain walks the binding of a parameter (§5.3: the order is an example). `linked` takes the first other window of the same kind that follows the parameter, dependency same; with none, the step is skipped.",
+  "focus_order": [
+    "dock",
+    "floating",
+    "shelf"
+  ],
+  "focus_order_note": "§6.4: the order of windows for Tab/the switcher keys: the dock tree in reading order (a before b), floating ones by z rising, then the shelf. Any order of these words.",
+  "touch_target_px": 44,
+  "touch_target_px_note": "§6.4: the minimum size of the title-bar buttons and grips (CSS px); smaller works."
+}

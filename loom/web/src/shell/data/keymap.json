@@ -1,0 +1,20 @@
+{
+  "schema": "loom.shell_keymap/1",
+  "note": "W7 (OKNA §6.3): the keys of the window system as data, moved out of layouts.json (window_arrange.keymap). A key combination (modifiers ctrl, alt, shift in this order, then the key as KeyboardEvent.key in lower case) → an operation on the focused window: a side (left/right/top/bottom), tab, float, maximize, minimize, restore, duplicate, or a journal/switcher step (undo, redo, next, prev). An open list of presets: any combination, any operation the window menu knows. In a text field the field keeps its keys. Ctrl+Tab of §6.3 is not a preset because browsers keep it for their own tabs (dated observation 2026-10-27); it works when a person adds it here and the shell (Android) passes it.",
+  "keys": {
+    "ctrl+shift+arrowleft": "left",
+    "ctrl+shift+arrowright": "right",
+    "ctrl+shift+arrowup": "top",
+    "ctrl+shift+arrowdown": "bottom",
+    "ctrl+shift+f": "float",
+    "ctrl+shift+m": "maximize",
+    "ctrl+shift+t": "tab",
+    "ctrl+shift+z": "undo",
+    "ctrl+shift+y": "redo",
+    "ctrl+alt+arrowright": "next",
+    "ctrl+alt+arrowleft": "prev",
+    "ctrl+shift+h": "minimize",
+    "ctrl+shift+e": "restore"
+  },
+  "text_fields_keep_keys": true
+}

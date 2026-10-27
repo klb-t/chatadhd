@@ -109,3 +109,8 @@ details[open] > summary::before { content: var(--disclosure-glyph-expanded); ani
 .model-chip-conn { margin-left: 6px; font-size: 12px; color: var(--dim); }
 .model-chip-conn[data-state="ok"] { color: var(--ok, #3a9a5b); }
 .model-chip-conn[data-state="failed"] { color: var(--danger, #c0392b); }
+
+/* W7 (§6.4): text for a reader of the screen only (the window in front, announced politely) */
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+/* W7 (§5.3): the chain is a button (tap walks the binding, long press opens the dependency choices) that looks like the W6 chain */
+button.win-chain { background: none; border: 0; color: inherit; font: inherit; cursor: pointer; min-height: 44px; padding: 0 6px; }

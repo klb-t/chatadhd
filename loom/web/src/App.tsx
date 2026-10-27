@@ -39,7 +39,7 @@ import { mergePatch } from "./api/merge-patch";
 import { clientIdentity, installationIdentity } from "./context/client-session";
 import { layoutIdOfMode } from "./shell/windows/migrate";
 import type { ShellLayouts } from "./shell/LayoutsSheet";
-import { WINDOW_DATA, closeWindows, windowDataOf, focusWindow, runWindowStep, switcherEntries, visibleId, type WindowReceipt } from "./shell/windows/ops";
+import { WINDOW_DATA, closeWindows, windowDataOf, focusWindow, resolveWord, runWindowStep, switcherEntries, visibleId, type WindowReceipt } from "./shell/windows/ops";
 import { WINDOW_STEP_EVENT, type WindowStepDetail } from "./context/browser-host";
 import { layerStack } from "./shell/history";
 import { shellLanguage } from "./shell/language";
@@ -48,7 +48,9 @@ import { glyphVariables } from "./shell/disclosure-glyphs";
 import { PANEL_LABELS, PANEL_TEXT_IDS, type PanelId } from "./shell/panels";
 import { useLayer } from "./shell/use-layer";
 import { useArrange } from "./shell/windows/useArrange";
-import { useCoupling } from "./shell/windows/useCoupling";
+import { useCoupling, type CouplingHook } from "./shell/windows/useCoupling";
+import { runArrangeStep, STEP_DATA } from "./shell/windows/steps";
+import { bindingsOf, paramOfWord, paramWord, paramsOfKind } from "./shell/windows/coupling";
 import { ARRANGE, arrangeWindow } from "./shell/windows/arrange";
 
 type Theme = "dark" | "amoled";
@@ -423,6 +425,7 @@ export default function App() {
     const n = twins.findIndex(x => x.id === id);
     return twins.length > 1 && n > 0 ? `${name} ${n + 1}` : name;
   }, [t]);
+  const couplingRef = useRef<CouplingHook | null>(null);
   useEffect(() => {
     const known = (id: string) => Object.prototype.hasOwnProperty.call(PANEL_LABELS, id);
     const onStep = (event: Event) => {
@@ -442,7 +445,55 @@ export default function App() {
           detail.outcome = ok(t(done ? `layout_receipt_${op}` : `layout_receipt_nothing_${op}`), { state: done ? "ok" : "noop" });
         }
         else if (op === "reset") detail.outcome = ok(t("layout_receipt_reset", { name: layoutOps.reset() }));
+        else if (op === "rename" || op === "delete") {
+          // W7: a sentence renames or deletes an own layout (delete only after the proposal and a yes: layout.delete is not direct)
+          const own = findNamed(readNamed(configRef.current.window_layouts), name);
+          const label = typeof args.label === "string" ? args.label.trim() : "";
+          if (!own) detail.outcome = fail(t(shippedId(name, LAYOUTS) ? "layout_receipt_shipped" : "layout_receipt_none", { name }));
+          else if (op === "delete") { layoutOps.remove(own.id); detail.outcome = ok(t("layout_receipt_deleted", { name: own.label })); }
+          else if (!label) detail.outcome = fail(t("layout_receipt_noname"));
+          else { const clash = layoutOps.rename(own.id, label); detail.outcome = clash ? fail(t("layouts_rename_clash", { name: label })) : ok(t("layout_receipt_renamed", { name: own.label, label })); }
+        }
         else detail.outcome = fail(t("layout_receipt_none", { name: detail.action }));
+        return;
+      }
+      const args = detail.args ?? {};
+      const failWith = (text: string) => { detail.outcome = { state: "failed", error: { message: text } }; };
+      if (detail.action === "window.bind" || detail.action === "window.unbind") {
+        // W7: a sentence binds (or unbinds) a parameter of every open window of a kind on a shared channel named after the parameter
+        const pw = typeof args.param === "string" ? args.param : "";
+        const param = paramOfWord(pw);
+        if (!param) { failWith(t("window_receipt_noparam", { word: pw })); return; }
+        const word = typeof args.target === "string" ? args.target : "";
+        const target = word ? resolveWord(word, known) : null;
+        if (word && !target) { failWith(t("window_receipt_none", { word })); return; }
+        const l = winRef.current.layout;
+        const kindOf = (w: Win) => String(w.params?.panel ?? w.kind);
+        let ids = l.windows.filter(w => paramsOfKind(kindOf(w)).includes(param) && (!target || ("chat" in target ? w.kind === "chat" && !w.params?.panel : w.params?.panel === target.panel))).map(w => w.id);
+        const pName = paramWord(param, uiLanguageRef.current);
+        if (detail.action === "window.bind") {
+          if (ids.length < 2) { failWith(t("window_receipt_fewer", { param: pName, count: String(ids.length) })); return; }
+          couplingRef.current?.bindAll(ids, param);
+        } else {
+          ids = ids.filter(id => param in bindingsOf(l.windows.find(w => w.id === id)));
+          couplingRef.current?.unbindAll(ids, param);
+        }
+        const text = t(detail.action === "window.bind" ? "window_receipt_bound" : "window_receipt_unbound", { param: pName, screen: ids.map(windowLabel).join(", ") || "0" });
+        detail.outcome = { state: "ok", parts: [{ kind: "text", text }], data: { schema: "loom.window_receipt/1", op: detail.action.slice(7), state: ids.length ? "ok" : "noop", windows: ids, param, layout: winRef.current.layout.id } };
+        return;
+      }
+      if (/^window\.(maximize|restore|minimize|dock|float|tab|move|resize)$/.test(detail.action)) {
+        // W7: arranging a window by a sentence - the same functions as the menu ⋯ and the keys, one journal entry
+        const r = runArrangeStep(winRef.current, detail.action, args, known, deviceClassOf(window.innerWidth), { w: window.innerWidth, h: window.innerHeight }, undefined, { ...windowDataRef.current, ...STEP_DATA });
+        moveTo(r.state);
+        const names = r.receipt.windows.map(windowLabel).join(", ");
+        if (r.receipt.state === "none") {
+          const sideWord = typeof args.side === "string" ? args.side : typeof args.direction === "string" ? args.direction : "";
+          failWith(r.receipt.word && r.receipt.word === sideWord ? t("window_receipt_noside", { word: sideWord }) : t("window_receipt_none", { word: r.receipt.word ?? "" }));
+          return;
+        }
+        const text = t("window_receipt_arranged", { screen: names, how: r.receipt.how ?? r.receipt.op });
+        detail.outcome = { state: "ok", parts: [{ kind: "text", text }], data: { schema: "loom.window_receipt/1", ...r.receipt, layout: r.state.layout.id } };
         return;
       }
       const deviceClass = deviceClassOf(window.innerWidth);
@@ -494,8 +545,9 @@ export default function App() {
   // W4: docking and floating (menu ⋯, drag, split grips, keys) and the advisory chips of the arrangement
   // W6: coupling of window parameters (bindings in the layout, values at runtime, chips with the arrangement ones)
   const coupling = useCoupling(win, winRef, moveTo, uiLanguage, windowLabel);
+  couplingRef.current = coupling;
   const arrangedRaw = useArrange(win, winRef, moveTo, uiLanguage, windowLabel, coupling.advisories);
-  const arranged = useMemo(() => ({ ...arrangedRaw, handlers: { ...arrangedRaw.handlers, extraMenu: coupling.extraMenu, onExtra: coupling.onExtra, chain: coupling.chain } }), [arrangedRaw, coupling]);
+  const arranged = useMemo(() => ({ ...arrangedRaw, handlers: { ...arrangedRaw.handlers, extraMenu: coupling.extraMenu, onExtra: coupling.onExtra, chain: coupling.chain, onChainTap: coupling.cycleChain } }), [arrangedRaw, coupling]);
   const [panelMenu, setPanelMenu] = useState(false);
   useEffect(() => { if (activePanel === null) setPanelMenu(false); }, [activePanel]);
   // the layout shows one window full-screen (the plain chat app is that case); a grid of docks (the former Workshop) is not
@@ -567,14 +619,19 @@ export default function App() {
   // W4: a layout whose preset shows one window full-screen (czat) and now draws its dock tree (a panel docked next to the chat) has no
   // switcher bar: the chat keeps its own bar and menu.
   const presetFront = LAYOUTS[win.layout.id]?.windows.find(w => w.mode === "maximized")?.id;
+  // W7 (§6.4): a reader of the screen hears which window is in front when it changes (aria-live polite, words of the shell)
+  const frontId = visibleId(win.layout) ?? win.layout.focus;
+  const announce = <div className="sr-only" role="status" aria-live="polite" data-testid="window-announce">{frontId ? t("window_announce", { screen: windowLabel(frontId) }) : ""}</div>;
   const grid = (body: ReactNode, overlay: ReactNode) => presetFront ? (
     <div className="app-root dock-root" data-layout={win.layout.id} data-testid="dock-root">
       <div className="app-layout">{body}{overlay}</div>
+      {announce}
     </div>
   ) : workshop(body, overlay);
   const workshop = (body: ReactNode, overlay: ReactNode) => (
     <div className="app-root" data-sidebar-side={primaryProfile?.presentation.sidebar.side ?? "left"} data-layout={win.layout.id}
       style={primaryProfile ? profileStyle(primaryProfile) : undefined}>
+      {announce}
       <div className="app-header window-switcher" role="toolbar" aria-label={shellText("menu_label")} data-testid="window-switcher"
         onKeyDown={(event) => { if (event.key === "Escape") setNavOpen(false); }} {...inertAttr(activePanel !== null)}>
         <button

@@ -272,4 +272,49 @@ TEST_SUITE("chat_coverage") {
         CHECK_MESSAGE((!entry || !f.rt->actions().runnable(*entry)), o.at("id").get<std::string>() << " is open but its action works: move it to capabilities");
       }
   }
+  TEST_CASE("W7 (OKNA §6.1-6.2): each window and layout sentence reaches its own action with its arguments") {
+    Fixture f;
+    struct Case { const char* text; const char* action; std::vector<std::pair<const char*, const char*>> args; };
+    const std::vector<Case> cases = {
+        {"zmaksymalizuj ustawienia", "window.maximize", {{"target", "ustawienia"}}},
+        {"zmaksymalizuj", "window.maximize", {}},
+        {"maximize the settings", "window.maximize", {{"target", "settings"}}},
+        {"zadokuj graf po lewej", "window.dock", {{"target", "graf"}, {"side", "lewej"}}},
+        {"przypnij graf do prawej", "window.dock", {{"target", "graf"}, {"side", "prawej"}}},
+        {"dock the graph on the left", "window.dock", {{"target", "graph"}, {"side", "left"}}},
+        {"przywróć okno graf", "window.restore", {{"target", "graf"}}},
+        {"restore the graph window", "window.restore", {{"target", "graph"}}},
+        {"zminimalizuj graf", "window.minimize", {{"target", "graf"}}},
+        {"minimize the graph", "window.minimize", {{"target", "graph"}}},
+        {"odepnij graf", "window.float", {{"target", "graf"}}},
+        {"pokaż ustawienia w pływającym oknie", "window.float", {{"target", "ustawienia"}}},
+        {"float the graph", "window.float", {{"target", "graph"}}},
+        {"dodaj graf jako zakładkę", "window.tab", {{"target", "graf"}}},
+        {"put the graph in a tab", "window.tab", {{"target", "graph"}}},
+        {"przesuń graf w prawo o 100", "window.move", {{"target", "graf"}, {"direction", "prawo"}, {"amount", "100"}}},
+        {"move the graph left", "window.move", {{"target", "graph"}, {"direction", "left"}}},
+        {"zmień rozmiar okna graf na 600x400", "window.resize", {{"target", "graf"}, {"w", "600"}, {"h", "400"}}},
+        {"powiększ okno graf", "window.resize", {{"target", "graf"}, {"how", "powiększ"}}},
+        {"resize the graph to 600x400", "window.resize", {{"target", "graph"}, {"w", "600"}, {"h", "400"}}},
+        {"powiąż przybliżenie obu grafów", "window.bind", {{"param", "przybliżenie"}, {"target", "grafów"}}},
+        {"link the zoom of both graphs", "window.bind", {{"param", "zoom"}, {"target", "graphs"}}},
+        {"rozwiąż przybliżenie obu grafów", "window.unbind", {{"param", "przybliżenie"}, {"target", "grafów"}}},
+        {"unlink the zoom of both graphs", "window.unbind", {{"param", "zoom"}, {"target", "graphs"}}},
+        {"zmień nazwę układu praca na dom", "layout.rename", {{"name", "praca"}, {"label", "dom"}}},
+        {"rename the layout work to home", "layout.rename", {{"name", "work"}, {"label", "home"}}},
+        {"usuń układ praca", "layout.delete", {{"name", "praca"}}},
+        {"delete the layout work", "layout.delete", {{"name", "work"}}},
+    };
+    int checked = 0;
+    for (const auto& c : cases) {
+      const Json routed = unwrap(chat_route::route(*f.rt, Json{{"text", c.text}, {"conv_id", f.conv_id}}));
+      const std::string reached = routed.value("kind", "") == "command" ? routed.at("command").value("action", "") : "";
+      CHECK_MESSAGE(reached == c.action, "\"" << c.text << "\" reached " << (reached.empty() ? "[a message]" : reached) << ", not " << c.action);
+      if (reached != c.action) continue;
+      const Json args = routed.at("command").value("args", Json::object());
+      for (const auto& [k, v] : c.args) CHECK_MESSAGE(args.value(k, "") == std::string(v), "\"" << c.text << "\": " << k << " = " << args.value(k, "") << ", not " << v);
+      ++checked;
+    }
+    CHECK(checked == static_cast<int>(cases.size()));
+  }
 }
