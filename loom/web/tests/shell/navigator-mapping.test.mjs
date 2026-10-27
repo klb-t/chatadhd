@@ -41,6 +41,9 @@ test('a changed mapping changes the picture: size by order differs from size by 
   assert.deepEqual(m.elements.slice(1).map(e => e.channels.hue), [240, 120, 0]);
   assert.deepEqual(m.elements.slice(1).map(e => e.channels.alpha), [0.25, 0.625, 1]);
   assert.equal(m.elements[0].channels.size, 18);
+  const outlier = [row(1, { order: 0 }), row(2, { order: 1 }), row(3, { order: 1000 })];
+  assert.deepEqual(map.viewModelFor(level(outlier), 'Graf', { hue: 'order' }).elements.slice(1).map(e => e.channels.hue), [240, 239.76, 0], 'linear: an outlier squashes the rest');
+  assert.deepEqual(map.viewModelFor(level(outlier), 'Graf', { hue: { measure: 'order', curve: 'rank' } }).elements.slice(1).map(e => e.channels.hue), [240, 120, 0], 'rank: evenly spread');
   // a category on a non-colour channel: its rank among the level's distinct values; a constant: the middle of the range
   const cats = map.viewModelFor(level([row(1, { kind: 'b' }), row(2, { kind: 'a' }), row(3, { kind: 'b' })]), 'Graf', { size: { measure: 'kind', range: [10, 30] }, alpha: 'none' });
   assert.deepEqual(cats.elements.slice(1).map(e => e.channels.size), [30, 10, 30]);

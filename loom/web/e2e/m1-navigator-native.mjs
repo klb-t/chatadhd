@@ -673,7 +673,8 @@ try {
     await chips.first().waitFor();
     const codes = await chips.evaluateAll(els => els.map(el => `${el.dataset.code}|${el.dataset.fingerprint}`));
     assert.deepEqual(codes, ["measure_missing|navigator_level|size|age"], "only the changed channel asks (no ROM row has an age: one chip says it, not two)");
-    assert.ok((await chips.first().innerText()).includes("żaden z 13 znaczników"), "the sentence says how many marks");
+    const sentence = await chips.first().innerText();
+    assert.ok(sentence.includes("żaden z 13 znaczników"), `the sentence says how many marks: ${sentence}`);
     assert.equal(listCalls.length, 1, "the remembered answers are read once, when there is something to advise");
     assert.equal(await page.getByTestId("nav-map-mark").count() > 0, true, "the map is still drawn: an advisory blocks nothing");
     await layoutFits();

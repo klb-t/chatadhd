@@ -122,6 +122,7 @@ export function levelChannels(focus: Partial<GraphNodeRow>, children: readonly P
     const nums = values.filter((v): v is number => typeof v === "number");
     const lo = nums.length ? Math.min(...nums) : 0, hi = nums.length ? Math.max(...nums) : 0;
     const cats = [...new Set(values.filter((v): v is string => typeof v === "string"))].sort();
+    const ranks = [...new Set(nums)].sort((a, b) => a - b);   // curve "rank": the place among the level's distinct numbers (an outlier does not squash the rest)
     const valueOf = (v: number | string | undefined): number => {
       if (v === undefined) return def.missing;
       if (d.measures[choice.measure]?.constant) return clean(lerp(def.range, 0.5));
@@ -130,6 +131,7 @@ export function levelChannels(focus: Partial<GraphNodeRow>, children: readonly P
         const i = cats.indexOf(v);
         return clean(lerp(def.range, cats.length > 1 && i >= 0 ? i / (cats.length - 1) : 0.5));
       }
+      if (def.curve === "rank") { const i = ranks.indexOf(v); return clean(lerp(def.range, ranks.length > 1 && i >= 0 ? i / (ranks.length - 1) : 0.5)); }
       if (def.curve === "log1p") return (def.base ?? def.range[0]) + (v > 0 ? (def.gain ?? 1) * Math.log10(1 + v) : v < 0 ? -(def.gain ?? 1) * Math.log10(1 - v) : 0);
       return clean(lerp(def.range, hi > lo ? (Math.min(hi, Math.max(lo, v)) - lo) / (hi - lo) : 0.5));
     };
