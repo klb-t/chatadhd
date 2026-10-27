@@ -447,6 +447,8 @@ test('W3: a step on the windows of the asking page is carried out by that page a
   assert.equal(a.carriesOutHere(own, 'web-a'), true, 'the page that sent the sentence opens the window');
   assert.equal(a.carriesOutHere(own, 'web-b'), false, 'another page showing the conversation leaves it');
   assert.equal(a.carriesOutHere(step('window.close', undefined), 'web-b'), true, 'no named asker: as before W3');
+  assert.equal(a.carriesOutHere(step('layout.apply', 'web-a'), 'web-b'), false, 'W5: a layout step too is only for the page that asked');
+  assert.equal(a.carriesOutHere(step('layout.undo', 'web-a'), 'web-a'), true);
   assert.equal(a.carriesOutHere(step('device.record_audio', 'web-a'), 'web-b'), true, 'device steps are not narrowed by this rule');
   assert.equal(a.carriesOutHere(step('device.record_audio', 'web-a'), 'web-b', ['device.']), false, 'the prefix list is data, open');
   assert.equal(a.carriesOutHere(a.pendingAnswer({ action_proposal: proposal }), 'web-b'), true, 'a proposal is not a client step');
