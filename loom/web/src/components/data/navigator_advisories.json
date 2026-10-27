@@ -1,13 +1,7 @@
 {
-  "navigator_advisories_note": "G3c: the generic degenerate checks of the navigator map (the view model is built in the browser, so the kernel's view engine cannot evaluate it): the same codes and the same loom.advisory/1 shape as the kernel's (nothing_visible, marks_identical). All presets, any value works: min_elements = how many marks a channel needs before 'all identical' is said (0 or 1 = even a single mark; a huge number = never); invisible_at_or_below per channel (absent = the channel cannot vanish); channels = which channels of a mark are checked and which data they show (words for the sentence). The fingerprint is the declaration id + channel (the mapping is the configuration, not the data), so 'don't ask' holds for this mapping on any level. Reverse: delete a channel here = it is no longer checked. advise_on_defaults (preset false): false = a channel is checked only when its mapping (setting navigator_mapping: channel -> what it shows) differs from default_mapping, i.e. the person or a profile changed it - the app's own default is not a question to the person; true = every channel is checked. default_mapping is the shipped mapping. Reverse: set advise_on_defaults true.",
+  "navigator_advisories_note": "G3c: the generic degenerate checks of the navigator map (the view model is built in the browser, so the kernel's view engine cannot evaluate it): the same codes and the same loom.advisory/1 shape as the kernel's (nothing_visible, marks_identical). All presets, any value works: min_elements = how many marks a channel needs before 'all identical' is said (0 or 1 = even a single mark; a huge number = never); invisible_at_or_below per channel (absent = the channel cannot vanish); channels = which channels of a mark are checked and which data they show (words for the sentence). The fingerprint is the declaration id + channel (the mapping is the configuration, not the data), so 'don't ask' holds for this mapping on any level. Reverse: delete a channel here = it is no longer checked. advise_on_defaults (preset false): false = a channel is checked only when its mapping (setting navigator_mapping: channel -> what it shows) differs from default_mapping, i.e. the person or a profile changed it - the app's own default is not a question to the person; true = every channel is checked. The shipped mapping is data/navigator_mapping.json 'default' (G3d: one place; default_mapping here, when present, overrides it for the checks only). Reverse: set advise_on_defaults true. G3d: channel_unknown (the setting names a channel the map does not draw: nothing is drawn for it, nothing refused) and measure_missing (no mark of the level has the measure: every mark draws the channel's preset; the generic 'all identical' is then not repeated) come from the mapping report of the level.",
   "declaration": "navigator_level",
   "advise_on_defaults": false,
-  "default_mapping": {
-    "hue": "kind",
-    "saturation": "kind",
-    "lightness": "kind",
-    "size": "count"
-  },
   "min_elements": 2,
   "channels": {
     "hue": {
@@ -34,6 +28,13 @@
         "pl": "liczba pod spodem",
         "en": "count below"
       }
+    },
+    "alpha": {
+      "invisible_at_or_below": 0,
+      "shows": {
+        "pl": "nic",
+        "en": "nothing"
+      }
     }
   },
   "texts": {
@@ -48,6 +49,14 @@
     "question": {
       "en": "Is this intended?",
       "pl": "Czy tak ma być?"
+    },
+    "measure_missing": {
+      "pl": "Kanał '{channel}' ma pokazywać {measure}, ale żaden z {total} znaczników nie ma tej wartości, więc wszystkie są rysowane tak samo (wartość domyślna kanału).",
+      "en": "The channel '{channel}' is set to show {measure}, but none of the {total} marks has that value, so all of them are drawn alike (the channel's preset)."
+    },
+    "channel_unknown": {
+      "pl": "Ustawienie wskazuje kanał '{channel}' (pokazuje: {measure}), którego mapa nie rysuje, więc nic się od niego nie zmienia.",
+      "en": "The setting names the channel '{channel}' (it shows: {measure}), which the map does not draw, so nothing changes because of it."
     }
   }
 }

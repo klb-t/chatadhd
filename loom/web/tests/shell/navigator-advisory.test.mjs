@@ -9,7 +9,7 @@ const map = await loader.load('src/components/navigator-map.ts');
 const adv = await loader.load('src/components/navigator-advisory.ts');
 const bar = await loader.load('src/view-engine/view-bar.ts');
 
-const row = (address, kind, extra = {}) => ({ address, label: 'L ' + address, kind, provenance: { layer: 'rom' }, evidence: { class: 'declared', confidence: null }, has_children: false, ...extra });
+const row = (address, kind, extra = {}) => ({ address, label: 'L ' + address, kind, provenance: { layer: 'rom' }, evidence: { class: 'declared', confidence: null }, has_children: false, count: 1, ...extra });   // G3d: a count everywhere, so 'size by count' is drawn (no count = measure_missing, tested below)
 const level = children => ({ focus: { address: 'area:rom', label: 'ROM', kind: 'area' }, children, edges: [], counts: { total: children.length, shown: children.length, collapsed: 0, by_source: {} } });
 const modelOf = children => map.viewModelFor(level(children), 'Graf');
 const ON = { ...adv.NAV_ADVISORY, advise_on_defaults: true };
@@ -69,9 +69,24 @@ test('advise_on_defaults false (the preset): the shipped mapping asks nothing; a
   assert.equal(adv.NAV_ADVISORY.advise_on_defaults, false);
   assert.deepEqual(adv.navigatorAdvisories(m), []);
   assert.deepEqual(adv.navigatorAdvisories(m, adv.NAV_ADVISORY, adv.readMapping({ hue: 'kind', size: 'count' })), [], 'the same as shipped is not a change');
-  const list = adv.navigatorAdvisories(m, adv.NAV_ADVISORY, adv.readMapping('{"size":"age"}'));
-  assert.deepEqual(codes(list), ['marks_identical:size']);
+  const rows3 = [row('a', 'topic'), row('b', 'topic'), row('c', 'topic')];
+  const list = adv.navigatorAdvisories(map.viewModelFor(level(rows3), 'Graf', '{"size":"age"}'), adv.NAV_ADVISORY, adv.readMapping('{"size":"age"}'));   // the map draws what the setting says
+  assert.deepEqual(codes(list), ['measure_missing:size'], 'G3d: no row has an age, so every mark draws the preset - said once, not twice');
   assert.equal(list[0].ask.fingerprint, 'navigator_level|size|age');
   assert.deepEqual(adv.readMapping('not json'), {}); assert.deepEqual(adv.readMapping([1]), {}); assert.deepEqual(adv.readMapping({ a: 1, b: 'x' }), { b: 'x' });
   assert.equal(adv.navigatorAdvisories(m, ON).length, 4);
+});
+
+test('G3d: the mapping report - a measure no mark has (measure_missing, any path), a channel the map does not draw (channel_unknown), a constant asks only "all identical"', () => {
+  const rows = [row('a', 'topic', { order: 1 }), row('b', 'person', { order: 2 })];
+  const at = (mapping) => adv.navigatorAdvisories(map.viewModelFor(level(rows), 'Graf', mapping), adv.NAV_ADVISORY, adv.readMapping(mapping));
+  assert.deepEqual(codes(at({ size: 'order' })), [], 'a measure the rows have, different values: nothing to say');
+  const miss = at({ hue: 'receipt.tokens_est' });
+  assert.deepEqual(codes(miss), ['measure_missing:hue']);
+  assert.ok(miss[0].text.pl.includes('receipt.tokens_est') && miss[0].text.pl.includes('2') && !/[{}]/.test(miss[0].text.pl + miss[0].text.en));
+  const unk = at({ glow: 'kind' });
+  assert.deepEqual(codes(unk), ['channel_unknown:glow']);
+  assert.equal(unk[0].ask.fingerprint, 'navigator_level|glow|kind');
+  assert.deepEqual(codes(at({ alpha: 'none' })), ['marks_identical:alpha']);
+  assert.deepEqual(codes(at({ size: { measure: 'order', range: [0, 0], curve: 'linear' } })), ['marks_identical:size', 'nothing_visible:size'], 'the finer form: a degenerate range is drawn and said, never refused');
 });

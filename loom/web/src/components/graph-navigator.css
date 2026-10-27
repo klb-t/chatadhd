@@ -95,9 +95,13 @@
 .gnav-map-enter { font-size: 14px; font-weight: 600; }
 .gnav-map-selected { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; min-height: 44px; margin: 6px 0 0; padding: 0 4px; }
 .gnav-map-hint { margin: 6px 4px 0; }
-.gnav-view-menu { width: 100%; display: flex; flex-direction: column; gap: 4px; padding: 4px 0 8px; border-bottom: 1px solid var(--border); margin-bottom: 4px; }
+.gnav-view-menu { width: 100%; display: flex; flex-direction: column; gap: 4px; padding: 4px 0 8px; border-bottom: 1px solid var(--border); margin-bottom: 4px; max-height: 60vh; overflow-y: auto; }
 .gnav-view-title { margin: 0 0 2px; font-weight: 600; }
 .gnav-view-option { min-height: 44px; padding: 0 12px; text-align: left; background: none; border: 1px solid var(--border); border-radius: 8px; color: inherit; font: inherit; cursor: pointer; touch-action: manipulation; }
+.gnav-mapping { display: flex; flex-direction: column; gap: 4px; padding-top: 6px; border-top: 1px solid var(--border); margin-top: 4px; }
+.gnav-mapping-row { display: flex; align-items: center; gap: 8px; min-height: 44px; }
+.gnav-mapping-channel { flex: 0 0 34%; overflow-wrap: anywhere; }
+.gnav-mapping-select { flex: 1 1 auto; min-width: 0; min-height: 44px; background: var(--bg, transparent); color: inherit; border: 1px solid var(--border); border-radius: 8px; font: inherit; padding: 0 8px; }
 .gnav-view-option[aria-checked="true"] { border-color: var(--accent, #7aa2f7); color: var(--accent, #7aa2f7); font-weight: 600; }
 /* K1c-3b: the record of a request - the mark of a derived row, the tokens that were sent, what was left out */
 .gnav-chip-derived { border-style: dotted; font-style: italic; }

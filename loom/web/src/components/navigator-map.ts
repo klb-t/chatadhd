@@ -6,7 +6,10 @@
 // (window.LoomBridge.setGestureExclusion, CSS px). Numbers here are presets, not rules; nothing lists nodes of its own.
 import type { GraphNavigateResult, GraphNodeRow } from "../api/graph-projection";
 import type { ViewEdge, ViewElement, ViewModel } from "../api/view-model";
-import { colorFor } from "./kind-colors";
+import { levelChannels, type ChannelReport } from "./navigator-mapping";
+
+/** The map's view model with what the mapping did on the level (G3d: the advisories read it). */
+export type NavViewModel = ViewModel & { mapping_report?: ChannelReport[] };
 
 /** The height of the map on a phone (px); the width follows the screen. */
 export const MAP_HEIGHT_PRESET = 300;
@@ -36,17 +39,7 @@ export interface Point { x: number; y: number }
 export interface Camera { zoom: number; panX: number; panY: number }
 export const CAMERA_HOME: Camera = { zoom: 1, panX: 0, panY: 0 };
 
-/** The HSL of a #rrggbb colour (hue in degrees, saturation and lightness 0..1), the channels project() understands. */
-export function hslOfHex(hex: string): { hue: number; saturation: number; lightness: number } {
-  const m = /^#?([0-9a-f]{6})$/i.exec(hex.trim());
-  if (!m) return { hue: 210, saturation: 0.55, lightness: 0.55 };
-  const n = parseInt(m[1], 16), r = ((n >> 16) & 255) / 255, g = ((n >> 8) & 255) / 255, b = (n & 255) / 255;
-  const max = Math.max(r, g, b), min = Math.min(r, g, b), l = (max + min) / 2, d = max - min;
-  if (d === 0) return { hue: 0, saturation: 0, lightness: Math.round(l * 1000) / 1000 };
-  const s = d / (1 - Math.abs(2 * l - 1));
-  const h = max === r ? ((g - b) / d + (g < b ? 6 : 0)) : max === g ? (b - r) / d + 2 : (r - g) / d + 4;
-  return { hue: Math.round(h * 60) % 360, saturation: Math.round(s * 1000) / 1000, lightness: Math.round(l * 1000) / 1000 };
-}
+export { hslOfHex } from "./navigator-mapping";
 
 /** The size channel of a row: grows with the log of its count, so a hundred children is visible and a million still fits. */
 export function sizeOf(row: Pick<GraphNodeRow, "count">): number {
@@ -56,22 +49,22 @@ export const elementIdOf = (address: string): string => address || ROOT_ELEMENT_
 
 /** The view model of one level: the focus at the centre, the children around it (angle by their order, radius by their depth),
  *  the kernel's edges where both ends are on the level, a focus→child edge for every child the kernel gave no edge for. */
-export function viewModelFor(result: Pick<GraphNavigateResult, "focus" | "children" | "edges" | "counts">, rootLabel: string): ViewModel {
+export function viewModelFor(result: Pick<GraphNavigateResult, "focus" | "children" | "edges" | "counts">, rootLabel: string, mapping?: unknown, now?: number): NavViewModel {
   const focusId = elementIdOf(result.focus.address);
-  const focusHsl = hslOfHex(colorFor(result.focus.kind));
+  // G3d: every channel comes from the setting navigator_mapping (navigator-mapping.ts); the shipped default is the M1-W0 picture (colour by kind, size by count)
+  const level = levelChannels(result.focus as Partial<GraphNodeRow>, result.children, mapping, now);
   const elements: ViewElement[] = [{
     id: focusId, label: result.focus.label || rootLabel, kind: result.focus.kind, focus: true, measures: {},
     coords: { sector: { radius: 0, angle_deg: 0 } },
-    channels: { hue: focusHsl.hue, saturation: focusHsl.saturation, lightness: focusHsl.lightness, size: 18 }, sources: ["graph.navigate"],
+    channels: level.channels.get(result.focus as Partial<GraphNodeRow>) ?? {}, sources: ["graph.navigate"],
   }];
   const n = Math.max(1, result.children.length);
   result.children.forEach((row, i) => {
-    const hsl = hslOfHex(colorFor(row.kind));
     const depth = typeof row.depth === "number" && row.depth > 0 ? row.depth : 1;
     elements.push({
       id: elementIdOf(row.address), label: row.label, kind: row.kind, measures: typeof row.count === "number" ? { count: row.count } : {},
       coords: { sector: { radius: depth, angle_deg: (i * 360) / n } },
-      channels: { hue: hsl.hue, saturation: hsl.saturation, lightness: hsl.lightness, size: sizeOf(row) }, sources: ["graph.navigate"],
+      channels: level.channels.get(row) ?? {}, sources: ["graph.navigate"],
     });
   });
   const ids = new Set(elements.map(e => e.id));
@@ -92,7 +85,7 @@ export function viewModelFor(result: Pick<GraphNavigateResult, "focus" | "childr
     schema: "loom.view_model/1", declaration: { id: "navigator_level", origin: "web GraphNavigator" }, focus: focusId, sources: [],
     elements, edges, groups: [], measure_stats: {},
     coordinate_systems: [{ id: "sector", system: "sector", axes: ["radius", "angle_deg"], bind: {}, supported: true }],
-    encodings: [], unsupported: [], budget: { max_nodes: null, elements: elements.length, collapsed: result.counts.collapsed }, issues: [],
+    encodings: [], unsupported: [], mapping_report: level.report, budget: { max_nodes: null, elements: elements.length, collapsed: result.counts.collapsed }, issues: [],
   };
 }
 

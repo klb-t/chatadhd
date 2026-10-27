@@ -12,6 +12,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import NodeCard from "./NodeCard";
 import NavigatorMap from "./NavigatorMap";
+import NavigatorMappingControl from "./NavigatorMappingControl";
 import MeView from "./MeView";
 import { isMeFocus } from "./me-view-state";
 import { featureInLanguage } from "../onboarding/presentation.mjs";
@@ -83,6 +84,8 @@ export default function GraphNavigator({ profileHost, convId, language, initialF
   const [open, setOpen] = useState(() => openByLayout(layoutOf(layoutSetting)));
   const [viewMenu, setViewMenu] = useState(false);
   const [viewNote, setViewNote] = useState<string | null>(null);
+  const [mapping, setMapping] = useState<unknown>(mappingSetting);   // G3d: what the map draws (navigator_mapping); the control in Widok ▾ changes it
+  useEffect(() => { setMapping(mappingSetting); }, [mappingSetting]);
   const [reloadTick, setReloadTick] = useState(0);   // a write on the screen "Ty" (a value corrected, a note forgotten): the counts are read again
   const [meOpen, setMeOpen] = useState({ rows: false, map: false });   // PRESET: under the page "Ty" the map and all the rows start closed
   const proposalWords = usePresentationFeature(profileHost, "action_proposal");
@@ -161,6 +164,17 @@ export default function GraphNavigator({ profileHost, convId, language, initialF
       setViewNote(runOutcome(run, t).ok ? t("view.saved", { layout: t(`view.${next}`) }) : t("view.save_error", { reason: String(run.error?.message ?? run.error?.code ?? run.status) }));
     } catch (failure) { setViewNote(t("view.save_error", { reason: failure instanceof Error ? failure.message : String(failure) })); }
   };
+  // G3d: a mapping choice redraws the map at once and is saved as yours (settings.set navigator_mapping, an object; {} = the shipped default)
+  const chooseMapping = async (next: Record<string, unknown>, said: string) => {
+    setMapping(next); setViewNote(null);
+    const actions = api.actions;
+    if (!actions) { setViewNote(t("view.save_error", { reason: t("error.no_actions") })); return; }
+    try {
+      const run = await actions.run({ action: "settings.set", args: { key: "navigator_mapping", value: next } });
+      if (runOutcome(run, t).ok) { setViewNote(said); onSetting?.("navigator_mapping", JSON.stringify(next)); }
+      else setViewNote(t("view.save_error", { reason: String(run.error?.message ?? run.error?.code ?? run.status) }));
+    } catch (failure) { setViewNote(t("view.save_error", { reason: failure instanceof Error ? failure.message : String(failure) })); }
+  };
   const focus = focusOf(state);
   const crumbs = [{ address: "", label: t("root") }, ...state.path];
   const lines = result ? [...honestyLines(result, t, language), ...receiptLines(result, t)] : [];
@@ -233,7 +247,7 @@ export default function GraphNavigator({ profileHost, convId, language, initialF
         </Disclosure>}
         {result && <Disclosure testId="nav-map-disclosure" className="gnav-disclosure" labels={meMode ? { show: t("me.map.show"), hide: t("me.map.hide") } : { show: t("map.show"), hide: t("map.hide") }}
           open={meMode ? meOpen.map : open.map} onToggle={v => meMode ? setMeOpen(o => ({ ...o, map: v })) : setOpen(o => ({ ...o, map: v }))}>
-          <NavigatorMap result={result} open={meMode ? meOpen.map : open.map} t={t} language={language} mapping={mappingSetting} onCard={showCard} onDrill={drill} />
+          <NavigatorMap result={result} open={meMode ? meOpen.map : open.map} t={t} language={language} mapping={mapping} onCard={showCard} onDrill={drill} />
         </Disclosure>}
         {card && <NodeCard key={card.address} address={card.address} label={card.label} language={language} convId={convId} t={t} receiptT={receiptT} section={cardSection}
           onClose={() => setCard(null)} onNavigate={(address, label) => drill({ address, label })} />}
@@ -245,6 +259,7 @@ export default function GraphNavigator({ profileHost, convId, language, initialF
           <p className="gnav-note gnav-view-title">{t("view.title")}</p>
           {LAYOUTS.map(id => <button key={id} type="button" role="radio" className="gnav-view-option" data-testid={`nav-view-${id}`}
             aria-checked={layout === id} onClick={() => chooseLayout(id)}>{t(`view.${id}`)}</button>)}
+          <NavigatorMappingControl value={mapping} language={language} onChange={chooseMapping} />
         </div>}
         {perspMenu && <div className="gnav-view-menu" data-testid="nav-perspective-menu" role="group" aria-label={t("perspective.title")}>
           <p className="gnav-note gnav-view-title">{t("perspective.title")}</p>

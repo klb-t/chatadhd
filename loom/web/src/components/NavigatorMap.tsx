@@ -1,6 +1,6 @@
 // M1-W0 (2), package P4: the MAP half of the graph navigator (spec §3.2 "Mapa"). It draws the same answer as the list (the focus
 // and its children from graph.navigate) through the existing view engine (view-engine/project.ts, the flat_2d renderer): the focus
-// in the middle, the children around it, colours by kind, size by count. Every mark has an invisible 44 px touch target (a real
+// in the middle, the children around it, every channel from the setting navigator_mapping (G3d; preset: colours by kind, size by count). Every mark has an invisible 44 px touch target (a real
 // button, so Back/keyboard/tests see it); a tap shows the whole label in the line under the map and opens the same card as the
 // list's ⋯. One finger drags the plane, two fingers pinch, + / − step the zoom. The visible rectangle of the map is reported to
 // the Android shell (window.LoomBridge.setGestureExclusion, CSS px) so the system's edge swipes do not eat the drag.
@@ -85,7 +85,8 @@ export default function NavigatorMap({ result, open, t, language = "pl", mapping
   useEffect(() => { reportExclusion(reported); }, [reported]);
   useEffect(() => () => reportExclusion([]), []);
 
-  const baseModel = useMemo(() => viewModelFor(result, t("root")), [result, t]);
+  const mappingKey = typeof mapping === "string" ? mapping : JSON.stringify(mapping ?? null);
+  const baseModel = useMemo(() => viewModelFor(result, t("root"), mapping), [result, t, mappingKey]); // eslint-disable-line react-hooks/exhaustive-deps
   const model = useNavigatorAdvisories(baseModel, mapping);   // G3c: the generic advisories of the map, answered like the "Widok" bar's
   const projection = useMemo(() => width > 0 ? project(model, { width, height, margin: MAP_MARGIN_PRESET }) : null, [model, width, height]);
   const rowsById = useMemo(() => {
@@ -157,7 +158,7 @@ export default function NavigatorMap({ result, open, t, language = "pl", mapping
     <div className="gnav-map-wrap" data-testid="nav-map-wrap">
       <ViewBar model={model} language={language} compact />
       <div ref={box} className="gnav-map" data-testid="nav-map" data-zoom={cam.zoom.toFixed(3)} data-marks={marks.length}
-        data-exclusion={JSON.stringify(reported)} data-system={projection?.system ?? ""} style={{ height }}
+        data-exclusion={JSON.stringify(reported)} data-mapping={mappingKey} data-system={projection?.system ?? ""} style={{ height }}
         onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerCancel={onPointerUp}>
         {projection && <svg className="gnav-map-svg" width={width} height={height} viewBox={`0 0 ${width} ${height}`} role="img" aria-label={t("map.aria")}>
           {edges.map((e, i) => <line key={i} x1={e.a.x} y1={e.a.y} x2={e.b.x} y2={e.b.y} stroke="currentColor" strokeOpacity={0.3} strokeWidth={1} />)}
