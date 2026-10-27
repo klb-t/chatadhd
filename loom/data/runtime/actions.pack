@@ -15983,6 +15983,306 @@
           "pl": "Poprzednie okno jest na wierzchu."
         }
       },
+      "layout.save": {
+        "id": "layout.save",
+        "kind": "atomic",
+        "status": "planned",
+        "planned_reason": {
+          "en": "A layout of windows belongs to the client that draws it (the web page or the Android shell); this runtime arranges no windows itself. Runnable for a client that declares arranges_windows (W5 of OKNA_SYSTEM); the named layouts live in the settings window_layouts / window_layout_active / window_layout_journal.",
+          "pl": "Układ okien należy do klienta, który go rysuje (strony albo powłoki Androida); ten runtime sam nie układa okien. Wykonywalna dla klienta, który deklaruje arranges_windows (W5 z OKNA_SYSTEM); nazwane układy leżą w ustawieniach window_layouts / window_layout_active / window_layout_journal."
+        },
+        "title": "Save the layout",
+        "description": "Save the windows on this screen as a named layout of the person (window_layouts); the same name replaces the earlier one. The layout becomes the active one of this device class (window_layout_active).",
+        "why": {
+          "pl": "Zapisuje okna z ekranu jako nazwany układ."
+        },
+        "labels": {
+          "pl": "Zapisz układ"
+        },
+        "inputs": [],
+        "outputs": [],
+        "requires": [],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.1,
+        "confidence": 0.9,
+        "effects": {
+          "reads_only": false,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "client",
+        "client": {
+          "capability": "arranges_windows",
+          "prompt": {
+            "en": "Save the layout of the windows on this device.",
+            "pl": "Zapisz układ okien na tym urządzeniu."
+          },
+          "expects": []
+        },
+        "phrases": {
+          "en": [
+            "save the layout as"
+          ],
+          "pl": [
+            "zapisz układ jako",
+            "zapisz uklad jako"
+          ]
+        },
+        "params": [
+          {
+            "name": "name",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "The name of the layout (any words).",
+              "pl": "Nazwa układu (dowolne słowa)."
+            }
+          }
+        ],
+        "result_text": {
+          "en": "The layout is saved.",
+          "pl": "Układ jest zapisany."
+        }
+      },
+      "layout.apply": {
+        "id": "layout.apply",
+        "kind": "atomic",
+        "status": "planned",
+        "planned_reason": {
+          "en": "A layout of windows belongs to the client that draws it (the web page or the Android shell); this runtime arranges no windows itself. Runnable for a client that declares arranges_windows (W5 of OKNA_SYSTEM); the named layouts live in the settings window_layouts / window_layout_active / window_layout_journal.",
+          "pl": "Układ okien należy do klienta, który go rysuje (strony albo powłoki Androida); ten runtime sam nie układa okien. Wykonywalna dla klienta, który deklaruje arranges_windows (W5 z OKNA_SYSTEM); nazwane układy leżą w ustawieniach window_layouts / window_layout_active / window_layout_journal."
+        },
+        "title": "Apply a layout",
+        "description": "Bring a named layout of the person (or a shipped one: czat, siatka, by id, alias or label) onto this screen, as one entry of the journal (undo brings the previous layout back whole). The layout becomes the active one of this device class.",
+        "why": {
+          "pl": "Przywraca nazwany układ okien."
+        },
+        "labels": {
+          "pl": "Wróć do układu"
+        },
+        "inputs": [],
+        "outputs": [],
+        "requires": [],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.1,
+        "confidence": 0.9,
+        "effects": {
+          "reads_only": false,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "client",
+        "client": {
+          "capability": "arranges_windows",
+          "prompt": {
+            "en": "Apply the layout on this device.",
+            "pl": "Zastosuj układ na tym urządzeniu."
+          },
+          "expects": []
+        },
+        "phrases": {
+          "en": [
+            "go back to the layout"
+          ],
+          "pl": [
+            "wróć do układu",
+            "wroc do ukladu"
+          ]
+        },
+        "params": [
+          {
+            "name": "name",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "The layout (its name, id, or a shipped layout).",
+              "pl": "Układ (nazwa, id albo układ aplikacji)."
+            }
+          }
+        ],
+        "result_text": {
+          "en": "The layout is on the screen.",
+          "pl": "Układ jest na ekranie."
+        }
+      },
+      "layout.undo": {
+        "id": "layout.undo",
+        "kind": "atomic",
+        "status": "planned",
+        "planned_reason": {
+          "en": "A layout of windows belongs to the client that draws it (the web page or the Android shell); this runtime arranges no windows itself. Runnable for a client that declares arranges_windows (W5 of OKNA_SYSTEM); the named layouts live in the settings window_layouts / window_layout_active / window_layout_journal.",
+          "pl": "Układ okien należy do klienta, który go rysuje (strony albo powłoki Androida); ten runtime sam nie układa okien. Wykonywalna dla klienta, który deklaruje arranges_windows (W5 z OKNA_SYSTEM); nazwane układy leżą w ustawieniach window_layouts / window_layout_active / window_layout_journal."
+        },
+        "title": "Undo a layout change",
+        "description": "Undo the last change of the layout on this device (the journal window_layout_journal of the device class, bounded by a preset).",
+        "why": {
+          "pl": "Cofa ostatnią zmianę układu okien."
+        },
+        "labels": {
+          "pl": "Cofnij układ"
+        },
+        "inputs": [],
+        "outputs": [],
+        "requires": [],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.1,
+        "confidence": 0.9,
+        "effects": {
+          "reads_only": false,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "client",
+        "client": {
+          "capability": "arranges_windows",
+          "prompt": {
+            "en": "Undo the layout change on this device.",
+            "pl": "Cofnij zmianę układu na tym urządzeniu."
+          },
+          "expects": []
+        },
+        "phrases": {
+          "en": [
+            "undo the layout"
+          ],
+          "pl": [
+            "cofnij układ",
+            "cofnij uklad"
+          ]
+        },
+        "params": [],
+        "result_text": {
+          "en": "The layout change is undone.",
+          "pl": "Zmiana układu jest cofnięta."
+        }
+      },
+      "layout.redo": {
+        "id": "layout.redo",
+        "kind": "atomic",
+        "status": "planned",
+        "planned_reason": {
+          "en": "A layout of windows belongs to the client that draws it (the web page or the Android shell); this runtime arranges no windows itself. Runnable for a client that declares arranges_windows (W5 of OKNA_SYSTEM); the named layouts live in the settings window_layouts / window_layout_active / window_layout_journal.",
+          "pl": "Układ okien należy do klienta, który go rysuje (strony albo powłoki Androida); ten runtime sam nie układa okien. Wykonywalna dla klienta, który deklaruje arranges_windows (W5 z OKNA_SYSTEM); nazwane układy leżą w ustawieniach window_layouts / window_layout_active / window_layout_journal."
+        },
+        "title": "Redo a layout change",
+        "description": "Redo the layout change undone last on this device.",
+        "why": {
+          "pl": "Ponawia cofniętą zmianę układu okien."
+        },
+        "labels": {
+          "pl": "Ponów układ"
+        },
+        "inputs": [],
+        "outputs": [],
+        "requires": [],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.1,
+        "confidence": 0.9,
+        "effects": {
+          "reads_only": false,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "client",
+        "client": {
+          "capability": "arranges_windows",
+          "prompt": {
+            "en": "Redo the layout change on this device.",
+            "pl": "Ponów zmianę układu na tym urządzeniu."
+          },
+          "expects": []
+        },
+        "phrases": {
+          "en": [
+            "redo the layout"
+          ],
+          "pl": [
+            "ponów układ",
+            "ponow uklad"
+          ]
+        },
+        "params": [],
+        "result_text": {
+          "en": "The layout change is redone.",
+          "pl": "Zmiana układu jest ponowiona."
+        }
+      },
+      "layout.reset": {
+        "id": "layout.reset",
+        "kind": "atomic",
+        "status": "planned",
+        "planned_reason": {
+          "en": "A layout of windows belongs to the client that draws it (the web page or the Android shell); this runtime arranges no windows itself. Runnable for a client that declares arranges_windows (W5 of OKNA_SYSTEM); the named layouts live in the settings window_layouts / window_layout_active / window_layout_journal.",
+          "pl": "Układ okien należy do klienta, który go rysuje (strony albo powłoki Androida); ten runtime sam nie układa okien. Wykonywalna dla klienta, który deklaruje arranges_windows (W5 z OKNA_SYSTEM); nazwane układy leżą w ustawieniach window_layouts / window_layout_active / window_layout_journal."
+        },
+        "title": "Reset the layout",
+        "description": "Put the shipped layout back on this screen (preset layout_reset of the page's data: the shipped form of the layout drawn now); one journal entry, undo returns what was there; no own layout stays active on this device class.",
+        "why": {
+          "pl": "Wraca do układu z aplikacji."
+        },
+        "labels": {
+          "pl": "Układ jak w aplikacji"
+        },
+        "inputs": [],
+        "outputs": [],
+        "requires": [],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.1,
+        "confidence": 0.9,
+        "effects": {
+          "reads_only": false,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "client",
+        "client": {
+          "capability": "arranges_windows",
+          "prompt": {
+            "en": "Reset the layout on this device.",
+            "pl": "Przywróć układ aplikacji na tym urządzeniu."
+          },
+          "expects": []
+        },
+        "phrases": {
+          "en": [
+            "reset the layout"
+          ],
+          "pl": [
+            "przywróć domyślny układ",
+            "przywroc domyslny uklad"
+          ]
+        },
+        "params": [],
+        "result_text": {
+          "en": "The layout is as shipped.",
+          "pl": "Układ jest jak w aplikacji."
+        }
+      },
       "advisory.answer": {
         "id": "advisory.answer",
         "kind": "atomic",

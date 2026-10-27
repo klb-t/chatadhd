@@ -882,24 +882,24 @@
           {
             "value": "windows",
             "meaning": {
-              "pl": "Okna: ostatni własny układ okien (zapisany przy wyjściu); dopóki nie ma własnych układów, otwiera się siatka wszystkich paneli.",
-              "en": "Windows: the last own window layout (saved on leaving); until there are own layouts, the grid of all panels opens."
+              "pl": "Okna: ostatni własny układ (aktywny na tym rodzaju urządzenia, inaczej ostatnio zapisany); dopóki nie zapiszesz żadnego, otwiera się siatka wszystkich paneli.",
+              "en": "Windows: the last own layout (the one active on this kind of device, else the most recently saved); until you save one, the grid of all panels opens."
             }
           }
         ],
-        "description": "Layout of the application: full_screen_chat (preset: the full-screen standard chat app, profile \"Czat\"), views_grid (the workbench: application views grid, profile \"Warsztat\") or windows (the last own window layout, window_layout_last; until named layouts exist the grid of all panels, layout siatka, opens - a fallback in layouts.json). The ⋮ menu switches between them for the session; the last choice is part of last_saved. Default: full_screen_chat (R56).",
+        "description": "Layout of the application: full_screen_chat (preset: the full-screen standard chat app, profile \"Czat\"), views_grid (the workbench: application views grid, profile \"Warsztat\") or windows (the last own layout: window_layout_active of this device class when it names an own layout, else the most recently saved of window_layouts; with no own layout the grid of all panels, layout siatka, opens - a fallback in layouts.json; W5). The ⋮ menu switches between them for the session; the last choice is part of last_saved. Default: full_screen_chat (R56).",
         "human": {
           "label": {
             "pl": "Układ aplikacji",
             "en": "Application layout"
           },
           "why": {
-            "pl": "Czat na pełnym ekranie (preset), warsztat z siatką widoków albo okna (planowane, jeszcze nie gotowe).",
-            "en": "Full-screen chat (preset), the workbench with a grid of views, or windows (planned, not ready yet)."
+            "pl": "Czat na pełnym ekranie (preset), warsztat z siatką widoków albo okna: twój ostatni własny układ.",
+            "en": "Full-screen chat (preset), the workbench with a grid of views, or windows: your last own layout."
           },
           "effect": {
-            "pl": "Zmienia układ od razu; „okna” jeszcze nie działają — wtedy otwiera się warsztat, z powodem.",
-            "en": "Changes the layout at once; “windows” does not work yet — then the workbench opens, with the reason."
+            "pl": "Zmienia układ przy następnym starcie; „okna” bez zapisanych układów otwiera siatkę wszystkich paneli.",
+            "en": "Changes the layout at the next start; “windows” with no saved layout opens the grid of all panels."
           },
           "levels": [
             "person"
@@ -913,6 +913,371 @@
           }
         },
         "on_unlisted": "warn"
+      },
+      {
+        "key": "window_layouts",
+        "scope": "config",
+        "group": "ui",
+        "type": "array",
+        "has_default": false,
+        "description": "The named window layouts of the person (OKNA §2.5): a list of loom.window_layout/2 documents {id, label, layout (the windows and the dock tree, as the page's window model has them), saved, device_class}. Written by ⋮ › Układ ▾ › Zapisz jako and by the action layout.save; read by the sheet, by layout.apply and at the start (window_layout_active, layout_mode=windows). A JSON text of the same list is read too; unreadable entries are skipped, never refused.",
+        "status": {
+          "state": "implemented",
+          "by": "M1-OKNA-W5",
+          "reader": "web App.tsx + shell/windows/named.ts",
+          "reason": {
+            "pl": "Strona czyta i zapisuje to pole: arkusz ⋮ › Układ ▾ i zdania „zapisz układ jako …”, „wróć do układu …”.",
+            "en": "The page reads and writes this field: the sheet ⋮ › Układ ▾ and the sentences “save the layout as …”, “go back to the layout …”."
+          },
+          "today": {
+            "pl": "Lista twoich układów okien; każdy można przywrócić z menu albo zdaniem, zmienić mu nazwę albo usunąć (z pytaniem).",
+            "en": "The list of your window layouts; each can be brought back from the menu or by a sentence, renamed or deleted (after a question)."
+          }
+        },
+        "human": {
+          "label": {
+            "pl": "Twoje układy okien",
+            "en": "Your window layouts"
+          },
+          "why": {
+            "pl": "Ekran ułożony tak, jak lubisz, możesz zapisać pod nazwą i wracać do niego jednym zdaniem.",
+            "en": "A screen arranged the way you like can be saved under a name and brought back with one sentence."
+          },
+          "effect": {
+            "pl": "Dodaje lub zmienia nazwane układy; sam ekran zmienia się dopiero, gdy któryś zastosujesz.",
+            "en": "Adds or changes named layouts; the screen itself changes only when you apply one."
+          },
+          "levels": [
+            "person"
+          ],
+          "group": "interfejs",
+          "subgroup": "nawigator",
+          "flows": [],
+          "when_unset": {
+            "pl": "brak własnych układów",
+            "en": "no layouts of your own"
+          }
+        }
+      },
+      {
+        "key": "window_layout_active",
+        "scope": "config",
+        "group": "ui",
+        "type": "object",
+        "has_default": false,
+        "description": "The layout active on each device class (OKNA §2.5, D19): {<device class>: <layout id>}, e.g. {\"phone\": \"u_praca\"} [example]. The classes are an open list (preset device_classes in the page's layouts.json: phone up to 599 px, desktop above); a bare id applies to every class. At the start the page opens the own layout active on its class; applying or saving a layout sets it, choosing a shipped layout or „Jak w aplikacji” clears it for that class only. Per person; an installation level override (D19) is not read yet.",
+        "status": {
+          "state": "implemented",
+          "by": "M1-OKNA-W5",
+          "reader": "web App.tsx + shell/windows/named.ts",
+          "reason": {
+            "pl": "Strona czyta je przy starcie i zapisuje przy zastosowaniu, zapisaniu albo wyborze układu.",
+            "en": "The page reads it at the start and writes it when a layout is applied, saved or chosen."
+          },
+          "today": {
+            "pl": "Telefon i komputer pamiętają osobno, który układ był ostatnio wybrany; po przeładowaniu każdy wraca do swojego.",
+            "en": "A phone and a computer each remember which layout was chosen last; after a reload each comes back to its own."
+          }
+        },
+        "human": {
+          "label": {
+            "pl": "Aktywny układ na każdym rodzaju urządzenia",
+            "en": "Active layout on each kind of device"
+          },
+          "why": {
+            "pl": "Na telefonie chcesz innego ekranu niż na komputerze.",
+            "en": "On a phone you want another screen than on a computer."
+          },
+          "effect": {
+            "pl": "Decyduje, który własny układ otwiera się na starcie na danym rodzaju urządzenia.",
+            "en": "Decides which own layout opens at the start on that kind of device."
+          },
+          "levels": [
+            "person"
+          ],
+          "group": "interfejs",
+          "subgroup": "nawigator",
+          "flows": [],
+          "when_unset": {
+            "pl": "układ wynika z „Co otwierać na starcie” i „Układ aplikacji”",
+            "en": "the layout follows the start view and the application layout"
+          }
+        }
+      },
+      {
+        "key": "window_layout_journal",
+        "scope": "config",
+        "group": "ui",
+        "type": "object",
+        "has_default": false,
+        "description": "The undo/redo journal of window layout changes, per device class (OKNA §2.5, D19): {limit?, <device class>: {past: [{op, layout}], future: [...]}}. Bounded by `limit` of the value, else the preset journal_limit of the page's layouts.json (50); 0 = no undo. Written by the page a moment after each change (one action = one entry), read at the start, so „cofnij układ” works after a reload. Per person, keyed by the device class (the installation level of D19 is approximated by the class key).",
+        "status": {
+          "state": "implemented",
+          "by": "M1-OKNA-W5",
+          "reader": "web App.tsx + shell/windows/named.ts",
+          "reason": {
+            "pl": "Strona zapisuje dziennik po każdej zmianie układu i czyta go przy starcie; cofanie działa po przeładowaniu.",
+            "en": "The page writes the journal after each layout change and reads it at the start; undo works after a reload."
+          },
+          "today": {
+            "pl": "„Cofnij układ” (menu, zdanie, Ctrl+Z) cofa ostatnią zmianę okien, także po przeładowaniu strony.",
+            "en": "“Undo the layout” (menu, sentence, Ctrl+Z) undoes the last change of the windows, also after a reload."
+          }
+        },
+        "human": {
+          "label": {
+            "pl": "Historia zmian układu (cofnij / ponów)",
+            "en": "History of layout changes (undo / redo)"
+          },
+          "why": {
+            "pl": "Zamknięte niechcący okno albo zły układ można cofnąć.",
+            "en": "A window closed by accident or a wrong layout can be undone."
+          },
+          "effect": {
+            "pl": "Pamięta zmiany okien, żeby dało się je cofnąć; długość ogranicza „limit” (domyślnie 50).",
+            "en": "Remembers the window changes so they can be undone; `limit` bounds its length (50 by default)."
+          },
+          "levels": [
+            "person"
+          ],
+          "group": "interfejs",
+          "subgroup": "nawigator",
+          "flows": [],
+          "when_unset": {
+            "pl": "pusta historia, limit 50",
+            "en": "an empty history, limit 50"
+          }
+        }
+      },
+      {
+        "key": "window_back",
+        "scope": "config",
+        "group": "ui",
+        "type": "string",
+        "has_default": false,
+        "values": [
+          {
+            "value": "visits",
+            "preset": true,
+            "meaning": {
+              "pl": "Wstecz wraca do poprzednio oglądanego okna (preset).",
+              "en": "Back returns to the window seen before (the preset)."
+            }
+          },
+          {
+            "value": "to_chat",
+            "meaning": {
+              "pl": "Wstecz zawsze wraca do czatu.",
+              "en": "Back always returns to the chat."
+            }
+          },
+          {
+            "value": "close_window",
+            "meaning": {
+              "pl": "Wstecz zamyka okno z wierzchu.",
+              "en": "Back closes the window in front."
+            }
+          },
+          {
+            "value": "none",
+            "meaning": {
+              "pl": "Wstecz nie zmienia okien (tylko menu i arkusze).",
+              "en": "Back never changes the window (only menus and sheets)."
+            }
+          }
+        ],
+        "on_unlisted": "warn",
+        "description": "What Back (Android, the browser) does with windows (OKNA §4.2, D7): visits | to_chat | close_window | none. Unset = the preset window_back of the page's layouts.json (visits). An unlisted value is stored with a warning and read as visits.",
+        "status": {
+          "state": "implemented",
+          "by": "M1-OKNA-W5",
+          "reader": "web App.tsx (windowDataOf)",
+          "reason": {
+            "pl": "Strona czyta to pole przy każdym Wstecz; nieustawione = preset z layouts.json.",
+            "en": "The page reads this field on every Back; unset = the preset of layouts.json."
+          },
+          "today": {
+            "pl": "Wstecz na telefonie wraca do poprzedniego okna; tu można to zmienić.",
+            "en": "Back on a phone returns to the previous window; this changes it."
+          }
+        },
+        "human": {
+          "label": {
+            "pl": "Co robi Wstecz z oknami",
+            "en": "What Back does with windows"
+          },
+          "why": {
+            "pl": "Na telefonie Wstecz może cofać po oknach, wracać do czatu albo zamykać okno.",
+            "en": "On a phone Back may walk back through the windows, return to the chat or close the window."
+          },
+          "effect": {
+            "pl": "Zmienia zachowanie Wstecz od następnego naciśnięcia.",
+            "en": "Changes what Back does from the next press."
+          },
+          "levels": [
+            "person"
+          ],
+          "group": "interfejs",
+          "subgroup": "nawigator",
+          "flows": [],
+          "when_unset": {
+            "pl": "wraca do poprzedniego okna",
+            "en": "returns to the previous window"
+          }
+        }
+      },
+      {
+        "key": "window_restore_front",
+        "scope": "config",
+        "group": "ui",
+        "type": "string",
+        "has_default": false,
+        "values": [
+          {
+            "value": "layout",
+            "preset": true,
+            "meaning": {
+              "pl": "Po starcie na wierzchu jest okno, które układ maksymalizuje (czat); reszta czeka w ⋮ › Okna (preset).",
+              "en": "After a start the window the layout maximizes (the chat) is in front; the others wait in ⋮ › Windows (the preset)."
+            }
+          },
+          {
+            "value": "saved",
+            "meaning": {
+              "pl": "Po starcie na wierzchu jest okno, które było na wierzchu przy wyjściu.",
+              "en": "After a start the window that was in front when the page was left is in front."
+            }
+          }
+        ],
+        "on_unlisted": "warn",
+        "description": "Which window is in front after a start that restored the last session's windows (window_layout_last): layout (the window the layout's preset maximizes) | saved (the one in front when the page was left). Unset = the preset of the page's layouts.json (layout).",
+        "status": {
+          "state": "implemented",
+          "by": "M1-OKNA-W5",
+          "reader": "web App.tsx (windowDataOf)",
+          "reason": {
+            "pl": "Strona czyta to pole przy starcie, który przywraca okna ostatniej sesji.",
+            "en": "The page reads this field at a start that restores the last session's windows."
+          },
+          "today": {
+            "pl": "Po przeładowaniu na wierzchu jest czat, inne okna czekają w ⋮ › Okna.",
+            "en": "After a reload the chat is in front, the other windows wait in ⋮ › Windows."
+          }
+        },
+        "human": {
+          "label": {
+            "pl": "Które okno na wierzchu po starcie",
+            "en": "Which window is in front after a start"
+          },
+          "why": {
+            "pl": "Możesz wracać do czatu albo do okna, na którym skończyłeś.",
+            "en": "You may come back to the chat or to the window you finished on."
+          },
+          "effect": {
+            "pl": "Działa przy następnym starcie aplikacji.",
+            "en": "Takes effect at the next start of the app."
+          },
+          "levels": [
+            "person"
+          ],
+          "group": "interfejs",
+          "subgroup": "nawigator",
+          "flows": [],
+          "when_unset": {
+            "pl": "czat na wierzchu",
+            "en": "the chat in front"
+          }
+        }
+      },
+      {
+        "key": "window_restore_last",
+        "scope": "config",
+        "group": "ui",
+        "type": "boolean",
+        "has_default": false,
+        "description": "Whether a start with the start view last_saved brings back the windows of the last session (window_layout_last), not only the layout id. Unset = the preset of the page's layouts.json (true).",
+        "status": {
+          "state": "implemented",
+          "by": "M1-OKNA-W5",
+          "reader": "web App.tsx (windowDataOf)",
+          "reason": {
+            "pl": "Strona czyta to pole przy starcie i przy zapisie ostatniej sesji.",
+            "en": "The page reads this field at the start and when it saves the last session."
+          },
+          "today": {
+            "pl": "Po przeładowaniu wracają okna, które były otwarte.",
+            "en": "After a reload the windows that were open come back."
+          }
+        },
+        "human": {
+          "label": {
+            "pl": "Przywracaj okna ostatniej sesji",
+            "en": "Bring back the windows of the last session"
+          },
+          "why": {
+            "pl": "Po powrocie do aplikacji masz od razu te same okna.",
+            "en": "Coming back to the app you have the same windows at once."
+          },
+          "effect": {
+            "pl": "Wyłączone: wraca tylko układ, bez otwartych okien.",
+            "en": "Off: only the layout comes back, without the open windows."
+          },
+          "levels": [
+            "person"
+          ],
+          "group": "interfejs",
+          "subgroup": "nawigator",
+          "flows": [],
+          "when_unset": {
+            "pl": "włączone",
+            "en": "on"
+          }
+        }
+      },
+      {
+        "key": "window_placements",
+        "scope": "config",
+        "group": "ui",
+        "type": "object",
+        "has_default": false,
+        "description": "The placement a screen uses for an asked one, per device class (`any` = every class): {<class>: {<asked>: <used>}}, e.g. {\"phone\": {\"beside\": \"maximize\"}} [example]. Placements: maximize, beside, below, float, tab, shelf (the window model's list). Unset = the preset of the page's layouts.json; the receipt of a window step says when the used placement differs from the asked one.",
+        "status": {
+          "state": "implemented",
+          "by": "M1-OKNA-W5",
+          "reader": "web shell/windows/ops.ts (runWindowStep via windowDataOf)",
+          "reason": {
+            "pl": "Strona czyta to pole przy każdym kroku okna ze zdania („otwórz graf obok”).",
+            "en": "The page reads this field at every window step of a sentence (“open the graph beside”)."
+          },
+          "today": {
+            "pl": "Na każdym urządzeniu „obok” otwiera kolejne okno; tu można to zmienić per rodzaj urządzenia.",
+            "en": "On every device “beside” opens the next window; this changes it per kind of device."
+          }
+        },
+        "human": {
+          "label": {
+            "pl": "Gdzie otwierać okna ze zdania",
+            "en": "Where windows from a sentence open"
+          },
+          "why": {
+            "pl": "„Obok” na wąskim telefonie może znaczyć kolejne okno, na komputerze dok.",
+            "en": "“Beside” on a narrow phone may mean the next window, on a computer a dock."
+          },
+          "effect": {
+            "pl": "Zmienia, gdzie otwiera się okno przy następnym zdaniu.",
+            "en": "Changes where a window opens at the next sentence."
+          },
+          "levels": [
+            "person"
+          ],
+          "group": "interfejs",
+          "subgroup": "nawigator",
+          "flows": [],
+          "when_unset": {
+            "pl": "wszędzie kolejne okno",
+            "en": "the next window everywhere"
+          }
+        }
       },
       {
         "key": "disclosure_glyphs",

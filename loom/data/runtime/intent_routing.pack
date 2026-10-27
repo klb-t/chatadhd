@@ -85,7 +85,12 @@
         "window.close",
         "window.focus",
         "window.next",
-        "window.prev"
+        "window.prev",
+        "layout.save",
+        "layout.apply",
+        "layout.undo",
+        "layout.redo",
+        "layout.reset"
       ]
     },
     "on_reject": {
@@ -2338,6 +2343,106 @@
           "action": "window.prev",
           "lang": "en",
           "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?previous\\s+window\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "layout.save.pl",
+          "action": "layout.save",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:zapisz|zachowaj)\\s+(?:ten\\s+|obecny\\s+|biezacy\\s+|moj\\s+)?uklad(?:\\s+okien)?\\s+(?:jako|pod\\s+nazwa)\\s+(.+?)\\s*[.!?]*\\s*$",
+          "args": [
+            "name"
+          ],
+          "original": [
+            "name"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "layout.save.en",
+          "action": "layout.save",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:save|store)\\s+(?:this\\s+|the\\s+|my\\s+|current\\s+)?(?:window\\s+)?layout\\s+as\\s+(.+?)\\s*[.!?]*\\s*$",
+          "args": [
+            "name"
+          ],
+          "original": [
+            "name"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "layout.apply.pl",
+          "action": "layout.apply",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:(?:wroc|przejdz|przelacz(?:\\s+sie)?|zmien)\\s+(?:do|na)\\s+(?:mojego\\s+|moj\\s+)?ukladu?|(?:zastosuj|wlacz|uzyj|przywroc)\\s+(?:moj\\s+)?uklad)\\s+(.+?)\\s*[.!?]*\\s*$",
+          "args": [
+            "name"
+          ],
+          "original": [
+            "name"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "layout.apply.en",
+          "action": "layout.apply",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:go\\s+back\\s+to|back\\s+to|switch\\s+to|apply|use|restore)\\s+(?:the\\s+|my\\s+)?(?:window\\s+)?layout\\s+(.+?)\\s*[.!?]*\\s*$",
+          "args": [
+            "name"
+          ],
+          "original": [
+            "name"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "layout.undo.pl",
+          "action": "layout.undo",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?cofnij\\s+(?:ostatnia\\s+)?(?:zmiane\\s+)?ukladu?(?:\\s+okien)?\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "layout.undo.en",
+          "action": "layout.undo",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?undo\\s+(?:the\\s+)?(?:last\\s+)?(?:window\\s+)?layout(?:\\s+change)?\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "layout.redo.pl",
+          "action": "layout.redo",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?ponow\\s+(?:zmiane\\s+)?ukladu?(?:\\s+okien)?\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "layout.redo.en",
+          "action": "layout.redo",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?redo\\s+(?:the\\s+)?(?:window\\s+)?layout(?:\\s+change)?\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "layout.reset.pl",
+          "action": "layout.reset",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:(?:przywroc|wroc\\s+do)\\s+(?:domyslny|domyslnego|fabryczny|fabrycznego|oryginalny|oryginalnego)\\s+ukladu?(?:\\s+okien)?|uklad\\s+jak\\s+w\\s+aplikacji|zresetuj\\s+uklad(?:\\s+okien)?)\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "layout.reset.en",
+          "action": "layout.reset",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:reset\\s+(?:the\\s+)?(?:window\\s+)?layout|(?:restore|back\\s+to)\\s+the\\s+(?:default|shipped|original)\\s+(?:window\\s+)?layout)\\s*[.!?]*\\s*$",
           "args": [],
           "takes_scope": false
         },

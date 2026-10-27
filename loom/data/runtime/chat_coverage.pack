@@ -2834,6 +2834,44 @@
         }
       },
       {
+        "id": "window_layouts",
+        "title": {
+          "en": "Save and bring back named layouts of windows",
+          "pl": "Zapisuj i przywracaj nazwane układy okien"
+        },
+        "via": "client",
+        "action": "layout.apply",
+        "also": [
+          "layout.save",
+          "layout.undo",
+          "layout.redo",
+          "layout.reset"
+        ],
+        "surfaces": {},
+        "examples": {
+          "pl": "wróć do układu praca",
+          "en": "go back to the layout work"
+        },
+        "examples_more": {
+          "pl": [
+            "zapisz układ jako praca",
+            "cofnij układ",
+            "ponów układ",
+            "przywróć domyślny układ"
+          ],
+          "en": [
+            "save the layout as work",
+            "undo the layout",
+            "redo the layout",
+            "reset the layout"
+          ]
+        },
+        "note": {
+          "en": "W5 of OKNA_SYSTEM: like the windows, a client step of the page that asked (arranges_windows, execution.direct). The page keeps the named layouts in window_layouts (person), the active layout per device class in window_layout_active and the undo journal per device class in window_layout_journal; the same operations are in ⋮ › Układ ▾.",
+          "pl": "W5 z OKNA_SYSTEM: jak okna, krok klienta strony, która pytała (arranges_windows, execution.direct). Strona trzyma nazwane układy w window_layouts (osoba), aktywny układ per klasa urządzenia w window_layout_active, a dziennik cofania per klasa w window_layout_journal; te same operacje są w ⋮ › Układ ▾."
+        }
+      },
+      {
         "id": "advisory_answer",
         "title": {
           "en": "Answer an advisory (keep, don't ask again, forget)",
