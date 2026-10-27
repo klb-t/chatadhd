@@ -160,3 +160,21 @@ export function runWindowStep(s: WState, action: string, args: Record<string, un
   if (op === "next" || op === "prev") return cycleWindow(s, op === "next" ? 1 : -1, ctx);
   return { state: s, receipt: { op, state: "none", windows: [], word: action } };
 }
+
+/** W5: the window presets as the person set them. A settings field of the same name (window_back, window_restore_last,
+ *  window_restore_front, window_placements; settings_fields.pack) overrides the preset of layouts.json; unset, empty or unreadable = the preset. */
+export const WINDOW_SETTING_KEYS = ["window_back", "window_restore_last", "window_restore_front", "window_placements"] as const;
+export function windowDataOf(config: Record<string, unknown>, data: WindowData = WINDOW_DATA): WindowData {
+  const out: WindowData = { ...data };
+  const set = out as Record<string, unknown>;
+  for (const key of WINDOW_SETTING_KEYS) {
+    let v = config[key];
+    if (v === undefined || v === null || v === "") continue;
+    if (key === "window_placements" && typeof v === "string") { try { v = JSON.parse(v); } catch { continue; } }
+    if (key === "window_placements" && (!v || typeof v !== "object" || Array.isArray(v))) continue;
+    if (key === "window_restore_last" && typeof v !== "boolean") v = !(v === "false" || v === 0 || v === "0");
+    if ((key === "window_back" || key === "window_restore_front") && typeof v !== "string") continue;
+    set[key] = v;
+  }
+  return out;
+}

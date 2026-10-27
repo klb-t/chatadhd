@@ -33,8 +33,11 @@ import { themeFromConfig } from "./shell/theme";
 import { DEFAULT_LAYOUT, JOURNAL_LIMIT, LAYOUTS, START_VIEW_PRESET, layoutOfMode, parseShellHash, readSaved, resolveLayoutId, resolveStartView, startViewOrder, writeSaved } from "./shell/start-view";
 import WindowHost from "./shell/windows/WindowHost";
 import { activePanelOf, baseWindow, layoutState, panelKind, restoreFront, setPanel, switchLayout, visibleOverlay } from "./shell/windows/session";
-import { createState, type WState, type Win } from "./shell/windows/model";
-import { WINDOW_DATA, closeWindows, focusWindow, runWindowStep, switcherEntries, visibleId, type WindowReceipt } from "./shell/windows/ops";
+import { createState, redo as redoLayout, undo as undoLayout, type WState, type Win } from "./shell/windows/model";
+import { deleteNamed, deviceClassOf, findNamed, labelOf, lastOwn, readActive, readJournal, readNamed, renameNamed, replaceLayout, resetTarget, saveNamed, shippedId, writeActive, writeJournal } from "./shell/windows/named";
+import { layoutIdOfMode } from "./shell/windows/migrate";
+import type { ShellLayouts } from "./shell/LayoutsSheet";
+import { WINDOW_DATA, closeWindows, windowDataOf, focusWindow, runWindowStep, switcherEntries, visibleId, type WindowReceipt } from "./shell/windows/ops";
 import { WINDOW_STEP_EVENT, type WindowStepDetail } from "./context/browser-host";
 import { layerStack } from "./shell/history";
 import { shellLanguage } from "./shell/language";
@@ -94,6 +97,23 @@ export default function App() {
   const [navOpen, setNavOpen] = useState(false);
   const [primaryProfile, setPrimaryProfile] = useState<ApplicationProfile | null>(null);
   const [config, setConfig] = useState<Record<string, unknown>>({});
+  // W5: the settings as the screen knows them right now (a write updates the ref at once, before React renders again)
+  const configRef = useRef(config);
+  configRef.current = config;
+  const saveSetting = useCallback((key: string, value: unknown) => {
+    configRef.current = { ...configRef.current, [key]: value };
+    setConfig(c => ({ ...c, [key]: value }));
+    api.setConfigKey(key, value).catch(err => console.debug(`${key}: the value is not saved`, err));
+  }, []);
+  // W5: window_back / window_restore_* / window_placements - the settings fields override the presets of layouts.json
+  const windowData = useMemo(() => windowDataOf(config), [config]);
+  const windowDataRef = useRef(windowData);
+  windowDataRef.current = windowData;
+  // W5: the device class of this screen (key of window_layout_active and window_layout_journal), the own layout active on it
+  const [deviceClass, setDeviceClass] = useState(() => deviceClassOf(window.innerWidth));
+  useEffect(() => { const on = () => setDeviceClass(deviceClassOf(window.innerWidth)); window.addEventListener("resize", on); return () => window.removeEventListener("resize", on); }, []);
+  const [ownActive, setOwnActive] = useState<string | null>(null);
+  const journalReady = useRef(false);
   const [started, setStarted] = useState(() => parseShellHash(window.location.hash) !== null);
   const sidebarOperations = useRef(0);
   const sidebarActivity = useCallback((delta: number) => { sidebarOperations.current += delta; }, []);
@@ -106,7 +126,13 @@ export default function App() {
     if (link) {
       // The link states the view; the config still decides the words (ui_language), the theme and the navigator's layout.
       if (link.conversationId) setActiveConvId(link.conversationId);
-      api.getConfig().then(cfg => { if (live) setConfig(cfg as Record<string, unknown>); }, () => { /* presets */ });
+      api.getConfig().then(cfg => {
+        if (!live) return;
+        setConfig(cfg as Record<string, unknown>);
+        const j = readJournal((cfg as Record<string, unknown>).window_layout_journal, deviceClassOf(window.innerWidth));
+        setWin(s => (s.past.length || s.future.length ? s : { ...s, past: j.past, future: j.future, limit: j.limit }));
+        journalReady.current = true;
+      }, () => { journalReady.current = true; });
       return () => { live = false; };
     }
     (async () => {
@@ -119,23 +145,43 @@ export default function App() {
       });
       if (!live) return;
       setConfig(cfg);
-      setLayout(resolved.layout ?? layoutOfMode(cfg.layout_mode));
+      configRef.current = cfg;
+      const wd = windowDataOf(cfg);
+      // W5: the own layout active on this device class (window_layout_active) opens first; layout_mode=windows opens the last own layout
+      // (the active one, else the most recently saved) and `layout:<id>` may name an own one; with no own layout the start is as before W5
+      const cls = deviceClassOf(window.innerWidth);
+      const named = readNamed(cfg.window_layouts);
+      const modeId = layoutIdOfMode(cfg.layout_mode, (WINDOW_DATA as { layout_modes?: Record<string, string> }).layout_modes).id;
+      const activeId = readActive(cfg.window_layout_active, cls);
+      const own = (activeId ? findNamed(named, activeId) : undefined) ?? findNamed(named, modeId) ?? (modeId === "last" ? lastOwn(named, null) : null) ?? null;
+      const last = readSaved(localStorage);
+      if (own) {
+        setLayout(own.layout.id);
+        // the last session's windows of the same own layout are newer than the saved layout itself
+        const recent = resolved.source === "last_saved" && wd.window_restore_last !== false && last?.own === own.id && last.windows && last.windows.id === own.layout.id ? last.windows : own.layout;
+        setWin(createState(recent, JOURNAL_LIMIT));
+        setOwnActive(own.id);
+      } else setLayout(resolved.layout ?? layoutOfMode(cfg.layout_mode));
       // W2: the last session's windows come back with its layout (window_layout_last; preset window_restore_last, false = the layout only)
-      const saved = resolved.source === "last_saved" && WINDOW_DATA.window_restore_last !== false ? readSaved(localStorage)?.windows ?? null : null;
+      const saved = !own && resolved.source === "last_saved" && wd.window_restore_last !== false ? last?.windows ?? null : null;
       if (saved && saved.id === resolved.layout) {
         // window_restore_front (preset `layout`): the window the layout's preset maximizes (the chat) is in front after a start, the others
         // wait in the switcher, as the start looked before W2; `saved` = the window that was in front when the page was left
         let restored = createState(saved, JOURNAL_LIMIT);
         const presetFront = LAYOUTS[saved.id]?.windows.find(w => w.mode === "maximized")?.id;
-        restored = restoreFront(restored, presetFront, WINDOW_DATA.window_restore_front ?? "layout");
+        restored = restoreFront(restored, presetFront, wd.window_restore_front ?? "layout");
         setWin(restored);
       }
+      // W5: the journal of layout changes of this device class (window_layout_journal) survives a reload
+      const j = readJournal(cfg.window_layout_journal, cls);
+      setWin(s => ({ ...s, past: j.past, future: j.future, limit: j.limit }));
+      journalReady.current = true;
       setActiveConvId(resolved.conversationId);
       setStarted(true);
     })();
     return () => { live = false; };
   }, []);
-  useEffect(() => { if (started && layout) writeSaved(localStorage, { layout, conversationId: activeConvId, windows: WINDOW_DATA.window_restore_last === false ? null : win.layout }); }, [started, layout, activeConvId, win.layout]);
+  useEffect(() => { if (started && layout) writeSaved(localStorage, { layout, conversationId: activeConvId, windows: windowData.window_restore_last === false ? null : win.layout, own: ownActive }); }, [started, layout, activeConvId, win.layout, windowData, ownActive]);
 
   // W2 (OKNA §4.2): the journal of visits. A change of the window in front made by a window step or the switcher is a visit; each visit
   // above the first is one layer of the LayerStack (`visit:<n>`), so Back walks the windows back (window_back: visits | to_chat |
@@ -147,11 +193,11 @@ export default function App() {
     const before = visibleId(winRef.current.layout), after = visibleId(next.layout);
     winRef.current = next;
     setWin(next);
-    if (before === after || after === null || (WINDOW_DATA.window_back ?? "visits") === "none") return;
+    if (before === after || after === null || (windowDataRef.current.window_back ?? "visits") === "none") return;
     setVisits(v => (v.length ? v : before ? [before] : []).concat(after));
   }, []);
   const visitBack = useCallback(() => {
-    const mode = WINDOW_DATA.window_back ?? "visits";
+    const mode = windowDataRef.current.window_back ?? "visits";
     setVisits(v => {
       const rest = v.slice(0, -1);
       const s = winRef.current;
@@ -175,6 +221,66 @@ export default function App() {
   }, [visits, visitBack]);
   // A window that is gone drops out of the journal (closed from the switcher or by a sentence).
   useEffect(() => { setVisits(v => { const left = v.filter(id => win.layout.windows.some(w => w.id === id)); return left.length === v.length ? v : left.length > 1 ? left : []; }); }, [win.layout]);
+  // W5: the journal (undo/redo) is written to window_layout_journal of this device class, a moment after the last change
+  const lastJournal = useRef("");
+  useEffect(() => {
+    if (!journalReady.current) return;
+    const timer = setTimeout(() => {
+      const value = writeJournal(configRef.current.window_layout_journal, deviceClassOf(window.innerWidth), win);
+      const text = JSON.stringify(value);
+      if (text === lastJournal.current || text === JSON.stringify(configRef.current.window_layout_journal ?? null)) { lastJournal.current = text; return; }
+      lastJournal.current = text;
+      saveSetting("window_layout_journal", value);
+    }, 600);
+    return () => clearTimeout(timer);
+  }, [win.past, win.future, saveSetting]);
+  // W5: the operations of named layouts - the sheet „Układ ▾” and the catalogue actions layout.* (a sentence) call the same functions
+  const layoutOps = useMemo(() => {
+    const cls = () => deviceClassOf(window.innerWidth);
+    const named = () => readNamed(configRef.current.window_layouts);
+    const setActive = (id: string | null) => {
+      setOwnActive(id);
+      if (readActive(configRef.current.window_layout_active, cls()) !== id) saveSetting("window_layout_active", writeActive(configRef.current.window_layout_active, cls(), id));
+    };
+    return {
+      save(label: string): string | null {
+        if (!label.trim()) return null;
+        const r = saveNamed(named(), label, winRef.current.layout, new Date().toISOString(), cls());
+        saveSetting("window_layouts", r.list);
+        setActive(r.entry.id);
+        return r.entry.label;
+      },
+      /** An own layout first, then a shipped one; the label applied, or null when the name names none. */
+      apply(name: string): string | null {
+        const own = findNamed(named(), name);
+        if (own) { moveTo(replaceLayout(winRef.current, own.layout, "layout.apply")); setLayoutKnown(true); setActive(own.id); return own.label; }
+        const id = shippedId(name, LAYOUTS);
+        if (!id) return null;
+        moveTo(replaceLayout(winRef.current, LAYOUTS[id], "layout.apply")); setLayoutKnown(true); setActive(null);
+        return labelOf(LAYOUTS[id], uiLanguageRef.current);
+      },
+      rename(id: string, label: string): string | null {
+        const r = renameNamed(named(), id, label);
+        if (r.conflict) return r.conflict;
+        saveSetting("window_layouts", r.list);
+        return null;
+      },
+      remove(id: string) {
+        saveSetting("window_layouts", deleteNamed(named(), id));
+        if (readActive(configRef.current.window_layout_active, cls()) === id) setActive(null);
+      },
+      undo(): boolean { const r = undoLayout(winRef.current); if (r.applied) moveTo(r.state); return r.applied; },
+      redo(): boolean { const r = redoLayout(winRef.current); if (r.applied) moveTo(r.state); return r.applied; },
+      reset(): string {
+        const id = resetTarget(winRef.current.layout.id, cls(), LAYOUTS);
+        moveTo(replaceLayout(winRef.current, LAYOUTS[id], "layout.reset")); setLayoutKnown(true); setActive(null);
+        return labelOf(LAYOUTS[id], uiLanguageRef.current);
+      },
+      /** A layout chosen from the menu (Czat / Siatka): no own layout is active on this class any more. */
+      clearActive() { if (readActive(configRef.current.window_layout_active, cls())) setActive(null); },
+    };
+  }, [moveTo, saveSetting]);
+  const pickLayout = useCallback((name: string) => { setLayout(name); layoutOps.clearActive(); }, [setLayout, layoutOps]);
   // Animation and disclosure glyphs are data: the resolved tables become CSS variables (prefers-reduced-motion selects the reduced-motion style).
   useEffect(() => {
     const reduced = typeof window.matchMedia === "function" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -259,6 +365,8 @@ export default function App() {
   };
   const uiShell = usePresentationFeature(userProfileHost, "ui_shell");
   const uiLanguage = shellLanguage(config.ui_language, undefined, navigator.languages ?? [navigator.language], ["en", "pl"]);
+  const uiLanguageRef = useRef(uiLanguage);
+  uiLanguageRef.current = uiLanguage;
   // r2:b4: the document speaks the shell's language (index.html ships lang="en"); a screen reader (TalkBack) then picks the Polish voice.
   useEffect(() => { document.documentElement.lang = uiLanguage; }, [uiLanguage]);
   const t = useMemo(() => shellTranslator(uiShell.feature, uiLanguage), [uiShell.feature, uiLanguage]);
@@ -284,8 +392,25 @@ export default function App() {
     const onStep = (event: Event) => {
       const detail = (event as CustomEvent<WindowStepDetail>).detail;
       if (!detail || detail.outcome) return;
-      const deviceClass = window.innerWidth < 600 ? "phone" : "desktop";
-      const { state, receipt } = runWindowStep(winRef.current, detail.action, detail.args ?? {}, known, deviceClass);
+      if (detail.action.startsWith("layout.")) {
+        // W5: layout.save / apply / undo / redo / reset - the same functions as the sheet „Układ ▾”; the receipt says what was done
+        const args = detail.args ?? {};
+        const name = ["name", "label", "target"].map(k => args[k]).find((v): v is string => typeof v === "string" && v.trim() !== "")?.trim() ?? "";
+        const op = detail.action.slice(7);
+        const ok = (text: string, extra: Record<string, unknown> = {}) => ({ state: "ok" as const, parts: [{ kind: "text", text }], data: { schema: "loom.layout_receipt/1", op, name, layout: winRef.current.layout.id, device_class: deviceClassOf(window.innerWidth), ...extra } });
+        const fail = (text: string) => ({ state: "failed" as const, error: { message: text } });
+        if (op === "save") { const label = layoutOps.save(name); detail.outcome = label ? ok(t("layout_receipt_saved", { name: label })) : fail(t("layout_receipt_noname")); }
+        else if (op === "apply") { const label = layoutOps.apply(name); detail.outcome = label ? ok(t("layout_receipt_applied", { name: label })) : fail(t("layout_receipt_none", { name })); }
+        else if (op === "undo" || op === "redo") {
+          const done = op === "undo" ? layoutOps.undo() : layoutOps.redo();
+          detail.outcome = ok(t(done ? `layout_receipt_${op}` : `layout_receipt_nothing_${op}`), { state: done ? "ok" : "noop" });
+        }
+        else if (op === "reset") detail.outcome = ok(t("layout_receipt_reset", { name: layoutOps.reset() }));
+        else detail.outcome = fail(t("layout_receipt_none", { name: detail.action }));
+        return;
+      }
+      const deviceClass = deviceClassOf(window.innerWidth);
+      const { state, receipt } = runWindowStep(winRef.current, detail.action, detail.args ?? {}, known, deviceClass, undefined, windowDataRef.current);
       moveTo(state);
       const say = (r: WindowReceipt): string => {
         const names = r.windows.map(windowLabel).join(", ");
@@ -301,7 +426,21 @@ export default function App() {
     };
     window.addEventListener(WINDOW_STEP_EVENT, onStep);
     return () => window.removeEventListener(WINDOW_STEP_EVENT, onStep);
-  }, [moveTo, t, windowLabel]);
+  }, [moveTo, t, windowLabel, layoutOps]);
+  // W5: what the sheet „Układ ▾” shows (the own layouts of the person, the one active on this device class, the shipped ones)
+  const shellLayouts = useMemo<ShellLayouts>(() => {
+    const own = readNamed(config.window_layouts);
+    return {
+      own: own.map(l => ({ id: l.id, label: l.label, active: l.id === ownActive })),
+      shipped: Object.keys(LAYOUTS).map(id => ({ id, label: labelOf(LAYOUTS[id], uiLanguage), current: ownActive === null && win.layout.id === id })),
+      deviceClass, canUndo: win.past.length > 0, canRedo: win.future.length > 0,
+      save: (label: string) => { layoutOps.save(label); },
+      apply: (id: string) => { layoutOps.apply(id); },
+      rename: (id: string, label: string) => layoutOps.rename(id, label),
+      remove: (id: string) => layoutOps.remove(id),
+      undo: () => { layoutOps.undo(); }, redo: () => { layoutOps.redo(); }, reset: () => { layoutOps.reset(); },
+    };
+  }, [config.window_layouts, ownActive, uiLanguage, win.layout.id, win.past.length, win.future.length, deviceClass, layoutOps]);
   const shellWindows = useMemo(() => {
     const front = visibleId(win.layout);
     return {
@@ -313,8 +452,9 @@ export default function App() {
         const w = winRef.current.layout.windows.find(x => x.id === id);
         if (w && typeof w.params?.panel === "string") moveTo(closeWindows(winRef.current, { target: { panel: String(w.params.panel) } }).state);
       },
+      layouts: shellLayouts,
     };
-  }, [win.layout, windowLabel, moveTo, uiLanguage]);
+  }, [win.layout, windowLabel, moveTo, uiLanguage, shellLayouts]);
   // W4: docking and floating (menu ⋯, drag, split grips, keys) and the advisory chips of the arrangement
   const arranged = useArrange(win, winRef, moveTo, uiLanguage, windowLabel);
   const [panelMenu, setPanelMenu] = useState(false);
@@ -413,7 +553,7 @@ export default function App() {
           {shellText("menu")}
         </button>
         <nav className={navOpen ? "app-nav open" : "app-nav"} id="app-nav" data-testid="app-nav">
-          <button data-testid="nav-chat" onClick={() => { setLayout("chat"); setNavOpen(false); }}>{t("workshop_back")}</button>
+          <button data-testid="nav-chat" onClick={() => { pickLayout("chat"); setNavOpen(false); }}>{t("workshop_back")}</button>
           <SemanticStatus profileHost={userProfileHost} />
           <button data-testid="nav-knowledge" data-tab="knowledge" aria-pressed={knowledgeOpen} onClick={() => { setKnowledgeOpen((value) => !value); setNavOpen(false); }}>Knowledge</button>
           {knowledgeOpen && <button aria-pressed={chatVisible} onClick={() => { setChatVisible((value) => !value); setNavOpen(false); }}>{chatVisible ? "Hide chat" : "Show chat"}</button>}
@@ -470,7 +610,7 @@ export default function App() {
   function renderMain(w: Win): ReactNode { return w.kind !== "chat" ? null : (
       <ChatShell profileHost={userProfileHost} convId={activeConvId} onSelect={setActiveConvId} onCreated={onConversationCreated} onShowInGraph={openNavigator}
         refreshKey={convRefreshKey} onMessagesChanged={onMessagesChanged} windows={shellWindows} behindOverlay={activePanel !== null || knowledgeOpen}
-        actions={{ panel: (id) => { if (id === "settings") setSettingsView(""); setActivePanel(id as PanelId); }, navigator: (focus) => { setNavigatorFocus(focus); setActivePanel("navigator"); }, knowledge: () => setKnowledgeOpen(true), workshop: () => setLayout("workshop") }} />); }
+        actions={{ panel: (id) => { if (id === "settings") setSettingsView(""); setActivePanel(id as PanelId); }, navigator: (focus) => { setNavigatorFocus(focus); setActivePanel("navigator"); }, knowledge: () => setKnowledgeOpen(true), workshop: () => pickLayout("workshop") }} />); }
   const host = <WindowHost state={win} renderOverlay={() => panels} grid={grid} renderDocked={docked} shown={dockShown} title={(w) => windowLabel(w.id)} renderWindow={renderMain}
     renderPanel={w => panelContent(String(w.params.panel) as PanelId, w.kind)} arrange={arranged.handlers} chips={arranged.chips} />;
   return (

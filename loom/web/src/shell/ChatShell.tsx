@@ -8,6 +8,7 @@ import SemanticStatus from "../components/SemanticStatus";
 import DiagnosticsSheet from "../components/DiagnosticsSheet";
 import SemanticDot from "./SemanticDot";
 import { useShellText } from "./text";
+import LayoutsSheet, { type ShellLayouts } from "./LayoutsSheet";
 import { CHAT_MENU, menuEntries, parseMenuAction, resolveNavigatorFocus, type SheetId } from "./menu";
 import { useLayer } from "./use-layer";
 import "./shell.css";
@@ -27,6 +28,8 @@ export interface ShellWindows {
   /** W4: every arrangement without dragging (dock left/right/top/bottom, tab, float, maximize) - entries from data. */
   arrangeMenu?: { id: string; label: string; icon?: string }[];
   arrange?(id: string, how: string): void;
+  /** W5: the sheet „Układ ▾” (named layouts, undo/redo, back to the shipped layout). */
+  layouts?: ShellLayouts;
 }
 interface Props {
   profileHost: UserProfileHost;
@@ -99,9 +102,10 @@ export default function ChatShell({ profileHost, convId, onSelect, onCreated, re
       </select>}
     </div>)}
   </div>;
+  if (sheet === "layouts" && windows?.layouts) sheetBody = <LayoutsSheet layouts={windows.layouts} done={() => setSheet(null)} />;
   if (sheet === "semantic") sheetBody = <SemanticStatus profileHost={profileHost} />;
   if (sheet === "diagnostics") sheetBody = <DiagnosticsSheet convId={convId} />;
-  const sheetTitle = sheet === "windows" ? t("windows_title") : sheet === "views" ? t("views_title") : sheet === "diagnostics" ? t("menu_diagnostics") : t("menu_semantic");
+  const sheetTitle = sheet === "windows" ? t("windows_title") : sheet === "layouts" ? t("layouts_title") : sheet === "views" ? t("views_title") : sheet === "diagnostics" ? t("menu_diagnostics") : t("menu_semantic");
 
   return (
     <div className="shell-root" data-testid="chat-shell" {...inertAttr(behindOverlay)}>

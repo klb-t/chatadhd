@@ -39,6 +39,11 @@
           "action": "sheet:windows"
         },
         {
+          "id": "layouts",
+          "label": "menu_layouts",
+          "action": "sheet:layouts"
+        },
+        {
           "id": "views",
           "label": "menu_views",
           "action": "sheet:views"
@@ -279,7 +284,7 @@
   "fallbacks": {
     "last": "siatka"
   },
-  "fallbacks_note": "W1: layout_mode=windows means 'the last own layout' (OKNA §3.1); until saved layouts exist (W5) it opens the grid, as before. A preset, not a rule.",
+  "fallbacks_note": "W5: layout_mode=windows means 'the last own layout' (OKNA §3.1): the layout active on this device class (window_layout_active) when it is an own one, else the most recently saved (window_layouts); only when the person has saved none does it open this fallback, the grid. A preset, not a rule.",
   "panel_kinds": {
     "graph": "graph_view",
     "graph-entry": "graph_entry",
@@ -345,13 +350,13 @@
       "shelf": "maximize"
     }
   },
-  "window_placements_note": "W2: the placement a screen uses for an asked one, per device class (`any` = every class). Preset: every placement is the next maximized window of the stack (OKNA §4.1) until docking and floating are drawn (W3/W4); the receipt says so when it differs from the asked one. A preset, not a rule.",
+  "window_placements_note": "W2: the placement a screen uses for an asked one, per device class (`any` = every class). Preset: every placement is the next maximized window of the stack (OKNA §4.1) until docking and floating are drawn (W3/W4); the receipt says so when it differs from the asked one. A preset, not a rule. W5: the settings field of the same name (settings_fields.pack) overrides this preset when it is set.",
   "window_back": "visits",
-  "window_back_note": "W2 (OKNA §4.2): what Back does with windows: visits (back to the previous window of the journal of visits), to_chat (back to the chat window), close_window (closes the window in front), none (Back never changes the window). Preset of the phone.",
+  "window_back_note": "W2 (OKNA §4.2): what Back does with windows: visits (back to the previous window of the journal of visits), to_chat (back to the chat window), close_window (closes the window in front), none (Back never changes the window). Preset of the phone. W5: the settings field of the same name (settings_fields.pack) overrides this preset when it is set.",
   "window_restore_last": true,
-  "window_restore_last_note": "W2: the start view `last_saved` restores the windows of the last session (window_layout_last in localStorage loom.shell.last.v2), not only the layout id. false = only the layout id, as in W1.",
+  "window_restore_last_note": "W2: the start view `last_saved` restores the windows of the last session (window_layout_last in localStorage loom.shell.last.v2), not only the layout id. false = only the layout id, as in W1. W5: the settings field of the same name (settings_fields.pack) overrides this preset when it is set.",
   "window_restore_front": "layout",
-  "window_restore_front_note": "W2: which window is in front after a start that restored window_layout_last: layout (preset: the window the layout's preset maximizes, the chat; the restored others wait in the switcher - a start looks as before W2) | saved (the window that was in front when the page was left).",
+  "window_restore_front_note": "W2: which window is in front after a start that restored window_layout_last: layout (preset: the window the layout's preset maximizes, the chat; the restored others wait in the switcher - a start looks as before W2) | saved (the window that was in front when the page was left). W5: the settings field of the same name (settings_fields.pack) overrides this preset when it is set.",
   "window_arrange": {
     "min_useful_width": 240,
     "offscreen_fraction": 0.5,
@@ -503,5 +508,20 @@
       "ctrl+shift+y": "redo"
     }
   },
-  "window_arrange_note": "W4 (OKNA §4.4, §6.3): presets of docking and floating - thresholds of the advisories dock_narrow (min_useful_width px of a drawn leaf), float_offscreen (fraction of a floating rect outside the area), float_under_keyboard (on-screen keyboard at least keyboard_min_px tall); drop_edge = the fraction of a leaf near its edge that docks to that side (the middle makes a tab); the menu entries and keys reach every arrangement without dragging. All examples; any value works, also degenerate ones (0 = never narrow)."
+  "window_arrange_note": "W4 (OKNA §4.4, §6.3): presets of docking and floating - thresholds of the advisories dock_narrow (min_useful_width px of a drawn leaf), float_offscreen (fraction of a floating rect outside the area), float_under_keyboard (on-screen keyboard at least keyboard_min_px tall); drop_edge = the fraction of a leaf near its edge that docks to that side (the middle makes a tab); the menu entries and keys reach every arrangement without dragging. All examples; any value works, also degenerate ones (0 = never narrow).",
+  "device_classes": [
+    {
+      "id": "phone",
+      "max_width": 599
+    },
+    {
+      "id": "desktop"
+    }
+  ],
+  "device_classes_note": "W5: the device class of a screen (the key of window_layout_active and of window_layout_journal): the first rule whose width range (CSS px, max_width / min_width) holds the screen wins. An open list of examples - add tablet, tv, watch… as rules; a screen no rule holds is the class `any`.",
+  "layout_reset": {
+    "any": "same"
+  },
+  "layout_reset_note": "W5: what „Jak w aplikacji” (layout.reset) brings back, per device class (`any` = every class): `same` = the shipped form of the layout drawn now (czat stays czat, siatka stays siatka), or the id of a shipped layout. One journal entry, undo returns the layout that was there.",
+  "journal_limit_note": "W5: the bound of the persisted journal (window_layout_journal, per device class); the field's own `limit` overrides it. Any number ≥ 0 (0 = no undo)."
 }

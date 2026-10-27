@@ -8,7 +8,7 @@ import { check, type WLayout } from "./windows/model";
 export const START_VIEW_PRESET: readonly string[] = ["last_saved", "last_conversation", "new_conversation"];
 /** A layout id (open set: a preset of layouts.json or a layout the person saved). */
 export type Layout = string;
-export interface SavedView { layout: Layout; conversationId: string | null; /** W2: window_layout_last - the windows of the layout as they were (v2 only). */ windows?: WLayout | null }
+export interface SavedView { layout: Layout; conversationId: string | null; /** W2: window_layout_last - the windows of the layout as they were (v2 only). */ windows?: WLayout | null; /** W5: the own (named) layout these windows belong to, or absent. */ own?: string | null }
 export interface StartProbes {
   saved(): SavedView | null;
   conversationExists(id: string): Promise<boolean>;
@@ -78,6 +78,7 @@ export function readSaved(store: Pick<Storage, "getItem">): SavedView | null {
       const view: SavedView = { layout: resolveLayoutId(v.layout), conversationId: v.conversation_id };
       const windows = savedWindows(v.window_layout_last, view.layout);
       if (windows) view.windows = windows;
+      if (typeof v.window_layout_own === "string" && v.window_layout_own) view.own = v.window_layout_own;
       return view;
     }
   } catch { /* unreadable: try v1 */ }
@@ -91,6 +92,7 @@ export function readSaved(store: Pick<Storage, "getItem">): SavedView | null {
 export function writeSaved(store: Pick<Storage, "setItem">, view: SavedView): void {
   const record: Record<string, unknown> = { schema: "loom.shell.last/2", layout: view.layout, conversation_id: view.conversationId };
   if (view.windows) record.window_layout_last = view.windows;
+  if (view.own) record.window_layout_own = view.own;
   try { store.setItem(LAST_KEY, JSON.stringify(record)); } catch { /* storage blocked */ }
 }
 
