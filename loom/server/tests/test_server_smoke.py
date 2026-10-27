@@ -305,6 +305,40 @@ def test_graph_packets(base: str, data_dir: str) -> None:
     print("OK: loom-server graph-packet profile acceptance/read/replay/CAS/drift checks passed")
 
 
+def test_config_merge(base: str, data_dir: str) -> None:
+    """M1-OKNA-W5b: PATCH /api/config/:key merges an RFC 7386 patch into the stored value under the config lock; two writers of
+    different members never lose each other's writes (a whole-value PUT from a stale copy would)."""
+    import threading
+    url = base + "/api/config/window_layout_journal"
+    bad = requests.patch(url, json={"value": {}}, timeout=5)
+    assert bad.status_code == 400, bad.text
+    errors: list[str] = []
+
+    def writer(name: str) -> None:
+        for i in range(25):
+            r = requests.patch(url, json={"merge": {"writers": {name: {"updated": str(i), "phone": {"past": [i], "future": []}}}}}, timeout=10)
+            if r.status_code != 200:
+                errors.append(r.text)
+
+    threads = [threading.Thread(target=writer, args=(f"web-{k}",)) for k in range(3)]
+    for t in threads:
+        t.start()
+    for t in threads:
+        t.join()
+    assert not errors, errors
+    value = requests.get(base + "/api/config", timeout=5).json()["window_layout_journal"]
+    assert sorted(value["writers"]) == ["web-0", "web-1", "web-2"], value
+    assert all(r["phone"]["past"] == [24] for r in value["writers"].values()), value
+    gone = requests.patch(url, json={"merge": {"writers": {"web-1": None}}}, timeout=5).json()["window_layout_journal"]
+    assert sorted(gone["writers"]) == ["web-0", "web-2"], gone
+    requests.put(base + "/api/config/window_layout_active", json={"value": json.dumps({"phone": "u_a"})}, timeout=5)
+    merged = requests.patch(base + "/api/config/window_layout_active", json={"merge": {"installations": {"inst-1": {"phone": "u_b"}}}}, timeout=5).json()
+    assert merged["window_layout_active"] == {"phone": "u_a", "installations": {"inst-1": {"phone": "u_b"}}}, merged["window_layout_active"]
+    on_disk = json.loads((Path(data_dir) / "config.json").read_text(encoding="utf-8"))
+    assert on_disk["window_layout_journal"]["writers"]["web-0"]["phone"]["past"] == [24], "config.json stays plain JSON"
+    print("OK: loom-server config merge (3 concurrent writers x 25, null removes, JSON text merged) passed")
+
+
 def main() -> int:
     server_bin = os.environ.get("LOOM_SERVER_BIN")
     if not server_bin or not os.path.exists(server_bin):
@@ -408,6 +442,7 @@ def main() -> int:
 
         test_knowledge(base, data_dir)
         test_graph_packets(base, data_dir)
+        test_config_merge(base, data_dir)
         test_actions_and_routing(base)
 
         # SSE chat: no upstream configured, so this must fail cleanly with a
