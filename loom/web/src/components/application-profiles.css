@@ -46,3 +46,10 @@
 .chat-host.beside-workbench > .application-views,
 .chat-host.beside-workbench .application-view-grid { flex: 0 0 auto; min-height: auto; }
 .chat-host.beside-workbench .application-profile-body { min-height: min(60vh, 22rem); }
+
+/* W3 regression (390 px): a chat leaf of the dock tree may be shorter than its content (toolbar + body). Like the former beside-workbench strip it
+   scrolls internally and its parts keep their natural height (grow, never shrink below it) instead of overflowing into the next leaf. */
+.dock-leaf > .chat-host { overflow: auto; }
+.dock-leaf > .chat-host > .application-views,
+.dock-leaf > .chat-host .application-view-grid { flex: 1 0 auto; min-height: auto; }
+.dock-leaf > .chat-host .application-profile-body { min-height: min(60vh, 22rem); }

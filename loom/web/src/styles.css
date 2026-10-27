@@ -250,6 +250,9 @@ textarea { resize: vertical; }
    the panel entries of the switcher bar are tabs (the pressed one underlined). */
 .dock-leaf:has(> [hidden]:only-child) { display: none; }
 .dock-leaf > .main-panel { flex: 1; }
+/* each leaf stays inside its box and scrolls internally (390 px regression: content with min-height:auto overflowed into the next leaf) */
+.dock-leaf { overflow-x: hidden; overflow-y: auto; }
+.dock-split { overflow: hidden; }
 .dock-split[data-split="v"] > .dock-leaf + .dock-leaf { border-top: 1px solid var(--border); }
 .dock-tabs { display: flex; gap: 2px; border-bottom: 1px solid var(--border); overflow-x: auto; flex-shrink: 0; }
 .window-switcher [data-tab] { border-radius: 6px 6px 0 0; border-bottom-width: 2px; }

@@ -260,6 +260,11 @@ try {
   assert.equal(await graph().last().getAttribute("data-view-id"), referenceId);
   await page.setViewportSize({ width: 390, height: 844 });
   if (!(await page.getByTestId("sidebar").getAttribute("class")).includes("collapsed")) await page.getByTestId("toggle-sidebar").click();
+  const leafBoxes = await page.evaluate(() => [...document.querySelectorAll(".dock-leaf")].filter((e) => e.offsetParent !== null).map((e) => { const r = e.getBoundingClientRect(); return { id: e.dataset.leaf, x: r.x, y: r.y, w: r.width, h: r.height }; }));
+  for (let i = 0; i < leafBoxes.length; i++) for (let j = i + 1; j < leafBoxes.length; j++) {
+    const a = leafBoxes[i], b = leafBoxes[j];
+    assert.ok(a.x + a.w <= b.x + 1 || b.x + b.w <= a.x + 1 || a.y + a.h <= b.y + 1 || b.y + b.h <= a.y + 1, `dock leaves do not overlap at 390 px: ${JSON.stringify([a, b])}`);
+  }
   await page.getByTestId("chat-context-controls").locator(":scope > summary").click();
   await page.getByTestId("use-knowledge-context").check();
   assert.equal(await page.getByTestId("use-context-plan").isChecked(), true, "the explicitly selected context plan survives reload independently of workspace restore");
