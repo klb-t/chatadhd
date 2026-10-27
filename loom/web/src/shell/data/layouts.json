@@ -494,6 +494,14 @@
           "en": "Maximize"
         },
         "icon": "⤢"
+      },
+      {
+        "id": "duplicate",
+        "label": {
+          "pl": "Otwórz drugie takie okno obok",
+          "en": "Open another one beside"
+        },
+        "icon": "⧉+"
       }
     ],
     "keymap": {
@@ -526,8 +534,14 @@
   "journal_limit_note": "W5: the bound of the persisted journal (window_layout_journal, per device class); the field's own `limit` overrides it. Any number ≥ 0 (0 = no undo).",
   "journal_writers": 20,
   "journal_writers_note": "W5b: how many writers (tabs, each with its own client id) keep their own journal in window_layout_journal.writers; past it the record updated longest ago is dropped when a writer saves (its entries are a copy of layout states, the layouts themselves stay). The value's own `writers_limit` overrides it; 0 = no bound.",
-  "journal_inherit": ["installation", "person"],
+  "journal_inherit": [
+    "installation",
+    "person"
+  ],
   "journal_inherit_note": "W5b: where a writer with no journal of its own (a new tab) takes its starting copy from, in order: `installation` = the most recently updated writer of the same browser installation and device class, `person` = the most recently updated writer of that class anywhere, then the W5 per-class journal. An open list; [] = a new tab starts with an empty journal. The value's own `inherit` overrides it.",
-  "active_levels": ["installation", "person"],
+  "active_levels": [
+    "installation",
+    "person"
+  ],
   "active_levels_note": "W5b (OKNA D19): where the page writes the active own layout of a device class (window_layout_active): `installation` = installations.<installation id>.<class> (this browser only; an empty id = no own layout here, which wins over the person value), `person` = <class> (the fallback of every installation that has no value of its own). Reading always tries this installation first, then the person value. An open list; the value's own `levels` overrides it."
 }

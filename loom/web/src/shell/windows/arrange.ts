@@ -47,6 +47,17 @@ export function arrangeWindow(s: WState, id: string, how: Arrange, opts: Arrange
   let state = s;
   const run = (op: Op) => { state = apply(state, op, ctx).state; };
   if (how === "maximize") run({ op: "maximize", id });
+  else if (how === "duplicate") {
+    // W6: another window of the same kind and panel (two graphs side by side, each with its own camera): docked beside the original when it
+    // is docked, else floating. Parameters are not copied (each window starts independent; coupling binds them on demand).
+    const known = new Set(state.layout.windows.map((x) => x.id));
+    const params: Record<string, unknown> = { ...(isPanel(w) ? { panel: w.params.panel } : {}), ...(typeof w.params?.over === "string" ? { over: w.params.over } : {}), copy_of: w.id };
+    run({ op: "open", kind: w.kind, node: w.node, placement: "float", params });
+    const fresh = state.layout.windows.find((x) => !known.has(x.id));
+    if (!fresh) return s;
+    if (w.dock) run({ op: "dock", id: fresh.id, target: { side: "right", of: w.dock.leaf } });
+    for (const x of [...state.layout.windows]) if (x.mode === "maximized" && x.dock) run({ op: "restore", id: x.id });
+  }
   else if (how === "float") {
     const base = state.layout.windows.find((x) => x.mode === "maximized" && x.id !== id) ?? (typeof w.params?.over === "string" ? state.layout.windows.find((x) => x.id === w.params.over) : undefined);
     run({ op: "float", id, rect: opts.rect ?? (w.mode === "floating" ? undefined : { ...(data.float_rect ?? {}) }) });

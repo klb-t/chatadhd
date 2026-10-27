@@ -1,4 +1,5 @@
 /** Browser projection state; conversation content remains in the native store. */
+import { bindingValue, type Binding } from "../shell/windows/binding";
 export type ConversationCoupling = "coupled" | "independent";
 export interface ApplicationViewState {
   id: string;
@@ -36,8 +37,14 @@ export function newApplicationView(id: string, profile: string): ApplicationView
   return { id, profile, conversation: { coupling: "coupled", selectedId: null, sidebarOpen: false } };
 }
 
+/** W6 (OKNA §5.3): the stored coupling read as a binding of the parameter `conversation` - `coupled` = shared in the channel
+ *  `conversation`, `independent` = the view's own value. The stored shape is unchanged (old saved views read the same). */
+export function conversationBinding(view: ApplicationViewState): Binding {
+  return view.conversation.coupling === "coupled" ? { binding: "shared", channel: "conversation" } : { binding: "independent", value: view.conversation.selectedId };
+}
+
 export function viewConversationId(view: ApplicationViewState, sharedId: string | null): string | null {
-  return view.conversation.coupling === "coupled" ? sharedId : view.conversation.selectedId;
+  return bindingValue(conversationBinding(view), view.conversation.selectedId, { conversation: sharedId }, "conversation") as string | null;
 }
 
 /** Detaching takes the conversation currently visible in this view, without changing siblings. */

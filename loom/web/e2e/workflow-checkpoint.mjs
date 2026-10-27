@@ -20,7 +20,8 @@ function moduleUrl(file, replacements = []) {
   return `data:text/javascript;base64,${Buffer.from(source).toString("base64")}`;
 }
 const runtimeUrl = moduleUrl("../src/profiles/runtime.ts");
-const viewUrl = moduleUrl("../src/profiles/view-state.ts");
+const bindingUrl = moduleUrl("../src/shell/windows/binding.ts");   // W6: view-state reads its conversation through a binding
+const viewUrl = moduleUrl("../src/profiles/view-state.ts", [["../shell/windows/binding", bindingUrl]]);
 const graphUrl = moduleUrl("../src/profiles/graph.ts", [["./runtime", runtimeUrl]]);
 const snapshotUrl = moduleUrl("../src/profiles/workflow-snapshot.ts", [["./runtime", runtimeUrl], ["./view-state", viewUrl], ["./graph", graphUrl]]);
 const checkpointUrl = moduleUrl("../src/profiles/workflow-checkpoint.ts", [["./runtime", runtimeUrl], ["./workflow-snapshot", snapshotUrl]]);
