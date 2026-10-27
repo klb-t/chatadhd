@@ -626,6 +626,7 @@
           ],
           "http": [
             "PATCH /api/config",
+            "PATCH /api/config/:id",
             "PUT /api/config/:id",
             "POST /api/semantic/retry-mode"
           ],
