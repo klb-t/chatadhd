@@ -357,8 +357,14 @@ def generated_inputs(expected, root):
         name, body = block.groups()
         if name in chunks:
             raise ValueError('duplicate_generated_source_chunks')
-        literal_pattern = r'\s*R"LPROFILE\((.*?)\)LPROFILE",'
-        parts = re.findall(literal_pattern, body, re.DOTALL)
+        # A chunk is a bare raw literal or, since G3b, std::string_view(literal, N) with its exact UTF-8 byte length
+        # (clang's constexpr strlen hits its step limit on a long table); a wrong N is refused, not trusted.
+        literal_pattern = r'\s*(?:R"LPROFILE\((.*?)\)LPROFILE"|std::string_view\(R"LPROFILE\((.*?)\)LPROFILE", ([0-9]+)\)),'
+        parts = []
+        for bare, sized, length in re.findall(literal_pattern, body, re.DOTALL):
+            if length and int(length) != len(sized.encode("utf-8")):
+                raise ValueError('generated_source_chunk_length_mismatch')
+            parts.append(sized if length else bare)
         if not parts or re.sub(literal_pattern, '', body, flags=re.DOTALL).strip():
             raise ValueError('invalid_generated_source_chunks')
         chunks[name] = ''.join(parts)
