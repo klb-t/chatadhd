@@ -124,6 +124,12 @@ try {
     assert.equal(summary, wire.truth.summary.pl.replace(/\s+/g, " ").trim(), "the page shows the kernel's Polish sentence as it came");
     assert.match(summary, /znaleziono 3, zapisano 0/);
     assert.match(summary, /eksport Claude\.ai nie zawiera plików załączników/);
+    // G2-P1: the graph summary (runtime/import_graph.pack templates) - a Polish sentence, no raw JSON, pointing at the area Importy
+    const graphLine = await text("import-graph-summary");
+    assert.match(graphLine, /Eksport Claude \(Anthropic\) z pliku „[^”]+”\. Rozmowy: 2, wiadomości: \d+\./);
+    assert.match(graphLine, /Importy/);
+    assert.ok(!/[{}\[\]"]/.test(graphLine), "no raw JSON in the graph summary");
+    REPORT.graphSummary = graphLine;
     assert.ok(!/Imported \d+ messages/.test(await page.getByTestId("import-result").innerText()), "the English line is gone");
     assert.equal(await page.getByTestId("import-summary").getAttribute("class").then(c => /\bwarn\b/.test(c)), true, "not everything was saved: the summary is not green");
     REPORT.summary = summary;
@@ -225,6 +231,15 @@ try {
     const rows = await page.locator('[data-testid="nav-rows"] > li .gnav-label').allInnerTexts();
     assert.deepEqual(rows, root.children.map(c => c.label), "the rows are the kernel's root rows");
     await shot("chat-root");
+    // G2-P1: the area Importy shows the export as a node; under it its conversations (and the file, the account, the projects)
+    await page.getByTestId("nav-row-area:imports").tap();
+    await until(async () => (await nav().getAttribute("data-focus")) === "area:imports", "the navigator at the area Importy");
+    const exportRow = page.locator('[data-testid="nav-rows"] > li[data-kind="export"] .gnav-row-main');
+    await until(async () => (await exportRow.count()) === 1, "one export node under Importy");
+    await exportRow.first().tap();
+    await until(async () => (await page.locator('[data-testid="nav-rows"] > li[data-kind="conversation"]').count()) === 2, "the export's two conversations");
+    assert.equal(await page.locator('[data-testid="nav-rows"] > li[data-kind="zip_archive"]').count(), 1, "the file under the export");
+    await shot("imports-export");
     await page.getByTestId("close-panel").tap();
     await nav().waitFor({ state: "detached" });
     const answer = await page.locator('[data-testid="message"][data-role="assistant"]').last().innerText();

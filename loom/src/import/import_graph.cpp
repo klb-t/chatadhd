@@ -65,6 +65,7 @@ Json union_strings(const Json& a, const Json& b) {
 }
 
 struct Writer {
+  explicit Writer(Database& d) : db(d) {}
   Database& db;
   std::string prefix;  // kind prefix
   std::string mkey;    // metadata key
@@ -156,8 +157,10 @@ Result<Json> project_with(Database& db, const fs::path& path, const ImportResult
   const std::string read_from = json::get_string(links, "read_from", "derived_from");
   const Json words = preset.value("words", Json::object());
 
-  Writer w{db, json::get_string(preset, "kind_prefix", "import:"), json::get_string(preset, "metadata_key", "import_graph"),
-           result.blob_hash};
+  Writer w(db);
+  w.prefix = json::get_string(preset, "kind_prefix", "import:");
+  w.mkey = json::get_string(preset, "metadata_key", "import_graph");
+  w.blob = result.blob_hash;
   if (w.blob.empty()) {
     auto hashed = sha256_file_hex(path);
     w.blob = hashed ? *hashed : "path:" + path.string();
@@ -217,7 +220,11 @@ Result<Json> project_with(Database& db, const fs::path& path, const ImportResult
   for (const auto& d : read_dispositions)
     if (d.is_string()) read_ok.insert(d.get<std::string>());
   const Json by_ext = preset.value("member_class_by_extension", Json::object());
-  if (is_export) {
+  bool archive = false;
+  const Json archive_formats = preset.value("archive_formats", Json::array());
+  for (const auto& f : archive_formats)
+    if (f.is_string() && f.get<std::string>() == result.format) archive = true;
+  if (is_export && archive) {
     const Json member_list = report.value("members", Json::array());
     for (const auto& m : member_list) {
       if (!m.is_object()) continue;

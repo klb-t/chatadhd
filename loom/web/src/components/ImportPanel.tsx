@@ -23,6 +23,17 @@ interface Props {
   onImported: () => void;
 }
 
+// Import as graph nodes (P1): the kernel's summary sentence (runtime/import_graph.pack templates), in the reader's language when the
+// kernel carries it, else in its preset language. Words only: the kernel never puts raw JSON in it.
+function graphSummary(result: Record<string, unknown>, language: string): string | null {
+  const graph = result.import_graph as { summary?: { text?: unknown; texts?: Record<string, unknown> } } | undefined;
+  const summary = graph?.summary;
+  if (!summary) return null;
+  const mine = summary.texts?.[language];
+  if (typeof mine === "string" && mine) return mine;
+  return typeof summary.text === "string" && summary.text ? summary.text : null;
+}
+
 export default function ImportPanel({ onImported }: Props) {
   const [file, setFile] = useState<File | null>(null);
   const [title, setTitle] = useState("");
@@ -134,6 +145,7 @@ export default function ImportPanel({ onImported }: Props) {
         return (
           <div style={{ marginTop: 12 }} data-testid="import-result" data-truth={view.hasTruth}>
             <div className={`pill import-summary ${view.allSaved ? "ok" : "warn"}`} data-testid="import-summary" role="status">{view.summary ?? view.legacyLine}</div>
+            {graphSummary(result, language) && <p className="import-graph-summary" data-testid="import-graph-summary">{graphSummary(result, language)}</p>}
             {view.rows.length > 0 && (
               <table className="import-truth" data-testid="import-truth-table" aria-label={t("import_table")}>
                 <thead><tr><th scope="col">{t("import_col_kind")}</th><th scope="col">{t("import_col_found")}</th><th scope="col">{t("import_col_saved")}</th></tr></thead>

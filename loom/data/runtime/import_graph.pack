@@ -98,13 +98,13 @@
         }
       },
       "plain_file": {
-        "en": "File",
-        "pl": "Plik"
+        "en": "Import",
+        "pl": "Import"
       },
       "disposition": {
         "offline_viewer_skipped": {
-          "en": "offline viewer, not read (the conversations come from the JSON files)",
-          "pl": "przeglądarka offline, nie wczytana (rozmowy pochodzą z plików JSON)"
+          "en": "offline viewer, not read; the conversations come from the JSON files",
+          "pl": "przeglądarka offline, nie wczytana; rozmowy pochodzą z plików JSON"
         },
         "unknown": {
           "en": "not recognised, kept as a node",
@@ -224,7 +224,10 @@
         "en": "{{name}} ({{why}})",
         "pl": "{{name}} ({{why}})"
       }
-    }
+    },
+    "archive_formats": [
+      "zip"
+    ]
   },
   "value_schema": {
     "type": "object",
@@ -314,6 +317,15 @@
         "type": "object",
         "x-setting": "/summary",
         "x-consumer": "loom::import_graph::project"
+      },
+      "archive_formats": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "x-setting": "/archive_formats",
+        "x-consumer": "loom::import_graph::project",
+        "description": "Formats whose members are written as archive_member nodes; a bare file is its own single member and gets no entry node (open list)."
       }
     }
   }

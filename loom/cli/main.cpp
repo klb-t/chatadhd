@@ -559,6 +559,11 @@ int cmd_import(Runtime& rt, const Args& a) {
     std::cout << "format " << r.format << ": " << r.conversations.size() << " conversations, " << r.messages
               << " messages" << (r.already_imported ? " (already imported; --force re-imports)" : "") << "\n";
     for (const auto& c : r.conversations) print_conv_line(c);
+    // Import as graph nodes (P1): the summary sentence in the preset language (runtime/import_graph.pack).
+    if (r.import_graph.is_object()) {
+      const Json summary = r.import_graph.value("summary", Json::object());
+      if (const std::string text = json::get_string(summary, "text"); !text.empty()) std::cout << text << "\n";
+    }
     for (const auto& w : r.warnings) std::cerr << "warning: " << w << "\n";
     if (usage->receipt().value("status", "") == "unavailable")
       std::cout << "usage policy: unavailable (thread 2 integration required)\n";
