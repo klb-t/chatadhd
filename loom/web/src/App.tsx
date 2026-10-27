@@ -34,7 +34,9 @@ import { DEFAULT_LAYOUT, JOURNAL_LIMIT, LAYOUTS, START_VIEW_PRESET, layoutOfMode
 import WindowHost from "./shell/windows/WindowHost";
 import { activePanelOf, baseWindow, layoutState, panelKind, restoreFront, setPanel, switchLayout, visibleOverlay } from "./shell/windows/session";
 import { createState, redo as redoLayout, undo as undoLayout, type WState, type Win } from "./shell/windows/model";
-import { deleteNamed, deviceClassOf, findNamed, labelOf, lastOwn, readActive, readJournal, readNamed, renameNamed, replaceLayout, resetTarget, saveNamed, shippedId, writeActive, writeJournal } from "./shell/windows/named";
+import { activePatch, deleteNamed, deviceClassOf, findNamed, journalPatch, labelOf, lastOwn, readActive, readNamed, readWriterJournal, renameNamed, replaceLayout, resetTarget, saveNamed, shippedId, type JournalWho } from "./shell/windows/named";
+import { mergePatch } from "./api/merge-patch";
+import { clientIdentity, installationIdentity } from "./context/client-session";
 import { layoutIdOfMode } from "./shell/windows/migrate";
 import type { ShellLayouts } from "./shell/LayoutsSheet";
 import { WINDOW_DATA, closeWindows, windowDataOf, focusWindow, runWindowStep, switcherEntries, visibleId, type WindowReceipt } from "./shell/windows/ops";
@@ -105,6 +107,29 @@ export default function App() {
     setConfig(c => ({ ...c, [key]: value }));
     api.setConfigKey(key, value).catch(err => console.debug(`${key}: the value is not saved`, err));
   }, []);
+  // W5b: a merge of one object value on the host (window_layout_journal, window_layout_active): other tabs' and devices' members of the
+  // value stay; the host's merged value comes back into the screen's config. A host without the merge: fresh read, merge, write.
+  const mergeSetting = useCallback((key: string, patch: unknown) => {
+    const local = mergePatch(configRef.current[key], patch);
+    configRef.current = { ...configRef.current, [key]: local };
+    setConfig(c => ({ ...c, [key]: local }));
+    const merged = api.mergeConfigKey ? api.mergeConfigKey(key, patch)
+      : api.getConfig().then(fresh => api.setConfigKey(key, mergePatch((fresh as Record<string, unknown>)[key], patch)));
+    merged.then(cfg => {
+      const value = (cfg as Record<string, unknown> | undefined)?.[key];
+      if (value === undefined) return;
+      configRef.current = { ...configRef.current, [key]: value };
+      setConfig(c => ({ ...c, [key]: value }));
+    }, err => console.debug(`${key}: the value is not merged`, err));
+  }, []);
+  // W5b: who writes the journal - this tab (its client id, kept across reloads of the tab) in this browser installation (OKNA D19)
+  const journalWho = useMemo<JournalWho>(() => ({
+    writer: clientIdentity(typeof sessionStorage === "undefined" ? undefined : sessionStorage),
+    installation: installationIdentity(typeof localStorage === "undefined" ? undefined : localStorage),
+  }), []);
+  const journalWhoRef = useRef(journalWho);
+  // W5b: the journal as last loaded or written by this tab (JSON of {past, future}); a write happens only when the journal differs
+  const journalWritten = useRef("");
   // W5: window_back / window_restore_* / window_placements - the settings fields override the presets of layouts.json
   const windowData = useMemo(() => windowDataOf(config), [config]);
   const windowDataRef = useRef(windowData);
@@ -129,7 +154,8 @@ export default function App() {
       api.getConfig().then(cfg => {
         if (!live) return;
         setConfig(cfg as Record<string, unknown>);
-        const j = readJournal((cfg as Record<string, unknown>).window_layout_journal, deviceClassOf(window.innerWidth));
+        const j = readWriterJournal((cfg as Record<string, unknown>).window_layout_journal, deviceClassOf(window.innerWidth), journalWhoRef.current);
+        journalWritten.current = JSON.stringify({ past: j.past, future: j.future });
         setWin(s => (s.past.length || s.future.length ? s : { ...s, past: j.past, future: j.future, limit: j.limit }));
         journalReady.current = true;
       }, () => { journalReady.current = true; });
@@ -152,7 +178,7 @@ export default function App() {
       const cls = deviceClassOf(window.innerWidth);
       const named = readNamed(cfg.window_layouts);
       const modeId = layoutIdOfMode(cfg.layout_mode, (WINDOW_DATA as { layout_modes?: Record<string, string> }).layout_modes).id;
-      const activeId = readActive(cfg.window_layout_active, cls);
+      const activeId = readActive(cfg.window_layout_active, cls, journalWhoRef.current.installation);
       const own = (activeId ? findNamed(named, activeId) : undefined) ?? findNamed(named, modeId) ?? (modeId === "last" ? lastOwn(named, null) : null) ?? null;
       const last = readSaved(localStorage);
       if (own) {
@@ -173,7 +199,8 @@ export default function App() {
         setWin(restored);
       }
       // W5: the journal of layout changes of this device class (window_layout_journal) survives a reload
-      const j = readJournal(cfg.window_layout_journal, cls);
+      const j = readWriterJournal(cfg.window_layout_journal, cls, journalWhoRef.current);
+      journalWritten.current = JSON.stringify({ past: j.past, future: j.future });
       setWin(s => ({ ...s, past: j.past, future: j.future, limit: j.limit }));
       journalReady.current = true;
       setActiveConvId(resolved.conversationId);
@@ -221,27 +248,28 @@ export default function App() {
   }, [visits, visitBack]);
   // A window that is gone drops out of the journal (closed from the switcher or by a sentence).
   useEffect(() => { setVisits(v => { const left = v.filter(id => win.layout.windows.some(w => w.id === id)); return left.length === v.length ? v : left.length > 1 ? left : []; }); }, [win.layout]);
-  // W5: the journal (undo/redo) is written to window_layout_journal of this device class, a moment after the last change
+  // W5: the journal (undo/redo) is written a moment after the last change. W5b: as this tab's own record (writers.<client id>.<class>),
+  // merged on the host - two tabs or two devices never overwrite each other's journal (before W5b the whole value was written: the
+  // last writer won and the other tab's steps were lost)
   useEffect(() => {
     if (!journalReady.current) return;
     const timer = setTimeout(() => {
-      // written only when this class's journal differs from the stored one (a start with an empty journal writes nothing)
-      const cls = deviceClassOf(window.innerWidth);
-      const stored = configRef.current.window_layout_journal;
-      const value = writeJournal(stored, cls, win);
-      const before = stored && typeof stored === "object" ? (stored as Record<string, unknown>)[cls] : undefined;
-      if (JSON.stringify(value[cls]) === JSON.stringify(before ?? { past: [], future: [] })) return;
-      saveSetting("window_layout_journal", value);
+      // written only when the journal differs from what this tab loaded or wrote (a start with an empty journal writes nothing)
+      const now = JSON.stringify({ past: win.past, future: win.future });
+      if (now === journalWritten.current) return;
+      journalWritten.current = now;
+      mergeSetting("window_layout_journal", journalPatch(configRef.current.window_layout_journal, deviceClassOf(window.innerWidth), win, journalWhoRef.current, new Date().toISOString()));
     }, 600);
     return () => clearTimeout(timer);
-  }, [win.past, win.future, saveSetting]);
+  }, [win.past, win.future, mergeSetting]);
   // W5: the operations of named layouts - the sheet „Układ ▾” and the catalogue actions layout.* (a sentence) call the same functions
   const layoutOps = useMemo(() => {
     const cls = () => deviceClassOf(window.innerWidth);
     const named = () => readNamed(configRef.current.window_layouts);
     const setActive = (id: string | null) => {
       setOwnActive(id);
-      if (readActive(configRef.current.window_layout_active, cls()) !== id) saveSetting("window_layout_active", writeActive(configRef.current.window_layout_active, cls(), id));
+      const inst = journalWhoRef.current.installation;
+      if (readActive(configRef.current.window_layout_active, cls(), inst) !== id) mergeSetting("window_layout_active", activePatch(configRef.current.window_layout_active, cls(), id, inst));
     };
     return {
       save(label: string): string | null {
@@ -268,7 +296,7 @@ export default function App() {
       },
       remove(id: string) {
         saveSetting("window_layouts", deleteNamed(named(), id));
-        if (readActive(configRef.current.window_layout_active, cls()) === id) setActive(null);
+        if (readActive(configRef.current.window_layout_active, cls(), journalWhoRef.current.installation) === id) setActive(null);
       },
       undo(): boolean { const r = undoLayout(winRef.current); if (r.applied) moveTo(r.state); return r.applied; },
       redo(): boolean { const r = redoLayout(winRef.current); if (r.applied) moveTo(r.state); return r.applied; },
@@ -278,9 +306,9 @@ export default function App() {
         return labelOf(LAYOUTS[id], uiLanguageRef.current);
       },
       /** A layout chosen from the menu (Czat / Siatka): no own layout is active on this class any more. */
-      clearActive() { if (readActive(configRef.current.window_layout_active, cls())) setActive(null); },
+      clearActive() { if (readActive(configRef.current.window_layout_active, cls(), journalWhoRef.current.installation)) setActive(null); },
     };
-  }, [moveTo, saveSetting]);
+  }, [moveTo, saveSetting, mergeSetting]);
   const pickLayout = useCallback((name: string) => { setLayout(name); layoutOps.clearActive(); }, [setLayout, layoutOps]);
   // Animation and disclosure glyphs are data: the resolved tables become CSS variables (prefers-reduced-motion selects the reduced-motion style).
   useEffect(() => {

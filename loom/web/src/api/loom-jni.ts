@@ -13,6 +13,7 @@
 // invokes `window.__loomCallbacks[callbackId](chunkJson, done)` for every
 // chunk, exactly like the C ABI's LoomStreamCallback/LoomProgressCallback/
 // LoomEventCallback (`done` is 1 on the final call, matching loom.h).
+import { mergePatch } from "./merge-patch";
 import type { InteractionBindings, ViewEngineList, ViewModel, ViewModelRequest } from "./view-model";
 import type { PerspectiveRequest, PerspectivesList, PerspectivesSideBySide, ScopeResolution, ScopeResolveRequest } from "./graph-views";
 import type { SettingsFieldsDoc } from "../settings/field-meta";
@@ -317,6 +318,11 @@ export class LoomJniApi implements LoomApi {
     this.call("set_config", { key, value: typeof value === "string" ? value : JSON.stringify(value) });
     return this.getConfig();
   }
+  /** One app process is the only writer of its data dir here, so read, merge and write in a row is the atomic merge. */
+  async mergeConfigKey(key: string, patch: unknown): Promise<ConfigMap> {
+    const config = await this.getConfig();
+    return this.setConfigKey(key, mergePatch(config[key], patch));
+  }
   listSecretKeys(): Promise<string[]> {
     return this.callAsync("list_secret_keys");
   }
@@ -466,3 +472,4 @@ export class LoomJniApi implements LoomApi {
     return this.callAsync("get_logs", { max_lines: maxLines });
   }
 }
+

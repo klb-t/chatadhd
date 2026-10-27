@@ -946,6 +946,39 @@ void App::route_config_secrets() {
     send_loom(res, loom_get_config(rctx()));
   });
 
+  // Single-key merge (M1-OKNA-W5b): PATCH /api/config/:key {"merge": <RFC 7386 merge patch>}. The stored value of the key is read,
+  // the patch is merged into it and the result is written, all under the config lock, so two clients writing different members of
+  // one object value (e.g. their own record of window_layout_journal) never overwrite each other (a whole-value PUT is last-writer-
+  // wins). A stored JSON text of an object is merged as that object; a stored non-object value is replaced by the patch, as RFC 7386.
+  svr_.Patch(R"(/api/config/([^/]+))", [this](const httplib::Request& req, httplib::Response& res) {
+    json body;
+    if (!object_body(req, res, body)) return;
+    if (!body.contains("merge")) {
+      send_error(res, "invalid_argument", "Configuration merge requires a merge patch");
+      return;
+    }
+    const std::string key = req.matches[1].str();
+    const auto ordered_body = nlohmann::ordered_json::parse(req.body);
+    std::lock_guard config_guard(native_ui::config_mutex());
+    const auto current = nlohmann::ordered_json::parse(own_and_free(loom_get_config(rctx())), nullptr, false);
+    nlohmann::ordered_json value = nlohmann::ordered_json::object();
+    if (current.is_object() && current.contains(key)) {
+      value = current[key];
+      if (value.is_string()) {
+        auto text = nlohmann::ordered_json::parse(value.get<std::string>(), nullptr, false);
+        if (!text.is_discarded() && text.is_object()) value = text;
+      }
+    }
+    value.merge_patch(ordered_body["merge"]);
+    const nlohmann::ordered_json patch = {{key, value}};
+    const int rc = loom_set_config_json(rctx(), patch.dump(-1, ' ', false, nlohmann::ordered_json::error_handler_t::replace).c_str());
+    if (rc < 0) {
+      send_error(res, errc_name_for_rc(rc), "Configuration value was rejected");
+      return;
+    }
+    send_loom(res, loom_get_config(rctx()));
+  });
+
   // Secrets are write-only: values never round-trip back to the client.
   svr_.Get("/api/secrets", [this](const httplib::Request&, httplib::Response& res) {
     send_loom(res, loom_list_secret_keys(rctx()));

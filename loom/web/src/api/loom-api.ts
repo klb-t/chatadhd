@@ -243,6 +243,9 @@ export interface LoomApi {
   getSettingsFields(): Promise<SettingsFieldsDoc>;
   setConfig(patch: ConfigMap): Promise<ConfigMap>;
   setConfigKey(key: string, value: unknown): Promise<ConfigMap>;
+  /** M1-OKNA-W5b: merges an RFC 7386 merge patch into the stored value of one key, atomically on the host (two clients writing
+   *  different members of one object never overwrite each other). Optional: a host without it is written with setConfigKey. */
+  mergeConfigKey?(key: string, patch: unknown): Promise<ConfigMap>;
   listSecretKeys(): Promise<string[]>;
   setSecret(key: string, value: string): Promise<void>;
   hasSecret(key: string): Promise<boolean>;

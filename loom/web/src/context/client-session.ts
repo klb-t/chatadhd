@@ -25,6 +25,19 @@ export function clientIdentity(store?: KeyValueStore): string {
   return made;
 }
 
+/** Where the id of this browser installation is kept (every tab of it, across restarts): the installation level of OKNA D19. */
+const INSTALLATION_KEY = "loom.installation_id";
+/** The id of this browser installation (local storage, shared by its tabs); without storage it lasts as long as the page. */
+export function installationIdentity(store?: KeyValueStore): string {
+  try {
+    const kept = store ? store.getItem(INSTALLATION_KEY) : null;
+    if (kept) return kept;
+  } catch { /* storage can be blocked */ }
+  const made = "inst-" + randomId();
+  try { if (store) store.setItem(INSTALLATION_KEY, made); } catch { /* as above */ }
+  return made;
+}
+
 /** How long a send waits for the declaration of the devices before it goes without one (ms). A preset: the constructor takes another. */
 export const DECLARE_TIMEOUT_MS = 4000;
 

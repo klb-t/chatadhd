@@ -9,7 +9,7 @@ export const NAMED_SCHEMA = "loom.window_layout/2";
 export interface NamedLayout { schema: string; id: string; label: string; layout: WLayout; saved: string; device_class?: string }
 /** A device class: the first rule whose width range holds the screen wins (preset `device_classes` in layouts.json; an open list). */
 export interface DeviceClassRule { id: string; max_width?: number; min_width?: number }
-interface NamedData { device_classes?: DeviceClassRule[]; journal_limit?: number; layout_reset?: Record<string, string> }
+interface NamedData { device_classes?: DeviceClassRule[]; journal_limit?: number; layout_reset?: Record<string, string>; journal_writers?: number; journal_inherit?: string[]; active_levels?: string[] }
 const DATA = layoutsFile as NamedData;
 const PRESET_CLASSES: DeviceClassRule[] = [{ id: "phone", max_width: 599 }, { id: "desktop" }];
 
@@ -83,8 +83,11 @@ export function renameNamed(list: NamedLayout[], id: string, label: string): { l
 export const deleteNamed = (list: NamedLayout[], id: string): NamedLayout[] => list.filter((x) => x.id !== id);
 
 /** `window_layout_active`: `{<device class>: <layout id>}` (or its JSON text, or a bare id = every class). */
-export function readActive(value: unknown, cls: string): string | null {
+export function readActive(value: unknown, cls: string, installation?: string): string | null {
   const v = parse(value);
+  // W5b (D19): this installation's own value wins; an empty id there = no own layout on this installation
+  const mine = installation && isObj(v) && isObj(v.installations) ? (v.installations as Record<string, unknown>)[installation] : undefined;
+  if (isObj(mine)) { const id = mine[cls] ?? mine.any; if (typeof id === "string") return id || null; }
   if (typeof v === "string" && v) return v;
   if (!isObj(v)) return null;
   const id = v[cls] ?? v.any;
@@ -97,6 +100,22 @@ export function writeActive(value: unknown, cls: string, id: string | null): Rec
   else if (typeof v === "string" && v) out.any = v;
   if (id) out[cls] = id; else delete out[cls];
   return out;
+}
+
+const levelsOf = (v: unknown, preset: string[]): string[] => {
+  const own = isObj(v) ? v.levels : undefined;
+  return Array.isArray(own) ? own.filter((x): x is string => typeof x === "string") : preset;
+};
+/** W5b: the RFC 7386 merge patch that sets (or clears, id null) the active own layout of a class at the levels of `active_levels`
+ *  (`installation` = installations.<id>.<class>, an empty id = cleared here; `person` = <class>). Merged on the host, so two devices
+ *  writing at once never lose each other's value. A bare stored id (every class) is kept as `any`. */
+export function activePatch(value: unknown, cls: string, id: string | null, installation?: string, preset: string[] = DATA.active_levels ?? ["installation", "person"]): Record<string, unknown> {
+  const v = parse(value);
+  const levels = levelsOf(v, preset);
+  const patch: Record<string, unknown> = typeof v === "string" && v ? { any: v } : {};
+  if (installation && levels.includes("installation")) patch.installations = { [installation]: { [cls]: id ?? "" } };
+  if (levels.includes("person") || !installation || !levels.includes("installation")) patch[cls] = id ?? null;
+  return patch;
 }
 
 /** The last own layout (layout_mode=windows): the active one of this class if it is own, else the most recently saved, else null. */
@@ -129,6 +148,51 @@ export function writeJournal(value: unknown, cls: string, s: Pick<WState, "past"
   const limit = journalLimit(out);
   out[cls] = { past: limit === 0 ? [] : s.past.slice(-limit), future: limit === 0 ? [] : s.future.slice(-limit) };
   return out;
+}
+
+/** W5b: who writes a journal - the tab (`writer`, its client id: kept across reloads of the tab, another for every tab) and the browser
+ *  installation it runs in (`installation`, kept across tabs). */
+export interface JournalWho { writer: string; installation?: string }
+type WriterRecord = Record<string, unknown> & { installation?: unknown; updated?: unknown };
+const writersOf = (v: unknown): Record<string, WriterRecord> => (isObj(v) && isObj(v.writers) ? v.writers as Record<string, WriterRecord> : {});
+const updatedOf = (r: WriterRecord): string => (typeof r.updated === "string" ? r.updated : "");
+/** W5b: the journal of this writer and class, with where it came from: `own` (its own record), else - a new tab - a copy from the
+ *  levels of `journal_inherit` (`installation`: the newest writer of the same installation and class, `person`: the newest writer of the
+ *  class), else `class` (the W5 per-class journal, read once - it is never written again and never removed), else `none`. */
+export function readWriterJournal(value: unknown, cls: string, who: JournalWho, inheritPreset: string[] = DATA.journal_inherit ?? ["installation", "person"]): { past: JournalEntry[]; future: JournalEntry[]; limit: number; source: string } {
+  const v = parse(value);
+  const limit = journalLimit(v);
+  const take = (j: unknown) => (isObj(j) ? { past: limit === 0 ? [] : entries(j.past, limit), future: limit === 0 ? [] : entries(j.future, limit) } : null);
+  const writers = writersOf(v);
+  const own = isObj(writers[who.writer]) ? take(writers[who.writer][cls]) : null;
+  if (own) return { ...own, limit, source: "own" };
+  const inherit = isObj(v) && Array.isArray(v.inherit) ? (v.inherit as unknown[]).filter((x): x is string => typeof x === "string") : inheritPreset;
+  const newest = (pred: (r: WriterRecord) => boolean) => Object.entries(writers)
+    .filter(([id, r]) => id !== who.writer && isObj(r) && isObj(r[cls]) && pred(r))
+    .sort(([, a], [, b]) => (updatedOf(a) < updatedOf(b) ? 1 : updatedOf(a) > updatedOf(b) ? -1 : 0))[0];
+  for (const level of inherit) {
+    const hit = level === "installation" ? (who.installation ? newest(r => r.installation === who.installation) : undefined) : level === "person" ? newest(() => true) : undefined;
+    const j = hit ? take(hit[1][cls]) : null;
+    if (j) return { ...j, limit, source: level };
+  }
+  const legacy = isObj(v) ? take(v[cls]) : null;
+  return legacy ? { ...legacy, limit, source: "class" } : { past: [], future: [], limit, source: "none" };
+}
+/** W5b: the merge patch that stores this writer's journal of a class (`writers.<writer>.<class>`), merged on the host: two tabs never
+ *  overwrite each other's records. Past `writers_limit` (else the preset journal_writers; 0 = no bound) the records updated longest ago
+ *  are dropped (null in the patch) - never this writer's own. */
+export function journalPatch(value: unknown, cls: string, s: Pick<WState, "past" | "future">, who: JournalWho, now: string, writersPreset: number = DATA.journal_writers ?? 20): Record<string, unknown> {
+  const v = parse(value);
+  const limit = journalLimit(v);
+  const own = Number(isObj(v) ? v.writers_limit : NaN);
+  const bound = Number.isFinite(own) && own >= 0 ? Math.floor(own) : writersPreset;
+  const record: Record<string, unknown> = { updated: now, [cls]: { past: limit === 0 ? [] : s.past.slice(-limit), future: limit === 0 ? [] : s.future.slice(-limit) } };
+  if (who.installation) record.installation = who.installation;
+  const patch: Record<string, unknown> = { [who.writer]: record };
+  const others = Object.entries(writersOf(v)).filter(([id]) => id !== who.writer)
+    .sort(([, a], [, b]) => (updatedOf(a) < updatedOf(b) ? -1 : updatedOf(a) > updatedOf(b) ? 1 : 0));
+  if (bound > 0) for (const [id] of others.slice(0, Math.max(0, others.length + 1 - bound))) patch[id] = null;
+  return { writers: patch };
 }
 
 /** Replaces the whole layout as ONE journal entry (layout.apply / layout.reset): undo brings the previous layout back whole. */

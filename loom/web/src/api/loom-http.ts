@@ -375,6 +375,9 @@ export class LoomHttpApi implements LoomApi {
   setConfigKey(key: string, value: unknown): Promise<ConfigMap> {
     return this.req("PUT", `/api/config/${encodeURIComponent(key)}`, { value });
   }
+  mergeConfigKey(key: string, patch: unknown): Promise<ConfigMap> {
+    return this.req("PATCH", `/api/config/${encodeURIComponent(key)}`, { merge: patch });
+  }
   listSecretKeys(): Promise<string[]> {
     return this.req("GET", "/api/secrets");
   }
