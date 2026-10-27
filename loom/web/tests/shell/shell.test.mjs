@@ -54,11 +54,11 @@ test('layout_mode and deep links', () => {
   assert.deepEqual(sv.readSaved(store), { layout: 'czat', conversationId: 'c_1' }, 'a value saved by the v1 shell is still read');
 });
 
-test('settings are described in settings_fields.pack: start_view, layout_mode (windows planned with a reason), ui_language, animation_*', () => {
+test('settings are described in settings_fields.pack: start_view, layout_mode (W3: windows is no longer planned), ui_language, animation_*', () => {
   const by = Object.fromEntries(fields.map(f => [f.key, f]));
   assert.match(by.start_view.description, /last_saved, last_conversation, new_conversation/);
   const windows = by.layout_mode.values.find(v => v.value === 'windows');
-  assert.equal(windows.status, 'planned'); assert.ok(windows.reason);
+  assert.equal(windows.status, undefined, 'W3: windows = the last own layout, not planned'); assert.equal(windows.reason, undefined); assert.ok(windows.meaning.pl && windows.meaning.en);
   assert.equal(by.layout_mode.values.find(v => v.preset).value, 'full_screen_chat');
   for (const k of ['animation_styles', 'animations', 'animation_reduced_motion', 'animation_refresh_hz']) {
     assert.equal(by[k].section, 'Interfejs i wyświetlanie'); assert.equal(by[k].subsection, 'Animacje');

@@ -881,19 +881,13 @@
           },
           {
             "value": "windows",
-            "status": "planned",
-            "reason": {
-              "pl": "Okna pływające i dokowane to następny wątek po P20; do tego czasu otwiera się warsztat (siatka widoków).",
-              "en": "Floating and dockable windows are the next thread after P20; until then the workbench (views_grid) opens."
-            },
             "meaning": {
-              "pl": "Okna pływające i dokowane (planowane; do tego czasu otwiera się warsztat).",
-              "en": "Floating and docked windows (planned; until then the workbench opens)."
-            },
-            "on_set": "warn"
+              "pl": "Okna: ostatni własny układ okien (zapisany przy wyjściu); dopóki nie ma własnych układów, otwiera się siatka wszystkich paneli.",
+              "en": "Windows: the last own window layout (saved on leaving); until there are own layouts, the grid of all panels opens."
+            }
           }
         ],
-        "description": "Layout of the application: full_screen_chat (preset: the full-screen standard chat app, profile \"Czat\"), views_grid (the workbench: application views grid, profile \"Warsztat\") or windows (floating and dockable windows; planned, not implemented yet: until it is, the workbench opens). The ⋮ menu switches between them for the session; the last choice is part of last_saved. Default: full_screen_chat (R56).",
+        "description": "Layout of the application: full_screen_chat (preset: the full-screen standard chat app, profile \"Czat\"), views_grid (the workbench: application views grid, profile \"Warsztat\") or windows (the last own window layout, window_layout_last; until named layouts exist the grid of all panels, layout siatka, opens - a fallback in layouts.json). The ⋮ menu switches between them for the session; the last choice is part of last_saved. Default: full_screen_chat (R56).",
         "human": {
           "label": {
             "pl": "Układ aplikacji",

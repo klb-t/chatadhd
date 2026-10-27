@@ -62,8 +62,8 @@ export function layoutIdOfMode(mode: unknown, modes: Record<string, string> = { 
 
 /** A hash `#czat[/id]`, `#warsztat`, `#uklad/<id>[/<conv>]`: the layout id and the conversation (W1 wires it; the pure part is here). */
 export function parseLayoutHash(hash: string): { layout: string; conversationId: string | null } | null {
-  const m = /^#(warsztat|czat)(?:\/([A-Za-z0-9_-]+))?$/.exec(hash) ?? /^#(uklad)\/([A-Za-z0-9_-]+)(?:\/([A-Za-z0-9_-]+))?$/.exec(hash);
+  const m = /^#(warsztat|siatka|czat)(?:\/([A-Za-z0-9_-]+))?$/.exec(hash) ?? /^#(uklad)\/([A-Za-z0-9_-]+)(?:\/([A-Za-z0-9_-]+))?$/.exec(hash);
   if (!m) return null;
   if (m[1] === "uklad") return { layout: m[2], conversationId: m[3] ?? null };
-  return { layout: m[1] === "warsztat" ? "siatka" : "czat", conversationId: m[2] ?? null };
+  return { layout: m[1] === "warsztat" || m[1] === "siatka" ? "siatka" : "czat", conversationId: m[2] ?? null };   // W3: #siatka too; #warsztat = siatka until W4 (§11 pt 3)
 }

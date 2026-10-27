@@ -160,7 +160,7 @@
         "warsztat",
         "workshop"
       ],
-      "note": "The workbench: the application views grid with every panel, as before P20. Dawny „Warsztat” (kod: layout workshop).",
+      "note": "The workbench: the application views grid with every panel, as before P20. Dawny „Warsztat” (kod: layout workshop). W3: drawn from this dock tree (list | chat over knowledge, 0.32 as the former 32 % chat strip); the former header is the switcher bar; the panels are its tabs and open as windows over the layout.",
       "tree": {
         "split": "h",
         "ratio": 0.22,
@@ -168,8 +168,8 @@
           "leaf": "L0"
         },
         "b": {
-          "split": "h",
-          "ratio": 0.5,
+          "split": "v",
+          "ratio": 0.32,
           "a": {
             "leaf": "L1"
           },
@@ -251,6 +251,15 @@
       },
       "shelf": {
         "handles": []
+      },
+      "leaf_sizing": {
+        "L0": "content"
+      },
+      "leaf_sizing_note": "W3: a leaf whose window keeps its own size (the conversation list: its CSS width and collapse, as in the former Workshop); other leaves take the split ratio. A preset: 'ratio' gives the list 22 %.",
+      "switcher": {
+        "style": "bar",
+        "position": "top",
+        "entries": "panels_as_tabs"
       }
     }
   },

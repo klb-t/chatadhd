@@ -77,7 +77,7 @@
    "component": "SettingsPanel",
    "params": [],
    "status": "present",
-   "note": "dziś tylko w Warsztacie (App.tsx: layout === workshop)"
+   "note": "W3: rodzaj okna — w układzie siatka panel „Ustawienia” otwiera ten rodzaj (panel_kinds_by_layout w layouts.json), w czat rodzaj settings; komponent wybiera rodzaj okna, nie nazwa układu"
   },
   {
    "id": "graph_view",

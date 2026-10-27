@@ -32,8 +32,8 @@ import { ShellLanguage, ShellText, shellTranslator } from "./shell/text";
 import { themeFromConfig } from "./shell/theme";
 import { DEFAULT_LAYOUT, JOURNAL_LIMIT, LAYOUTS, START_VIEW_PRESET, layoutOfMode, parseShellHash, readSaved, resolveLayoutId, resolveStartView, startViewOrder, writeSaved } from "./shell/start-view";
 import WindowHost from "./shell/windows/WindowHost";
-import { activePanelOf, baseWindow, layoutState, restoreFront, setPanel, switchLayout, visibleOverlay } from "./shell/windows/session";
-import { createState, type WState } from "./shell/windows/model";
+import { activePanelOf, baseWindow, layoutState, panelKind, restoreFront, setPanel, switchLayout, visibleOverlay } from "./shell/windows/session";
+import { createState, type WState, type Win } from "./shell/windows/model";
 import { WINDOW_DATA, closeWindows, focusWindow, runWindowStep, switcherEntries, visibleId, type WindowReceipt } from "./shell/windows/ops";
 import { WINDOW_STEP_EVENT, type WindowStepDetail } from "./context/browser-host";
 import { layerStack } from "./shell/history";
@@ -365,20 +365,23 @@ export default function App() {
         
   );
   if (layout === null) return null;
-  const workshop = (overlay: ReactNode) => (
-    <div className="app-root" data-sidebar-side={primaryProfile?.presentation.sidebar.side ?? "left"}
+  // W3 (OKNA §3.1): the former Workshop is the layout `siatka` drawn from its dock tree (WindowHost → DockTree). Its header is gone: the
+  // buttons it had are the entries of the switcher bar (switcher.style "bar" in layouts.json) - the panels as tabs, the list handle,
+  // knowledge, theme, account. An open panel is a modal window over the layout: the bar and the docked windows behind it are inert.
+  const workshop = (body: ReactNode, overlay: ReactNode) => (
+    <div className="app-root" data-sidebar-side={primaryProfile?.presentation.sidebar.side ?? "left"} data-layout={win.layout.id}
       style={primaryProfile ? profileStyle(primaryProfile) : undefined}>
-      {/* an open panel is a modal dialog: the header, the sidebar and the main panel behind it are inert (no Tab, no taps, no reader) */}
-      <header className="app-header" onKeyDown={(event) => { if (event.key === "Escape") setNavOpen(false); }} {...inertAttr(activePanel !== null)}>
+      <div className="app-header window-switcher" role="toolbar" aria-label={shellText("menu_label")} data-testid="window-switcher"
+        onKeyDown={(event) => { if (event.key === "Escape") setNavOpen(false); }} {...inertAttr(activePanel !== null)}>
         <button
           className="icon-btn"
           aria-label="Toggle conversation list"
           data-testid="toggle-sidebar"
+          aria-pressed={sidebarOpen}
           onClick={() => setSidebarOpen((v) => !v)}
         >
           ≡
         </button>
-        <h1>Loom</h1>
         <div className="spacer" />
         <button className="nav-toggle" aria-label={shellText("menu_label")} aria-expanded={navOpen} aria-controls="app-nav" data-testid="toggle-nav"
           onClick={() => setNavOpen((v) => !v)}>
@@ -387,15 +390,16 @@ export default function App() {
         <nav className={navOpen ? "app-nav open" : "app-nav"} id="app-nav" data-testid="app-nav">
           <button data-testid="nav-chat" onClick={() => { setLayout("chat"); setNavOpen(false); }}>{t("workshop_back")}</button>
           <SemanticStatus profileHost={userProfileHost} />
-          <button data-testid="nav-knowledge" aria-pressed={knowledgeOpen} onClick={() => { setKnowledgeOpen((value) => !value); setNavOpen(false); }}>Knowledge</button>
+          <button data-testid="nav-knowledge" data-tab="knowledge" aria-pressed={knowledgeOpen} onClick={() => { setKnowledgeOpen((value) => !value); setNavOpen(false); }}>Knowledge</button>
           {knowledgeOpen && <button aria-pressed={chatVisible} onClick={() => { setChatVisible((value) => !value); setNavOpen(false); }}>{chatVisible ? "Hide chat" : "Show chat"}</button>}
           {(Object.keys(PANEL_LABELS) as PanelId[]).map((p) => (
             <button
               key={p}
               data-testid={`nav-${p}`}
+              data-tab={p}
+              data-window-kind={panelKind(p, win.layout.id)}
               aria-pressed={activePanel === p}
               onClick={() => openPanel(p)}
-              style={activePanel === p ? { borderColor: "var(--accent)", color: "var(--accent)" } : undefined}
             >
               {PANEL_TEXT_IDS[p] ? t(PANEL_TEXT_IDS[p]!) : PANEL_LABELS[p]}
             </button>
@@ -409,34 +413,35 @@ export default function App() {
             </button>
           )}
         </nav>
-      </header>
+      </div>
 
       <div className="app-layout">
-        <aside className={`sidebar${sidebarOpen ? "" : " collapsed"}`} data-testid="sidebar" {...inertAttr(activePanel !== null)}>
-          <ConversationList
-            key={convRefreshKey}
-            activeConvId={activeConvId}
-            onSelect={onSelectConversation}
-            onCreated={onConversationCreated}
-            onActivity={sidebarActivity}
-          />
-        </aside>
-
-        <div className={`main-panel${knowledgeOpen ? " with-workbench" : ""}`} {...inertAttr(activePanel !== null)}>
-          <div className={`chat-host${knowledgeOpen ? " beside-workbench" : ""}`} hidden={knowledgeOpen && !chatVisible}>
-            <ApplicationProfiles profileHost={userProfileHost} convId={activeConvId} onConversationCreated={onConversationCreated}
-              refreshKey={convRefreshKey} onMessagesChanged={onMessagesChanged} ui={profileUi}
-              onPrimaryProfile={setPrimaryProfile} onSharedConversationRestored={setActiveConvId}
-              canRestoreWorkspace={canRestoreWorkspace} />
-          </div>
-          {knowledgeOpen && <KnowledgeWorkbench profileHost={userProfileHost} onClose={() => setKnowledgeOpen(false)} onDataChanged={() => setConvRefreshKey((key) => key + 1)} />}
-        </div>
-
+        {body}
         {overlay}
       </div>
     </div>
   );
-  const host = <WindowHost state={win} renderOverlay={() => panels} grid={workshop} renderWindow={w => w.kind !== "chat" ? null : (
+  // W3: the docked windows of `siatka` by kind (the dock tree decides where and how big; the kind decides what).
+  const docked = (w: Win): ReactNode => {
+    if (w.kind === "conversation_list") return (
+      <aside className={`sidebar${sidebarOpen ? "" : " collapsed"}`} data-testid="sidebar" {...inertAttr(activePanel !== null)}>
+        <ConversationList key={convRefreshKey} activeConvId={activeConvId} onSelect={onSelectConversation} onCreated={onConversationCreated} onActivity={sidebarActivity} />
+      </aside>);
+    if (w.kind === "chat") return (
+      <div className="chat-host main-panel" data-window={w.id} hidden={knowledgeOpen && !chatVisible} {...inertAttr(activePanel !== null)}>
+        <ApplicationProfiles profileHost={userProfileHost} convId={activeConvId} onConversationCreated={onConversationCreated}
+          refreshKey={convRefreshKey} onMessagesChanged={onMessagesChanged} ui={profileUi}
+          onPrimaryProfile={setPrimaryProfile} onSharedConversationRestored={setActiveConvId}
+          canRestoreWorkspace={canRestoreWorkspace} />
+      </div>);
+    if (w.kind === "knowledge") return (
+      <div className="main-panel with-workbench" data-window={w.id} {...inertAttr(activePanel !== null)}>
+        <KnowledgeWorkbench profileHost={userProfileHost} onClose={() => setKnowledgeOpen(false)} onDataChanged={() => setConvRefreshKey((key) => key + 1)} />
+      </div>);
+    return null;   // a kind without a docked view yet (W4+): its leaf is drawn empty, the advisory is the model's
+  };
+  const dockShown = (w: Win) => !w.collapsed && (w.kind !== "knowledge" || knowledgeOpen);
+  const host = <WindowHost state={win} renderOverlay={() => panels} grid={workshop} renderDocked={docked} shown={dockShown} title={(w) => windowLabel(w.id)} renderWindow={w => w.kind !== "chat" ? null : (
       <ChatShell profileHost={userProfileHost} convId={activeConvId} onSelect={setActiveConvId} onCreated={onConversationCreated} onShowInGraph={openNavigator}
         refreshKey={convRefreshKey} onMessagesChanged={onMessagesChanged} windows={shellWindows} behindOverlay={activePanel !== null || knowledgeOpen}
         actions={{ panel: (id) => { if (id === "settings") setSettingsView(""); setActivePanel(id as PanelId); }, navigator: (focus) => { setNavigatorFocus(focus); setActivePanel("navigator"); }, knowledge: () => setKnowledgeOpen(true), workshop: () => setLayout("workshop") }} />)} />;
