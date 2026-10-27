@@ -88,3 +88,18 @@ export function switchLayout(s: WState, layout: WLayout, limit = 50, ctx: Ctx = 
   const fresh = layoutState(layout, limit);
   return panel === null ? fresh : openPanel(fresh, panel, ctx);
 }
+
+/** W2 window_restore_front = `layout` after a start that restored window_layout_last: the window the layout's preset maximizes is in front
+ *  (the chat); in a layout whose preset maximizes none (a grid, `siatka`) no window opened over it stays in front either - the restored
+ *  panels wait in the switcher, not as an open drawer. `saved` keeps the state as it was left. The journal starts empty. */
+export function restoreFront(restored: WState, presetFront: string | undefined, mode: string = "layout", ctx: Ctx = WINDOW_CTX): WState {
+  if (mode !== "layout") return restored;
+  let state = restored;
+  if (presetFront) {
+    const w = state.layout.windows.find((x) => x.id === presetFront);
+    if (w && !(w.mode === "maximized" && !visibleOverlay(state.layout))) state = apply(state, { op: "maximize", id: presetFront }, ctx).state;
+  } else {
+    for (const w of overlays(state.layout)) if (w.mode === "maximized") state = apply(state, { op: "restore", id: w.id }, ctx).state;
+  }
+  return { ...state, past: [], future: [] };
+}

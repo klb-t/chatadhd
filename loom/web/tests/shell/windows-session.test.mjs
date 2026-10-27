@@ -100,3 +100,18 @@ test('generative: any sequence of panel / layout changes keeps one overlay at mo
     assert.deepEqual(closed.layout.windows.map(w => [w.id, w.mode]), preset.layout.windows.map(w => [w.id, w.mode]), `seed ${start}: closing restores the preset`);
   }
 });
+
+test('W2 restore in siatka with window_restore_front=layout leaves no panel open (it waits in the switcher); `saved` keeps it; czat still brings the chat forward', () => {
+  const opened = S.openPanel(siatka(), 'graph');
+  assert.equal(S.activePanelOf(opened), 'graph');
+  const left = M.createState(opened.layout, sv.JOURNAL_LIMIT);   // what a reload reads back from window_layout_last
+  const r = S.restoreFront(left, undefined, 'layout');
+  assert.equal(S.activePanelOf(r), null, 'no open drawer after the start');
+  assert.equal(S.overlays(r.layout).length, 1, 'the restored panel window still exists (waits in the switcher)');
+  assert.equal(r.past.length, 0);
+  assert.equal(S.activePanelOf(S.restoreFront(left, undefined, 'saved')), 'graph');
+  const c = S.openPanel(czat(), 'graph');
+  const rc = S.restoreFront(M.createState(c.layout, sv.JOURNAL_LIMIT), sv.LAYOUTS.czat.windows.find(w => w.mode === 'maximized').id, 'layout');
+  assert.equal(S.activePanelOf(rc), null);
+  assert.equal(S.baseWindow(rc.layout).kind, 'chat');
+});

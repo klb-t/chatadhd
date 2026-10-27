@@ -32,7 +32,7 @@ import { ShellLanguage, ShellText, shellTranslator } from "./shell/text";
 import { themeFromConfig } from "./shell/theme";
 import { DEFAULT_LAYOUT, JOURNAL_LIMIT, LAYOUTS, START_VIEW_PRESET, layoutOfMode, parseShellHash, readSaved, resolveLayoutId, resolveStartView, startViewOrder, writeSaved } from "./shell/start-view";
 import WindowHost from "./shell/windows/WindowHost";
-import { activePanelOf, baseWindow, layoutState, setPanel, switchLayout, visibleOverlay } from "./shell/windows/session";
+import { activePanelOf, baseWindow, layoutState, restoreFront, setPanel, switchLayout, visibleOverlay } from "./shell/windows/session";
 import { createState, type WState } from "./shell/windows/model";
 import { WINDOW_DATA, closeWindows, focusWindow, runWindowStep, switcherEntries, visibleId, type WindowReceipt } from "./shell/windows/ops";
 import { WINDOW_STEP_EVENT, type WindowStepDetail } from "./context/browser-host";
@@ -125,7 +125,7 @@ export default function App() {
         // wait in the switcher, as the start looked before W2; `saved` = the window that was in front when the page was left
         let restored = createState(saved, JOURNAL_LIMIT);
         const presetFront = LAYOUTS[saved.id]?.windows.find(w => w.mode === "maximized")?.id;
-        if ((WINDOW_DATA.window_restore_front ?? "layout") === "layout" && presetFront) restored = { ...focusWindow(restored, presetFront), past: [], future: [] };
+        restored = restoreFront(restored, presetFront, WINDOW_DATA.window_restore_front ?? "layout");
         setWin(restored);
       }
       setActiveConvId(resolved.conversationId);
