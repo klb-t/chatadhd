@@ -1467,6 +1467,8 @@ std::string_view(R"loom_onboard(                "empty_title": "How can I help?"
                 "ri_k_next": "Preview of the next one",
                 "ri_k_next_hint": "Built from the text in the field now; nothing is sent.",
                 "ri_k_refresh": "Refresh",
+                "ri_k_show_values": "Show setting values",
+                "ri_k_show_values_hint": "Shows values you typed in settings even when they look like a key or password. Secrets from the secrets store and the route credential stay masked always. Applies to the preview now and to the next request sent.",
                 "ri_k_none": "The kernel has not sent any request in this conversation yet.",
                 "ri_k_loading": "Asking the kernel…",
                 "ri_k_error": "The kernel could not show the request: {{error}}",
@@ -1859,11 +1861,11 @@ std::string_view(R"loom_onboard(                "empty_title": "How can I help?"
                 "mp_class_unknown": "Klasa: nieznana — {{reason}}",
                 "mp_price": "Cena za 1 mln tokenów: {{input}} wejście, {{output}} wyjście",
                 "mp_price_unknown": "Cena: nieznany — brak ceny",
-                "mp_change": "Model zmienisz w menu +, pozycja „Wybierz model”.",
+)loom_onboard", 59959),
+std::string_view(R"loom_onboard(                "mp_change": "Model zmienisz w menu +, pozycja „Wybierz model”.",
                 "cm_issue_no_step": "„{{name}}” ma być krokiem kontekstu, ale nie wskazuje, którym",
                 "cm_issue_no_focus": "„{{name}}” ma otwierać węzeł grafu, ale nie wskazuje którego",
-)loom_onboard", 59946),
-std::string_view(R"loom_onboard(                "mp_set_by_window": "Wybrany w tym oknie i wysyłany z każdym zapytaniem (nie jest zapisany w łańcuchu ustawień).",
+                "mp_set_by_window": "Wybrany w tym oknie i wysyłany z każdym zapytaniem (nie jest zapisany w łańcuchu ustawień).",
                 "mp_reason_other_model": "ta klasa dotyczy modelu {{model}} roli „Odpowiedź na wiadomość”, nie wybranego tutaj",
                 "mp_reason_no_role": "silnik nie podał roli odpowiedzi na wiadomość",
                 "mp_chain_rest": "Pozostałe poziomy nie mają wartości albo nie dotyczą tej rozmowy: {{levels}}.",
@@ -1995,6 +1997,8 @@ std::string_view(R"loom_onboard(                "mp_set_by_window": "Wybrany w t
                 "ri_k_next": "Podgląd następnego",
                 "ri_k_next_hint": "Zbudowane z tekstu, który jest teraz w polu; nic nie jest wysyłane.",
                 "ri_k_refresh": "Odśwież",
+                "ri_k_show_values": "Pokaż wartości z ustawień",
+                "ri_k_show_values_hint": "Pokazuje wartości wpisane w ustawieniach, nawet gdy wyglądają jak klucz lub hasło. Sekrety z magazynu sekretów i poświadczenie trasy są zawsze zamazane. Działa od razu w podglądzie i od następnego wysłanego zapytania.",
                 "ri_k_none": "Jądro nie wysłało jeszcze żadnego zapytania w tej rozmowie.",
                 "ri_k_loading": "Pytam jądro…",
                 "ri_k_error": "Jądro nie mogło pokazać zapytania: {{error}}",
@@ -2765,7 +2769,8 @@ std::string_view(R"loom_onboard(                "mp_set_by_window": "Wybrany w t
                 "reason.memory_unavailable": "nie da się odczytać pamięci",
                 "reason.planned": "planowane",
                 "reason.several_profiles_name_one": "kilka profili — wskaż jeden",
-                "proposals.planned": "propozycja modelu — planowane ({{reason}})",
+)loom_onboard", 59980),
+std::string_view(R"loom_onboard(                "proposals.planned": "propozycja modelu — planowane ({{reason}})",
                 "count.name.rom_items": "elementy ROM",
                 "count.name.profile_slots": "pola profilu",
                 "count.name.principles": "zasady",
@@ -2775,8 +2780,7 @@ std::string_view(R"loom_onboard(                "mp_set_by_window": "Wybrany w t
                 "count.name.import_formats": "formaty importu",
                 "count.name.interfaces": "interfejsy",
                 "count.name.profile_domains": "profile działania",
-)loom_onboard", 59955),
-std::string_view(R"loom_onboard(                "count.name.scopes": "poziomy zakresów",
+                "count.name.scopes": "poziomy zakresów",
                 "count.name.conflict_rules": "reguły konfliktów",
                 "count.name.party_templates": "szablony podmiotów",
                 "count.name.kb.entities": "encje",
@@ -3568,7 +3572,7 @@ std::string_view(R"loom_onboard(                "count.name.scopes": "poziomy za
               "by": "M1-W2a",
               "today": {
                 "pl": "Pusty czat pokazuje kartę „Poznajmy się” (ustawienie onboarding_card = show, gdy wywiad się jeszcze nie zaczął): Zacznij otwiera rozmowę wywiadu, Później chowa kartę do następnego uruchomienia, Nigdy nie pytaj chowa ją na stałe. W rozmowie wywiadu pierwsze pytanie to trzy karty poziomów (minimalnie, zwykle, szczegółowo) z podglądem: o co zapytam, co zapiszę, co zobaczy model; dotknięcie karty wysyła nazwę poziomu jako Twoją odpowiedź. Pod pytaniem są szybkie odpowiedzi (Pomiń, Nie teraz, Nigdy, Podsumowanie, Ile zostało) — wysyłają słowo sterujące jako zwykłą wiadomość. Uwaga w rodzaju „nie pytaj o zdrowie” daje propozycję „Tak zrozumiałem” z przyciskami Tak i Nie. Nad rozmową stoi linia „Rozmowa bez modelu — tylko formularz” z liczbą pytań do zadania. Żadnego modelu się nie woła.",
-)loom_onboard", 59280),
+)loom_onboard", 59898),
 std::string_view(R"loom_onboard(                "en": "The empty chat shows the card “Let us get to know each other” (setting onboarding_card = show, while the interview has not started): Start opens the interview conversation, Later hides the card until the next launch, Never ask hides it for good. In the interview conversation the first question is three level cards (minimal, usual, detailed) with a preview: what I will ask, what I will write down, what the model will see; tapping a card sends the level's name as your answer. Under a question there are quick replies (Skip, Not now, Never, Summary, How many left) — they send the control word as an ordinary message. A remark like “do not ask about health” gives a proposal “This is what I understood” with Yes and No. Above the conversation a line “A conversation without a model — a form only” shows the number of questions left. No model is called."
               },
               "reason": {
@@ -6167,6 +6171,8 @@ std::string_view(R"loom_onboard(            "cm_reason_no_navigator": "This scre
             "ri_k_next": "Preview of the next one",
             "ri_k_next_hint": "Built from the text in the field now; nothing is sent.",
             "ri_k_refresh": "Refresh",
+            "ri_k_show_values": "Show setting values",
+            "ri_k_show_values_hint": "Shows values you typed in settings even when they look like a key or password. Secrets from the secrets store and the route credential stay masked always. Applies to the preview now and to the next request sent.",
             "ri_k_none": "The kernel has not sent any request in this conversation yet.",
             "ri_k_loading": "Asking the kernel…",
             "ri_k_error": "The kernel could not show the request: {{error}}",
@@ -6694,6 +6700,8 @@ std::string_view(R"loom_onboard(            "cm_reason_no_navigator": "This scre
             "ri_k_next": "Podgląd następnego",
             "ri_k_next_hint": "Zbudowane z tekstu, który jest teraz w polu; nic nie jest wysyłane.",
             "ri_k_refresh": "Odśwież",
+            "ri_k_show_values": "Pokaż wartości z ustawień",
+            "ri_k_show_values_hint": "Pokazuje wartości wpisane w ustawieniach, nawet gdy wyglądają jak klucz lub hasło. Sekrety z magazynu sekretów i poświadczenie trasy są zawsze zamazane. Działa od razu w podglądzie i od następnego wysłanego zapytania.",
             "ri_k_none": "Jądro nie wysłało jeszcze żadnego zapytania w tej rozmowie.",
             "ri_k_loading": "Pytam jądro…",
             "ri_k_error": "Jądro nie mogło pokazać zapytania: {{error}}",
@@ -6904,7 +6912,8 @@ std::string_view(R"loom_onboard(            "cm_reason_no_navigator": "This scre
       }
     },
     {
-      "id": "presentation.graph_screen/v1",
+)loom_onboard", 59980),
+std::string_view(R"loom_onboard(      "id": "presentation.graph_screen/v1",
       "key": "presentation.graph_screen",
       "area": "presentation/graph_screen",
       "revision": 1,
@@ -6915,8 +6924,7 @@ std::string_view(R"loom_onboard(            "cm_reason_no_navigator": "This scre
         "status": {
           "state": "present",
           "today": {
-)loom_onboard", 59955),
-std::string_view(R"loom_onboard(            "pl": "Lista i karta węzła są na ekranie (loom/web/src/components/GraphNavigator.tsx, NodeCard.tsx): menu ⋮ › Graf pokazuje wiersze korzenia z graph.navigate (etykieta, licznik albo „nieznane (powód)”, chip pochodzenia, po co), dotknięcie wiersza wchodzi głębiej, ścieżka cofa (także Wstecz Androida), lupa szuka na poziomie, Szerzej/Węziej i Głębiej/Płycej zmieniają budżet i głębię. Dotknięcie liścia albo ⋯ otwiera kartę z graph.card: wartość, po co, co zmienia, chip z warstwami, „Skąd jest wartość” całym łańcuchem (zwycięski poziom podświetlony, „bez projektu” jawnie), powiązania grupami, działania; Zmień → Dla kogo? → settings.set (Ty) / rules.set (rozmowa, projekt…) z potwierdzeniem, o które pyta silnik; „Zdejmij wartość: <warstwa>” przez rules.disable. Mapa (ten sam silnik widoków; lista i mapa jedna pod drugą w Disclosure), Perspektywa ▾ (perspektywy silnika jako lista do zaznaczenia, kilka naraz), Działania (karta ogniska przy „Co możesz zrobić”; w korzeniu pasek mówi, gdzie są działania) i Widok ▾ (lista / mapa / obie; wybór zapisany dla Ciebie jako navigator_layout) są na ekranie — żaden przycisk paska nie mówi „planowane”.",
+            "pl": "Lista i karta węzła są na ekranie (loom/web/src/components/GraphNavigator.tsx, NodeCard.tsx): menu ⋮ › Graf pokazuje wiersze korzenia z graph.navigate (etykieta, licznik albo „nieznane (powód)”, chip pochodzenia, po co), dotknięcie wiersza wchodzi głębiej, ścieżka cofa (także Wstecz Androida), lupa szuka na poziomie, Szerzej/Węziej i Głębiej/Płycej zmieniają budżet i głębię. Dotknięcie liścia albo ⋯ otwiera kartę z graph.card: wartość, po co, co zmienia, chip z warstwami, „Skąd jest wartość” całym łańcuchem (zwycięski poziom podświetlony, „bez projektu” jawnie), powiązania grupami, działania; Zmień → Dla kogo? → settings.set (Ty) / rules.set (rozmowa, projekt…) z potwierdzeniem, o które pyta silnik; „Zdejmij wartość: <warstwa>” przez rules.disable. Mapa (ten sam silnik widoków; lista i mapa jedna pod drugą w Disclosure), Perspektywa ▾ (perspektywy silnika jako lista do zaznaczenia, kilka naraz), Działania (karta ogniska przy „Co możesz zrobić”; w korzeniu pasek mówi, gdzie są działania) i Widok ▾ (lista / mapa / obie; wybór zapisany dla Ciebie jako navigator_layout) są na ekranie — żaden przycisk paska nie mówi „planowane”.",
             "en": "The list and the node card are on screen (loom/web/src/components/GraphNavigator.tsx, NodeCard.tsx): menu ⋮ › Graph shows the root rows from graph.navigate (label, count or “unknown (reason)”, provenance chip, what for), a tap on a row goes in, the path goes back (Android Back too), the magnifier searches on the level, Wider/Narrower and Deeper/Shallower change the budget and depth. A tap on a leaf or on ⋯ opens the card from graph.card: value, what for, what it changes, the chip with its layers, “Where the value comes from” as the whole chain (the winning level highlighted, “without a project” said), relations by kind, actions; Change → For whom? → settings.set (you) / rules.set (conversation, project …) with the confirmation the kernel asks for; “Take the value off: <layer>” through rules.disable. The map (the same view engine; list and map one under the other in Disclosure), Perspective ▾ (the kernel's perspectives as a tick list, several at once), Actions (the focus's card at “What you can do”; at the root the bar says where actions live) and View ▾ (list / map / both; the choice saved for you as navigator_layout) are on screen — no bar button says “planned”."
           },
           "reason": {
@@ -7793,7 +7801,8 @@ std::string_view(R"loom_onboard(            "pl": "Lista i karta węzła są na 
             "count.line": "{{fields}} · {{yours}}",
             "yours.help": "“Yours” are the fields you gave a value (for yourself, a conversation, a project…). A preset and a preset kept in your settings do not count.",
             "filter.changed": "Show only changed",
-            "filter.help": "Changed fields are the ones you set.",
+)loom_onboard", 59985),
+std::string_view(R"loom_onboard(            "filter.help": "Changed fields are the ones you set.",
             "filter.empty": "You have set nothing here yet: every field has its preset value.",
             "subgroup.none": "General",
             "field.card": "Card of the field {{label}}: change it, where the value comes from",
@@ -7803,8 +7812,7 @@ std::string_view(R"loom_onboard(            "pl": "Lista i karta węzła są na 
             "field.flows.none": "No flow reads this field today.",
             "field.edit": "Change",
             "planned.reason": "Why it does not work yet",
-)loom_onboard", 59960),
-std::string_view(R"loom_onboard(            "edit.optional": "Can be changed",
+            "edit.optional": "Can be changed",
             "edit.required": "Required: the app does not work without it",
             "edit.requires_confirmation": "A change asks for your confirmation",
             "edit.read_only": "Read only",
@@ -8520,7 +8528,7 @@ std::string_view(R"loom_onboard(            "edit.optional": "Can be changed",
   },
   "presentation_key": "presentation.onboarding"
 }
-)loom_onboard", 44266)};
+)loom_onboard", 44856)};
 static constexpr std::string_view kOnboardingScenario[] = {
 std::string_view(R"loom_onboard({
   "schema": "loom.onboarding.scenario/1",
