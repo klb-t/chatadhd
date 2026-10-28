@@ -88,7 +88,7 @@ export function pickArtifact(messages: readonly { id?: string; role?: string; te
   const all: Artifact[] = [];
   for (const m of messages) if (m.role === "assistant" && typeof m.text === "string")
     for (const s of splitArtifacts(m.text, m.id, data)) if (s.kind === "artifact") all.push(s.artifact);
-  const w = word.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().trim();
+  const w = word.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
   const map = data.which_words ?? {};
   const n = w === "" ? -1 : (Object.prototype.hasOwnProperty.call(map, w) ? map[w] : (/^-?\d+$/.test(w) ? Number(w) : NaN));
   if (!Number.isFinite(n)) return { artifact: null, count: all.length, known: false };

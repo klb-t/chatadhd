@@ -592,9 +592,10 @@ export default function App() {
   const styled = (w: Win, node: ReactNode): ReactNode => {
     const r = styleOf(w.id);
     // W-gaps: the same element whether a style applies or not, so choosing or clearing a style never remounts the window's content (a chat
-    // that asked „przywróć styl domyślny” must stay mounted to answer its own client step); without a style it is an empty display:contents box
-    if (!r.profile || (r.source !== "window" && r.source !== "layout")) return <div style={{ display: "contents" }}>{node}</div>;
-    return <div className="win-style" style={{ display: "contents", ...profileStyle(r.profile) }} data-testid="window-style-root" data-window={w.id}
+    // that asked „przywróć styl domyślny” must stay mounted to answer its own client step); without a style it is an empty display:contents box.
+    // CSS that addresses the content of a leaf as its child (`.dock-leaf > .main-panel`) also names `.dock-leaf > .win-box > …`
+    if (!r.profile || (r.source !== "window" && r.source !== "layout")) return <div className="win-box" style={{ display: "contents" }}>{node}</div>;
+    return <div className="win-box win-style" style={{ display: "contents", ...profileStyle(r.profile) }} data-testid="window-style-root" data-window={w.id}
       data-style-profile={r.profile.id} data-style-revision={r.profile.profile_revision} data-style-source={r.source}>{node}</div>;
   };
   // W5: what the sheet „Układ ▾” shows (the own layouts of the person, the one active on this device class, the shipped ones)
@@ -733,10 +734,12 @@ export default function App() {
       <div className="app-layout">{body}{overlay}</div>
     </div>
   ) : workshop(body, overlay);
-  // W9: a style named by the layout replaces the person's profile on the root of the grid (the window ones sit inside their windows)
+  // W9: a style named by the layout replaces the person's profile on the root of the grid (the window ones sit inside their windows).
+  // The list LEAF of the dock tree follows only the person's profile (data-sidebar-leaf-side, W3); a style named by the layout or a window
+  // only suggests its side (advisory profile_moves_dock, fix „Przestaw”) - before W-gaps that held only because its wrapper hid the leaf from the CSS.
   const layoutStyle = (() => { const r = styleOf(null); return r.source === "layout" ? r.profile : null; })();
   const workshop = (body: ReactNode, overlay: ReactNode) => (
-    <div className="app-root" data-sidebar-side={(layoutStyle ?? primaryProfile)?.presentation.sidebar.side ?? "left"} data-layout={win.layout.id}
+    <div className="app-root" data-sidebar-side={(layoutStyle ?? primaryProfile)?.presentation.sidebar.side ?? "left"} data-sidebar-leaf-side={primaryProfile?.presentation.sidebar.side ?? "left"} data-layout={win.layout.id}
       data-style-profile={layoutStyle?.id} style={layoutStyle ? profileStyle(layoutStyle) : primaryProfile ? profileStyle(primaryProfile) : undefined}>
       <div className="app-header window-switcher" role="toolbar" aria-label={shellText("menu_label")} data-testid="window-switcher"
         onKeyDown={(event) => { if (event.key === "Escape") setNavOpen(false); }} {...inertAttr(activePanel !== null)}>

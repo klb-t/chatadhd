@@ -32,7 +32,7 @@
 .app-root .sidebar { width: var(--profile-sidebar-width, 280px); min-width: var(--profile-sidebar-width, 280px); }
 .app-root .sidebar.collapsed { margin-left: calc(-1 * var(--profile-sidebar-width, 280px)); }
 .app-root[data-sidebar-side="right"] > .app-layout .sidebar { order: 2; border-left: 1px solid var(--border); border-right: none; }
-.app-root[data-sidebar-side="right"] > .app-layout .dock-leaf:has(> .sidebar) { order: 2; }   /* W3: the list leaf of the dock tree goes right with it */
+.app-root[data-sidebar-leaf-side="right"] > .app-layout .dock-leaf:has(> .sidebar, > .win-box > .sidebar) { order: 2; }   /* W3: the list leaf of the dock tree goes right with it */
 .app-root[data-sidebar-side="right"] > .app-layout .sidebar.collapsed { margin-left: 0; margin-right: calc(-1 * var(--profile-sidebar-width, 280px)); }
 @media (max-width: 720px) {
   .profile-workspace-controls span { display: none; }
@@ -49,7 +49,8 @@
 
 /* W3 regression (390 px): a chat leaf of the dock tree may be shorter than its content (toolbar + body). Like the former beside-workbench strip it
    scrolls internally and its parts keep their natural height (grow, never shrink below it) instead of overflowing into the next leaf. */
-.dock-leaf > .chat-host { overflow: auto; }
-.dock-leaf > .chat-host > .application-views,
+.dock-leaf > .chat-host, .dock-leaf > .win-box > .chat-host { overflow: auto; }
+.dock-leaf > .chat-host > .application-views, .dock-leaf > .win-box > .chat-host > .application-views,
+.dock-leaf > .win-box > .chat-host .application-view-grid,
 .dock-leaf > .chat-host .application-view-grid { flex: 1 0 auto; min-height: auto; }
-.dock-leaf > .chat-host .application-profile-body { min-height: min(60vh, 22rem); }
+.dock-leaf > .chat-host .application-profile-body, .dock-leaf > .win-box > .chat-host .application-profile-body { min-height: min(60vh, 22rem); }

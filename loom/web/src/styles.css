@@ -226,7 +226,7 @@ textarea { resize: vertical; }
   .app-nav.open {
     display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px;
     position: absolute; top: 100%; left: 0; right: 0; z-index: 18;
-    padding: 8px var(--gutter) 12px; max-height: calc(100dvh - 49px); overflow-y: auto;
+    padding: 8px var(--gutter) 12px; max-height: calc(100dvh - 72px); overflow-y: auto; box-sizing: border-box;   /* W-gaps: the header is not always 49 px (54 at 320 wide) and the padding counted outside the limit: one more panel ran the open menu 5 px off a 320x800 screen; 72 px leaves room for a taller header */
     background: var(--card); border-bottom: 1px solid var(--border); box-shadow: 0 8px 16px rgba(0,0,0,0.4);
   }
   .app-nav.open .pill { grid-column: 1 / -1; }
@@ -249,7 +249,7 @@ textarea { resize: vertical; }
 /* W3 (OKNA §3.1): the former Workshop drawn from its dock tree. A leaf whose only window is hidden (chat hidden beside knowledge) drops out;
    the panel entries of the switcher bar are tabs (the pressed one underlined). */
 .dock-leaf:has(> [hidden]:only-child) { display: none; }
-.dock-leaf > .main-panel { flex: 1; }
+.dock-leaf > .main-panel, .dock-leaf > .win-box > .main-panel { flex: 1; }
 /* each leaf stays inside its box and scrolls internally (390 px regression: content with min-height:auto overflowed into the next leaf) */
 .dock-leaf { overflow-x: hidden; overflow-y: auto; }
 .dock-split { overflow: hidden; }
@@ -261,8 +261,8 @@ textarea { resize: vertical; }
 /* W4 (OKNA §2.2, §6.3): window frames of docked/floating panels, floating layer, drop zone, split grips, advisory chips */
 .dock-root { height: 100vh; height: 100dvh; display: flex; flex-direction: column; }
 .dock-root > .app-layout { height: 100%; }
-.dock-leaf > .dock-chat { flex: 1; min-height: 0; display: flex; flex-direction: column; }
-.dock-leaf > .dock-chat > .shell-root { height: 100%; }
+.dock-leaf > .dock-chat, .dock-leaf > .win-box > .dock-chat { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.dock-leaf > .dock-chat > .shell-root, .dock-leaf > .win-box > .dock-chat > .shell-root { height: 100%; }
 .win-frame { display: flex; flex-direction: column; flex: 1; min-height: 0; min-width: 0; background: var(--card); border-left: 1px solid var(--border); position: relative; }
 .win-floating { height: 100%; border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 8px 28px rgba(0,0,0,0.45); overflow: hidden; }
 .win-titlebar { display: flex; align-items: center; gap: 4px; padding: 0 4px 0 10px; min-height: 44px; border-bottom: 1px solid var(--border); cursor: grab; touch-action: none; user-select: none; flex-shrink: 0; }

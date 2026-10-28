@@ -545,6 +545,36 @@
       "decision": "applicable",
       "label": "Usuń układ",
       "implementation": "planned"
+    },
+    {
+      "id": "window.style",
+      "decision": "applicable",
+      "label": "Styl okna",
+      "implementation": "planned"
+    },
+    {
+      "id": "layout.style",
+      "decision": "applicable",
+      "label": "Styl układu",
+      "implementation": "planned"
+    },
+    {
+      "id": "artifact.open",
+      "decision": "applicable",
+      "label": "Otwórz blok w oknie",
+      "implementation": "planned"
+    },
+    {
+      "id": "artifact.copy",
+      "decision": "applicable",
+      "label": "Skopiuj blok",
+      "implementation": "planned"
+    },
+    {
+      "id": "artifact.save",
+      "decision": "applicable",
+      "label": "Zapisz blok",
+      "implementation": "planned"
     }
   ],
   "breadcrumbs": [

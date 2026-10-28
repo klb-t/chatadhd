@@ -40,7 +40,9 @@ details[open] > summary::before { content: var(--disclosure-glyph-expanded); ani
 .shell-drawer .shell-list { flex: 1; overflow-y: auto; }
 .shell-drawer .shell-row { display: block; width: 100%; text-align: left; min-height: 44px; border: 0; border-bottom: 1px solid var(--border); border-radius: 0; background: none; }
 .shell-drawer .shell-row.active { background: var(--ai); border-left: 3px solid var(--accent); }
-.shell-menu { position: absolute; top: 100%; right: 8px; z-index: 23; min-width: 220px; max-width: calc(100vw - 16px); background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: 0 8px 24px rgba(0,0,0,.4); display: flex; flex-direction: column; }
+.shell-menu { position: absolute; top: 100%; right: 8px; z-index: 23; min-width: 220px; max-width: calc(100vw - 16px); background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: 0 8px 24px rgba(0,0,0,.4); display: flex; flex-direction: column;
+  /* W-gaps: a menu taller than the screen (12 entries at 320x800, more on a short phone) scrolls instead of running off the bottom */
+  max-height: calc(100vh - 72px); max-height: calc(100dvh - 72px); overflow-y: auto; overscroll-behavior: contain; }
 .shell-menu button { text-align: left; min-height: 44px; border: 0; border-radius: 0; background: none; }
 .shell-bar { position: relative; }
 .shell-card { margin: 12px var(--gutter); padding: 14px; border: 1px solid var(--warn); border-radius: var(--radius); background: var(--input-bg); display: flex; flex-direction: column; gap: 8px; }
