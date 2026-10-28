@@ -966,6 +966,11 @@ ChatADHD działa bez logowania (nie konto anonimowe, tylko tryb bez konta) na da
 
 Uzupełnienie R103: pula właściciela to budżet próbny (kilka centów, preset) dla każdego użytkownika na wypróbowanie płatnych funkcji; czat idzie na produkcję po wprowadzeniu trybu bez logowania, z opcją budowania profilu w pamięci lokalnej użytkownika; cała logika (graf, flow itd.) darmowa dla użytkowników niekomercyjnych.
 
+## R105 — Gość: zwykły interfejs, najlepszy darmowy model, ostrzeżenie o utracie rozmowy wg metryki wartości (owner, 2026-10-28)
+> ja to widzę że czatpo wyświetleniu przez użytkownika nie zalogowanego pokazuje standardowy interfejs pełnoekranowy z możliwością zamknięcia i tak dalej ale standardowo normalnie Prowadzi rozmowę za pomocą najlepszego dostępnego darmowego modelu. przy drugim prącie w rozmowie albo jeśli jego pierwsza odpowiedź jest skomplikowana i jakiś w ogóle trzeba metrykę wartości tej odpowiedzi zrobić, informuję że użytkownik nie jest zalogowany i jeśli nie przeznaczy pamięci miejsca do zapisu, to może utracić treść tej rozmowy po zakończeniu sesji, lub po innym okresie wynikającym z dostępnej czatowi pamięci na kopie robocze
+
+Niezalogowany widzi standardowy pełnoekranowy interfejs (okna, zamykanie itd.) i od razu rozmawia z najlepszym dostępnym darmowym modelem. Przy drugim prompcie albo gdy pierwsza odpowiedź jest wartościowa (metryka wartości odpowiedzi — do zaprojektowania, preset) czat informuje, że użytkownik nie jest zalogowany i bez wskazania miejsca zapisu może stracić rozmowę po końcu sesji lub po okresie wynikającym z dostępnej pamięci na kopie robocze (okres podawany uczciwie).
+
 ## Decision — rebuild, don't recover
 > "nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane"
 
