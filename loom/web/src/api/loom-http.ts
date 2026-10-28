@@ -75,6 +75,9 @@ export class LoomHttpApi implements LoomApi {
   usagePolicy(command: Record<string, unknown>): Promise<Record<string, unknown>> {
     return this.req("POST", "/api/usage-policy", command);
   }
+  providerRequest(request: Record<string, unknown>): Promise<Record<string, unknown>> {
+    return this.req("POST", "/api/chat/request", request);
+  }
   readonly agent: AgentApi = {
     run: (request) => this.req("POST", "/api/agent/run", request),
   };

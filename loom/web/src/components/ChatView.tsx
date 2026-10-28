@@ -36,7 +36,7 @@ import ImportedMessageContent from "./ImportedMessageContent";
 import ArtifactFrame from "../shell/artifacts/ArtifactFrame";
 import { OPEN_ARTIFACT_EVENT, fileNameOf, formatById, pickArtifact, splitArtifacts } from "../shell/artifacts/artifacts";
 import { downloadText } from "../shell/artifacts/ArtifactFrame";
-import { recordRequest } from "../shell/last-request";
+import { recordDraft, recordRequest, settleRequest } from "../shell/last-request";
 import { projectImportedMessage } from "../content/imported-message";
 import ConversationBranches, { conversationBranchPath } from "./ConversationBranches";
 import { parseCandidateChannels, readChatSettings, storedPlan, writeChatSettings } from "../context/chat-settings";
@@ -757,6 +757,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
       if (!isCurrent() || terminal) return;
       terminal = true;
       setLastRequest({ ok: false, at: Date.now() });
+      settleRequest(requestConvId);
       setStream(null);
       setPendingUserText(null);
       let message = raw;
@@ -821,6 +822,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
           } else if (chunk.type === "done") {
             terminal = true;
             setLastRequest({ ok: true, at: Date.now() });
+            settleRequest(chunk.conv_id ?? requestConvId);
 
             if (chunk.context_trace) setLastTrace({ convId: chunk.conv_id, userId: currentUserIdRef.current, trace: chunk.context_trace });
             setStream(null);
@@ -1639,7 +1641,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
           placeholder={chat ? t("composer_placeholder") : profile?.composer.placeholder ?? "Message Loom…"}
           rows={1}
           data-testid="chat-input"
-          onChange={(e) => { setInput(e.target.value); setQueuedNote((note) => (note === "failed" ? null : note)); }}
+          onChange={(e) => { setInput(e.target.value); recordDraft(e.target.value, convId ?? null); setQueuedNote((note) => (note === "failed" ? null : note)); }}
           onKeyDown={(e) => {
             if (supports("chat.send") && shouldSubmit(profile?.composer.submit ?? "enter", { key: e.key, shiftKey: e.shiftKey,
               ctrlKey: e.ctrlKey, metaKey: e.metaKey, altKey: e.altKey, isComposing: e.nativeEvent.isComposing })) {

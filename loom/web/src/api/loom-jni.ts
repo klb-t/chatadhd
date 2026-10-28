@@ -227,6 +227,9 @@ export class LoomJniApi implements LoomApi {
     };
   }
 
+  providerRequest(request: Record<string, unknown>): Promise<Record<string, unknown>> {
+    return this.callAsync("invoke", { port: "chat", action: "request", request });
+  }
   setAuthToken(): void {
     // No-op: the native shell talks to the in-process LoomContext directly,
     // there is no bearer-token HTTP boundary to authenticate.

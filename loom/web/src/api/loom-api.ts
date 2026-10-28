@@ -199,6 +199,9 @@ export interface LoomApi {
   graphReply?(command: Record<string, unknown>, options?: NativeUiRequestOptions): Promise<Record<string, unknown>>;
   // Optional native extensions: older embedded hosts report unavailable.
   usagePolicy?(command: Record<string, unknown>): Promise<Record<string, unknown>>;
+  /** RI-2: the request the kernel sends to the provider (loom.provider_request/1), secrets masked by the kernel. {conv_id}: the last one sent
+   *  in that conversation; {preview: true, message, conv_id?, ...chat options}: the next one built without sending. Nothing is sent. */
+  providerRequest?(request: Record<string, unknown>): Promise<Record<string, unknown>>;
   packet?(command: Record<string, unknown>): Promise<Record<string, unknown>>;
   readonly operations?: import("./operations").OperationsApi;
   // Additive capability (loom_invoke ports actions and chat); older hosts leave it unavailable.

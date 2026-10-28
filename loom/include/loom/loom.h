@@ -513,7 +513,9 @@ LOOM_API const char* loom_github_sync(LoomContext* ctx, const char* request_json
  * usage guard's x10 hold pauses the run with a receipt that the answer must carry; see
  * loom/action_runner.h); port "chat" action "route" (is a chat input a message or a command, and for a
  * command which action on which element with what plan; nothing is stored or executed; see
- * loom/chat_route.h). request_json: JSON object of the action's input, may be
+ * loom/chat_route.h); port "chat" action "request" (the request the kernel sends to the provider, secrets
+ * masked by the kernel: the last one sent in conv_id, or with preview:true the next one built from
+ * message + chat options without sending; see loom/chat_engine.h provider_request_preview). request_json: JSON object of the action's input, may be
  * NULL/"" = {}. Returns caller-freed JSON like every other call; never throws. */
 LOOM_API const char* loom_invoke(LoomContext* ctx, const char* port, const char* action,
                                  const char* request_json);

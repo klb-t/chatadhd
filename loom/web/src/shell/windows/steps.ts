@@ -26,7 +26,7 @@ export interface GestureData {
 }
 export const GESTURES: GestureData = gesturesFile as GestureData;
 
-const fold = (t: string) => t.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/ł/g, "l").replace(/Ł/g, "L").toLowerCase().trim();
+const fold = (t: string) => t.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ł/g, "l").replace(/Ł/g, "L").toLowerCase().trim();
 
 /** A key event's combination in the form of keymap.json: ctrl, alt, shift in this order, then the key in lower case. */
 export function comboOf(e: { ctrlKey?: boolean; metaKey?: boolean; altKey?: boolean; shiftKey?: boolean; key: string }): string {

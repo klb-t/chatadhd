@@ -770,6 +770,13 @@ void App::route_chat() {
 #endif
   });
 
+  // RI-2: the request the kernel sends (or, with preview:true, would send) to the provider, masked by the kernel; nothing is sent.
+  svr_.Post("/api/chat/request", [this](const httplib::Request& req, httplib::Response& res) {
+    json body;
+    if (!object_body(req, res, body)) return;
+    send_loom(res, loom_invoke(rctx(), "chat", "request", body.dump(-1, ' ', false, json::error_handler_t::replace).c_str()));
+  });
+
   svr_.Post("/api/chat/cancel", [this](const httplib::Request& req, httplib::Response& res) {
     json body = parse_body(req);
     std::string request_id = body.value("request_id", req.get_param_value("request_id"));

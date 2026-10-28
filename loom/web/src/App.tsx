@@ -674,7 +674,7 @@ export default function App() {
                   meOpenSetting={config.me_open_sections} meInferredOpacity={config.me_inferred_opacity} onOpenConversation={id => { onConversationCreated(id); closePanel(); }} />}
                 {p === "perspectives" && <PerspectivesPanel convId={activeConvId} />}
                 {p === "view-engine" && <ViewEnginePanel />}
-                {p === "request" && <RequestInspector />}
+                {p === "request" && <RequestInspector api={api} convId={activeConvId} />}
                 {p === "memory" && <MemoryPanel />}
                 {p === "import" && <ImportPanel onImported={() => setConvRefreshKey((k) => k + 1)} />}
                 {p === "context" && <ContextSlider convId={activeConvId} />}

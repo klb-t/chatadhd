@@ -26,4 +26,14 @@ struct Source {
 // `store_values`: {key: value} of the secrets store; `confirmed`: the request carries secret_confirmation {approved:true}.
 Result<Json> gate(const Json& recipe, const std::string& mode, const std::vector<Source>& sources, const Json& store_values, bool confirmed);
 
+// RI-2: what leaves the device, shown with its secrets masked. Every value the gate would report (a pattern of the recipe, a value of the
+// secrets store at least store.min_length long, plus any `extra` value such as the credential of the route) is replaced by the mark
+// "[redacted:<rule>]" (store values: "[redacted:secrets_store:<key>]"). Each replacement is appended to `marks` as {rule, where, key?,
+// count} - by rule and place, NEVER by value. Store values are masked first, longest first, so a pattern never leaves half of one.
+std::string mask(const Json& recipe, const std::string& text, const Json& store_values, Json& marks, const std::string& where);
+// The same over every string of a JSON value (object keys stay; `where` grows into a JSON pointer).
+Json mask_json(const Json& recipe, const Json& value, const Json& store_values, Json& marks, const std::string& where);
+// A header that carries a credential by its name (authorization, api key, token, secret, cookie, password): its value never leaves the kernel.
+bool credential_header(const std::string& name);
+
 }  // namespace loom::chat::secrets

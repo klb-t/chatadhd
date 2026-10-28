@@ -27,7 +27,7 @@ const parse = (v: unknown): unknown => {
 };
 const isObj = (v: unknown): v is Record<string, unknown> => !!v && typeof v === "object" && !Array.isArray(v);
 /** Folded form of a name: no case, no diacritics, no quotes around it („praca”, «praca», "praca" and Praca are one name). */
-export const foldName = (t: string): string => t.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/ł/g, "l").replace(/Ł/g, "L")
+export const foldName = (t: string): string => t.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ł/g, "l").replace(/Ł/g, "L")
   .toLowerCase().replace(/[„”“"«»‚‘’'`]/g, "").replace(/\s+/g, " ").trim();
 const slug = (label: string): string => "u_" + (foldName(label).replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "uklad");
 

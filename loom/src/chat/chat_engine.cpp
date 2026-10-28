@@ -610,6 +610,77 @@ Result<Json> prepare_active_task(Database& db, std::string_view conv_id, const C
               {"source_selection", "native:active"}};
 }
 
+
+// RI-2: the request a call puts on the wire, as the person may see it (loom.provider_request/1). The body is the exact bytes of the request
+// parsed back (byte for byte when nothing was masked: `body_bytes` and `body_sha256` describe the masked text the view holds), the headers
+// carry no credential (by name, and every value is masked like the body), the url and the body are masked by the secrets recipe
+// (runtime/chat_secrets: its patterns and the values of the secrets store) plus the credential of the route. A mark replaces a value; the
+// list `redactions` says by rule and place what was masked, never the value. `parts` names the messages in words for the request inspector.
+Json provider_request_view(const Config& cfg, const Secrets& secrets, const llm::PreparedCall& call, const std::string& model,
+                           const std::string& kind) {
+  Json recipe = Json::object();
+  if (auto r = RuntimeProfile::load("chat_secrets", cfg.path().parent_path())) recipe = r->values();
+  Json store_values = Json::object();
+  for (const auto& key : secrets.keys()) store_values[key] = secrets.get(key, Json(nullptr));
+  if (!call.route.credential.empty()) store_values["route_credential"] = call.route.credential;
+  Json marks = Json::array();
+  const net::HttpRequest& req = call.request;
+  Json headers = Json::object();
+  for (const auto& [name, value] : req.headers) {
+    if (chat::secrets::credential_header(name)) {
+      headers[name] = "[redacted:header]";
+      marks.push_back(Json{{"rule", "credential_header"}, {"where", "headers/" + name}, {"count", 1}});
+    } else {
+      headers[name] = chat::secrets::mask(recipe, value, store_values, marks, "headers/" + name);
+    }
+  }
+  const std::string url = chat::secrets::mask(recipe, req.url, store_values, marks, "url");
+  Json body;
+  std::string body_text;
+  auto parsed = json::parse(req.body);
+  if (parsed) {
+    body = chat::secrets::mask_json(recipe, *parsed, store_values, marks, "body");
+    body_text = json::dump(body);
+  } else {
+    body_text = chat::secrets::mask(recipe, req.body, store_values, marks, "body");
+    body = body_text;
+  }
+  Json parts = Json::array();
+  if (body.is_object() && body.contains("messages") && body["messages"].is_array()) {
+    const Json msgs = body["messages"];
+    long last_user = -1;
+    for (size_t i = 0; i < msgs.size(); ++i)
+      if (msgs[i].is_object() && msgs[i].value("role", "") == "user") last_user = static_cast<long>(i);
+    bool first_system = true;
+    for (size_t i = 0; i < msgs.size(); ++i) {
+      const Json& m = msgs[i];
+      const std::string role = m.is_object() ? m.value("role", "") : std::string();
+      const Json content = m.is_object() ? m.value("content", Json(nullptr)) : Json(nullptr);
+      const std::string text = content.is_string() ? content.get<std::string>() : json::dump(content);
+      std::string part = role == "system" ? (first_system ? "system_prompt" : "context")
+                         : static_cast<long>(i) == last_user ? "current_message"
+                         : role == "user" ? "history_user" : role == "assistant" ? "history_assistant" : "other";
+      if (role == "system") first_system = false;
+      if (part == "context" && text.rfind("User's memory/context:", 0) == 0) part = "memory";
+      parts.push_back(Json{{"index", i}, {"part", part}, {"role", role}, {"chars", utf8::length(text)}, {"bytes", text.size()}});
+    }
+  }
+  Json params = Json::object();
+  size_t tools = 0;
+  if (body.is_object())
+    for (auto it = body.begin(); it != body.end(); ++it) {
+      if (it.key() == "messages") continue;
+      if (it.key() == "tools" && it.value().is_array()) { tools = it.value().size(); continue; }
+      params[it.key()] = it.value();
+    }
+  return Json{{"schema", "loom.provider_request/1"}, {"kind", kind}, {"at", timeutil::utc_now_iso()},
+              {"provider", call.route.provider_id}, {"adapter", call.route.adapter},
+              {"endpoint", call.route.endpoint.empty() ? call.route.adapter : call.route.endpoint},
+              {"method", req.method}, {"url", url}, {"model", model}, {"stream", req.stream}, {"headers", headers},
+              {"body", body}, {"body_bytes", body_text.size()}, {"wire_bytes", req.body.size()}, {"body_sha256", Sha256::hex(body_text)},
+              {"parts", parts}, {"tools", tools}, {"parameters", params}, {"redactions", marks}, {"redacted", !marks.empty()}};
+}
+
 }  // namespace
 
 Result<ChatOptions> ChatOptions::from_json(const Json& j) {
@@ -1010,6 +1081,42 @@ Result<Json> ChatEngine::preview_usage(std::string_view text, const ChatOptions&
   LOOM_TRY_ASSIGN(auto settings, effective_usage_policy_options(cfg_));
   LOOM_TRY_ASSIGN(auto policy, UsagePolicy::open(cfg_.path().parent_path() / "usage-policy.sqlite", settings));
   return policy->preview(estimate);
+}
+
+Result<Json> ChatEngine::provider_request_preview(std::string_view text, const ChatOptions& opts_in) {
+  LOOM_TRY(check_attachments(opts_in.attachments));
+  LOOM_TRY_ASSIGN(auto reasoning_recipe, chat::reasoning_recipe(cfg_.get("chat_reasoning", Json::object())));
+  std::string conv_id;
+  {
+    std::lock_guard lk(mu_);
+    if (opts_in.conv_id) conv_id = *opts_in.conv_id;
+    else if (conv_ && !opts_in.new_conversation) conv_id = conv_->id;
+  }
+  // As preview_usage: the values waiting in the turn carrier count and stay; nothing is stored, nothing is sent.
+  const ChatOptions opts = select_representation(with_carried_turn(opts_in, turn_carrier_.peek(conv_id)), conv_id);
+  LOOM_TRY_ASSIGN(auto messages, build_messages(conv_id, text, opts.attachments, opts));
+  const std::string model = opts.model ? *opts.model : scoped_default_model(db_, cfg_, conv_id);
+  const bool stream = opts.stream.value_or(cfg_bool(cfg_, "stream", true));
+  llm::ModelRequest mreq;
+  mreq.kind = "chat.send";
+  mreq.action = "chat.send";
+  mreq.models = {llm::ModelSpec{model, "", Json::object()}};
+  mreq.body = compose_chat_payload(cfg_, opts, model, messages, stream, reasoning_recipe);
+  mreq.stream = stream;
+  mreq.title = "ChatADHD";
+  mreq.route.require_credential = false;  // a look spends nothing and needs no key
+  LOOM_TRY_ASSIGN(auto call, llm::prepare_call(llm::Services(cfg_, secrets_, http_), mreq));
+  Json view = provider_request_view(cfg_, secrets_, call, model, "preview");
+  view["conv_id"] = conv_id.empty() ? Json(nullptr) : Json(conv_id);
+  view["dispatched"] = false;
+  view["note"] = "built as the next send would build it (without the flow's graph recipe, which is prepared at send time); nothing stored or sent";
+  return view;
+}
+
+Json ChatEngine::last_provider_request(std::string_view conv_id) const {
+  std::lock_guard lk(mu_);
+  if (auto it = last_provider_request_.find(std::string(conv_id)); it != last_provider_request_.end()) return it->second;
+  return Json{{"schema", "loom.provider_request/1"}, {"kind", "none"}, {"conv_id", std::string(conv_id)}};
 }
 
 Result<Json> ChatEngine::context_guard(std::string_view conv_id_in, std::string_view text, const ChatOptions& opts_in, const Json& extra_turn) {
@@ -2069,6 +2176,17 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
   auto call = llm::prepare_call(services, mreq);
   if (!call) return call.error();
   net::HttpRequest& req = call->request;
+  // RI-2: what goes on the wire for this conversation, kept in memory (setting request_inspector_record, preset true) for the request
+  // inspector; masked as it is shown. `dispatched` turns true when the transport is reached.
+  const bool record_wire = cfg_bool(cfg_, "request_inspector_record", true);
+  if (record_wire) {
+    Json view = provider_request_view(cfg_, secrets_, *call, model, "sent");
+    view["conv_id"] = conv.id;
+    view["user_message_id"] = user_mid;
+    view["dispatched"] = false;
+    std::lock_guard lk(mu_);
+    last_provider_request_[conv.id] = std::move(view);
+  }
 
   if (graph && graph->prepared && graph->prepared->capability.value("available", false) && !graph_postprocess) {
     const Json transport = graph_options.value("transport", Json::object());
@@ -2107,6 +2225,10 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
   mreq.hooks.on_text = [&](std::string_view part) { if (cb.on_chunk) cb.on_chunk(part); };
   mreq.hooks.on_reasoning = [&](std::string_view part) { if (cb.on_reasoning) cb.on_reasoning(part); };
   llm::VariantResult sent = llm::execute_call(services, mreq, *call);
+  if (record_wire && sent.state != llm::State::Held && sent.state != llm::State::GateError) {
+    std::lock_guard lk(mu_);
+    if (auto it = last_provider_request_.find(conv.id); it != last_provider_request_.end()) it->second["dispatched"] = true;
+  }
 
   if (graph && graph->guard && (sent.state == llm::State::GateError || sent.state == llm::State::Held)) {
     graph->issue("usage_policy_pending", sent.state == llm::State::Held ? json::get_string(sent.hold, "status", "unavailable") :

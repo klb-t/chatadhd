@@ -32,7 +32,7 @@ export interface WindowReceipt {
   kept?: string[];
 }
 
-const fold = (t: string) => t.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/ł/g, "l").replace(/Ł/g, "L").toLowerCase();
+const fold = (t: string) => t.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ł/g, "l").replace(/Ł/g, "L").toLowerCase();
 
 /** A word of a sentence ("graf", "czatem", "the settings") to a window target, by the longest stem of the data; an id of a panel or the
  *  word `chat` is accepted as is. Null = the word names no window. */

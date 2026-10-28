@@ -1,5 +1,7 @@
 #include "secret_filter.h"
 
+#include <algorithm>
+#include <cctype>
 #include <regex>
 #include <set>
 
@@ -67,6 +69,78 @@ Result<Json> gate(const Json& recipe, const std::string& mode, const std::vector
     out["resend"] = "repeat the same request with secret_confirmation {approved: true}";
   }
   return out;
+}
+
+namespace {
+
+std::string replace_all(std::string text, const std::string& what, const std::string& with, int& count) {
+  if (what.empty()) return text;
+  for (size_t at = text.find(what); at != std::string::npos; at = text.find(what, at + with.size())) {
+    text.replace(at, what.size(), with);
+    ++count;
+  }
+  return text;
+}
+
+}  // namespace
+
+std::string mask(const Json& recipe, const std::string& text_in, const Json& store_values, Json& marks, const std::string& where) {
+  std::string text = text_in;
+  if (!marks.is_array()) marks = Json::array();
+  const Json store = recipe.is_object() ? recipe.value("store", Json::object()) : Json::object();
+  const size_t min_len = static_cast<size_t>(store.value("min_length", 8));
+  // Store values: longest first, so a value that contains another is masked whole.
+  std::vector<std::pair<std::string, std::string>> values;  // key, value
+  if (store_values.is_object())
+    for (auto it = store_values.begin(); it != store_values.end(); ++it)
+      if (it.value().is_string() && it.value().get<std::string>().size() >= min_len) values.emplace_back(it.key(), it.value().get<std::string>());
+  std::sort(values.begin(), values.end(), [](const auto& a, const auto& b) { return a.second.size() > b.second.size(); });
+  for (const auto& [key, value] : values) {
+    int n = 0;
+    text = replace_all(std::move(text), value, "[redacted:secrets_store:" + key + "]", n);
+    if (n) marks.push_back(Json{{"rule", "secrets_store"}, {"key", key}, {"where", where}, {"count", n}});
+  }
+  if (recipe.is_object() && recipe.contains("patterns"))
+    for (const auto& p : recipe.at("patterns")) {
+      auto flags = std::regex::ECMAScript;
+      if (p.value("flags", "").find('i') != std::string::npos) flags |= std::regex::icase;
+      std::regex rx;
+      try {
+        rx = std::regex(p.value("regex", ""), flags);
+      } catch (const std::regex_error&) {
+        continue;  // the gate says an unreadable pattern before anything leaves; the view masks with the rest
+      }
+      const std::string id = p.value("id", "pattern");
+      int n = 0;
+      for (auto it = std::sregex_iterator(text.begin(), text.end(), rx); it != std::sregex_iterator(); ++it) ++n;
+      if (!n) continue;
+      text = std::regex_replace(text, rx, "[redacted:" + id + "]");
+      marks.push_back(Json{{"rule", id}, {"where", where}, {"count", n}});
+    }
+  return text;
+}
+
+Json mask_json(const Json& recipe, const Json& value, const Json& store_values, Json& marks, const std::string& where) {
+  if (value.is_string()) return Json(mask(recipe, value.get<std::string>(), store_values, marks, where));
+  if (value.is_array()) {
+    Json out = Json::array();
+    for (size_t i = 0; i < value.size(); ++i) out.push_back(mask_json(recipe, value[i], store_values, marks, where + "/" + std::to_string(i)));
+    return out;
+  }
+  if (value.is_object()) {
+    Json out = Json::object();
+    for (auto it = value.begin(); it != value.end(); ++it) out[it.key()] = mask_json(recipe, it.value(), store_values, marks, where + "/" + it.key());
+    return out;
+  }
+  return value;
+}
+
+bool credential_header(const std::string& name) {
+  std::string n = name;
+  std::transform(n.begin(), n.end(), n.begin(), [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+  for (const char* w : {"authorization", "api-key", "api_key", "apikey", "token", "secret", "cookie", "password", "credential"})
+    if (n.find(w) != std::string::npos) return true;
+  return false;
 }
 
 }  // namespace loom::chat::secrets

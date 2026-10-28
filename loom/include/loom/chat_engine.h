@@ -239,6 +239,15 @@ class ChatEngine {
 
   Result<Json> preview_usage(std::string_view text, const ChatOptions& opts = {});
 
+  // RI-2: the request the kernel puts on the wire for the provider, as the person may see it (loom.provider_request/1: provider, endpoint,
+  // url, headers without credentials, the body parsed from the exact bytes, parts in words, tools, parameters, sizes, the list of masks).
+  // Secrets are masked by the kernel (the chat_secrets recipe, the values of the secrets store, the credential of the route): a mark stands
+  // where a value was, never the value. The preview builds the next request as send() would (the turn carrier is only looked at), with no
+  // key needed, and stores or sends nothing. The record of the last sent one lives in memory per conversation (setting
+  // request_inspector_record, preset true); `kind` "none" when there is none.
+  Result<Json> provider_request_preview(std::string_view text, const ChatOptions& opts = {});
+  Json last_provider_request(std::string_view conv_id) const;
+
   // The values that hold for the next request of a conversation only (M1-K1b; turn_carrier.h). The action context.modify fills it, the next
   // send() of that conversation takes everything it holds, preview_usage() only looks.
   TurnCarrier& turn_carrier() { return turn_carrier_; }
@@ -275,6 +284,7 @@ class ChatEngine {
   mutable std::mutex mu_;
   std::optional<Conversation> conv_;
   std::optional<std::string> last_reasoning_;
+  std::map<std::string, Json> last_provider_request_;  // conv id -> loom.provider_request/1 (masked), guarded by mu_
 };
 
 }  // namespace loom

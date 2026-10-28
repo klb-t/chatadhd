@@ -9,7 +9,9 @@
 #include "loom/action_runner.h"
 #include "loom/agent.h"
 #include "loom/action_table.h"
+#include "loom/chat_engine.h"
 #include "loom/chat_route.h"
+#include "loom/runtime.h"
 #include "loom/environments.h"
 #include "loom/memory_folder.h"
 #include "loom/tool_sources.h"
@@ -115,6 +117,24 @@ LOOM_API const char* loom_invoke(LoomContext* ctx, const char* port, const char*
       return out(*r);
     }
     if (p == "chat") {
+      if (a == "request") {
+        // RI-2: the request the kernel sends (or would send) to the provider, masked by the kernel (chat_engine.h provider_request_preview /
+        // last_provider_request). {preview:true, message, ...chat options} builds the next one without sending; otherwise the record of the
+        // last one sent in conversation `conv_id` (or `conversation_id`).
+        if (json::get_bool(*rj, "preview", false)) {
+          Json chat_request = *rj;
+          chat_request.erase("preview");
+          auto opts = ChatOptions::from_json(chat_request);
+          if (!opts) return out_error(opts.error());
+          auto r = ctx->rt->chat().provider_request_preview(json::get_string(*rj, "message"), *opts);
+          if (!r) return out_error(r.error());
+          return out(*r);
+        }
+        std::string cid = json::get_string(*rj, "conv_id");
+        if (cid.empty()) cid = json::get_string(*rj, "conversation_id");
+        if (cid.empty()) return out_error(missing("conv_id"));
+        return out(ctx->rt->chat().last_provider_request(cid));
+      }
       if (a != "route") return out_error(Errc::InvalidArgument, "unknown chat action '" + a + "'");
       auto r = chat_route::route(*ctx->rt, *rj);
       if (!r) return out_error(r.error());
