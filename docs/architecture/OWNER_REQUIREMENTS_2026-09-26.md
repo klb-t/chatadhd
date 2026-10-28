@@ -948,6 +948,12 @@ Slowa wlasciciela wypowiedziane w sesji VM (gcp) ok. 19:10 UTC, zapisane przez t
 
 Gdy osoba zminimalizuje i zamknie ostatnie (pełnoekranowe) okno, zostaje interfejs zerowy, z którego da się otworzyć nowe okno (dowolnego rodzaju, także przywrócić zminimalizowane, wczytać układ). Dyktowane: 'Zbigniew' = 'zminimalizuje'. Wygląd i treść interfejsu zerowego to presety, nie reguły.
 
+## R102 — Orkiestracja wielomodelowa i geneza tekstu (inspiracja) (owner, 2026-10-28)
+> „za bardzo się Claude wczuł w innej rozmowie w szczegóły. ty znasz lepiej filozofię strukturę grafu architektury systemu więc to co wkleję traktuj jako źródło inspiracji, przede wszystkim stawiając priorytety które już chyba mamy określone: filozofie i tak dalej”
+> [Wklejona notatka z innej rozmowy „Notatka dla dyspozytora: orkiestracja wielomodelowa” — status: kierunek, przykłady. Problem: praca w wielu rozmowach i z wieloma modelami gubi genezę (skąd sformułowanie, co je zastąpiło, co znikło); wartość z rozbieżności, nie ze zgody. Rdzeń: fan-out jednej wiadomości do N modeli tymi samymi słowami; pseudonimy Model A/B/C stałe w sesji, losowane między sesjami, bez nazw dostawców; schematy odpowiedzi jako wtyczki; strategie agregacji jako wtyczki (domyślnie suma, nie głosowanie); rundy: pierwsza ślepa, kolejne krzyżowe; pochodzenie i diff z dodaniami, zmianami i usunięciami. Przykłady: suma list z deduplikacją semantyczną i pochodzeniem; pytania w slotach (cel/odbiorca/ograniczenia/brakujące fakty/forma) z jedną odpowiedzią rozsyłaną do wszystkich; pytania otwarte z cytatem; mapa niejednoznaczności do poprawy promptu. Zasady: zgoda modeli to słaby sygnał (skorelowane błędy); zawsze pole otwarte „czego brakuje / jak zrozumiałem zadanie”; pierwsza runda bez wglądu; integracja z warstwą pochodzenia Loom pożądana. Przypadek testowy: dokument redagowany w dwóch rozmowach z dwoma modelami z przeklejkami; cicho znika istotne zdanie — system wykazuje gdzie i kiedy.]
+
+Źródło inspiracji, nie specyfikacja: wszystkie mechanizmy to przykłady/presety jednego silnika (fan-out, pseudonimy, schematy i agregacje jako wtyczki, rundy ślepe/krzyżowe, pochodzenie i diff z usunięciami). Priorytet: filozofia i istniejąca architektura (graf, Loom provenance, MR21). Przypadek testowy: wykrycie cicho usuniętego zdania między rozmowami.
+
 ## Decision — rebuild, don't recover
 > "nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane"
 

@@ -5,8 +5,8 @@
  "sources": {
   "owner": {
    "path": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
-   "sha256": "c98201bbd3dac73e8f14b1e216cc1c81351d9ecdc9a7467de17cbfa9290b747f",
-   "lines": 965
+   "sha256": "c895a79a639bbd3c018fd12cbb6473d78b3cb27f1f6d355514cf2080b0de2d9d",
+   "lines": 971
   },
   "slowa": {
    "path": "docs/architecture/SLOWA_WLASCICIELA_2026-10-16.md",
@@ -5847,6 +5847,60 @@
    ]
   },
   {
+   "id": "s_98ec88df70b6",
+   "aliases": [
+    "R102"
+   ],
+   "kind": "requirement",
+   "title": "Orkiestracja wielomodelowa i geneza tekstu (inspiracja)",
+   "date": "2026-10-28",
+   "theme": "owner_requirements",
+   "theme_inferred": false,
+   "understanding": {
+    "state": "none"
+   },
+   "quotes": [
+    {
+     "text": "„za bardzo się Claude wczuł w innej rozmowie w szczegóły. ty znasz lepiej filozofię strukturę grafu architektury systemu więc to co wkleję traktuj jako źródło inspiracji, przede wszystkim stawiając priorytety które już chyba mamy określone: filozofie i tak dalej”\n[Wklejona notatka z innej rozmowy „Notatka dla dyspozytora: orkiestracja wielomodelowa” — status: kierunek, przykłady. Problem: praca w wielu rozmowach i z wieloma modelami gubi genezę (skąd sformułowanie, co je zastąpiło, co znikło); wartość z rozbieżności, nie ze zgody. Rdzeń: fan-out jednej wiadomości do N modeli tymi samymi słowami; pseudonimy Model A/B/C stałe w sesji, losowane między sesjami, bez nazw dostawców; schematy odpowiedzi jako wtyczki; strategie agregacji jako wtyczki (domyślnie suma, nie głosowanie); rundy: pierwsza ślepa, kolejne krzyżowe; pochodzenie i diff z dodaniami, zmianami i usunięciami. Przykłady: suma list z deduplikacją semantyczną i pochodzeniem; pytania w slotach (cel/odbiorca/ograniczenia/brakujące fakty/forma) z jedną odpowiedzią rozsyłaną do wszystkich; pytania otwarte z cytatem; mapa niejednoznaczności do poprawy promptu. Zasady: zgoda modeli to słaby sygnał (skorelowane błędy); zawsze pole otwarte „czego brakuje / jak zrozumiałem zadanie”; pierwsza runda bez wglądu; integracja z warstwą pochodzenia Loom pożądana. Przypadek testowy: dokument redagowany w dwóch rozmowach z dwoma modelami z przeklejkami; cicho znika istotne zdanie — system wykazuje gdzie i kiedy.]",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:952-953",
+     "ref": null,
+     "attr": [],
+     "lead": null,
+     "secondary": false
+    }
+   ],
+   "sense": null,
+   "summary": null,
+   "restatement": [
+    {
+     "text": "Źródło inspiracji, nie specyfikacja: wszystkie mechanizmy to przykłady/presety jednego silnika (fan-out, pseudonimy, schematy i agregacje jako wtyczki, rundy ślepe/krzyżowe, pochodzenie i diff z usunięciami). Priorytet: filozofia i istniejąca architektura (graf, Loom provenance, MR21). Przypadek testowy: wykrycie cicho usuniętego zdania między rozmowami.",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:955"
+    }
+   ],
+   "commentary": [],
+   "status": null,
+   "gap_text": null,
+   "evidence": [],
+   "next_step": null,
+   "refs": [
+    "s_05faa268effb"
+   ],
+   "supersedes": [],
+   "superseded_by": [],
+   "supersession_notes": [],
+   "tags": [],
+   "heading_note": "owner, 2026-10-28",
+   "sources": [
+    {
+     "role": "owner",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:951-955"
+    }
+   ],
+   "files": [
+    "owner"
+   ]
+  },
+  {
    "id": "s_18ec73967a7b",
    "aliases": [
     "owner:decision-rebuild-don-t-recover"
@@ -5862,7 +5916,7 @@
    "quotes": [
     {
      "text": "\"nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane\"",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:952",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:958",
      "ref": null,
      "attr": [],
      "lead": null,
@@ -5874,7 +5928,7 @@
    "restatement": [
     {
      "text": "Recovered versions (`history/chatadhd_v0.8.3`, `history/chatadhd_v0.9.0`) and\nthe historical report are sources of requirements, ideas and data assets\n(e.g. `film_structure.json`), and real ground truth for self-discovery tests —\nnot code to merge. Everything is rebuilt in Loom with tests.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:954-957"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:960-963"
     }
    ],
    "commentary": [],
@@ -5891,7 +5945,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:951-957"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:957-963"
     }
    ],
    "files": [
@@ -5917,7 +5971,7 @@
    "restatement": [
     {
      "text": "`workbench_mockup_2026-09-26.webp`: dockable/floating panels (conversation\nlist, active conversation, knowledge graph with active context window, project\nstructure with dimmed high-confidence auto-completable nodes, artifact views\nfor music/video with timeline + storyboard, video player, execution\nenvironment with agent), multi-format ingestion, Loom SDK at the centre.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:960-964"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:966-970"
     }
    ],
    "commentary": [],
@@ -5934,7 +5988,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:959-964"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:965-970"
     }
    ],
    "files": [

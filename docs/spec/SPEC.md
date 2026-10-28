@@ -5,13 +5,13 @@ Ten plik jest **wygenerowany** z `docs/spec/spec.json` poleceniem `python3 tools
 
 Status pochodzi z pliku luk i jest **obserwacją z podanej daty**, nie ograniczeniem.
 
-Pozycji razem: **525**.
+Pozycji razem: **526**.
 
 | Status (z LUKI) | liczba |
 |---|---|
 | częściowo | 210 |
 | jest | 151 |
-| bez statusu (nie ma w LUKI) | 142 |
+| bez statusu (nie ma w LUKI) | 143 |
 | brak | 16 |
 | nieaktualne | 5 |
 | sprzeczne | 1 |
@@ -19,7 +19,7 @@ Pozycji razem: **525**.
 | Rodzaj | liczba |
 |---|---|
 | remark | 367 |
-| requirement | 101 |
+| requirement | 102 |
 | philosophy | 36 |
 | statement | 10 |
 | decision | 4 |
@@ -28,14 +28,14 @@ Pozycji razem: **525**.
 
 | Rozumienie (R61) | liczba |
 |---|---|
-| none | 510 |
+| none | 511 |
 | proposed | 12 |
 | corrected | 3 |
 
 | W których plikach | liczba |
 |---|---|
 | LUKI + SLOWA | 379 |
-| rejestr R/D | 108 |
+| rejestr R/D | 109 |
 | SLOWA | 34 |
 | LUKI | 4 |
 
@@ -55,7 +55,7 @@ Pozycji razem: **525**.
 | Proces i współpraca | 67 |
 | Pozostałe | 33 |
 | Uzupełnienia (wypowiedzi bez numeru) | 10 |
-| Rejestr wymagań R/D | 108 |
+| Rejestr wymagań R/D | 109 |
 | bez tematu | 3 |
 
 ## Filozofia
@@ -622,8 +622,9 @@ Pozycji razem: **525**.
 - `s_5eaff9b7c238` **R99** — Krótko do właściciela; AGEDS rzecznik: model użytkowników, spraw, pakietów i współdzielonych źródeł (GPT) — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L937)
 - `s_a50a787171eb` **R100** — Zgoda: wszystkie dane właściciela mogą iść do Google Vertex; warunek: nie publicznie i nie do trenowania; cache Vertex zostaje włączony — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L941)
 - `s_8561825a92fa` **R101** — Interfejs zerowy po zamknięciu ostatniego okna — _bez statusu_ · rozumienie: corrected · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L946)
-- `s_18ec73967a7b` **owner:decision-rebuild-don-t-recover** — Decision — rebuild, don't recover — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L951)
-- `s_223e1568b3b9` **owner:ui-reference** — UI reference — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L959)
+- `s_98ec88df70b6` **R102** — Orkiestracja wielomodelowa i geneza tekstu (inspiracja) — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L951)
+- `s_18ec73967a7b` **owner:decision-rebuild-don-t-recover** — Decision — rebuild, don't recover — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L957)
+- `s_223e1568b3b9` **owner:ui-reference** — UI reference — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L965)
 
 ## Bez tematu
 
