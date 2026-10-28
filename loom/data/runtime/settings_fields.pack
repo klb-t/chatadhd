@@ -1195,6 +1195,7 @@
         "group": "ui",
         "type": "string",
         "has_default": false,
+        "on_unlisted": "warn",
         "values": [
           {
             "value": "layout",
