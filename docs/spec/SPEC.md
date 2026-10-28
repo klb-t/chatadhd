@@ -5,13 +5,13 @@ Ten plik jest **wygenerowany** z `docs/spec/spec.json` poleceniem `python3 tools
 
 Status pochodzi z pliku luk i jest **obserwacją z podanej daty**, nie ograniczeniem.
 
-Pozycji razem: **527**.
+Pozycji razem: **528**.
 
 | Status (z LUKI) | liczba |
 |---|---|
 | częściowo | 210 |
 | jest | 151 |
-| bez statusu (nie ma w LUKI) | 144 |
+| bez statusu (nie ma w LUKI) | 145 |
 | brak | 16 |
 | nieaktualne | 5 |
 | sprzeczne | 1 |
@@ -19,7 +19,7 @@ Pozycji razem: **527**.
 | Rodzaj | liczba |
 |---|---|
 | remark | 367 |
-| requirement | 103 |
+| requirement | 104 |
 | philosophy | 36 |
 | statement | 10 |
 | decision | 4 |
@@ -28,14 +28,14 @@ Pozycji razem: **527**.
 
 | Rozumienie (R61) | liczba |
 |---|---|
-| none | 511 |
+| none | 512 |
 | approved | 12 |
 | corrected | 4 |
 
 | W których plikach | liczba |
 |---|---|
 | LUKI + SLOWA | 379 |
-| rejestr R/D | 110 |
+| rejestr R/D | 111 |
 | SLOWA | 34 |
 | LUKI | 4 |
 
@@ -55,7 +55,7 @@ Pozycji razem: **527**.
 | Proces i współpraca | 67 |
 | Pozostałe | 33 |
 | Uzupełnienia (wypowiedzi bez numeru) | 10 |
-| Rejestr wymagań R/D | 110 |
+| Rejestr wymagań R/D | 111 |
 | bez tematu | 3 |
 
 ## Filozofia
@@ -624,8 +624,9 @@ Pozycji razem: **527**.
 - `s_8561825a92fa` **R101** — Interfejs zerowy po zamknięciu ostatniego okna — _bez statusu_ · rozumienie: corrected · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L946)
 - `s_98ec88df70b6` **R102** — Orkiestracja wielomodelowa i geneza tekstu (inspiracja) — _bez statusu_ · rozumienie: corrected · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L951)
 - `s_876d3e3a2863` **R103** — Korzystanie bez logowania: darmowe API, pula kluczy właściciela, historia u użytkownika — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L957)
-- `s_18ec73967a7b` **owner:decision-rebuild-don-t-recover** — Decision — rebuild, don't recover — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L962)
-- `s_223e1568b3b9` **owner:ui-reference** — UI reference — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L970)
+- `s_831a5fde86e9` **R104** — Budżet próbny dla każdego, profil w pamięci lokalnej, darmowo dla niekomercyjnych — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L962)
+- `s_18ec73967a7b` **owner:decision-rebuild-don-t-recover** — Decision — rebuild, don't recover — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L969)
+- `s_223e1568b3b9` **owner:ui-reference** — UI reference — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L977)
 
 ## Bez tematu
 

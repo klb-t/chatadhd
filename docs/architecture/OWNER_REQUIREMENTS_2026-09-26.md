@@ -959,6 +959,13 @@ Gdy osoba zminimalizuje i zamknie ostatnie (pełnoekranowe) okno, zostaje interf
 
 ChatADHD działa bez logowania (nie konto anonimowe, tylko tryb bez konta) na darmowych API; przygotowany na przydział kluczy testowych z puli właściciela; historia rozmów zapisywana tam, gdzie użytkownik da dostęp (np. jego dysk); darmowe funkcje mają być dużo lepsze niż u innych dostawców; dopóki użytkowników jest mało, rozdajemy wolną moc obliczeniową VM i do kilku euro tokenów (presety).
 
+## R104 — Budżet próbny dla każdego, profil w pamięci lokalnej, darmowo dla niekomercyjnych (owner, 2026-10-28)
+> te darmowe Tokeny to będą ogólnie dla użytkowników żeby sobie mogli nawet nie mając Wielkiego zainteresowania przetestować funkcjonalności płatne za parę centów ode mnie.
+> wdróż wszystko, Czata po wprowadzeniu darmowych funkcjonalności bez logowania z opcją wykorzystania pamięci lokalnej użytkownika na budowanie profilu
+> właśnie bo logikę całą grafy i tak dalej To dajemy za darmo dla użytkowników niekomercyjnych
+
+Uzupełnienie R103: pula właściciela to budżet próbny (kilka centów, preset) dla każdego użytkownika na wypróbowanie płatnych funkcji; czat idzie na produkcję po wprowadzeniu trybu bez logowania, z opcją budowania profilu w pamięci lokalnej użytkownika; cała logika (graf, flow itd.) darmowa dla użytkowników niekomercyjnych.
+
 ## Decision — rebuild, don't recover
 > "nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane"
 
