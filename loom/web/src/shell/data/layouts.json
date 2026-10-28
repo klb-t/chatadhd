@@ -24,11 +24,6 @@
           "action": "panel:settings"
         },
         {
-          "id": "request",
-          "label": "ri_open_hint",
-          "action": "panel:request"
-        },
-        {
           "id": "me",
           "label": "menu_me",
           "action": "navigator:party:self"
@@ -62,6 +57,11 @@
           "id": "diagnostics",
           "label": "menu_diagnostics",
           "action": "sheet:diagnostics"
+        },
+        {
+          "id": "request",
+          "label": "ri_open_hint",
+          "action": "panel:request"
         },
         {
           "id": "connection",

@@ -370,7 +370,8 @@
    "status": "present",
    "note": "W-gaps: the Expert view lifted out of the Workshop - the last request this page sent (or prepared) in words, the raw JSON under „Szczegóły techniczne”; opened as the shell panel `request` (chat menu „Pokaż zapytanie”, sentence „pokaż zapytanie” / „show the request”). It shows what the page sent to the kernel, not yet the request the kernel assembled for the provider.",
    "state_keys": [
-    "params"
+    "params",
+    "scroll"
    ]
   },
   {
