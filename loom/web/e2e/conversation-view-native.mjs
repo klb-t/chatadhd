@@ -10,6 +10,8 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
 import { suiteCompletionGuard } from './harness-lifecycle.mjs';
+import { traceOnFailure } from './trace-on-failure.mjs';
+import { throttleCpu } from './stable-shot.mjs';
 
 const web = fileURLToPath(new URL('../',import.meta.url)), loom=path.resolve(web,'..');
 const serverBin=process.env.LOOM_SERVER_BIN || path.join(loom,'build/dev/server/loom-server');
@@ -49,7 +51,7 @@ const binHash=sha(readFileSync(serverBin));
 writeFileSync(path.join(evidence,'receipt-before.json'),JSON.stringify({sources:before,server:serverBin,server_sha256:binHash,
   dist_index_sha256:sha(readFileSync(path.join(dist,'index.html'))),fixture_sha256:sha(readFileSync(archive)),data_dir:data,source_dir:source,native_tmpdir:runtimeTmp,
   model_calls:0,retention:{scan_content_index:'none',initial_projection_storage:'snapshot',selected_read_projection_storage:'transient'}},null,2));
-let server,browser,page,serverLog='',failure;
+let server,browser,page,trace,serverLog='',failure,lostTaps=0;
 const groups=[],remoteRequests=[],sendRequests=[],declareRequests=[],mutations=[],sourceReads=[],errors=[];
 const complete=suiteCompletionGuard('conversation-view-native',9,groups);
 async function request(method,route,body){const response=await fetch(base+route,{method,headers:{'Content-Type':'application/json'},...(body===undefined?{}:{body:JSON.stringify(body)})});
@@ -82,7 +84,12 @@ try{
   assert.deepEqual((await request('GET',`/api/conversations/${convId}/messages?all=1`)).result,nativeRows);
  });
  browser=await chromium.launch({headless:true,...(process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE?{executablePath:process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE}:{})});
- const context=await browser.newContext({hasTouch:true,viewport:{width:1500,height:1100}});page=await context.newPage();page.on('pageerror',err=>errors.push(err.message));
+ const context=await browser.newContext({hasTouch:true,viewport:{width:1500,height:1100}});trace=await traceOnFailure(context,evidence,'conversation-view-native');
+ // Event log of the read button: which element received each touch/pointer/click event and whether it was still connected.
+ await context.addInitScript(()=>{const log=window.__tapLog=[];for(const type of ['touchstart','touchend','pointerdown','pointerup','mousedown','mouseup','click'])
+  document.addEventListener(type,e=>{const t=e.target instanceof Element?e.target:null;log.push({type,t:Math.round(performance.now()),testid:t?.closest('[data-testid]')?.dataset.testid??t?.tagName??null,
+   connected:t?.isConnected??null,disabled:t?.closest('button')?.disabled??null,x:e.clientX??e.changedTouches?.[0]?.clientX,y:e.clientY??e.changedTouches?.[0]?.clientY});},true);});
+ page=await context.newPage();await throttleCpu(page);page.on('pageerror',err=>errors.push(err.message));
  await page.route('**/*',async route=>{const req=route.request(),url=new URL(req.url());
   if(url.origin!==base){remoteRequests.push(req.url());return route.abort();}
   if(url.pathname==='/api/chat'){sendRequests.push(req.postDataJSON());return route.abort();}
@@ -148,8 +155,12 @@ try{
   for(let attempt=0;sourceReads.length<2;attempt++){
    assert.ok(attempt<5,'second explicit tap never produced a source read request');
    const sent=page.waitForRequest(r=>r.method()==='POST'&&new URL(r.url()).pathname.endsWith('/view'),{timeout:5000}).then(()=>true,()=>false);
+   await page.evaluate(()=>{window.__tapLog.length=0;});
    await chat().getByTestId('read-conversation-sources').tap();
    if(await sent)break;
+   lostTaps++;
+   console.log(`[conversation-view-native] tap lost, retry ${attempt+1}: ${JSON.stringify(await page.evaluate(()=>({events:window.__tapLog,
+    button:(()=>{const b=document.querySelector('[data-testid="read-conversation-sources"]');const r=b?.getBoundingClientRect();return b&&{disabled:b.disabled,text:b.textContent,rect:r&&[r.x,r.y,r.width,r.height]};})()})))}`);
   }
   await visibleReferences().first().waitFor();
   const again=(await request('POST',`/api/conversations/${convId}/view`,{read_options:{projection_storage:'transient',content_index:'none'}})).result;
@@ -221,7 +232,7 @@ try{
  });
  await page.screenshot({path:path.join(evidence,'ordinary-app.png'),fullPage:true});
 }catch(error){failure=error;console.error(error.stack);if(page)await page.screenshot({path:path.join(evidence,'failure.png'),fullPage:true}).catch(()=>{});}
-finally{await browser?.close();await stop();writeFileSync(path.join(evidence,'server.log'),serverLog);writeFileSync(path.join(evidence,'result.json'),JSON.stringify({groups,expected:9,passed:groups.length,error:failure?.stack??null,source_after:sourceHashes(),remoteRequests,sendRequests,mutations},null,2));}
+finally{await trace?.finish(failure||lostTaps>0);await browser?.close();await stop();writeFileSync(path.join(evidence,'server.log'),serverLog);writeFileSync(path.join(evidence,'result.json'),JSON.stringify({groups,expected:9,passed:groups.length,lost_taps:lostTaps,error:failure?.stack??null,source_after:sourceHashes(),remoteRequests,sendRequests,mutations},null,2));}
 if(failure)throw failure;
 complete.complete();
-console.log(`[conversation-view-native] ${groups.length}/9 groups passed; zero model calls; evidence ${evidence}`);
+console.log(`[conversation-view-native] ${groups.length}/9 groups passed; lost taps: ${lostTaps}; zero model calls; evidence ${evidence}`);
