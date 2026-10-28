@@ -954,6 +954,11 @@ Gdy osoba zminimalizuje i zamknie ostatnie (pełnoekranowe) okno, zostaje interf
 
 Źródło inspiracji, nie specyfikacja: wszystkie mechanizmy to przykłady/presety jednego silnika (fan-out, pseudonimy, schematy i agregacje jako wtyczki, rundy ślepe/krzyżowe, pochodzenie i diff z usunięciami). Priorytet: filozofia i istniejąca architektura (graf, Loom provenance, MR21). Przypadek testowy: wykrycie cicho usuniętego zdania między rozmowami.
 
+## R103 — Korzystanie bez logowania: darmowe API, pula kluczy właściciela, historia u użytkownika (owner, 2026-10-28)
+> stwórz w chatadhd konto anonimowe które będzie korzystało z darmowych api ale przygotowane ewentualnie na przyszłość że przydzielę jakiś klucz do testów dla użytkowników z własnej puli.  może zachowywać rozmowy nie wiem czy darmowy czat GPT to historię ci trzyma? my dajemy wszystko za co nie trzeba płacić. i to nie konta anonimowe tylko po prostu funkcjonalność bez logowania, myślę gdzie zapisać rozmowy na przykład na dysku użytkownika ale to wtedy Użytkownik który będzie chciał zapisywać historię rozmów będzie musiał dać dostęp. Przemyśl wszystko żeby były darmowe funkcjonalności lepsze niż od innych dostawców, dużo lepsze, Dopóki nie będzie dużo użytkowników to tyle ile tak jak mówięmocy obliczeniowej starczy do rozdania a nawet parę euro tokenów
+
+ChatADHD działa bez logowania (nie konto anonimowe, tylko tryb bez konta) na darmowych API; przygotowany na przydział kluczy testowych z puli właściciela; historia rozmów zapisywana tam, gdzie użytkownik da dostęp (np. jego dysk); darmowe funkcje mają być dużo lepsze niż u innych dostawców; dopóki użytkowników jest mało, rozdajemy wolną moc obliczeniową VM i do kilku euro tokenów (presety).
+
 ## Decision — rebuild, don't recover
 > "nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane"
 

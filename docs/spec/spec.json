@@ -5,8 +5,8 @@
  "sources": {
   "owner": {
    "path": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
-   "sha256": "c895a79a639bbd3c018fd12cbb6473d78b3cb27f1f6d355514cf2080b0de2d9d",
-   "lines": 971
+   "sha256": "25e482ed9eb4b73bcd6e2d7a13ad1cb868e1600d59f6627bd5f0802ef5c52123",
+   "lines": 976
   },
   "slowa": {
    "path": "docs/architecture/SLOWA_WLASCICIELA_2026-10-16.md",
@@ -5973,6 +5973,58 @@
    ]
   },
   {
+   "id": "s_876d3e3a2863",
+   "aliases": [
+    "R103"
+   ],
+   "kind": "requirement",
+   "title": "Korzystanie bez logowania: darmowe API, pula kluczy właściciela, historia u użytkownika",
+   "date": "2026-10-28",
+   "theme": "owner_requirements",
+   "theme_inferred": false,
+   "understanding": {
+    "state": "none"
+   },
+   "quotes": [
+    {
+     "text": "stwórz w chatadhd konto anonimowe które będzie korzystało z darmowych api ale przygotowane ewentualnie na przyszłość że przydzielę jakiś klucz do testów dla użytkowników z własnej puli.  może zachowywać rozmowy nie wiem czy darmowy czat GPT to historię ci trzyma? my dajemy wszystko za co nie trzeba płacić. i to nie konta anonimowe tylko po prostu funkcjonalność bez logowania, myślę gdzie zapisać rozmowy na przykład na dysku użytkownika ale to wtedy Użytkownik który będzie chciał zapisywać historię rozmów będzie musiał dać dostęp. Przemyśl wszystko żeby były darmowe funkcjonalności lepsze niż od innych dostawców, dużo lepsze, Dopóki nie będzie dużo użytkowników to tyle ile tak jak mówięmocy obliczeniowej starczy do rozdania a nawet parę euro tokenów",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:958",
+     "ref": null,
+     "attr": [],
+     "lead": null,
+     "secondary": false
+    }
+   ],
+   "sense": null,
+   "summary": null,
+   "restatement": [
+    {
+     "text": "ChatADHD działa bez logowania (nie konto anonimowe, tylko tryb bez konta) na darmowych API; przygotowany na przydział kluczy testowych z puli właściciela; historia rozmów zapisywana tam, gdzie użytkownik da dostęp (np. jego dysk); darmowe funkcje mają być dużo lepsze niż u innych dostawców; dopóki użytkowników jest mało, rozdajemy wolną moc obliczeniową VM i do kilku euro tokenów (presety).",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:960"
+    }
+   ],
+   "commentary": [],
+   "status": null,
+   "gap_text": null,
+   "evidence": [],
+   "next_step": null,
+   "refs": [],
+   "supersedes": [],
+   "superseded_by": [],
+   "supersession_notes": [],
+   "tags": [],
+   "heading_note": "owner, 2026-10-28",
+   "sources": [
+    {
+     "role": "owner",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:957-960"
+    }
+   ],
+   "files": [
+    "owner"
+   ]
+  },
+  {
    "id": "s_18ec73967a7b",
    "aliases": [
     "owner:decision-rebuild-don-t-recover"
@@ -5988,7 +6040,7 @@
    "quotes": [
     {
      "text": "\"nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane\"",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:958",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:963",
      "ref": null,
      "attr": [],
      "lead": null,
@@ -6000,7 +6052,7 @@
    "restatement": [
     {
      "text": "Recovered versions (`history/chatadhd_v0.8.3`, `history/chatadhd_v0.9.0`) and\nthe historical report are sources of requirements, ideas and data assets\n(e.g. `film_structure.json`), and real ground truth for self-discovery tests —\nnot code to merge. Everything is rebuilt in Loom with tests.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:960-963"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:965-968"
     }
    ],
    "commentary": [],
@@ -6017,7 +6069,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:957-963"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:962-968"
     }
    ],
    "files": [
@@ -6043,7 +6095,7 @@
    "restatement": [
     {
      "text": "`workbench_mockup_2026-09-26.webp`: dockable/floating panels (conversation\nlist, active conversation, knowledge graph with active context window, project\nstructure with dimmed high-confidence auto-completable nodes, artifact views\nfor music/video with timeline + storyboard, video player, execution\nenvironment with agent), multi-format ingestion, Loom SDK at the centre.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:966-970"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:971-975"
     }
    ],
    "commentary": [],
@@ -6060,7 +6112,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:965-970"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:970-975"
     }
    ],
    "files": [
