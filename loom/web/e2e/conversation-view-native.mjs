@@ -147,20 +147,20 @@ try{
   assert.deepEqual((await request('GET',`/api/conversations/${convId}/messages?all=1`)).result,nativeRows);
  });
  await check('second explicit tap keeps source message identity and does not persist content in browser storage',async()=>{
-  // Real conditions, not timing: every metadata refresh started by the failed send has finished (no view request in flight) and the
-  // read button is enabled. A tap that produced no read request at all (the DOM was re-rendered under the touch) is repeated until the
-  // second read request is observed; a read that went out is never repeated.
+  // Real conditions, not timing: the read button is enabled and every metadata refresh started by the failed send has finished.
+  // ONE tap must read (M1-ZGUBIONE-DOTKNIECIE): a tap that sends no read request fails the suite loudly, with the event trail of the
+  // button (which element got each touch/pointer/click event) and the Playwright trace kept in the evidence directory.
   await page.waitForFunction(()=>{const b=document.querySelector('[data-testid="read-conversation-sources"]');return b&&!b.disabled;});
   await page.waitForFunction(()=>performance.getEntriesByType('resource').every(e=>e.responseEnd>0));
-  for(let attempt=0;sourceReads.length<2;attempt++){
-   assert.ok(attempt<5,'second explicit tap never produced a source read request');
-   const sent=page.waitForRequest(r=>r.method()==='POST'&&new URL(r.url()).pathname.endsWith('/view'),{timeout:5000}).then(()=>true,()=>false);
-   await page.evaluate(()=>{window.__tapLog.length=0;});
-   await chat().getByTestId('read-conversation-sources').tap();
-   if(await sent)break;
+  const sent=page.waitForRequest(r=>r.method()==='POST'&&new URL(r.url()).pathname.endsWith('/view'),{timeout:5000}).then(()=>true,()=>false);
+  await page.evaluate(()=>{window.__tapLog.length=0;});
+  await chat().getByTestId('read-conversation-sources').tap();
+  if(!await sent){
    lostTaps++;
-   console.log(`[conversation-view-native] tap lost, retry ${attempt+1}: ${JSON.stringify(await page.evaluate(()=>({events:window.__tapLog,
-    button:(()=>{const b=document.querySelector('[data-testid="read-conversation-sources"]');const r=b?.getBoundingClientRect();return b&&{disabled:b.disabled,text:b.textContent,rect:r&&[r.x,r.y,r.width,r.height]};})()})))}`);
+   const trail=await page.evaluate(()=>({events:window.__tapLog,
+    button:(()=>{const b=document.querySelector('[data-testid="read-conversation-sources"]');const r=b?.getBoundingClientRect();return b&&{disabled:b.disabled,text:b.textContent,rect:r&&[r.x,r.y,r.width,r.height]};})()}));
+   console.log(`[conversation-view-native] tap lost: ${JSON.stringify(trail)}`);
+   assert.fail('second explicit tap produced no source read request (tap lost; event trail above, trace in the evidence directory)');
   }
   await visibleReferences().first().waitFor();
   const again=(await request('POST',`/api/conversations/${convId}/view`,{read_options:{projection_storage:'transient',content_index:'none'}})).result;
