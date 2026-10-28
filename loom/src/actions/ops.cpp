@@ -2821,6 +2821,109 @@ StepOutcome advisory_policy(Ctx& x) {
   return answer(x.say("adv_policy_set", vars), Json{{"code", code}, {"patch", patch}, {"policy", policy}, {"preset", preset}, {"effective", eff}});
 }
 
+// ── R101 D1: pinning on a desktop (PULPIT_R101 §4.3) ────────────────
+// A pin is the graph link `pinned_on` (target node -> desktop node) in the links table; a thing that is an address and not a row (kind:chat,
+// desktop:main, trash:, conv:<id>, sentence:<text>...) gets a representative node (label = the address, metadata.address) of the node kind
+// graph_views.pack -> node_addresses names for its prefix; an unlisted prefix is pinned as `unknown_kind` (preset `address`), never refused.
+// window.unpin removes the link and nothing else (pinning again restores it); the soft step through the trash is D4.
+
+Json node_addresses_of(Ctx& x) {
+  if (auto p = RuntimeProfile::load("graph_views", x.rt.paths().root)) {
+    const Json v = p->values();
+    if (const Json* na = json::find(v, "node_addresses"); na && na->is_object()) return *na;
+  }
+  return Json::object();
+}
+
+std::string address_node_kind(const Json& na, const std::string& address) {
+  std::string best, kind;
+  if (const Json* pre = json::find(na, "prefixes"); pre && pre->is_object()) {
+    for (const auto& [prefix, entry] : pre->items()) {
+      if (prefix.size() <= best.size() || address.rfind(prefix, 0) != 0) continue;
+      const Json* k = json::find(entry, "node_kind");
+      if (k && k->is_string()) { best = prefix; kind = k->get<std::string>(); }
+    }
+  }
+  if (!kind.empty()) return kind;
+  const Json* u = json::find(na, "unknown_kind");
+  return u && u->is_string() ? u->get<std::string>() : std::string("address");
+}
+
+Result<std::string> address_node(Ctx& x, const Json& na, const std::string& address) {
+  if (address.rfind("n_", 0) == 0) {   // an existing node of the graph is pinned as itself
+    auto n = x.rt.db().get_node(address);
+    if (!n) return n.error();
+    if (*n) return address;
+  }
+  NodeOptions opts;
+  opts.metadata = Json{{"address", address}, {"representative", true}};
+  return x.rt.db().get_or_create_node(address, address_node_kind(na, address), opts);
+}
+
+std::string pin_desktop(Ctx& x, const Json& na) {
+  std::string d = trim_quotes(x.str("desktop"));
+  if (!d.empty()) return d;
+  const Json* dd = json::find(na, "default_desktop");
+  return dd && dd->is_string() ? dd->get<std::string>() : std::string("desktop:main");
+}
+
+StepOutcome window_pin(Ctx& x) {
+  const std::string target = trim_quotes(x.str("target", x.element_id()));
+  if (target.empty()) return fail(Errc::InvalidArgument, x.say("pin_what"));
+  const Json na = node_addresses_of(x);
+  const std::string desktop = pin_desktop(x, na);
+  auto dn = address_node(x, na, desktop);
+  if (!dn) return fail(dn.error());
+  auto tn = address_node(x, na, target);
+  if (!tn) return fail(tn.error());
+  auto into = x.rt.db().get_links(std::string_view(*dn), std::string_view("pinned_on"));
+  if (!into) return fail(into.error());
+  std::int64_t order = 0;
+  for (const auto& l : *into) {
+    if (l.dst != *dn) continue;
+    if (l.src == *tn)
+      return answer(x.say("pin_already", Json{{"target", target}, {"desktop", desktop}}),
+                    Json{{"pinned", true}, {"changed", false}, {"link", l.id}, {"node", *tn}, {"desktop_node", *dn}, {"desktop", desktop}});
+    ++order;
+  }
+  const std::string label = trim_quotes(x.str("label"));
+  const Json meta{{"order", order}, {"pinned_at", timeutil::utc_now_iso()}, {"label_override", label.empty() ? Json(nullptr) : Json(label)},
+                  {"glyph", nullptr}, {"address", target}, {"desktop", desktop}};
+  auto lid = x.rt.db().create_link(*tn, *dn, "pinned_on", 1.0, meta);
+  if (!lid) return fail(lid.error());
+  return answer(x.say("pinned", Json{{"target", target}, {"desktop", desktop}}),
+                Json{{"pinned", true}, {"changed", true}, {"link", *lid}, {"node", *tn}, {"desktop_node", *dn}, {"desktop", desktop}, {"metadata", meta}});
+}
+
+StepOutcome window_unpin(Ctx& x) {
+  const std::string target = trim_quotes(x.str("target", x.element_id()));
+  if (target.empty()) return fail(Errc::InvalidArgument, x.say("pin_what"));
+  const Json na = node_addresses_of(x);
+  const std::string desktop = pin_desktop(x, na);
+  auto dnode = x.rt.db().find_node(desktop, address_node_kind(na, desktop));
+  if (!dnode) return fail(dnode.error());
+  std::string tid = target;
+  if (target.rfind("n_", 0) != 0) {
+    auto tnode = x.rt.db().find_node(target, address_node_kind(na, target));
+    if (!tnode) return fail(tnode.error());
+    tid = *tnode ? (*tnode)->id : std::string();
+  }
+  std::vector<std::string> removed;
+  if (*dnode && !tid.empty()) {
+    const std::string did = (*dnode)->id;
+    auto links = x.rt.db().get_links(std::string_view(tid), std::string_view("pinned_on"));
+    if (!links) return fail(links.error());
+    for (const auto& l : *links)
+      if (l.src == tid && l.dst == did) {
+        if (auto st = x.rt.db().delete_link(l.id); !st) return fail(st.error());
+        removed.push_back(l.id);
+      }
+  }
+  const Json vars{{"target", target}, {"desktop", desktop}};
+  return answer(x.say(removed.empty() ? "unpin_none" : "unpinned", vars),
+                Json{{"pinned", false}, {"changed", !removed.empty()}, {"removed", removed}, {"desktop", desktop}, {"target", target}});
+}
+
 using Op = StepOutcome (*)(Ctx&);
 
 const std::map<std::string, Op>& table() {
@@ -2847,7 +2950,8 @@ const std::map<std::string, Op>& table() {
       {"inference.confirm", inference_confirm_op}, {"inference.reject", inference_reject_op},
       {"units.define", units_define_op}, {"units.list", units_list_op}, {"units.forget", units_forget_op},
       {"conversation.set_unit", conversation_set_unit_op}, {"conversation.clear_unit", conversation_clear_unit_op},
-      {"advisory.answer", advisory_answer}, {"advisory.list", advisory_list}, {"advisory.policy", advisory_policy}};
+      {"advisory.answer", advisory_answer}, {"advisory.list", advisory_list}, {"advisory.policy", advisory_policy},
+      {"window.pin", window_pin}, {"window.unpin", window_unpin}};
   return t;
 }
 

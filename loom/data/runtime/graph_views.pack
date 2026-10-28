@@ -1427,6 +1427,21 @@
         "direction": "directed",
         "parent": "relation",
         "perspectives": []
+      },
+      "pinned_on": {
+        "label": {
+          "en": "pinned on",
+          "pl": "przypięte do"
+        },
+        "meaning": {
+          "en": "Source (any node or a representative of a concept: kind:<window kind>, layout:<id>, sentence:<text>) is pinned on target (a desktop desktop:<id>) - an icon of the desktop (R101 D1, PULPIT_R101 §4.3). Link metadata: order, pinned_at, label_override, glyph, address. Removing the link unpins (window.unpin); nothing else changes.",
+          "pl": "Źródło (dowolny węzeł albo reprezentant pojęcia: kind:<rodzaj okna>, layout:<id>, sentence:<zdanie>) jest przypięte do celu (pulpitu desktop:<id>) — ikona pulpitu (R101 D1, PULPIT_R101 §4.3). Metadane linku: order, pinned_at, label_override, glyph, address. Usunięcie linku odpina (window.unpin); nic poza tym się nie zmienia."
+        },
+        "direction": "directed",
+        "parent": "relation",
+        "perspectives": [
+          "pinned_on"
+        ]
       }
     },
     "node_kinds": {
@@ -1557,6 +1572,42 @@
         },
         "perspectives": [
           "environments"
+        ]
+      },
+      "desktop": {
+        "meaning": {
+          "en": "A desktop: the background window under every other (desktop:<id>); its icons are the nodes pinned on it (pinned_on).",
+          "pl": "Pulpit: okno tła pod wszystkimi innymi (desktop:<id>); jego ikony to węzły przypięte do niego (pinned_on)."
+        },
+        "perspectives": [
+          "pinned_on"
+        ]
+      },
+      "trash": {
+        "meaning": {
+          "en": "The trash (trash:): the reversible step before an irreversible delete (PULPIT_R101 §5; actions in D4).",
+          "pl": "Kosz (trash:): odwracalny krok przed nieodwracalnym kasowaniem (PULPIT_R101 §5; akcje w D4)."
+        },
+        "perspectives": [
+          "pinned_on"
+        ]
+      },
+      "window_kind": {
+        "meaning": {
+          "en": "A kind of window as a node (kind:<id>): the representative of a concept that has no row of its own, created at the first pin.",
+          "pl": "Rodzaj okna jako węzeł (kind:<id>): reprezentant pojęcia bez własnego wiersza, tworzony przy pierwszym przypięciu."
+        },
+        "perspectives": [
+          "pinned_on"
+        ]
+      },
+      "address": {
+        "meaning": {
+          "en": "A representative of any other address pinned on a desktop (an address prefix not described in node_addresses): kept, not refused.",
+          "pl": "Reprezentant każdego innego adresu przypiętego do pulpitu (prefiks nieopisany w node_addresses): zachowany, nie odrzucony."
+        },
+        "perspectives": [
+          "pinned_on"
         ]
       }
     },
@@ -1840,6 +1891,22 @@
           "edge_style": "line"
         },
         "source": "catalogue"
+      },
+      "pinned_on": {
+        "label": {
+          "en": "Pinned on the desktop",
+          "pl": "Przypięte do pulpitu"
+        },
+        "relations": [
+          "pinned_on"
+        ],
+        "direction": "in",
+        "hops": 1,
+        "node_filter": {},
+        "render": {
+          "layout": "grid",
+          "edge_style": "none"
+        }
       }
     },
     "unit_kinds": {
@@ -4721,6 +4788,122 @@
             "fov_deg": 70
           },
           "fov_deg": 55
+        }
+      }
+    },
+    "node_addresses": {
+      "note": {
+        "en": "R101 D1 (PULPIT_R101 §4.2): address prefixes of things that can be pinned on a desktop and the node kind of their representative row in the nodes table (label = the address, metadata.address = the address). The list is open (examples): a prefix not listed here is pinned as node kind `address`, never refused. same_as: the id form the address points at, when it is a real row.",
+        "pl": "R101 D1 (PULPIT_R101 §4.2): prefiksy adresów rzeczy, które można przypiąć do pulpitu, i rodzaj węzła ich reprezentanta w tabeli nodes (etykieta = adres, metadata.address = adres). Lista otwarta (przykłady): prefiks spoza listy przypina się jako węzeł rodzaju `address`, nigdy nie jest odrzucany. same_as: forma id, na którą adres wskazuje, gdy to prawdziwy wiersz."
+      },
+      "unknown_kind": "address",
+      "default_desktop": "desktop:main",
+      "prefixes": {
+        "desktop:": {
+          "node_kind": "desktop",
+          "label": {
+            "en": "Desktop",
+            "pl": "Pulpit"
+          }
+        },
+        "trash:": {
+          "node_kind": "trash",
+          "label": {
+            "en": "Trash",
+            "pl": "Kosz"
+          }
+        },
+        "kind:": {
+          "node_kind": "window_kind",
+          "label": {
+            "en": "Window kind",
+            "pl": "Rodzaj okna"
+          }
+        },
+        "conv:": {
+          "node_kind": "conversation",
+          "same_as": "c_",
+          "label": {
+            "en": "Conversation",
+            "pl": "Rozmowa"
+          }
+        },
+        "conversations:": {
+          "node_kind": "area",
+          "label": {
+            "en": "Conversations",
+            "pl": "Rozmowy"
+          }
+        },
+        "party:": {
+          "node_kind": "party",
+          "label": {
+            "en": "Party",
+            "pl": "Osoba"
+          }
+        },
+        "area:": {
+          "node_kind": "area",
+          "label": {
+            "en": "Area",
+            "pl": "Obszar"
+          }
+        },
+        "memory:": {
+          "node_kind": "memory",
+          "label": {
+            "en": "Memory entry",
+            "pl": "Wpis pamięci"
+          }
+        },
+        "layout:": {
+          "node_kind": "layout",
+          "label": {
+            "en": "Layout",
+            "pl": "Układ"
+          }
+        },
+        "window:": {
+          "node_kind": "window",
+          "label": {
+            "en": "Window",
+            "pl": "Okno"
+          }
+        },
+        "sentence:": {
+          "node_kind": "sentence",
+          "label": {
+            "en": "Sentence",
+            "pl": "Zdanie"
+          }
+        },
+        "action:": {
+          "node_kind": "action",
+          "label": {
+            "en": "Action",
+            "pl": "Akcja"
+          }
+        },
+        "artifact:": {
+          "node_kind": "artifact",
+          "label": {
+            "en": "Artifact",
+            "pl": "Artefakt"
+          }
+        },
+        "settings:": {
+          "node_kind": "settings_group",
+          "label": {
+            "en": "Settings group",
+            "pl": "Grupa ustawień"
+          }
+        },
+        "model:": {
+          "node_kind": "model",
+          "label": {
+            "en": "Model",
+            "pl": "Model"
+          }
         }
       }
     }

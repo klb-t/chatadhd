@@ -17757,6 +17757,208 @@
           "en": "The block is saved.",
           "pl": "Blok jest zapisany."
         }
+      },
+      "window.pin": {
+        "id": "window.pin",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Pin on the desktop",
+        "description": "Pins a thing on a desktop: writes the graph link pinned_on from the thing's node to the desktop node (R101 D1, PULPIT_R101 §4.3). A thing that is only an address (a kind of window, a sentence, a layout) gets a representative node at the first pin. Reversible: window.unpin removes the link.",
+        "why": {
+          "pl": "Przypina rzecz do pulpitu: zapisuje w grafie relację pinned_on od węzła rzeczy do węzła pulpitu; odwracalne przez odpięcie."
+        },
+        "labels": {
+          "pl": "Przypnij do pulpitu"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "target",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "What to pin: an address of the graph (conv:<id>, kind:chat, party:self, trash:, a node id n_…); an unknown prefix is kept, not refused",
+              "pl": "Co przypiąć: adres w grafie (conv:<id>, kind:chat, party:self, trash:, id węzła n_…); nieznany prefiks jest zachowany, nie odrzucony"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "desktop",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The desktop (desktop:<id>); empty = graph_views.pack node_addresses.default_desktop (preset desktop:main)",
+              "pl": "Pulpit (desktop:<id>); puste = graph_views.pack node_addresses.default_desktop (preset desktop:main)"
+            },
+            "has_default": true,
+            "edit": "free_text"
+          },
+          {
+            "name": "label",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "A label of the icon instead of the node's own (label_override)",
+              "pl": "Podpis ikony zamiast etykiety węzła (label_override)"
+            },
+            "has_default": true,
+            "edit": "free_text"
+          }
+        ],
+        "examples": {
+          "en": [
+            "pin conv:c_0123456789ab on the desktop"
+          ],
+          "pl": [
+            "przypnij conv:c_0123456789ab do pulpitu"
+          ]
+        },
+        "positional_arg": "target",
+        "result_text": {
+          "en": "It is pinned on the desktop.",
+          "pl": "Jest przypięte do pulpitu."
+        }
+      },
+      "window.unpin": {
+        "id": "window.unpin",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Unpin from the desktop",
+        "description": "Takes a thing off a desktop: removes the graph link pinned_on from the thing's node to the desktop node and nothing else (the node stays; pinning again restores the icon). The step through the trash (§5) is D4.",
+        "why": {
+          "pl": "Zdejmuje rzecz z pulpitu: usuwa relację pinned_on i nic więcej; ponowne przypięcie ją przywraca."
+        },
+        "labels": {
+          "pl": "Odepnij od pulpitu"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "target",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "What to pin: an address of the graph (conv:<id>, kind:chat, party:self, trash:, a node id n_…); an unknown prefix is kept, not refused",
+              "pl": "Co przypiąć: adres w grafie (conv:<id>, kind:chat, party:self, trash:, id węzła n_…); nieznany prefiks jest zachowany, nie odrzucony"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "desktop",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The desktop (desktop:<id>); empty = graph_views.pack node_addresses.default_desktop (preset desktop:main)",
+              "pl": "Pulpit (desktop:<id>); puste = graph_views.pack node_addresses.default_desktop (preset desktop:main)"
+            },
+            "has_default": true,
+            "edit": "free_text"
+          }
+        ],
+        "examples": {
+          "en": [
+            "unpin kind:chat from the desktop"
+          ],
+          "pl": [
+            "odepnij kind:chat od pulpitu"
+          ]
+        },
+        "positional_arg": "target",
+        "result_text": {
+          "en": "It is no longer pinned on the desktop.",
+          "pl": "Nie jest już przypięte do pulpitu."
+        }
+      },
+      "desktop.show": {
+        "id": "desktop.show",
+        "kind": "atomic",
+        "status": "planned",
+        "planned_reason": {
+          "en": "The desktop belongs to the client that draws it (the web page or the Android shell); this runtime arranges no windows itself. Runnable for a client that declares arranges_windows (R101 D1); only the client that asked carries it out.",
+          "pl": "Pulpit należy do klienta, który go rysuje (strony albo powłoki Androida); ten runtime sam nie układa okien. Wykonywalna dla klienta, który deklaruje arranges_windows (R101 D1); wykonuje ją tylko klient, który pytał."
+        },
+        "title": "Show the desktop",
+        "description": "Minimizes every shown window so the desktop under them is seen; one journal entry, so layout.undo brings them back (R101, PULPIT_R101 §7; the page's Ctrl+Shift+D).",
+        "why": {
+          "pl": "Zwija wszystkie widoczne okna, żeby było widać pulpit; jeden wpis dziennika, cofane."
+        },
+        "labels": {
+          "pl": "Pokaż pulpit"
+        },
+        "inputs": [],
+        "outputs": [],
+        "requires": [],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.1,
+        "confidence": 0.9,
+        "effects": {
+          "reads_only": false,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "client",
+        "client": {
+          "capability": "arranges_windows",
+          "prompt": {
+            "en": "Show the desktop on this device.",
+            "pl": "Pokaż pulpit na tym urządzeniu."
+          },
+          "expects": []
+        },
+        "params": [],
+        "result_text": {
+          "en": "The desktop is shown; undo brings the windows back.",
+          "pl": "Widać pulpit; cofnięcie przywraca okna."
+        }
       }
     }
   },
