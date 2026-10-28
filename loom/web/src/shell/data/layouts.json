@@ -595,8 +595,8 @@
       "default_bytes": 0
     },
     "cost_estimate_note": "W10: the estimate shown as evidence of many_windows - JS heap per mounted window measured by e2e/windows-perf-native.mjs (a dated observation of one machine and browser, never a constraint; WebView on a phone is not measured here).",
-    "restore_frames": 30,
-    "restore_frames_note": "W10: for how many animation frames a remounted window tries to restore its kept scroll (content that loads late); any number ≥ 0.",
+    "restore_frames": 300,
+    "restore_frames_note": "W10: for how many animation frames (≈ 5 s at 60 Hz) a remounted window tries to restore its kept scroll while its content loads (a panel that fetches its data first shows „Wczytuję…”); it stops at once when every position is restored or the person touches the window. Any number ≥ 0.",
     "advisories": {
       "many_windows": {
         "text": {

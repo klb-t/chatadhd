@@ -1305,6 +1305,121 @@
         }
       },
       {
+        "key": "window_keep_mounted",
+        "scope": "config",
+        "group": "ui",
+        "type": "string",
+        "has_default": false,
+        "on_unlisted": "warn",
+        "values": [
+          {
+            "value": "visible",
+            "preset": true,
+            "meaning": {
+              "pl": "Zamontowane są tylko okna widoczne teraz; ukryte (nieaktywna zakładka, zwinięte, czekające w przełączniku) są odmontowane i wracają ze stanem z state_keys (preset).",
+              "en": "Only the windows drawn now are mounted; hidden ones (inactive tab, minimized, waiting in the switcher) are unmounted and come back with their state_keys (the preset)."
+            }
+          },
+          {
+            "value": "all",
+            "meaning": {
+              "pl": "Każde okno układu zostaje zamontowane, także ukryte: powrót jest natychmiastowy, pamięć rośnie z liczbą okien.",
+              "en": "Every window of the layout stays mounted, hidden ones too: coming back is instant, memory grows with the number of windows."
+            }
+          },
+          {
+            "value": "recent:3",
+            "meaning": {
+              "pl": "Przykład kształtu recent:<n>: widoczne plus n ostatnio widzianych ukrytych (dowolne n ≥ 0).",
+              "en": "An example of the shape recent:<n>: the drawn ones plus the n most recently drawn hidden ones (any n ≥ 0)."
+            }
+          }
+        ],
+        "description": "Which windows stay mounted while hidden (OKNA §8.3, W10, web shell/windows/keep.ts): visible = only the drawn ones (hidden windows unmount and come back with the state their kind declares in window_kinds.json state_keys), all = every window of the layout, recent:<n> = the drawn ones plus the n most recently drawn hidden ones (any n ≥ 0). An unknown value is used as the preset of the device class with the advisory window_keep_mounted_unknown. Unset = the preset per device class in the page's layouts.json window_mount.keep_mounted (visible on every class today). There is no upper number of windows: many_windows is an advisory.",
+        "status": {
+          "state": "implemented",
+          "by": "M1-OKNA-W10",
+          "reader": "web shell/windows/keep.ts (keepPolicy, keptHidden) via App.tsx → WindowHost/DockTree",
+          "reason": {
+            "pl": "Strona czyta to pole przy każdej zmianie układu okien.",
+            "en": "The page reads this field at every change of the window layout."
+          },
+          "today": {
+            "pl": "Ukryte okna są odmontowane i wracają ze swoim stanem (przewinięcie, przełączniki, kamera grafu).",
+            "en": "Hidden windows are unmounted and come back with their state (scroll, switches, the graph camera)."
+          }
+        },
+        "human": {
+          "label": {
+            "pl": "Które okna trzymać w pamięci, gdy są ukryte",
+            "en": "Which windows to keep in memory while hidden"
+          },
+          "why": {
+            "pl": "Okno ukryte (zakładka w tle, zwinięte) można trzymać gotowe w pamięci albo odłożyć i odtworzyć przy powrocie; pierwsze jest szybsze, drugie oszczędza pamięć telefonu.",
+            "en": "A hidden window (a tab behind, minimized) can be kept ready in memory or put away and rebuilt when it comes back; the first is faster, the second saves the phone's memory."
+          },
+          "effect": {
+            "pl": "visible: tylko widoczne; all: wszystkie; recent:<n>: widoczne i n ostatnich. Działa od następnej zmiany okien.",
+            "en": "visible: only the drawn ones; all: every one; recent:<n>: the drawn ones and the n last. Takes effect at the next change of windows."
+          },
+          "levels": [
+            "person"
+          ],
+          "group": "interfejs",
+          "subgroup": "nawigator",
+          "flows": [],
+          "when_unset": {
+            "pl": "tylko widoczne (preset urządzenia)",
+            "en": "only the drawn ones (the device preset)"
+          }
+        }
+      },
+      {
+        "key": "window_mounted_soft",
+        "scope": "config",
+        "group": "ui",
+        "type": "integer",
+        "has_default": false,
+        "description": "From how many mounted windows the non-blocking advisory many_windows asks (OKNA §4.4, §8.3, W10), with the count, the policy and the estimated memory from a dated measurement as evidence; its button „Odstaw niewidoczne” minimizes the floating windows that are not focused (one undoable step). Any integer ≥ 0. Unset = the preset per device class in the page's layouts.json window_mount.mounted_soft (phone 6, desktop 12). A threshold of advice, never a cap: nothing is refused or unmounted by itself.",
+        "status": {
+          "state": "implemented",
+          "by": "M1-OKNA-W10",
+          "reader": "web shell/windows/keep.ts (mountAdvisories) via App.tsx",
+          "reason": {
+            "pl": "Strona czyta to pole przy każdej zmianie układu okien.",
+            "en": "The page reads this field at every change of the window layout."
+          },
+          "today": {
+            "pl": "Przy 7 oknach na telefonie i 13 na komputerze pojawia się podpowiedź z szacunkiem pamięci.",
+            "en": "At 7 windows on a phone and 13 on a computer an advisory with an estimate of memory appears."
+          }
+        },
+        "human": {
+          "label": {
+            "pl": "Od ilu okien podpowiadać o pamięci",
+            "en": "From how many windows to advise about memory"
+          },
+          "why": {
+            "pl": "Wiele otwartych okien zużywa pamięć, zwłaszcza na telefonie; ta liczba mówi, kiedy o tym wspomnieć.",
+            "en": "Many open windows use memory, especially on a phone; this number says when to mention it."
+          },
+          "effect": {
+            "pl": "Podpowiedź nic nie zamyka sama: [Zostaw], [Nie pytaj więcej] albo [Odstaw niewidoczne]. Działa od następnej zmiany okien.",
+            "en": "The advisory closes nothing by itself: [Keep], [Don't ask again] or [Park the others]. Takes effect at the next change of windows."
+          },
+          "levels": [
+            "person"
+          ],
+          "group": "interfejs",
+          "subgroup": "nawigator",
+          "flows": [],
+          "when_unset": {
+            "pl": "preset urządzenia (telefon 6, komputer 12)",
+            "en": "the device preset (phone 6, computer 12)"
+          }
+        }
+      },
+      {
         "key": "artifact_html_scripts",
         "scope": "config",
         "group": "ui",

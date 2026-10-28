@@ -43,8 +43,14 @@ export function KeptScroll({ win, className, children }: { win: { id: string; ki
       }
       if (left && frames-- > 0) raf = requestAnimationFrame(tryRestore);
     };
-    if (spots.length) tryRestore();
-    return () => { cancelAnimationFrame(raf); pageStore.keep(win, { scroll: spotsOf(root) }); };
+    // a window drawn hidden (display: none, kept mounted) has no scroll to set or to read: its kept state waits for a drawn mount
+    const drawn = () => root.getClientRects().length > 0;
+    // the person touching the window takes over: restoring stops (no fight with a scroll they start)
+    const stop = () => { frames = 0; cancelAnimationFrame(raf); };
+    const evs = ["wheel", "touchstart", "pointerdown", "keydown"] as const;
+    evs.forEach((e) => root.addEventListener(e, stop, { passive: true }));
+    if (spots.length && drawn()) tryRestore();
+    return () => { evs.forEach((e) => root.removeEventListener(e, stop)); cancelAnimationFrame(raf); if (drawn()) pageStore.keep(win, { scroll: spotsOf(root) }); };
   }, [win.id]);   // eslint-disable-line react-hooks/exhaustive-deps
   return <div ref={ref} className={className} data-kept-scroll={on ? "1" : undefined}>{children}</div>;
 }

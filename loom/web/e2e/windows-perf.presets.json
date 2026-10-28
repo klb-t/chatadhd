@@ -1,0 +1,16 @@
+{
+  "schema": "loom.windows_perf/1",
+  "note": "W10 (OKNA §8.3): presets of the measurement harness e2e/windows-perf-native.mjs. Window counts and the panels opened are examples of the space (open lists; LOOM_PERF_COUNTS=1,4,8,16,32 runs other counts). The numbers it prints are dated observations of one machine and one browser (headless Chromium here, not WebView on a phone). `gross` are thresholds of a gross regression only: crossing one prints a warning and fails only with LOOM_PERF_STRICT=1 (report-only by default, never a flaky gate).",
+  "counts": [1, 4, 8, 16],
+  "policies": ["visible", "all"],
+  "viewport": { "width": 1280, "height": 800 },
+  "panels": ["settings", "logs", "memory", "operations", "methods", "analysis", "perspectives", "navigator", "import", "context", "onboarding", "user-knowledge", "graph-entry", "view-engine", "graph"],
+  "switch_rounds": 3,
+  "gross": {
+    "heap_mb_per_window": 40,
+    "open_ms": 3000,
+    "switch_ms": 2000,
+    "tti_ms": 20000,
+    "nodes_per_window": 20000
+  }
+}

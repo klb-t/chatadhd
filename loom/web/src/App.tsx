@@ -57,7 +57,7 @@ import { ARTIFACTS, OPEN_ARTIFACT_EVENT, artifactOf, scriptsOn } from "./shell/a
 import { runArrangeStep, STEP_DATA } from "./shell/windows/steps";
 import { bindingsOf, paramOfWord, paramWord, paramsOfKind } from "./shell/windows/coupling";
 import { ARRANGE, arrangeWindow } from "./shell/windows/arrange";
-import { keepPolicy, keptHidden, mountAdvisories, mountedIds, shownIds, touchRecent } from "./shell/windows/keep";
+import { MOUNT, keepPolicy, keptHidden, mountAdvisories, mountedIds, shownIds, touchRecent } from "./shell/windows/keep";
 import { usePruneKept } from "./shell/windows/useKeep";
 
 type Theme = "dark" | "amoled";
@@ -605,8 +605,10 @@ export default function App() {
     const { policy, unknown } = keepPolicy(config.window_keep_mounted, deviceClass);
     recentRef.current = touchRecent(recentRef.current, shownIds(win.layout, mountShown), win.layout);
     const keep = keptHidden(win.layout, policy, recentRef.current, mountShown);
-    return { keep, advisories: mountAdvisories(win.layout, mountedIds(win.layout, policy, recentRef.current, mountShown), deviceClass, policy, unknown) };
-  }, [config.window_keep_mounted, deviceClass, win.layout, mountShown]);
+    const soft = config.window_mounted_soft;
+    const data = typeof soft === "number" && Number.isFinite(soft) ? { ...MOUNT, mounted_soft: { [deviceClass]: soft } } : MOUNT;
+    return { keep, advisories: mountAdvisories(win.layout, mountedIds(win.layout, policy, recentRef.current, mountShown), deviceClass, policy, unknown, data) };
+  }, [config.window_keep_mounted, config.window_mounted_soft, deviceClass, win.layout, mountShown]);
   usePruneKept(win.layout);
   const advice = useMemo(() => {
     const more = [...styleAdvice, ...mount.advisories];
