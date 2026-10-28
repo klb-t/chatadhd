@@ -273,6 +273,19 @@ textarea { resize: vertical; }
 .win-menu { display: flex; flex-direction: column; padding: 4px; border-bottom: 1px solid var(--border); background: var(--card); }
 .win-menu > button { text-align: start; min-height: 44px; }
 .win-float-layer { position: fixed; inset: 0; pointer-events: none; z-index: 16; }
+/* R101 P0: the desktop layer under the windows (always mounted; hidden under a full cover; floating windows (z 16) and chips (z 40) above it) */
+.desktop-layer { position: fixed; inset: 0; z-index: 8; overflow: auto; background: var(--bg); color: var(--text, inherit); }
+.desktop-layer[hidden] { display: none; }
+.desktop-ended { z-index: 100; }
+.desktop-content { max-width: 720px; margin: 0 auto; padding: 24px 16px 96px; display: flex; flex-direction: column; gap: 16px; }
+.desktop-title { margin: 0; font-size: 20px; }
+.desktop-hint { margin: 0; opacity: 0.75; }
+.desktop-section h3 { margin: 0 0 8px; font-size: 15px; }
+.desktop-items { display: flex; flex-wrap: wrap; gap: 8px; }
+.desktop-items button, .desktop-emergency, .desktop-sentence button { min-height: 44px; padding: 8px 12px; border-radius: 10px; border: 1px solid var(--border); background: var(--card); color: inherit; }
+.desktop-items button[disabled] { opacity: 0.45; }
+.desktop-sentence { display: flex; gap: 8px; }
+.desktop-sentence input { flex: 1; min-width: 0; min-height: 44px; padding: 8px 12px; border-radius: 10px; border: 1px solid var(--border); background: var(--card); color: inherit; }
 .win-float { position: absolute; pointer-events: auto; display: flex; }
 .win-drop { position: fixed; z-index: 30; pointer-events: none; background: color-mix(in srgb, var(--accent, #4a8cff) 25%, transparent); border: 2px solid var(--accent, #4a8cff); border-radius: 6px; }
 .dock-grip { flex: 0 0 6px; background: var(--border); position: relative; touch-action: none; z-index: 1; }

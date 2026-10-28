@@ -60,6 +60,11 @@ import { bindingsOf, paramOfWord, paramWord, paramsOfKind } from "./shell/window
 import { ARRANGE, arrangeWindow } from "./shell/windows/arrange";
 import { MOUNT, keepPolicy, keptHidden, mountAdvisories, mountedIds, shownIds, touchRecent } from "./shell/windows/keep";
 import { usePruneKept } from "./shell/windows/useKeep";
+import Desktop, { DesktopEnded } from "./shell/windows/Desktop";
+import { DESKTOP, closedLast, desktopCover, desktopPaths, desktopSettings, kindEntries, lastWindowClose, openFromDesktop, restoreFromDesktop, showDesktop, type KindTarget } from "./shell/windows/desktop";
+import { handSentence } from "./shell/desktop-sentence";
+import { oneEntry, comboOf } from "./shell/windows/steps";
+import { apply as applyOp } from "./shell/windows/model";
 
 type Theme = "dark" | "amoled";
 // The panels are one list (shell/panels.ts): the + menu checks the panel an entry names against it.
@@ -617,13 +622,15 @@ export default function App() {
   const shellWindows = useMemo(() => {
     const front = visibleId(win.layout);
     return {
-      entries: switcherEntries(win.layout).map(w => ({ id: w.id, label: windowLabel(w.id), front: w.id === front, closable: typeof w.params?.panel === "string" })),
+      // R101 P0: every window closes from the switcher (the chat too): the desktop stays under the last one
+      entries: switcherEntries(win.layout).map(w => ({ id: w.id, label: windowLabel(w.id), front: w.id === front, closable: true })),
       focus: (id: string) => moveTo(focusWindow(winRef.current, id)),
       arrangeMenu: (ARRANGE.menu ?? []).map(m => ({ id: m.id, label: (uiLanguage === "pl" ? m.label.pl : m.label.en) ?? m.id, icon: m.icon })),
       arrange: (id: string, how: string) => moveTo(arrangeWindow(winRef.current, id, how)),
       close: (id: string) => {
         const w = winRef.current.layout.windows.find(x => x.id === id);
         if (w && typeof w.params?.panel === "string") moveTo(closeWindows(winRef.current, { target: { panel: String(w.params.panel) } }).state);
+        else if (w) moveTo(oneEntry(winRef.current, applyOp(winRef.current, { op: "close", id }, WINDOW_CTX).state, "close"));
       },
       layouts: shellLayouts,
       style: windowStyleMenu, setStyle: setWindowStyle,
@@ -647,6 +654,47 @@ export default function App() {
     return { keep, advisories: mountAdvisories(win.layout, mountedIds(win.layout, policy, recentRef.current, mountShown), deviceClass, policy, unknown, data) };
   }, [config.window_keep_mounted, config.window_mounted_soft, deviceClass, win.layout, mountShown]);
   usePruneKept(win.layout);
+  // R101 P0 (PULPIT §7, §10, §12): the desktop under the windows - always mounted, seen where no window covers it; content from data
+  // (shell/data/desktop.json) and settings (desktop_sections, desktop_emergency_path, last_window_close).
+  const deskSettings = useMemo(() => desktopSettings(config), [config.desktop_sections, config.desktop_emergency_path]);   // eslint-disable-line react-hooks/exhaustive-deps
+  const deskEntries = useMemo(() => kindEntries((id) => Object.prototype.hasOwnProperty.call(PANEL_LABELS, id), win.layout.id, uiLanguage), [win.layout.id, uiLanguage]);
+  const deskCover = desktopCover(win.layout, mountShown);
+  const deskLayouts = useMemo(() => ({ shipped: shellLayouts.shipped.map(l => ({ id: l.id, label: l.label })), own: shellLayouts.own.map(l => ({ id: l.id, label: l.label })) }), [shellLayouts]);
+  const deskPaths = useMemo(() => desktopPaths(win.layout, deskSettings, deskEntries, [...deskLayouts.shipped, ...deskLayouts.own].map(l => l.id)), [win.layout, deskSettings, deskEntries, deskLayouts]);
+  const deskOpen = useCallback((target: KindTarget) => moveTo(openFromDesktop(winRef.current, target, deviceClassOf(window.innerWidth))), [moveTo]);
+  const deskLoad = useCallback((id: string, own: boolean) => {
+    if (!own && winRef.current.layout.id === id && ownActive === null) layoutOps.reset(); else layoutOps.apply(own ? (readNamed(configRef.current.window_layouts).find(l => l.id === id)?.label ?? id) : id);
+    setLayoutKnown(true);
+  }, [layoutOps, ownActive]);
+  const [ended, setEnded] = useState(false);
+  const lastLayoutRef = useRef(win.layout);
+  useEffect(() => {
+    const before = lastLayoutRef.current; lastLayoutRef.current = win.layout;
+    if (!closedLast(before, win)) return;
+    const what = lastWindowClose(config.last_window_close);
+    if (what.do === "close_app") {
+      setEnded(true);
+      const shell = (window as unknown as { LoomBridge?: { finish?: () => void } }).LoomBridge;
+      try { if (typeof shell?.finish === "function") shell.finish(); else window.close(); } catch (e) { console.debug("last_window_close: the host refused to close", e); }
+    } else if (what.do === "reopen") { const e = deskEntries.find(x => x.kind === what.kind); if (e?.target) deskOpen(e.target); }
+    else if (what.do === "layout") deskLoad(what.id, readNamed(configRef.current.window_layouts).some(l => l.id === what.id));
+    else if ("unknown" in what) console.debug(`last_window_close: unknown value ${what.unknown}, the desktop stays`);
+  }, [win]);   // eslint-disable-line react-hooks/exhaustive-deps
+  // the keys of desktop.json (preset ctrl+shift+d: show the desktop = every window minimized, one journal entry)
+  useEffect(() => {
+    const on = (e: KeyboardEvent) => {
+      const what = DESKTOP.keys?.[comboOf(e)];
+      if (what !== "show_desktop") return;
+      const tg = e.target as HTMLElement | null;
+      if (tg && (tg.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(tg.tagName))) return;
+      e.preventDefault(); moveTo(showDesktop(winRef.current));
+    };
+    window.addEventListener("keydown", on);
+    return () => window.removeEventListener("keydown", on);
+  }, [moveTo]);
+  const desktop = <Desktop layout={win.layout} cover={deskCover} lang={uiLanguage} settings={deskSettings} entries={deskEntries} paths={deskPaths} layouts={deskLayouts}
+    title={windowLabel} openKind={deskOpen} restore={(id) => moveTo(restoreFromDesktop(winRef.current, id))} loadLayout={deskLoad}
+    sentence={(text) => { deskOpen({ chat: true }); handSentence(text, DESKTOP.sentence.send !== false); }} enableEmergency={() => saveSetting("desktop_emergency_path", true)} />;
   const advice = useMemo(() => {
     const more = [...styleAdvice, ...mount.advisories];
     return more.length ? [...coupling.advisories, ...more] : coupling.advisories;
@@ -822,6 +870,8 @@ export default function App() {
   return (
     <ShellText.Provider value={t}><ShellLanguage.Provider value={uiLanguage}>
       {host}
+      {desktop}
+      {ended && <DesktopEnded lang={uiLanguage} back={() => setEnded(false)} />}
       {announce}
       {fullWindow && knowledgeOpen && <>
         <div className="drawer-backdrop" onClick={() => setKnowledgeOpen(false)} />

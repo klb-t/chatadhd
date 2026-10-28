@@ -1,0 +1,39 @@
+{
+ "schema": "loom.shell_desktop/1",
+ "note": "R101 P0 (PULPIT_R101_2026-10-28 §7, §8, §10, §12): the desktop layer under the windows - always mounted, drawn where no window covers it. Everything here is a preset (CLAUDE.md: lists are examples): the sections and their order (setting desktop_sections overrides), the texts, the last_window_close values the page knows (setting last_window_close, an open value) and the emergency path (setting desktop_emergency_path). An unknown section id is skipped with the advisory desktop_section_unknown, never an error. P0 is the mechanism only: icons, wallpaper, the graph under the windows are D1-D10.",
+ "sections": ["sentence", "restore", "open", "layouts"],
+ "sections_known": {
+  "sentence": { "opens_window": true, "note": "a sentence goes to the chat composer of a chat window (restored or opened), the same route as typing it there" },
+  "restore": { "opens_window": true, "note": "minimized windows of the layout, a tap restores one" },
+  "open": { "opens_window": true, "note": "every kind of window_kinds.json; a planned kind or a kind the page cannot open by itself yet is shown greyed with its reason, never hidden" },
+  "layouts": { "opens_window": true, "note": "the shipped layouts and the person's saved ones (W5)" }
+ },
+ "sentence": { "send": true, "note": "true: the sentence is sent from the composer at once; false: it waits in the composer" },
+ "emergency": { "kind": "chat", "note": "the one path kept when the sections leave none (B3); setting desktop_emergency_path=false switches it off, the desktop then says what is missing (advisory desktop_no_path)" },
+ "last_window_close": {
+  "preset": "desktop",
+  "aliases": { "exit": "close_app" },
+  "note": "open value: desktop | close_app | reopen:<kind> | layout:<id> [examples]; an unknown value is read as desktop with the advisory last_window_close_unknown"
+ },
+ "keys": { "ctrl+shift+d": "show_desktop" },
+ "words": {
+  "title": { "pl": "Pulpit", "en": "Desktop" },
+  "hint": { "pl": "Tu zawsze możesz otworzyć nowe okno.", "en": "From here you can always open a new window." },
+  "sentence_label": { "pl": "Napisz, co chcesz zrobić", "en": "Write what you want to do" },
+  "sentence_send": { "pl": "Wyślij", "en": "Send" },
+  "restore": { "pl": "Zminimalizowane okna", "en": "Minimized windows" },
+  "open": { "pl": "Otwórz nowe okno", "en": "Open a new window" },
+  "layouts": { "pl": "Układy", "en": "Layouts" },
+  "layouts_own": { "pl": "Twoje", "en": "Yours" },
+  "unavailable_cannot_open": { "pl": "Ten rodzaj okna otwiera się dziś tylko z innego okna; strona nie umie go jeszcze otworzyć sama.", "en": "This kind of window opens today only from another window; the page cannot open it by itself yet." },
+  "emergency": { "pl": "Otwórz okno czatu", "en": "Open a chat window" },
+  "no_path": { "pl": "Na pulpicie nie ma teraz żadnej drogi do otwarcia okna, bo wyłączono sekcje i drogę awaryjną. Czy to celowe?", "en": "The desktop has no way to open a window now: the sections and the emergency path are switched off. Is that intended?" },
+  "no_path_fix": { "pl": "Przywróć drogę awaryjną", "en": "Bring back the emergency path" },
+  "section_unknown": { "pl": "Nieznana sekcja pulpitu, pominięta: {id}.", "en": "Unknown desktop section, skipped: {id}." },
+  "last_close_unknown": { "pl": "Nieznana wartość „po zamknięciu ostatniego okna”: {value}; zostaje pulpit.", "en": "Unknown value of “after the last window closes”: {value}; the desktop stays." },
+  "ended_title": { "pl": "ChatADHD zamknięty", "en": "ChatADHD closed" },
+  "ended_text": { "pl": "Zamknięto ostatnie okno, a ustawienie mówi: zamknij program. Przeglądarka może odmówić zamknięcia karty, której nie otworzył skrypt - wtedy zamknij ją sam.", "en": "The last window was closed and the setting says: close the program. The browser may refuse to close a tab no script opened - then close it yourself." },
+  "ended_back": { "pl": "Wróć na pulpit", "en": "Back to the desktop" },
+  "keep": { "pl": "Zostaw", "en": "Keep it" }
+ }
+}

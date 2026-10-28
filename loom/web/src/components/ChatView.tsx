@@ -37,6 +37,7 @@ import ArtifactFrame from "../shell/artifacts/ArtifactFrame";
 import { OPEN_ARTIFACT_EVENT, fileNameOf, formatById, pickArtifact, splitArtifacts } from "../shell/artifacts/artifacts";
 import { downloadText } from "../shell/artifacts/ArtifactFrame";
 import { recordDraft, recordRequest, settleRequest } from "../shell/last-request";
+import { DESKTOP_SENTENCE_EVENT, takeSentence } from "../shell/desktop-sentence";
 import { projectImportedMessage } from "../content/imported-message";
 import ConversationBranches, { conversationBranchPath } from "./ConversationBranches";
 import { parseCandidateChannels, readChatSettings, storedPlan, writeChatSettings } from "../context/chat-settings";
@@ -901,6 +902,15 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
   }, [input, attachments, switches, composedMenu, filesWithAction, restoredChips, keepNewConversationModel, t, stream, convId, creating, gate, shownModel, onConversationCreated, refreshMessages, clientSession, routeIssueCatalog.feature, usageCatalog.feature,
     useKnowledge, contextQuery, contextProject, contextTargets, contextRun,
     contextLanguage, contextBudget, contextHops, contextDetail, usePlan, planDraft, includeMemory, includeGraphMemory, includeHistory, traceContext, runProfileOperation, onMessagesChanged, supports, channels, scanLimit, counterEvidence, lexicalShadow, branchLeaf, requestOverride, gate.blocked, gateTexts.blocked, gateTexts.emptyAnswer, gateTexts.streamEnded]);
+  // R101 P0: a sentence written on the desktop comes here (shell/desktop-sentence.ts) and goes the composer's own route
+  const [handed, setHanded] = useState(false);
+  useEffect(() => {
+    const take = () => { const p = takeSentence(); if (p) { setInput(p.text); recordDraft(p.text, convId ?? null); if (p.send) setHanded(true); } };
+    take();
+    window.addEventListener(DESKTOP_SENTENCE_EVENT, take);
+    return () => window.removeEventListener(DESKTOP_SENTENCE_EVENT, take);
+  }, []);   // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { if (handed && input.trim() && supports("chat.send") && !stream) { setHanded(false); send("send"); } }, [handed, input, send, supports, stream]);
 
   // The queued send, each time what it waits for changes: sent once when nothing waits any more, said and kept when the conversation did not load,
   // dropped (the text stays) when the person went to another conversation.
