@@ -6089,7 +6089,18 @@
    "theme": "owner_requirements",
    "theme_inferred": false,
    "understanding": {
-    "state": "none"
+    "state": "corrected",
+    "history": [
+     {
+      "state": "corrected",
+      "by": "owner",
+      "date": "2026-10-28",
+      "text": "„niepotrzebnie ta metryka standardowo po odpowiedzi nie będziemy komplikować” — bez metryki wartości; informacja o braku logowania i możliwej utracie rozmowy standardowo po pierwszej odpowiedzi."
+     }
+    ],
+    "corrected_text": "„niepotrzebnie ta metryka standardowo po odpowiedzi nie będziemy komplikować” — bez metryki wartości; informacja o braku logowania i możliwej utracie rozmowy standardowo po pierwszej odpowiedzi.",
+    "by": "owner",
+    "date": "2026-10-28"
    },
    "quotes": [
     {

@@ -1,6 +1,20 @@
 {
  "schema": "loom.spec.understanding/1",
  "items": {
+  "s_006a12993c58": {
+   "state": "corrected",
+   "history": [
+    {
+     "state": "corrected",
+     "by": "owner",
+     "date": "2026-10-28",
+     "text": "„niepotrzebnie ta metryka standardowo po odpowiedzi nie będziemy komplikować” — bez metryki wartości; informacja o braku logowania i możliwej utracie rozmowy standardowo po pierwszej odpowiedzi."
+    }
+   ],
+   "corrected_text": "„niepotrzebnie ta metryka standardowo po odpowiedzi nie będziemy komplikować” — bez metryki wartości; informacja o braku logowania i możliwej utracie rozmowy standardowo po pierwszej odpowiedzi.",
+   "by": "owner",
+   "date": "2026-10-28"
+  },
   "s_0f005a5e98e8": {
    "state": "approved",
    "history": [
