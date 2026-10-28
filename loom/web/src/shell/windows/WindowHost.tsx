@@ -13,7 +13,8 @@ import type { Rect, WState, Win } from "./model";
 import { baseWindow, visibleOverlay } from "./session";
 import DockTree from "./DockTree";
 import { GESTURES } from "./steps";
-import { dockView, dropZone, type Box, type Zone } from "./dock";
+import { dockView, dropZone, type Box, type DockNode, type Zone } from "./dock";
+import { KeptScroll } from "./useKeep";
 
 export interface ArrangeHandlers {
   /** The entries of the menu ⋯ of a window (data: layouts.json → window_arrange.menu). */
@@ -60,6 +61,8 @@ export interface WindowHostProps {
   arrange?: ArrangeHandlers;
   /** W4: the advisory chips (non-blocking), drawn over the layout. */
   chips?: ReactNode;
+  /** W10: hidden windows kept mounted (keep.ts keptHidden under window_keep_mounted); drawn hidden, so they keep their live state. */
+  keep?: ReadonlySet<string>;
 }
 
 type DragStart = (w: Win, e: PointerEvent<HTMLDivElement>) => void;
@@ -138,12 +141,12 @@ function WindowFrame({ w, title, a, children, floating, onDrag }: { w: Win; titl
           ))}
         </div>
       )}
-      <div className="win-body">{children}</div>
+      <KeptScroll win={w} className="win-body">{children}</KeptScroll>
     </section>
   );
 }
 
-export default function WindowHost({ state, renderWindow, renderOverlay, grid, renderDocked, shown, title, onActivate, renderPanel, arrange, chips }: WindowHostProps) {
+export default function WindowHost({ state, renderWindow, renderOverlay, grid, renderDocked, shown, title, onActivate, renderPanel, arrange, chips, keep }: WindowHostProps) {
   const l = state.layout;
   const name = title ?? ((w: Win) => w.kind);
   const [drop, setDrop] = useState<Drop | null>(null);
@@ -212,10 +215,22 @@ export default function WindowHost({ state, renderWindow, renderOverlay, grid, r
   ) : null;
   const zone = drop ? zoneBox(drop) : null;
   const dropNode = zone && drop ? <div className="win-drop" data-testid="drop-zone" data-zone={drop.zone} data-leaf={drop.leaf} style={{ left: zone.x, top: zone.y, width: zone.w, height: zone.h }} /> : null;
-  const extras = <>{floatLayer}{dropNode}{chips}</>;
+  // W10: kept hidden windows that are inactive tabs of a drawn leaf are drawn hidden in their leaf (DockTree); the others (minimized,
+  // waiting in the switcher, in a hidden leaf) in a hidden parking box. Moving between the two remounts (React does not reparent) - the
+  // state then comes back from state_keys, as under `visible`.
+  const tree = !base ? dockView(l, shown) : null;
+  const inLeaves = new Set<string>();
+  const walkLeaves = (n: DockNode | null) => { if (!n || n.hidden) return; if (n.type === "leaf") n.windows.forEach((w) => inLeaves.add(w.id)); else { walkLeaves(n.a); walkLeaves(n.b); } };
+  if (keep?.size) walkLeaves(tree);
+  const parkedWins = keep?.size ? l.windows.filter((w) => keep.has(w.id) && !inLeaves.has(w.id) && w.id !== top?.id && w.id !== base?.id && !(w.mode === "floating" && w.rect)) : [];
+  const parked = parkedWins.length ? (
+    <div className="win-parked" hidden style={{ display: "none" }} data-testid="window-parked">
+      {parkedWins.map((w) => <div key={w.id} data-window-parked={w.id}>{isPanel(w) ? renderPanel?.(w) ?? null : (renderDocked ?? renderWindow)(w)}</div>)}
+    </div>
+  ) : null;
+  const extras = <>{floatLayer}{dropNode}{chips}{parked}</>;
   if (!base) {
-    const tree = dockView(l, shown);
-    const body = tree ? <DockTree node={tree} renderWindow={docked} title={name} onActivate={onActivate} onRatio={arrange?.onRatio} /> : null;
+    const body = tree ? <DockTree node={tree} renderWindow={docked} title={name} onActivate={onActivate} onRatio={arrange?.onRatio} keep={keep} /> : null;
     return <>{grid(body, <>{overlay}{extras}</>)}</>;
   }
   return <>{renderWindow(base)}{overlay}{extras}</>;

@@ -574,5 +574,49 @@
       "w": 0.8
     }
   },
-  "window_step_note": "W7: presets of the sentences window.move (step in px when the sentence names no number) and window.resize (factor per word; a number scales both sides, {w,h} each side). Any value, also degenerate ones (0 = the window collapses to nothing, which the float_offscreen advisory then says)."
+  "window_step_note": "W7: presets of the sentences window.move (step in px when the sentence names no number) and window.resize (factor per word; a number scales both sides, {w,h} each side). Any value, also degenerate ones (0 = the window collapses to nothing, which the float_offscreen advisory then says).",
+  "window_mount": {
+    "keep_mounted": {
+      "phone": "visible",
+      "desktop": "visible",
+      "any": "visible"
+    },
+    "keep_mounted_note": "W10 (OKNA §8.3): presets of the settings field window_keep_mounted per device class (an open value: visible | all | recent:<n>; unset = this preset). visible everywhere = what the host did before W10 (hidden windows unmounted, state from state_keys); the design named `all` as a desktop preset - kept `visible` until a measurement shows `all` buys something (the W10 harness measures both, card S1 / M1-OKNA-W10). Reversal: one value here.",
+    "mounted_soft": {
+      "phone": 6,
+      "desktop": 12,
+      "any": 12
+    },
+    "mounted_soft_note": "W10: the advisory many_windows asks when more windows are mounted than this number on a device class (any number ≥ 0; a class without a number is never asked). A preset, not a cap: nothing is refused or unmounted by itself.",
+    "cost_estimate": {
+      "observed": null,
+      "machine": null,
+      "per_window_bytes": {},
+      "default_bytes": 0
+    },
+    "cost_estimate_note": "W10: the estimate shown as evidence of many_windows - JS heap per mounted window measured by e2e/windows-perf-native.mjs (a dated observation of one machine and browser, never a constraint; WebView on a phone is not measured here).",
+    "restore_frames": 30,
+    "restore_frames_note": "W10: for how many animation frames a remounted window tries to restore its kept scroll (content that loads late); any number ≥ 0.",
+    "advisories": {
+      "many_windows": {
+        "text": {
+          "pl": "Zamontowanych okien: {count} (podpowiedź od {soft}); szacunek pamięci ok. {mb} MB (pomiar {observed}).",
+          "en": "Mounted windows: {count} (advice from {soft}); estimated memory about {mb} MB (measured {observed})."
+        },
+        "fix": {
+          "id": "park",
+          "label": {
+            "pl": "Odstaw niewidoczne",
+            "en": "Park the others"
+          }
+        }
+      },
+      "window_keep_mounted_unknown": {
+        "text": {
+          "pl": "Wartość «{value}» pola window_keep_mounted nie jest znana; użyto «{used}».",
+          "en": "The value «{value}» of window_keep_mounted is not known; «{used}» is used."
+        }
+      }
+    }
+  }
 }

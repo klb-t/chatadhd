@@ -15,6 +15,8 @@ export interface DockTreeProps {
   onRatio?: (path: string, ratio: number, commit: boolean) => void;
   /** W4: the step of one arrow key on a grip (preset 0.05). */
   keyStep?: number;
+  /** W10: inactive tabs kept mounted (window_keep_mounted): drawn hidden next to the active one, each under its own key. */
+  keep?: ReadonlySet<string>;
 }
 
 function Grip({ node, props }: { node: Extract<DockNode, { type: "split" }>; props: DockTreeProps }) {
@@ -50,7 +52,11 @@ function Node({ node, flex, props }: { node: DockNode; flex: string; props: Dock
             ))}
           </div>
         )}
-        {node.active && props.renderWindow(node.active)}
+        {node.windows.some((w) => w.id !== node.active?.id && props.keep?.has(w.id))
+          ? node.windows.filter((w) => w.id === node.active?.id || props.keep?.has(w.id)).map((w) => (
+            <div key={w.id} data-window-kept={w.id === node.active?.id ? undefined : w.id} hidden={w.id !== node.active?.id}
+              style={{ display: w.id === node.active?.id ? "contents" : "none" }}>{props.renderWindow(w)}</div>))
+          : node.active && props.renderWindow(node.active)}
       </div>
     );
   }

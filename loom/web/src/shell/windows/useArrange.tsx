@@ -3,6 +3,7 @@
 // advisory chips of the arrangement. The chips are answered through the catalogue action advisory.answer with the code and the
 // configuration fingerprint (G3b's store, the same as the „Widok” bar): "don't ask again" is remembered by the kernel and read back with
 // advisory.list (after a reload too); "keep" hides the chip while the arrangement lasts. Nothing here refuses an arrangement.
+import { parkWindows } from "./keep";
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { api } from "../../api";
 import { apply, redo, undo, type Rect, type WState } from "./model";
@@ -142,7 +143,7 @@ export function useArrange(win: WState, winRef: { current: WState }, commit: (s:
       {chips.map((a) => {
         const buttons: ReactNode[] = [];
         for (const id of order) {
-          if (id === "fix") { if (a.fix) buttons.push(<button key="fix" type="button" data-testid="window-advisory-fix" data-fix={a.fix.id} onClick={() => commit(a.fix?.id === "unbind" ? applyCouplingFix(winRef.current, a) : a.fix?.id === "profile_side" ? applyStyleFix(winRef.current, a) : applyFix(winRef.current, a, env))}>{say(a.fix.label, lang)}</button>); continue; }
+          if (id === "fix") { if (a.fix) buttons.push(<button key="fix" type="button" data-testid="window-advisory-fix" data-fix={a.fix.id} onClick={() => commit(a.fix?.id === "unbind" ? applyCouplingFix(winRef.current, a) : a.fix?.id === "profile_side" ? applyStyleFix(winRef.current, a) : a.fix?.id === "park" ? parkWindows(winRef.current) : applyFix(winRef.current, a, env))}>{say(a.fix.label, lang)}</button>); continue; }
           const c = choices.find((x) => x.id === id);
           if (c) buttons.push(<button key={id} type="button" data-testid={`window-advisory-${id}`} onClick={() => answer(a, id)}>{say(c.label, lang)}</button>);
         }

@@ -2,7 +2,7 @@
 import registry from "../data/window_kinds.json";
 import type { Ctx } from "./model";
 
-export interface Kind { id: string; label: { pl: string }; component: string | null; params: string[]; status: string; reason?: { pl: string }; note?: string; preset_params?: Record<string, unknown> }
+export interface Kind { id: string; label: { pl: string }; component: string | null; params: string[]; status: string; reason?: { pl: string }; note?: string; preset_params?: Record<string, unknown>; state_keys?: string[] }
 export const KINDS: readonly Kind[] = registry.kinds as Kind[];
 export const NOT_WINDOW: readonly { component: string; reason: { pl: string } }[] = registry.not_window;
 

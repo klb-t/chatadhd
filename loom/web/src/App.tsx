@@ -57,6 +57,8 @@ import { ARTIFACTS, OPEN_ARTIFACT_EVENT, artifactOf, scriptsOn } from "./shell/a
 import { runArrangeStep, STEP_DATA } from "./shell/windows/steps";
 import { bindingsOf, paramOfWord, paramWord, paramsOfKind } from "./shell/windows/coupling";
 import { ARRANGE, arrangeWindow } from "./shell/windows/arrange";
+import { keepPolicy, keptHidden, mountAdvisories, mountedIds, shownIds, touchRecent } from "./shell/windows/keep";
+import { usePruneKept } from "./shell/windows/useKeep";
 
 type Theme = "dark" | "amoled";
 // The panels are one list (shell/panels.ts): the + menu checks the panel an entry names against it.
@@ -596,7 +598,20 @@ export default function App() {
   const coupling = useCoupling(win, winRef, moveTo, uiLanguage, windowLabel, couplingData);
   couplingRef.current = coupling;
   useEffect(() => { if (started && layout) writeSaved(localStorage, { layout, conversationId: activeConvId, windows: windowData.window_restore_last === false ? null : win.layout, own: ownActive, values: coupling.values }); }, [started, layout, activeConvId, win.layout, windowData, ownActive, coupling.values]);
-  const advice = useMemo(() => (styleAdvice.length ? [...coupling.advisories, ...styleAdvice] : coupling.advisories), [coupling.advisories, styleAdvice]);
+  // W10 (OKNA §8.3): which hidden windows stay mounted (window_keep_mounted, preset per device class) and the advisory many_windows
+  const mountShown = useCallback((w: Win) => !w.collapsed && (w.kind !== "knowledge" || knowledgeOpen), [knowledgeOpen]);
+  const recentRef = useRef<string[]>([]);
+  const mount = useMemo(() => {
+    const { policy, unknown } = keepPolicy(config.window_keep_mounted, deviceClass);
+    recentRef.current = touchRecent(recentRef.current, shownIds(win.layout, mountShown), win.layout);
+    const keep = keptHidden(win.layout, policy, recentRef.current, mountShown);
+    return { keep, advisories: mountAdvisories(win.layout, mountedIds(win.layout, policy, recentRef.current, mountShown), deviceClass, policy, unknown) };
+  }, [config.window_keep_mounted, deviceClass, win.layout, mountShown]);
+  usePruneKept(win.layout);
+  const advice = useMemo(() => {
+    const more = [...styleAdvice, ...mount.advisories];
+    return more.length ? [...coupling.advisories, ...more] : coupling.advisories;
+  }, [coupling.advisories, styleAdvice, mount.advisories]);
   const arrangedRaw = useArrange(win, winRef, moveTo, uiLanguage, windowLabel, advice);
   const arranged = useMemo(() => ({ ...arrangedRaw, handlers: { ...arrangedRaw.handlers, extraMenu: coupling.extraMenu, onExtra: coupling.onExtra, chain: coupling.chain, onChainTap: coupling.cycleChain,
     styleMenu: (w: Win) => windowStyleMenu(w.id), onStyle: setWindowStyle } }), [arrangedRaw, coupling, windowStyleMenu, setWindowStyle]);
@@ -736,7 +751,7 @@ export default function App() {
   );
   // W3: the docked windows of `siatka` by kind (the dock tree decides where and how big; the kind decides what).
   const docked = (w: Win): ReactNode => {
-    if (w.kind === "artifact") return <ArtifactWindow value={w.params?.artifact} scripts={scriptsOn(config)} />;
+    if (w.kind === "artifact") return <ArtifactWindow value={w.params?.artifact} scripts={scriptsOn(config)} win={w} />;
     if (w.kind === "conversation_list") return (
       <aside className={`sidebar${sidebarOpen ? "" : " collapsed"}`} data-testid="sidebar" {...inertAttr(activePanel !== null)}>
         <ConversationList key={convRefreshKey} activeConvId={activeConvId} onSelect={onSelectConversation} onCreated={onConversationCreated} onActivity={sidebarActivity} />
@@ -761,7 +776,7 @@ export default function App() {
         refreshKey={convRefreshKey} onMessagesChanged={onMessagesChanged} windows={shellWindows} behindOverlay={activePanel !== null || knowledgeOpen}
         actions={{ panel: (id) => { if (id === "settings") setSettingsView(""); setActivePanel(id as PanelId); }, navigator: (focus) => { setNavigatorFocus(focus); setActivePanel("navigator"); }, knowledge: () => setKnowledgeOpen(true), workshop: () => pickLayout("workshop") }} />); }
   const host = <WindowHost state={win} renderOverlay={() => panels} grid={grid} renderDocked={w => styled(w, docked(w))} shown={dockShown} title={(w) => windowLabel(w.id)} renderWindow={w => styled(w, renderMain(w))}
-    renderPanel={w => styled(w, coupling.provide(w, panelContent(String(w.params.panel) as PanelId, w.kind)))} arrange={arranged.handlers} chips={arranged.chips} />;
+    renderPanel={w => styled(w, coupling.provide(w, panelContent(String(w.params.panel) as PanelId, w.kind)))} arrange={arranged.handlers} chips={arranged.chips} keep={mount.keep} />;
   return (
     <ShellText.Provider value={t}><ShellLanguage.Provider value={uiLanguage}>
       {host}

@@ -2,18 +2,19 @@
 // window comes back with the layout. HTML and SVG get a preview in an iframe sandbox (no scripts unless the settings field
 // artifact_html_scripts is on - then allow-scripts, never allow-same-origin, with a non-blocking advisory); Markdown a sanitized preview;
 // every format its source. The preview/source switch is local to the window.
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
+import { useKeptState } from "../windows/useKeep";
 import { marked } from "marked";
 import DOMPurify from "dompurify";
 import { useShellText } from "../text";
 import { ArtifactActions } from "./ArtifactFrame";
 import { artifactOf, formatById, sandboxOf } from "./artifacts";
 
-export default function ArtifactWindow({ value, scripts }: { value: unknown; scripts: boolean }) {
+export default function ArtifactWindow({ value, scripts, win }: { value: unknown; scripts: boolean; win?: { id: string; kind: string } }) {
   const t = useShellText();
   const a = artifactOf(value);
   const preview = a ? formatById(a.format)?.preview : undefined;
-  const [source, setSource] = useState(!preview);
+  const [source, setSource] = useKeptState(win, "view_mode", !preview);   // W10: the switch survives an unmount (state_keys)
   const md = useMemo(() => {
     if (!a || preview !== "markdown") return "";
     try { return DOMPurify.sanitize(marked.parse(a.content, { async: false }) as string, { FORBID_TAGS: ["style"] }); } catch { return ""; }
