@@ -303,7 +303,7 @@ Testy własności: losowe edycje (usuń/wstaw/zmień/przenieś) na losowych teks
 wstrzyknięty skrypt; teksty puste, jednozdaniowe, identyczne, całkowicie różne; Unicode i polskie znaki.
 
 Etap B (na prawdziwych modelach, raz przed oddaniem do testów właściciela): ten sam scenariusz z dwoma tanimi modelami
-przez OpenRouter, kosztorys przed biegiem w granicach zgody właściciela na wydatki (CLAUDE.md „Spending authority”: ≤ 1 €/dzień i ≤ 3 €/tydzień, odczyt „euro dziennie” do potwierdzenia; powyżej — pytanie tak/nie); bieg w osobnym, tymczasowym katalogu danych (`CHATADHD_DATA`), nie w danych użytkownika; raport podaje, które dane
+przez OpenRouter, kosztorys przed biegiem w granicach zgody właściciela na wydatki (CLAUDE.md „Spending authority” i „Credits are separate”: płatne opłaty ≤ 1 €/dzień i ≤ 3 €/tydzień; kredyty — np. Google — do 10 % każdego kredytu bez pytania (właściciel, 2026-10-27); powyżej — pytanie tak/nie); bieg w osobnym, tymczasowym katalogu danych (`CHATADHD_DATA`), nie w danych użytkownika; raport podaje, które dane
 były syntetyczne (dokument D0) i które odpowiedzi prawdziwe. Do tego bieg flow „Zapytaj kilka modeli” (3 tory, ślepa +
 krzyżowa) z asercjami: pseudonimy stałe w biegu, paragony per tor, suma z pochodzeniem, węzły rozbieżności.
 
@@ -342,7 +342,7 @@ modeli); W1→W6 potem. Projekt przed pakietami przechodzi tani przegląd cztere
 
 Brak. Sprawdzone wobec filozofii: liczba torów, rund, role, pseudonimy, tryby przedstawienia, schematy i agregacje są
 otwartymi danymi z presetami (nic do wyboru za niego); nowi dostawcy nie są potrzebni (tory używają już skonfigurowanych);
-koszt Etapu B ma mieścić się w zgodzie na wydatki (≤ 1 €/dzień, ≤ 3 €/tydzień, odczyt do potwierdzenia) — to sprawdza kosztorys przed biegiem, nie ta uwaga. Jedyne miejsce, gdzie decyzja należy do niego, zostaje w aplikacji:
+koszt Etapu B ma mieścić się w zgodzie na wydatki (płatne ≤ 1 €/dzień, ≤ 3 €/tydzień; z kredytów do 10 % każdego bez pytania) — to sprawdza kosztorys przed biegiem, nie ta uwaga. Jedyne miejsce, gdzie decyzja należy do niego, zostaje w aplikacji:
 potwierdzenie ×10 i pierwsze wysłanie kategorii danych do nowego dostawcy.
 
 ## Poprawki po kontroli (2026-10-28)
