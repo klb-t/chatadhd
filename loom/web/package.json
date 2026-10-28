@@ -98,6 +98,7 @@
     "test:interview": "node tests/shell/interview.test.mjs",
     "test:me-view": "node tests/shell/me-view-state.test.mjs",
     "test:m1-me": "node e2e/m1-me-native.mjs",
+    "test:guest-mode": "node e2e/guest-mode-native.mjs",
     "test:m1-navigator": "node e2e/m1-navigator-native.mjs",
     "test:m1-settings": "node e2e/m1-settings-native.mjs",
     "test:m1-context-sent": "node e2e/m1-context-sent-native.mjs",

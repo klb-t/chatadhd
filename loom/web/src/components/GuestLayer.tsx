@@ -107,14 +107,14 @@ export default function GuestLayer({ guest, guests, text, onSignIn, children }: 
   const src = guest.modelSource;
   const terms = src && typeof src.data_terms === "object" && src.data_terms !== null
     ? (src.data_terms as { summary?: Record<string, string> }).summary : undefined;
-  const lang = typeof document !== "undefined" && document.documentElement.lang?.startsWith("en") ? "en" : "pl";
-  const termsText = terms ? (terms[lang] ?? terms.pl ?? terms.en ?? "") : "";
+  const lang = typeof navigator !== "undefined" ? (navigator.language ?? "").split("-")[0] : "";
+  const termsText = terms ? (terms[lang] ?? Object.values(terms)[0] ?? "") : "";
 
   return (
     <>
       {children}
       <div className="guest-layer" data-testid="guest-layer" data-guest-id={guest.id} data-saved-at={saved ?? ""}
-        style={{ position: "fixed", left: 8, right: 8, bottom: 72, zIndex: 50, pointerEvents: "none", display: "flex", flexDirection: "column", gap: 6, alignItems: "stretch", maxWidth: 640, margin: "0 auto" }}>
+        style={{ position: "fixed", left: 8, right: 8, bottom: 112, zIndex: 50, pointerEvents: "none", display: "flex", flexDirection: "column", gap: 6, alignItems: "stretch", maxWidth: 640, margin: "0 auto" }}>
         {notice && (
           <div role="status" data-testid="guest-notice" data-period={which.period ?? "session"}
             style={{ pointerEvents: "auto", background: "var(--surface, #222)", color: "inherit", border: "1px solid var(--border, #555)", borderRadius: 10, padding: "10px 12px" }}>

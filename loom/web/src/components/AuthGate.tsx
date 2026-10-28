@@ -4,6 +4,7 @@ import {
   ACCOUNTS_FEATURE, accountText, authReduce, registrationOffer, startsGuestAutomatically, type AccountsTextId, type AuthState,
 } from "../context/auth-state";
 import GuestLayer from "./GuestLayer";
+import { resolvePresentation, resolvePresentationFeature } from "../onboarding/presentation.mjs";
 import { usePresentationFeature } from "./ConversationSourceView";
 
 /** Present only when the server runs with accounts and someone is signed in. */
@@ -15,6 +16,14 @@ export default function AuthGate({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(authReduce, { phase: "loading" } as AuthState);
   const { feature } = usePresentationFeature(undefined, ACCOUNTS_FEATURE);
   const text = useCallback((id: AccountsTextId, parameters = {}) => accountText(feature, id, parameters), [feature]);
+  // A guest has no profile yet: his words follow the browser's language when the pack has it, else the default.
+  const guestFeature = useMemo(() => {
+    try {
+      const lang = typeof navigator !== "undefined" ? (navigator.language ?? "").split("-")[0] : "";
+      return lang ? resolvePresentationFeature(resolvePresentation(undefined, lang), ACCOUNTS_FEATURE) : feature;
+    } catch { return feature; }
+  }, [feature]);
+  const guestText = useCallback((id: AccountsTextId, parameters = {}) => accountText(guestFeature, id, parameters), [guestFeature]);
 
   const [guestOffer, setGuestOffer] = useState(false);
   const refresh = useCallback(async () => {
@@ -54,7 +63,7 @@ export default function AuthGate({ children }: { children: ReactNode }) {
   if (state.phase === "guest")
     return (
       <AccountContext.Provider value={session}>
-        <GuestLayer guest={state.guest} guests={state.guests} text={text}
+        <GuestLayer guest={state.guest} guests={state.guests} text={guestText}
           onSignIn={() => dispatch({ type: "signed_out" })}>{children}</GuestLayer>
       </AccountContext.Provider>
     );

@@ -294,6 +294,7 @@ jobs:
           npm run test:m1-history
           npm run test:m1-profile
           npm run test:m1-me
+          npm run test:guest-mode
           npm run test:m1-import-truth
           npm run test:windows-w2
           npm run test:windows-w4
