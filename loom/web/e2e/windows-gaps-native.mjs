@@ -27,11 +27,15 @@ const CHROMIUM = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE || "/opt/pw-browsers
 const SHOTS = process.env.M1_SHOTS_DIR || mkdtempSync(path.join(tmpdir(), "loom-wgaps-shots-"));
 if (!existsSync(SERVER_BIN) || !existsSync(path.join(DIST, "index.html"))) { console.error("[windows-gaps] build loom-server and `npm run build` first"); process.exit(2); }
 
+const received = [];
+const SECRET = "ghp_" + "RI2wgapsSecretValue0123456789abcdefXY";  // a token typed into settings: goes to the provider, never shown
 const CODE = "print('w-gaps')\nx = 1\ny = 2";
 const provider = createServer(async (req, res) => {
   if (req.method !== "POST" || !req.url.endsWith("/chat/completions")) { res.writeHead(404).end(); return; }
   const chunks = []; for await (const c of req) chunks.push(c);
-  const body = JSON.parse(Buffer.concat(chunks).toString());
+  const raw = Buffer.concat(chunks).toString();
+  received.push(raw);  // RI-2: what the provider got, byte for byte (the kernel's record is compared with it)
+  const body = JSON.parse(raw);
   const content = "Oto kod:\n\n```python\n" + CODE + "\n```\n\nGotowe.";
   if (body.stream) { res.writeHead(200, { "Content-Type": "text/event-stream" }); res.write(`data: ${JSON.stringify({ choices: [{ delta: { content } }] })}\n\n`); res.end("data: [DONE]\n\n"); }
   else { res.writeHead(200, { "Content-Type": "application/json" }); res.end(JSON.stringify({ choices: [{ message: { role: "assistant", content } }], usage: { prompt_tokens: 1, completion_tokens: 1 } })); }
@@ -133,6 +137,55 @@ try {
     await page.waitForTimeout(300);
     await menu("request");
     await ri.first().waitFor({ timeout: 10000 });
+  });
+
+  await step("3b RI-2 „Co jądro wysłało dostawcy”: the system prompt and the message in words, the JSON equals the provider's body minus masks, a secret never shown", async () => {
+    await api("POST", "/api/secrets/github_token", { value: SECRET });
+    await api("PATCH", "/api/config", { system_prompt: "WGAPS-SYS token " + SECRET });
+    await page.goto(base + "/");
+    await page.getByTestId("chat-input").waitFor();
+    const before = received.length;
+    await say("RI2 wiadomość do modelu", /Gotowe\./);
+    for (let i = 0; i < 50 && received.length === before; i++) await page.waitForTimeout(100);
+    assert.equal(received.length, before + 1, "one request reached the provider");
+    assert.ok(received.at(-1).includes(SECRET), "the person's own setting goes out as it is");
+    await menu("request");
+    const ri = page.getByTestId("request-inspector");
+    await ri.first().waitFor({ timeout: 10000 });
+    await page.getByTestId("ri-tab-kernel").first().click();
+    const words = page.getByTestId("ri-kernel-words").first();
+    await words.waitFor({ timeout: 15000 });
+    const said = await words.innerText();
+    assert.match(said, /Instrukcja systemowa: znaków \d+/);
+    assert.match(said, /Twoja wiadomość: znaków \d+/);
+    assert.match(said, /Ukryte przez jądro przed pokazaniem: \d+/);
+    assert.equal(await page.getByTestId("ri-kernel-json").first().isVisible(), false, "the JSON is folded");
+    await page.getByTestId("ri-kernel-details").first().locator("summary").click();
+    const shown = await page.getByTestId("ri-kernel-json").first().innerText();
+    assert.ok(!shown.includes(SECRET) && !shown.includes("local-fake-provider-only"), "no secret in the kernel's answer");
+    assert.ok(!(await page.evaluate(() => document.body.innerText)).includes(SECRET), "no secret anywhere on the screen");
+    const view = JSON.parse(shown);
+    assert.equal(view.kind, "sent");
+    const unmasked = JSON.parse(JSON.stringify(view.body).split("[redacted:secrets_store:github_token]").join(SECRET));
+    assert.deepEqual(unmasked, JSON.parse(received.at(-1)), "the kernel's record is the provider's body, minus the masks");
+    assert.equal(view.body.messages.at(-1).content, "RI2 wiadomość do modelu");
+    await shot("wgaps-3b-request-kernel");
+    // „Podgląd następnego”: built from the text in the field now, nothing reaches the provider
+    await page.keyboard.press("Escape");
+    await back();
+    await page.waitForTimeout(300);
+    await page.getByTestId("chat-input").fill("RI2 następna wiadomość");
+    await menu("request");
+    await page.getByTestId("ri-tab-kernel").first().click();
+    await page.getByTestId("ri-kernel-next").first().click();
+    const kernel = page.locator('[data-testid="request-inspector-kernel"][data-kind="preview"][data-state="ok"]');
+    await kernel.first().waitFor({ timeout: 15000 });
+    const next = JSON.parse(await page.getByTestId("ri-kernel-json").first().textContent());
+    assert.equal(next.body.messages.at(-1).content, "RI2 następna wiadomość", "inputs: " + JSON.stringify(await page.evaluate(() => [...document.querySelectorAll('[data-testid="chat-input"]')].map(e => e.value))));
+    assert.ok(!JSON.stringify(next).includes(SECRET));
+    assert.equal(received.length, before + 1, "the preview sent nothing");
+    await page.getByTestId("chat-input").fill("");
+    await api("PATCH", "/api/config", { system_prompt: "" });
   });
 
   await step("4 an imported profile wanting the list on the right: width preset, chip, „Przestaw” moves the list, Cofnij takes it back", async () => {
