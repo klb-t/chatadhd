@@ -387,9 +387,11 @@ if(LOOM_BUILD_TESTS)
       TIMEOUT 240)
     add_test(NAME server.security
       COMMAND ${Python3_EXECUTABLE} ${LOOM_ROOT}/server/tests/test_server_security.py)
+    # 68 s on a dev build (2026-10-28); ASan runs it ~5x slower and the suite grew (11b-11d, catalogue routes), so 300 s
+    # was cut on CI 40716907078. The limit is a ceiling, not a duration: the test ends as soon as it is done.
     set_tests_properties(server.security PROPERTIES
       ENVIRONMENT "LOOM_SERVER_BIN=$<TARGET_FILE:loom-server>;PYTHONDONTWRITEBYTECODE=1"
-      TIMEOUT 300)
+      TIMEOUT 900)
     add_test(NAME server.sse
       COMMAND ${Python3_EXECUTABLE} ${LOOM_ROOT}/server/tests/test_server_sse.py)
     set_tests_properties(server.sse PROPERTIES
