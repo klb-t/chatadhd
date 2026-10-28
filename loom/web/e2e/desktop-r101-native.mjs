@@ -3,7 +3,10 @@
 // (390x844). The desktop is always under the windows: (1) close every window → the desktop stays, a window opens from it, a sentence
 // written on it goes to the chat composer; (2) minimize all (Ctrl+Shift+D) → the desktop is seen → a minimized window comes back;
 // (3) last_window_close=close_app → the end screen with its advisory → back to the desktop; (4) B3: with no section the emergency path
-// is there; switched off, the desktop says so and brings it back on request. With M1_SHOTS_DIR=<dir> the screenshots go there.
+// is there; switched off, the desktop says so and brings it back on request. R101 D2 (§3.2, §4, §12, §14 row D2): the desktop is the preset
+// pulpit_graf - the first pins as icons (written once into the graph) over the faint graph on a canvas; a tap on "Rozmowy" opens the
+// conversation list window, Back brings the desktop; P0's sections are behind "Więcej…" and a long press; pulpit_ikony drops the graph.
+// With M1_SHOTS_DIR=<dir> the screenshots go there.
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
 import { existsSync, mkdtempSync } from "node:fs";
@@ -67,6 +70,23 @@ try {
       await closeChat(p);
       await seen(p);
       assert.equal(await p.getByTestId("chat-input").count(), 0);
+      // R101 D2: pulpit_graf - the first pins of the declaration as icons, the faint graph behind them on one canvas
+      const icons = p.getByTestId("desktop-icons");
+      await p.waitForFunction(() => document.querySelector('[data-testid="desktop-icons"]')?.getAttribute("data-state") === "ok", null, { timeout: 15000 });
+      assert.equal(await icons.getAttribute("data-declaration"), "pulpit_graf");
+      const labels = await p.getByTestId("desktop-icon").allInnerTexts();
+      assert.deepEqual(labels.map(t => t.split("\n").pop().trim()), ["Ty", "Moje projekty", "Rozmowy", "Nowy czat", "Mój graf", "Ustawienia", "Kosz"]);
+      const trash = p.locator('[data-testid="desktop-icon"][data-address="trash:"]');
+      assert.equal(await trash.getAttribute("data-status"), "planned"); assert.ok(await trash.isDisabled(), "the trash is greyed until D4, with its reason");
+      const graph = p.getByTestId("desktop-graph");
+      await p.waitForFunction(() => Number(document.querySelector('[data-testid="desktop-graph"]')?.getAttribute("data-nodes")) > 3, null, { timeout: 15000 });
+      assert.ok(Number(await graph.getAttribute("data-edges")) > 0, "real edges behind");
+      assert.ok(Number(await graph.getAttribute("data-alpha")) < 0.5, "faint");
+      assert.equal(await p.getByTestId("desktop-emergency").count(), 0, "icons are a path: no emergency button");
+      await stableShot(p, path.join(SHOTS, `${device}-desktop-graf.png`));
+      // P0's sections stay reachable behind "Więcej…"
+      assert.equal(await p.getByTestId("desktop-open-kind").count(), 0);
+      await p.getByTestId("desktop-more").click();
       const kinds = p.getByTestId("desktop-open-kind");
       assert.ok(await kinds.count() >= 25, `kinds on the desktop: ${await kinds.count()}`);
       const planned = p.locator('[data-testid="desktop-open-kind"][data-status="planned"]');
@@ -75,7 +95,26 @@ try {
       assert.ok((await planned.first().getAttribute("title") ?? "").length > 5, "a planned kind carries its reason");
       await stableShot(p, path.join(SHOTS, `${device}-desktop-closed.png`));
     });
+    await step(`${device}: D2 - tap "Rozmowy" → the conversation list window → Back → the desktop with its icons`, async () => {
+      await p.locator('[data-testid="desktop-icon"][data-address="conversations:"]').click();
+      await covered(p);
+      await p.getByTestId("panel-conversations").waitFor();
+      assert.ok(await p.getByTestId("panel-conversations").getByRole("button").count() >= 1, "the conversation list is in the window");
+      await stableShot(p, path.join(SHOTS, `${device}-desktop-rozmowy.png`));
+      await p.getByTestId("close-panel").click();
+      await seen(p);
+      await p.locator('[data-testid="desktop-icon"][data-address="conversations:"]').waitFor();
+    });
+    await step(`${device}: D2 - a long press on the empty desktop opens "Więcej…" (every kind of window)`, async () => {
+      if (await p.getByTestId("desktop-more").getAttribute("aria-expanded") === "true") await p.getByTestId("desktop-more").click();
+      await p.getByTestId("desktop-more-panel").waitFor({ state: "detached" });
+      await p.mouse.move(viewport.width - 6, viewport.height - 6);
+      await p.mouse.down(); await p.waitForTimeout(900); await p.mouse.up();
+      await p.getByTestId("desktop-more-panel").waitFor();
+      assert.ok(await p.getByTestId("desktop-open-kind").count() >= 25);
+    });
     await step(`${device}: a window opens from the desktop (Graf), closing it brings the desktop back`, async () => {
+      if (await p.getByTestId("desktop-more").getAttribute("aria-expanded") !== "true") await p.getByTestId("desktop-more").click();
       await p.locator('[data-testid="desktop-open-kind"][data-kind="navigator"]').click();
       await covered(p);
       await p.getByTestId("close-panel").click();
@@ -124,6 +163,7 @@ try {
       await closeChat(p);
       await seen(p);
       assert.equal(await p.getByTestId("desktop-open-kind").count(), 0);
+      assert.equal(await p.getByTestId("desktop-icon").count(), 0, "P1: the icons are a section too; with none, the emergency path stays");
       await p.getByTestId("desktop-emergency").click();
       await covered(p);
       await p.getByTestId("chat-input").waitFor();
@@ -147,6 +187,18 @@ try {
     await p.context().close();
     await setKey("desktop_sections", null);
     await setKey("desktop_emergency_path", null);
+    await setKey("desktop_declaration", "pulpit_ikony");
+    p = await fresh();
+    await step(`${device}: D2 - desktop_declaration=pulpit_ikony: the same icons, no graph behind`, async () => {
+      await closeChat(p);
+      await seen(p);
+      await p.waitForFunction(() => document.querySelector('[data-testid="desktop-icons"]')?.getAttribute("data-state") === "ok", null, { timeout: 15000 });
+      assert.equal(await p.getByTestId("desktop-icons").getAttribute("data-declaration"), "pulpit_ikony");
+      assert.equal(await p.getByTestId("desktop-icon").count(), 7);
+      assert.equal(await p.getByTestId("desktop-graph").count(), 0);
+    });
+    await p.context().close();
+    await setKey("desktop_declaration", null);
   }
   await step("no page errors", async () => assert.deepEqual(errors, []));
 } catch (e) { failed = true; console.error(e); }

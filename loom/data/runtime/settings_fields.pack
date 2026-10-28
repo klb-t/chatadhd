@@ -1682,7 +1682,7 @@
         "group": "ui",
         "type": "array",
         "has_default": false,
-        "description": "What the desktop shows and in which order: section ids such as sentence, restore, open, layouts [examples, the list of the page's shell/data/desktop.json sections_known]; an array or a comma list. Unset = the preset order of desktop.json. An unknown id is skipped with an advisory; an empty list leaves only the emergency path (desktop_emergency_path).",
+        "description": "What the desktop shows and in which order: section ids such as icons, sentence, restore, open, layouts [examples, the list of the page's shell/data/desktop.json sections_known]; an array or a comma list. Unset = the preset order of desktop.json. An unknown id is skipped with an advisory; an empty list leaves only the emergency path (desktop_emergency_path).",
         "status": {
           "state": "implemented",
           "by": "M1-R101-P0",
@@ -1692,8 +1692,8 @@
             "en": "The page reads this field whenever it draws the desktop."
           },
           "today": {
-            "pl": "Pulpit ma pole zdania, zminimalizowane okna, nowe okno każdego rodzaju i układy.",
-            "en": "The desktop has a sentence field, the minimized windows, a new window of every kind and the layouts."
+            "pl": "Pulpit ma ikony, pole zdania, zminimalizowane okna, a pod „Więcej…” nowe okno każdego rodzaju i układy.",
+            "en": "The desktop has icons, a sentence field, the minimized windows, and under “More…” a new window of every kind and the layouts."
           }
         },
         "human": {
@@ -1716,8 +1716,53 @@
           "subgroup": "nawigator",
           "flows": [],
           "when_unset": {
-            "pl": "zdanie, zminimalizowane, nowe okno, układy",
-            "en": "sentence, minimized, new window, layouts"
+            "pl": "ikony, zdanie, zminimalizowane, nowe okno, układy",
+            "en": "icons, sentence, minimized, new window, layouts"
+          }
+        }
+      },
+      {
+        "key": "desktop_declaration",
+        "scope": "config",
+        "group": "ui",
+        "type": "string",
+        "has_default": false,
+        "description": "What the desktop is: the view declaration over the graph that draws it (R101 D2, PULPIT_R101 §3). An id of the page's shell/data/desktop.json declarations such as pulpit_graf (preset: the pinned nodes as icons, the rest of the person's graph faint behind them) or pulpit_ikony (icons only) [examples, an open list], or a declaration object (its JSON text) with elements source / encoding / coordinates / icon / rules. Unset = pulpit_graf. An unknown id is read as the preset with the advisory desktop_declaration_unknown; an element the page does not draw is skipped with its reason; opacity 0 of everything behind is legal and asked about (nothing_visible).",
+        "status": {
+          "state": "implemented",
+          "by": "M1-R101-D2",
+          "reader": "web shell/windows/Desktop.tsx (resolveDeclaration, shell/windows/desktop-icons.ts)",
+          "reason": {
+            "pl": "Strona czyta to pole przy każdym rysowaniu pulpitu.",
+            "en": "The page reads this field whenever it draws the desktop."
+          },
+          "today": {
+            "pl": "Pulpit pokazuje przypięte ikony i blady graf w tle; inne pomysły pulpitu dochodzą jako kolejne deklaracje.",
+            "en": "The desktop shows the pinned icons and a faint graph behind them; other desktop ideas come as further declarations."
+          }
+        },
+        "human": {
+          "label": {
+            "pl": "Jak wygląda pulpit",
+            "en": "What the desktop looks like"
+          },
+          "why": {
+            "pl": "Pulpit może być grafem z ikonami, samymi ikonami albo czymś innym — to jedna deklaracja widoku.",
+            "en": "The desktop can be a graph with icons, icons only or something else — it is one view declaration."
+          },
+          "effect": {
+            "pl": "Zmienia pulpit przy następnym pokazaniu.",
+            "en": "Changes the desktop the next time it is shown."
+          },
+          "levels": [
+            "person"
+          ],
+          "group": "interfejs",
+          "subgroup": "nawigator",
+          "flows": [],
+          "when_unset": {
+            "pl": "graf z ikonami (pulpit_graf)",
+            "en": "graph with icons (pulpit_graf)"
           }
         }
       },
