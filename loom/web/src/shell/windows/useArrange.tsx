@@ -14,6 +14,7 @@ import { ARRANGE, applyFix, arrangeWindow, moveFloating, num, rememberedKeys, se
 import type { Box } from "./dock";
 import { LAYOUTS } from "../start-view";
 import { applyCouplingFix } from "./coupling";
+import { applyStyleFix } from "./style";
 
 type Lang = "pl" | "en" | string;
 const say = (w: { pl?: string; en?: string } | undefined, lang: Lang) => (lang === "pl" ? w?.pl ?? w?.en : w?.en ?? w?.pl) ?? "";
@@ -141,7 +142,7 @@ export function useArrange(win: WState, winRef: { current: WState }, commit: (s:
       {chips.map((a) => {
         const buttons: ReactNode[] = [];
         for (const id of order) {
-          if (id === "fix") { if (a.fix) buttons.push(<button key="fix" type="button" data-testid="window-advisory-fix" data-fix={a.fix.id} onClick={() => commit(a.fix?.id === "unbind" ? applyCouplingFix(winRef.current, a) : applyFix(winRef.current, a, env))}>{say(a.fix.label, lang)}</button>); continue; }
+          if (id === "fix") { if (a.fix) buttons.push(<button key="fix" type="button" data-testid="window-advisory-fix" data-fix={a.fix.id} onClick={() => commit(a.fix?.id === "unbind" ? applyCouplingFix(winRef.current, a) : a.fix?.id === "profile_side" ? applyStyleFix(winRef.current, a) : applyFix(winRef.current, a, env))}>{say(a.fix.label, lang)}</button>); continue; }
           const c = choices.find((x) => x.id === id);
           if (c) buttons.push(<button key={id} type="button" data-testid={`window-advisory-${id}`} onClick={() => answer(a, id)}>{say(c.label, lang)}</button>);
         }

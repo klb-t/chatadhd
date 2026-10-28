@@ -18,6 +18,8 @@ export interface ShellLayouts {
   undo(): void;
   redo(): void;
   reset(): void;
+  /** W9 (OKNA §7.2): the style of the whole layout ("" = inherit from the person) - stored in the layout, one journal entry. */
+  style?: { label: string; value: string; options: { value: string; label: string }[]; set(value: string): void };
 }
 
 export default function LayoutsSheet({ layouts, done }: { layouts: ShellLayouts; done(): void }) {
@@ -44,6 +46,12 @@ export default function LayoutsSheet({ layouts, done }: { layouts: ShellLayouts;
           onChange={(e) => setName(e.target.value)} style={{ flex: 1, minWidth: 0 }} />
         <button type="submit" data-testid="layouts-save" disabled={!name.trim()}>{t("layouts_save")}</button>
       </form>
+      {layouts.style && <label className="shell-row" style={{ display: "flex", gap: 8, alignItems: "center" }} data-testid="layout-style">
+        <span style={{ flex: 1 }}>{layouts.style.label}</span>
+        <select data-testid="layout-style-select" aria-label={layouts.style.label} value={layouts.style.value} onChange={(e) => layouts.style?.set(e.target.value)}>
+          {layouts.style.options.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
+        </select>
+      </label>}
       <div className="shell-row" role="toolbar" aria-label={t("layouts_title")} style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
         <button data-testid="layouts-undo" disabled={!layouts.canUndo} onClick={() => { layouts.undo(); done(); }}>{t("layouts_undo")}</button>
         <button data-testid="layouts-redo" disabled={!layouts.canRedo} onClick={() => { layouts.redo(); done(); }}>{t("layouts_redo")}</button>

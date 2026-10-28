@@ -1190,6 +1190,75 @@
         }
       },
       {
+        "key": "profile_layout_fields",
+        "scope": "config",
+        "group": "ui",
+        "type": "string",
+        "has_default": false,
+        "values": [
+          {
+            "value": "layout",
+            "preset": true,
+            "meaning": {
+              "pl": "Pola układowe stylu (strona i szerokość listy rozmów) podpowiada styl układu (Układ ▾ › Styl układu); styl przypisany jednemu oknu zmienia tylko jego wygląd (preset).",
+              "en": "The layout fields of a style (side and width of the conversation list) are suggested by the style of the layout (Layout ▾ › Layout style); a style assigned to one window changes only its look (the preset)."
+            }
+          },
+          {
+            "value": "window",
+            "meaning": {
+              "pl": "Podpowiada je także styl przypisany oknu listy rozmów (okno → układ → Twój).",
+              "en": "The style assigned to the conversation list window suggests them too (window → layout → yours)."
+            }
+          },
+          {
+            "value": "off",
+            "meaning": {
+              "pl": "Nikt ich nie czyta: style zmieniają tylko kolory i szerokość treści, nigdy położenia doków.",
+              "en": "Nobody reads them: styles change only colours and content width, never where docks are."
+            }
+          }
+        ],
+        "description": "Where the layout fields of an application profile used as a window or layout style (OKNA §7.2, D14: presentation.sidebar.side/width) apply: layout (preset) = the style of the layout suggests them; window = the style of the conversation list window too; off = never. A suggestion never moves a dock by itself: when it differs from where the list is docked the page shows the non-blocking advisory profile_moves_dock ([Przestaw] mirrors the split, one undoable step). An unknown value is used as the preset with an advisory. Unset = the preset of the page's styles.json (layout).",
+        "status": {
+          "state": "implemented",
+          "by": "M1-OKNA-W9",
+          "reader": "web shell/windows/style.ts (layoutFieldsMode, styleAdvisories) via App.tsx",
+          "reason": {
+            "pl": "Strona czyta to pole przy każdej zmianie stylu okna albo układu.",
+            "en": "The page reads this field at every change of a window or layout style."
+          },
+          "today": {
+            "pl": "Styl układu podpowiada stronę listy rozmów; styl okna zmienia tylko wygląd okna.",
+            "en": "The layout style suggests the side of the conversation list; a window style changes only the look of the window."
+          }
+        },
+        "human": {
+          "label": {
+            "pl": "Czy styl może przestawiać listę rozmów",
+            "en": "Whether a style may move the conversation list"
+          },
+          "why": {
+            "pl": "Styl «jak w …» ma też zdanie o tym, po której stronie stoi lista rozmów; to pole mówi, czyje zdanie się liczy: stylu układu, także stylu okna, czy niczyje.",
+            "en": "A style «like …» also has an opinion on which side the conversation list stands; this field says whose opinion counts: the layout style, the window style too, or nobody's."
+          },
+          "effect": {
+            "pl": "Gdy styl chce listy po innej stronie, niż jest, pojawia się podpowiedź z przyciskiem Przestaw (nic nie przestawia się samo). Działa od następnej zmiany stylu.",
+            "en": "When a style wants the list on another side than it is, an advisory with a Move button appears (nothing moves by itself). Takes effect at the next change of a style."
+          },
+          "levels": [
+            "person"
+          ],
+          "group": "interfejs",
+          "subgroup": "nawigator",
+          "flows": [],
+          "when_unset": {
+            "pl": "podpowiada styl układu",
+            "en": "the layout style suggests"
+          }
+        }
+      },
+      {
         "key": "coupling_max_iterations",
         "scope": "config",
         "group": "ui",

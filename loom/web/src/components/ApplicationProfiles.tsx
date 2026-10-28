@@ -48,6 +48,9 @@ interface Props {
   onPrimaryProfile: (profile: ApplicationProfile) => void;
   onSharedConversationRestored?: (id: string | null) => void;
   canRestoreWorkspace?: () => boolean;
+  /** W9 (OKNA §7.2): the style of the window this view sits in, when the window or its layout names one (window → layout); it replaces only
+   * the CSS variables of the view - the profile chosen here keeps its actions, composer and workflows (UI17: nothing of a request changes). */
+  styleOverride?: ApplicationProfile | null;
 }
 
 /** Profiles project native conversations; selection can be coupled or independent. */
@@ -366,7 +369,7 @@ function ApplicationView({ profile: inputProfile, profiles: inputProfiles, viewI
   const currentProfileSession = session?.profile.id === profile.id && session.profile.profile_revision === profile.profile_revision ? session : current;
 
   return <section className={`application-profile-view profile-messages-${profile.presentation.message_style}`}
-    style={profileStyle(profile)} data-testid="application-profile-view" data-profile-id={profile.id} data-profile-revision={profile.profile_revision}
+    style={profileStyle(props.styleOverride ?? profile)} data-style-profile-id={props.styleOverride?.id} data-testid="application-profile-view" data-profile-id={profile.id} data-profile-revision={profile.profile_revision}
     data-profile-view-id={viewId} data-conversation-coupling={conversation.coupling} data-conversation-id={props.convId ?? ""}
     data-sidebar-side={profile.presentation.sidebar.side} data-view-sidebar-open={conversation.sidebarOpen}>
     <div className="application-profile-toolbar">

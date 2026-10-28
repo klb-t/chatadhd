@@ -25,6 +25,8 @@ import { usePresentationFeature } from "./components/ConversationSourceView";
 import { featureMessage } from "./onboarding/presentation.mjs";
 import { useAccountSession } from "./components/AuthGate";
 import { createLoomProfileRegistry } from "./profiles/loom-adapter";
+import { BUILTIN_PROFILE_DOCUMENTS } from "./profiles/builtins";
+import { STYLES, findProfile, inheritLabel, refKey, refOf, refOfDoc, resolveStyle, sayStyle, setLayoutProfile, setWindowProfile, styleAdvisories, type ProfileRef } from "./shell/windows/style";
 import ChatShell from "./shell/ChatShell";
 import PerspectivesPanel from "./components/PerspectivesPanel";
 import ViewEnginePanel from "./components/ViewEnginePanel";
@@ -531,6 +533,32 @@ export default function App() {
     window.addEventListener(WINDOW_STEP_EVENT, onStep);
     return () => window.removeEventListener(WINDOW_STEP_EVENT, onStep);
   }, [moveTo, t, windowLabel, layoutOps]);
+  // W9 (OKNA §7.2, D14): the style of a window / of the layout = an application profile named in the layout (window.profile, layout.profile),
+  // inherited window → layout → the person's profile (the one chosen in the workbench, else none) → the preset fallback. Choosing one is a
+  // journaled operation of the layout (undo, last layout, named layouts written by the W5b merge). UI17: only CSS variables change.
+  const styleDocs = BUILTIN_PROFILE_DOCUMENTS as ApplicationProfile[];
+  const personStyle = useMemo<ProfileRef | null>(() => (primaryProfile ? refOfDoc(primaryProfile) : null), [primaryProfile]);
+  const styleOf = useCallback((id: string | null) => resolveStyle(win.layout, id, personStyle, styleDocs), [win.layout, personStyle, styleDocs]);
+  const styleChoice = useCallback((current: unknown, inherit: string, label: string) => {
+    const ref = refOf(current); const doc = findProfile(styleDocs, ref);
+    const value = ref ? (doc ? `${doc.id}@${doc.profile_revision}` : refKey(ref)) : "";
+    const options = [{ value: "", label: inherit }, ...styleDocs.map(d => ({ value: `${d.id}@${d.profile_revision}`, label: `${d.label} · r${d.profile_revision}` }))];
+    if (ref && !doc) options.push({ value, label: `? ${ref.id}${ref.revision === null ? "" : `@${ref.revision}`}` });
+    return { label, value, options };
+  }, [styleDocs]);
+  const windowStyleMenu = useCallback((id: string) => {
+    const w = win.layout.windows.find(x => x.id === id);
+    return w ? styleChoice(w.profile, inheritLabel(win.layout, id, personStyle, styleDocs, uiLanguage), sayStyle(STYLES.words.window_menu, uiLanguage)) : null;
+  }, [win.layout, personStyle, styleDocs, uiLanguage, styleChoice]);
+  const setWindowStyle = useCallback((id: string, value: string) => moveTo(setWindowProfile(winRef.current, id, value ? refOf(value) : null)), [moveTo]);
+  const styleAdvice = useMemo(() => styleAdvisories(win.layout, personStyle, styleDocs, config.profile_layout_fields), [win.layout, personStyle, styleDocs, config.profile_layout_fields]);
+  /** The content of a window inside its style: a wrapper only when the window or the layout names a style (otherwise nothing changes). */
+  const styled = (w: Win, node: ReactNode): ReactNode => {
+    const r = styleOf(w.id);
+    if (!r.profile || (r.source !== "window" && r.source !== "layout")) return node;
+    return <div className="win-style" style={{ display: "contents", ...profileStyle(r.profile) }} data-testid="window-style-root" data-window={w.id}
+      data-style-profile={r.profile.id} data-style-revision={r.profile.profile_revision} data-style-source={r.source}>{node}</div>;
+  };
   // W5: what the sheet „Układ ▾” shows (the own layouts of the person, the one active on this device class, the shipped ones)
   const shellLayouts = useMemo<ShellLayouts>(() => {
     const own = readNamed(config.window_layouts);
@@ -543,8 +571,10 @@ export default function App() {
       rename: (id: string, label: string) => layoutOps.rename(id, label),
       remove: (id: string) => layoutOps.remove(id),
       undo: () => { layoutOps.undo(); }, redo: () => { layoutOps.redo(); }, reset: () => { layoutOps.reset(); },
+      style: { ...styleChoice(win.layout.profile, inheritLabel(win.layout, null, personStyle, styleDocs, uiLanguage), sayStyle(STYLES.words.layout_menu, uiLanguage)),
+        set: (value: string) => moveTo(setLayoutProfile(winRef.current, value ? refOf(value) : null)) },
     };
-  }, [config.window_layouts, ownActive, uiLanguage, win.layout.id, win.past.length, win.future.length, deviceClass, layoutOps]);
+  }, [config.window_layouts, ownActive, uiLanguage, win.layout.id, win.layout.profile, win.layout, personStyle, styleDocs, styleChoice, moveTo, win.past.length, win.future.length, deviceClass, layoutOps]);
   const shellWindows = useMemo(() => {
     const front = visibleId(win.layout);
     return {
@@ -557,16 +587,19 @@ export default function App() {
         if (w && typeof w.params?.panel === "string") moveTo(closeWindows(winRef.current, { target: { panel: String(w.params.panel) } }).state);
       },
       layouts: shellLayouts,
+      style: windowStyleMenu, setStyle: setWindowStyle,
     };
-  }, [win.layout, windowLabel, moveTo, uiLanguage, shellLayouts]);
+  }, [win.layout, windowLabel, moveTo, uiLanguage, shellLayouts, windowStyleMenu, setWindowStyle]);
   // W4: docking and floating (menu ⋯, drag, split grips, keys) and the advisory chips of the arrangement
   // W6: coupling of window parameters (bindings in the layout, values at runtime, chips with the arrangement ones)
   const couplingData = useMemo(() => couplingDataOf(config), [config.coupling_max_iterations]);   // eslint-disable-line react-hooks/exhaustive-deps
   const coupling = useCoupling(win, winRef, moveTo, uiLanguage, windowLabel, couplingData);
   couplingRef.current = coupling;
   useEffect(() => { if (started && layout) writeSaved(localStorage, { layout, conversationId: activeConvId, windows: windowData.window_restore_last === false ? null : win.layout, own: ownActive, values: coupling.values }); }, [started, layout, activeConvId, win.layout, windowData, ownActive, coupling.values]);
-  const arrangedRaw = useArrange(win, winRef, moveTo, uiLanguage, windowLabel, coupling.advisories);
-  const arranged = useMemo(() => ({ ...arrangedRaw, handlers: { ...arrangedRaw.handlers, extraMenu: coupling.extraMenu, onExtra: coupling.onExtra, chain: coupling.chain, onChainTap: coupling.cycleChain } }), [arrangedRaw, coupling]);
+  const advice = useMemo(() => (styleAdvice.length ? [...coupling.advisories, ...styleAdvice] : coupling.advisories), [coupling.advisories, styleAdvice]);
+  const arrangedRaw = useArrange(win, winRef, moveTo, uiLanguage, windowLabel, advice);
+  const arranged = useMemo(() => ({ ...arrangedRaw, handlers: { ...arrangedRaw.handlers, extraMenu: coupling.extraMenu, onExtra: coupling.onExtra, chain: coupling.chain, onChainTap: coupling.cycleChain,
+    styleMenu: (w: Win) => windowStyleMenu(w.id), onStyle: setWindowStyle } }), [arrangedRaw, coupling, windowStyleMenu, setWindowStyle]);
   const [panelMenu, setPanelMenu] = useState(false);
   useEffect(() => { if (activePanel === null) setPanelMenu(false); }, [activePanel]);
   // the layout shows one window full-screen (the plain chat app is that case); a grid of docks (the former Workshop) is not
@@ -625,7 +658,7 @@ export default function App() {
                   onClick={() => { setPanelMenu(false); const id = visibleOverlay(winRef.current.layout)?.id; if (id) arranged.handlers.onArrange(id, m.id); }}>{m.icon ? `${m.icon} ` : ""}{m.label}</button>)}
               </div>}
               <div className="drawer-body">
-                {(() => { const top = visibleOverlay(win.layout); const body = panelContent(activePanel, topKind); return top ? coupling.provide(top, body) : body; })()}
+                {(() => { const top = visibleOverlay(win.layout); const body = panelContent(activePanel, topKind); return top ? styled(top, coupling.provide(top, body)) : body; })()}
               </div>
             </div>
           </>
@@ -646,9 +679,11 @@ export default function App() {
       <div className="app-layout">{body}{overlay}</div>
     </div>
   ) : workshop(body, overlay);
+  // W9: a style named by the layout replaces the person's profile on the root of the grid (the window ones sit inside their windows)
+  const layoutStyle = (() => { const r = styleOf(null); return r.source === "layout" ? r.profile : null; })();
   const workshop = (body: ReactNode, overlay: ReactNode) => (
-    <div className="app-root" data-sidebar-side={primaryProfile?.presentation.sidebar.side ?? "left"} data-layout={win.layout.id}
-      style={primaryProfile ? profileStyle(primaryProfile) : undefined}>
+    <div className="app-root" data-sidebar-side={(layoutStyle ?? primaryProfile)?.presentation.sidebar.side ?? "left"} data-layout={win.layout.id}
+      data-style-profile={layoutStyle?.id} style={layoutStyle ? profileStyle(layoutStyle) : primaryProfile ? profileStyle(primaryProfile) : undefined}>
       <div className="app-header window-switcher" role="toolbar" aria-label={shellText("menu_label")} data-testid="window-switcher"
         onKeyDown={(event) => { if (event.key === "Escape") setNavOpen(false); }} {...inertAttr(activePanel !== null)}>
         <button
@@ -712,7 +747,7 @@ export default function App() {
         <ApplicationProfiles profileHost={userProfileHost} convId={activeConvId} onConversationCreated={onConversationCreated}
           refreshKey={convRefreshKey} onMessagesChanged={onMessagesChanged} ui={profileUi}
           onPrimaryProfile={setPrimaryProfile} onSharedConversationRestored={setActiveConvId}
-          canRestoreWorkspace={canRestoreWorkspace} />
+          canRestoreWorkspace={canRestoreWorkspace} styleOverride={(() => { const r = styleOf(w.id); return r.profile && (r.source === "window" || r.source === "layout") ? r.profile : null; })()} />
       </div>);
     if (w.kind === "knowledge") return (
       <div className="main-panel with-workbench" data-window={w.id} {...inertAttr(activePanel !== null)}>
@@ -725,8 +760,8 @@ export default function App() {
       <ChatShell profileHost={userProfileHost} convId={activeConvId} onSelect={setActiveConvId} onCreated={onConversationCreated} onShowInGraph={openNavigator}
         refreshKey={convRefreshKey} onMessagesChanged={onMessagesChanged} windows={shellWindows} behindOverlay={activePanel !== null || knowledgeOpen}
         actions={{ panel: (id) => { if (id === "settings") setSettingsView(""); setActivePanel(id as PanelId); }, navigator: (focus) => { setNavigatorFocus(focus); setActivePanel("navigator"); }, knowledge: () => setKnowledgeOpen(true), workshop: () => pickLayout("workshop") }} />); }
-  const host = <WindowHost state={win} renderOverlay={() => panels} grid={grid} renderDocked={docked} shown={dockShown} title={(w) => windowLabel(w.id)} renderWindow={renderMain}
-    renderPanel={w => coupling.provide(w, panelContent(String(w.params.panel) as PanelId, w.kind))} arrange={arranged.handlers} chips={arranged.chips} />;
+  const host = <WindowHost state={win} renderOverlay={() => panels} grid={grid} renderDocked={w => styled(w, docked(w))} shown={dockShown} title={(w) => windowLabel(w.id)} renderWindow={w => styled(w, renderMain(w))}
+    renderPanel={w => styled(w, coupling.provide(w, panelContent(String(w.params.panel) as PanelId, w.kind)))} arrange={arranged.handlers} chips={arranged.chips} />;
   return (
     <ShellText.Provider value={t}><ShellLanguage.Provider value={uiLanguage}>
       {host}

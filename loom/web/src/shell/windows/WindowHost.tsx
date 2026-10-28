@@ -34,6 +34,9 @@ export interface ArrangeHandlers {
   chain?: (w: Win) => { icon: string; lines: string[]; title: string } | null;
   /** W7 (§5.3): a tap on the chain (gestures.json targets.chain.tap); a long press opens the menu ⋯ with the dependency choices. */
   onChainTap?: (id: string) => void;
+  /** W9 (OKNA §7.2): the style of the window in its menu ⋯ - the current value ("" = inherit) and the choices; choosing one is one journal entry. */
+  styleMenu?: (w: Win) => { label: string; value: string; options: { value: string; label: string }[] } | null;
+  onStyle?: (id: string, value: string) => void;
 }
 
 export interface WindowHostProps {
@@ -102,6 +105,7 @@ function WindowFrame({ w, title, a, children, floating, onDrag }: { w: Win; titl
   const key = String(w.params?.panel ?? w.kind);
   const chain = a?.chain?.(w) ?? null;
   const extra = open && a?.extraMenu ? a.extraMenu(w) : [];
+  const style = open && a?.styleMenu ? a.styleMenu(w) : null;
   return (
     <section className={floating ? "win-frame win-floating" : "win-frame"} role="region" aria-label={title} data-testid={`window-${key}`} data-window={w.id} data-mode={w.mode}>
       <div className="win-titlebar" data-testid={`window-titlebar-${key}`}
@@ -122,6 +126,11 @@ function WindowFrame({ w, title, a, children, floating, onDrag }: { w: Win; titl
               {m.icon ? `${m.icon} ` : ""}{m.label}
             </button>
           ))}
+          {style && <label className="win-menu-style" data-testid="window-style">{style.label}{" "}
+            <select data-testid="window-style-select" aria-label={`${style.label}: ${title}`} value={style.value}
+              onChange={(e) => { setOpen(false); a.onStyle?.(w.id, e.target.value); }}>
+              {style.options.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
+            </select></label>}
           {extra.map((m) => (
             <button key={m.id} type="button" role="menuitem" data-testid="window-couple" data-entry={m.id} onClick={() => { setOpen(false); a.onExtra?.(w.id, m.id); }}>
               {m.icon ? `${m.icon} ` : ""}{m.label}

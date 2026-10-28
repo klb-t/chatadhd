@@ -27,6 +27,9 @@ export interface ShellWindows {
   close(id: string): void;
   /** W4: every arrangement without dragging (dock left/right/top/bottom, tab, float, maximize) - entries from data. */
   arrangeMenu?: { id: string; label: string; icon?: string }[];
+  /** W9 (OKNA §7.2): the style of a window in the sheet „Okna” (the ⋯ of a window that has no frame, e.g. the maximized chat). */
+  style?: (id: string) => { label: string; value: string; options: { value: string; label: string }[] } | null;
+  setStyle?: (id: string, value: string) => void;
   arrange?(id: string, how: string): void;
   /** W5: the sheet „Układ ▾” (named layouts, undo/redo, back to the shipped layout). */
   layouts?: ShellLayouts;
@@ -95,6 +98,10 @@ export default function ChatShell({ profileHost, convId, onSelect, onCreated, re
       <button className="shell-row" style={{ flex: 1, textAlign: "start", border: 0, background: "transparent" }} aria-current={w.front ? "true" : undefined} data-testid="windows-entry-focus"
         onClick={() => { setSheet(null); windows?.focus(w.id); }}>{w.label}{w.front ? ` · ${t("windows_active")}` : ""}</button>
       {w.closable && <button className="icon-btn" aria-label={t("windows_close", { screen: w.label })} data-testid="windows-entry-close" onClick={() => windows?.close(w.id)}>×</button>}
+      {windows?.style && (() => { const st = windows.style!(w.id); return st ? <select className="windows-style" aria-label={`${st.label}: ${w.label}`} data-testid="windows-entry-style" value={st.value}
+        onChange={e => windows.setStyle?.(w.id, e.target.value)}>
+        {st.options.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+      </select> : null; })()}
       {windows?.arrange && (windows.arrangeMenu ?? []).length > 0 && <select className="windows-arrange" aria-label={w.label} data-testid="windows-entry-arrange" value=""
         onChange={e => { const how = e.target.value; if (how) { setSheet(null); windows.arrange!(w.id, how); } }}>
         <option value="">⋯</option>

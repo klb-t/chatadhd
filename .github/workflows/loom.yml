@@ -300,6 +300,7 @@ jobs:
           npm run test:windows-w6
           npm run test:windows-w7
           npm run test:windows-w8
+          npm run test:windows-w9
           npm run test:chat-first
           npm run test:composer-menu-browser
           npm run test:workspace
