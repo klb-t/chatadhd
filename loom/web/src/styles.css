@@ -296,6 +296,11 @@ textarea { resize: vertical; }
 .desktop-icon[disabled] { opacity: 0.45; cursor: default; }
 .desktop-icon-glyph { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 14px; background: var(--card); border: 1px solid var(--border); font-size: 22px; line-height: 1; }
 .desktop-icon-label { font-size: 13px; text-align: center; overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; word-break: break-word; max-width: 100%; }
+/* R101 D3 (PULPIT §8): desktop_minimized=icons - the minimized windows as a strip of small icons at the bottom of the desktop (a taskbar) */
+.desktop-minimized-strip { position: sticky; bottom: 0; display: flex; flex-wrap: wrap; gap: 4px; padding: 6px 4px; margin-top: auto; border-top: 1px solid var(--border); background: color-mix(in srgb, var(--card) 80%, transparent); z-index: 2; }
+.desktop-icon-small { flex-direction: row; padding: 4px 8px; }
+.desktop-icon-small .desktop-icon-glyph { width: 32px; height: 32px; font-size: 16px; border-radius: 10px; }
+.desktop-card h3 { margin: 0 0 6px; }
 .desktop-more { align-self: flex-start; min-height: 44px; padding: 8px 12px; border-radius: 10px; border: 1px solid var(--border); background: var(--card); color: inherit; }
 .win-float { position: absolute; pointer-events: auto; display: flex; }
 .win-drop { position: fixed; z-index: 30; pointer-events: none; background: color-mix(in srgb, var(--accent, #4a8cff) 25%, transparent); border: 2px solid var(--accent, #4a8cff); border-radius: 6px; }

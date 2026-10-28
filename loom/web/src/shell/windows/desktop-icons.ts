@@ -9,12 +9,23 @@ type Text = { pl?: string; en?: string };
 export interface DeclElement { id?: string; kind?: string; [key: string]: unknown }
 export interface Declaration { id?: string; label?: Text | string; elements?: DeclElement[] }
 export interface Advisory { code: string; vars?: Record<string, string> }
+export interface IconSource { id: string; perspective: string; limit: number | null }
+/** The icon sources the page can fill today (perspectives of the desktop's own data); another perspective is `unsupported` with its reason. */
+export const ICON_SOURCES = ["window_kinds", "minimized_windows", "layouts", "recent_conversations"];
 export interface ResolvedDesktop {
   id: string;
   /** preset: nothing set; setting: an id of desktop.json declarations; inline: a declaration object (or its JSON text) in the setting. */
   origin: "preset" | "setting" | "inline";
   pins: { focus: string; seed: string[] } | null;
-  around: { focus: string; depth: number; budget: number } | null;
+  /** R101 D3: the background graph; `channel` set = it follows that coupling channel (W6, e.g. focus of a navigator window), `focus` is
+   *  then the fallback when no window gives a value (pulpit_graf_zywy). */
+  around: { focus: string; depth: number; budget: number; channel?: string } | null;
+  /** R101 D3: icon sources other than the pins (window_kinds, minimized_windows, layouts, recent_conversations - an open list), in order. */
+  sources: IconSource[];
+  /** R101 D3: a card of a node as the content of the desktop (pulpit_karta: party:self). */
+  card: { focus: string; limit: number } | null;
+  /** R101 D3: the affordance of the declaration (§12): the sections it asks for when the setting desktop_sections is unset; null = the preset. */
+  sections: string[] | null;
   alpha: number;
   edgeAlpha: number;
   grid: { columns: number | "auto"; cellPx: number; flow: string };
@@ -50,7 +61,7 @@ export function resolveDeclaration(setting: unknown, deviceClass: string, data: 
   if (!decl) { decl = decls[presetId] ?? { elements: [] }; }
   const known = new Set(data.element_kinds_known ?? ["source", "encoding", "coordinates", "icon", "rules"]);
   const elements = Array.isArray(decl.elements) ? decl.elements.filter((e): e is DeclElement => !!e && typeof e === "object" && !Array.isArray(e)) : [];
-  const out: ResolvedDesktop = { id, origin, pins: null, around: null, alpha: 0, edgeAlpha: 0, grid: { columns: "auto", cellPx: 96, flow: "row_major" }, icon: null, unsupported: [], advisories };
+  const out: ResolvedDesktop = { id, origin, pins: null, around: null, sources: [], card: null, sections: null, alpha: 0, edgeAlpha: 0, grid: { columns: "auto", cellPx: 96, flow: "row_major" }, icon: null, unsupported: [], advisories };
   let alphaSet = false, edgeSet = false;
   elements.forEach((e, i) => {
     const eid = typeof e.id === "string" ? e.id : `#${i}`; const kind = typeof e.kind === "string" ? e.kind : "";
@@ -60,7 +71,13 @@ export function resolveDeclaration(setting: unknown, deviceClass: string, data: 
       if (persp === "pinned_on") out.pins = { focus: str(e.focus, "desktop:main"), seed: Array.isArray(e.seed) ? e.seed.filter((x): x is string => typeof x === "string" && !!x.trim()) : [] };
       else if (persp === "navigate" || persp === "scope_chain" || persp === "around") {
         const depth = num(e.depth); const budget = num(byClass(e.budget, deviceClass));
-        out.around = { focus: str(e.focus, "party:self"), depth: depth === undefined ? 2 : Math.max(0, Math.floor(depth)), budget: budget === undefined ? 400 : Math.max(0, Math.floor(budget)) };
+        // a focus is an address, or {channel, fallback}: the value of a coupling channel (W6), the fallback when no window gives one
+        const f = e.focus; const live = f && typeof f === "object" && !Array.isArray(f) ? f as Record<string, unknown> : null;
+        out.around = { focus: live ? str(live.fallback, "party:self") : str(f, "party:self"), depth: depth === undefined ? 2 : Math.max(0, Math.floor(depth)), budget: budget === undefined ? 400 : Math.max(0, Math.floor(budget)),
+          ...(live ? { channel: str(live.channel, "focus") } : {}) };
+      } else if (ICON_SOURCES.includes(persp)) {
+        const lim = num(byClass(e.limit, deviceClass));
+        out.sources.push({ id: eid, perspective: persp, limit: lim === undefined ? null : Math.max(0, Math.floor(lim)) });
       } else out.unsupported.push({ id: eid, kind, reason: `perspective_unknown:${persp || "?"}` });
     } else if (kind === "encoding") {
       const v = num(byClass(e.value, deviceClass));
@@ -73,11 +90,17 @@ export function resolveDeclaration(setting: unknown, deviceClass: string, data: 
       out.grid = { columns: cn === undefined ? "auto" : Math.max(1, Math.floor(cn)), cellPx: px === undefined || px <= 0 ? 96 : px, flow: str(e.flow, "row_major") };
     } else if (kind === "icon") {
       const n = num(e.label_lines); out.icon = { labelLines: n === undefined ? 2 : Math.max(0, Math.floor(n)) };
+    } else if (kind === "card") {
+      const lim = num(byClass(e.limit, deviceClass));
+      out.card = { focus: str(e.focus, "party:self"), limit: lim === undefined ? 8 : Math.max(0, Math.floor(lim)) };
+    } else if (kind === "affordance") {
+      if (Array.isArray(e.sections)) out.sections = e.sections.filter((x): x is string => typeof x === "string" && !!x.trim());
+      else out.unsupported.push({ id: eid, kind, reason: "sections_missing" });
     }
   });
   if (out.around && !alphaSet) out.alpha = 0.12;
   if (out.around && !edgeSet) out.edgeAlpha = 0.07;
-  if (out.pins && !out.icon) out.icon = { labelLines: 2 };
+  if ((out.pins || out.sources.length) && !out.icon) out.icon = { labelLines: 2 };
   if (out.around && out.alpha === 0 && out.edgeAlpha === 0) advisories.push({ code: "nothing_visible" });
   return out;
 }
@@ -91,6 +114,9 @@ export interface DesktopExtra {
   open_targets?: { prefixes?: Record<string, OpenRule>; fallback?: OpenRule };
   address_labels?: Record<string, Text | string>;
   glyphs?: Record<string, string>;
+  minimized?: { preset?: unknown; known?: string[] };
+  declaration_words?: Record<string, { pl?: string[]; en?: string[] }>;
+  declaration_clear_words?: string[];
 }
 export interface OpenRule { kind?: string; focus?: string; conversation?: string }
 export const DESKTOP_X = DESKTOP as DesktopData & DesktopExtra;
@@ -121,6 +147,10 @@ export interface DesktopIcon {
   /** The window kind it opens (null: no rule); status/reason as the kind's entry on the desktop (planned and unopenable greyed, never hidden). */
   kind: string | null; status: "available" | "planned" | "cannot_open"; reason?: string;
   open?: { target: KindTarget; focus?: string; conversation?: string };
+  /** R101 D3: which source of the declaration gave the icon (pins, or the id of a source element). */
+  source?: string;
+  /** R101 D3: an icon that does not open a kind - a minimized window to restore, a layout to load. */
+  act?: { restore: string } | { layout: string; own: boolean };
 }
 
 const pickText = (t: Text | string | undefined, lang: string): string | undefined => (typeof t === "string" ? t : t ? (lang === "pl" ? t.pl ?? t.en : t.en ?? t.pl) : undefined);
@@ -208,4 +238,82 @@ export function backdropLayout(nodes: readonly BackNode[], edges: readonly BackE
     }
   }
   return { pos: new Map(ids.map((a, i) => [a, { x: x[i], y: y[i] }])), edges: kept };
+}
+
+// ---------- R101 D3: the other concepts as presets (PULPIT §3.1, §3.2, §8) ----------
+
+const glyphOf = (address: string, data: DesktopExtra) => { const gp = longestPrefix(data.glyphs, address); return gp !== undefined ? data.glyphs![gp] : "•"; };
+
+export interface SourceContext {
+  entries: readonly KindEntry[];
+  minimized: readonly { id: string; title: string }[];
+  layouts: { shipped: readonly { id: string; label: string }[]; own: readonly { id: string; label: string }[] };
+  conversations: readonly { id: string; title: string }[];
+}
+/** The icons of one source of the declaration. window_kinds: every kind of window_kinds.json as a tile (planned and unopenable greyed
+ *  with their reason, never hidden); minimized_windows: the minimized windows (tap restores); layouts: the shipped and own layouts (tap
+ *  loads); recent_conversations: the latest conversations (tap opens it in the chat). `limit` null = all. Total: an unknown perspective
+ *  gives no icon (resolveDeclaration already listed it as unsupported). */
+export function sourceIcons(src: IconSource, ctx: SourceContext, _lang: string, data: DesktopExtra = DESKTOP_X): DesktopIcon[] {
+  const cut = <T,>(xs: readonly T[]) => (src.limit === null ? [...xs] : xs.slice(0, src.limit));
+  const mk = (address: string, label: string, i: number) => ({ address, node: `${src.id}:${address}`, label, glyph: glyphOf(address, data), order: i, source: src.id });
+  if (src.perspective === "window_kinds") return cut(ctx.entries).map((e, i) => {
+    const b = mk(`kind:${e.kind}`, e.label, i);
+    return e.status === "available" && e.target ? { ...b, kind: e.kind, status: "available" as const, open: { target: e.target } } : { ...b, kind: e.kind, status: e.status, reason: e.reason };
+  });
+  if (src.perspective === "minimized_windows") return cut(ctx.minimized).map((w, i) => ({ ...mk(`window:${w.id}`, w.title, i), kind: null, status: "available" as const, act: { restore: w.id } }));
+  if (src.perspective === "layouts") return cut([...ctx.layouts.shipped.map((l) => ({ ...l, own: false })), ...ctx.layouts.own.map((l) => ({ ...l, own: true }))])
+    .map((l, i) => ({ ...mk(`layout:${l.id}`, l.label, i), kind: null, status: "available" as const, act: { layout: l.id, own: l.own } }));
+  if (src.perspective === "recent_conversations") return cut(ctx.conversations).map((c, i) => {
+    const t = openTargetOf(`conv:${c.id}`, data); const e = t ? ctx.entries.find((x) => x.kind === t.kind) : undefined;
+    const b = mk(`conv:${c.id}`, c.title || c.id, i);
+    return e?.status === "available" && e.target ? { ...b, kind: e.kind, status: "available" as const, open: { target: e.target, conversation: c.id } } : { ...b, kind: t?.kind ?? null, status: "cannot_open" as const, reason: e?.reason };
+  });
+  return [];
+}
+
+/** Every icon of the desktop in the order of the declaration: the pins first (when declared), then each source in its order. */
+export function allIcons(decl: ResolvedDesktop, pinIcons: readonly DesktopIcon[], ctx: SourceContext, lang: string, data: DesktopExtra = DESKTOP_X): DesktopIcon[] {
+  const out: DesktopIcon[] = decl.pins ? pinIcons.map((p) => ({ ...p, source: p.source ?? "pins" })) : [];
+  for (const s of decl.sources) out.push(...sourceIcons(s, ctx, lang, data));
+  return out;
+}
+
+/** The focus of a live background graph (pulpit_graf_zywy): the value of the coupling channel; else the same parameter of the focused
+ *  window, else of the last window that has one (a navigator writes its focus there); else the declaration's fallback. */
+export function liveFocus(around: NonNullable<ResolvedDesktop["around"]>, values: { windows: Record<string, Record<string, unknown>>; channels: Record<string, unknown> } | null | undefined,
+  windows: readonly { id: string }[] = [], focused: string | null = null): { focus: string; from: "channel" | "window" | "fallback"; window?: string } {
+  if (!around.channel || !values) return { focus: around.focus, from: "fallback" };
+  const ch = values.channels?.[around.channel];
+  if (typeof ch === "string" && ch) return { focus: ch, from: "channel" };
+  const ids = windows.map((w) => w.id);
+  const order = focused && ids.includes(focused) ? [focused, ...ids.filter((x) => x !== focused).reverse()] : [...ids].reverse();
+  for (const id of order) { const v = values.windows?.[id]?.[around.channel]; if (typeof v === "string" && v) return { focus: v, from: "window", window: id }; }
+  return { focus: around.focus, from: "fallback" };
+}
+
+/** desktop_minimized (PULPIT §8): where a minimized window shows on the desktop - shelf (the list section), icons (a strip at the bottom of
+ *  the desktop), both, none [examples]. Unset = the preset per device class; an unknown value = the preset with an advisory. */
+export function minimizedMode(setting: unknown, deviceClass: string, data: DesktopExtra = DESKTOP_X): { mode: string; advisory?: Advisory } {
+  const preset = String(byClass(data.minimized?.preset, deviceClass) ?? "shelf");
+  const known = data.minimized?.known ?? ["shelf", "icons", "both", "none"];
+  if (setting === undefined || setting === null || setting === "") return { mode: preset };
+  const v = String(setting).trim();
+  return known.includes(v) ? { mode: v } : { mode: preset, advisory: { code: "desktop_minimized_unknown", vars: { value: v.slice(0, 40), preset } } };
+}
+
+const fold = (s: string) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ł/g, "l").replace(/Ł/g, "L").toLowerCase().replace(/[^a-z0-9_:]+/g, " ").trim();
+/** The declaration a word names (the sentence „pulpit jako ikony”): an id of `declarations` (with or without pulpit_), its label, or a
+ *  word of declaration_words; a clear word (default, domyślny) = null (the preset). Unknown: undefined (the page says which it knows). */
+export function declarationOfWord(word: string, data: DesktopExtra = DESKTOP_X): string | null | undefined {
+  const w = fold(word); if (!w) return undefined;
+  if ((data.declaration_clear_words ?? []).some((c) => fold(c) === w)) return null;
+  const ids = Object.keys(data.declarations ?? {});
+  for (const id of ids) if (fold(id) === w || fold(id.replace(/^pulpit_/, "")) === w || fold(id.replace(/^pulpit_/, "").replace(/_/g, " ")) === w) return id;
+  for (const id of ids) {
+    const words = data.declaration_words?.[id]; const label = data.declarations![id].label;
+    const all = [...(words?.pl ?? []), ...(words?.en ?? []), ...(typeof label === "string" ? [label] : [label?.pl ?? "", label?.en ?? ""])];
+    if (all.some((x) => x && fold(x) === w)) return id;
+  }
+  return undefined;
 }

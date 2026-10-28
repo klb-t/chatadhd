@@ -63,7 +63,7 @@ import { usePruneKept } from "./shell/windows/useKeep";
 import Desktop, { DesktopEnded } from "./shell/windows/Desktop";
 import { DESKTOP, say, say as sayDesktop, closedLast, desktopCover, desktopPaths, desktopSettings, kindEntries, lastWindowClose, openFromDesktop, restoreFromDesktop, showDesktop, type KindTarget } from "./shell/windows/desktop";
 import { handSentence } from "./shell/desktop-sentence";
-import type { DesktopIcon } from "./shell/windows/desktop-icons";
+import { DESKTOP_X, declarationOfWord, minimizedMode, resolveDeclaration, type DesktopIcon } from "./shell/windows/desktop-icons";
 import { oneEntry, comboOf } from "./shell/windows/steps";
 import { apply as applyOp } from "./shell/windows/model";
 
@@ -487,6 +487,23 @@ export default function App() {
         return;
       }
       if (detail.action.startsWith("artifact.")) return;   // W-gaps: the chat page that shows the answers carries these out (ChatView)
+      if (detail.action === "desktop.declare") {
+        // R101 D3: the client step of desktop.declare - a sentence („pulpit jako ikony”) picks the desktop declaration by a word of
+        // desktop.json (id, label, declaration_words; a clear word = the preset) and writes the setting desktop_declaration
+        const word = typeof detail.args?.declaration === "string" ? detail.args.declaration : "";
+        const id = declarationOfWord(word);
+        const lang = uiLanguageRef.current;
+        const labelOf = (x: string) => { const l = DESKTOP_X.declarations?.[x]?.label; return typeof l === "string" ? l : (lang === "pl" ? l?.pl ?? l?.en : l?.en ?? l?.pl) ?? x; };
+        if (id === undefined) {
+          const known = Object.keys(DESKTOP_X.declarations ?? {}).map(labelOf).join(", ");
+          detail.outcome = { state: "failed", error: { message: sayDesktop(DESKTOP.words, "declare_unknown", lang, { word, known }) } };
+          return;
+        }
+        saveSetting("desktop_declaration", id);
+        const text = sayDesktop(DESKTOP.words, id === null ? "declare_receipt_preset" : "declare_receipt", lang, { label: labelOf(id ?? DESKTOP_X.declaration_preset ?? "pulpit_graf") });
+        detail.outcome = { state: "ok", parts: [{ kind: "text", text }], data: { schema: "loom.desktop_receipt/1", op: "desktop.declare", declaration: id } };
+        return;
+      }
       if (detail.action === "desktop.show") {
         // R101 D1: the client step of the catalogue action desktop.show = Ctrl+Shift+D (every shown window minimized, one journal entry)
         const before = winRef.current; const next = showDesktop(before); moveTo(next);
@@ -664,7 +681,10 @@ export default function App() {
   usePruneKept(win.layout);
   // R101 P0 (PULPIT §7, §10, §12): the desktop under the windows - always mounted, seen where no window covers it; content from data
   // (shell/data/desktop.json) and settings (desktop_sections, desktop_emergency_path, last_window_close).
-  const deskSettings = useMemo(() => desktopSettings(config), [config.desktop_sections, config.desktop_emergency_path]);   // eslint-disable-line react-hooks/exhaustive-deps
+  // R101 D3: the declaration may ask for its own sections (affordance, e.g. pulpit_pusty); desktop_minimized=none drops the shelf
+  const deskDecl = useMemo(() => resolveDeclaration(config.desktop_declaration, deviceClass), [config.desktop_declaration, deviceClass]);
+  const deskMin = minimizedMode(config.desktop_minimized, deviceClass).mode;
+  const deskSettings = useMemo(() => desktopSettings(config, DESKTOP, deskDecl.sections, deskMin), [config.desktop_sections, config.desktop_emergency_path, deskDecl, deskMin]);   // eslint-disable-line react-hooks/exhaustive-deps
   const deskEntries = useMemo(() => kindEntries((id) => Object.prototype.hasOwnProperty.call(PANEL_LABELS, id), win.layout.id, uiLanguage), [win.layout.id, uiLanguage]);
   const deskCover = desktopCover(win.layout, mountShown);
   const deskLayouts = useMemo(() => ({ shipped: shellLayouts.shipped.map(l => ({ id: l.id, label: l.label })), own: shellLayouts.own.map(l => ({ id: l.id, label: l.label })) }), [shellLayouts]);
@@ -710,7 +730,7 @@ export default function App() {
   const desktop = <Desktop layout={win.layout} cover={deskCover} lang={uiLanguage} settings={deskSettings} entries={deskEntries} paths={deskPaths} layouts={deskLayouts}
     title={windowLabel} openKind={deskOpen} restore={(id) => moveTo(restoreFromDesktop(winRef.current, id))} loadLayout={deskLoad}
     sentence={(text) => { deskOpen({ chat: true }); handSentence(text, DESKTOP.sentence.send !== false); }} enableEmergency={() => saveSetting("desktop_emergency_path", true)}
-    api={api} deviceClass={deviceClass} declaration={config.desktop_declaration} openIcon={deskIcon} />;
+    api={api} deviceClass={deviceClass} declaration={config.desktop_declaration} openIcon={deskIcon} coupling={coupling.values} minimizedSetting={config.desktop_minimized} />;
   const advice = useMemo(() => {
     const more = [...styleAdvice, ...mount.advisories];
     return more.length ? [...coupling.advisories, ...more] : coupling.advisories;

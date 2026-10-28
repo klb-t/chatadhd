@@ -42,14 +42,17 @@ export function desktopCover(l: WLayout, shown: (w: Win) => boolean = (w) => !w.
 
 export interface DesktopSettings { sections: string[]; emergency: boolean; unknownSections: string[] }
 /** desktop_sections (an array or a comma list; unset = the preset) and desktop_emergency_path (unset = on). */
-export function desktopSettings(config: Record<string, unknown>, data: DesktopData = DESKTOP): DesktopSettings {
+/** R101 D3: `declared` = the sections the desktop declaration asks for (its affordance element, e.g. pulpit_pusty); they are used when the
+ *  setting is unset (the setting wins). `minimized` = the mode of desktop_minimized: none drops the section restore (no path from it). */
+export function desktopSettings(config: Record<string, unknown>, data: DesktopData = DESKTOP, declared: string[] | null = null, minimized = "shelf"): DesktopSettings {
   let raw: unknown = config.desktop_sections;
+  if ((raw === undefined || raw === null || raw === "") && declared) raw = declared;
   if (typeof raw === "string") { try { raw = raw.trim().startsWith("[") ? JSON.parse(raw) : raw.split(",").map((x) => x.trim()).filter(Boolean); } catch { raw = undefined; } }
   const list = Array.isArray(raw) ? raw.filter((x): x is string => typeof x === "string") : data.sections;
   const known = list.filter((x) => x in data.sections_known);
   const e = config.desktop_emergency_path;
   const emergency = !(e === false || e === "false" || e === 0 || e === "0");
-  return { sections: known, emergency, unknownSections: list.filter((x) => !(x in data.sections_known)) };
+  return { sections: minimized === "none" ? known.filter((x) => x !== "restore") : known, emergency, unknownSections: list.filter((x) => !(x in data.sections_known)) };
 }
 
 export type KindTarget = { chat: true } | { panel: string };

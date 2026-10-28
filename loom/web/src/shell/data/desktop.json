@@ -176,6 +176,34 @@
   "nothing_visible": {
    "pl": "Graf w tle jest niewidoczny (krycie 0). Czy to celowe?",
    "en": "The graph behind is invisible (opacity 0). Is that intended?"
+  },
+  "minimized_icons": {
+   "pl": "Zminimalizowane okna (pasek)",
+   "en": "Minimized windows (bar)"
+  },
+  "minimized_unknown": {
+   "pl": "Nieznana wartość „zminimalizowane okna na pulpicie”: {value}; użyto {preset}.",
+   "en": "Unknown value of “minimized windows on the desktop”: {value}; {preset} is used."
+  },
+  "card_label": {
+   "pl": "Karta: {label}",
+   "en": "Card: {label}"
+  },
+  "card_empty": {
+   "pl": "Wokół tego węzła nie ma jeszcze nic w grafie.",
+   "en": "Nothing is around this node in the graph yet."
+  },
+  "declare_receipt": {
+   "pl": "Pulpit ma teraz wygląd „{label}”. Zdanie „pulpit jako graf” wraca do domyślnego.",
+   "en": "The desktop is now “{label}”. The sentence “desktop as graph” brings the default back."
+  },
+  "declare_receipt_preset": {
+   "pl": "Pulpit wraca do domyślnego wyglądu ({label}).",
+   "en": "The desktop is back to its default ({label})."
+  },
+  "declare_unknown": {
+   "pl": "Nie znam takiego wyglądu pulpitu: „{word}”. Znane: {known}.",
+   "en": "I do not know such a desktop: “{word}”. Known: {known}."
   }
  },
  "sections_more": [
@@ -280,7 +308,7 @@
     "pl": "Pulpit: ikony",
     "en": "Desktop: icons"
    },
-   "note": "PULPIT_R101 §3.1 [preset]: only the pins, no graph behind them (pulpit_graf with the rest at opacity 0). The other concepts are D3.",
+   "note": "PULPIT_R101 §3.1 [preset]: only the pins, no graph behind them (pulpit_graf with the rest at opacity 0).",
    "elements": [
     {
      "id": "pins",
@@ -322,6 +350,286 @@
      "label_lines": 2
     }
    ]
+  },
+  "pulpit_start": {
+   "id": "pulpit_start",
+   "label": {
+    "pl": "Pulpit: start",
+    "en": "Desktop: start"
+   },
+   "note": "PULPIT_R101 §3.1 [preset]: a launcher - a tile for every kind of window (planned ones greyed with their reason), the latest conversations and the layouts; the sentence field stays. Limits are presets.",
+   "elements": [
+    {
+     "id": "kinds",
+     "kind": "source",
+     "perspective": "window_kinds",
+     "weight": "main"
+    },
+    {
+     "id": "recent",
+     "kind": "source",
+     "perspective": "recent_conversations",
+     "limit": {
+      "phone": 4,
+      "tablet": 6,
+      "desktop": 8
+     }
+    },
+    {
+     "id": "layouts",
+     "kind": "source",
+     "perspective": "layouts"
+    },
+    {
+     "id": "co",
+     "kind": "coordinates",
+     "system": "icon_grid",
+     "columns": {
+      "phone": 4,
+      "tablet": "auto",
+      "desktop": "auto"
+     },
+     "cell_px": {
+      "phone": 84,
+      "tablet": 96,
+      "desktop": 96
+     },
+     "flow": "row_major"
+    },
+    {
+     "id": "ic",
+     "kind": "icon",
+     "glyph": "address",
+     "label": "label",
+     "label_lines": 2
+    },
+    {
+     "id": "af",
+     "kind": "affordance",
+     "sections": [
+      "icons",
+      "sentence",
+      "restore"
+     ]
+    }
+   ]
+  },
+  "pulpit_polka": {
+   "id": "pulpit_polka",
+   "label": {
+    "pl": "Pulpit: półka",
+    "en": "Desktop: shelf"
+   },
+   "note": "PULPIT_R101 §3.1 [preset]: only the shelf - the minimized windows as icons over the whole background (a taskbar as the desktop); a tap restores one. The sentence field and \"More…\" stay as the ways to a new window (§12 P1).",
+   "elements": [
+    {
+     "id": "shelf",
+     "kind": "source",
+     "perspective": "minimized_windows",
+     "weight": "main"
+    },
+    {
+     "id": "co",
+     "kind": "coordinates",
+     "system": "icon_grid",
+     "columns": {
+      "phone": 4,
+      "tablet": "auto",
+      "desktop": "auto"
+     },
+     "cell_px": {
+      "phone": 84,
+      "tablet": 96,
+      "desktop": 96
+     },
+     "flow": "row_major"
+    },
+    {
+     "id": "ic",
+     "kind": "icon",
+     "glyph": "address",
+     "label": "label",
+     "label_lines": 2
+    },
+    {
+     "id": "af",
+     "kind": "affordance",
+     "sections": [
+      "icons",
+      "sentence",
+      "open",
+      "layouts"
+     ]
+    }
+   ]
+  },
+  "pulpit_pusty": {
+   "id": "pulpit_pusty",
+   "label": {
+    "pl": "Pulpit: pusty",
+    "en": "Desktop: empty"
+   },
+   "note": "PULPIT_R101 §3.1 [preset]: almost nothing - the background and one way in: the sentence field, and a long press (or \"More…\") for every kind of window (§12 P1).",
+   "elements": [
+    {
+     "id": "af",
+     "kind": "affordance",
+     "sections": [
+      "sentence",
+      "open"
+     ]
+    }
+   ]
+  },
+  "pulpit_karta": {
+   "id": "pulpit_karta",
+   "label": {
+    "pl": "Pulpit: karta „Ty”",
+    "en": "Desktop: “You” card"
+   },
+   "note": "PULPIT_R101 §3.1 [preset]: the desktop is the card of the node party:self (its name and what is around it in the graph, a tap opens the navigator there) with the pinned icons under it.",
+   "elements": [
+    {
+     "id": "card",
+     "kind": "card",
+     "focus": "party:self",
+     "limit": {
+      "phone": 6,
+      "tablet": 8,
+      "desktop": 10
+     }
+    },
+    {
+     "id": "pins",
+     "kind": "source",
+     "perspective": "pinned_on",
+     "focus": "desktop:main",
+     "weight": "main",
+     "seed": [
+      "party:self",
+      "area:context_projects",
+      "conversations:",
+      "kind:chat",
+      "area:knowledge",
+      "kind:settings",
+      "trash:"
+     ]
+    },
+    {
+     "id": "co",
+     "kind": "coordinates",
+     "system": "icon_grid",
+     "columns": {
+      "phone": 4,
+      "tablet": "auto",
+      "desktop": "auto"
+     },
+     "cell_px": {
+      "phone": 84,
+      "tablet": 96,
+      "desktop": 96
+     },
+     "flow": "row_major"
+    },
+    {
+     "id": "ic",
+     "kind": "icon",
+     "glyph": "address",
+     "label": "label",
+     "label_lines": 2
+    }
+   ]
+  },
+  "pulpit_graf_zywy": {
+   "id": "pulpit_graf_zywy",
+   "label": {
+    "pl": "Pulpit: żywy graf",
+    "en": "Desktop: live graph"
+   },
+   "note": "PULPIT_R101 §3.1/§3.2 [preset]: as pulpit_graf, but the graph behind follows the coupling channel focus (W6): the focus of the navigator window (its own value, or the shared channel focus when bound); with no such window it falls back to party:self.",
+   "elements": [
+    {
+     "id": "pins",
+     "kind": "source",
+     "perspective": "pinned_on",
+     "focus": "desktop:main",
+     "weight": "main",
+     "seed": [
+      "party:self",
+      "area:context_projects",
+      "conversations:",
+      "kind:chat",
+      "area:knowledge",
+      "kind:settings",
+      "trash:"
+     ]
+    },
+    {
+     "id": "around",
+     "kind": "source",
+     "perspective": "navigate",
+     "focus": {
+      "channel": "focus",
+      "fallback": "party:self"
+     },
+     "weight": "side",
+     "depth": 2,
+     "budget": {
+      "phone": 150,
+      "tablet": 250,
+      "desktop": 400
+     }
+    },
+    {
+     "id": "a",
+     "kind": "encoding",
+     "channel": "alpha",
+     "source": "around",
+     "value": {
+      "phone": 0.14,
+      "tablet": 0.12,
+      "desktop": 0.12
+     }
+    },
+    {
+     "id": "e",
+     "kind": "encoding",
+     "channel": "edge_alpha",
+     "source": "around",
+     "value": 0.07
+    },
+    {
+     "id": "co",
+     "kind": "coordinates",
+     "system": "icon_grid",
+     "columns": {
+      "phone": 4,
+      "tablet": "auto",
+      "desktop": "auto"
+     },
+     "cell_px": {
+      "phone": 84,
+      "tablet": 96,
+      "desktop": 96
+     },
+     "flow": "row_major",
+     "others": "force"
+    },
+    {
+     "id": "ic",
+     "kind": "icon",
+     "glyph": "address",
+     "label": "label",
+     "label_lines": 2
+    },
+    {
+     "id": "rl",
+     "kind": "rules",
+     "advisories": {
+      "nothing_visible": "ask"
+     }
+    }
+   ]
   }
  },
  "element_kinds_known": [
@@ -329,7 +637,9 @@
   "encoding",
   "coordinates",
   "icon",
-  "rules"
+  "rules",
+  "card",
+  "affordance"
  ],
  "open_targets": {
   "note": "address of an icon -> the window it opens (longest prefix wins; $address = the whole address, $rest = what follows the prefix). The kind goes through window_kinds.json: a planned kind is shown greyed with its reason, a kind the page cannot open yet too. An address no prefix knows opens fallback. Examples, an open list.",
@@ -411,6 +721,118 @@
   "trash:": "⌫",
   "conv:": "✉",
   "memory:": "✦",
-  "": "•"
+  "": "•",
+  "window:": "▭",
+  "layout:": "▦"
+ },
+ "declaration_words": {
+  "note": "the words a sentence („pulpit jako ikony”, „desktop as start”) may name a declaration with, besides its id (with or without pulpit_) and its label. Examples, an open list.",
+  "pulpit_graf": {
+   "pl": [
+    "graf",
+    "grafem",
+    "graf z ikonami"
+   ],
+   "en": [
+    "graph",
+    "a graph"
+   ]
+  },
+  "pulpit_ikony": {
+   "pl": [
+    "ikony",
+    "ikonami",
+    "same ikony"
+   ],
+   "en": [
+    "icons",
+    "icons only"
+   ]
+  },
+  "pulpit_start": {
+   "pl": [
+    "start",
+    "startowy",
+    "siatka startowa",
+    "kafle",
+    "kafelki"
+   ],
+   "en": [
+    "start",
+    "launcher",
+    "tiles",
+    "a launcher"
+   ]
+  },
+  "pulpit_polka": {
+   "pl": [
+    "półka",
+    "półką",
+    "pasek zadań"
+   ],
+   "en": [
+    "shelf",
+    "a shelf",
+    "taskbar"
+   ]
+  },
+  "pulpit_pusty": {
+   "pl": [
+    "pusty",
+    "puste",
+    "nic"
+   ],
+   "en": [
+    "empty",
+    "nothing"
+   ]
+  },
+  "pulpit_karta": {
+   "pl": [
+    "karta",
+    "kartą",
+    "karta ty",
+    "ty"
+   ],
+   "en": [
+    "card",
+    "a card",
+    "you",
+    "you card"
+   ]
+  },
+  "pulpit_graf_zywy": {
+   "pl": [
+    "graf żywy",
+    "żywy graf",
+    "żywy",
+    "żywym grafem"
+   ],
+   "en": [
+    "live graph",
+    "a live graph",
+    "live"
+   ]
+  }
+ },
+ "declaration_clear_words": [
+  "domyślny",
+  "domyślnie",
+  "default",
+  "preset"
+ ],
+ "minimized": {
+  "preset": {
+   "phone": "shelf",
+   "tablet": "icons",
+   "desktop": "icons"
+  },
+  "known": [
+   "shelf",
+   "icons",
+   "both",
+   "none"
+  ],
+  "note": "setting desktop_minimized (PULPIT §8, §9): where a minimized window shows on the desktop - shelf (the list section restore), icons (a strip of icons at the bottom of the desktop, a taskbar), both, none [examples; presets per device class]. An unknown value is the preset with the advisory desktop_minimized_unknown."
  }
 }

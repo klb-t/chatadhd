@@ -33,6 +33,7 @@ import { BAR_BUTTONS, SEARCH_DEBOUNCE_PRESET_MS, budgetLine, chipText, countText
   initialState, narrower, noTranslationText, requestFor, setQuery, shallower, statusText, wider, type BarButtonId, type NavigatorState, withFocusLabel,
   actionsTarget, clearPerspectives, perspectiveOptions, togglePerspective, type PerspectiveOption } from "./navigator-state";
 import "./graph-navigator.css";
+import { useWindowParam } from "../shell/windows/WindowParams";
 
 interface Props {
   profileHost?: UserProfileHost;
@@ -183,6 +184,11 @@ export default function GraphNavigator({ profileHost, convId, language, initialF
     });
   };
   const focus = focusOf(state);
+  // R101 D3 (PULPIT §3.1 pulpit_graf_zywy): the navigator reports the focus it shows as its window parameter focus (W6 coupling); a live
+  // desktop graph follows it. Write-only: nothing here reads it back, so a binding of focus offers no control (kind_params stays zoom/pan).
+  const focusParam = useWindowParam("focus");
+  const shownFocus = result?.focus.address ?? "";
+  useEffect(() => { if (shownFocus && focusParam.value !== shownFocus) focusParam.set(shownFocus); }, [shownFocus]);   // eslint-disable-line react-hooks/exhaustive-deps
   const crumbs = [{ address: "", label: t("root") }, ...state.path];
   const lines = result ? [...honestyLines(result, t, language), ...receiptLines(result, t)] : [];
   const meMode = !!result && isMeFocus(result.focus.address) && isMeFocus(focus) && state.perspectives.length === 0;
