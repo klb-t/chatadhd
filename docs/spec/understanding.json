@@ -175,9 +175,15 @@
      "by": "owner",
      "date": "2026-10-28",
      "text": "„nie mówię że to ma być ale że to może być to jest jedna z koncepcji” — pulpit jako widok grafu to JEDNA z koncepcji do rozważenia, nie decyzja; projekt porównuje koncepcje."
+    },
+    {
+     "state": "corrected",
+     "by": "owner",
+     "date": "2026-10-28",
+     "text": "„co prawda bardzo zgodna z filozofią więc pewnie wyjdzie preferowana” / „zresztą wszystkie pomysły można zaimplementować wybieramy tylko domyślną opcję” — wszystkie koncepcje pulpitu są implementowane jako presety jednego mechanizmu; porównanie wybiera tylko domyślną (oczekiwanie właściciela: widok grafu)."
     }
    ],
-   "corrected_text": "„nie mówię że to ma być ale że to może być to jest jedna z koncepcji” — pulpit jako widok grafu to JEDNA z koncepcji do rozważenia, nie decyzja; projekt porównuje koncepcje.",
+   "corrected_text": "„co prawda bardzo zgodna z filozofią więc pewnie wyjdzie preferowana” / „zresztą wszystkie pomysły można zaimplementować wybieramy tylko domyślną opcję” — wszystkie koncepcje pulpitu są implementowane jako presety jednego mechanizmu; porównanie wybiera tylko domyślną (oczekiwanie właściciela: widok grafu).",
    "by": "owner",
    "date": "2026-10-28"
   },
