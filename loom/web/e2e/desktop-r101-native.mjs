@@ -262,11 +262,16 @@ try {
         .catch(async e => { throw new Error(`the graph behind did not follow the navigator: ${await focusNow()} (${e.message})`); });
       assert.equal(await desk(p).getAttribute("data-focus-from"), "window");
       await stableShot(p, path.join(SHOTS, `${device}-desktop-graf-zywy.png`));
-      await p.locator('[data-testid="desktop-restore-item"], [data-testid="desktop-minimized-icon"]').first().click();
-      await covered(p);
-      await p.getByTestId("close-panel").click();
+      // the navigator moves to another focus (the icon "Ty" brings the same window back on party:self) → the graph behind moves too
+      const again = p.waitForResponse(r => r.url().includes("/api/graph/navigate") && r.request().postData()?.includes("party:self"), { timeout: 15000 });
+      await p.locator('[data-testid="desktop-icon"][data-address="party:self"]').click();
+      await again; await p.waitForTimeout(300);
+      await p.evaluate(() => (document.activeElement)?.blur?.());
+      await p.keyboard.press("Control+Shift+D");
       await seen(p);
-      await p.waitForFunction(() => document.querySelector('[data-testid="desktop-graph"]')?.getAttribute("data-focus") === "party:self", null, { timeout: 10000 });
+      await p.waitForFunction(() => document.querySelector('[data-testid="desktop-graph"]')?.getAttribute("data-focus") === "party:self", null, { timeout: 10000 })
+        .catch(async e => { throw new Error(`the graph behind did not move with the navigator: ${await focusNow()} (${e.message})`); });
+      assert.equal(await desk(p).getAttribute("data-focus-from"), "window");
     });
     await step(`${device}: D3 - „pusty pulpit” → no icons, no graph, the sentence field and "Więcej…" stay (P1); „pulpit jako graf” brings the default back`, async () => {
       await say(p, "pusty pulpit", "pulpit_pusty");
