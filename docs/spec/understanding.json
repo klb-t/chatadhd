@@ -209,9 +209,15 @@
      "by": "owner",
      "date": "2026-10-28",
      "text": "„to będzie po prostu przypadek Flow w grafie Gdzie są zebrane Flow. Flow konwersacyjny. wielotorowe eksperymenty mamy już chyba zaimplementowane to jest wielotorowa równoległa konwersacja” — R102 to przypadek flow (konwersacyjny) w miejscu grafu, gdzie zebrane są flow; wielotorowa równoległa konwersacja = wielotorowe eksperymenty (DUCH_GRAFU §4) zastosowane do rozmowy, nie nowy silnik."
+    },
+    {
+     "state": "corrected",
+     "by": "owner",
+     "date": "2026-10-28",
+     "text": "„właśnie we flow wielotorowym to można przydzielać wiele ról, które modele to obsługują? jak nie obsługują to można też w jednej roli napisać rozdział na model a model B” — we flow wielotorowym wiele ról/uczestników; gdzie dostawca nie ma natywnego rozróżnienia uczestników, ich wypowiedzi trafiają do jednej roli z podziałem (Model A: … / Model B: …). Sposób przekazania = zdolność dostawcy w danych + preset."
     }
    ],
-   "corrected_text": "„to będzie po prostu przypadek Flow w grafie Gdzie są zebrane Flow. Flow konwersacyjny. wielotorowe eksperymenty mamy już chyba zaimplementowane to jest wielotorowa równoległa konwersacja” — R102 to przypadek flow (konwersacyjny) w miejscu grafu, gdzie zebrane są flow; wielotorowa równoległa konwersacja = wielotorowe eksperymenty (DUCH_GRAFU §4) zastosowane do rozmowy, nie nowy silnik.",
+   "corrected_text": "„właśnie we flow wielotorowym to można przydzielać wiele ról, które modele to obsługują? jak nie obsługują to można też w jednej roli napisać rozdział na model a model B” — we flow wielotorowym wiele ról/uczestników; gdzie dostawca nie ma natywnego rozróżnienia uczestników, ich wypowiedzi trafiają do jednej roli z podziałem (Model A: … / Model B: …). Sposób przekazania = zdolność dostawcy w danych + preset.",
    "by": "owner",
    "date": "2026-10-28"
   },
