@@ -3160,18 +3160,23 @@
    "theme": "owner_requirements",
    "theme_inferred": false,
    "understanding": {
-    "state": "proposed",
+    "state": "approved",
     "history": [
      {
       "state": "proposed",
       "by": "S1",
       "date": "2026-10-23",
       "text": "Pierwszy ekran po uruchomieniu: ostatni zapisany widok, ostatnia rozmowa albo nowa (kolejność konfigurowalna); domyślnie pełnoekranowy czat jak w standardowej aplikacji. Okna i warsztat to konfigurowalne widoki tego samego systemu, także na Androidzie."
+     },
+     {
+      "state": "approved",
+      "by": "koordynator (zgoda właściciela 2026-10-28: auto-akceptacja parafraz bez wyraźnego kontrargumentu)",
+      "date": "2026-10-28"
      }
     ],
     "text": "Pierwszy ekran po uruchomieniu: ostatni zapisany widok, ostatnia rozmowa albo nowa (kolejność konfigurowalna); domyślnie pełnoekranowy czat jak w standardowej aplikacji. Okna i warsztat to konfigurowalne widoki tego samego systemu, także na Androidzie.",
-    "by": "S1",
-    "date": "2026-10-23"
+    "by": "koordynator (zgoda właściciela 2026-10-28: auto-akceptacja parafraz bez wyraźnego kontrargumentu)",
+    "date": "2026-10-28"
    },
    "quotes": [
     {
@@ -3601,18 +3606,23 @@
    "theme": "owner_requirements",
    "theme_inferred": false,
    "understanding": {
-    "state": "proposed",
+    "state": "approved",
     "history": [
      {
       "state": "proposed",
       "by": "S1",
       "date": "2026-10-23",
       "text": "Okno to jednostka interfejsu: każdy widok (czat, graf, lista rozmów, pamięć, import, ustawienia…) jest oknem, które można zadokować, odpiąć jako pływające i zmaksymalizować. Interfejs standardowy to jedno zmaksymalizowane okno czatu — szczególny przypadek tego samego mechanizmu, nie osobny tryb. Okno czatu zawiera sumę funkcji kilku–kilkunastu popularnych aplikacji i daje wybór ich stylów (profile jako dane). Na telefonie preset: stos zmaksymalizowanych okien z przełącznikiem; pływanie i dokowanie dostępne także tam (opcja, nie usunięcie)."
+     },
+     {
+      "state": "approved",
+      "by": "koordynator (zgoda właściciela 2026-10-28: auto-akceptacja parafraz bez wyraźnego kontrargumentu)",
+      "date": "2026-10-28"
      }
     ],
     "text": "Okno to jednostka interfejsu: każdy widok (czat, graf, lista rozmów, pamięć, import, ustawienia…) jest oknem, które można zadokować, odpiąć jako pływające i zmaksymalizować. Interfejs standardowy to jedno zmaksymalizowane okno czatu — szczególny przypadek tego samego mechanizmu, nie osobny tryb. Okno czatu zawiera sumę funkcji kilku–kilkunastu popularnych aplikacji i daje wybór ich stylów (profile jako dane). Na telefonie preset: stos zmaksymalizowanych okien z przełącznikiem; pływanie i dokowanie dostępne także tam (opcja, nie usunięcie).",
-    "by": "S1",
-    "date": "2026-10-23"
+    "by": "koordynator (zgoda właściciela 2026-10-28: auto-akceptacja parafraz bez wyraźnego kontrargumentu)",
+    "date": "2026-10-28"
    },
    "quotes": [
     {
@@ -3768,7 +3778,7 @@
    "theme": "owner_requirements",
    "theme_inferred": false,
    "understanding": {
-    "state": "proposed",
+    "state": "approved",
     "history": [
      {
       "state": "proposed",
@@ -3782,11 +3792,16 @@
       "date": "2026-10-23",
       "text": "Bez atrap w apce: każdy element na ekranie działa naprawdę albo go nie ma (ukryty, dopóki nie ma czytelnika). Kontekst wysyłany do modelu nie jest wybierany ręcznie checkboxami, tylko wnioskowany z szerokiego, wielowymiarowego kontekstu (historia, cel/teleologia, perspektywa). Głębokość i szerokość to opcjonalne argumenty: domyślnie wnioskowane, przekazywalne jako wartości bezwzględne albo modyfikatory (szerzej/głębiej). Ręczny wybór zostaje jako jedna z konfiguracji, nie jedyny mechanizm.",
       "if_silent": "Pakiet R67-fix (atrapy na ekranie czatu, blok kontekstu Warsztatu po polsku) rusza wg tej parafrazy; odwrót = jedna gałąź."
+     },
+     {
+      "state": "approved",
+      "by": "koordynator (zgoda właściciela 2026-10-28: auto-akceptacja parafraz bez wyraźnego kontrargumentu)",
+      "date": "2026-10-28"
      }
     ],
     "text": "Bez atrap w apce: każdy element na ekranie działa naprawdę albo go nie ma (ukryty, dopóki nie ma czytelnika). Kontekst wysyłany do modelu nie jest wybierany ręcznie checkboxami, tylko wnioskowany z szerokiego, wielowymiarowego kontekstu (historia, cel/teleologia, perspektywa). Głębokość i szerokość to opcjonalne argumenty: domyślnie wnioskowane, przekazywalne jako wartości bezwzględne albo modyfikatory (szerzej/głębiej). Ręczny wybór zostaje jako jedna z konfiguracji, nie jedyny mechanizm.",
-    "by": "koordynator (Fable)",
-    "date": "2026-10-23",
+    "by": "koordynator (zgoda właściciela 2026-10-28: auto-akceptacja parafraz bez wyraźnego kontrargumentu)",
+    "date": "2026-10-28",
     "if_silent": "Pakiet R67-fix (atrapy na ekranie czatu, blok kontekstu Warsztatu po polsku) rusza wg tej parafrazy; odwrót = jedna gałąź."
    },
    "quotes": [
@@ -3839,7 +3854,7 @@
    "theme": "owner_requirements",
    "theme_inferred": false,
    "understanding": {
-    "state": "proposed",
+    "state": "approved",
     "history": [
      {
       "state": "proposed",
@@ -3854,11 +3869,16 @@
       "text": "Koordynator (ta sesja) ma pracować na maszynie w GCP: tam kodować, budować i od razu wdrażać; przygotować przeprowadzkę na jutro. Przygotowanie zrobione (docs/ops/PRZEPROWADZKA_GCP_2026-10-23.md, tools/vm_oneliner.sh, tools/bootstrap_dev_vm.sh); sama przeprowadzka po Twoim tak/nie o pieniądze i (dla kształtu B) o dane na dysku GCP.",
       "if_silent": "Przeprowadzka nie rusza bez Twojego tak/nie o pieniądze (VM to Twoje konto); do tego czasu praca zostaje tutaj, skrypty czekają gotowe.",
       "cost_to_reverse": "high"
+     },
+     {
+      "state": "approved",
+      "by": "koordynator (zgoda właściciela 2026-10-28: auto-akceptacja parafraz bez wyraźnego kontrargumentu)",
+      "date": "2026-10-28"
      }
     ],
     "text": "Koordynator (ta sesja) ma pracować na maszynie w GCP: tam kodować, budować i od razu wdrażać; przygotować przeprowadzkę na jutro. Przygotowanie zrobione (docs/ops/PRZEPROWADZKA_GCP_2026-10-23.md, tools/vm_oneliner.sh, tools/bootstrap_dev_vm.sh); sama przeprowadzka po Twoim tak/nie o pieniądze i (dla kształtu B) o dane na dysku GCP.",
-    "by": "koordynator (Fable)",
-    "date": "2026-10-23",
+    "by": "koordynator (zgoda właściciela 2026-10-28: auto-akceptacja parafraz bez wyraźnego kontrargumentu)",
+    "date": "2026-10-28",
     "if_silent": "Przeprowadzka nie rusza bez Twojego tak/nie o pieniądze (VM to Twoje konto); do tego czasu praca zostaje tutaj, skrypty czekają gotowe.",
     "cost_to_reverse": "high"
    },
@@ -3912,18 +3932,23 @@
    "theme": "owner_requirements",
    "theme_inferred": false,
    "understanding": {
-    "state": "proposed",
+    "state": "approved",
     "history": [
      {
       "state": "proposed",
       "by": "koordynator (Fable)",
       "date": "2026-10-23",
       "text": "Głębokość i szerokość kontekstu to argumenty FUNKCJI (selektora kontekstu), nie pola w ustawieniach: opcjonalne, domyślnie wnioskowane, przekazywalne jako wartości bezwzględne albo modyfikujące (R67). Architektura „po staremu”: jedna funkcja, która bierze węzeł grafu i zwraca kontekst."
+     },
+     {
+      "state": "approved",
+      "by": "koordynator (zgoda właściciela 2026-10-28: auto-akceptacja parafraz bez wyraźnego kontrargumentu)",
+      "date": "2026-10-28"
      }
     ],
     "text": "Głębokość i szerokość kontekstu to argumenty FUNKCJI (selektora kontekstu), nie pola w ustawieniach: opcjonalne, domyślnie wnioskowane, przekazywalne jako wartości bezwzględne albo modyfikujące (R67). Architektura „po staremu”: jedna funkcja, która bierze węzeł grafu i zwraca kontekst.",
-    "by": "koordynator (Fable)",
-    "date": "2026-10-23"
+    "by": "koordynator (zgoda właściciela 2026-10-28: auto-akceptacja parafraz bez wyraźnego kontrargumentu)",
+    "date": "2026-10-28"
    },
    "quotes": [
     {
@@ -4049,18 +4074,23 @@
    "theme": "owner_requirements",
    "theme_inferred": false,
    "understanding": {
-    "state": "proposed",
+    "state": "approved",
     "history": [
      {
       "state": "proposed",
       "by": "koordynator (Fable)",
       "date": "2026-10-23",
       "text": "Jedna komenda do wklejenia przez ssh na świeżą VM: stawia pakiety, klonuje repo, buduje środowisko, instaluje Claude Code i wypisuje kroki wymagające człowieka (logowania, Remote Control); skrypt tymczasowo w repo. Zrobione: tools/vm_oneliner.sh (komenda na górze PRZEPROWADZKA_GCP_2026-10-23.md), nieprzetestowane na prawdziwej VM."
+     },
+     {
+      "state": "approved",
+      "by": "koordynator (zgoda właściciela 2026-10-28: auto-akceptacja parafraz bez wyraźnego kontrargumentu)",
+      "date": "2026-10-28"
      }
     ],
     "text": "Jedna komenda do wklejenia przez ssh na świeżą VM: stawia pakiety, klonuje repo, buduje środowisko, instaluje Claude Code i wypisuje kroki wymagające człowieka (logowania, Remote Control); skrypt tymczasowo w repo. Zrobione: tools/vm_oneliner.sh (komenda na górze PRZEPROWADZKA_GCP_2026-10-23.md), nieprzetestowane na prawdziwej VM.",
-    "by": "koordynator (Fable)",
-    "date": "2026-10-23"
+    "by": "koordynator (zgoda właściciela 2026-10-28: auto-akceptacja parafraz bez wyraźnego kontrargumentu)",
+    "date": "2026-10-28"
    },
    "quotes": [
     {
@@ -4186,18 +4216,23 @@
    "theme": "owner_requirements",
    "theme_inferred": false,
    "understanding": {
-    "state": "proposed",
+    "state": "approved",
     "history": [
      {
       "state": "proposed",
       "by": "koordynator (Fable)",
       "date": "2026-10-23",
       "text": "Widok specyfikacji = drzewo z docs/spec/spec.json (tematy → pozycje → cytat, sens, status z datą, parafraza i jej stan), zwijane, z wyszukiwaniem i licznikami; generowane przez tools/spec.py (html) po każdej zmianie spec i publikowane jako strona (artefakt w aplikacji Claude), a docelowo jako perspektywa grafu w aplikacji (spec to węzły). „Na żywo”: po każdej zmianie strona odświeżona; pozycje zmienione w ostatnich godzinach i ta, którą właśnie edytuję, rozwinięte i podświetlone, reszta zwinięta. Wszystko (głębokość, co rozwinięte, kolejność) to presety."
+     },
+     {
+      "state": "approved",
+      "by": "koordynator (zgoda właściciela 2026-10-28: auto-akceptacja parafraz bez wyraźnego kontrargumentu)",
+      "date": "2026-10-28"
      }
     ],
     "text": "Widok specyfikacji = drzewo z docs/spec/spec.json (tematy → pozycje → cytat, sens, status z datą, parafraza i jej stan), zwijane, z wyszukiwaniem i licznikami; generowane przez tools/spec.py (html) po każdej zmianie spec i publikowane jako strona (artefakt w aplikacji Claude), a docelowo jako perspektywa grafu w aplikacji (spec to węzły). „Na żywo”: po każdej zmianie strona odświeżona; pozycje zmienione w ostatnich godzinach i ta, którą właśnie edytuję, rozwinięte i podświetlone, reszta zwinięta. Wszystko (głębokość, co rozwinięte, kolejność) to presety.",
-    "by": "koordynator (Fable)",
-    "date": "2026-10-23"
+    "by": "koordynator (zgoda właściciela 2026-10-28: auto-akceptacja parafraz bez wyraźnego kontrargumentu)",
+    "date": "2026-10-28"
    },
    "quotes": [
     {
@@ -4249,7 +4284,7 @@
    "theme": "owner_requirements",
    "theme_inferred": false,
    "understanding": {
-    "state": "proposed",
+    "state": "approved",
     "history": [
      {
       "state": "proposed",
@@ -4262,11 +4297,16 @@
       "by": "koordynator (Fable)",
       "date": "2026-10-23",
       "text": "Adres względny w grafie: współrzędna liczona od węzła bieżącego wzdłuż wybranego wymiaru (perspektywy). Wiadomości: 0 = bieżąca (dla której budujemy kontekst), −1 = poprzednia, −n = n wstecz. Wymiary bywają HIERARCHICZNE (R76: wersja duża.mała.poprawka): adres idzie po poziomach, np. poprzednia duża wersja → w niej ostatnia mała → w niej ostatnia poprawka; słowa typu ostatnia/pierwsza/wszystkie są częścią adresu. Współrzędne nie są ograniczone do liczb całkowitych (R76): nazwa, data, czas, ułamek, zakres, predykat — co wymiar niesie. Adresy składają się między wymiarami (wiadomość −1 → jej ostatnia wersja). Składnia i skróty to dane do zaprojektowania w K3 (jego zapisy to przykłady); silnik obsługuje każdy wymiar i każdą kombinację, także bezużyteczną (podpowiedź R58, nie odmowa). Selektor kontekstu używa tych adresów, a zakres wnioskuje z ostatnich wiadomości i celu (R72)."
+     },
+     {
+      "state": "approved",
+      "by": "koordynator (zgoda właściciela 2026-10-28: auto-akceptacja parafraz bez wyraźnego kontrargumentu)",
+      "date": "2026-10-28"
      }
     ],
     "text": "Adres względny w grafie: współrzędna liczona od węzła bieżącego wzdłuż wybranego wymiaru (perspektywy). Wiadomości: 0 = bieżąca (dla której budujemy kontekst), −1 = poprzednia, −n = n wstecz. Wymiary bywają HIERARCHICZNE (R76: wersja duża.mała.poprawka): adres idzie po poziomach, np. poprzednia duża wersja → w niej ostatnia mała → w niej ostatnia poprawka; słowa typu ostatnia/pierwsza/wszystkie są częścią adresu. Współrzędne nie są ograniczone do liczb całkowitych (R76): nazwa, data, czas, ułamek, zakres, predykat — co wymiar niesie. Adresy składają się między wymiarami (wiadomość −1 → jej ostatnia wersja). Składnia i skróty to dane do zaprojektowania w K3 (jego zapisy to przykłady); silnik obsługuje każdy wymiar i każdą kombinację, także bezużyteczną (podpowiedź R58, nie odmowa). Selektor kontekstu używa tych adresów, a zakres wnioskuje z ostatnich wiadomości i celu (R72).",
-    "by": "koordynator (Fable)",
-    "date": "2026-10-23"
+    "by": "koordynator (zgoda właściciela 2026-10-28: auto-akceptacja parafraz bez wyraźnego kontrargumentu)",
+    "date": "2026-10-28"
    },
    "quotes": [
     {
@@ -4321,7 +4361,7 @@
    "theme": "owner_requirements",
    "theme_inferred": false,
    "understanding": {
-    "state": "proposed",
+    "state": "approved",
     "history": [
      {
       "state": "proposed",
@@ -4334,11 +4374,16 @@
       "by": "koordynator (Fable)",
       "date": "2026-10-23",
       "text": "Brak Twojej odpowiedzi nie zatrzymuje pracy: biorę decyzję wstępną (najtańszą do odwrócenia: dokument zamiast kodu, preset w danych zamiast zmiany silnika, gałąź zamiast main), zapisuję ją w INDEX/QUEUE z odwrotem i jadę dalej; parafrazy zostają w stanie proposed do Twojego przeglądu. Wyjątki bez zmian: Twoje pieniądze poza budżetem, Twoje dane u nowego dostawcy, wzrost zużycia x10."
+     },
+     {
+      "state": "approved",
+      "by": "koordynator (zgoda właściciela 2026-10-28: auto-akceptacja parafraz bez wyraźnego kontrargumentu)",
+      "date": "2026-10-28"
      }
     ],
     "text": "Brak Twojej odpowiedzi nie zatrzymuje pracy: biorę decyzję wstępną (najtańszą do odwrócenia: dokument zamiast kodu, preset w danych zamiast zmiany silnika, gałąź zamiast main), zapisuję ją w INDEX/QUEUE z odwrotem i jadę dalej; parafrazy zostają w stanie proposed do Twojego przeglądu. Wyjątki bez zmian: Twoje pieniądze poza budżetem, Twoje dane u nowego dostawcy, wzrost zużycia x10.",
-    "by": "koordynator (Fable)",
-    "date": "2026-10-23"
+    "by": "koordynator (zgoda właściciela 2026-10-28: auto-akceptacja parafraz bez wyraźnego kontrargumentu)",
+    "date": "2026-10-28"
    },
    "quotes": [
     {
@@ -5070,18 +5115,23 @@
    "theme": "owner_requirements",
    "theme_inferred": false,
    "understanding": {
-    "state": "proposed",
+    "state": "approved",
     "history": [
      {
       "state": "proposed",
       "by": "koordynator (Fable)",
       "date": "2026-10-23",
       "text": "Wersja 1 (tania, odwracalna, R75): strona drzewa spec (R73) dostaje przy każdej pozycji przyciski „Zatwierdzam”, „Popraw” (z tekstem) i „Uwaga” (nowa wypowiedź), zapisywane w bazie strony; osobne, tanie zadanie „sekretarz” (Sonnet/Haiku, co godzinę albo na żądanie) czyta te wpisy, zapisuje je do spec (approve/correct/add), robi commit i odświeża stronę, a do mnie (drogiego) trafia tylko to, co nietypowe lub złożone — reszta czeka na mnie w spec, nie w czacie. Format = węzły spec (id, cytat, parafraza, stan). Czat zostaje do dyskusji. Wszystko (które przyciski, kto sekretarzem, co „nietypowe”) to presety."
+     },
+     {
+      "state": "approved",
+      "by": "koordynator (zgoda właściciela 2026-10-28: auto-akceptacja parafraz bez wyraźnego kontrargumentu)",
+      "date": "2026-10-28"
      }
     ],
     "text": "Wersja 1 (tania, odwracalna, R75): strona drzewa spec (R73) dostaje przy każdej pozycji przyciski „Zatwierdzam”, „Popraw” (z tekstem) i „Uwaga” (nowa wypowiedź), zapisywane w bazie strony; osobne, tanie zadanie „sekretarz” (Sonnet/Haiku, co godzinę albo na żądanie) czyta te wpisy, zapisuje je do spec (approve/correct/add), robi commit i odświeża stronę, a do mnie (drogiego) trafia tylko to, co nietypowe lub złożone — reszta czeka na mnie w spec, nie w czacie. Format = węzły spec (id, cytat, parafraza, stan). Czat zostaje do dyskusji. Wszystko (które przyciski, kto sekretarzem, co „nietypowe”) to presety.",
-    "by": "koordynator (Fable)",
-    "date": "2026-10-23"
+    "by": "koordynator (zgoda właściciela 2026-10-28: auto-akceptacja parafraz bez wyraźnego kontrargumentu)",
+    "date": "2026-10-28"
    },
    "quotes": [
     {
@@ -5135,18 +5185,23 @@
    "theme": "owner_requirements",
    "theme_inferred": false,
    "understanding": {
-    "state": "proposed",
+    "state": "approved",
     "history": [
      {
       "state": "proposed",
       "by": "koordynator (Fable)",
       "date": "2026-10-23",
       "text": "Uruchamiam badanie w kilku torach (praktycy: pamięć podręczna promptów, kompaktowanie kontekstu, subagenci; nauka: kompresja kontekstu, pamięć agentów, routing i kaskady modeli; interfejsy współpracy człowiek–AI nad specyfikacją; role i żonglerka modelami w frameworkach; nasze własne pomiary i możliwości platformy), każdy wynik z oceną wiarygodności źródła i datą (R59), potem ocena relewantności przez pryzmat filozofii, a na końcu synteza Fable: co użyć wprost, co usprawnić, co oryginalnego — i projekt dedykowanego interfejsu współpracy (wspólne dokumenty/schematy, tania rozmowa, drogi koordynator tylko tam, gdzie trzeba) z pakietami. Dokument: docs/architecture/INTERFEJS_WSPOLPRACY_2026-10-23.md. Podział ról Fable/Sonnet to preset."
+     },
+     {
+      "state": "approved",
+      "by": "koordynator (zgoda właściciela 2026-10-28: auto-akceptacja parafraz bez wyraźnego kontrargumentu)",
+      "date": "2026-10-28"
      }
     ],
     "text": "Uruchamiam badanie w kilku torach (praktycy: pamięć podręczna promptów, kompaktowanie kontekstu, subagenci; nauka: kompresja kontekstu, pamięć agentów, routing i kaskady modeli; interfejsy współpracy człowiek–AI nad specyfikacją; role i żonglerka modelami w frameworkach; nasze własne pomiary i możliwości platformy), każdy wynik z oceną wiarygodności źródła i datą (R59), potem ocena relewantności przez pryzmat filozofii, a na końcu synteza Fable: co użyć wprost, co usprawnić, co oryginalnego — i projekt dedykowanego interfejsu współpracy (wspólne dokumenty/schematy, tania rozmowa, drogi koordynator tylko tam, gdzie trzeba) z pakietami. Dokument: docs/architecture/INTERFEJS_WSPOLPRACY_2026-10-23.md. Podział ról Fable/Sonnet to preset.",
-    "by": "koordynator (Fable)",
-    "date": "2026-10-23"
+    "by": "koordynator (zgoda właściciela 2026-10-28: auto-akceptacja parafraz bez wyraźnego kontrargumentu)",
+    "date": "2026-10-28"
    },
    "quotes": [
     {
@@ -32072,18 +32127,23 @@
    "theme": "onboarding_profile",
    "theme_inferred": false,
    "understanding": {
-    "state": "proposed",
+    "state": "approved",
     "history": [
      {
       "state": "proposed",
       "by": "S1",
       "date": "2026-10-23",
       "text": "Ekran „Ty” pokazuje wszystko, co aplikacja o Tobie wie, jako części grafu (tożsamość, pola wywiadu, preferencje po poziomach, polityki, jednostki, zainteresowania, sieć, „Co pamiętam”) — każda pozycja z pochodzeniem (skąd, kiedy, jaką metodą) i z klasą dowodu (powiedziane / zaobserwowane / wywnioskowane; wniosek nigdy nie udaje obserwacji). Przy każdej pozycji akcje z katalogu: Popraw, Zapomnij (na zawsze, z potwierdzeniem i historią), Potwierdź (dla wniosku). Lista części i akcje są danymi, nie kodem; „Poznaj mnie” uruchamia wywiad."
+     },
+     {
+      "state": "approved",
+      "by": "koordynator (zgoda właściciela 2026-10-28: auto-akceptacja parafraz bez wyraźnego kontrargumentu)",
+      "date": "2026-10-28"
      }
     ],
     "text": "Ekran „Ty” pokazuje wszystko, co aplikacja o Tobie wie, jako części grafu (tożsamość, pola wywiadu, preferencje po poziomach, polityki, jednostki, zainteresowania, sieć, „Co pamiętam”) — każda pozycja z pochodzeniem (skąd, kiedy, jaką metodą) i z klasą dowodu (powiedziane / zaobserwowane / wywnioskowane; wniosek nigdy nie udaje obserwacji). Przy każdej pozycji akcje z katalogu: Popraw, Zapomnij (na zawsze, z potwierdzeniem i historią), Potwierdź (dla wniosku). Lista części i akcje są danymi, nie kodem; „Poznaj mnie” uruchamia wywiad.",
-    "by": "S1",
-    "date": "2026-10-23"
+    "by": "koordynator (zgoda właściciela 2026-10-28: auto-akceptacja parafraz bez wyraźnego kontrargumentu)",
+    "date": "2026-10-28"
    },
    "quotes": [
     {
