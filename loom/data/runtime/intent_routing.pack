@@ -104,6 +104,7 @@
         "layout.rename",
         "window.style",
         "layout.style",
+        "desktop.declare",
         "artifact.open",
         "artifact.copy",
         "artifact.save"
@@ -2880,6 +2881,71 @@
           ],
           "original": [
             "target"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "desktop.declare.pl",
+          "action": "desktop.declare",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:(?:ustaw|zmien|zrob|przelacz)\\s+)?pulpit\\s+(?:jako|na)\\s+(.+?)\\s*[.!?]*\\s*$",
+          "args": [
+            "declaration"
+          ],
+          "original": [
+            "declaration"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "desktop.declare.word.pl",
+          "action": "desktop.declare",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:(?:ustaw|zrob|daj|pokaz)\\s+)?pulpit\\s+(graf\\s+zywy|zywy\\s+graf|ikony|start|polka|karta|pusty)\\s*[.!?]*\\s*$",
+          "args": [
+            "declaration"
+          ],
+          "original": [
+            "declaration"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "desktop.declare.adj.pl",
+          "action": "desktop.declare",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:(?:ustaw|zrob|daj|pokaz)\\s+)?(pusty|zywy)\\s+pulpit\\s*[.!?]*\\s*$",
+          "args": [
+            "declaration"
+          ],
+          "original": [
+            "declaration"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "desktop.declare.en",
+          "action": "desktop.declare",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:(?:set|make|change|switch|turn)\\s+)?(?:the\\s+)?desktop\\s+(?:as|to|into)\\s+(?:an?\\s+)?(.+?)\\s*[.!?]*\\s*$",
+          "args": [
+            "declaration"
+          ],
+          "original": [
+            "declaration"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "desktop.declare.adj.en",
+          "action": "desktop.declare",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:(?:show|make|use|give\\s+me)\\s+)?(?:an?\\s+|the\\s+)?(empty|live\\s+graph|start|icons?)\\s+desktop\\s*[.!?]*\\s*$",
+          "args": [
+            "declaration"
+          ],
+          "original": [
+            "declaration"
           ],
           "takes_scope": false
         },

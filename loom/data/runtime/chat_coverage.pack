@@ -3006,6 +3006,40 @@
         }
       },
       {
+        "id": "desktop_declare",
+        "title": {
+          "en": "Choose what the desktop is by a sentence",
+          "pl": "Wybierz zdaniem, czym jest pulpit"
+        },
+        "via": "client",
+        "action": "desktop.declare",
+        "surfaces": {},
+        "examples": {
+          "pl": "pulpit jako ikony",
+          "en": "desktop as icons"
+        },
+        "examples_more": {
+          "pl": [
+            "pulpit jako start",
+            "pusty pulpit",
+            "pulpit graf żywy",
+            "ustaw pulpit na półkę",
+            "pulpit jako karta",
+            "pulpit jako graf"
+          ],
+          "en": [
+            "desktop as start",
+            "empty desktop",
+            "set the desktop to a live graph",
+            "desktop as a shelf"
+          ]
+        },
+        "note": {
+          "en": "R101 D3 (PULPIT_R101 §3.1, §13): the word is matched by the page against its desktop declarations (shell/data/desktop.json: id, label, declaration_words; declaration_clear_words go back to the preset) and written to the setting desktop_declaration. An unknown word is a failed receipt that lists the known ones.",
+          "pl": "R101 D3 (PULPIT_R101 §3.1, §13): słowo strona dopasowuje do swoich deklaracji pulpitu (shell/data/desktop.json: id, etykieta, declaration_words; declaration_clear_words wracają do presetu) i zapisuje w ustawieniu desktop_declaration. Nieznane słowo to nieudany paragon z listą znanych."
+        }
+      },
+      {
         "id": "artifact_actions",
         "title": {
           "en": "Open, copy or save a block of an answer by a sentence",

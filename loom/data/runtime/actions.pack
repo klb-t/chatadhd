@@ -17959,6 +17959,82 @@
           "en": "The desktop is shown; undo brings the windows back.",
           "pl": "Widać pulpit; cofnięcie przywraca okna."
         }
+      },
+      "desktop.declare": {
+        "id": "desktop.declare",
+        "kind": "atomic",
+        "status": "planned",
+        "planned_reason": {
+          "en": "The desktop belongs to the client that draws it (the web page or the Android shell); this runtime draws no desktop itself. Runnable for a client that declares arranges_windows (R101 D3); only the client that asked carries it out.",
+          "pl": "Pulpit należy do klienta, który go rysuje (strony albo powłoki Androida); ten runtime sam nie rysuje pulpitu. Wykonywalna dla klienta, który deklaruje arranges_windows (R101 D3); wykonuje ją tylko klient, który pytał."
+        },
+        "title": "Choose what the desktop is",
+        "description": "Sets the desktop declaration (setting desktop_declaration, R101 D3, PULPIT_R101 §3.1): a word names one of the client's declarations such as graf, ikony, start, półka, pusty, karta, żywy graf [examples, an open list of the client's data]; a word such as domyślny goes back to the preset. Reversible: the next sentence sets another one.",
+        "why": {
+          "pl": "Zmienia wygląd pulpitu: graf z ikonami, same ikony, start, półka, pusty, karta „Ty”, żywy graf…",
+          "en": "Changes what the desktop looks like: a graph with icons, icons only, start, shelf, empty, the “You” card, a live graph…"
+        },
+        "labels": {
+          "pl": "Wygląd pulpitu",
+          "en": "What the desktop looks like"
+        },
+        "inputs": [],
+        "outputs": [],
+        "requires": [],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.1,
+        "confidence": 0.9,
+        "effects": {
+          "reads_only": false,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "client",
+        "client": {
+          "capability": "arranges_windows",
+          "prompt": {
+            "en": "Change the desktop on this device.",
+            "pl": "Zmień pulpit na tym urządzeniu."
+          },
+          "expects": []
+        },
+        "params": [
+          {
+            "name": "declaration",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "A word naming a desktop declaration the client knows (its id, label or one of its words); a clear word such as default means the preset.",
+              "pl": "Słowo nazywające deklarację pulpitu znaną klientowi (jej id, etykieta albo jedno z jej słów); słowo takie jak domyślny oznacza preset."
+            }
+          }
+        ],
+        "result_text": {
+          "en": "The desktop is changed; another sentence changes it back.",
+          "pl": "Pulpit jest zmieniony; kolejne zdanie zmienia go z powrotem."
+        },
+        "phrases": {
+          "en": [
+            "desktop as"
+          ],
+          "pl": [
+            "pulpit jako"
+          ]
+        },
+        "examples": {
+          "en": [
+            "desktop as icons"
+          ],
+          "pl": [
+            "pulpit jako ikony"
+          ]
+        },
+        "positional_arg": "declaration"
       }
     }
   },

@@ -1727,18 +1727,18 @@
         "group": "ui",
         "type": "string",
         "has_default": false,
-        "description": "What the desktop is: the view declaration over the graph that draws it (R101 D2, PULPIT_R101 §3). An id of the page's shell/data/desktop.json declarations such as pulpit_graf (preset: the pinned nodes as icons, the rest of the person's graph faint behind them) or pulpit_ikony (icons only) [examples, an open list], or a declaration object (its JSON text) with elements source / encoding / coordinates / icon / rules. Unset = pulpit_graf. An unknown id is read as the preset with the advisory desktop_declaration_unknown; an element the page does not draw is skipped with its reason; opacity 0 of everything behind is legal and asked about (nothing_visible).",
+        "description": "What the desktop is: the view declaration over the graph that draws it (R101 D2/D3, PULPIT_R101 §3). An id of the page's shell/data/desktop.json declarations such as pulpit_graf (preset: the pinned nodes as icons, the rest of the person's graph faint behind them), pulpit_ikony (icons only), pulpit_start (a tile for every kind of window, the latest conversations, the layouts), pulpit_polka (the minimized windows as icons), pulpit_pusty (the sentence field and a long press), pulpit_karta (the card of party:self with the pins), pulpit_graf_zywy (the graph behind follows the focus of the navigator window, W6 coupling) [examples, an open list], or a declaration object (its JSON text) with elements source / encoding / coordinates / icon / card / affordance / rules. Unset = pulpit_graf. An unknown id is read as the preset with the advisory desktop_declaration_unknown; an element the page does not draw is skipped with its reason; opacity 0 of everything behind is legal and asked about (nothing_visible). The sentence „pulpit jako …” (desktop.declare) writes it.",
         "status": {
           "state": "implemented",
-          "by": "M1-R101-D2",
+          "by": "M1-R101-D2, M1-R101-D3",
           "reader": "web shell/windows/Desktop.tsx (resolveDeclaration, shell/windows/desktop-icons.ts)",
           "reason": {
             "pl": "Strona czyta to pole przy każdym rysowaniu pulpitu.",
             "en": "The page reads this field whenever it draws the desktop."
           },
           "today": {
-            "pl": "Pulpit pokazuje przypięte ikony i blady graf w tle; inne pomysły pulpitu dochodzą jako kolejne deklaracje.",
-            "en": "The desktop shows the pinned icons and a faint graph behind them; other desktop ideas come as further declarations."
+            "pl": "Pulpit może być grafem z ikonami, samymi ikonami, startem, półką, pusty, kartą „Ty” albo żywym grafem; zmienia go też zdanie „pulpit jako …”.",
+            "en": "The desktop can be a graph with icons, icons only, start, a shelf, empty, the “You” card or a live graph; the sentence “desktop as …” changes it too."
           }
         },
         "human": {
@@ -1763,6 +1763,51 @@
           "when_unset": {
             "pl": "graf z ikonami (pulpit_graf)",
             "en": "graph with icons (pulpit_graf)"
+          }
+        }
+      },
+      {
+        "key": "desktop_minimized",
+        "scope": "config",
+        "group": "ui",
+        "type": "string",
+        "has_default": false,
+        "description": "Where a minimized window shows on the desktop (R101 D3, PULPIT_R101 §8): shelf (the list section restore), icons (a strip of icons at the bottom of the desktop, a taskbar; a tap restores), both, none (only sentences and the window switcher) [examples]. Unset = the preset per device class of the page's shell/data/desktop.json minimized.preset (phone shelf, tablet and computer icons). An unknown value is the preset with the advisory desktop_minimized_unknown. none drops the shelf from the ways to a window (P1 counts what is drawn).",
+        "status": {
+          "state": "implemented",
+          "by": "M1-R101-D3",
+          "reader": "web shell/windows/Desktop.tsx (minimizedMode, shell/windows/desktop-icons.ts)",
+          "reason": {
+            "pl": "Strona czyta to pole przy każdym rysowaniu pulpitu.",
+            "en": "The page reads this field whenever it draws the desktop."
+          },
+          "today": {
+            "pl": "Zminimalizowane okna są na liście (telefon) albo jako pasek ikon na dole pulpitu (komputer).",
+            "en": "Minimized windows are a list (phone) or a strip of icons at the bottom of the desktop (computer)."
+          }
+        },
+        "human": {
+          "label": {
+            "pl": "Zminimalizowane okna na pulpicie",
+            "en": "Minimized windows on the desktop"
+          },
+          "why": {
+            "pl": "Zwinięte okno może czekać na liście, jako ikona na pasku u dołu pulpitu, w obu miejscach albo nigdzie.",
+            "en": "A minimized window can wait in a list, as an icon on a bar at the bottom of the desktop, in both or nowhere."
+          },
+          "effect": {
+            "pl": "Zmienia pulpit przy następnym pokazaniu.",
+            "en": "Changes the desktop the next time it is shown."
+          },
+          "levels": [
+            "person"
+          ],
+          "group": "interfejs",
+          "subgroup": "nawigator",
+          "flows": [],
+          "when_unset": {
+            "pl": "telefon: lista; komputer: pasek ikon",
+            "en": "phone: a list; computer: a strip of icons"
           }
         }
       },

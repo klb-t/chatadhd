@@ -317,6 +317,35 @@ TEST_SUITE("chat_coverage") {
     }
     CHECK(checked == static_cast<int>(cases.size()));
   }
+  TEST_CASE("R101 D3 (PULPIT §3.1, §13): a desktop sentence reaches desktop.declare with the word of the declaration") {
+    Fixture f;
+    struct Case { const char* text; const char* action; const char* word; };
+    const std::vector<Case> cases = {
+        {"pulpit jako ikony", "desktop.declare", "ikony"},
+        {"pulpit jako start", "desktop.declare", "start"},
+        {"ustaw pulpit na półkę", "desktop.declare", "półkę"},
+        {"pusty pulpit", "desktop.declare", "pusty"},
+        {"pulpit graf żywy", "desktop.declare", "graf żywy"},
+        {"pulpit jako karta", "desktop.declare", "karta"},
+        {"desktop as icons", "desktop.declare", "icons"},
+        {"set the desktop to a live graph", "desktop.declare", "live graph"},
+        {"empty desktop", "desktop.declare", "empty"},
+    };
+    int checked = 0;
+    for (const auto& c : cases) {
+      const Json routed = unwrap(chat_route::route(*f.rt, Json{{"text", c.text}, {"conv_id", f.conv_id}}));
+      const std::string reached = routed.value("kind", "") == "command" ? routed.at("command").value("action", "") : "";
+      CHECK_MESSAGE(reached == c.action, "\"" << c.text << "\" reached " << (reached.empty() ? "[a message]" : reached) << ", not " << c.action);
+      if (reached != c.action) continue;
+      const Json args = routed.at("command").value("args", Json::object());
+      CHECK_MESSAGE(args.value("declaration", "") == std::string(c.word), "\"" << c.text << "\": declaration = " << args.value("declaration", ""));
+      ++checked;
+    }
+    CHECK(checked == static_cast<int>(cases.size()));
+    // a sentence that only starts with the word stays a message (the desktop's own sentence field sends such sentences to the chat)
+    const Json plain = unwrap(chat_route::route(*f.rt, Json{{"text", "pulpit mówi dzień dobry"}, {"conv_id", f.conv_id}}));
+    CHECK(plain.value("kind", "") != "command");
+  }
   TEST_CASE("W-gaps (OKNA): style, artifact and request-inspector sentences reach their own action with their arguments") {
     Fixture f;
     struct Case { const char* text; const char* action; std::vector<std::pair<const char*, const char*>> args; };
