@@ -118,12 +118,14 @@ export function closedLast(before: WLayout, after: WState): boolean {
   return liveWindows(before).length > 0 && liveWindows(after.layout).length === 0 && after.past[after.past.length - 1]?.op === "close";
 }
 
-export interface DesktopPath { section: string; kind?: string; window?: string; layout?: string; emergency?: boolean }
+export interface DesktopPath { section: string; kind?: string; window?: string; layout?: string; icon?: string; emergency?: boolean }
 /** The ways the desktop offers to put a window on the screen, in this state with these settings (P1 is: non-empty unless the person
- *  switched the emergency path off). `layouts` = the ids the person can load. */
-export function desktopPaths(l: WLayout, settings: DesktopSettings, entries: KindEntry[], layouts: string[], data: DesktopData = DESKTOP): DesktopPath[] {
+ *  switched the emergency path off). `layouts` = the ids the person can load; `icons` = the icons of the desktop (R101 D2; an icon that
+ *  opens nothing - planned, unopenable - is not a path). */
+export function desktopPaths(l: WLayout, settings: DesktopSettings, entries: KindEntry[], layouts: string[], data: DesktopData = DESKTOP, icons: readonly { address: string; status: string }[] = []): DesktopPath[] {
   const out: DesktopPath[] = [];
   for (const sec of settings.sections) {
+    if (sec === "icons") for (const i of icons) if (i.status === "available") out.push({ section: sec, icon: i.address });
     if (sec === "sentence" && entries.some((e) => e.kind === "chat" && e.status === "available")) out.push({ section: sec, kind: "chat" });
     if (sec === "restore") for (const w of minimizedWindows(l)) out.push({ section: sec, window: w.id });
     if (sec === "open") for (const e of entries) if (e.status === "available") out.push({ section: sec, kind: e.kind });

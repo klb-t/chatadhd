@@ -286,6 +286,17 @@ textarea { resize: vertical; }
 .desktop-items button[disabled] { opacity: 0.45; }
 .desktop-sentence { display: flex; gap: 8px; }
 .desktop-sentence input { flex: 1; min-width: 0; min-height: 44px; padding: 8px 12px; border-radius: 10px; border: 1px solid var(--border); background: var(--card); color: inherit; }
+
+/* R101 D2: pulpit_graf - the faint graph is one canvas behind everything (not one element per mark, PULPIT §13), the icons a grid above it */
+.desktop-graph { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+.desktop-layer .desktop-content { position: relative; z-index: 1; }
+.desktop-icons { display: grid; gap: 4px 0; justify-content: start; }
+.desktop-icon { display: flex; flex-direction: column; align-items: center; gap: 4px; min-height: 44px; min-width: 44px; padding: 6px 2px; border: 1px solid transparent; border-radius: 12px; background: transparent; color: inherit; cursor: pointer; }
+.desktop-icon:hover:not([disabled]), .desktop-icon:focus-visible { border-color: var(--border); background: color-mix(in srgb, var(--card) 70%, transparent); }
+.desktop-icon[disabled] { opacity: 0.45; cursor: default; }
+.desktop-icon-glyph { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 14px; background: var(--card); border: 1px solid var(--border); font-size: 22px; line-height: 1; }
+.desktop-icon-label { font-size: 13px; text-align: center; overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; word-break: break-word; max-width: 100%; }
+.desktop-more { align-self: flex-start; min-height: 44px; padding: 8px 12px; border-radius: 10px; border: 1px solid var(--border); background: var(--card); color: inherit; }
 .win-float { position: absolute; pointer-events: auto; display: flex; }
 .win-drop { position: fixed; z-index: 30; pointer-events: none; background: color-mix(in srgb, var(--accent, #4a8cff) 25%, transparent); border: 2px solid var(--accent, #4a8cff); border-radius: 6px; }
 .dock-grip { flex: 0 0 6px; background: var(--border); position: relative; touch-action: none; z-index: 1; }

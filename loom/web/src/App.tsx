@@ -63,6 +63,7 @@ import { usePruneKept } from "./shell/windows/useKeep";
 import Desktop, { DesktopEnded } from "./shell/windows/Desktop";
 import { DESKTOP, say, say as sayDesktop, closedLast, desktopCover, desktopPaths, desktopSettings, kindEntries, lastWindowClose, openFromDesktop, restoreFromDesktop, showDesktop, type KindTarget } from "./shell/windows/desktop";
 import { handSentence } from "./shell/desktop-sentence";
+import type { DesktopIcon } from "./shell/windows/desktop-icons";
 import { oneEntry, comboOf } from "./shell/windows/steps";
 import { apply as applyOp } from "./shell/windows/model";
 
@@ -669,6 +670,13 @@ export default function App() {
   const deskLayouts = useMemo(() => ({ shipped: shellLayouts.shipped.map(l => ({ id: l.id, label: l.label })), own: shellLayouts.own.map(l => ({ id: l.id, label: l.label })) }), [shellLayouts]);
   const deskPaths = useMemo(() => desktopPaths(win.layout, deskSettings, deskEntries, [...deskLayouts.shipped, ...deskLayouts.own].map(l => l.id)), [win.layout, deskSettings, deskEntries, deskLayouts]);
   const deskOpen = useCallback((target: KindTarget) => moveTo(openFromDesktop(winRef.current, target, deviceClassOf(window.innerWidth))), [moveTo]);
+  // R101 D2: a tap on a desktop icon opens its target (open_targets in desktop.json): a navigator icon with its focus, a conversation in the chat
+  const deskIcon = useCallback((icon: DesktopIcon) => {
+    if (!icon.open) return;
+    if (icon.open.focus) setNavigatorFocus(icon.open.focus);
+    if (icon.open.conversation) setActiveConvId(icon.open.conversation);
+    deskOpen(icon.open.target);
+  }, [deskOpen]);
   const deskLoad = useCallback((id: string, own: boolean) => {
     if (!own && winRef.current.layout.id === id && ownActive === null) layoutOps.reset(); else layoutOps.apply(own ? (readNamed(configRef.current.window_layouts).find(l => l.id === id)?.label ?? id) : id);
     setLayoutKnown(true);
@@ -701,7 +709,8 @@ export default function App() {
   }, [moveTo]);
   const desktop = <Desktop layout={win.layout} cover={deskCover} lang={uiLanguage} settings={deskSettings} entries={deskEntries} paths={deskPaths} layouts={deskLayouts}
     title={windowLabel} openKind={deskOpen} restore={(id) => moveTo(restoreFromDesktop(winRef.current, id))} loadLayout={deskLoad}
-    sentence={(text) => { deskOpen({ chat: true }); handSentence(text, DESKTOP.sentence.send !== false); }} enableEmergency={() => saveSetting("desktop_emergency_path", true)} />;
+    sentence={(text) => { deskOpen({ chat: true }); handSentence(text, DESKTOP.sentence.send !== false); }} enableEmergency={() => saveSetting("desktop_emergency_path", true)}
+    api={api} deviceClass={deviceClass} declaration={config.desktop_declaration} openIcon={deskIcon} />;
   const advice = useMemo(() => {
     const more = [...styleAdvice, ...mount.advisories];
     return more.length ? [...coupling.advisories, ...more] : coupling.advisories;
@@ -730,6 +739,8 @@ export default function App() {
                 {p === "perspectives" && <PerspectivesPanel convId={activeConvId} />}
                 {p === "view-engine" && <ViewEnginePanel />}
                 {p === "request" && <RequestInspector api={api} convId={activeConvId} />}
+                {p === "conversations" && <ConversationList key={convRefreshKey} activeConvId={activeConvId}
+                  onSelect={id => { setActiveConvId(id); closePanel(); deskOpen({ chat: true }); }} onCreated={id => { onConversationCreated(id); closePanel(); deskOpen({ chat: true }); }} onActivity={sidebarActivity} />}
                 {p === "memory" && <MemoryPanel />}
                 {p === "import" && <ImportPanel onImported={() => setConvRefreshKey((k) => k + 1)} />}
                 {p === "context" && <ContextSlider convId={activeConvId} />}

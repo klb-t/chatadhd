@@ -305,7 +305,9 @@
     "analysis": "analysis",
     "onboarding": "onboarding",
     "user-knowledge": "user_knowledge",
-    "operations": "operations"
+    "operations": "operations",
+    "request": "request_inspector",
+    "conversations": "conversation_list"
   },
   "panel_kinds_by_layout": {
     "siatka": {

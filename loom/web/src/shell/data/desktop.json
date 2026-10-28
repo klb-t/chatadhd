@@ -1,42 +1,416 @@
 {
  "schema": "loom.shell_desktop/1",
- "note": "R101 P0 (PULPIT_R101_2026-10-28 §7, §8, §10, §12): the desktop layer under the windows - always mounted, drawn where no window covers it. Everything here is a preset (CLAUDE.md: lists are examples): the sections and their order (setting desktop_sections overrides), the texts, the last_window_close values the page knows (setting last_window_close, an open value) and the emergency path (setting desktop_emergency_path). An unknown section id is skipped with the advisory desktop_section_unknown, never an error. P0 is the mechanism only: icons, wallpaper, the graph under the windows are D1-D10.",
- "sections": ["sentence", "restore", "open", "layouts"],
+ "note": "R101 P0 (PULPIT_R101_2026-10-28 §7, §8, §10, §12): the desktop layer under the windows - always mounted, drawn where no window covers it. Everything here is a preset (CLAUDE.md: lists are examples): the sections and their order (setting desktop_sections overrides), the texts, the last_window_close values the page knows (setting last_window_close, an open value) and the emergency path (setting desktop_emergency_path). An unknown section id is skipped with the advisory desktop_section_unknown, never an error. P0 was the mechanism; D2 adds the section `icons` (the pins of the desktop, PULPIT_R101 §4) and the faint graph under them, both from the view declaration chosen by the setting desktop_declaration (`declarations`, preset pulpit_graf). Sections listed in sections_more are drawn behind the button \"Więcej\" (and a long press on the empty desktop), so nothing P0 offered disappears.",
+ "sections": [
+  "icons",
+  "sentence",
+  "restore",
+  "open",
+  "layouts"
+ ],
  "sections_known": {
-  "sentence": { "opens_window": true, "note": "a sentence goes to the chat composer of a chat window (restored or opened), the same route as typing it there" },
-  "restore": { "opens_window": true, "note": "minimized windows of the layout, a tap restores one" },
-  "open": { "opens_window": true, "note": "every kind of window_kinds.json; a planned kind or a kind the page cannot open by itself yet is shown greyed with its reason, never hidden" },
-  "layouts": { "opens_window": true, "note": "the shipped layouts and the person's saved ones (W5)" }
+  "icons": {
+   "opens_window": true,
+   "note": "R101 D2: the icons of the desktop - nodes pinned to it (perspective pinned_on read from the kernel), laid out by the coordinates of the declaration (icon_grid); a tap opens the target (open_targets)"
+  },
+  "sentence": {
+   "opens_window": true,
+   "note": "a sentence goes to the chat composer of a chat window (restored or opened), the same route as typing it there"
+  },
+  "restore": {
+   "opens_window": true,
+   "note": "minimized windows of the layout, a tap restores one"
+  },
+  "open": {
+   "opens_window": true,
+   "note": "every kind of window_kinds.json; a planned kind or a kind the page cannot open by itself yet is shown greyed with its reason, never hidden"
+  },
+  "layouts": {
+   "opens_window": true,
+   "note": "the shipped layouts and the person's saved ones (W5)"
+  }
  },
- "sentence": { "send": true, "note": "true: the sentence is sent from the composer at once; false: it waits in the composer" },
- "emergency": { "kind": "chat", "note": "the one path kept when the sections leave none (B3); setting desktop_emergency_path=false switches it off, the desktop then says what is missing (advisory desktop_no_path)" },
+ "sentence": {
+  "send": true,
+  "note": "true: the sentence is sent from the composer at once; false: it waits in the composer"
+ },
+ "emergency": {
+  "kind": "chat",
+  "note": "the one path kept when the sections leave none (B3); setting desktop_emergency_path=false switches it off, the desktop then says what is missing (advisory desktop_no_path)"
+ },
  "last_window_close": {
   "preset": "desktop",
-  "aliases": { "exit": "close_app" },
+  "aliases": {
+   "exit": "close_app"
+  },
   "note": "open value: desktop | close_app | reopen:<kind> | layout:<id> [examples]; an unknown value is read as desktop with the advisory last_window_close_unknown"
  },
- "keys": { "ctrl+shift+d": "show_desktop" },
+ "keys": {
+  "ctrl+shift+d": "show_desktop"
+ },
  "words": {
-  "title": { "pl": "Pulpit", "en": "Desktop" },
-  "hint": { "pl": "Tu zawsze możesz otworzyć nowe okno.", "en": "From here you can always open a new window." },
-  "sentence_label": { "pl": "Napisz, co chcesz zrobić", "en": "Write what you want to do" },
-  "sentence_send": { "pl": "Wyślij", "en": "Send" },
-  "restore": { "pl": "Zminimalizowane okna", "en": "Minimized windows" },
-  "open": { "pl": "Otwórz nowe okno", "en": "Open a new window" },
-  "layouts": { "pl": "Układy", "en": "Layouts" },
-  "layouts_own": { "pl": "Twoje", "en": "Yours" },
-  "unavailable_cannot_open": { "pl": "Ten rodzaj okna otwiera się dziś tylko z innego okna; strona nie umie go jeszcze otworzyć sama.", "en": "This kind of window opens today only from another window; the page cannot open it by itself yet." },
-  "show_receipt": { "pl": "Widać pulpit; okna są zwinięte, „cofnij układ” je przywróci.", "en": "The desktop is shown; the windows are minimized, “undo layout” brings them back." },
-  "show_receipt_noop": { "pl": "Pulpit już jest widoczny; nic nie zwinięto.", "en": "The desktop is already shown; nothing was minimized." },
-  "background_kind": { "pl": "To jest ten pulpit: jest zawsze pod oknami, jeden na układ; pokazuje go „pokaż pulpit” (Ctrl+Shift+D).", "en": "This is the desktop itself: always under the windows, one per layout; “show the desktop” (Ctrl+Shift+D) shows it." },
-  "emergency": { "pl": "Otwórz okno czatu", "en": "Open a chat window" },
-  "no_path": { "pl": "Na pulpicie nie ma teraz żadnej drogi do otwarcia okna, bo wyłączono sekcje i drogę awaryjną. Czy to celowe?", "en": "The desktop has no way to open a window now: the sections and the emergency path are switched off. Is that intended?" },
-  "no_path_fix": { "pl": "Przywróć drogę awaryjną", "en": "Bring back the emergency path" },
-  "section_unknown": { "pl": "Nieznana sekcja pulpitu, pominięta: {id}.", "en": "Unknown desktop section, skipped: {id}." },
-  "last_close_unknown": { "pl": "Nieznana wartość „po zamknięciu ostatniego okna”: {value}; zostaje pulpit.", "en": "Unknown value of “after the last window closes”: {value}; the desktop stays." },
-  "ended_title": { "pl": "ChatADHD zamknięty", "en": "ChatADHD closed" },
-  "ended_text": { "pl": "Zamknięto ostatnie okno, a ustawienie mówi: zamknij program. Przeglądarka może odmówić zamknięcia karty, której nie otworzył skrypt - wtedy zamknij ją sam.", "en": "The last window was closed and the setting says: close the program. The browser may refuse to close a tab no script opened - then close it yourself." },
-  "ended_back": { "pl": "Wróć na pulpit", "en": "Back to the desktop" },
-  "keep": { "pl": "Zostaw", "en": "Keep it" }
+  "title": {
+   "pl": "Pulpit",
+   "en": "Desktop"
+  },
+  "hint": {
+   "pl": "Tu zawsze możesz otworzyć nowe okno.",
+   "en": "From here you can always open a new window."
+  },
+  "sentence_label": {
+   "pl": "Napisz, co chcesz zrobić",
+   "en": "Write what you want to do"
+  },
+  "sentence_send": {
+   "pl": "Wyślij",
+   "en": "Send"
+  },
+  "restore": {
+   "pl": "Zminimalizowane okna",
+   "en": "Minimized windows"
+  },
+  "open": {
+   "pl": "Otwórz nowe okno",
+   "en": "Open a new window"
+  },
+  "layouts": {
+   "pl": "Układy",
+   "en": "Layouts"
+  },
+  "layouts_own": {
+   "pl": "Twoje",
+   "en": "Yours"
+  },
+  "unavailable_cannot_open": {
+   "pl": "Ten rodzaj okna otwiera się dziś tylko z innego okna; strona nie umie go jeszcze otworzyć sama.",
+   "en": "This kind of window opens today only from another window; the page cannot open it by itself yet."
+  },
+  "show_receipt": {
+   "pl": "Widać pulpit; okna są zwinięte, „cofnij układ” je przywróci.",
+   "en": "The desktop is shown; the windows are minimized, “undo layout” brings them back."
+  },
+  "show_receipt_noop": {
+   "pl": "Pulpit już jest widoczny; nic nie zwinięto.",
+   "en": "The desktop is already shown; nothing was minimized."
+  },
+  "background_kind": {
+   "pl": "To jest ten pulpit: jest zawsze pod oknami, jeden na układ; pokazuje go „pokaż pulpit” (Ctrl+Shift+D).",
+   "en": "This is the desktop itself: always under the windows, one per layout; “show the desktop” (Ctrl+Shift+D) shows it."
+  },
+  "emergency": {
+   "pl": "Otwórz okno czatu",
+   "en": "Open a chat window"
+  },
+  "no_path": {
+   "pl": "Na pulpicie nie ma teraz żadnej drogi do otwarcia okna, bo wyłączono sekcje i drogę awaryjną. Czy to celowe?",
+   "en": "The desktop has no way to open a window now: the sections and the emergency path are switched off. Is that intended?"
+  },
+  "no_path_fix": {
+   "pl": "Przywróć drogę awaryjną",
+   "en": "Bring back the emergency path"
+  },
+  "section_unknown": {
+   "pl": "Nieznana sekcja pulpitu, pominięta: {id}.",
+   "en": "Unknown desktop section, skipped: {id}."
+  },
+  "last_close_unknown": {
+   "pl": "Nieznana wartość „po zamknięciu ostatniego okna”: {value}; zostaje pulpit.",
+   "en": "Unknown value of “after the last window closes”: {value}; the desktop stays."
+  },
+  "ended_title": {
+   "pl": "ChatADHD zamknięty",
+   "en": "ChatADHD closed"
+  },
+  "ended_text": {
+   "pl": "Zamknięto ostatnie okno, a ustawienie mówi: zamknij program. Przeglądarka może odmówić zamknięcia karty, której nie otworzył skrypt - wtedy zamknij ją sam.",
+   "en": "The last window was closed and the setting says: close the program. The browser may refuse to close a tab no script opened - then close it yourself."
+  },
+  "ended_back": {
+   "pl": "Wróć na pulpit",
+   "en": "Back to the desktop"
+  },
+  "keep": {
+   "pl": "Zostaw",
+   "en": "Keep it"
+  },
+  "more": {
+   "pl": "Więcej…",
+   "en": "More…"
+  },
+  "less": {
+   "pl": "Mniej",
+   "en": "Less"
+  },
+  "icons": {
+   "pl": "Ikony pulpitu",
+   "en": "Desktop icons"
+  },
+  "icons_count": {
+   "pl": "Pulpit, ikon: {n}",
+   "en": "Desktop, {n} icons"
+  },
+  "icons_loading": {
+   "pl": "Wczytuję ikony…",
+   "en": "Loading the icons…"
+  },
+  "icons_error": {
+   "pl": "Nie udało się wczytać ikon pulpitu: {error}",
+   "en": "Could not load the desktop icons: {error}"
+  },
+  "desktop_empty": {
+   "pl": "Na pulpicie nie ma ikon. Przypnij coś zdaniem, np. „przypnij rozmowy do pulpitu”.",
+   "en": "The desktop has no icons. Pin something with a sentence, e.g. “pin conversations on the desktop”."
+  },
+  "declaration_unknown": {
+   "pl": "Nieznana deklaracja pulpitu „{id}”; użyto domyślnej ({preset}).",
+   "en": "Unknown desktop declaration “{id}”; the default ({preset}) is used."
+  },
+  "element_unsupported": {
+   "pl": "Element deklaracji pulpitu, którego ta strona nie rysuje, pominięty: {id} ({kind}).",
+   "en": "A desktop declaration element this page does not draw, skipped: {id} ({kind})."
+  },
+  "graph_label": {
+   "pl": "Twój graf w tle: węzłów {n}, krawędzi {e}",
+   "en": "Your graph behind: {n} nodes, {e} edges"
+  },
+  "nothing_visible": {
+   "pl": "Graf w tle jest niewidoczny (krycie 0). Czy to celowe?",
+   "en": "The graph behind is invisible (opacity 0). Is that intended?"
+  }
+ },
+ "sections_more": [
+  "open",
+  "layouts"
+ ],
+ "long_press_ms": 600,
+ "declaration_preset": "pulpit_graf",
+ "declarations": {
+  "pulpit_graf": {
+   "id": "pulpit_graf",
+   "label": {
+    "pl": "Pulpit: graf",
+    "en": "Desktop: graph"
+   },
+   "note": "PULPIT_R101 §3.2 [preset, the default chosen by the owner 2026-10-28]: the pinned nodes as icons, the rest of the person's graph faint, only that it exists. Every number is a preset.",
+   "elements": [
+    {
+     "id": "pins",
+     "kind": "source",
+     "perspective": "pinned_on",
+     "focus": "desktop:main",
+     "weight": "main",
+     "seed": [
+      "party:self",
+      "area:context_projects",
+      "conversations:",
+      "kind:chat",
+      "area:knowledge",
+      "kind:settings",
+      "trash:"
+     ],
+     "seed_note": "the first pins, written once as ordinary pinned_on links (window.pin) when the desktop node does not exist yet; the person may unpin any of them - examples, not a rule (owner's list + his associations, PULPIT §4.3)"
+    },
+    {
+     "id": "around",
+     "kind": "source",
+     "perspective": "navigate",
+     "focus": "party:self",
+     "weight": "side",
+     "depth": 2,
+     "budget": {
+      "phone": 150,
+      "tablet": 250,
+      "desktop": 400
+     }
+    },
+    {
+     "id": "a",
+     "kind": "encoding",
+     "channel": "alpha",
+     "source": "around",
+     "value": {
+      "phone": 0.14,
+      "tablet": 0.12,
+      "desktop": 0.12
+     }
+    },
+    {
+     "id": "e",
+     "kind": "encoding",
+     "channel": "edge_alpha",
+     "source": "around",
+     "value": 0.07
+    },
+    {
+     "id": "co",
+     "kind": "coordinates",
+     "system": "icon_grid",
+     "columns": {
+      "phone": 4,
+      "tablet": "auto",
+      "desktop": "auto"
+     },
+     "cell_px": {
+      "phone": 84,
+      "tablet": 96,
+      "desktop": 96
+     },
+     "flow": "row_major",
+     "others": "force"
+    },
+    {
+     "id": "ic",
+     "kind": "icon",
+     "glyph": "address",
+     "label": "label",
+     "label_lines": 2
+    },
+    {
+     "id": "rl",
+     "kind": "rules",
+     "advisories": {
+      "nothing_visible": "ask"
+     }
+    }
+   ]
+  },
+  "pulpit_ikony": {
+   "id": "pulpit_ikony",
+   "label": {
+    "pl": "Pulpit: ikony",
+    "en": "Desktop: icons"
+   },
+   "note": "PULPIT_R101 §3.1 [preset]: only the pins, no graph behind them (pulpit_graf with the rest at opacity 0). The other concepts are D3.",
+   "elements": [
+    {
+     "id": "pins",
+     "kind": "source",
+     "perspective": "pinned_on",
+     "focus": "desktop:main",
+     "weight": "main",
+     "seed": [
+      "party:self",
+      "area:context_projects",
+      "conversations:",
+      "kind:chat",
+      "area:knowledge",
+      "kind:settings",
+      "trash:"
+     ]
+    },
+    {
+     "id": "co",
+     "kind": "coordinates",
+     "system": "icon_grid",
+     "columns": {
+      "phone": 4,
+      "tablet": "auto",
+      "desktop": "auto"
+     },
+     "cell_px": {
+      "phone": 84,
+      "tablet": 96,
+      "desktop": 96
+     },
+     "flow": "row_major"
+    },
+    {
+     "id": "ic",
+     "kind": "icon",
+     "glyph": "address",
+     "label": "label",
+     "label_lines": 2
+    }
+   ]
+  }
+ },
+ "element_kinds_known": [
+  "source",
+  "encoding",
+  "coordinates",
+  "icon",
+  "rules"
+ ],
+ "open_targets": {
+  "note": "address of an icon -> the window it opens (longest prefix wins; $address = the whole address, $rest = what follows the prefix). The kind goes through window_kinds.json: a planned kind is shown greyed with its reason, a kind the page cannot open yet too. An address no prefix knows opens fallback. Examples, an open list.",
+  "prefixes": {
+   "conversations:": {
+    "kind": "conversation_list"
+   },
+   "kind:": {
+    "kind": "$rest"
+   },
+   "party:": {
+    "kind": "navigator",
+    "focus": "$address"
+   },
+   "area:": {
+    "kind": "navigator",
+    "focus": "$address"
+   },
+   "trash:": {
+    "kind": "trash"
+   },
+   "conv:": {
+    "kind": "chat",
+    "conversation": "$rest"
+   },
+   "memory:": {
+    "kind": "memory"
+   },
+   "settings:": {
+    "kind": "settings"
+   }
+  },
+  "fallback": {
+   "kind": "navigator",
+   "focus": "$address"
+  }
+ },
+ "address_labels": {
+  "note": "the label of an icon when the pin carries no label_override (a representative node is labelled with its address): longest prefix wins, else the node's own label. Examples.",
+  "party:self": {
+   "pl": "Ty",
+   "en": "You"
+  },
+  "area:context_projects": {
+   "pl": "Moje projekty",
+   "en": "My projects"
+  },
+  "conversations:": {
+   "pl": "Rozmowy",
+   "en": "Conversations"
+  },
+  "kind:chat": {
+   "pl": "Nowy czat",
+   "en": "New chat"
+  },
+  "area:knowledge": {
+   "pl": "Mój graf",
+   "en": "My graph"
+  },
+  "kind:settings": {
+   "pl": "Ustawienia",
+   "en": "Settings"
+  },
+  "trash:": {
+   "pl": "Kosz",
+   "en": "Trash"
+  }
+ },
+ "glyphs": {
+  "note": "the sign of an icon by the longest address prefix (element icon, glyph: address) - plain text symbols, a preset; a node's own metadata.glyph or the pin's glyph wins.",
+  "party:": "◉",
+  "area:context_projects": "▤",
+  "area:knowledge": "⋈",
+  "area:": "◇",
+  "conversations:": "☰",
+  "kind:chat": "✎",
+  "kind:settings": "⚙",
+  "kind:": "▢",
+  "trash:": "⌫",
+  "conv:": "✉",
+  "memory:": "✦",
+  "": "•"
  }
 }
