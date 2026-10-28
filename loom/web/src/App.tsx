@@ -61,7 +61,7 @@ import { ARRANGE, arrangeWindow } from "./shell/windows/arrange";
 import { MOUNT, keepPolicy, keptHidden, mountAdvisories, mountedIds, shownIds, touchRecent } from "./shell/windows/keep";
 import { usePruneKept } from "./shell/windows/useKeep";
 import Desktop, { DesktopEnded } from "./shell/windows/Desktop";
-import { DESKTOP, say, closedLast, desktopCover, desktopPaths, desktopSettings, kindEntries, lastWindowClose, openFromDesktop, restoreFromDesktop, showDesktop, type KindTarget } from "./shell/windows/desktop";
+import { DESKTOP, say, say as sayDesktop, closedLast, desktopCover, desktopPaths, desktopSettings, kindEntries, lastWindowClose, openFromDesktop, restoreFromDesktop, showDesktop, type KindTarget } from "./shell/windows/desktop";
 import { handSentence } from "./shell/desktop-sentence";
 import { oneEntry, comboOf } from "./shell/windows/steps";
 import { apply as applyOp } from "./shell/windows/model";
@@ -486,6 +486,13 @@ export default function App() {
         return;
       }
       if (detail.action.startsWith("artifact.")) return;   // W-gaps: the chat page that shows the answers carries these out (ChatView)
+      if (detail.action === "desktop.show") {
+        // R101 D1: the client step of the catalogue action desktop.show = Ctrl+Shift+D (every shown window minimized, one journal entry)
+        const before = winRef.current; const next = showDesktop(before); moveTo(next);
+        const text = sayDesktop(DESKTOP.words, next === before ? "show_receipt_noop" : "show_receipt", uiLanguageRef.current);
+        detail.outcome = { state: "ok", parts: [{ kind: "text", text }], data: { schema: "loom.window_receipt/1", op: "desktop.show", state: next === before ? "noop" : "ok", windows: [], layout: next.layout.id } };
+        return;
+      }
       const args = detail.args ?? {};
       const failWith = (text: string) => { detail.outcome = { state: "failed", error: { message: text } }; };
       if (detail.action === "window.style" || detail.action === "layout.style") {

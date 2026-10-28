@@ -26,6 +26,8 @@
   "layouts": { "pl": "Układy", "en": "Layouts" },
   "layouts_own": { "pl": "Twoje", "en": "Yours" },
   "unavailable_cannot_open": { "pl": "Ten rodzaj okna otwiera się dziś tylko z innego okna; strona nie umie go jeszcze otworzyć sama.", "en": "This kind of window opens today only from another window; the page cannot open it by itself yet." },
+  "show_receipt": { "pl": "Widać pulpit; okna są zwinięte, „cofnij układ” je przywróci.", "en": "The desktop is shown; the windows are minimized, “undo layout” brings them back." },
+  "show_receipt_noop": { "pl": "Pulpit już jest widoczny; nic nie zwinięto.", "en": "The desktop is already shown; nothing was minimized." },
   "background_kind": { "pl": "To jest ten pulpit: jest zawsze pod oknami, jeden na układ; pokazuje go „pokaż pulpit” (Ctrl+Shift+D).", "en": "This is the desktop itself: always under the windows, one per layout; “show the desktop” (Ctrl+Shift+D) shows it." },
   "emergency": { "pl": "Otwórz okno czatu", "en": "Open a chat window" },
   "no_path": { "pl": "Na pulpicie nie ma teraz żadnej drogi do otwarcia okna, bo wyłączono sekcje i drogę awaryjną. Czy to celowe?", "en": "The desktop has no way to open a window now: the sections and the emergency path are switched off. Is that intended?" },
