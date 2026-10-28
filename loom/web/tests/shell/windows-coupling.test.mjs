@@ -58,6 +58,20 @@ test('zoom bound ×2: zooming one changes the other ×2; the bound one zoomed al
   assert.equal(s.layout.windows.find(w => w.id === g2).params.bind, undefined, 'no empty bind object left');
 });
 
+test('R101 D3 gate: a parameter nothing depends on (the navigator reporting its focus) moves no other value, even beside a ×2 zoom loop', () => {
+  let { s, g1, g2 } = twoGraphs();
+  s = C.bindParam(C.bindParam(s, g2, 'zoom', scale2(g1)), g1, 'zoom', scale2(g2));
+  const v0 = { windows: { [g1]: { zoom: 1 }, [g2]: { zoom: 1 } }, channels: {} };
+  const r = C.setParam(s.layout, v0, g2, 'focus', 'area:knowledge');
+  assert.deepEqual(r.changed, [`w:${g2}:focus`]);
+  assert.equal(C.resolveParam(s.layout, r.values, g1, 'zoom'), 1); assert.equal(C.resolveParam(s.layout, r.values, g2, 'zoom'), 1);
+  assert.deepEqual([...C.downstreamOf(s.layout, `w:${g1}:zoom`)].sort(), [`w:${g1}:zoom`, `w:${g2}:zoom`].sort(), 'a loop reaches back to itself');
+  // unbound the second: zooming the first leaves the second as it is (windows-w6 step 5), also after an unrelated write
+  s = C.unbindParam(s, g2, 'zoom');
+  const v1 = C.setParam(s.layout, C.setParam(s.layout, v0, g1, 'focus', 'party:self').values, g1, 'zoom', 1.25).values;
+  assert.equal(C.resolveParam(s.layout, v1, g2, 'zoom'), 1);
+});
+
 test('bound back the other way: coupling_cycle (non-blocking), propagation stops at the preset instead of oscillating', () => {
   let { s, g1, g2 } = twoGraphs();
   s = C.bindParam(C.bindParam(s, g2, 'zoom', scale2(g1)), g1, 'zoom', scale2(g2));

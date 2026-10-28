@@ -49,7 +49,15 @@ function personIn(row: { label?: string; person_values?: string[] } | undefined)
 export default function NavigatorMap({ result, open, t, language = "pl", mapping, onCard, onDrill }: Props) {
   const box = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(0);
-  const [cam, setCam] = useState<Camera>(CAMERA_HOME);
+  // W8 (R101 D3 gate, windows-w6 step 5): the camera STARTS at the value the window already has (restored after a reload, or given by a
+  // binding), not at home - a map mounted late used to show and report its home zoom first and the window's value a moment later.
+  const zoomParam = useWindowParam("zoom"), panParam = useWindowParam("pan");
+  const [cam, setCam] = useState<Camera>(() => {
+    const z = zoomParam.value, p = panParam.value as { x?: unknown; y?: unknown } | undefined;
+    const zoom = typeof z === "number" && Number.isFinite(z) && z > 0 ? z : CAMERA_HOME.zoom;
+    const pan = p && typeof p.x === "number" && typeof p.y === "number" && Number.isFinite(p.x) && Number.isFinite(p.y) ? { panX: p.x, panY: p.y } : {};
+    return { ...CAMERA_HOME, zoom, ...pan };
+  });
   const [selected, setSelected] = useState<string | null>(null);
   const [reported, setReported] = useState<Rect[]>([]);
   const pointers = useRef(new Map<number, Point>());
@@ -71,7 +79,6 @@ export default function NavigatorMap({ result, open, t, language = "pl", mapping
   // the coupling of windows gives it (a binding ×2 to another graph window, a shared channel...). The value is honoured as given (not
   // clamped: a binding asking for an unusual zoom is shown as asked). Without a window (no provider) nothing changes.
   // The echo of the map's own report is not followed (param-echo.ts: on a slow device it can arrive after a newer own change, CI 6ab55aae).
-  const zoomParam = useWindowParam("zoom"), panParam = useWindowParam("pan");
   const zoomOwn = useRef<unknown[]>([]), panOwn = useRef<unknown[]>([]);
   useEffect(() => {
     const z = zoomParam.value;

@@ -123,7 +123,9 @@ function paramsOf(l: WLayout, values: Values, id: string): Record<string, unknow
 }
 
 export interface PropagateResult { values: Values; iterations: number; converged: boolean; changed: string[]; failures: { node: string; code: string; evidence: Record<string, unknown> }[] }
-export interface PropagateOpts { maxIterations?: number; env?: Omit<DepEnv, "other" | "self" | "channels">; data?: CouplingData }
+export interface PropagateOpts { maxIterations?: number; env?: Omit<DepEnv, "other" | "self" | "channels">; data?: CouplingData;
+  /** Only these targets are recomputed (setParam: the nodes downstream of the changed one); absent = every linked parameter. */
+  only?: ReadonlySet<string> }
 
 /** Kahn order of the targets (acyclic part first; the members of loops after it, in a stable order). */
 function order(edges: Edge[]): Edge[] {
@@ -144,7 +146,7 @@ function order(edges: Edge[]): Edge[] {
 export function propagate(l: WLayout, values: Values, pinned: string[] = [], opts: PropagateOpts = {}): PropagateResult {
   const data = opts.data ?? COUPLING;
   const max = Math.max(0, Math.floor(opts.maxIterations ?? (typeof data.max_iterations === "number" ? data.max_iterations : 8)));
-  const edges = order(edgesOf(l)).filter((e) => !pinned.includes(e.target));
+  const edges = order(edgesOf(l)).filter((e) => !pinned.includes(e.target) && (!opts.only || opts.only.has(e.target)));
   let v = values; const changed = new Set<string>(); const failures: PropagateResult["failures"] = [];
   let iterations = 0, converged = edges.length === 0 || max === 0 ? edges.length === 0 : false;
   for (; iterations < max && !converged; iterations++) {
@@ -164,10 +166,23 @@ export function propagate(l: WLayout, values: Values, pinned: string[] = [], opt
 }
 
 /** The person (or a component) set a parameter of a window: written to its node, then propagated with that node pinned. */
+/** The targets that depend on `node`, directly or through other linked parameters (the only ones a change of `node` may move). */
+export function downstreamOf(l: WLayout, node: string, edges: Edge[] = edgesOf(l)): Set<string> {
+  const reached = new Set<string>([node]); const out = new Set<string>();
+  for (let grew = true; grew;) {
+    grew = false;
+    for (const e of edges) if (!out.has(e.target) && e.sources.some((x) => reached.has(x))) { out.add(e.target); reached.add(e.target); grew = true; }
+  }
+  return out;
+}
+/** The person (or a component) set a parameter of a window: written to its node, then propagated with that node pinned - and only to the
+ *  parameters that depend on it (R101 D3 gate: a navigator reporting its focus re-ran an unrelated ×2 zoom loop, which does not settle). */
 export function setParam(l: WLayout, values: Values, id: string, param: string, value: unknown, opts: PropagateOpts = {}): PropagateResult {
   const node = nodeOf(l, id, param);
   if (same(readNode(l, values, node), value)) return { values, iterations: 0, converged: true, changed: [], failures: [] };
-  const r = propagate(l, writeNode(values, node, value), [node], opts);
+  const only = downstreamOf(l, node);
+  if (!only.size) return { values: writeNode(values, node, value), iterations: 0, converged: true, changed: [node], failures: [] };
+  const r = propagate(l, writeNode(values, node, value), [node], { ...opts, only: opts.only ? new Set([...only].filter((t) => opts.only!.has(t))) : only });
   return { ...r, changed: [node, ...r.changed] };
 }
 
