@@ -63,6 +63,8 @@ export function kindEntries(knownPanel: (id: string) => boolean, layoutId: strin
   return kinds.map((k) => {
     const label = k.label?.pl ?? k.id;
     if (k.status !== "present") return { kind: k.id, label, status: "planned", reason: k.reason?.pl ?? k.status };
+    // R101 D1: the background kind (the desktop itself) is listed, never hidden, with the reason that it is always there.
+    if (k.mode === "background") return { kind: k.id, label, status: "cannot_open", reason: say(words, "background_kind", lang) };
     if (k.id === "chat") return { kind: k.id, label, status: "available", target: { chat: true } };
     const panel = byKind.get(k.id) ?? (knownPanel(k.id) ? k.id : undefined);
     return panel ? { kind: k.id, label, status: "available", target: { panel } } : { kind: k.id, label, status: "cannot_open", reason: say(words, "unavailable_cannot_open", lang) };

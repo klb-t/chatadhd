@@ -1,10 +1,18 @@
 // W0 of the window system (docs/architecture/OKNA_SYSTEM_2026-10-23.md §2): the window model as pure data + total operations.
 // Nothing here touches React or the DOM. Every operation is TOTAL: invalid input returns the unchanged state plus an advisory, never throws.
 // Every number, preset and name below is an example/preset (CLAUDE.md "lists are examples"): modes, placements and kinds are open strings where
-// the design allows it; `Mode` is closed only because the five modes are the vocabulary of the design (§2.1), reversible by widening the type.
+// the design allows it; `Mode` is closed only because the modes are the vocabulary of the design (§2.1), reversible by widening the type.
+// R101 D1 (PULPIT_R101 §7) widened it by the sixth mode `background`: the desktop, exactly one per layout, under every other window. Decision
+// D5 (card S1 / M1-R101-D1 in docs/reports/INDEX.md): the desktop is NOT an element of `windows[]` (162 reads of `.windows` in 18 files of
+// the page treat every element as a closable, switchable window); it lives in the optional field `layout.desktop` and is seen through the
+// adapter `desktopOf` / `allWindows`. Absent field = the preset desktop (nothing written, every saved layout stays byte-identical). Reversal:
+// put it into windows[] (normalize inserts it) and filter `mode !== "background"` in those readers.
 
-export type Mode = "maximized" | "docked" | "floating" | "minimized" | "tabbed";
-export const MODES: readonly Mode[] = ["maximized", "docked", "floating", "minimized", "tabbed"];
+export type Mode = "maximized" | "docked" | "floating" | "minimized" | "tabbed" | "background";
+export const MODES: readonly Mode[] = ["maximized", "docked", "floating", "minimized", "tabbed", "background"];
+/** The kind of the background window and its preset (data: shell/data/window_kinds.json, kind `desktop`, `preset_params`). */
+export const DESKTOP_KIND = "desktop";
+export const DESKTOP_PRESET: Readonly<Pick<Win, "id" | "node">> = { id: "w_desktop", node: "desktop:main" };
 export type Rect = { x: number; y: number; w: number; h: number; unit: "fraction" | "px" };
 export type Leaf = { leaf: string; born?: "explicit" };
 export type Split = { split: "h" | "v"; ratio: number; a: Tree; b: Tree };
@@ -19,6 +27,8 @@ export interface WLayout {
   schema?: string; id: string; label?: unknown; origin?: string; device_class?: string;
   tree: Tree; leaves: Record<string, LeafInfo>; windows: Win[]; focus: string | null;
   channels: Record<string, unknown>; shelf: { handles: string[] }; profile?: unknown;
+  /** R101 D1: the one background window (the desktop); absent = the preset one (`desktopOf`). Never an element of `windows`. */
+  desktop?: Win;
   [extra: string]: unknown;   // chat/topbar/menu/... travel with the layout untouched
 }
 export interface Advisory { id: string; window?: string; evidence: Record<string, unknown>; text: string }
@@ -52,7 +62,12 @@ const ADV_TEXT: Record<string, string> = {
   empty_leaf_collapsed: "Pusty panel został usunięty. Czy tak ma być?", ratio_clamped: "Proporcja podziału poza zakresem 0..1, przycięto.",
   zero_size: "Okno ma zerowy rozmiar. Czy to celowe?", dock_onto_self: "Okno jest już jedyne w tym panelu.", focus_hidden: "Okno ma fokus, ale jest zasłonięte.",
   rect_invalid: "Prostokąt okna był nieprawidłowy, użyto domyślnego.", nothing_to_undo: "Nie ma czego cofnąć.", nothing_to_redo: "Nie ma czego ponowić.",
-  dock_narrow: "Panel jest wąski. Czy tak ma być?", unknown_split: "Nie ma takiego podziału.", not_movable: "To okno nie ma gdzie się przesunąć w tym stanie.", no_windows: "Brak okien.",
+  dock_narrow: "Panel jest wąski. Czy tak ma być?",
+  desktop_not_closable: "Pulpit się nie zamyka; można go zasłonić oknami albo pokazać skrótem „pokaż pulpit”.",
+  desktop_fixed: "Pulpit leży pod wszystkimi oknami; nie da się go zadokować, odpiąć ani przesunąć.",
+  desktop_one: "Pulpit już jest (jeden na układ); pokazuje go „pokaż pulpit”.",
+  desktop_duplicate: "W układzie było drugie okno-pulpit; zwinięto je, pulpit jest jeden. Czy tak ma być?",
+  desktop_lifted: "Okno w trybie tła stało się pulpitem tego układu.", unknown_split: "Nie ma takiego podziału.", not_movable: "To okno nie ma gdzie się przesunąć w tym stanie.", no_windows: "Brak okien.",
 };
 const adv = (id: string, evidence: Record<string, unknown> = {}, window?: string): Advisory => ({ id, evidence, text: ADV_TEXT[id] ?? id, ...(window ? { window } : {}) });
 
@@ -75,6 +90,22 @@ function freshLeafId(l: WLayout): string { let i = 0; const used = new Set([...O
 let counter = 0;
 const defaultId = () => "w_" + (Date.now().toString(16) + (counter++).toString(16) + Math.floor(Math.random() * 2 ** 32).toString(16)).replace(/[^0-9a-f]/g, "").padEnd(12, "0").slice(-12);
 
+// ---------- R101 D1: the background window (the desktop), through the adapter ----------
+const isWinObj = (x: unknown): x is Win => !!x && typeof x === "object" && typeof (x as Win).id === "string" && !!(x as Win).id;
+/** The one background window of the layout: the stored `layout.desktop` (forced to mode `background`, kind `desktop` unless it names its
+ *  own kind) or the preset one. Never undefined, so "exactly one background window" holds for every layout, also one written before D1. */
+export function desktopOf(l: WLayout): Win {
+  const d = isWinObj(l.desktop) ? l.desktop : undefined;
+  return {
+    id: d?.id ?? DESKTOP_PRESET.id, kind: typeof d?.kind === "string" && d.kind ? d.kind : DESKTOP_KIND, node: typeof d?.node === "string" && d.node ? d.node : DESKTOP_PRESET.node,
+    mode: "background", z: 0, params: d?.params && typeof d.params === "object" ? d.params : {}, profile: d?.profile ?? null,
+    title_override: d?.title_override ?? null, collapsed: false, pinned: true,
+  };
+}
+/** Every window of the layout including the background one (first: it is under everything). */
+export const allWindows = (l: WLayout): Win[] => [desktopOf(l), ...l.windows];
+export const isBackground = (w: Pick<Win, "mode">): boolean => w.mode === "background";
+
 const byId = (l: WLayout, id: unknown): Win | undefined => typeof id === "string" ? l.windows.find((w) => w.id === id) : undefined;
 const isDockedMode = (m: Mode) => m === "docked" || m === "tabbed";
 export const firstLeaf = (t: Tree): string => (isLeaf(t) ? t.leaf : firstLeaf(t.a));
@@ -82,6 +113,19 @@ export const firstLeaf = (t: Tree): string => (isLeaf(t) ? t.leaf : firstLeaf(t.
 // ---------- normalization (run after every operation) ----------
 /** Makes the layout internally consistent: dock<->leaf membership, tabbed vs docked, z-order, focus, handles. Idempotent. */
 export function normalize(l: WLayout, ctx: Ctx = {}, out: Advisory[] = [], mayCollapse: boolean = true): WLayout {
+  // R101 D1: a background window inside windows[] (an imported or hand-written layout) becomes the desktop when the layout has none; any
+  // other one is minimized with the advisory desktop_duplicate (nothing is dropped). Afterwards windows[] holds no background window.
+  if (l.windows.some((w) => w.mode === "background")) {
+    const kept: Win[] = [];
+    for (const w of l.windows) {
+      if (w.mode !== "background") { kept.push(w); continue; }
+      if (!isWinObj(l.desktop)) { delete w.dock; delete w.rect; l.desktop = { ...w, mode: "background", z: 0 }; out.push(adv("desktop_lifted", { id: w.id }, w.id)); continue; }
+      delete w.dock; w.mode = "minimized"; kept.push(w); out.push(adv("desktop_duplicate", { id: w.id, desktop: l.desktop.id }, w.id));
+    }
+    l.windows = kept;
+  }
+  if (l.desktop !== undefined && !isWinObj(l.desktop)) delete l.desktop;
+  else if (l.desktop) { l.desktop.mode = "background"; l.desktop.z = 0; delete l.desktop.dock; delete l.desktop.rect; }
   const ids = new Set(l.windows.map((w) => w.id));
   const leaves = new Set(leafIds(l.tree));
   for (const k of Object.keys(l.leaves)) if (!leaves.has(k)) delete l.leaves[k];
@@ -163,6 +207,12 @@ function visibleHost(l: WLayout): string | undefined { return (byId(l, l.focus)?
 // ---------- operations (pure: mutate a clone) ----------
 function run(l: WLayout, op: Op, ctx: Ctx, out: Advisory[]): boolean {
   const need = (id: unknown): Win | undefined => { const w = byId(l, id); if (!w) out.push(adv("unknown_window", { id })); return w; };
+  // R101 D1: the background window is not closed, docked, floated, moved, maximized or minimized - a noop with a receipt (R101 point 3);
+  // a second one is not opened (several desktops are D9 of PULPIT §11). Focus on it is a gap for D2 (keyboard on the icons).
+  const desk = desktopOf(l);
+  const onDesk = (op as { id?: unknown }).id === desk.id || (op.op === "close" && (op as { kind?: unknown }).kind === DESKTOP_KIND);
+  if (onDesk && op.op !== "focus") { out.push(adv(op.op === "close" ? "desktop_not_closable" : "desktop_fixed", { op: op.op }, desk.id)); return false; }
+  if (op.op === "open" && op.kind === DESKTOP_KIND) { out.push(adv("desktop_one", { kind: op.kind }, desk.id)); return false; }
   switch (op.op) {
     case "open": {
       if (typeof op.kind !== "string" || !op.kind) { out.push(adv("bad_op", { field: "kind" })); return false; }
@@ -353,6 +403,9 @@ export function check(l: WLayout, opts: { allowEmptyLeaves?: boolean } = {}): st
   if (l.windows.filter((w) => w.mode === "maximized").length > 1) p.push("two maximized");
   if (l.windows.length === 0 ? l.focus !== null : !ids.includes(l.focus as string)) p.push("focus invalid");
   for (const h of l.shelf.handles) if (!ids.includes(h)) p.push("handle without window " + h);
+  // R101 D1 (P2 of PULPIT §14): exactly one background window, and it is not in windows[].
+  if (allWindows(l).filter((w) => w.mode === "background").length !== 1) p.push("background windows != 1");
+  if (ids.includes(desktopOf(l).id)) p.push("desktop id reused by a window");
   return p;
 }
 export type Reach = "visible" | "handle" | "switcher";

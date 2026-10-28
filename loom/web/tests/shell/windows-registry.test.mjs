@@ -36,7 +36,7 @@ test('P13: present kinds point at an existing component file; planned kinds carr
     if (k.status === 'planned') assert.ok(k.reason && k.reason.pl.length > 10, k.id + ' planned without reason');
     else {
       assert.ok(k.component, k.id + ' present without component');
-      const found = await Promise.any(['components', 'shell', 'shell/artifacts'].map(d => access(new URL(`../../src/${d}/${k.component}.tsx`, import.meta.url))));
+      const found = await Promise.any(['components', 'shell', 'shell/artifacts', 'shell/windows'].map(d => access(new URL(`../../src/${d}/${k.component}.tsx`, import.meta.url))));
       void found;
     }
   }
