@@ -163,9 +163,15 @@
      "by": "owner",
      "date": "2026-10-28",
      "text": "„koncepcja … interfejs zerowy dosłownie jako pulpit z ikonkami mój graf ustawienia rozmowy okienko czatu kosz” — koncepcja do analizy (agenci, także Fable): pulpit z ikonami; jego lista ikon to przykłady (lista otwarta)."
+    },
+    {
+     "state": "corrected",
+     "by": "owner",
+     "date": "2026-10-28",
+     "text": "„Mógłby to być specyficzny widok na Graf który wybrane węzły wyciąga w postaci ikonek, a krawędzie i inne węzły bardzo przezroczyste pokazuje że tylko Byłoby widać że istnieją. zamiast katalogu domowego by był użytkownik, zamiast moje dokumenty- moje projekty, moje pliki. to takie przykładowe skojarzenia” — pulpit jako widok grafu: wybrane węzły jako ikony, reszta węzłów i krawędzie bardzo przezroczyste (widać, że istnieją); skojarzenia (przykłady): katalog domowy → użytkownik, moje dokumenty → moje projekty, moje pliki."
     }
    ],
-   "corrected_text": "„koncepcja … interfejs zerowy dosłownie jako pulpit z ikonkami mój graf ustawienia rozmowy okienko czatu kosz” — koncepcja do analizy (agenci, także Fable): pulpit z ikonami; jego lista ikon to przykłady (lista otwarta).",
+   "corrected_text": "„Mógłby to być specyficzny widok na Graf który wybrane węzły wyciąga w postaci ikonek, a krawędzie i inne węzły bardzo przezroczyste pokazuje że tylko Byłoby widać że istnieją. zamiast katalogu domowego by był użytkownik, zamiast moje dokumenty- moje projekty, moje pliki. to takie przykładowe skojarzenia” — pulpit jako widok grafu: wybrane węzły jako ikony, reszta węzłów i krawędzie bardzo przezroczyste (widać, że istnieją); skojarzenia (przykłady): katalog domowy → użytkownik, moje dokumenty → moje projekty, moje pliki.",
    "by": "owner",
    "date": "2026-10-28"
   },
