@@ -15,6 +15,7 @@ import PersonText from "./PersonText";
 import ViewBar from "./ViewBar";
 import { useNavigatorAdvisories } from "./use-navigator-advisories";
 import { useWindowParam } from "../shell/windows/WindowParams";
+import { heard, wrote } from "../shell/windows/param-echo";
 
 interface Props {
   result: GraphNavigateResult;
@@ -69,19 +70,30 @@ export default function NavigatorMap({ result, open, t, language = "pl", mapping
   // W6 (OKNA §5): zoom and pan are parameters of the window the map is drawn in. The map reports its own changes and follows a value
   // the coupling of windows gives it (a binding ×2 to another graph window, a shared channel...). The value is honoured as given (not
   // clamped: a binding asking for an unusual zoom is shown as asked). Without a window (no provider) nothing changes.
+  // The echo of the map's own report is not followed (param-echo.ts: on a slow device it can arrive after a newer own change, CI 6ab55aae).
   const zoomParam = useWindowParam("zoom"), panParam = useWindowParam("pan");
+  const zoomOwn = useRef<unknown[]>([]), panOwn = useRef<unknown[]>([]);
   useEffect(() => {
     const z = zoomParam.value;
-    if (typeof z === "number" && Number.isFinite(z) && z > 0 && Math.abs(z - cam.zoom) > 1e-9) setCam(c => ({ ...c, zoom: z }));
+    if (typeof z !== "number" || !Number.isFinite(z) || z <= 0) return;
+    const h = heard(zoomOwn.current, z); zoomOwn.current = h.queue;
+    if (h.apply && Math.abs(z - cam.zoom) > 1e-9) setCam(c => ({ ...c, zoom: z }));
   }, [zoomParam.value]); // eslint-disable-line react-hooks/exhaustive-deps
-  useEffect(() => { zoomParam.set(cam.zoom); }, [cam.zoom]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (zoomParam.window) zoomOwn.current = wrote(zoomOwn.current, cam.zoom, zoomParam.value);
+    zoomParam.set(cam.zoom);
+  }, [cam.zoom]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
     const p = panParam.value as { x?: unknown; y?: unknown } | undefined;
-    if (p && typeof p.x === "number" && typeof p.y === "number" && Number.isFinite(p.x) && Number.isFinite(p.y) && (p.x !== cam.panX || p.y !== cam.panY)) {
-      const x = p.x, y = p.y; setCam(c => ({ ...c, panX: x, panY: y }));
-    }
+    if (!p || typeof p.x !== "number" || typeof p.y !== "number" || !Number.isFinite(p.x) || !Number.isFinite(p.y)) return;
+    const h = heard(panOwn.current, p); panOwn.current = h.queue;
+    if (h.apply && (p.x !== cam.panX || p.y !== cam.panY)) { const x = p.x, y = p.y; setCam(c => ({ ...c, panX: x, panY: y })); }
   }, [panParam.value]); // eslint-disable-line react-hooks/exhaustive-deps
-  useEffect(() => { panParam.set({ x: cam.panX, y: cam.panY }); }, [cam.panX, cam.panY]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    const v = { x: cam.panX, y: cam.panY };
+    if (panParam.window) panOwn.current = wrote(panOwn.current, v, panParam.value);
+    panParam.set(v);
+  }, [cam.panX, cam.panY]); // eslint-disable-line react-hooks/exhaustive-deps
   // A new level: the camera goes home and the selection is dropped (the rows are different ones).
   // W8: not at mount - the camera starts home anyway, and a value the window restored (zoom/pan after a reload) must win over it.
   const shownAddress = useRef(result.focus.address);

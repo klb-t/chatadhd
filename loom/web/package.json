@@ -79,6 +79,7 @@
     "test:node-card-state": "node tests/shell/node-card-state.test.mjs",
     "test:navigator-receipt": "node tests/shell/navigator-receipt.test.mjs",
     "test:navigator-map": "node tests/shell/navigator-map.test.mjs",
+    "test:param-echo": "node tests/shell/param-echo.test.mjs",
     "test:navigator-advisory": "node tests/shell/navigator-advisory.test.mjs",
     "test:navigator-mapping": "node tests/shell/navigator-mapping.test.mjs",
     "test:settings-human": "node tests/shell/settings-human-state.test.mjs",

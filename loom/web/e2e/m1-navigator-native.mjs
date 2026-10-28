@@ -484,6 +484,26 @@ try {
     assert.equal(await page.getByTestId("nav-map").getAttribute("data-zoom"), "2.000", "fingers 100 px apart to 200 px apart doubles the zoom");
     await page.getByTestId("nav-map-home").tap();   // ⌂: the camera home, so no node is lost after a pan or a pinch
     assert.equal(await page.getByTestId("nav-map").getAttribute("data-zoom"), "1.000");
+    // CI 6ab55aae: the same pinch landing before React's next task after a − step, as on a slow runner. The map's own report of the − step
+    // (window parameter zoom = 1) is still waiting to be rendered when the pinch sets the camera to 2; React renders both in one batch and the
+    // map must not take that echo of its own write for a value from elsewhere (it did: the camera went back to 1, then swapped 1 <-> 2).
+    const seen = await page.getByTestId("nav-map").evaluate(async el => {
+      const btn = id => document.querySelector(`[data-testid="${id}"]`);
+      const frames = n => new Promise(res => { const go = k => k ? requestAnimationFrame(() => go(k - 1)) : res(); go(n); });
+      btn("nav-map-zoom-in").click(); await frames(3);
+      btn("nav-map-zoom-out").click(); await Promise.resolve(); await Promise.resolve();   // the − step rendered, its report not yet
+      const r = el.getBoundingClientRect();
+      const ev = (type, id, x, y) => el.dispatchEvent(new PointerEvent(type, { pointerId: id, pointerType: "touch", clientX: r.left + x, clientY: r.top + y, bubbles: true, isPrimary: id === 1 }));
+      ev("pointerdown", 1, 120, 150); ev("pointerdown", 2, 220, 150);
+      ev("pointermove", 1, 70, 150); ev("pointermove", 2, 270, 150);
+      ev("pointerup", 1, 70, 150); ev("pointerup", 2, 270, 150);
+      const out = [];
+      for (let i = 0; i < 20; i++) { await frames(1); out.push(el.dataset.zoom); }
+      return out;
+    });
+    assert.deepEqual([...new Set(seen.slice(-10))], ["2.000"], `a pinch right after a − step keeps the zoom it set (frames: ${seen.join(" ")})`);
+    await page.getByTestId("nav-map-home").tap();
+    await page.waitForFunction(() => document.querySelector('[data-testid="nav-map"]')?.dataset.zoom === "1.000", null, { timeout: 5000 });
     // a tap on the mark of the first row: the label line with the row's words and the same card as the row's ⋯ (graph.card of that address)
     await page.getByTestId("card-close").tap().catch(() => {});
     await page.getByTestId("node-card").waitFor({ state: "detached" });
