@@ -17,7 +17,7 @@ import { dockView, type DockNode } from "./dock";
 import type { WinAdvisory } from "./arrange";
 
 type Words = { pl?: string; en?: string };
-export interface CostEstimate { observed?: string | null; machine?: string | null; per_window_bytes?: Record<string, number>; default_bytes?: number; base_bytes?: number }
+export interface CostEstimate { observed?: string | null; machine?: string | null; source?: string; per_window_bytes?: Record<string, number>; default_bytes?: number; base_bytes?: number }
 export interface MountData {
   keep_mounted?: Record<string, string>;
   mounted_soft?: Record<string, number>;

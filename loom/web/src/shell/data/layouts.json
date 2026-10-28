@@ -589,10 +589,11 @@
     },
     "mounted_soft_note": "W10: the advisory many_windows asks when more windows are mounted than this number on a device class (any number ≥ 0; a class without a number is never asked). A preset, not a cap: nothing is refused or unmounted by itself.",
     "cost_estimate": {
-      "observed": null,
-      "machine": null,
+      "observed": "2026-10-28",
+      "machine": "VM S1 (GCP, 8 vCPU AMD EPYC 7B12, 31 GB), headless Chromium 141.0.7390.37, 1280×800, empty data dir",
       "per_window_bytes": {},
-      "default_bytes": 0
+      "default_bytes": 350000,
+      "source": "e2e/windows-perf-native.mjs: (JS heap at 16 windows − at 1) / 15 = (9.1 − 4.1) MB / 15 after GC; panels with an empty data directory, so a real graph or a long log weighs more"
     },
     "cost_estimate_note": "W10: the estimate shown as evidence of many_windows - JS heap per mounted window measured by e2e/windows-perf-native.mjs (a dated observation of one machine and browser, never a constraint; WebView on a phone is not measured here).",
     "restore_frames": 300,
