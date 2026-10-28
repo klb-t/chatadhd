@@ -5857,7 +5857,18 @@
    "theme": "owner_requirements",
    "theme_inferred": false,
    "understanding": {
-    "state": "none"
+    "state": "corrected",
+    "history": [
+     {
+      "state": "corrected",
+      "by": "owner",
+      "date": "2026-10-28",
+      "text": "„to będzie po prostu przypadek Flow w grafie Gdzie są zebrane Flow. Flow konwersacyjny. wielotorowe eksperymenty mamy już chyba zaimplementowane to jest wielotorowa równoległa konwersacja” — R102 to przypadek flow (konwersacyjny) w miejscu grafu, gdzie zebrane są flow; wielotorowa równoległa konwersacja = wielotorowe eksperymenty (DUCH_GRAFU §4) zastosowane do rozmowy, nie nowy silnik."
+     }
+    ],
+    "corrected_text": "„to będzie po prostu przypadek Flow w grafie Gdzie są zebrane Flow. Flow konwersacyjny. wielotorowe eksperymenty mamy już chyba zaimplementowane to jest wielotorowa równoległa konwersacja” — R102 to przypadek flow (konwersacyjny) w miejscu grafu, gdzie zebrane są flow; wielotorowa równoległa konwersacja = wielotorowe eksperymenty (DUCH_GRAFU §4) zastosowane do rozmowy, nie nowy silnik.",
+    "by": "owner",
+    "date": "2026-10-28"
    },
    "quotes": [
     {
