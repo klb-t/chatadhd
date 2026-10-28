@@ -2832,6 +2832,58 @@
           "takes_scope": false
         },
         {
+          "id": "window.pin.pl",
+          "action": "window.pin",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:przypnij)\\s+(.+?)\\s+(?:do|na)\\s+(?:pulpitu|pulpit|pulpicie)\\s*[.!?]*\\s*$",
+          "args": [
+            "target"
+          ],
+          "original": [
+            "target"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "window.pin.en",
+          "action": "window.pin",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:pin)\\s+(.+?)\\s+(?:on|to)\\s+(?:the\\s+)?desktop\\s*[.!?]*\\s*$",
+          "args": [
+            "target"
+          ],
+          "original": [
+            "target"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "window.unpin.pl",
+          "action": "window.unpin",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:odepnij|zdejmij)\\s+(.+?)\\s+(?:od|z)\\s+(?:pulpitu)\\s*[.!?]*\\s*$",
+          "args": [
+            "target"
+          ],
+          "original": [
+            "target"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "window.unpin.en",
+          "action": "window.unpin",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:unpin|take)\\s+(.+?)\\s+(?:off|from)\\s+(?:the\\s+)?desktop\\s*[.!?]*\\s*$",
+          "args": [
+            "target"
+          ],
+          "original": [
+            "target"
+          ],
+          "takes_scope": false
+        },
+        {
           "id": "window.minimize.pl",
           "action": "window.minimize",
           "lang": "pl",
