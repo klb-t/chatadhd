@@ -575,6 +575,12 @@
       "decision": "applicable",
       "label": "Zapisz blok",
       "implementation": "planned"
+    },
+    {
+      "id": "desktop.show",
+      "decision": "applicable",
+      "label": "Pokaż pulpit",
+      "implementation": "planned"
     }
   ],
   "breadcrumbs": [
