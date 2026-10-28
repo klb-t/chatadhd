@@ -943,6 +943,11 @@ Slowa wlasciciela wypowiedziane w sesji VM (gcp) ok. 19:10 UTC, zapisane przez t
 > nie nie nie cache nie wyłączaj bo to koszty za duże by były
 > przesadziłem chodzi mi o to żeby nie oddawać publicznie ani do trenowania
 
+## R101 — Interfejs zerowy po zamknięciu ostatniego okna (owner, 2026-10-28)
+> sobie pomyślałem jak ktoś odpali ChatADHD i dostanie pełnoekranowy interfejs. jak go Zbigniew okienko i zamknie, to musi mu zostać coś pozwalające na stworzenie nowego okienka, taki interfejs zerowy.
+
+Gdy osoba zminimalizuje i zamknie ostatnie (pełnoekranowe) okno, zostaje interfejs zerowy, z którego da się otworzyć nowe okno (dowolnego rodzaju, także przywrócić zminimalizowane, wczytać układ). Dyktowane: 'Zbigniew' = 'zminimalizuje'. Wygląd i treść interfejsu zerowego to presety, nie reguły.
+
 ## Decision — rebuild, don't recover
 > "nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane"
 
