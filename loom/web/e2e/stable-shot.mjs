@@ -74,8 +74,22 @@ async function paintMasks(page, presets) {
 const tracked = new WeakMap();
 
 /** Counts the page's requests in flight (attached once per page; call it early, before navigation, for full coverage). */
+/** Opt-in slow CPU (env LOOM_E2E_CPU_THROTTLE = N, Chromium's CDP Emulation.setCPUThrottlingRate: N times slower; unset or <= 1 = off,
+ *  the default). It reproduces on a dev box the races a slow CI runner shows (the order of React's renders and effects). Applied by
+ *  trackRequests to every page it tracks; callable on its own too. A browser without CDP (not Chromium) only gets a warning. */
+export async function throttleCpu(page, rate = Number(process.env.LOOM_E2E_CPU_THROTTLE || 0)) {
+  if (!(rate > 1)) return false;
+  try {
+    const cdp = await page.context().newCDPSession(page);
+    await cdp.send("Emulation.setCPUThrottlingRate", { rate });
+    console.log(`[e2e] CPU throttled x${rate} (LOOM_E2E_CPU_THROTTLE)`);
+    return true;
+  } catch (e) { console.warn(`[e2e] LOOM_E2E_CPU_THROTTLE=${rate} not applied: ${e.message}`); return false; }
+}
+
 export function trackRequests(page, { ignore = /\/api\/events\/stream/ } = {}) {
   if (tracked.has(page)) return tracked.get(page);
+  throttleCpu(page).catch(() => {});
   const state = { inflight: new Set(), last: Date.now() };
   const skip = request => ignore.test(request.url()) || (request.headers().accept || "").includes("text/event-stream");
   page.on("request", r => { if (!skip(r)) { state.inflight.add(r); state.last = Date.now(); } });
