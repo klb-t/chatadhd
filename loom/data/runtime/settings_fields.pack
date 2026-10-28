@@ -1555,6 +1555,173 @@
         }
       },
       {
+        "key": "last_window_close",
+        "scope": "config",
+        "group": "ui",
+        "type": "string",
+        "has_default": false,
+        "values": [
+          {
+            "value": "desktop",
+            "preset": true,
+            "meaning": {
+              "pl": "Zostaje pulpit, z którego otworzysz nowe okno (preset).",
+              "en": "The desktop stays; from it you open a new window (the preset)."
+            }
+          },
+          {
+            "value": "close_app",
+            "meaning": {
+              "pl": "Zamyka program: na Androidzie kończy aplikację, gdy powłoka to umie; w przeglądarce ekran końcowy i próba zamknięcia karty (przeglądarka może odmówić).",
+              "en": "Closes the program: on Android it ends the app when the shell can; in a browser an end screen and an attempt to close the tab (the browser may refuse)."
+            }
+          },
+          {
+            "value": "reopen:chat",
+            "meaning": {
+              "pl": "Otwiera od razu nowe okno danego rodzaju (przykład: czat).",
+              "en": "Opens a new window of the kind at once (example: chat)."
+            }
+          },
+          {
+            "value": "layout:czat",
+            "meaning": {
+              "pl": "Wczytuje układ o tym id (przykład: czat).",
+              "en": "Loads the layout of this id (example: czat)."
+            }
+          }
+        ],
+        "values_open": true,
+        "description": "What closing the last window does (R101, PULPIT_R101 §10): desktop | close_app (alias exit) | reopen:<kind> | layout:<id> [examples; open value]. Unset = the preset last_window_close of the page's shell/data/desktop.json (desktop). An unknown value is read as desktop. Minimizing every window is not a close: the desktop shows them.",
+        "status": {
+          "state": "implemented",
+          "by": "M1-R101-P0",
+          "reader": "web App.tsx (lastWindowClose, shell/windows/desktop.ts)",
+          "reason": {
+            "pl": "Strona czyta to pole, gdy zamknięte zostaje ostatnie okno.",
+            "en": "The page reads this field when the last window is closed."
+          },
+          "today": {
+            "pl": "Po zamknięciu ostatniego okna zostaje pulpit.",
+            "en": "After the last window closes the desktop stays."
+          }
+        },
+        "human": {
+          "label": {
+            "pl": "Po zamknięciu ostatniego okna",
+            "en": "After the last window closes"
+          },
+          "why": {
+            "pl": "Jedni chcą wtedy pulpitu, inni zamknięcia programu.",
+            "en": "Some want the desktop then, others want the program to close."
+          },
+          "effect": {
+            "pl": "Działa przy następnym zamknięciu ostatniego okna.",
+            "en": "Takes effect at the next close of the last window."
+          },
+          "levels": [
+            "person"
+          ],
+          "group": "interfejs",
+          "subgroup": "nawigator",
+          "flows": [],
+          "when_unset": {
+            "pl": "zostaje pulpit",
+            "en": "the desktop stays"
+          }
+        }
+      },
+      {
+        "key": "desktop_emergency_path",
+        "scope": "config",
+        "group": "ui",
+        "type": "boolean",
+        "has_default": false,
+        "description": "Whether the desktop keeps one emergency way to open a window (a chat window button) when desktop_sections leave none (R101 P1, PULPIT_R101 §12 B3). Unset = on. Off: the desktop may offer no way to open a window; it then says so (advisory desktop_no_path) with a button to bring the path back.",
+        "status": {
+          "state": "implemented",
+          "by": "M1-R101-P0",
+          "reader": "web App.tsx (desktopSettings, shell/windows/desktop.ts)",
+          "reason": {
+            "pl": "Strona czyta to pole przy każdym rysowaniu pulpitu.",
+            "en": "The page reads this field whenever it draws the desktop."
+          },
+          "today": {
+            "pl": "Gdy na pulpicie nie ma innej drogi, jest przycisk „Otwórz okno czatu”.",
+            "en": "When the desktop has no other way, there is a button “Open a chat window”."
+          }
+        },
+        "human": {
+          "label": {
+            "pl": "Awaryjna droga do nowego okna",
+            "en": "Emergency way to a new window"
+          },
+          "why": {
+            "pl": "Chroni przed stanem, w którym nie da się otworzyć żadnego okna.",
+            "en": "Protects from a state in which no window can be opened."
+          },
+          "effect": {
+            "pl": "Wyłączone: przy wyłączonych sekcjach pulpitu może nie być żadnej drogi do okna — pulpit to powie i zaproponuje włączenie z powrotem.",
+            "en": "Off: with the desktop sections switched off there may be no way to a window — the desktop says so and offers to switch it back on."
+          },
+          "levels": [
+            "person"
+          ],
+          "group": "interfejs",
+          "subgroup": "nawigator",
+          "flows": [],
+          "when_unset": {
+            "pl": "włączone",
+            "en": "on"
+          }
+        }
+      },
+      {
+        "key": "desktop_sections",
+        "scope": "config",
+        "group": "ui",
+        "type": "array",
+        "has_default": false,
+        "description": "What the desktop shows and in which order: section ids such as sentence, restore, open, layouts [examples, the list of the page's shell/data/desktop.json sections_known]; an array or a comma list. Unset = the preset order of desktop.json. An unknown id is skipped with an advisory; an empty list leaves only the emergency path (desktop_emergency_path).",
+        "status": {
+          "state": "implemented",
+          "by": "M1-R101-P0",
+          "reader": "web App.tsx (desktopSettings, shell/windows/desktop.ts)",
+          "reason": {
+            "pl": "Strona czyta to pole przy każdym rysowaniu pulpitu.",
+            "en": "The page reads this field whenever it draws the desktop."
+          },
+          "today": {
+            "pl": "Pulpit ma pole zdania, zminimalizowane okna, nowe okno każdego rodzaju i układy.",
+            "en": "The desktop has a sentence field, the minimized windows, a new window of every kind and the layouts."
+          }
+        },
+        "human": {
+          "label": {
+            "pl": "Co jest na pulpicie",
+            "en": "What the desktop shows"
+          },
+          "why": {
+            "pl": "Pulpit pod oknami może być pełny albo prawie pusty.",
+            "en": "The desktop under the windows can be full or almost empty."
+          },
+          "effect": {
+            "pl": "Zmienia pulpit od razu.",
+            "en": "Changes the desktop at once."
+          },
+          "levels": [
+            "person"
+          ],
+          "group": "interfejs",
+          "subgroup": "nawigator",
+          "flows": [],
+          "when_unset": {
+            "pl": "zdanie, zminimalizowane, nowe okno, układy",
+            "en": "sentence, minimized, new window, layouts"
+          }
+        }
+      },
+      {
         "key": "disclosure_glyphs",
         "scope": "config",
         "group": "ui",

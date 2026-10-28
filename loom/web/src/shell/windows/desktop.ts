@@ -33,7 +33,8 @@ export const liveWindows = (l: WLayout): Win[] => l.windows.filter((w) => !w.col
 /** How much of the desktop the windows cover: full (a maximized window, a panel in front or a drawn dock tree), partial (only floating
  *  windows), none (no window shown: all closed or minimized). `shown` is the page's own rule of a drawn docked window. */
 export function desktopCover(l: WLayout, shown: (w: Win) => boolean = (w) => !w.collapsed): "full" | "partial" | "none" {
-  if (visibleOverlay(l) || baseWindow(l)) return "full";
+  const base = baseWindow(l);   // a minimized window can be the "covered" one of a floating panel: it covers nothing
+  if (visibleOverlay(l) || (base && base.mode !== "minimized")) return "full";
   if (l.windows.some((w) => w.dock && (w.mode === "docked" || w.mode === "tabbed") && shown(w))) return "full";
   if (l.windows.some((w) => w.mode === "floating" && w.rect && shown(w))) return "partial";
   return "none";
