@@ -76,8 +76,9 @@ Dzięki temu nie ma dwóch światów: przejście z rozmowy jednotorowej do wielo
 ### 3.2 Tor jako przypadek ogólnego eksperymentu
 
 Tor w rozmowie = wariant kroku interpretera rozszerzony o uczestnika. Rozszerzenia interpretera (mechanizm):
-- `variant_mode` dziś jest zamkniętą listą (`all`, `first_success`). Zgodnie z zasadą „listy opcji tylko gdy konieczne”
-  staje się **otwartą wartością** z presetami: `all` (sekwencyjnie), `parallel` (równolegle, z otwartą liczbą
+- `variant_mode` dziś: kod rozpoznaje tylko wartość `first_success`, każda inna (także `all`) znaczy „wszystkie po kolei”
+  (run.cpp ~1119; obserwacja 2026-10-28). Zgodnie z zasadą „listy opcji tylko gdy konieczne” staje się **otwartą wartością**
+  z presetami (przykłady): `all` (sekwencyjnie), `parallel` (równolegle, z otwartą liczbą
   jednoczesnych wywołań, preset = liczba torów), `first_success`, `race` (pierwszy, który skończy), `until` (predykat nad
   wynikami, np. „aż dwa tory się zgodzą”), i każdy inny opisany predykatem. Nieznany tryb = podpowiedź, nie błąd.
 - Tor może się różnić **czymkolwiek**: modelem, dostawcą, promptem, temperaturą, rozumowaniem, kontekstem (inny profil
@@ -89,8 +90,8 @@ Tor w rozmowie = wariant kroku interpretera rozszerzony o uczestnika. Rozszerzen
 
 ### 3.3 Uczestnicy i role (otwarte dane)
 
-Uczestnik: `{id, pseudonim, wiązanie, role[], widoczność, ustawienia toru}`. Wiązanie: model (przez port/politykę),
-człowiek (użytkownik albo inna osoba), agent, narzędzie, inny flow. Role to otwarte etykiety z opisem i fragmentem promptu;
+Uczestnik: `{id, pseudonim, wiązanie, role[], widoczność, ustawienia toru}`. Wiązanie (lista otwarta, przykłady): model (przez port/politykę),
+człowiek (użytkownik albo inna osoba), agent, narzędzie, inny flow, każde inne. Role to otwarte etykiety z opisem i fragmentem promptu;
 **przykłady** ról: odpowiadający, krytyk, obrońca, redaktor, sędzia, sekretarz-streszczacz, „adwokat diabła”, tłumacz.
 Jeden uczestnik może mieć wiele ról, jedna rola wielu uczestników, rola może się zmieniać między rundami (dane rundy).
 Zgodnie z drugą poprawką właściciela („we flow wielotorowym to można przydzielać wiele ról”) role nie są ograniczone do
@@ -131,7 +132,8 @@ Agregacja = akcja katalogu `(odpowiedzi torów, schemat) → wynik + węzły gra
 unia elementów z deduplikacją semantyczną i pochodzeniem każdego elementu (który pseudonim, która runda, cytat).
 **Inne przykłady**: tylko niezgodności (MR21); przecięcie; głosowanie z progiem; ranking przez sędziego-model; ocena
 wielokryterialna z DUCH_GRAFU §4; ręczny wybór; łańcuch agregacji (najpierw suma, potem tylko różnice). Deduplikacja sama
-jest metodą z wariantami (dokładna, leksykalna, wektorowa, Jev, model) — wybór i próg to presety, a scalenie dwóch
+jest metodą z wariantami (przykłady: dokładna, leksykalna, wektorowa, model, Jev — dotychczasowy lokalny mechanizm oceny z
+projektu, nazwa robocza; lista otwarta) — wybór i próg to presety, a scalenie dwóch
 elementów zostaje odwracalną propozycją z dowodem. Zasada z notatki „zgoda modeli to słaby sygnał (skorelowane błędy)”
 jest daną kalibracji: zgoda podnosi pewność słabo (waga w `loom/data/policy/calibration.json`, do strojenia), a zgoda
 modeli tej samej rodziny jeszcze słabiej; nigdy nie jest werdyktem.
@@ -144,10 +146,10 @@ przedstawienia jest **otwartą wartością** z presetami, wybieraną per tor:
 - `labelled_sections` — wypowiedzi innych uczestników w jednej roli z podziałem „Model A: … / Model B: …” (forma z poprawki
   właściciela; szablon nagłówka to dane);
 - `quoted_transcript` — cały przebieg jako cytowany transkrypt w jednym bloku (rozszerzenie istniejącego trybu pakietu
-  w `build_messages`), z instrukcją, kim jest adresat;
+  w `build_messages` — uwaga: tamtejszy „flow” to klasa formatu czatu, nie flow z obszaru „Przepływy”; precedens dotyczy tylko bloku w roli system), z instrukcją, kim jest adresat;
 - `separate_turns` — każdy uczestnik jako osobna tura (z ryzykiem sklejenia przez dostawcę, patrz niżej);
 - dowolny inny szablon zdefiniowany przez użytkownika.
-Wybór domyślny wynika z wpisu zdolności dostawcy (`participants_presentation`: tryby natywne, co dostawca robi z nieznanym
+Wybór domyślny wynika z wpisu zdolności dostawcy (`participants_presentation` — wpis do utworzenia w pakiecie W1, dziś go nie ma; tryby natywne, co dostawca robi z nieznanym
 polem, czy skleja kolejne tury tej samej roli) i z presetu. Użytkownik może wymusić dowolny tryb także tam, gdzie dostawca
 go nie wspiera natywnie — wtedy podpowiedź `presentation_not_native` mówi, co dostawca z tym zrobi (np. zignoruje pole,
 sklei tury). Paragon „Co wysłaliśmy” pokazuje dokładnie wysłany kształt.
@@ -167,7 +169,7 @@ dokumentacja/kod SDK, F = forum/prasa.
 Wniosek dla presetów (przykład, do kalibracji testem): OpenAI Chat → `native_name`; Anthropic i Gemini →
 `labelled_sections` w jednej turze użytkownika (sklejanie tur u Anthropic i tak by je połączyło); OpenRouter → pole `name`
 działa jak `labelled_sections` przy modelach spoza OpenAI, więc system może wysłać `name` i wiedzieć, co dotrze.
-Wpis ma okno ważności i ocenę źródła (rejestr R59); test na żywym dostawcy podnosi albo obniża ocenę. Obserwacja o
+Wpis ma okno ważności i ocenę źródła (rejestr R59); test na żywym dostawcy podnosi albo obniża ocenę. Źródła tabeli nie zostały ponownie otwarte w kontroli 2026-10-28 (cytaty przepisane z projektu; ocena O/F jak wyżej) — pierwszy test na żywym dostawcy w W6 je potwierdza albo obala. Obserwacja o
 produktach (czaty grupowe, `@`) to inspiracja dla wejść w UI, nie wzorzec do kopiowania.
 
 ## 4. Geneza tekstu: pochodzenie i diff (mechanizm ogólny, poza R102 też)
@@ -178,14 +180,14 @@ Tekst (wiadomość, dokument, wklejka, wynik toru, plik importu) jest dzielony n
 akapit → zdanie → słowo (lista poziomów otwarta: linia, punkt listy, komórka tabeli, linia kodu). Podział to metoda z
 presetami zależnymi od języka i formatu (zdania po polsku i angielsku, Markdown, kod). Fragment dostaje odcisk
 znormalizowanej treści (normalizacja to dane: białe znaki, wielkość liter, interpunkcja) i węzeł w grafie dopiero, gdy
-jest potrzebny (leniwie — nie zakładamy węzła dla każdego słowa każdej wiadomości; to preset, nie ograniczenie).
+jest potrzebny (preset: leniwie; tryb „od razu dla wszystkiego” jest ustawieniem do włączenia, bez ograniczeń).
 
 ### 4.2 Wyrównanie wersji
 
 Dwie wersje porównuje się wyrównaniem sekwencji fragmentów: istniejący Myers z `lineage.cpp` uogólniony z linii na
-dowolne jednostki i rozszerzony tak, by zwracał **skrypt** (zachowane, dodane, usunięte, zmienione, przeniesione), nie tylko
+dowolne jednostki i rozszerzony tak, by zwracał **skrypt** (rodzaje operacji — przykłady, lista otwarta: zachowane, dodane, usunięte, zmienione, przeniesione), nie tylko
 długość. Zdanie zmienione (a nie usunięte i dodane) rozpoznaje dopasowanie przybliżone (podobieństwo znakowe/słowne;
-próg = preset; opcjonalnie wektorowe lub model jako dalsze warianty metody, płatne tylko po włączeniu). Wewnątrz
+próg = preset; opcjonalnie wektorowe lub model jako dalsze warianty metody; preset: wyłączone, bo płatne — użytkownik włącza je jednym ustawieniem, także na stałe). Wewnątrz
 zmienionego zdania — diff słów. Przeniesienie = fragment usunięty w jednym miejscu i dodany w innym z tym samym odciskiem.
 
 ### 4.3 Skąd biorą się wersje
@@ -202,7 +204,7 @@ zmienionego zdania — diff słów. Przeniesienie = fragment usunięty w jednym 
 
 Każda różnica jest węzłem w grafie, nie tylko kolorem w widoku: `usunięcie` (fragment, wersja przed, wersja po, gdzie —
 rozmowa/wiadomość/wklejka, kiedy, kto lub co: użytkownik, model z pseudonimem, tor, agregacja), analogicznie `zastąpienie`
-(z krawędzią do następcy), `przeniesienie`, `dodanie`. Krawędzie: `derived_from`, `replaced_by`, `deleted_in`,
+(z krawędzią do następcy), `przeniesienie`, `dodanie` (rodzaje zdarzeń to przykłady; nowe dodaje się przez użycie). Krawędzie: `derived_from`, `replaced_by`, `deleted_in`,
 `pasted_from`, `moved_to` (nowe rodzaje krawędzi dodaje się przez samo użycie). Istotność usunięcia to osobna, opcjonalna
 ocena (lokalne cechy: długość, liczby, nazwy własne, przeczenia; Jev albo model jako warianty) — preset: pokazuj wszystkie
 usunięcia, istotne na górze; „cicho zniknęło” = usunięcie, którego nikt nie zaakceptował ani nie skomentował.
@@ -230,11 +232,11 @@ lokalnie i deterministycznie; koszt pieniężny tylko przy włączonych warianta
 - Kosztorys biegu = suma po rundach i torach (rozszerzenie `estimate.cpp`, które już mnoży warianty). Rundy krzyżowe
   rosną szybciej niż liniowo (każdy tor czyta odpowiedzi pozostałych): kosztorys pokazuje to wprost.
 - Strażnik ×10 działa jak dla każdej akcji: jeśli spodziewane zużycie biegu przekracza zwykłe zużycie o rząd wielkości
-  (współczynnik z `usage_policy`, preset 10), bieg czeka na „tak” z paragonem. Przykład: trzy tory × trzy rundy z
-  krzyżowym kontekstem łatwo przekracza ×10 względem pojedynczej wiadomości — wtedy pytamy; dwa tory w jednej ślepej
-  rundzie zwykle nie. Limity wydatków użytkownika (dzień/tydzień/miesiąc) też działają; nic nie dodajemy od siebie.
+  (współczynnik z `usage_policy`, preset 10), bieg czeka na „tak” z paragonem. Hipoteza do zmierzenia kosztorysem, nie fakt: trzy tory × trzy rundy z
+  krzyżowym kontekstem mogą przekroczyć ×10 względem pojedynczej wiadomości (wtedy pytamy); dwa tory w jednej ślepej
+  rundzie raczej nie. Próg decyduje liczba z kosztorysu, nie ta uwaga. Limity wydatków użytkownika (dzień/tydzień/miesiąc) też działają; nic nie dodajemy od siebie.
 - Bez nowych ograniczeń: liczba torów, rund i uczestników jest otwarta. Podpowiedź `many_tracks` (próg = preset) mówi o
-  koszcie i o tym, że kolejne tory tej samej rodziny modeli wnoszą mało — nie blokuje.
+  koszcie i, jako hipotezę do sprawdzenia na dowodach z §5, że kolejne tory tej samej rodziny modeli mogą wnosić mało — nie blokuje.
 - Pamięć podręczna dostawców (caching) jest wykorzystywana: wspólny prefiks wiadomości jest taki sam dla wszystkich
   torów tego samego dostawcy (preset „te same słowa” temu sprzyja).
 
@@ -247,7 +249,7 @@ lokalnie i deterministycznie; koszt pieniężny tylko przy włączonych warianta
 - Pseudonimy chronią przed uprzedzeniem modeli (nazwa dostawcy w treści to też dane; czyszczenie „jestem Claude/GPT”
   z odpowiedzi przed rundą krzyżową to preset, wyłączalny).
 - Pierwsze wysłanie danych do dostawcy, którego użytkownik jeszcze nie używał dla danej kategorii, przechodzi przez
-  istniejące potwierdzenie — flow wielotorowy nie omija tej zasady, nawet gdy tor dodał automat półautomatycznego trybu.
+  istniejące potwierdzenie — flow wielotorowy nie omija tej zasady, także gdy tor został dodany automatycznie (tryb półautomatyczny lub automatyczny).
 - Geneza tekstu i indeks odcisków są lokalne; nic z nich nie wychodzi bez osobnej, jawnej akcji.
 
 ## 8. Wejścia w UI
@@ -255,7 +257,8 @@ lokalnie i deterministycznie; koszt pieniężny tylko przy włączonych warianta
 - **Czat**: w menu „+” przy polu wiadomości „Zapytaj kilka modeli” (otwiera wybór uczestników z presetami flow);
   `@pseudonim` / `@model` w polu wiadomości dodaje uczestnika albo adresuje wiadomość do jednego toru (inspiracja: wzmianki
   w produktach, §3.6); przy odpowiedzi „Powtórz innym torem” (MR21, drugi przykład) i „Porównaj z…” (inna wersja, inna
-  rozmowa, wklejka). Wiadomość wielotorowa w czacie to jeden dymek z zakładkami/kolumnami torów i paskiem agregacji.
+  rozmowa, wklejka). Przykład układu (nie wymóg): wiadomość wielotorowa jako jeden dymek z zakładkami/kolumnami torów i paskiem agregacji; kształt ustawia użytkownik.
+- **Niedokończone = oznaczone**: wpisy menu, okna i zdania z tej listy pojawiają się w aplikacji dopiero z pakietem, który je realizuje; wcześniej są widoczne jako wyszarzone z powodem („planned”, jak w `window_kinds.json`), nigdy jako działające atrapy. Ograniczenia flow (np. warianty dziś po kolei, brak rund) użytkownik dostaje przed uruchomieniem.
 - **Rodzaje okien** (nowe wpisy w `window_kinds.json`, lista otwarta): „Tory obok siebie” (kolumny, synchroniczne
   przewijanie, diff słów między kolumnami), „Rozbieżności i niejednoznaczności” (lista węzłów §5 z cytatami), „Geneza
   tekstu” (oś czasu fragmentu: powstanie, zmiany, wklejki, usunięcie; z przejściem do źródła).
@@ -279,12 +282,14 @@ lokalnie i deterministycznie; koszt pieniężny tylko przy włączonych warianta
 | fragmenty, odciski, wyrównanie, dopasowanie przybliżone | poziomy zdanie+słowo; próg podobieństwa; normalizacja |
 | zdarzenia usunięcia/zastąpienia/wklejenia jako węzły | „pokaż wszystkie usunięcia, istotne na górze” |
 | kosztorys po torach i rundach, ×10, limity | współczynnik 10; próg podpowiedzi `many_tracks` |
-| podpowiedzi | `tracks_identical`, `presentation_not_native`, `open_field_off`, `many_tracks`, `cross_round_privacy` |
+| podpowiedzi | `tracks_identical`, `presentation_not_native`, `open_field_off`, `many_tracks`, `cross_round_privacy` (informacja towarzysząca wstrzymaniu z §7, nie samodzielna blokada) |
 
 ## 10. Przypadek testowy jako test akceptacyjny (e2e)
 
 Scenariusz: dokument redagowany w dwóch rozmowach z dwoma modelami przez przeklejanie; w jednej z przeklejek cicho znika
 istotne zdanie. System ma pokazać **gdzie** (która rozmowa, która wiadomość, która wklejka) i **kiedy**.
+
+Zasada oddania (~/.claude/CLAUDE.md, 2026-10-25): dostawca-atrapa i dane syntetyczne żyją wyłącznie w `loom/tests/`, `loom/web/e2e/` i w osobnych katalogach danych testów; w aplikacji, danych roboczych i eksportach właściciela nie zostaje po nich ślad. Właściciel dostaje to po przejściu Etapu B przez mnie, nie przed.
 
 Etap A (deterministyczny, w CI): dane testowe w `loom/tests/fixtures/` i `loom/web/e2e/` — dokument i odpowiedzi modeli
 są **syntetyczne** (dostawca-atrapa w fixture, tylko w testach; zgodnie z zasadą właściciela nie ma ich w aplikacji ani w
@@ -298,7 +303,7 @@ Testy własności: losowe edycje (usuń/wstaw/zmień/przenieś) na losowych teks
 wstrzyknięty skrypt; teksty puste, jednozdaniowe, identyczne, całkowicie różne; Unicode i polskie znaki.
 
 Etap B (na prawdziwych modelach, raz przed oddaniem do testów właściciela): ten sam scenariusz z dwoma tanimi modelami
-przez OpenRouter, kosztorys przed biegiem w granicach stałej zgody właściciela (≤ 1 €/dzień); raport podaje, które dane
+przez OpenRouter, kosztorys przed biegiem w granicach zgody właściciela na wydatki (CLAUDE.md „Spending authority”: ≤ 1 €/dzień i ≤ 3 €/tydzień, odczyt „euro dziennie” do potwierdzenia; powyżej — pytanie tak/nie); bieg w osobnym, tymczasowym katalogu danych (`CHATADHD_DATA`), nie w danych użytkownika; raport podaje, które dane
 były syntetyczne (dokument D0) i które odpowiedzi prawdziwe. Do tego bieg flow „Zapytaj kilka modeli” (3 tory, ślepa +
 krzyżowa) z asercjami: pseudonimy stałe w biegu, paragony per tor, suma z pochodzeniem, węzły rozbieżności.
 
@@ -330,12 +335,32 @@ krzyżowa) z asercjami: pseudonimy stałe w biegu, paragony per tor, suma z poch
     Etap B §10 na prawdziwych modelach z kosztorysem; raport ze źródłem każdego wyniku. Akceptacja: raport + zielona
     bramka.
 
-Kolejność: G1→G4 dają przypadek testowy niezależnie od R102 (najwyższa wartość za najmniejszy koszt, bez wywołań
+Kolejność (decyzja koordynatora, preset; odwrócenie: zmiana kolejności pakietów, zapis w `docs/reports/INDEX.md`): G1→G4 dają przypadek testowy niezależnie od R102 (najwyższa wartość za najmniejszy koszt, bez wywołań
 modeli); W1→W6 potem. Projekt przed pakietami przechodzi tani przegląd czterech antywzorców (CLAUDE.md, „Check before use”).
 
 ## 12. Pytania do właściciela
 
 Brak. Sprawdzone wobec filozofii: liczba torów, rund, role, pseudonimy, tryby przedstawienia, schematy i agregacje są
 otwartymi danymi z presetami (nic do wyboru za niego); nowi dostawcy nie są potrzebni (tory używają już skonfigurowanych);
-koszt Etapu B mieści się w stałej zgodzie na wydatki. Jedyne miejsce, gdzie decyzja należy do niego, zostaje w aplikacji:
+koszt Etapu B ma mieścić się w zgodzie na wydatki (≤ 1 €/dzień, ≤ 3 €/tydzień, odczyt do potwierdzenia) — to sprawdza kosztorys przed biegiem, nie ta uwaga. Jedyne miejsce, gdzie decyzja należy do niego, zostaje w aplikacji:
 potwierdzenie ×10 i pierwsze wysłanie kategorii danych do nowego dostawcy.
+
+## Poprawki po kontroli (2026-10-28)
+
+Kontrola read-only wg „Check before use”; kod sprawdzony na `origin/claude/m1-w1` a781156a (potwierdzone: warianty
+sekwencyjne w run.cpp ~1116–1153, Myers po liniach tylko z długością w lineage.cpp ~71, klasy `flows`/`flow_step` i
+obszar „Przepływy” w pakach, `growth_factor` 10 w `usage_policy.pack`, adaptery tylko `openai_chat` i `anthropic_messages`).
+Blokujące (4): B1, B2, B3, B4. Redakcyjne (7): W1–W7.
+
+- B1 (hand-off, §10, §8): Etap B szedł bez izolacji danych, a UI mogło pokazać niedokończone wpisy → osobny katalog danych,
+  atrapy tylko w testach, niedokończone wpisy wyszarzone z powodem, ograniczenia flow przed uruchomieniem.
+- B2 (§6): przykłady ×10 (3×3 przekracza, 2×1 nie) podane jak fakty → hipoteza do zmierzenia kosztorysem.
+- B3 (§10, §12): „stała zgoda właściciela” jako fakt → cytat reguły z CLAUDE.md z zastrzeżeniem odczytu, kosztorys rozstrzyga.
+- B4 (§3.3, §3.5, §4.2, §4.4): listy zamknięte (wiązania, metody deduplikacji, operacje skryptu, rodzaje zdarzeń) → przykłady, lista otwarta.
+- W1 (§3.2): „variant_mode zamknięta lista” → dokładny opis kodu (rozpoznaje tylko `first_success`).
+- W2 (§3.5): „Jev” nieobjaśnione → objaśnione jako nazwa robocza.
+- W3 (§3.6): `participants_presentation` brzmiał jak istniejący → wpis do utworzenia w W1; „flow” w trybie pakietu to klasa formatu czatu.
+- W4 (§3.6): tabela dostawców — zaznaczone, że źródeł nie otwierano ponownie w kontroli.
+- W5 (§4.1, §4.2, §6): „leniwie”/„wyłączone”/„wnoszą mało” — uzupełnione jako presety i hipotezy, z opcją włączenia.
+- W6 (§7, §9): zdanie o automacie półautomatycznym poprawione; `cross_round_privacy` opisany jako towarzyszący wstrzymaniu.
+- W7 (§8, §11): układ dymka oznaczony jako przykład; kolejność pakietów jako decyzja koordynatora z drogą odwrócenia.
