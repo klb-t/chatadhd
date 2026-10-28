@@ -5771,9 +5771,15 @@
       "by": "owner",
       "date": "2026-10-28",
       "text": "„ale może być też ustawiona opcja że zamknięcie ostatniego okienka powoduje zamknięcie programu.” — zachowanie po zamknięciu ostatniego okna jest ustawieniem: interfejs zerowy (preset) albo zamknięcie programu (i inne)."
+     },
+     {
+      "state": "corrected",
+      "by": "owner",
+      "date": "2026-10-28",
+      "text": "„a ten Interfejs zerowy to ja myślę że nie tylko po zamknięciu ale cały czas żeby pod spodem był. coś jak pulpit” — interfejs zerowy jest stałą warstwą pod oknami (jak pulpit), widoczną gdy okna go nie zakrywają, nie tylko po zamknięciu ostatniego okna."
      }
     ],
-    "corrected_text": "„ale może być też ustawiona opcja że zamknięcie ostatniego okienka powoduje zamknięcie programu.” — zachowanie po zamknięciu ostatniego okna jest ustawieniem: interfejs zerowy (preset) albo zamknięcie programu (i inne).",
+    "corrected_text": "„a ten Interfejs zerowy to ja myślę że nie tylko po zamknięciu ale cały czas żeby pod spodem był. coś jak pulpit” — interfejs zerowy jest stałą warstwą pod oknami (jak pulpit), widoczną gdy okna go nie zakrywają, nie tylko po zamknięciu ostatniego okna.",
     "by": "owner",
     "date": "2026-10-28"
    },
