@@ -581,6 +581,12 @@
       "decision": "applicable",
       "label": "Pokaż pulpit",
       "implementation": "planned"
+    },
+    {
+      "id": "desktop.declare",
+      "decision": "applicable",
+      "label": "Wygląd pulpitu",
+      "implementation": "planned"
     }
   ],
   "breadcrumbs": [
