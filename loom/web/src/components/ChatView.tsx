@@ -365,6 +365,9 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
   const mountedRef = useRef(true);
   const sendEpochRef = useRef(0);
   const fetchEpochRef = useRef(0);
+  // The explicit local source read in flight (its own token): a metadata refresh must neither cancel it nor replace its display.
+  const readTokenRef = useRef(0);
+  const readingRef = useRef<string | null>(null);
   const available = useMemo(() => availableOperations ? new Set(availableOperations) : null, [availableOperations]);
   const supports = useCallback((operation: string) => !available || available.has(operation), [available]);
 
@@ -426,12 +429,13 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
       const list = view ? view.messages : await api.getMessages(id, true);
       if (mountedRef.current && selectedConvRef.current === id && epoch === fetchEpochRef.current) {
         metadataViewRef.current = view;
+        if (readingRef.current === id) return;  // an explicit read is in flight: its result is the display; this refresh must not drop it
         loadedCountRef.current = list.length;
         setOlderMessages([]); setPageInfo(conversationPage(view));
         setConversationView(view); setMessages(list); setBranchMessages(list); setSourceBusy(false);
       }
     } catch (err) {
-      if (mountedRef.current && selectedConvRef.current === id && epoch === fetchEpochRef.current) {
+      if (mountedRef.current && selectedConvRef.current === id && epoch === fetchEpochRef.current && readingRef.current !== id) {
         const reason = err instanceof Error ? err.message : String(err);
         // A failed view degrades sending to stored messages; it does not stop it (R43).
         if (api.readConversationView) setViewFailure({ conversationId: id, reason,
@@ -477,7 +481,10 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
 
   const readSources = useCallback(async (options: Record<string, unknown>) => {
     if (!convId || !api.readConversationView || sourceBusy || !sourceCatalog.feature) return;
-    const id = convId, epoch = ++fetchEpochRef.current;
+    const id = convId, token = ++readTokenRef.current;
+    fetchEpochRef.current++;  // refreshes already in flight predate this read
+    readingRef.current = id;
+    const current = () => mountedRef.current && selectedConvRef.current === id && token === readTokenRef.current;
     setSourceBusy(true); setError(null);
     // A new read invalidates the preceding transient display before dispatch.
     const metadata = metadataViewRef.current?.conversation_id === id ? metadataViewRef.current : null;
@@ -485,18 +492,19 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
     setBranchLeaf(null); setEditingId(null); setVersionsById({});
     try {
       const view = await api.readConversationView(id, { sourceAccess: "local_read", readOptions: options });
-      if (mountedRef.current && selectedConvRef.current === id && epoch === fetchEpochRef.current) {
+      if (current()) {
         setConversationView(view); setMessages(view.messages); setBranchMessages(view.messages);
       }
     } catch (cause) {
-      if (mountedRef.current && selectedConvRef.current === id && epoch === fetchEpochRef.current)
-        setError(cause instanceof Error ? cause.message : String(cause));
+      if (current()) setError(cause instanceof Error ? cause.message : String(cause));
     } finally {
-      if (mountedRef.current && selectedConvRef.current === id && epoch === fetchEpochRef.current) setSourceBusy(false);
+      if (token === readTokenRef.current) readingRef.current = null;
+      if (current()) setSourceBusy(false);
     }
   }, [convId, sourceBusy, sourceCatalog.feature]);
 
   useEffect(() => {
+    readTokenRef.current++; readingRef.current = null;
     setMessages([]); setBranchMessages([]); setConversationView(null); metadataViewRef.current = null; setSourceBusy(false);
     setOlderMessages([]); setPageInfo(null); loadedCountRef.current = 0;
     setViewFailure(null);

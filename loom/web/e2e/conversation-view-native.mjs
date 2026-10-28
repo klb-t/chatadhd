@@ -140,7 +140,18 @@ try{
   assert.deepEqual((await request('GET',`/api/conversations/${convId}/messages?all=1`)).result,nativeRows);
  });
  await check('second explicit tap keeps source message identity and does not persist content in browser storage',async()=>{
-  await chat().getByTestId('read-conversation-sources').tap();await visibleReferences().first().waitFor();
+  // Real conditions, not timing: every metadata refresh started by the failed send has finished (no view request in flight) and the
+  // read button is enabled. A tap that produced no read request at all (the DOM was re-rendered under the touch) is repeated until the
+  // second read request is observed; a read that went out is never repeated.
+  await page.waitForFunction(()=>{const b=document.querySelector('[data-testid="read-conversation-sources"]');return b&&!b.disabled;});
+  await page.waitForFunction(()=>performance.getEntriesByType('resource').every(e=>e.responseEnd>0));
+  for(let attempt=0;sourceReads.length<2;attempt++){
+   assert.ok(attempt<5,'second explicit tap never produced a source read request');
+   const sent=page.waitForRequest(r=>r.method()==='POST'&&new URL(r.url()).pathname.endsWith('/view'),{timeout:5000}).then(()=>true,()=>false);
+   await chat().getByTestId('read-conversation-sources').tap();
+   if(await sent)break;
+  }
+  await visibleReferences().first().waitFor();
   const again=(await request('POST',`/api/conversations/${convId}/view`,{read_options:{projection_storage:'transient',content_index:'none'}})).result;
   assert.deepEqual(again.messages.map(row=>row.id),headless.messages.map(row=>row.id));assert.equal(sourceReads.length,2);
   const stored=await page.evaluate(()=>JSON.stringify({local:{...localStorage},session:{...sessionStorage}}));assert.equal(stored.includes(canary),false);
