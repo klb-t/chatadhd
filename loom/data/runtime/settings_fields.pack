@@ -5011,6 +5011,100 @@
         "on_unlisted": "refuse"
       },
       {
+        "key": "request_inspector_record",
+        "scope": "config",
+        "group": "safety",
+        "type": "boolean",
+        "has_default": false,
+        "description": "Whether the kernel keeps, in memory, the last request it sent to the model provider in each conversation, for the window 'Zapytanie do modelu' (RI-2). Unset = true (today's behaviour); false = nothing is kept and the window says so.",
+        "status": {
+          "state": "implemented",
+          "by": "RI-2b",
+          "reader": "kernel ChatEngine::send (record of the last provider request, loom.provider_request/1)",
+          "reason": {
+            "pl": "Jądro czyta to pole przy każdej wysyłce.",
+            "en": "The kernel reads this field on every send."
+          },
+          "today": {
+            "pl": "Dziś ostatnie zapytanie jest zapisywane w pamięci (preset: włączone).",
+            "en": "Today the last request is kept in memory (preset: on)."
+          }
+        },
+        "human": {
+          "label": {
+            "pl": "Zapamiętuj ostatnie zapytanie do modelu",
+            "en": "Keep the last request sent to the model"
+          },
+          "why": {
+            "pl": "Jądro może trzymać w pamięci procesu zapytanie, które ostatnio poszło do dostawcy, żeby okno „Zapytanie do modelu” pokazało, co dokładnie wyszło. Wyłączone: nic nie jest trzymane.",
+            "en": "The kernel can keep in process memory the request that last went to the provider so the window 'Request to the model' can show what exactly left. Off: nothing is kept."
+          },
+          "effect": {
+            "pl": "Wyłączone: okno nie ma czego pokazać po wysyłce. Podgląd następnego zapytania działa nadal. Wysyłka się nie zmienia.",
+            "en": "Off: the window has nothing to show after a send. The preview of the next request still works. Sending does not change."
+          },
+          "levels": [
+            "person"
+          ],
+          "group": "prywatnosc",
+          "subgroup": "dane",
+          "flows": [
+            "chat.send"
+          ],
+          "when_unset": {
+            "pl": "włączone",
+            "en": "on"
+          }
+        }
+      },
+      {
+        "key": "request_inspector_show_setting_values",
+        "scope": "config",
+        "group": "safety",
+        "type": "boolean",
+        "has_default": false,
+        "description": "Whether the request inspector shows the values you typed in settings (e.g. the system instruction) unmasked even when they look like a key or password (pattern rules of runtime/chat_secrets). Unset = false (masked). Whatever is in the secrets store, the credential of the route and credential headers are ALWAYS masked by the kernel, regardless of this setting.",
+        "status": {
+          "state": "implemented",
+          "by": "RI-2b",
+          "reader": "kernel provider_request_view (chat_engine.cpp), toggle in the RequestInspector kernel tab",
+          "reason": {
+            "pl": "Jądro czyta to pole przy budowie widoku zapytania.",
+            "en": "The kernel reads this field when it builds the request view."
+          },
+          "today": {
+            "pl": "Dziś wartości wyglądające jak sekret są zamazane (preset: wyłączone).",
+            "en": "Today values that look like a secret are masked (preset: off)."
+          }
+        },
+        "human": {
+          "label": {
+            "pl": "Pokaż wartości z ustawień w oknie zapytania",
+            "en": "Show setting values in the request window"
+          },
+          "why": {
+            "pl": "Domyślnie okno zapytania zamazuje wszystko, co wygląda jak klucz lub hasło, także gdy sam to wpisałeś w ustawieniach (np. w instrukcji systemowej). Tu możesz pozwolić pokazywać takie wartości.",
+            "en": "By default the request window masks everything that looks like a key or password, even when you typed it in settings yourself (e.g. in the system instruction). Here you may allow such values to be shown."
+          },
+          "effect": {
+            "pl": "Włączone: wartości wpisane w ustawieniach są widoczne w oknie. Sekrety z magazynu sekretów, poświadczenie trasy i nagłówki z poświadczeniami są zawsze zamazane.",
+            "en": "On: values typed in settings are visible in the window. Secrets from the secrets store, the route credential and credential headers are always masked."
+          },
+          "levels": [
+            "person"
+          ],
+          "group": "prywatnosc",
+          "subgroup": "dane",
+          "flows": [
+            "chat.send"
+          ],
+          "when_unset": {
+            "pl": "zamazane",
+            "en": "masked"
+          }
+        }
+      },
+      {
         "key": "profile_detail_level",
         "scope": "config",
         "group": "context",

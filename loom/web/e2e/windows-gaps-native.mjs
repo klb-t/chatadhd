@@ -184,6 +184,23 @@ try {
     assert.equal(next.body.messages.at(-1).content, "RI2 następna wiadomość", "inputs: " + JSON.stringify(await page.evaluate(() => [...document.querySelectorAll('[data-testid="chat-input"]')].map(e => e.value))));
     assert.ok(!JSON.stringify(next).includes(SECRET));
     assert.equal(received.length, before + 1, "the preview sent nothing");
+    // RI-2b: the toggle „Pokaż wartości z ustawień" writes request_inspector_show_setting_values; values that only look like a secret show, the store secret stays masked
+    await api("PATCH", "/api/config", { system_prompt: "WGAPS-SYS password: hunter22xyz " + SECRET });
+    const toggle = page.getByTestId("ri-show-setting-values").first();
+    assert.equal(await toggle.isChecked(), false, "preset: masked");
+    await toggle.check();
+    for (let i = 0; i < 50 && (await api("GET", "/api/config")).request_inspector_show_setting_values !== true; i++) await page.waitForTimeout(100);
+    assert.equal((await api("GET", "/api/config")).request_inspector_show_setting_values, true, "the toggle wrote the setting");
+    await page.getByTestId("ri-kernel-refresh").first().click();
+    await page.waitForTimeout(600);
+    const shownOn = await page.getByTestId("ri-kernel-json").first().textContent();
+    assert.ok(shownOn.includes("hunter22xyz"), "setting value shown when on");
+    assert.ok(!shownOn.includes(SECRET) && !shownOn.includes("local-fake-provider-only"), "store secret and route credential stay masked");
+    await toggle.uncheck();
+    for (let i = 0; i < 50 && (await api("GET", "/api/config")).request_inspector_show_setting_values !== false; i++) await page.waitForTimeout(100);
+    await page.getByTestId("ri-kernel-refresh").first().click();
+    await page.waitForTimeout(600);
+    assert.ok(!(await page.getByTestId("ri-kernel-json").first().textContent()).includes("hunter22xyz"), "masked again when off");
     await page.getByTestId("chat-input").fill("");
     await api("PATCH", "/api/config", { system_prompt: "" });
   });

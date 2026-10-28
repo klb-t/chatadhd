@@ -12,13 +12,21 @@ import { useShellText } from "./text";
 type Tab = "page" | "kernel";
 type Which = "last" | "next";
 
-export default function RequestInspector({ api, convId }: { api?: Pick<LoomApi, "providerRequest">; convId?: string | null }) {
+export default function RequestInspector({ api, convId }: { api?: Pick<LoomApi, "providerRequest"> & Partial<Pick<LoomApi, "getConfig" | "setConfig">>; convId?: string | null }) {
   const t = useShellText();
   const [sent, setSent] = useState(lastRequest);
   const [tab, setTab] = useState<Tab>("page");
   const [which, setWhich] = useState<Which>("last");
   const [kernel, setKernel] = useState<{ state: "idle" | "loading" | "ok" | "error"; view?: Record<string, unknown>; error?: string }>({ state: "idle" });
   const [tick, setTick] = useState(0);
+  // RI-2b: the setting request_inspector_show_setting_values (kernel masking; the store secrets and the route credential stay masked always).
+  const [showValues, setShowValues] = useState(false);
+  useEffect(() => { void api?.getConfig?.().then((c) => setShowValues(c?.request_inspector_show_setting_values === true)).catch(() => undefined); }, [api]);
+  const toggleValues = async (on: boolean) => {
+    setShowValues(on);
+    try { await api?.setConfig?.({ request_inspector_show_setting_values: on }); } catch { setShowValues(!on); }
+    setTick((n) => n + 1);
+  };
   useEffect(() => onRequest(() => { setSent(lastRequest()); setTick((n) => n + 1); }), []);
 
   const conv = convId || (typeof sent?.request.conv_id === "string" ? sent.request.conv_id : null) || settledConversation();
@@ -67,6 +75,8 @@ export default function RequestInspector({ api, convId }: { api?: Pick<LoomApi, 
         <button aria-pressed={which === "next"} data-testid="ri-kernel-next" onClick={() => setWhich("next")}>{t("ri_k_next")}</button>
         <button data-testid="ri-kernel-refresh" onClick={() => void ask()}>{t("ri_k_refresh")}</button>
       </div>
+      <label className="ri-show-values"><input type="checkbox" data-testid="ri-show-setting-values" checked={showValues} disabled={!api?.setConfig} onChange={(e) => void toggleValues(e.target.checked)} /> {t("ri_k_show_values")}</label>
+      <p>{t("ri_k_show_values_hint")}</p>
       {which === "next" && <p>{t("ri_k_next_hint")}</p>}
       {kernel.state === "loading" && <p>{t("ri_k_loading")}</p>}
       {kernel.state === "error" && <p role="alert">{t("ri_k_error", { error: kernel.error ?? "" })}</p>}

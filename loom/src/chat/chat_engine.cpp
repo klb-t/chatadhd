@@ -620,6 +620,10 @@ Json provider_request_view(const Config& cfg, const Secrets& secrets, const llm:
                            const std::string& kind) {
   Json recipe = Json::object();
   if (auto r = RuntimeProfile::load("chat_secrets", cfg.path().parent_path())) recipe = r->values();
+  // RI-2b: request_inspector_show_setting_values (preset false). On: text that only LOOKS like a secret (the pattern rules) is shown, so the
+  // values the person typed in settings stay readable. The kernel rule stays whatever the setting says: values of the secrets store, the
+  // credential of the route and credential headers are always masked (below).
+  if (cfg_bool(cfg, "request_inspector_show_setting_values", false) && recipe.is_object()) recipe.erase("patterns");
   Json store_values = Json::object();
   for (const auto& key : secrets.keys()) store_values[key] = secrets.get(key, Json(nullptr));
   if (!call.route.credential.empty()) store_values["route_credential"] = call.route.credential;

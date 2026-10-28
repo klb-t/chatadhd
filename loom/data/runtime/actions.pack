@@ -282,6 +282,8 @@
           "max_tokens",
           "stream",
           "secrets_in_chat",
+          "request_inspector_record",
+          "request_inspector_show_setting_values",
           "auto_title",
           "language",
           "chat_context_order",

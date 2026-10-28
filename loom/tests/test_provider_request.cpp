@@ -138,6 +138,30 @@ TEST_SUITE("provider_request") {
     CHECK(view.at("body").at("messages").size() == sent.at("messages").size());
   }
 
+  TEST_CASE("RI-2b: request_inspector_show_setting_values shows what only looks like a secret, the store and the route credential stay masked") {
+    Fixture f;
+    f.secrets.set("github_token", kStoreValue);
+    f.cfg.set("system_prompt", std::string("SYS-RI2 token is ") + kStoreValue + " and password: hunter22xyz");
+    f.cfg.set("request_inspector_show_setting_values", true);
+    auto e = f.engine();
+    f.transport.expect("POST", "https://api.test/chat/completions", net::ScriptedTransport::Reply::json(200, openai_reply("ok")));
+    unwrap(e.send("MSG-RI2 hello", f.opts()));
+    const std::string dumped = e.last_provider_request(f.conv_id).dump();
+    CHECK(dumped.find("hunter22xyz") != std::string::npos);        // typed in settings, shown on request
+    CHECK(dumped.find(kStoreValue) == std::string::npos);          // the secrets store is masked whatever the setting says
+    CHECK(dumped.find("[redacted:secrets_store:github_token]") != std::string::npos);
+    CHECK(dumped.find(kKey) == std::string::npos);                 // the route credential too
+    CHECK(dumped.find("[redacted:header]") != std::string::npos);
+    // The preview obeys the same setting.
+    const std::string pv = unwrap(e.provider_request_preview("MSG-RI2 next", f.opts())).dump();
+    CHECK(pv.find(kStoreValue) == std::string::npos);
+    CHECK(pv.find(kKey) == std::string::npos);
+    f.cfg.set("request_inspector_show_setting_values", false);
+    f.transport.expect("POST", "https://api.test/chat/completions", net::ScriptedTransport::Reply::json(200, openai_reply("ok")));
+    unwrap(e.send("MSG-RI2 again", f.opts()));
+    CHECK(e.last_provider_request(f.conv_id).dump().find("hunter22xyz") == std::string::npos);
+  }
+
   TEST_CASE("RI-2: the preview builds the request the send then makes, stores and sends nothing, needs no key") {
     Fixture f;
     auto e = f.engine();
