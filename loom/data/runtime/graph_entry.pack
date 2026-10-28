@@ -4091,6 +4091,7 @@
           "POST /api/catalog/select",
           "POST /api/chat",
           "POST /api/chat/cancel",
+          "POST /api/chat/request",
           "POST /api/chat/route",
           "POST /api/client/capabilities",
           "POST /api/client/declare",

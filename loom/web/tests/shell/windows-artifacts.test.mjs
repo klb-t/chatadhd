@@ -132,3 +132,26 @@ test('W-gaps: pickArtifact names blocks of assistant answers by words (last, pre
   assert.equal(Ax.pickArtifact([], 'ostatni').artifact, null);
   assert.equal(Ax.pickArtifact(msgs, 'x', { ...Ax.ARTIFACTS, which_words: { x: 0 } }).artifact.lang, 'python', 'the words are data');
 });
+
+// RI-2: the kernel's record of a request to the provider in words (last-request.ts kernelLines): every part with its size in order, tools and
+// scalar parameters, masks counted without the header of the key; an unknown part or a record without parts still reads.
+test('RI-2 kernelLines: parts in order with sizes, tools, parameters, masks', async () => {
+  const L = await loader.load('src/shell/last-request.ts');
+  const view = { kind: 'sent', dispatched: true, provider: 'openrouter', endpoint: 'chat_completions', model: 'm', body_bytes: 321,
+    parts: [{ part: 'system_prompt', chars: 10 }, { part: 'memory', chars: 5 }, { part: 'history_user', chars: 3 }, { part: 'weird', role: 'tool', chars: 2 }, { part: 'current_message', chars: 7 }],
+    tools: 2, parameters: { model: 'm', temperature: 0.7, plugins: [{ id: 'web' }] },
+    redactions: [{ rule: 'credential_header', count: 1 }, { rule: 'secrets_store', key: 'k', count: 2 }] };
+  const lines = L.kernelLines(view);
+  assert.deepEqual(lines.map(l => l.id), ['ri_k_head', 'ri_k_part_system_prompt', 'ri_k_part_memory', 'ri_k_part_history_user', 'ri_k_part_other', 'ri_k_part_current_message', 'ri_k_tools', 'ri_k_params', 'ri_k_redacted']);
+  assert.equal(lines[0].vars.bytes, '321');
+  assert.equal(lines[4].vars.role, 'tool');
+  assert.equal(lines.at(-2).vars.list, 'model=m, temperature=0.7');
+  assert.equal(lines.at(-1).vars.count, '2');
+  assert.deepEqual(L.kernelLines({ kind: 'sent', dispatched: false }).map(l => l.id), ['ri_k_head', 'ri_k_not_dispatched', 'ri_k_not_redacted']);
+  L.recordDraft('draft text', 'c_1');
+  assert.deepEqual(L.currentDraft(), { text: 'draft text', conv: 'c_1' });
+  L.recordRequest({ message: 'x' });
+  assert.equal(L.currentDraft().text, '', 'a send empties the field');
+  L.settleRequest('c_2');
+  assert.equal(L.settledConversation(), 'c_2');
+});
