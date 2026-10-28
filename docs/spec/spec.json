@@ -5764,7 +5764,18 @@
    "theme": "owner_requirements",
    "theme_inferred": false,
    "understanding": {
-    "state": "none"
+    "state": "corrected",
+    "history": [
+     {
+      "state": "corrected",
+      "by": "owner",
+      "date": "2026-10-28",
+      "text": "„ale może być też ustawiona opcja że zamknięcie ostatniego okienka powoduje zamknięcie programu.” — zachowanie po zamknięciu ostatniego okna jest ustawieniem: interfejs zerowy (preset) albo zamknięcie programu (i inne)."
+     }
+    ],
+    "corrected_text": "„ale może być też ustawiona opcja że zamknięcie ostatniego okienka powoduje zamknięcie programu.” — zachowanie po zamknięciu ostatniego okna jest ustawieniem: interfejs zerowy (preset) albo zamknięcie programu (i inne).",
+    "by": "owner",
+    "date": "2026-10-28"
    },
    "quotes": [
     {
