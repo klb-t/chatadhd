@@ -95,5 +95,16 @@
   "html_scripts": false,
   "html_scripts_note": "The preset of the settings field artifact_html_scripts: false = iframe sandbox without scripts. On = sandbox allow-scripts (never allow-same-origin) plus a non-blocking advisory in the window.",
   "file_stem": "artefakt",
-  "file_stem_note": "The stem of the file name „Zapisz” proposes (then -<n>.<ext>)."
+  "file_stem_note": "The stem of the file name „Zapisz” proposes (then -<n>.<ext>).",
+  "which_words": {
+    "ostatni": -1,
+    "ten": -1,
+    "last": -1,
+    "this": -1,
+    "przedostatni": -2,
+    "previous": -2,
+    "pierwszy": 0,
+    "first": 0
+  },
+  "which_words_note": "W-gaps: the words of a sentence (folded) naming which block of the answers of the shown conversation (artifact.open / copy / save): a number >= 0 counts from the first block, < 0 from the last. Open example map; an empty word = the preset -1."
 }

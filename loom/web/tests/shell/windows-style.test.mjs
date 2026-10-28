@@ -155,3 +155,40 @@ test(`generative: ${CONFIG.runs} random sequences of choices (seed ${CONFIG.seed
     assert.equal(JSON.stringify(back.layout), JSON.stringify(s0.layout), 'undo restores the layout exactly');
   }
 });
+
+// W-gaps: a style named by a word (window.style / layout.style sentences), imported profiles on the list, sidebar.width as a preset
+test('W-gaps: styleOfWord maps sentence words to profiles (newest revision), clear words to inherit, anything else to null', () => {
+  const docs = [doc('chatgpt-inspired', 1, 'left', 'ChatGPT-inspired'), doc('chatgpt-inspired', 2, 'left', 'ChatGPT-inspired'), doc('claude-inspired', 2, 'left', 'Claude-inspired'), doc('loom-default', 2, 'left', 'Loom')];
+  assert.equal(St.styleOfWord('Claude', docs).doc.id, 'claude-inspired');
+  assert.equal(St.styleOfWord('ChatGPT', docs).doc.profile_revision, 2, 'the newest revision first');
+  assert.equal(St.styleOfWord('loom', docs).doc.id, 'loom-default');
+  assert.equal(St.styleOfWord('claude-inspired', docs).doc.id, 'claude-inspired');
+  assert.deepEqual(St.styleOfWord('domyślny', docs), { clear: true });
+  assert.deepEqual(St.styleOfWord('default', docs), { clear: true });
+  assert.equal(St.styleOfWord('Copilot', docs), null, 'an unknown word is answered, not guessed');
+  assert.equal(St.styleOfWord('', docs), null);
+  assert.deepEqual(St.styleOfWord('xyz', docs, { clear_words: ['xyz'] }), { clear: true }, 'clear words are data');
+});
+test('W-gaps: importedStyleDocs reads the Workshop store, skips malformed docs, survives an unreadable store', () => {
+  const store = JSON.stringify({ schema: 'loom.application.views/1', custom_profiles: [doc('mine', 3, 'right', 'Mine'), { id: 'bad' }, null], views: [] });
+  assert.deepEqual(St.importedStyleDocs(() => store).map(d => d.id), ['mine']);
+  assert.deepEqual(St.importedStyleDocs(() => null), []);
+  assert.deepEqual(St.importedStyleDocs(() => '{not json'), []);
+});
+test('W-gaps: withSidebarWidth sets the list share from the profile width once, at the choice, in the same journal entry; off and false leave it', () => {
+  const s0 = grid();
+  const wide = { ...doc('wide', 1, 'left', 'Wide'), presentation: { sidebar: { side: 'left', width: 500 } } };
+  const docs = [...DOCS, wide];
+  const s1 = St.setLayoutProfile(s0, ref('wide', 1));
+  const s2 = St.withSidebarWidth(s0, s1, null, docs, 'layout', 1000);
+  const at = St.leafSide(s2.layout.tree, s2.layout.windows.find(w => w.kind === 'conversation_list').dock.leaf);
+  assert.ok(Math.abs(at.share - 0.5) < 1e-9, 'share = 500 / 1000, got ' + at.share);
+  assert.equal(s2.past.length, s1.past.length, 'no extra journal entry');
+  assert.equal(JSON.stringify(M.undo(s2).state.layout), JSON.stringify(s0.layout), 'one undo takes the style and the width back');
+  assert.equal(St.withSidebarWidth(s0, s1, null, docs, 'off', 1000), s1, 'profile_layout_fields off: nothing');
+  assert.equal(St.withSidebarWidth(s0, s1, null, docs, 'layout', 1000, { apply_sidebar_width: false }), s1, 'apply_sidebar_width false: nothing');
+  assert.equal(St.withSidebarWidth(s2, s2, null, docs, 'layout', 1000), s2, 'no change of style: the dragged split stays');
+  const huge = St.withSidebarWidth(s0, St.setLayoutProfile(s0, ref('wide', 1)), null, docs, 'layout', 100);
+  const hat = St.leafSide(huge.layout.tree, huge.layout.windows.find(w => w.kind === 'conversation_list').dock.leaf);
+  assert.ok(hat.share <= 1 && hat.share >= 0, 'a degenerate width is clamped into 0..1 (dock_narrow then says it)');
+});

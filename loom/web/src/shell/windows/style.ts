@@ -14,6 +14,7 @@ import type { WinAdvisory } from "./arrange";
 type Words = { pl?: string; en?: string };
 export const STYLES = stylesFile as unknown as {
   fallback_profile?: string; layout_fields_default?: string; layout_fields_known?: string[]; words: Record<string, Words>;
+  clear_words?: string[]; apply_sidebar_width?: boolean;
 };
 export interface ProfileRef { id: string; revision: number | null }
 /** The part of an application profile this module reads (the whole document is passed through untouched). */
@@ -174,3 +175,66 @@ export function inheritLabel<D extends StyleDoc>(l: WLayout, windowId: string | 
   return say(STYLES.words.inherit, lang).replace("{from}", from);
 }
 export { say as sayStyle };
+
+const foldWord = (t: string) => t.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ł/g, "l").replace(/Ł/g, "L").toLowerCase().trim();
+
+/**
+ * W-gaps: a word of a sentence („Claude”, „ChatGPT”, „domyślny”) to a style. `clear` = a word of styles.json clear_words (inherit again);
+ * otherwise the profile whose id or label contains the word (or whose label's first word the word starts with), the newest revision first
+ * (docs are searched in the order given, revisions sorted descending). null = not known here (the caller says so with the known labels).
+ */
+export function styleOfWord<D extends StyleDoc>(word: string, docs: readonly D[], data: { clear_words?: string[] } = STYLES): { clear: true } | { doc: D } | null {
+  const w = foldWord(word).replace(/^(?:styl[a-z]*|style|the|w|jak)\s+/, "").replace(/\s+(?:style|styl[a-z]*)$/, "");
+  if (!w) return null;
+  if ((data.clear_words ?? []).some((c) => foldWord(c) === w)) return { clear: true };
+  const sorted = [...docs].sort((a, b) => (a.id === b.id ? b.profile_revision - a.profile_revision : 0));
+  const label = (d: D) => foldWord(d.label ?? d.id);
+  const hit = sorted.find((d) => foldWord(d.id) === w || label(d) === w)
+    ?? sorted.find((d) => foldWord(d.id).includes(w) || label(d).includes(w))
+    ?? sorted.find((d) => { const first = label(d).split(/[^a-z0-9]+/)[0]; return first.length > 1 && w.startsWith(first); });
+  return hit ? { doc: hit } : null;
+}
+
+/**
+ * W-gaps (W10 gap 2): `presentation.sidebar.width` of a style applied as a PRESET when the style is chosen: for each docked, drawn conversation
+ * list whose resolved style (as in styleAdvisories) changed from `before` to `after` and names a positive width, the outermost horizontal split
+ * that separates it gets the share width / areaW (the side stays). Part of the same journal entry as the choice: `after` is returned with the
+ * new tree in its layout and nothing added to the journal; dragging the split later overrides it. The ratio goes through the model's clamp
+ * (0..1), so a degenerate width is drawn as narrow as it asks and the usual dock_narrow advisory says so.
+ */
+export function withSidebarWidth<D extends StyleDoc>(before: WState, after: WState, person: ProfileRef | null, docs: readonly D[], modeValue: unknown, areaW: number, data: { apply_sidebar_width?: boolean } = STYLES): WState {
+  if (after === before || data.apply_sidebar_width === false || !(areaW > 0)) return after;
+  const { mode } = layoutFieldsMode(modeValue);
+  if (mode === "off") return after;
+  let tree = after.layout.tree;
+  for (const w of sidebarWindows(after.layout)) {
+    const r = resolveStyle(after.layout, mode === "window" ? w.id : null, person, docs);
+    if (!r.profile || (r.source !== "layout" && r.source !== "window")) continue;
+    const was = resolveStyle(before.layout, mode === "window" ? w.id : null, person, docs);
+    if (was.profile && sameRef(refOfDoc(was.profile), refOfDoc(r.profile)) && was.source === r.source) continue;
+    const width = r.profile.presentation?.sidebar?.width;
+    if (typeof width !== "number" || !(width > 0)) continue;
+    const at = leafSide(tree, w.dock!.leaf);
+    if (!at) continue;
+    const share = Math.min(1, Math.max(0, width / areaW));
+    tree = setRatioAt(tree, at.path, at.side === "left" ? share : 1 - share);
+  }
+  return tree === after.layout.tree ? after : { ...after, layout: { ...after.layout, tree } };
+}
+function setRatioAt(t: Tree, path: string, ratio: number): Tree {
+  if ("leaf" in t) return t;
+  if (!path) return { ...t, ratio };
+  return path[0] === "a" ? { ...t, a: setRatioAt(t.a, path.slice(1), ratio) } : { ...t, b: setRatioAt(t.b, path.slice(1), ratio) };
+}
+
+/** W-gaps (W10 gap 4): the profiles the person imported in the Workshop (its saved views, key preset below) join the style list after the
+ *  built-in ones; an unreadable store gives none (logged), a doc without id / profile_revision is skipped. */
+export const IMPORTED_PROFILES_KEY = "loom.application.views.v1";
+export function importedStyleDocs<D extends StyleDoc>(read: () => string | null = () => localStorage.getItem(IMPORTED_PROFILES_KEY)): D[] {
+  try {
+    const raw = read();
+    const saved = raw ? JSON.parse(raw) as { custom_profiles?: unknown } : null;
+    const list = Array.isArray(saved?.custom_profiles) ? saved!.custom_profiles as unknown[] : [];
+    return list.filter((d): d is D => !!d && typeof (d as StyleDoc).id === "string" && Number.isFinite((d as StyleDoc).profile_revision));
+  } catch (e) { console.debug("styles: imported profiles not readable", e); return []; }
+}

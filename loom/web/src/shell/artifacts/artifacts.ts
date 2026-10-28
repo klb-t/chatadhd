@@ -6,7 +6,7 @@ import artifactsFile from "../data/artifacts.json";
 
 export interface ArtifactFormat { id: string; fence: string[]; sniff?: string; preview?: string; ext: string; mime: string }
 export interface ArtifactsData {
-  formats: ArtifactFormat[]; ext_by_lang?: Record<string, string>; min_lines?: number; placement?: string; placements?: Record<string, Record<string, string>>; html_scripts?: boolean; file_stem?: string;
+  formats: ArtifactFormat[]; ext_by_lang?: Record<string, string>; min_lines?: number; placement?: string; placements?: Record<string, Record<string, string>>; html_scripts?: boolean; file_stem?: string; which_words?: Record<string, number>;
 }
 export const ARTIFACTS: ArtifactsData = artifactsFile as ArtifactsData;
 /** One block of an answer opened as a window: what the window shows (kept in the window's params, so it travels with the layout). */
@@ -78,3 +78,20 @@ export function artifactOf(v: unknown): Artifact | null {
 
 /** The event ChatView sends to its shell for „Otwórz w oknie” (the shell opens a window of the kind `artifact`). */
 export const OPEN_ARTIFACT_EVENT = "loom:open-artifact";
+
+/**
+ * W-gaps (artifact.open / copy / save from a sentence): the block a word names among the answers of a conversation. The blocks are those
+ * splitArtifacts finds in the assistant messages, in order; the word maps through artifacts.json which_words (>= 0 from the first block,
+ * < 0 from the last; empty = -1). `index` is -1 / null when the word is unknown / the block does not exist.
+ */
+export function pickArtifact(messages: readonly { id?: string; role?: string; text?: string }[], word: string, data: ArtifactsData = ARTIFACTS): { artifact: Artifact | null; count: number; known: boolean } {
+  const all: Artifact[] = [];
+  for (const m of messages) if (m.role === "assistant" && typeof m.text === "string")
+    for (const s of splitArtifacts(m.text, m.id, data)) if (s.kind === "artifact") all.push(s.artifact);
+  const w = word.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().trim();
+  const map = data.which_words ?? {};
+  const n = w === "" ? -1 : (Object.prototype.hasOwnProperty.call(map, w) ? map[w] : (/^-?\d+$/.test(w) ? Number(w) : NaN));
+  if (!Number.isFinite(n)) return { artifact: null, count: all.length, known: false };
+  const i = n < 0 ? all.length + n : n;
+  return { artifact: all[i] ?? null, count: all.length, known: true };
+}

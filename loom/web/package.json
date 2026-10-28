@@ -70,6 +70,7 @@
     "test:windows-w7": "node e2e/windows-w7-native.mjs",
     "test:windows-w8": "node e2e/windows-w8-native.mjs",
     "test:windows-w9": "node e2e/windows-w9-native.mjs",
+    "test:windows-gaps": "node e2e/windows-gaps-native.mjs",
     "test:theme": "node tests/shell/theme.test.mjs",
     "test:context-trace-rows": "node tests/shell/context-trace-rows.test.mjs",
     "test:diagnostics-rows": "node tests/shell/diagnostics-rows.test.mjs",

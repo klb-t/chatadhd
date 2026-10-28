@@ -109,3 +109,26 @@ test(`generative: ${CONFIG.runs} random texts split losslessly, every block has 
   }
   assert.ok(blocks > CONFIG.runs / 4, `blocks seen: ${blocks}`);
 });
+
+// W-gaps: artifact.open / copy / save from a sentence pick a block of the answers by a word (which_words data)
+test('W-gaps: pickArtifact names blocks of assistant answers by words (last, previous, first, numbers), unknown words and missing blocks say so', async () => {
+  const Ax = await loader.load('src/shell/artifacts/artifacts.ts');
+  const fence = (lang, body) => '```' + lang + '\n' + body + '\n```';
+  const msgs = [
+    { id: 'm1', role: 'user', text: fence('js', 'console.log(0)\n1\n2') },
+    { id: 'm2', role: 'assistant', text: 'a\n' + fence('python', 'print(1)\nx = 1\ny = 2') + '\nb\n' + fence('json', '{"a": 1,\n"b": 2,\n"c": 3}') },
+    { id: 'm3', role: 'assistant', text: fence('html', '<p>x</p>\n<p>y</p>\n<p>z</p>') },
+  ];
+  const lang = w => Ax.pickArtifact(msgs, w).artifact?.lang;
+  assert.equal(lang('ostatni'), 'html');
+  assert.equal(lang(''), 'html', 'empty = the preset -1');
+  assert.equal(lang('last'), 'html');
+  assert.equal(lang('przedostatni'), 'json');
+  assert.equal(lang('pierwszy'), 'python', 'user messages are not answers');
+  assert.equal(lang('1'), 'json');
+  assert.equal(Ax.pickArtifact(msgs, 'ostatni').count, 3);
+  assert.equal(Ax.pickArtifact(msgs, 'dziesiąty').known, false);
+  assert.equal(Ax.pickArtifact(msgs, '7').artifact, null);
+  assert.equal(Ax.pickArtifact([], 'ostatni').artifact, null);
+  assert.equal(Ax.pickArtifact(msgs, 'x', { ...Ax.ARTIFACTS, which_words: { x: 0 } }).artifact.lang, 'python', 'the words are data');
+});

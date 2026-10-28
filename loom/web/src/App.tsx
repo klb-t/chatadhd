@@ -26,7 +26,7 @@ import { featureMessage } from "./onboarding/presentation.mjs";
 import { useAccountSession } from "./components/AuthGate";
 import { createLoomProfileRegistry } from "./profiles/loom-adapter";
 import { BUILTIN_PROFILE_DOCUMENTS } from "./profiles/builtins";
-import { STYLES, findProfile, inheritLabel, refKey, refOf, refOfDoc, resolveStyle, sayStyle, setLayoutProfile, setWindowProfile, styleAdvisories, type ProfileRef } from "./shell/windows/style";
+import { STYLES, findProfile, inheritLabel, refKey, refOf, refOfDoc, resolveStyle, sayStyle, setLayoutProfile, setWindowProfile, styleAdvisories, styleOfWord, withSidebarWidth, importedStyleDocs, type ProfileRef } from "./shell/windows/style";
 import ChatShell from "./shell/ChatShell";
 import PerspectivesPanel from "./components/PerspectivesPanel";
 import ViewEnginePanel from "./components/ViewEnginePanel";
@@ -53,6 +53,7 @@ import { useArrange } from "./shell/windows/useArrange";
 import { useCoupling, type CouplingHook } from "./shell/windows/useCoupling";
 import { couplingDataOf } from "./shell/windows/coupling";
 import ArtifactWindow from "./shell/artifacts/ArtifactWindow";
+import RequestInspector from "./shell/RequestInspector";
 import { ARTIFACTS, OPEN_ARTIFACT_EVENT, artifactOf, scriptsOn } from "./shell/artifacts/artifacts";
 import { runArrangeStep, STEP_DATA } from "./shell/windows/steps";
 import { bindingsOf, paramOfWord, paramWord, paramsOfKind } from "./shell/windows/coupling";
@@ -447,12 +448,13 @@ export default function App() {
     return twins.length > 1 && n > 0 ? `${name} ${n + 1}` : name;
   }, [t]);
   const couplingRef = useRef<CouplingHook | null>(null);
+  const styleCtxRef = useRef<{ docs: ApplicationProfile[]; person: ProfileRef | null; mode: unknown }>({ docs: [], person: null, mode: undefined });
   useEffect(() => {
     const known = (id: string) => Object.prototype.hasOwnProperty.call(PANEL_LABELS, id);
     const onStep = (event: Event) => {
       const detail = (event as CustomEvent<WindowStepDetail>).detail;
       if (!detail || detail.outcome) return;
-      if (detail.action.startsWith("layout.")) {
+      if (detail.action.startsWith("layout.") && detail.action !== "layout.style") {   // layout.style: below, with window.style
         // W5: layout.save / apply / undo / redo / reset - the same functions as the sheet „Układ ▾”; the receipt says what was done
         const args = detail.args ?? {};
         const name = ["name", "label", "target"].map(k => args[k]).find((v): v is string => typeof v === "string" && v.trim() !== "")?.trim() ?? "";
@@ -478,8 +480,38 @@ export default function App() {
         else detail.outcome = fail(t("layout_receipt_none", { name: detail.action }));
         return;
       }
+      if (detail.action.startsWith("artifact.")) return;   // W-gaps: the chat page that shows the answers carries these out (ChatView)
       const args = detail.args ?? {};
       const failWith = (text: string) => { detail.outcome = { state: "failed", error: { message: text } }; };
+      if (detail.action === "window.style" || detail.action === "layout.style") {
+        // W-gaps: the style of a window / of the layout from a sentence - the same operation as the menu „Styl okna” / „Styl układu ▾”
+        const sc = styleCtxRef.current;
+        const word = typeof args.style === "string" ? args.style : "";
+        const found = styleOfWord(word, sc.docs);
+        if (!found) { failWith(t("style_receipt_none", { word, known: [...new Set(sc.docs.map(d => d.label ?? d.id))].join(", ") })); return; }
+        const ref = "doc" in found ? refOfDoc(found.doc) : null;
+        const styleName = "doc" in found ? (found.doc.label ?? found.doc.id) : "";
+        const before = winRef.current;
+        if (detail.action === "layout.style") {
+          moveTo(withSidebarWidth(before, setLayoutProfile(before, ref), sc.person, sc.docs, sc.mode, window.innerWidth));
+          const text = ref ? t("style_receipt_layout", { style: styleName }) : t("style_receipt_layout_cleared");
+          detail.outcome = { state: "ok", parts: [{ kind: "text", text }], data: { schema: "loom.style_receipt/1", op: "layout", profile: ref, layout: winRef.current.layout.id } };
+          return;
+        }
+        const tw = typeof args.target === "string" ? args.target.trim() : "";
+        const l = before.layout;
+        let id: string | null = l.focus ?? null;
+        if (tw) {
+          const target = resolveWord(tw, known);
+          const w = target ? l.windows.find(x => "chat" in target ? x.kind === "chat" && typeof x.params?.panel !== "string" : x.params?.panel === target.panel) : undefined;
+          id = w?.id ?? null;
+        }
+        if (!id || !l.windows.some(x => x.id === id)) { failWith(t("style_receipt_nowindow", { word: tw || "—" })); return; }
+        moveTo(withSidebarWidth(before, setWindowProfile(before, id, ref), sc.person, sc.docs, sc.mode, window.innerWidth));
+        const text = ref ? t("style_receipt_window", { screen: windowLabel(id), style: styleName }) : t("style_receipt_cleared", { screen: windowLabel(id) });
+        detail.outcome = { state: "ok", parts: [{ kind: "text", text }], data: { schema: "loom.style_receipt/1", op: "window", window: id, profile: ref, layout: winRef.current.layout.id } };
+        return;
+      }
       if (detail.action === "window.bind" || detail.action === "window.unbind") {
         // W7: a sentence binds (or unbinds) a parameter of every open window of a kind on a shared channel named after the parameter
         const pw = typeof args.param === "string" ? args.param : "";
@@ -538,8 +570,10 @@ export default function App() {
   // W9 (OKNA §7.2, D14): the style of a window / of the layout = an application profile named in the layout (window.profile, layout.profile),
   // inherited window → layout → the person's profile (the one chosen in the workbench, else none) → the preset fallback. Choosing one is a
   // journaled operation of the layout (undo, last layout, named layouts written by the W5b merge). UI17: only CSS variables change.
-  const styleDocs = BUILTIN_PROFILE_DOCUMENTS as ApplicationProfile[];
+  // W-gaps (W10 gap 4): the profiles imported in the Workshop join the list (re-read when the person's profile changes there)
+  const styleDocs = useMemo(() => [...(BUILTIN_PROFILE_DOCUMENTS as ApplicationProfile[]), ...importedStyleDocs<ApplicationProfile>()], [primaryProfile]);   // eslint-disable-line react-hooks/exhaustive-deps
   const personStyle = useMemo<ProfileRef | null>(() => (primaryProfile ? refOfDoc(primaryProfile) : null), [primaryProfile]);
+  styleCtxRef.current = { docs: styleDocs, person: personStyle, mode: config.profile_layout_fields };
   const styleOf = useCallback((id: string | null) => resolveStyle(win.layout, id, personStyle, styleDocs), [win.layout, personStyle, styleDocs]);
   const styleChoice = useCallback((current: unknown, inherit: string, label: string) => {
     const ref = refOf(current); const doc = findProfile(styleDocs, ref);
@@ -552,12 +586,14 @@ export default function App() {
     const w = win.layout.windows.find(x => x.id === id);
     return w ? styleChoice(w.profile, inheritLabel(win.layout, id, personStyle, styleDocs, uiLanguage), sayStyle(STYLES.words.window_menu, uiLanguage)) : null;
   }, [win.layout, personStyle, styleDocs, uiLanguage, styleChoice]);
-  const setWindowStyle = useCallback((id: string, value: string) => moveTo(setWindowProfile(winRef.current, id, value ? refOf(value) : null)), [moveTo]);
+  const setWindowStyle = useCallback((id: string, value: string) => moveTo(withSidebarWidth(winRef.current, setWindowProfile(winRef.current, id, value ? refOf(value) : null), personStyle, styleDocs, config.profile_layout_fields, window.innerWidth)), [moveTo, personStyle, styleDocs, config.profile_layout_fields]);
   const styleAdvice = useMemo(() => styleAdvisories(win.layout, personStyle, styleDocs, config.profile_layout_fields), [win.layout, personStyle, styleDocs, config.profile_layout_fields]);
   /** The content of a window inside its style: a wrapper only when the window or the layout names a style (otherwise nothing changes). */
   const styled = (w: Win, node: ReactNode): ReactNode => {
     const r = styleOf(w.id);
-    if (!r.profile || (r.source !== "window" && r.source !== "layout")) return node;
+    // W-gaps: the same element whether a style applies or not, so choosing or clearing a style never remounts the window's content (a chat
+    // that asked „przywróć styl domyślny” must stay mounted to answer its own client step); without a style it is an empty display:contents box
+    if (!r.profile || (r.source !== "window" && r.source !== "layout")) return <div style={{ display: "contents" }}>{node}</div>;
     return <div className="win-style" style={{ display: "contents", ...profileStyle(r.profile) }} data-testid="window-style-root" data-window={w.id}
       data-style-profile={r.profile.id} data-style-revision={r.profile.profile_revision} data-style-source={r.source}>{node}</div>;
   };
@@ -574,9 +610,9 @@ export default function App() {
       remove: (id: string) => layoutOps.remove(id),
       undo: () => { layoutOps.undo(); }, redo: () => { layoutOps.redo(); }, reset: () => { layoutOps.reset(); },
       style: { ...styleChoice(win.layout.profile, inheritLabel(win.layout, null, personStyle, styleDocs, uiLanguage), sayStyle(STYLES.words.layout_menu, uiLanguage)),
-        set: (value: string) => moveTo(setLayoutProfile(winRef.current, value ? refOf(value) : null)) },
+        set: (value: string) => moveTo(withSidebarWidth(winRef.current, setLayoutProfile(winRef.current, value ? refOf(value) : null), personStyle, styleDocs, config.profile_layout_fields, window.innerWidth)) },
     };
-  }, [config.window_layouts, ownActive, uiLanguage, win.layout.id, win.layout.profile, win.layout, personStyle, styleDocs, styleChoice, moveTo, win.past.length, win.future.length, deviceClass, layoutOps]);
+  }, [config.window_layouts, ownActive, uiLanguage, win.layout.id, win.layout.profile, win.layout, personStyle, styleDocs, styleChoice, moveTo, win.past.length, win.future.length, deviceClass, layoutOps, config.profile_layout_fields]);
   const shellWindows = useMemo(() => {
     const front = visibleId(win.layout);
     return {
@@ -637,6 +673,7 @@ export default function App() {
                   meOpenSetting={config.me_open_sections} meInferredOpacity={config.me_inferred_opacity} onOpenConversation={id => { onConversationCreated(id); closePanel(); }} />}
                 {p === "perspectives" && <PerspectivesPanel convId={activeConvId} />}
                 {p === "view-engine" && <ViewEnginePanel />}
+                {p === "request" && <RequestInspector />}
                 {p === "memory" && <MemoryPanel />}
                 {p === "import" && <ImportPanel onImported={() => setConvRefreshKey((k) => k + 1)} />}
                 {p === "context" && <ContextSlider convId={activeConvId} />}

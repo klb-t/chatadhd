@@ -3,20 +3,77 @@
   "note": "W9 (OKNA §7.2): words and presets of the style (application profile) per window and per layout. Data, not code: the fallback profile, the default of profile_layout_fields and every text are presets here, the settings field profile_layout_fields overrides the mode.",
   "fallback_profile": "loom-default",
   "layout_fields_default": "layout",
-  "layout_fields_known": ["layout", "window", "off"],
+  "layout_fields_known": [
+    "layout",
+    "window",
+    "off"
+  ],
   "words": {
-    "window_menu": { "pl": "Styl okna", "en": "Window style" },
-    "layout_menu": { "pl": "Styl układu", "en": "Layout style" },
-    "inherit": { "pl": "dziedzicz ({from})", "en": "inherit ({from})" },
-    "from_layout": { "pl": "z układu: {label}", "en": "from the layout: {label}" },
-    "from_person": { "pl": "Twój: {label}", "en": "yours: {label}" },
-    "from_default": { "pl": "domyślny: {label}", "en": "default: {label}" },
-    "missing": { "pl": "Styl {id} nie jest znany na tym urządzeniu; okno używa stylu {used}.", "en": "The style {id} is not known on this device; the window uses {used}." },
-    "moves_dock": { "pl": "Styl «{label}» chce listy rozmów po stronie: {want}, a jest po stronie: {now}.", "en": "The style «{label}» wants the conversation list on the {want}, it is on the {now}." },
-    "moves_dock_question": { "pl": "Przestawić?", "en": "Move it?" },
-    "moves_dock_fix": { "pl": "Przestaw", "en": "Move it" },
-    "side_left": { "pl": "lewej", "en": "left" },
-    "side_right": { "pl": "prawej", "en": "right" },
-    "unknown_mode": { "pl": "Nieznana wartość profile_layout_fields «{value}»: pola układowe profilu są stosowane jak przy «layout».", "en": "Unknown profile_layout_fields value «{value}»: the layout fields of a profile apply as with «layout»." }
-  }
+    "window_menu": {
+      "pl": "Styl okna",
+      "en": "Window style"
+    },
+    "layout_menu": {
+      "pl": "Styl układu",
+      "en": "Layout style"
+    },
+    "inherit": {
+      "pl": "dziedzicz ({from})",
+      "en": "inherit ({from})"
+    },
+    "from_layout": {
+      "pl": "z układu: {label}",
+      "en": "from the layout: {label}"
+    },
+    "from_person": {
+      "pl": "Twój: {label}",
+      "en": "yours: {label}"
+    },
+    "from_default": {
+      "pl": "domyślny: {label}",
+      "en": "default: {label}"
+    },
+    "missing": {
+      "pl": "Styl {id} nie jest znany na tym urządzeniu; okno używa stylu {used}.",
+      "en": "The style {id} is not known on this device; the window uses {used}."
+    },
+    "moves_dock": {
+      "pl": "Styl «{label}» chce listy rozmów po stronie: {want}, a jest po stronie: {now}.",
+      "en": "The style «{label}» wants the conversation list on the {want}, it is on the {now}."
+    },
+    "moves_dock_question": {
+      "pl": "Przestawić?",
+      "en": "Move it?"
+    },
+    "moves_dock_fix": {
+      "pl": "Przestaw",
+      "en": "Move it"
+    },
+    "side_left": {
+      "pl": "lewej",
+      "en": "left"
+    },
+    "side_right": {
+      "pl": "prawej",
+      "en": "right"
+    },
+    "unknown_mode": {
+      "pl": "Nieznana wartość profile_layout_fields «{value}»: pola układowe profilu są stosowane jak przy «layout».",
+      "en": "Unknown profile_layout_fields value «{value}»: the layout fields of a profile apply as with «layout»."
+    }
+  },
+  "clear_words": [
+    "default",
+    "domyslny",
+    "domyslnego",
+    "domyslna",
+    "inherit",
+    "dziedzicz",
+    "zaden",
+    "none",
+    "brak"
+  ],
+  "clear_words_note": "W-gaps: words of a sentence (folded, no diacritics) that clear a style choice (window.style / layout.style with style = one of these: the window inherits from the layout, the layout from the person). Open example list; a word that is neither one of these nor a profile is answered, nothing is guessed.",
+  "apply_sidebar_width": true,
+  "apply_sidebar_width_note": "W-gaps (W10 gap 2): when a style chosen for the layout (or, with profile_layout_fields = window, for the list window) names presentation.sidebar.width, the split of the docked conversation list takes that width as a PRESET at the moment of the choice (part of the same journal entry); dragging the split afterwards overrides it. false = never; profile_layout_fields = off also turns it off. A leaf made too narrow raises the usual dock_narrow advisory."
 }

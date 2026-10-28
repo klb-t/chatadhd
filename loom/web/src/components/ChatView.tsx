@@ -17,7 +17,7 @@ import { attachmentChips, chipStateText } from "../content/attachment-chips";
 import { graphTargetOfRun } from "../context/chat-graph-focus";
 import ClientStepBlock from "./ClientStepBlock";
 import { CLIENT_STEP_FEATURE, type BlobLoader, type BlobUploader } from "../context/client-device";
-import { browserHost } from "../context/browser-host";
+import { browserHost, WINDOW_STEP_EVENT, type WindowStepDetail } from "../context/browser-host";
 import { clientIdentity, pageClientSession } from "../context/client-session";
 import { ACTION_PROPOSAL_FEATURE, answerRequest, offerRequest, offerState, messageLanguage, offerTexts, openOffer, pendingAnswer, carriesOutHere, producedText, producedView, proposalState, routeConfirmedRequest, undoCall, undoConfirmation, undoRequest, writtenView, type OfferView, type PendingAnswer, type WrittenView } from "../context/action-proposal";
 import { confirmedRequest, USAGE_PENDING_FEATURE, usageNoticeLines, type UsagePendingReceipt } from "../context/usage-pending";
@@ -34,7 +34,9 @@ import { buildRetrievalPlan } from "../context/retrieval-plan";
 import { shouldSubmit, type ApplicationProfile } from "../profiles/runtime";
 import ImportedMessageContent from "./ImportedMessageContent";
 import ArtifactFrame from "../shell/artifacts/ArtifactFrame";
-import { splitArtifacts } from "../shell/artifacts/artifacts";
+import { OPEN_ARTIFACT_EVENT, fileNameOf, formatById, pickArtifact, splitArtifacts } from "../shell/artifacts/artifacts";
+import { downloadText } from "../shell/artifacts/ArtifactFrame";
+import { recordRequest } from "../shell/last-request";
 import { projectImportedMessage } from "../content/imported-message";
 import ConversationBranches, { conversationBranchPath } from "./ConversationBranches";
 import { parseCandidateChannels, readChatSettings, storedPlan, writeChatSettings } from "../context/chat-settings";
@@ -254,6 +256,33 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
   const [lexicalShadow, setLexicalShadow] = useState(() => storedBool("lexicalShadow", false));
   const [requestOverride, setRequestOverride] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
+  // W-gaps: artifact.open / copy / save from a sentence („skopiuj ostatni blok”) - a client step only the asking page carries out
+  // (ASKING_CLIENT_ONLY); this page finds the block among the answers it shows and does what the buttons under the block do.
+  const messagesRef = useRef<Message[]>(messages);
+  messagesRef.current = messages;
+  useEffect(() => {
+    const onStep = (event: Event) => {
+      const detail = (event as CustomEvent<WindowStepDetail>).detail;
+      if (!detail || detail.outcome || !detail.action.startsWith("artifact.")) return;
+      const which = typeof detail.args?.which === "string" ? detail.args.which : "";
+      const picked = pickArtifact(messagesRef.current, which);
+      const a = picked.artifact;
+      if (!a) { detail.outcome = { state: "failed", error: { message: t("artifact_receipt_none", { which: which || "-1", count: String(picked.count) }) } }; return; }
+      const format = a.lang || a.format;
+      const op = detail.action.slice(9);
+      let text: string;
+      if (op === "open") { window.dispatchEvent(new CustomEvent(OPEN_ARTIFACT_EVENT, { detail: { artifact: a } })); text = t("artifact_receipt_opened", { format, which: which || "-1" }); }
+      else if (op === "copy") {
+        void navigator.clipboard?.writeText(a.content).catch((e) => console.debug("artifact: not copied", e));
+        text = t("artifact_receipt_copied", { format, which: which || "-1", chars: String([...a.content].length) });
+      }
+      else if (op === "save") { const file = fileNameOf(a); downloadText(file, formatById(a.format)?.mime ?? "text/plain", a.content); text = t("artifact_receipt_saved", { file }); }
+      else { detail.outcome = { state: "failed", error: { message: t("window_receipt_none", { word: detail.action }) } }; return; }
+      detail.outcome = { state: "ok", parts: [{ kind: "text", text }], data: { schema: "loom.artifact_receipt/1", op, format: a.format, message: a.message ?? null, index: a.index, chars: [...a.content].length } };
+    };
+    window.addEventListener(WINDOW_STEP_EVENT, onStep);
+    return () => window.removeEventListener(WINDOW_STEP_EVENT, onStep);
+  }, [t]);
   const lastProfile = useMemo(() => lastReceiptProfile(messages, shellLanguage), [messages, shellLanguage]);
   // M1-W2a: is this the interview about the person? Read from the loaded messages (they carry metadata.interview), not from a request for the conversation record.
   const interviewConv = useMemo(() => isInterviewMessages(convId, messages), [convId, messages]);
@@ -709,8 +738,9 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
         ...(lexicalShadow && { lexical_shadow: true }),
       } }),
     };
-    if (mode === "preview") { setRequestOverride(JSON.stringify(request, null, 2)); setError(null); return; }
+    if (mode === "preview") { recordRequest(request, true); setRequestOverride(JSON.stringify(request, null, 2)); setError(null); return; }
     }
+    recordRequest(request);   // W-gaps: the window „Zapytanie do modelu” shows what was sent
     const epoch = ++sendEpochRef.current;
     const isCurrent = () => mountedRef.current && epoch === sendEpochRef.current;
     let terminal = false;

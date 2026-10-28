@@ -24,6 +24,11 @@
           "action": "panel:settings"
         },
         {
+          "id": "request",
+          "label": "ri_open_hint",
+          "action": "panel:request"
+        },
+        {
           "id": "me",
           "label": "menu_me",
           "action": "navigator:party:self"
@@ -338,7 +343,9 @@
     "perspektyw": "perspectives",
     "perspective": "perspectives",
     "silnik widok": "view-engine",
-    "view engine": "view-engine"
+    "view engine": "view-engine",
+    "zapytan": "request",
+    "request": "request"
   },
   "window_words_note": "W2: a word of a sentence (folded, no diacritics) to a window: the longest stem a word starts with wins; the value is `chat` (the own chat window) or a panel id. Open map, an example set; an id of a panel is accepted as is.",
   "window_placements": {

@@ -81,7 +81,7 @@ export interface PendingAnswer {
 }
 
 /** Steps only the asking client carries out (W3 gap A): its own windows. A preset - a prefix of the action id, the list is open. */
-export const ASKING_CLIENT_ONLY = ["window.", "layout."];
+export const ASKING_CLIENT_ONLY = ["window.", "layout.", "artifact."];
 
 /** W3: whether this page carries out the step of the answer. A step on the asking client's own windows is done by that client alone: another
  *  page showing the same conversation (another device, another tab) leaves it. A step without a named client, or any other step, stays as before. */

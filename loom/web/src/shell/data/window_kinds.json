@@ -362,15 +362,13 @@
    "label": {
     "pl": "Żądanie do modelu"
    },
-   "component": null,
+   "component": "RequestInspector",
    "params": [
     "conversation",
     "turn"
    ],
-   "status": "planned",
-   "reason": {
-    "pl": "dziś „Expert” w czacie tylko w Warsztacie; osobne okno to pakiet W8"
-   },
+   "status": "present",
+   "note": "W-gaps: the Expert view lifted out of the Workshop - the last request this page sent (or prepared) in words, the raw JSON under „Szczegóły techniczne”; opened as the shell panel `request` (chat menu „Pokaż zapytanie”, sentence „pokaż zapytanie” / „show the request”). It shows what the page sent to the kernel, not yet the request the kernel assembled for the provider.",
    "state_keys": [
     "params"
    ]

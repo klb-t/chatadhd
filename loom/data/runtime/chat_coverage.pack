@@ -2821,12 +2821,16 @@
           "pl": [
             "zamknij wszystko poza czatem",
             "następne okno",
-            "przełącz na okno ustawienia"
+            "przełącz na okno ustawienia",
+            "pokaż zapytanie",
+            "pokaż ostatnie zapytanie do modelu"
           ],
           "en": [
             "close everything except the chat",
             "next window",
-            "switch to the settings window"
+            "switch to the settings window",
+            "show the request",
+            "show me the last request"
           ]
         },
         "note": {
@@ -2961,6 +2965,77 @@
         "note": {
           "en": "W7 of OKNA_SYSTEM: a shared channel named after the parameter for every open window of the kind (the menu ⋯ of a window offers the linked forms with a dependency). The parameter words are data of the page (coupling.json params).",
           "pl": "W7 z OKNA_SYSTEM: wspólny kanał nazwany jak parametr dla każdego otwartego okna danego rodzaju (menu ⋯ okna daje formy powiązane z zależnością). Słowa parametrów to dane strony (coupling.json params)."
+        }
+      },
+      {
+        "id": "window_style",
+        "title": {
+          "en": "Set the style of a window or of the layout by a sentence",
+          "pl": "Ustaw styl okna albo układu zdaniem"
+        },
+        "via": "client",
+        "action": "window.style",
+        "also": [
+          "layout.style"
+        ],
+        "surfaces": {},
+        "examples": {
+          "pl": "ustaw styl tego okna na Claude",
+          "en": "set the style of this window to Claude"
+        },
+        "examples_more": {
+          "pl": [
+            "układ w stylu ChatGPT",
+            "przywróć styl domyślny",
+            "ustaw styl okna graf na Gemini",
+            "przywróć domyślny styl układu",
+            "zrób to okno jak w Claude"
+          ],
+          "en": [
+            "make the layout look like ChatGPT",
+            "restore the default style",
+            "make this window look like Gemini",
+            "set the layout style to Loom"
+          ]
+        },
+        "note": {
+          "en": "W-gaps of OKNA_SYSTEM: the style word is matched by the page against the application profiles it knows (built in and imported); the words that clear a choice are data of the page (styles.json clear_words). One journal entry; layout.undo takes it back.",
+          "pl": "Luki W z OKNA_SYSTEM: słowo stylu strona dopasowuje do znanych sobie profili aplikacji (wbudowanych i zaimportowanych); słowa, które zdejmują wybór, to dane strony (styles.json clear_words). Jeden wpis dziennika; cofnij układ go zdejmuje."
+        }
+      },
+      {
+        "id": "artifact_actions",
+        "title": {
+          "en": "Open, copy or save a block of an answer by a sentence",
+          "pl": "Otwórz, skopiuj albo zapisz blok odpowiedzi zdaniem"
+        },
+        "via": "client",
+        "action": "artifact.open",
+        "also": [
+          "artifact.copy",
+          "artifact.save"
+        ],
+        "surfaces": {},
+        "examples": {
+          "pl": "otwórz ostatni blok kodu w oknie",
+          "en": "open the last code block in a window"
+        },
+        "examples_more": {
+          "pl": [
+            "skopiuj ostatni blok",
+            "zapisz ostatni blok",
+            "skopiuj przedostatni kod do schowka",
+            "pokaż pierwszy blok w osobnym oknie"
+          ],
+          "en": [
+            "copy the last block",
+            "save the last block",
+            "download the previous code block"
+          ]
+        },
+        "note": {
+          "en": "W-gaps of OKNA_SYSTEM: the page that asked finds the block among the answers of the conversation it shows (the words of which block are data, artifacts.json which_words) and does what the buttons under the block do.",
+          "pl": "Luki W z OKNA_SYSTEM: strona, która pytała, znajduje blok wśród odpowiedzi pokazanej rozmowy (słowa „który blok” to dane, artifacts.json which_words) i robi to samo co przyciski pod blokiem."
         }
       },
       {

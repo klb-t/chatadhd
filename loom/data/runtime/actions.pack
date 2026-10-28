@@ -17420,6 +17420,341 @@
           "en": "The layout is deleted.",
           "pl": "Układ jest usunięty."
         }
+      },
+      "window.style": {
+        "id": "window.style",
+        "kind": "atomic",
+        "status": "planned",
+        "planned_reason": {
+          "en": "A window of the application belongs to the client that draws it (the web page or the Android shell); this runtime arranges no windows itself. Runnable for a client that declares arranges_windows (W7 of OKNA_SYSTEM); only the client that asked carries it out.",
+          "pl": "Okno aplikacji należy do klienta, który je rysuje (strony albo powłoki Androida); ten runtime sam nie układa okien. Wykonywalna dla klienta, który deklaruje arranges_windows (W7 z OKNA_SYSTEM); wykonuje ją tylko klient, który pytał."
+        },
+        "title": "Set the style of a window",
+        "description": "Give one window the style of an application profile (only its CSS variables change; the request to the model does not, UI17); a word such as default makes it inherit from the layout again. One journal entry, undoable.",
+        "why": {
+          "pl": "Ustawia styl jednego okna."
+        },
+        "labels": {
+          "pl": "Styl okna"
+        },
+        "inputs": [],
+        "outputs": [],
+        "requires": [],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.1,
+        "confidence": 0.9,
+        "effects": {
+          "reads_only": false,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "client",
+        "client": {
+          "capability": "arranges_windows",
+          "prompt": {
+            "en": "Do it on this device.",
+            "pl": "Zrób to na tym urządzeniu."
+          },
+          "expects": []
+        },
+        "phrases": {
+          "en": [
+            "window style"
+          ],
+          "pl": [
+            "styl okna"
+          ]
+        },
+        "params": [
+          {
+            "name": "style",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "The style: a word naming an application profile known on the device (Claude, ChatGPT, Gemini, Loom ... - the client matches it against its profiles); a word of its data such as default clears the choice (inherit).",
+              "pl": "Styl: słowo nazywające profil aplikacji znany na urządzeniu (Claude, ChatGPT, Gemini, Loom ... - klient dopasowuje je do swoich profili); słowo z jego danych takie jak domyślny zdejmuje wybór (dziedziczenie)."
+            }
+          },
+          {
+            "name": "target",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The window: a kind or a word naming it (graph, settings, chat ...); empty = the focused window.",
+              "pl": "Okno: rodzaj albo słowo, które go nazywa (graf, ustawienia, czat ...); puste = okno z fokusem."
+            }
+          }
+        ],
+        "result_text": {
+          "en": "The style of the window is set.",
+          "pl": "Styl okna jest ustawiony."
+        }
+      },
+      "layout.style": {
+        "id": "layout.style",
+        "kind": "atomic",
+        "status": "planned",
+        "planned_reason": {
+          "en": "A window of the application belongs to the client that draws it (the web page or the Android shell); this runtime arranges no windows itself. Runnable for a client that declares arranges_windows (W7 of OKNA_SYSTEM); only the client that asked carries it out.",
+          "pl": "Okno aplikacji należy do klienta, który je rysuje (strony albo powłoki Androida); ten runtime sam nie układa okien. Wykonywalna dla klienta, który deklaruje arranges_windows (W7 z OKNA_SYSTEM); wykonuje ją tylko klient, który pytał."
+        },
+        "title": "Set the style of the layout",
+        "description": "Give the whole layout the style of an application profile (windows without their own style inherit it); a word such as default makes it inherit from the person again. One journal entry, undoable.",
+        "why": {
+          "pl": "Ustawia styl całego układu."
+        },
+        "labels": {
+          "pl": "Styl układu"
+        },
+        "inputs": [],
+        "outputs": [],
+        "requires": [],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.1,
+        "confidence": 0.9,
+        "effects": {
+          "reads_only": false,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "client",
+        "client": {
+          "capability": "arranges_windows",
+          "prompt": {
+            "en": "Do it on this device.",
+            "pl": "Zrób to na tym urządzeniu."
+          },
+          "expects": []
+        },
+        "phrases": {
+          "en": [
+            "layout style"
+          ],
+          "pl": [
+            "styl układu",
+            "styl ukladu"
+          ]
+        },
+        "params": [
+          {
+            "name": "style",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "The style: a word naming an application profile known on the device (Claude, ChatGPT, Gemini, Loom ... - the client matches it against its profiles); a word of its data such as default clears the choice (inherit).",
+              "pl": "Styl: słowo nazywające profil aplikacji znany na urządzeniu (Claude, ChatGPT, Gemini, Loom ... - klient dopasowuje je do swoich profili); słowo z jego danych takie jak domyślny zdejmuje wybór (dziedziczenie)."
+            }
+          }
+        ],
+        "result_text": {
+          "en": "The style of the layout is set.",
+          "pl": "Styl układu jest ustawiony."
+        }
+      },
+      "artifact.open": {
+        "id": "artifact.open",
+        "kind": "atomic",
+        "status": "planned",
+        "planned_reason": {
+          "en": "A window of the application belongs to the client that draws it (the web page or the Android shell); this runtime arranges no windows itself. Runnable for a client that declares arranges_windows (W7 of OKNA_SYSTEM); only the client that asked carries it out.",
+          "pl": "Okno aplikacji należy do klienta, który je rysuje (strony albo powłoki Androida); ten runtime sam nie układa okien. Wykonywalna dla klienta, który deklaruje arranges_windows (W7 z OKNA_SYSTEM); wykonuje ją tylko klient, który pytał."
+        },
+        "title": "Open a block of an answer in a window",
+        "description": "Open a block of an answer (code, HTML, SVG, JSON ... - the formats are data of the client) in a window of the kind artifact; the same as „Otwórz w oknie” under the block.",
+        "why": {
+          "pl": "Otwiera blok odpowiedzi w oknie."
+        },
+        "labels": {
+          "pl": "Otwórz blok w oknie"
+        },
+        "inputs": [],
+        "outputs": [],
+        "requires": [],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.1,
+        "confidence": 0.9,
+        "effects": {
+          "reads_only": false,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "client",
+        "client": {
+          "capability": "arranges_windows",
+          "prompt": {
+            "en": "Do it on this device.",
+            "pl": "Zrób to na tym urządzeniu."
+          },
+          "expects": []
+        },
+        "phrases": {
+          "en": [
+            "open the block in a window"
+          ],
+          "pl": [
+            "otwórz blok w oknie"
+          ]
+        },
+        "params": [
+          {
+            "name": "which",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Which block: a word such as last, previous, first (the client maps words through its data; empty = the last one).",
+              "pl": "Który blok: słowo takie jak ostatni, przedostatni, pierwszy (klient mapuje słowa przez swoje dane; puste = ostatni)."
+            }
+          }
+        ],
+        "result_text": {
+          "en": "The block is open in a window.",
+          "pl": "Blok jest otwarty w oknie."
+        }
+      },
+      "artifact.copy": {
+        "id": "artifact.copy",
+        "kind": "atomic",
+        "status": "planned",
+        "planned_reason": {
+          "en": "A window of the application belongs to the client that draws it (the web page or the Android shell); this runtime arranges no windows itself. Runnable for a client that declares arranges_windows (W7 of OKNA_SYSTEM); only the client that asked carries it out.",
+          "pl": "Okno aplikacji należy do klienta, który je rysuje (strony albo powłoki Androida); ten runtime sam nie układa okien. Wykonywalna dla klienta, który deklaruje arranges_windows (W7 z OKNA_SYSTEM); wykonuje ją tylko klient, który pytał."
+        },
+        "title": "Copy a block of an answer",
+        "description": "Copy a block of an answer to the clipboard of the asking device; the same as „Kopiuj” under the block.",
+        "why": {
+          "pl": "Kopiuje blok odpowiedzi do schowka."
+        },
+        "labels": {
+          "pl": "Skopiuj blok"
+        },
+        "inputs": [],
+        "outputs": [],
+        "requires": [],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.1,
+        "confidence": 0.9,
+        "effects": {
+          "reads_only": false,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "client",
+        "client": {
+          "capability": "arranges_windows",
+          "prompt": {
+            "en": "Do it on this device.",
+            "pl": "Zrób to na tym urządzeniu."
+          },
+          "expects": []
+        },
+        "phrases": {
+          "en": [
+            "copy the block"
+          ],
+          "pl": [
+            "skopiuj blok"
+          ]
+        },
+        "params": [
+          {
+            "name": "which",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Which block: a word such as last, previous, first (the client maps words through its data; empty = the last one).",
+              "pl": "Który blok: słowo takie jak ostatni, przedostatni, pierwszy (klient mapuje słowa przez swoje dane; puste = ostatni)."
+            }
+          }
+        ],
+        "result_text": {
+          "en": "The block is copied.",
+          "pl": "Blok jest skopiowany."
+        }
+      },
+      "artifact.save": {
+        "id": "artifact.save",
+        "kind": "atomic",
+        "status": "planned",
+        "planned_reason": {
+          "en": "A window of the application belongs to the client that draws it (the web page or the Android shell); this runtime arranges no windows itself. Runnable for a client that declares arranges_windows (W7 of OKNA_SYSTEM); only the client that asked carries it out.",
+          "pl": "Okno aplikacji należy do klienta, który je rysuje (strony albo powłoki Androida); ten runtime sam nie układa okien. Wykonywalna dla klienta, który deklaruje arranges_windows (W7 z OKNA_SYSTEM); wykonuje ją tylko klient, który pytał."
+        },
+        "title": "Save a block of an answer",
+        "description": "Save a block of an answer as a file on the asking device (name and extension from the data of the client); the same as „Zapisz” under the block.",
+        "why": {
+          "pl": "Zapisuje blok odpowiedzi do pliku."
+        },
+        "labels": {
+          "pl": "Zapisz blok"
+        },
+        "inputs": [],
+        "outputs": [],
+        "requires": [],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.1,
+        "confidence": 0.9,
+        "effects": {
+          "reads_only": false,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "client",
+        "client": {
+          "capability": "arranges_windows",
+          "prompt": {
+            "en": "Do it on this device.",
+            "pl": "Zrób to na tym urządzeniu."
+          },
+          "expects": []
+        },
+        "phrases": {
+          "en": [
+            "save the block"
+          ],
+          "pl": [
+            "zapisz blok"
+          ]
+        },
+        "params": [
+          {
+            "name": "which",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Which block: a word such as last, previous, first (the client maps words through its data; empty = the last one).",
+              "pl": "Który blok: słowo takie jak ostatni, przedostatni, pierwszy (klient mapuje słowa przez swoje dane; puste = ostatni)."
+            }
+          }
+        ],
+        "result_text": {
+          "en": "The block is saved.",
+          "pl": "Blok jest zapisany."
+        }
       }
     }
   },

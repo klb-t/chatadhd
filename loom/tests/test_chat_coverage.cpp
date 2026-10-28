@@ -317,4 +317,42 @@ TEST_SUITE("chat_coverage") {
     }
     CHECK(checked == static_cast<int>(cases.size()));
   }
+  TEST_CASE("W-gaps (OKNA): style, artifact and request-inspector sentences reach their own action with their arguments") {
+    Fixture f;
+    struct Case { const char* text; const char* action; std::vector<std::pair<const char*, const char*>> args; };
+    const std::vector<Case> cases = {
+        {"ustaw styl tego okna na Claude", "window.style", {{"style", "Claude"}, {"target", ""}}},
+        {"ustaw styl okna graf na Gemini", "window.style", {{"style", "Gemini"}, {"target", "graf"}}},
+        {"zrób to okno jak w ChatGPT", "window.style", {{"style", "ChatGPT"}}},
+        {"przywróć styl domyślny", "window.style", {{"style", "default"}}},
+        {"set the style of this window to Claude", "window.style", {{"style", "Claude"}}},
+        {"make this window look like Gemini", "window.style", {{"style", "Gemini"}}},
+        {"restore the default style", "window.style", {{"style", "default"}}},
+        {"układ w stylu ChatGPT", "layout.style", {{"style", "ChatGPT"}}},
+        {"ustaw styl układu na Loom", "layout.style", {{"style", "Loom"}}},
+        {"przywróć domyślny styl układu", "layout.style", {{"style", "default"}}},
+        {"make the layout look like ChatGPT", "layout.style", {{"style", "ChatGPT"}}},
+        {"set the layout style to Loom", "layout.style", {{"style", "Loom"}}},
+        {"otwórz ostatni blok kodu w oknie", "artifact.open", {{"which", "ostatni"}}},
+        {"open the last code block in a window", "artifact.open", {{"which", "last"}}},
+        {"skopiuj ostatni blok", "artifact.copy", {{"which", "ostatni"}}},
+        {"skopiuj przedostatni kod do schowka", "artifact.copy", {{"which", "przedostatni"}}},
+        {"copy the last block", "artifact.copy", {{"which", "last"}}},
+        {"zapisz ostatni blok", "artifact.save", {{"which", "ostatni"}}},
+        {"save the last block", "artifact.save", {{"which", "last"}}},
+        {"pokaż zapytanie", "window.open", {{"target", "request_inspector"}}},
+        {"show the request", "window.open", {{"target", "request_inspector"}}},
+    };
+    int checked = 0;
+    for (const auto& c : cases) {
+      const Json routed = unwrap(chat_route::route(*f.rt, Json{{"text", c.text}, {"conv_id", f.conv_id}}));
+      const std::string reached = routed.value("kind", "") == "command" ? routed.at("command").value("action", "") : "";
+      CHECK_MESSAGE(reached == c.action, "\"" << c.text << "\" reached " << (reached.empty() ? "[a message]" : reached) << ", not " << c.action);
+      if (reached != c.action) continue;
+      const Json args = routed.at("command").value("args", Json::object());
+      for (const auto& [k, v] : c.args) CHECK_MESSAGE(args.value(k, "") == std::string(v), "\"" << c.text << "\": " << k << " = " << args.value(k, "") << ", not " << v);
+      ++checked;
+    }
+    CHECK(checked == static_cast<int>(cases.size()));
+  }
 }
