@@ -6,10 +6,14 @@
 // is there; switched off, the desktop says so and brings it back on request. R101 D2 (§3.2, §4, §12, §14 row D2): the desktop is the preset
 // pulpit_graf - the first pins as icons (written once into the graph) over the faint graph on a canvas; a tap on "Rozmowy" opens the
 // conversation list window, Back brings the desktop; P0's sections are behind "Więcej…" and a long press; pulpit_ikony drops the graph.
+// R101 D3 (§3.1, §8, §14 row D3): the other concepts are presets of the same mechanism, each reachable by a sentence and reversible -
+// „pulpit jako ikony” (the graph goes), „pulpit jako start” (a tile for every kind of window_kinds.json, the planned ones greyed),
+// „pulpit graf żywy” (the graph behind follows the focus of the navigator window), „pusty pulpit”, pulpit_karta, pulpit_polka, and
+// desktop_minimized=icons (a minimized chat is an icon at the bottom; a tap restores it).
 // With M1_SHOTS_DIR=<dir> the screenshots go there.
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
-import { existsSync, mkdtempSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import net from "node:net";
 import path from "node:path";
@@ -35,6 +39,8 @@ let browser, failed = false, dump = async () => "";
 const step = async (name, fn) => { if (failed) return; try { await fn(); console.log(`[desktop-r101] PASS ${name}`); } catch (e) { failed = true; console.error(`[desktop-r101] FAIL ${name}\n${e.stack}\n--- the screen says:\n${await dump().catch(() => "")}`); } };
 const api = async (m, p, b) => { const r = await fetch(base + p, { method: m, headers: { "content-type": "application/json" }, body: b ? JSON.stringify(b) : undefined }); assert.ok(r.ok, `${m} ${p}: ${r.status}`); return r.json().catch(() => ({})); };
 const setKey = (key, value) => api("PUT", `/api/config/${key}`, { value });
+const getKey = async key => { const cfg = await api("GET", "/api/config"); return (cfg.config ?? cfg)[key]; };
+const KINDS = JSON.parse(readFileSync(path.join(LOOM, "web/src/shell/data/window_kinds.json"), "utf8")).kinds;
 
 try {
   await waitUp(`${base}/api/healthz`);
@@ -134,7 +140,8 @@ try {
       await p.locator("body").click({ position: { x: 5, y: Math.floor(viewport.height / 2) } });
       await p.keyboard.press("Control+Shift+D");
       await seen(p);
-      const item = p.locator('[data-testid="desktop-restore-item"][data-window="w_chat"]');
+      // R101 D3: desktop_minimized preset - a list (phone) or an icon on the strip at the bottom (computer)
+      const item = p.locator('[data-testid="desktop-restore-item"][data-window="w_chat"], [data-testid="desktop-minimized-icon"][data-window="w_chat"]');
       await item.waitFor();
       await stableShot(p, path.join(SHOTS, `${device}-desktop-minimized.png`));
       await item.click();
@@ -199,6 +206,126 @@ try {
     });
     await p.context().close();
     await setKey("desktop_declaration", null);
+
+    // ---------- R101 D3 ----------
+    const decl = p => desk(p).getAttribute("data-declaration");
+    const say = async (p, text, want) => {
+      await p.getByTestId("desktop-sentence-input").fill(text);
+      await p.getByTestId("desktop-sentence-send").click();
+      await covered(p);
+      let v; for (const end = Date.now() + 15000; Date.now() < end && v !== want; await new Promise(r => setTimeout(r, 150))) v = await getKey("desktop_declaration");
+      assert.equal(v, want, `„${text}” writes desktop_declaration`);
+      await closeChat(p);
+      await seen(p);
+      await p.waitForFunction(w => document.querySelector('[data-testid="desktop"]')?.getAttribute("data-declaration") === w, want, { timeout: 10000 });
+    };
+    p = await fresh();
+    await step(`${device}: D3 - „pulpit jako ikony” → the graph behind disappears, the icons stay`, async () => {
+      await closeChat(p); await seen(p);
+      await p.getByTestId("desktop-graph").waitFor();
+      await say(p, "pulpit jako ikony", "pulpit_ikony");
+      await p.waitForFunction(() => document.querySelector('[data-testid="desktop-icons"]')?.getAttribute("data-state") === "ok", null, { timeout: 15000 });
+      assert.equal(await p.getByTestId("desktop-graph").count(), 0);
+      assert.equal(await p.getByTestId("desktop-icon").count(), 7);
+    });
+    await step(`${device}: D3 - „pulpit jako start” → a tile for every kind of window, the planned ones greyed with a reason`, async () => {
+      await say(p, "pulpit jako start", "pulpit_start");
+      const tiles = p.locator('[data-testid="desktop-icon"][data-source="kinds"]');
+      await tiles.first().waitFor();
+      assert.equal(await tiles.count(), KINDS.length, "one tile per kind of window_kinds.json");
+      const planned = p.locator('[data-testid="desktop-icon"][data-source="kinds"][data-status="planned"]');
+      assert.equal(await planned.count(), KINDS.filter(k => k.status !== "present").length);
+      assert.ok(await planned.first().isDisabled()); assert.ok(((await planned.first().getAttribute("title")) ?? "").length > 5, "greyed with its reason");
+      assert.ok(await p.locator('[data-testid="desktop-icon"][data-source="layouts"]').count() >= 1, "the layouts are tiles too");
+      assert.equal(await p.getByTestId("desktop-graph").count(), 0);
+      await stableShot(p, path.join(SHOTS, `${device}-desktop-start.png`));
+      await p.locator('[data-testid="desktop-icon"][data-source="kinds"][data-kind="navigator"]').click();
+      await covered(p);
+      await p.getByTestId("close-panel").click();
+      await seen(p);
+    });
+    await step(`${device}: D3 - „pulpit graf żywy” → the graph behind follows the focus of the navigator window`, async () => {
+      await say(p, "pulpit graf żywy", "pulpit_graf_zywy");
+      const g = p.getByTestId("desktop-graph");
+      await g.waitFor();
+      assert.equal(await g.getAttribute("data-focus"), "party:self", "no navigator window: the fallback");
+      // the navigator writes its focus once graph.navigate has answered (wait for the answer, not for a fixed time)
+      const answered = p.waitForResponse(r => r.url().includes("/api/graph/navigate") && r.request().postData()?.includes("area:knowledge"), { timeout: 15000 });
+      await p.locator('[data-testid="desktop-icon"][data-address="area:knowledge"]').click();
+      await covered(p);
+      await answered; await p.waitForTimeout(300);
+      await p.evaluate(() => (document.activeElement)?.blur?.());
+      await p.keyboard.press("Control+Shift+D");
+      await seen(p);
+      const focusNow = async () => [await p.getByTestId("desktop-graph").getAttribute("data-focus"), await desk(p).getAttribute("data-focus-from")];
+      await p.waitForFunction(() => document.querySelector('[data-testid="desktop-graph"]')?.getAttribute("data-focus") === "area:knowledge", null, { timeout: 10000 })
+        .catch(async e => { throw new Error(`the graph behind did not follow the navigator: ${await focusNow()} (${e.message})`); });
+      assert.equal(await desk(p).getAttribute("data-focus-from"), "window");
+      await stableShot(p, path.join(SHOTS, `${device}-desktop-graf-zywy.png`));
+      await p.locator('[data-testid="desktop-restore-item"], [data-testid="desktop-minimized-icon"]').first().click();
+      await covered(p);
+      await p.getByTestId("close-panel").click();
+      await seen(p);
+      await p.waitForFunction(() => document.querySelector('[data-testid="desktop-graph"]')?.getAttribute("data-focus") === "party:self", null, { timeout: 10000 });
+    });
+    await step(`${device}: D3 - „pusty pulpit” → no icons, no graph, the sentence field and "Więcej…" stay (P1); „pulpit jako graf” brings the default back`, async () => {
+      await say(p, "pusty pulpit", "pulpit_pusty");
+      assert.equal(await p.getByTestId("desktop-icon").count(), 0);
+      assert.equal(await p.getByTestId("desktop-graph").count(), 0);
+      assert.equal(await p.getByTestId("desktop-emergency").count(), 0, "the sentence is a way: no emergency button");
+      await p.getByTestId("desktop-more").click();
+      assert.ok(await p.getByTestId("desktop-open-kind").count() >= 25);
+      await stableShot(p, path.join(SHOTS, `${device}-desktop-pusty.png`));
+      await say(p, "pulpit jako graf", "pulpit_graf");
+      await p.getByTestId("desktop-graph").waitFor();
+      assert.equal(await p.getByTestId("desktop-icon").count(), 7);
+    });
+    await p.context().close();
+    await setKey("desktop_declaration", "pulpit_karta");
+    p = await fresh();
+    await step(`${device}: D3 - pulpit_karta → the card of party:self with the pins under it`, async () => {
+      await closeChat(p); await seen(p);
+      await p.waitForFunction(() => document.querySelector('[data-testid="desktop-card"]')?.getAttribute("data-state") === "ok", null, { timeout: 15000 });
+      assert.ok((await p.getByTestId("desktop-card").locator("h3").innerText()).trim().length > 0);
+      await p.waitForFunction(() => document.querySelector('[data-testid="desktop-icons"]')?.getAttribute("data-state") === "ok", null, { timeout: 15000 });
+      assert.equal(await p.getByTestId("desktop-icon").count(), 7);
+      await stableShot(p, path.join(SHOTS, `${device}-desktop-karta.png`));
+    });
+    await p.context().close();
+    await setKey("desktop_declaration", "pulpit_polka");
+    p = await fresh();
+    await step(`${device}: D3 - pulpit_polka → the minimized chat is the icon of the desktop; a tap restores it`, async () => {
+      await p.locator("body").click({ position: { x: 5, y: Math.floor(viewport.height / 2) } });
+      await p.keyboard.press("Control+Shift+D");
+      await seen(p);
+      const shelf = p.locator('[data-testid="desktop-icon"][data-source="shelf"]');
+      await shelf.first().waitFor();
+      assert.equal(await shelf.count(), 1); assert.equal(await shelf.getAttribute("data-address"), "window:w_chat");
+      await shelf.click();
+      await covered(p);
+      await p.getByTestId("chat-input").waitFor();
+    });
+    await p.context().close();
+    await setKey("desktop_declaration", null);
+    await setKey("desktop_minimized", "icons");
+    p = await fresh();
+    await step(`${device}: D3 - desktop_minimized=icons → the minimized chat is an icon at the bottom → a tap restores it`, async () => {
+      await p.locator("body").click({ position: { x: 5, y: Math.floor(viewport.height / 2) } });
+      await p.keyboard.press("Control+Shift+D");
+      await seen(p);
+      assert.equal(await desk(p).getAttribute("data-minimized"), "icons");
+      const icon = p.locator('[data-testid="desktop-minimized-icon"][data-window="w_chat"]');
+      await icon.waitFor();
+      assert.equal(await p.getByTestId("desktop-restore-item").count(), 0, "icons, not the list");
+      const box = await p.getByTestId("desktop-minimized").boundingBox();
+      assert.ok(box && box.y + box.height > viewport.height * 0.6, `the strip is at the bottom (${JSON.stringify(box)})`);
+      await stableShot(p, path.join(SHOTS, `${device}-desktop-minimized-icons.png`));
+      await icon.click();
+      await covered(p);
+      await p.getByTestId("chat-input").waitFor();
+    });
+    await p.context().close();
+    await setKey("desktop_minimized", null);
   }
   await step("no page errors", async () => assert.deepEqual(errors, []));
 } catch (e) { failed = true; console.error(e); }

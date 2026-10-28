@@ -34,7 +34,7 @@ test('declaration: unset = pulpit_graf (pins with the first pins, the graph behi
 test('declaration: an unknown id = the preset with an advisory; inline object or JSON text; unknown element kinds are listed, not refused', () => {
   const u = I.resolveDeclaration('pulpit_nieznany', 'desktop');
   assert.equal(u.id, 'pulpit_graf'); assert.deepEqual(u.advisories.map(a => a.code), ['desktop_declaration_unknown']);
-  const inline = { id: 'moj', elements: [{ id: 'p', kind: 'source', perspective: 'pinned_on', focus: 'desktop:praca' }, { id: 'x', kind: 'wallpaper' }, { id: 'c', kind: 'card' }] };
+  const inline = { id: 'moj', elements: [{ id: 'p', kind: 'source', perspective: 'pinned_on', focus: 'desktop:praca' }, { id: 'x', kind: 'wallpaper' }, { id: 'c', kind: 'layers' }] };
   for (const v of [inline, JSON.stringify(inline)]) {
     const r = I.resolveDeclaration(v, 'phone');
     assert.equal(r.origin, 'inline'); assert.equal(r.id, 'moj'); assert.equal(r.pins.focus, 'desktop:praca'); assert.equal(r.around, null);

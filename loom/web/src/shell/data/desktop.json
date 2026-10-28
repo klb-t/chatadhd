@@ -742,7 +742,8 @@
    "pl": [
     "ikony",
     "ikonami",
-    "same ikony"
+    "same ikony",
+    "ikonki"
    ],
    "en": [
     "icons",
@@ -767,6 +768,7 @@
   "pulpit_polka": {
    "pl": [
     "półka",
+    "półkę",
     "półką",
     "pasek zadań"
    ],
@@ -790,6 +792,7 @@
   "pulpit_karta": {
    "pl": [
     "karta",
+    "kartę",
     "kartą",
     "karta ty",
     "ty"

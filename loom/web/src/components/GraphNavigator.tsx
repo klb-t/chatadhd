@@ -186,6 +186,13 @@ export default function GraphNavigator({ profileHost, convId, language, initialF
   const focus = focusOf(state);
   // R101 D3 (PULPIT §3.1 pulpit_graf_zywy): the navigator reports the focus it shows as its window parameter focus (W6 coupling); a live
   // desktop graph follows it. Write-only: nothing here reads it back, so a binding of focus offers no control (kind_params stays zoom/pan).
+  // R101 D3: a navigator kept mounted follows a new initial focus (an icon of the desktop opens it on "Mój graf" after "Ty")
+  const initialSeen = useRef(initialFocus);
+  useEffect(() => {
+    if (initialSeen.current === initialFocus) return;
+    initialSeen.current = initialFocus;
+    if (initialFocus && focusOf(state) !== initialFocus) setState((s) => ({ ...initialState(initialFocus), perspectives: s.perspectives }));
+  }, [initialFocus]);   // eslint-disable-line react-hooks/exhaustive-deps
   const focusParam = useWindowParam("focus");
   const shownFocus = result?.focus.address ?? "";
   useEffect(() => { if (shownFocus && focusParam.value !== shownFocus) focusParam.set(shownFocus); }, [shownFocus]);   // eslint-disable-line react-hooks/exhaustive-deps
