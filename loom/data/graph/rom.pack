@@ -345,6 +345,9 @@
           "path": "loom/data/runtime/element_resolution.pack"
         },
         {
+          "path": "loom/data/runtime/free_providers.pack"
+        },
+        {
           "path": "loom/data/runtime/github.pack"
         },
         {

@@ -3905,6 +3905,7 @@
           "POST /api/analysis",
           "POST /api/archive/cancel",
           "POST /api/archive/run",
+          "POST /api/auth/guest",
           "POST /api/auth/login",
           "POST /api/auth/logout",
           "POST /api/auth/password",
@@ -4080,6 +4081,7 @@
           "POST /api/actions/status",
           "POST /api/agent/run",
           "POST /api/analysis",
+          "POST /api/auth/guest",
           "POST /api/auth/login",
           "POST /api/auth/logout",
           "POST /api/auth/register",
@@ -4499,6 +4501,9 @@
             },
             {
               "path": "loom/data/runtime/element_resolution.pack"
+            },
+            {
+              "path": "loom/data/runtime/free_providers.pack"
             },
             {
               "path": "loom/data/runtime/github.pack"

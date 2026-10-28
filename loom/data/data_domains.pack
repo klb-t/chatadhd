@@ -150,7 +150,7 @@
     {
       "path": "graph/interfaces.pack",
       "schema": "loom.graph_interfaces/1",
-      "sha256": "aecd2ce0540b1946ed6edf0419cae0323f04998b82ed24363cda111c61174d92",
+      "sha256": "40c8d9419863b0893511dde9cafdc412c719ec820920c328df2bd30f2979cc5a",
       "domain": "graph_entry",
       "role": "configuration",
       "validation_refs": [
@@ -162,7 +162,7 @@
     {
       "path": "graph/rom.pack",
       "schema": "loom.rom_catalogue/1",
-      "sha256": "2a559c546a2e6cc166ef51b6a52b66d06268818067d1b286e3cc10b9d87d9e73",
+      "sha256": "a8829087926380317de21fbb758501705b7d870a2701ed4c251441b452e21253",
       "domain": "graph_entry",
       "role": "configuration",
       "validation_refs": [

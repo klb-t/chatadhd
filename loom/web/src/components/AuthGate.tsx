@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useReducer, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useReducer, useRef, useState, type ReactNode } from "react";
 import { authApi, AUTH_REQUIRED_EVENT } from "../api/auth";
 import {
   ACCOUNTS_FEATURE, accountText, authReduce, registrationOffer, startsGuestAutomatically, type AccountsTextId, type AuthState,
@@ -26,6 +26,8 @@ export default function AuthGate({ children }: { children: ReactNode }) {
   const guestText = useCallback((id: AccountsTextId, parameters = {}) => accountText(guestFeature, id, parameters), [guestFeature]);
 
   const [guestOffer, setGuestOffer] = useState(false);
+  const phaseRef = useRef(state.phase);
+  phaseRef.current = state.phase;
   const refresh = useCallback(async () => {
     let result = await authApi.me();
     // R105: no gate - when the server starts guests automatically, the first visit IS a guest session.
@@ -42,7 +44,7 @@ export default function AuthGate({ children }: { children: ReactNode }) {
   useEffect(() => { void refresh(); }, [refresh]);
   useEffect(() => {
     // A guest whose session ended (idle time) gets a new one at once when the server starts guests automatically.
-    const onRequired = () => { dispatch({ type: "unauthorized" }); void refresh(); };
+    const onRequired = () => { const wasGuest = phaseRef.current === "guest"; dispatch({ type: "unauthorized" }); if (wasGuest) void refresh(); };
     window.addEventListener(AUTH_REQUIRED_EVENT, onRequired);
     return () => window.removeEventListener(AUTH_REQUIRED_EVENT, onRequired);
   }, [refresh]);
