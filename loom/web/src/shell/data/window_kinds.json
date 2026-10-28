@@ -490,6 +490,18 @@
    "reason": {
     "pl": "arkusz menu ⋮ › Układ ▾ (W5): zapis, przywrócenie, zmiana nazwy i usunięcie nazwanych układów, cofnij/ponów; warstwa (arkusz) nad czatem, nie okno — działa na układzie, nie jest jego częścią"
    }
+  },
+  {
+   "component": "Desktop",
+   "reason": {
+    "pl": "R101 P0: warstwa pulpitu pod wszystkimi oknami (zawsze zamontowana, nie okno: nie zamyka się, nie wchodzi do przełącznika); D1 może zrobić z niej rodzaj okna desktop w trybie background (PULPIT_R101 §7)."
+   }
+  },
+  {
+   "component": "DesktopEnded",
+   "reason": {
+    "pl": "R101 P0: ekran końcowy last_window_close=close_app tam, gdzie gospodarz nie zamyka programu (karta przeglądarki); nie okno, tylko stan po zamknięciu ostatniego."
+   }
   }
  ],
  "state_keepers": {

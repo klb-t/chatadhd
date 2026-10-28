@@ -139,8 +139,10 @@ try {
       await adv.waitFor();
       await p.getByTestId("desktop-advisory-fix").click();
       await p.getByTestId("desktop-emergency").waitFor();
-      const cfg = await api("GET", "/api/config"); const c = cfg.config ?? cfg;
-      assert.equal(c.desktop_emergency_path, true);
+      let stored;
+      for (const end = Date.now() + 5000; Date.now() < end && stored !== true; await new Promise(r => setTimeout(r, 100))) { const cfg = await api("GET", "/api/config"); stored = (cfg.config ?? cfg).desktop_emergency_path; }
+      assert.equal(stored, true, "the fix writes desktop_emergency_path=true");
+      assert.match(await p.getByTestId("window-announce").innerText(), /Pulpit/);
     });
     await p.context().close();
     await setKey("desktop_sections", null);

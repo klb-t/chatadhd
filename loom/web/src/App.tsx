@@ -61,7 +61,7 @@ import { ARRANGE, arrangeWindow } from "./shell/windows/arrange";
 import { MOUNT, keepPolicy, keptHidden, mountAdvisories, mountedIds, shownIds, touchRecent } from "./shell/windows/keep";
 import { usePruneKept } from "./shell/windows/useKeep";
 import Desktop, { DesktopEnded } from "./shell/windows/Desktop";
-import { DESKTOP, closedLast, desktopCover, desktopPaths, desktopSettings, kindEntries, lastWindowClose, openFromDesktop, restoreFromDesktop, showDesktop, type KindTarget } from "./shell/windows/desktop";
+import { DESKTOP, say, closedLast, desktopCover, desktopPaths, desktopSettings, kindEntries, lastWindowClose, openFromDesktop, restoreFromDesktop, showDesktop, type KindTarget } from "./shell/windows/desktop";
 import { handSentence } from "./shell/desktop-sentence";
 import { oneEntry, comboOf } from "./shell/windows/steps";
 import { apply as applyOp } from "./shell/windows/model";
@@ -776,7 +776,7 @@ export default function App() {
   const presetFront = LAYOUTS[win.layout.id]?.windows.find(w => w.mode === "maximized")?.id;
   // W7 (§6.4): a reader of the screen hears which window is in front when it changes (aria-live polite, words of the shell)
   const frontId = visibleId(win.layout) ?? win.layout.focus;
-  const announce = <div className="sr-only" role="status" aria-live="polite" data-testid="window-announce">{frontId ? t("window_announce", { screen: windowLabel(frontId) }) : ""}</div>;
+  const announce = <div className="sr-only" role="status" aria-live="polite" data-testid="window-announce">{deskCover === "none" ? t("window_announce", { screen: say(DESKTOP.words, "title", uiLanguage) }) : frontId ? t("window_announce", { screen: windowLabel(frontId) }) : ""}</div>;
   const grid = (body: ReactNode, overlay: ReactNode) => presetFront ? (
     <div className="app-root dock-root" data-layout={win.layout.id} data-testid="dock-root">
       <div className="app-layout">{body}{overlay}</div>
