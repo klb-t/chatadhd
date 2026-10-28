@@ -82,7 +82,8 @@ export default function Desktop({ layout, cover, lang, settings, entries, paths,
   return (
     <div ref={root} className="desktop-layer" data-testid="desktop" data-cover={cover} role="region" aria-label={say(w, "title", lang)} tabIndex={-1}
       hidden={covered} aria-hidden={covered || undefined} {...(covered ? { inert: "" } : {})} onKeyDown={onKey}>
-      <div className="desktop-content">
+      {/* under a full cover only the layer stays mounted (its state - the draft of the sentence - stays); the entries are drawn when seen */}
+      {!covered && <div className="desktop-content">
         <h2 className="desktop-title">{say(w, "title", lang)}</h2>
         <p className="desktop-hint">{say(w, "hint", lang)}</p>
         {settings.sections.map(section)}
@@ -95,7 +96,7 @@ export default function Desktop({ layout, cover, lang, settings, entries, paths,
           </span>
         </div>}
         {settings.unknownSections.map((id) => <div key={id} className="win-chip" role="status" data-testid="desktop-advisory" data-code="desktop_section_unknown"><span>{say(w, "section_unknown", lang, { id })}</span></div>)}
-      </div>
+      </div>}
     </div>
   );
 }
