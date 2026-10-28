@@ -1755,6 +1755,8 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
       header["flow"] = flow ? Json{{"flow", flow->flow}, {"renderer", flow->renderer}, {"output", flow->output}, {"mode", flow->mode}, {"model_class", flow->model_class}, {"why", flow->reason}}
                             : Json{{"flow", "plain"}, {"renderer", "chat_turns"}, {"output", "text"}};
       header["renderer"] = flow ? flow->renderer : std::string("chat_turns");
+      // R103 §4.3: the data terms of the provider this runtime was given (a guest's free provider) go into every receipt.
+      if (Json terms = cfg_.get("loom_provider_terms"); terms.is_object()) header["provider_terms"] = std::move(terms);
       long long max_bytes = cfg_integer(cfg_, "context_receipt_max_bytes", 65536);
       Json whole = chat::formats::receipt_finish(fill(false), header, messages);
       if (receipt_store != "always" && max_bytes > 0 && !ritems_aggregate.empty() && json::dump(whole).size() > static_cast<std::size_t>(max_bytes)) {

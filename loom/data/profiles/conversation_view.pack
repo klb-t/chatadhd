@@ -752,7 +752,7 @@
       "key": "presentation.accounts",
       "area": "presentation/accounts",
       "revision": 1,
-      "label": "Texts of the sign-in screen and the sign-out button shown when the server runs with accounts; texts only",
+      "label": "Texts of the sign-in screen and the sign-out button shown when the server runs with accounts; texts only; R103 guest texts (notice after the first answer, browser store, archive)",
       "value": {
         "schema": "loom.presentation_feature/1",
         "feature": "accounts",
@@ -775,7 +775,24 @@
             "logout": "Sign out",
             "error.auth": "Wrong login or password.",
             "error.failed": "The server answered with an error ({{reason}}).",
-            "error.unreachable": "The server could not be reached ({{reason}})."
+            "error.unreachable": "The server could not be reached ({{reason}}).",
+            "guest.start": "Continue without an account",
+            "guest.notice_title": "You are not signed in",
+            "guest.notice_body_browser": "This conversation is only in a working copy on the server and in this browser. Without choosing where to keep it, it may be lost {{period}}.",
+            "guest.notice_body_session": "This conversation is only in a working copy on the server. Without choosing where to keep it, it will be lost {{period}}.",
+            "guest.notice_choose_store": "Choose where to keep it",
+            "guest.notice_sign_in": "Sign in / create an account",
+            "guest.notice_never": "Don't ask again",
+            "guest.notice_close": "Close",
+            "guest.download": "Download archive",
+            "guest.load": "Load archive",
+            "guest.restored": "Restored {{count}} conversation(s) from this browser.",
+            "guest.model_line": "Answers: {{model}} ({{provider}}), the best of today's free models. {{terms}}",
+            "guest.no_model": "No free model is available on this server right now ({{reason}}). You can add your own key in Settings.",
+            "guest.terms_title": "What the provider does with the text",
+            "guest.period_unknown": "when the browser clears this site's data or after {{ttl}} without activity on the server",
+            "guest.persisted": "only when you clear this site's data (the browser granted persistent storage; {{free}} free); the server copy after {{ttl}} without activity",
+            "guest.not_persisted": "when the browser needs space ({{free}} free, storage not persistent) and the server copy after {{ttl}} without activity"
           },
           "pl": {
             "title": "Zaloguj się do Loom",
@@ -795,7 +812,24 @@
             "logout": "Wyloguj",
             "error.auth": "Zły login lub hasło.",
             "error.failed": "Serwer odpowiedział błędem ({{reason}}).",
-            "error.unreachable": "Nie udało się połączyć z serwerem ({{reason}})."
+            "error.unreachable": "Nie udało się połączyć z serwerem ({{reason}}).",
+            "guest.start": "Kontynuuj bez konta",
+            "guest.notice_title": "Nie jesteś zalogowany",
+            "guest.notice_body_browser": "Ta rozmowa jest tylko w kopii roboczej na serwerze i w tej przeglądarce. Bez wybrania miejsca zapisu może przepaść {{period}}.",
+            "guest.notice_body_session": "Ta rozmowa jest tylko w kopii roboczej na serwerze. Bez wybrania miejsca zapisu przepadnie {{period}}.",
+            "guest.notice_choose_store": "Wybierz, gdzie zapisać",
+            "guest.notice_sign_in": "Zaloguj / załóż konto",
+            "guest.notice_never": "Nie pytaj więcej",
+            "guest.notice_close": "Zamknij",
+            "guest.download": "Pobierz archiwum",
+            "guest.load": "Wczytaj archiwum",
+            "guest.restored": "Przywrócono rozmowy z tej przeglądarki: {{count}}.",
+            "guest.model_line": "Odpowiada: {{model}} ({{provider}}), najlepszy z dzisiejszych darmowych modeli. {{terms}}",
+            "guest.no_model": "Na tym serwerze nie ma teraz darmowego modelu ({{reason}}). Możesz dodać własny klucz w ustawieniach.",
+            "guest.terms_title": "Co dostawca robi z tekstem",
+            "guest.period_unknown": "gdy przeglądarka wyczyści dane tej strony albo po {{ttl}} bez ruchu na serwerze",
+            "guest.persisted": "dopiero gdy sam wyczyścisz dane tej strony (przeglądarka dała trwały schowek; wolne {{free}}); kopia na serwerze po {{ttl}} bez ruchu",
+            "guest.not_persisted": "gdy przeglądarce zabraknie miejsca (wolne {{free}}, schowek nietrwały), a kopia na serwerze po {{ttl}} bez ruchu"
           }
         }
       }

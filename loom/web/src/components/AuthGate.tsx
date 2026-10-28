@@ -1,8 +1,9 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useReducer, useState, type ReactNode } from "react";
 import { authApi, AUTH_REQUIRED_EVENT } from "../api/auth";
 import {
-  ACCOUNTS_FEATURE, accountText, authReduce, registrationOffer, type AccountsTextId, type AuthState,
+  ACCOUNTS_FEATURE, accountText, authReduce, registrationOffer, startsGuestAutomatically, type AccountsTextId, type AuthState,
 } from "../context/auth-state";
+import GuestLayer from "./GuestLayer";
 import { usePresentationFeature } from "./ConversationSourceView";
 
 /** Present only when the server runs with accounts and someone is signed in. */
@@ -15,16 +16,27 @@ export default function AuthGate({ children }: { children: ReactNode }) {
   const { feature } = usePresentationFeature(undefined, ACCOUNTS_FEATURE);
   const text = useCallback((id: AccountsTextId, parameters = {}) => accountText(feature, id, parameters), [feature]);
 
+  const [guestOffer, setGuestOffer] = useState(false);
   const refresh = useCallback(async () => {
-    const result = await authApi.me();
+    let result = await authApi.me();
+    // R105: no gate - when the server starts guests automatically, the first visit IS a guest session.
+    if (result.ok && startsGuestAutomatically(result.body)) {
+      const started = await authApi.guest();
+      if (started.ok) result = await authApi.me();
+    }
+    if (result.ok) {
+      const g = (result.body as { guests?: { enabled?: boolean } } | null)?.guests;
+      setGuestOffer(g?.enabled === true);
+    }
     dispatch(result.ok ? { type: "me", body: result.body } : { type: "me_failed", reason: result.reason });
   }, []);
   useEffect(() => { void refresh(); }, [refresh]);
   useEffect(() => {
-    const onRequired = () => dispatch({ type: "unauthorized" });
+    // A guest whose session ended (idle time) gets a new one at once when the server starts guests automatically.
+    const onRequired = () => { dispatch({ type: "unauthorized" }); void refresh(); };
     window.addEventListener(AUTH_REQUIRED_EVENT, onRequired);
     return () => window.removeEventListener(AUTH_REQUIRED_EVENT, onRequired);
-  }, []);
+  }, [refresh]);
 
   const session = useMemo<AccountSession | null>(() => state.phase !== "signed_in" ? null : {
     login: state.user.login,
@@ -36,12 +48,22 @@ export default function AuthGate({ children }: { children: ReactNode }) {
   if (state.phase === "loading") return <div className="auth-screen" data-testid="auth-loading"><p>{text("loading")}</p></div>;
   if (state.phase === "error")
     return <div className="auth-screen" data-testid="auth-error"><p>{text("error.unreachable", { reason: state.reason })}</p></div>;
-  if (state.phase === "signed_out") return <SignIn registration={state.registration} text={text} onDone={refresh} />;
+  if (state.phase === "signed_out")
+    return <SignIn registration={state.registration} text={text} onDone={refresh}
+      onGuest={guestOffer ? () => { void authApi.guest().then(refresh); } : undefined} />;
+  if (state.phase === "guest")
+    return (
+      <AccountContext.Provider value={session}>
+        <GuestLayer guest={state.guest} guests={state.guests} text={text}
+          onSignIn={() => dispatch({ type: "signed_out" })}>{children}</GuestLayer>
+      </AccountContext.Provider>
+    );
   return <AccountContext.Provider value={session}>{children}</AccountContext.Provider>;
 }
 
-function SignIn({ registration, text, onDone }: {
+function SignIn({ registration, text, onDone, onGuest }: {
   registration: "open" | "invite" | "closed";
+  onGuest?: () => void;
   text: (id: AccountsTextId, parameters?: Record<string, string>) => string;
   onDone: () => Promise<void>;
 }) {
@@ -93,6 +115,7 @@ function SignIn({ registration, text, onDone }: {
               {text(creating ? "to_login" : "to_register")}
             </button>
           </>}
+      {onGuest && <button type="button" data-testid="auth-guest" onClick={onGuest}>{text("guest.start")}</button>}
     </form>
   );
 }

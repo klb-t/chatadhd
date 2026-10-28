@@ -6,6 +6,7 @@ of `content` deltas, matching what engine/chat_engine.py / Loom's chat
 engine expect from a streaming /chat/completions response.
 """
 import http.server
+import hashlib
 import json
 import sys
 import time
@@ -20,6 +21,9 @@ class Handler(http.server.BaseHTTPRequestHandler):
         # GET /__count: how many requests the model server received (everything except the /__ probes): a test that must not reach the model asserts 0.
         if self.path.rstrip("/").endswith("/__last"):
             body = json.dumps(Handler.last_body).encode()
+        elif self.path.rstrip("/").endswith("/__auth"):
+            # GET /__auth: SHA-256 of the last chat request's Authorization header (a key reached the model server or not; never the key).
+            body = json.dumps({"sha256": Handler.last_auth}).encode()
         elif self.path.rstrip("/").endswith("/__count"):
             body = json.dumps({"requests": Handler.received, "chat": Handler.chats}).encode()
         else:
@@ -33,6 +37,7 @@ class Handler(http.server.BaseHTTPRequestHandler):
         self.wfile.write(body)
 
     last_body = None
+    last_auth = None
     received = 0
     chats = 0
 
@@ -41,6 +46,8 @@ class Handler(http.server.BaseHTTPRequestHandler):
         Handler.chats += 1
         length = int(self.headers.get("Content-Length", 0))
         raw = self.rfile.read(length)
+        auth = self.headers.get("Authorization")
+        Handler.last_auth = hashlib.sha256(auth.encode()).hexdigest() if auth else None
         try:
             Handler.last_body = json.loads(raw)
         except ValueError:

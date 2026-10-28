@@ -117,10 +117,25 @@ Result<Settings> load_settings(const std::filesystem::path& root) {
     s.hash_max_concurrent = v["hashing"].value("max_concurrent", std::int64_t(-1));
     s.hash_wait_seconds = v["hashing"].value("wait_seconds", std::int64_t(5));
   }
+  if (v.contains("guests") && v["guests"].is_object()) {
+    const Json& g = v["guests"];
+    s.guests.raw = g;
+    s.guests.enabled = g.value("enabled", false);
+    s.guests.start = g.value("start", std::string("auto"));
+    s.guests.sweep_interval_seconds = g.value("sweep_interval_seconds", std::int64_t(60));
+    s.guests.keys_file = g.value("keys_file", std::string());
+    if (g.contains("workdir") && g["workdir"].is_object()) {
+      const Json& w = g["workdir"];
+      s.guests.workdir_subdir = w.value("subdir", std::string("guests"));
+      s.guests.idle_ttl_seconds = w.value("idle_ttl_seconds", std::int64_t(86400));
+    }
+  }
   // File names must stay inside the accounts root.
-  for (const auto& p : {s.accounts_file, s.users_subdir})
+  for (const auto& p : {s.accounts_file, s.users_subdir, s.guests.workdir_subdir})
     if (p.find('/') != std::string::npos || p.find('\\') != std::string::npos || p == ".." || p == ".")
-      return Error(Errc::InvalidArgument, "accounts_file/users_subdir must be a single path component");
+      return Error(Errc::InvalidArgument, "accounts_file/users_subdir/guests.workdir.subdir must be a single path component");
+  if (s.guests.workdir_subdir == s.users_subdir)
+    return Error(Errc::InvalidArgument, "guests.workdir.subdir must differ from users_subdir");
 
   auto sec = RuntimeProfile::load("storage_security", root);
   if (!sec) return sec.error();
@@ -159,7 +174,9 @@ Result<std::unique_ptr<AccountStore>> AccountStore::open(const std::filesystem::
                         " created TEXT NOT NULL, last_seen INTEGER NOT NULL, expires INTEGER NOT NULL);"
                         "CREATE INDEX IF NOT EXISTS sessions_user ON sessions(user_id);"
                         "CREATE TABLE IF NOT EXISTS invites(code_hash TEXT PRIMARY KEY, created TEXT NOT NULL,"
-                        " used_by TEXT);"));
+                        " used_by TEXT);"
+                        "CREATE TABLE IF NOT EXISTS guest_sessions(token_hash TEXT PRIMARY KEY, guest_id TEXT NOT NULL UNIQUE,"
+                        " started INTEGER NOT NULL, last_seen INTEGER NOT NULL, expires INTEGER NOT NULL);"));
   return st;
 }
 
@@ -383,6 +400,91 @@ Result<std::optional<User>> AccountStore::find_session(const std::string& token)
 Status AccountStore::revoke_session(const std::string& token) {
   std::lock_guard lk(mu_);
   return db_.run("DELETE FROM sessions WHERE token_hash=?", token_hash(token));
+}
+
+// ── Guests (R103 B1) ─────────────────────────────────────────────────────────────────────────────────────────
+
+bool AccountStore::valid_guest_id(const std::string& id) {
+  if (id.size() < 3 || id.size() > 64 || id.compare(0, 2, "g_") != 0) return false;
+  return std::all_of(id.begin() + 2, id.end(), [](unsigned char c) { return std::isdigit(c) || (c >= 'a' && c <= 'f'); });
+}
+
+std::filesystem::path AccountStore::guests_root() const { return root_ / settings_.guests.workdir_subdir; }
+std::filesystem::path AccountStore::guest_dir(const std::string& guest_id) const { return guests_root() / guest_id; }
+
+Result<GuestSession> AccountStore::create_guest_session() {
+  GuestSession g;
+  g.token = cs::to_hex(random_bytes(settings_.session_token_bytes));
+  g.guest_id = "g_" + cs::to_hex(random_bytes(8));
+  g.started = now_s();
+  const std::int64_t ttl = settings_.guests.idle_ttl_seconds;
+  const std::int64_t life = settings_.session_lifetime_seconds;
+  g.expires = g.started + (ttl > 0 ? std::min(ttl, life) : life);
+  std::error_code ec;
+  std::filesystem::create_directories(guest_dir(g.guest_id), ec);
+  if (ec) return Error(Errc::Io, "cannot create the guest working directory: " + ec.message());
+  std::lock_guard lk(mu_);
+  LOOM_TRY(db_.run("INSERT INTO guest_sessions(token_hash, guest_id, started, last_seen, expires) VALUES(?,?,?,?,?)",
+                   token_hash(g.token), g.guest_id, g.started, g.started, g.started + life));
+  return g;
+}
+
+Result<std::optional<Guest>> AccountStore::find_guest_session(const std::string& token) {
+  if (token.empty() || !settings_.guests.enabled) return std::optional<Guest>{};
+  std::lock_guard lk(mu_);
+  const std::string th = token_hash(token);
+  LOOM_TRY_ASSIGN(auto st, db_.prepare("SELECT guest_id, started, last_seen, expires FROM guest_sessions WHERE token_hash=?"));
+  st.bind_all(th);
+  LOOM_TRY_ASSIGN(bool row, st.step());
+  if (!row) return std::optional<Guest>{};
+  Guest g{st.get_text(0), st.get_int(1), st.get_int(2)};
+  const std::int64_t exp = st.get_int(3), now = now_s();
+  st = sql::Stmt();
+  const std::int64_t ttl = settings_.guests.idle_ttl_seconds;
+  if (exp < now || (ttl > 0 && now - g.last_seen > ttl)) return std::optional<Guest>{};  // the sweep removes it with its directory
+  LOOM_TRY(db_.run("UPDATE guest_sessions SET last_seen=? WHERE token_hash=?", now, th));
+  g.last_seen = now;
+  return std::optional<Guest>(g);
+}
+
+Status AccountStore::revoke_guest_session(const std::string& token) {
+  std::lock_guard lk(mu_);
+  return db_.run("UPDATE guest_sessions SET expires=0 WHERE token_hash=?", token_hash(token));
+}
+
+Result<std::vector<std::string>> AccountStore::sweep_guests() {
+  std::vector<std::string> gone;
+  const std::int64_t now = now_s(), ttl = settings_.guests.idle_ttl_seconds;
+  std::vector<std::string> live;
+  {
+    std::lock_guard lk(mu_);
+    LOOM_TRY_ASSIGN(auto st, db_.prepare("SELECT guest_id, last_seen, expires FROM guest_sessions"));
+    while (true) {
+      LOOM_TRY_ASSIGN(bool row, st.step());
+      if (!row) break;
+      std::string id = st.get_text(0);
+      const bool dead = st.get_int(2) < now || (ttl > 0 && now - st.get_int(1) > ttl);
+      (dead ? gone : live).push_back(std::move(id));
+    }
+    st = sql::Stmt();
+    for (const auto& id : gone) LOOM_TRY(db_.run("DELETE FROM guest_sessions WHERE guest_id=?", id));
+  }
+  std::error_code ec;
+  for (auto it = std::filesystem::directory_iterator(guests_root(), ec); !ec && it != std::filesystem::directory_iterator(); it.increment(ec)) {
+    const std::string name = it->path().filename().string();
+    if (!valid_guest_id(name)) continue;  // never touch what the server did not make
+    if (std::find(live.begin(), live.end(), name) == live.end() && std::find(gone.begin(), gone.end(), name) == gone.end())
+      gone.push_back(name);
+  }
+  return gone;
+}
+
+Status AccountStore::remove_guest_dir(const std::string& guest_id) {
+  if (!valid_guest_id(guest_id)) return Error(Errc::InvalidArgument, "not a guest id");
+  std::error_code ec;
+  std::filesystem::remove_all(guest_dir(guest_id), ec);
+  if (ec) return Error(Errc::Io, "cannot remove the guest working directory: " + ec.message());
+  return {};
 }
 
 Status AccountStore::revoke_user_sessions(const std::string& user_id) {

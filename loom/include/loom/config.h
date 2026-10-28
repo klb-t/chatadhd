@@ -137,6 +137,13 @@ class Secrets : public JsonStore {
   explicit Secrets(fs::path path);
   std::string get_string(std::string_view key) const;  // "" if missing or not a string
   bool has(std::string_view key) const;                // non-empty string value
+  // R103 §3.4: credentials handed to this runtime in memory only (loom_init_ex "credential_overlay"), read before
+  // secrets.json and never written to it, listed or exported. Set once, before the runtime is used.
+  void set_overlay(std::map<std::string, std::string> overlay) { overlay_ = std::move(overlay); }
+  bool from_overlay(std::string_view key) const { return overlay_.count(std::string(key)) != 0; }
+
+ private:
+  std::map<std::string, std::string> overlay_;
 };
 
 }  // namespace loom

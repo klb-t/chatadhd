@@ -344,7 +344,9 @@ export class LoomHttpApi implements LoomApi {
   // ── Chat ─────────────────────────────────────────────────────────────
 
   chat(req: ChatRequest, handlers: StreamHandlers<ChatChunk>): Unsubscribe {
-    return this.streamSse("POST", "/api/chat", req, handlers);
+    // R103: an answer that finished is announced, so the guest layer can save the history and show its notice.
+    const announce = () => { if (typeof window !== "undefined") window.dispatchEvent(new CustomEvent("loom:answer-done", { detail: { conv_id: req.conv_id ?? null } })); };
+    return this.streamSse("POST", "/api/chat", req, { ...handlers, onDone: () => { handlers.onDone?.(); announce(); } });
   }
   async cancelChat(requestId: string): Promise<void> {
     await this.req("POST", "/api/chat/cancel", { request_id: requestId });

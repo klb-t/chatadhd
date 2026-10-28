@@ -385,6 +385,11 @@ if(LOOM_BUILD_TESTS)
     set_tests_properties(server.accounts PROPERTIES
       ENVIRONMENT "LOOM_SERVER_BIN=$<TARGET_FILE:loom-server>;PYTHONDONTWRITEBYTECODE=1"
       TIMEOUT 240)
+    add_test(NAME server.guests
+      COMMAND ${Python3_EXECUTABLE} ${LOOM_ROOT}/server/tests/test_server_guests.py)
+    set_tests_properties(server.guests PROPERTIES
+      ENVIRONMENT "LOOM_SERVER_BIN=$<TARGET_FILE:loom-server>;PYTHONDONTWRITEBYTECODE=1"
+      TIMEOUT 240)
     add_test(NAME server.security
       COMMAND ${Python3_EXECUTABLE} ${LOOM_ROOT}/server/tests/test_server_security.py)
     # 68 s on a dev build (2026-10-28); ASan runs it ~5x slower and the suite grew (11b-11d, catalogue routes), so 300 s

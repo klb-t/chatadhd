@@ -1,0 +1,329 @@
+{
+  "schema": "loom.runtime_profile/1",
+  "domain": "free_providers",
+  "revision": 1,
+  "description": "Model sources for guests (R103 §4, B1). Every entry is DATA and a preset: providers, models, limits and data terms are dated observations (observed_at, source_url, source_rating) to refresh, never rules. An entry is used only when enabled is true and its condition holds (active_when key_present = its auth_env name is present in the operator's keys file, server_accounts guests.keys_file; the key goes to the guest runtime in memory through credential_overlay and never into the guest directory). disabled_reason says why an entry is out of the guest queue on the operator's key and since when (provider terms are treated like law: a closed choice with a reason and a date). data_terms.summary (pl/en) is shown to the guest before the first send and copied into every receipt (provider_terms). budget on a paid entry is a spending preset (EUR per day/week, share of each credit, advisory threshold). free_model_choice: which model a guest without his own key gets; table = an example ranking with dates (quality 0..1), require = data-terms condition on the operator's key, reevaluate = when the choice is computed again (B1 computes it when the guest runtime opens; per_message comes with the quota counters of B4). test_providers: extra entries an operator overlay may add (tests use a mock).",
+  "defaults": {
+    "providers": [
+      {
+        "id": "groq",
+        "display_name": "Groq",
+        "base_url": "https://api.groq.com/openai/v1",
+        "adapter": "openai_compatible",
+        "auth_env": "GROQ_API_KEY",
+        "auth_secret": "api_key",
+        "tier": "free",
+        "active_when": "key_present",
+        "enabled": true,
+        "models": [
+          {
+            "id": "openai/gpt-oss-120b",
+            "notes": "przykład / example"
+          },
+          {
+            "id": "llama-3.3-70b-versatile",
+            "notes": "przykład / example"
+          }
+        ],
+        "limits": {
+          "rpm": 30,
+          "rpd": 1000,
+          "tpm": 8000,
+          "tpd": 200000,
+          "reset": "utc_midnight",
+          "shared_with": "account",
+          "observed": "Developer plan table; Free plan values to be measured in B4"
+        },
+        "data_terms": {
+          "retention": "none_by_default",
+          "human_review": false,
+          "training": "no",
+          "region_rules": [],
+          "source_url": "https://console.groq.com/docs/your-data",
+          "observed_at": "2026-10-28",
+          "source_rating": "official",
+          "summary": {
+            "pl": "Groq domyślnie nie przechowuje treści zapytań; dzienniki tylko przy diagnozie lub nadużyciu, do 30 dni. Rozmowa idzie przez konto operatora tego serwera.",
+            "en": "Groq does not retain request content by default; logs only for diagnosis or abuse, up to 30 days. The conversation goes through the account of this server's operator."
+          }
+        },
+        "fallback_order": 10
+      },
+      {
+        "id": "openrouter_free",
+        "display_name": "OpenRouter (:free)",
+        "base_url": "https://openrouter.ai/api/v1",
+        "adapter": "openai_compatible",
+        "auth_env": "OPENROUTER_API_KEY",
+        "auth_secret": "api_key",
+        "tier": "free",
+        "active_when": "key_present",
+        "enabled": true,
+        "models": [
+          {
+            "id": "meta-llama/llama-3.3-70b-instruct:free",
+            "notes": "przykład / example"
+          },
+          {
+            "id": "deepseek/deepseek-chat-v3-0324:free",
+            "notes": "przykład / example"
+          }
+        ],
+        "limits": {
+          "rpm": 20,
+          "rpd": 50,
+          "reset": "utc_midnight",
+          "shared_with": "account",
+          "observed": "50/day below 10 credits bought, 1000/day at >= 10; counter free_model_daily_requests in GET /api/v1/key"
+        },
+        "request_extra": {
+          "provider": {
+            "data_collection": "deny"
+          }
+        },
+        "data_terms": {
+          "retention": "depends_on_upstream",
+          "human_review": "unspecified",
+          "training": "no",
+          "region_rules": [],
+          "source_url": "https://openrouter.ai/docs/features/privacy-and-logging",
+          "observed_at": "2026-10-28",
+          "source_rating": "official",
+          "summary": {
+            "pl": "OpenRouter przekazuje zapytanie dostawcy modelu; konto operatora ma wyłączone kierowanie do dostawców uczących na danych, a zapytanie wymaga polityki bez zbierania danych (nazwa pola do potwierdzenia w B4).",
+            "en": "OpenRouter forwards the request to a model host; the operator's account excludes hosts that train on data and the request asks for a no-data-collection policy (field name to be confirmed in B4)."
+          }
+        },
+        "fallback_order": 20
+      },
+      {
+        "id": "vertex_gemini",
+        "display_name": "Google Vertex AI (Gemini)",
+        "base_url": "https://aiplatform.googleapis.com/v1/projects/{project}/locations/global/endpoints/openapi",
+        "adapter": "vertex_openai_compatible",
+        "auth_env": "",
+        "auth_kind": "vm_service_account",
+        "auth_secret": "api_key",
+        "tier": "paid_credits",
+        "location": "global",
+        "active_when": "wired_in_b3",
+        "enabled": false,
+        "disabled_reason": {
+          "pl": "Połączenie z kontem usługi maszyny powstaje w pakiecie B3; nigdy nie używa danych konta właściciela z /var/lib/chatadhd.",
+          "en": "The VM service-account connection is wired in package B3; it never uses the owner's account data from /var/lib/chatadhd.",
+          "since": "2026-10-28"
+        },
+        "models": [
+          {
+            "id": "gemini-3.5-flash",
+            "notes": "przykład / example"
+          }
+        ],
+        "budget": {
+          "currency": "EUR",
+          "preset": true,
+          "credits": {
+            "per_day": 1.0,
+            "share_of_each_credit": 0.1,
+            "advisory_at_share": 0.8,
+            "counter": "usage ledger of the guest runtime (B3)"
+          },
+          "beyond_credits": {
+            "per_day": 1.0,
+            "per_week": 3.0
+          },
+          "note": "Presets from the owner's spending rule (R103/R104); the counter is shown in the package card. Change by editing this entry."
+        },
+        "data_terms": {
+          "retention": "per_vertex_terms",
+          "human_review": "no",
+          "training": "no",
+          "region_rules": [],
+          "source_url": "https://cloud.google.com/vertex-ai/generative-ai/docs/data-governance",
+          "observed_at": "2026-10-28",
+          "source_rating": "official",
+          "summary": {
+            "pl": "Vertex AI nie uczy na danych klientów (domyślnie, tak zostaje); dane idą do Google Cloud na koncie operatora; pamięć podręczna Vertex włączona.",
+            "en": "Vertex AI does not train on customer data (by default, kept so); data goes to Google Cloud on the operator's account; Vertex caching is on."
+          }
+        },
+        "fallback_order": 5
+      },
+      {
+        "id": "gemini_api_free",
+        "display_name": "Gemini API (free tier)",
+        "base_url": "https://generativelanguage.googleapis.com/v1beta/openai",
+        "adapter": "openai_compatible",
+        "auth_env": "GEMINI_API_KEY",
+        "auth_secret": "api_key",
+        "tier": "free",
+        "active_when": "key_present",
+        "enabled": false,
+        "disabled_reason": {
+          "pl": "Warunki Gemini API: klienta udostępnianego użytkownikom w EOG wolno budować tylko na płatnych usługach; dostępny jako własny klucz gościa.",
+          "en": "Gemini API terms: a client offered to users in the EEA may use only Paid Services; available as the guest's own key.",
+          "since": "2026-10-28",
+          "kind": "provider_terms"
+        },
+        "models": [
+          {
+            "id": "gemini-flash-latest",
+            "notes": "przykład / example"
+          }
+        ],
+        "limits": {
+          "reset": "pacific_midnight",
+          "shared_with": "project"
+        },
+        "data_terms": {
+          "retention": "unspecified",
+          "human_review": true,
+          "training": "yes",
+          "region_rules": [
+            {
+              "region": "EEA, CH, UK",
+              "rule": "paid services only"
+            }
+          ],
+          "source_url": "https://ai.google.dev/gemini-api/terms",
+          "observed_at": "2026-10-28",
+          "source_rating": "official",
+          "summary": {
+            "pl": "Google używa treści do ulepszania produktów i uczenia; czytać mogą ludzie.",
+            "en": "Google uses content to improve products and train models; humans may read it."
+          }
+        },
+        "fallback_order": 90
+      },
+      {
+        "id": "mistral_free",
+        "display_name": "Mistral (Free)",
+        "base_url": "https://api.mistral.ai/v1",
+        "adapter": "openai_compatible",
+        "auth_env": "MISTRAL_API_KEY",
+        "auth_secret": "api_key",
+        "tier": "free",
+        "active_when": "key_present",
+        "enabled": false,
+        "disabled_reason": {
+          "pl": "Tryb Free uczy na danych, dopóki operator tego nie wyłączy; wpis wraca, gdy training ma wartość no z datą sprawdzenia.",
+          "en": "The Free mode trains on data unless the operator opts out; the entry returns when training is no with a check date.",
+          "since": "2026-10-28",
+          "kind": "data_terms"
+        },
+        "models": [
+          {
+            "id": "mistral-small-latest",
+            "notes": "przykład / example"
+          }
+        ],
+        "data_terms": {
+          "retention": "unspecified",
+          "human_review": "unspecified",
+          "training": "opt_out_available",
+          "region_rules": [],
+          "source_url": "https://help.mistral.ai",
+          "observed_at": "2026-10-28",
+          "source_rating": "official",
+          "summary": {
+            "pl": "Mistral może uczyć modele na danych trybu Free; rezygnacja w panelu.",
+            "en": "Mistral may train on Free-mode data; opt-out in the console."
+          }
+        },
+        "fallback_order": 95
+      }
+    ],
+    "free_model_choice": {
+      "rank_source": "table",
+      "table": [
+        {
+          "model": "gemini-3.5-flash",
+          "provider": "vertex_gemini",
+          "quality": 0.85,
+          "observed_at": "2026-10-28",
+          "source": "przykład koordynatora / coordinator's example ranking"
+        },
+        {
+          "model": "openai/gpt-oss-120b",
+          "provider": "groq",
+          "quality": 0.8,
+          "observed_at": "2026-10-28",
+          "source": "przykład koordynatora / coordinator's example ranking"
+        },
+        {
+          "model": "meta-llama/llama-3.3-70b-instruct:free",
+          "provider": "openrouter_free",
+          "quality": 0.7,
+          "observed_at": "2026-10-28",
+          "source": "przykład koordynatora / coordinator's example ranking"
+        },
+        {
+          "model": "llama-3.3-70b-versatile",
+          "provider": "groq",
+          "quality": 0.65,
+          "observed_at": "2026-10-28",
+          "source": "przykład koordynatora / coordinator's example ranking"
+        }
+      ],
+      "require": {
+        "training": "no"
+      },
+      "prefer": [
+        "quality",
+        "remaining_quota",
+        "latency_p50"
+      ],
+      "min_remaining_quota": 0.05,
+      "reevaluate": "per_session"
+    },
+    "terms": {
+      "commercial_use": "ask_owner"
+    }
+  },
+  "value_schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "providers": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "id",
+            "base_url",
+            "enabled",
+            "data_terms"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "base_url": {
+              "type": "string",
+              "minLength": 1
+            },
+            "enabled": {
+              "type": "boolean"
+            },
+            "data_terms": {
+              "type": "object"
+            }
+          }
+        },
+        "x-setting": "/providers",
+        "x-consumer": "server guests"
+      },
+      "free_model_choice": {
+        "type": "object",
+        "x-setting": "/free_model_choice",
+        "x-consumer": "server guests"
+      },
+      "terms": {
+        "type": "object",
+        "x-setting": "/terms",
+        "x-consumer": "server guests"
+      }
+    }
+  }
+}

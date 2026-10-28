@@ -28,6 +28,8 @@ export const authApi = {
   register: (login: string, password: string, invite?: string) =>
     call("POST", "/api/auth/register", invite ? { login, password, invite } : { login, password }),
   logout: () => call("POST", "/api/auth/logout", {}),
+  /** R103: a session without an account (only when the server offers guests). */
+  guest: () => call("POST", "/api/auth/guest", {}),
 };
 
 /** Fired by the HTTP transport when an API call is answered 401. */

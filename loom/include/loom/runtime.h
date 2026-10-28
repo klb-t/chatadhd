@@ -18,6 +18,8 @@
 // start_workers=false keeps every background thread off (tests, CLI tools).
 #pragma once
 
+#include <map>
+
 #include <filesystem>
 #include <functional>
 #include <memory>
@@ -163,6 +165,8 @@ struct RuntimeOptions {
   std::optional<std::int64_t> zip_max_total_bytes;
   std::optional<double> zip_max_ratio;
   std::optional<bool> git_allow_repo_config;
+  // R103 §3.4: secret name -> value given to this runtime in memory only (Secrets::set_overlay); never persisted.
+  std::map<std::string, std::string> credential_overlay;
   std::shared_ptr<net::HttpTransport> http;  // default: net::make_default_transport()
   std::optional<log::Level> log_level;
   RuntimeParts parts;  // factory overrides; empty = defaults (see RuntimeParts)

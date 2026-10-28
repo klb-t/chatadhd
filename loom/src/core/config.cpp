@@ -298,6 +298,7 @@ Json Config::get(std::string_view key, const Json& fallback) const {
 Secrets::Secrets(fs::path path) : JsonStore(std::move(path), Json::object(), true) {}
 
 std::string Secrets::get_string(std::string_view key) const {
+  if (auto it = overlay_.find(std::string(key)); it != overlay_.end() && !it->second.empty()) return it->second;
   Json v = get(key);
   return v.is_string() ? v.get<std::string>() : std::string();
 }

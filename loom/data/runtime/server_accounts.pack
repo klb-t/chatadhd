@@ -1,8 +1,8 @@
 {
   "schema": "loom.runtime_profile/1",
   "domain": "server_accounts",
-  "revision": 4,
-  "description": "loom-server accounts (P1). All values are presets, not rules (owner rule). registration: open = anyone may create an account, invite = only with a code made by 'loom-server user invite', closed = accounts are created by the operator CLI only. Sessions are random tokens stored only as SHA-256. Argon2id parameters come from the named preset of the storage_security pack (crypto.params.argon2id_presets); stored hashes carry their own parameters, so changing the preset never invalidates existing passwords. Overlay: <accounts_root>/profiles/server_accounts.pack. throttle (R43, security reason: stops online password guessing, which Argon2id cost alone only slows): after free_attempts failed logins for one login (per_login) or from one client address (per_ip) further attempts are refused with 429 for base_delay_seconds * 2^(failures - free_attempts), capped at max_delay_seconds; failures are forgotten after reset_seconds without a new one. mode off disables it. The address is the TCP peer unless trust_forwarded_for is true (set it only behind your own reverse proxy). Isolation (R18, security review): confine_paths = every filesystem path a request supplies (catalog/archive/knowledge sources, a repo, a local storage target, a prompt folder) must lie inside the user's own data directory or one of path_roots, so one account cannot read another's data or the accounts database; false lifts it (single-operator installs). block_private_hosts = outbound requests of an account to loopback/private/link-local addresses are refused (stops using the server as a proxy into its own network) except to the hosts in allow_private_hosts (e.g. a local model server). csrf.check_origin = a state-changing request that carries an Origin (or Sec-Fetch-Site: cross-site) naming another site than the one it was sent to is refused, unless that origin is in csrf.allowed_origins. expose_server_logs = /api/logs shows the process-wide log, which mixes all users, so it is off for accounts. Hashing (R20): hashing.max_concurrent = how many Argon2id evaluations (login, register, password change) may run at the same time, because each takes its full memory (rfc9106_second = 64 MiB): -1 = number of CPUs (preset), 0 = unlimited, N = at most N. A request that finds every slot taken waits up to hashing.wait_seconds (preset 5) and is then answered 503 with Retry-After; 0 = refuse at once. login_max_length (R20): the longest login (counted in characters) that register and login accept; 0 = no limit. Longer names are refused with 400 before any hashing or throttle bookkeeping, so one request cannot grow the account tables or the throttle memory. Operator ceilings (R20 follow-up): zip.max_total_bytes / zip.max_ratio (0 = no ceiling) and git.allow_repo_config bound what an account may set in its own config.json (loom_zip_*, loom_git_allow_repo_config): the effective value is the more restrictive of the two, so a user can tighten but not loosen; they protect the server's disk and the server's processes. Single-user and local runtimes have no ceiling.",
+  "revision": 5,
+  "description": "loom-server accounts (P1). All values are presets, not rules (owner rule). registration: open = anyone may create an account, invite = only with a code made by 'loom-server user invite', closed = accounts are created by the operator CLI only. Sessions are random tokens stored only as SHA-256. Argon2id parameters come from the named preset of the storage_security pack (crypto.params.argon2id_presets); stored hashes carry their own parameters, so changing the preset never invalidates existing passwords. Overlay: <accounts_root>/profiles/server_accounts.pack. throttle (R43, security reason: stops online password guessing, which Argon2id cost alone only slows): after free_attempts failed logins for one login (per_login) or from one client address (per_ip) further attempts are refused with 429 for base_delay_seconds * 2^(failures - free_attempts), capped at max_delay_seconds; failures are forgotten after reset_seconds without a new one. mode off disables it. The address is the TCP peer unless trust_forwarded_for is true (set it only behind your own reverse proxy). Isolation (R18, security review): confine_paths = every filesystem path a request supplies (catalog/archive/knowledge sources, a repo, a local storage target, a prompt folder) must lie inside the user's own data directory or one of path_roots, so one account cannot read another's data or the accounts database; false lifts it (single-operator installs). block_private_hosts = outbound requests of an account to loopback/private/link-local addresses are refused (stops using the server as a proxy into its own network) except to the hosts in allow_private_hosts (e.g. a local model server). csrf.check_origin = a state-changing request that carries an Origin (or Sec-Fetch-Site: cross-site) naming another site than the one it was sent to is refused, unless that origin is in csrf.allowed_origins. expose_server_logs = /api/logs shows the process-wide log, which mixes all users, so it is off for accounts. Hashing (R20): hashing.max_concurrent = how many Argon2id evaluations (login, register, password change) may run at the same time, because each takes its full memory (rfc9106_second = 64 MiB): -1 = number of CPUs (preset), 0 = unlimited, N = at most N. A request that finds every slot taken waits up to hashing.wait_seconds (preset 5) and is then answered 503 with Retry-After; 0 = refuse at once. login_max_length (R20): the longest login (counted in characters) that register and login accept; 0 = no limit. Longer names are refused with 400 before any hashing or throttle bookkeeping, so one request cannot grow the account tables or the throttle memory. Operator ceilings (R20 follow-up): zip.max_total_bytes / zip.max_ratio (0 = no ceiling) and git.allow_repo_config bound what an account may set in its own config.json (loom_zip_*, loom_git_allow_repo_config): the effective value is the more restrictive of the two, so a user can tighten but not loosen; they protect the server's disk and the server's processes. Single-user and local runtimes have no ceiling. Guests (R103 B1, presets): guests.enabled (false = no use without an account; the public address gets guests only after the abuse protection of package B2), guests.start (auto = the first visit starts a guest session and shows the full interface without any gate; explicit = only on a button), guests.first_answer_notice (one non-blocking notice after the first answer; ask_again per_device | per_session | never), guests.workdir (subdir under the accounts root holding one ordinary Loom data directory per guest; idle_ttl_seconds = the directory and the session disappear after that long without a request, 0 = never by itself; max_bytes = operator ceiling, 0 = none, enforced from B2; keep_after_session ask | never | always), guests.sweep_interval_seconds (how often expired guests are looked for), guests.keys_file (KEY=VALUE file of the operator's provider keys; read into memory and handed to a guest runtime through credential_overlay, never written to the guest directory; empty = none), guests.model_sources (order of model sources, open list), guests.secrets_routes (write_only_session = a guest never reads a key, pool keys are never listed).",
   "defaults": {
     "registration": "closed",
     "session_lifetime_seconds": 2592000,
@@ -54,6 +54,29 @@
     },
     "git": {
       "allow_repo_config": false
+    },
+    "guests": {
+      "enabled": false,
+      "start": "auto",
+      "first_answer_notice": {
+        "on": true,
+        "ask_again": "per_device"
+      },
+      "workdir": {
+        "subdir": "guests",
+        "idle_ttl_seconds": 86400,
+        "max_bytes": 268435456,
+        "keep_after_session": "ask"
+      },
+      "sweep_interval_seconds": 60,
+      "keys_file": "~/.config/chatadhd/keys.env",
+      "secrets_routes": "write_only_session",
+      "model_sources": [
+        "byok",
+        "pool",
+        "free",
+        "local"
+      ]
     }
   },
   "value_schema": {
@@ -397,6 +420,77 @@
           "allow_repo_config": {
             "type": "boolean",
             "description": "true lets accounts opt in (loom_git_allow_repo_config) to running git with a repository's own hooks and configuration; false forbids it."
+          }
+        }
+      },
+      "guests": {
+        "type": "object",
+        "additionalProperties": false,
+        "description": "Use without an account (R103). Every value is a preset.",
+        "x-setting": "/guests",
+        "x-consumer": "server accounts guests",
+        "properties": {
+          "enabled": {
+            "type": "boolean"
+          },
+          "start": {
+            "type": "string",
+            "minLength": 1,
+            "description": "auto | explicit (open value)."
+          },
+          "first_answer_notice": {
+            "type": "object",
+            "properties": {
+              "on": {
+                "type": "boolean"
+              },
+              "ask_again": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "workdir": {
+            "type": "object",
+            "properties": {
+              "subdir": {
+                "type": "string",
+                "minLength": 1
+              },
+              "idle_ttl_seconds": {
+                "type": "integer",
+                "minimum": 0,
+                "x-unit": "seconds"
+              },
+              "max_bytes": {
+                "type": "integer",
+                "minimum": 0,
+                "x-unit": "bytes"
+              },
+              "keep_after_session": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "sweep_interval_seconds": {
+            "type": "integer",
+            "minimum": 0,
+            "x-unit": "seconds"
+          },
+          "keys_file": {
+            "type": "string"
+          },
+          "secrets_routes": {
+            "type": "string",
+            "minLength": 1
+          },
+          "model_sources": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
           }
         }
       }

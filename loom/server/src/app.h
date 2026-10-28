@@ -91,6 +91,13 @@ class App {
   // POST /api/auth/{login,logout,register,password}, GET /api/auth/me.
   void route_auth();
   LoomContext* context_for_user(const std::string& user_id);
+  // R103 B1: a guest's runtime over its own working directory, with the same R18 isolation as an account and the
+  // operator's free-provider key handed over in memory only (credential_overlay).
+  LoomContext* context_for_guest(const std::string& guest_id);
+  // Removes guests idle longer than guests.workdir.idle_ttl_seconds (runtime closed, directory deleted); runs at
+  // most every guests.sweep_interval_seconds, on requests.
+  void sweep_guests_if_due();
+  nlohmann::json guest_source(const std::string& guest_id);
 
   // Route groups (implemented in app.cpp), split only for readability -
   // all register handlers on svr_.
@@ -119,6 +126,9 @@ class App {
   std::unique_ptr<loom::accounts::AccountStore> accounts_;
   std::mutex pool_mu_;
   std::unordered_map<std::string, LoomContext*> user_ctx_;  // lazily opened, kept for the process lifetime
+  std::unordered_map<std::string, LoomContext*> guest_ctx_;  // closed by the guest sweep
+  std::unordered_map<std::string, nlohmann::json> guest_source_;  // which free provider/model a guest runtime got, and why
+  std::atomic<std::int64_t> next_guest_sweep_{0};
   httplib::Server svr_;
   std::atomic<bool> running_{false};
 };

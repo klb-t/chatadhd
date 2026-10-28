@@ -17,6 +17,7 @@
 #include <nlohmann/json.hpp>
 
 #include "loom/action_table.h"
+#include "loom/runtime_profile.h"
 #include "sse_stream.h"
 #include "onboarding-ui-routes.h"
 #include "method-ui-routes.h"
@@ -332,23 +333,11 @@ namespace {
 thread_local LoomContext* t_request_ctx = nullptr;
 thread_local std::optional<loom::accounts::User> t_user;
 thread_local std::string t_session_token;
-}  // namespace
+thread_local std::optional<loom::accounts::Guest> t_guest;
 
-LoomContext* App::rctx() const { return accounts_ ? t_request_ctx : ctx_; }
-
-App::~App() {
-  if (ctx_) loom_shutdown(ctx_);
-  for (auto& [id, c] : user_ctx_) loom_shutdown(c);
-}
-
-LoomContext* App::context_for_user(const std::string& user_id) {
-  std::lock_guard lk(pool_mu_);
-  auto it = user_ctx_.find(user_id);
-  if (it != user_ctx_.end()) return it->second;
-  // Each account's runtime is confined (R18): request-supplied paths stay in the account's own data dir (plus
-  // the operator's path_roots) and outbound requests cannot reach the server's private network.
-  const auto& iso = accounts_->settings().isolation;
-  json options = {{"data_dir", accounts_->user_dir(user_id).string()}};
+// R18 options shared by account and guest runtimes.
+json isolated_options(const loom::accounts::Isolation& iso, const std::string& data_dir) {
+  json options = {{"data_dir", data_dir}};
   if (iso.confine_paths) {
     options["confine_paths"] = true;
     options["path_roots"] = iso.path_roots;
@@ -360,12 +349,160 @@ LoomContext* App::context_for_user(const std::string& user_id) {
     options["block_private_hosts"] = true;
     options["allow_hosts"] = iso.allow_private_hosts;
   }
+  return options;
+}
+
+// The operator's keys file (KEY=VALUE lines, optional "export ", quotes, # comments). Only the names asked for are
+// kept; values never reach a log or an answer.
+std::map<std::string, std::string> read_keys_file(std::string path, const std::vector<std::string>& wanted) {
+  std::map<std::string, std::string> out;
+  if (path.empty() || wanted.empty()) return out;
+  if (path.rfind("~/", 0) == 0) {
+    const char* home = std::getenv("HOME");
+    if (!home) return out;
+    path = std::string(home) + path.substr(1);
+  }
+  std::ifstream in(path);
+  std::string line;
+  while (std::getline(in, line)) {
+    while (!line.empty() && (line.back() == '\r' || line.back() == ' ')) line.pop_back();
+    std::size_t b = line.find_first_not_of(" \t");
+    if (b == std::string::npos || line[b] == '#') continue;
+    line = line.substr(b);
+    if (line.rfind("export ", 0) == 0) line = line.substr(7);
+    const auto eq = line.find('=');
+    if (eq == std::string::npos) continue;
+    std::string k = line.substr(0, eq), v = line.substr(eq + 1);
+    if (v.size() >= 2 && (v.front() == '"' || v.front() == '\'') && v.back() == v.front()) v = v.substr(1, v.size() - 2);
+    if (!v.empty() && std::find(wanted.begin(), wanted.end(), k) != wanted.end()) out[k] = v;
+  }
+  return out;
+}
+
+// R103 §4.5: the best free model a guest without his own key gets, from the free_model_choice data. An entry counts
+// when its provider is enabled, its condition holds (key_present = its auth_env is in the keys file, none = no key)
+// and its data terms satisfy `require`. Returns {provider, model, base_url, data_terms, quality, why} or
+// {provider: null, why}; `secret`/`secret_name` (not part of the public answer) carry the overlay.
+json choose_free_model(const json& fp, const std::string& keys_file, std::map<std::string, std::string>& overlay) {
+  const json providers = fp.value("providers", json::array());
+  const json choice = fp.value("free_model_choice", json::object());
+  std::vector<std::string> wanted;
+  for (const auto& p : providers)
+    if (p.is_object() && !p.value("auth_env", std::string()).empty()) wanted.push_back(p.value("auth_env", std::string()));
+  const auto keys = read_keys_file(keys_file, wanted);
+  const json require = choice.value("require", json::object());
+  json table = choice.value("table", json::array());
+  if (!table.is_array()) table = json::array();
+  std::stable_sort(table.begin(), table.end(), [](const json& a, const json& b) {
+    return a.value("quality", 0.0) > b.value("quality", 0.0);
+  });
+  json skipped = json::array();
+  for (const auto& row : table) {
+    const std::string pid = row.value("provider", std::string());
+    const json* prov = nullptr;
+    for (const auto& p : providers)
+      if (p.is_object() && p.value("id", std::string()) == pid) prov = &p;
+    if (!prov) { skipped.push_back({{"provider", pid}, {"why", "no_provider_entry"}}); continue; }
+    if (!prov->value("enabled", false)) { skipped.push_back({{"provider", pid}, {"why", "disabled"}}); continue; }
+    const std::string when = prov->value("active_when", std::string("key_present"));
+    const std::string env = prov->value("auth_env", std::string());
+    std::string key;
+    if (when == "key_present") {
+      auto it = keys.find(env);
+      if (it == keys.end()) { skipped.push_back({{"provider", pid}, {"why", "no_key"}, {"key_name", env}}); continue; }
+      key = it->second;
+    } else if (when != "none") { skipped.push_back({{"provider", pid}, {"why", when}}); continue; }
+    const json terms = prov->value("data_terms", json::object());
+    bool ok = true;
+    for (auto it = require.begin(); it != require.end(); ++it)
+      if (!terms.contains(it.key()) || terms[it.key()] != it.value()) ok = false;
+    if (!ok) { skipped.push_back({{"provider", pid}, {"why", "data_terms_require"}}); continue; }
+    if (!key.empty()) overlay[prov->value("auth_secret", std::string("api_key"))] = key;
+    return {{"provider", pid}, {"display_name", prov->value("display_name", pid)}, {"model", row.value("model", std::string())},
+            {"base_url", prov->value("base_url", std::string())}, {"data_terms", terms}, {"quality", row.value("quality", json(nullptr))},
+            {"observed_at", row.value("observed_at", json(nullptr))}, {"source", row.value("source", json(nullptr))},
+            {"why", "best_in_table"}, {"skipped", skipped}};
+  }
+  return {{"provider", nullptr}, {"why", "no_free_provider_active"}, {"skipped", skipped}};
+}
+}  // namespace
+
+LoomContext* App::rctx() const { return accounts_ ? t_request_ctx : ctx_; }
+
+App::~App() {
+  if (ctx_) loom_shutdown(ctx_);
+  for (auto& [id, c] : user_ctx_) loom_shutdown(c);
+  for (auto& [id, c] : guest_ctx_) loom_shutdown(c);
+}
+
+LoomContext* App::context_for_user(const std::string& user_id) {
+  std::lock_guard lk(pool_mu_);
+  auto it = user_ctx_.find(user_id);
+  if (it != user_ctx_.end()) return it->second;
+  // Each account's runtime is confined (R18): request-supplied paths stay in the account's own data dir (plus
+  // the operator's path_roots) and outbound requests cannot reach the server's private network.
+  json options = isolated_options(accounts_->settings().isolation, accounts_->user_dir(user_id).string());
   const char* err = nullptr;
   LoomContext* c = loom_init_ex(options.dump().c_str(), &err);
   if (!c) std::cerr << "loom-server: cannot open the data directory of " << user_id << ": " << own_and_free(err) << std::endl;
   else if (err) loom_free_string(err);
   if (c) user_ctx_[user_id] = c;
   return c;
+}
+
+LoomContext* App::context_for_guest(const std::string& guest_id) {
+  std::lock_guard lk(pool_mu_);
+  auto it = guest_ctx_.find(guest_id);
+  if (it != guest_ctx_.end()) return it->second;
+  json options = isolated_options(accounts_->settings().isolation, accounts_->guest_dir(guest_id).string());
+  std::map<std::string, std::string> overlay;
+  json source = {{"provider", nullptr}, {"why", "free_providers_unreadable"}};
+  if (auto fp = loom::RuntimeProfile::load("free_providers", accounts_->root()); fp)
+    source = choose_free_model(fp->values(), accounts_->settings().guests.keys_file, overlay);
+  if (!overlay.empty()) options["credential_overlay"] = overlay;
+  const char* err = nullptr;
+  LoomContext* c = loom_init_ex(options.dump().c_str(), &err);
+  if (!c) std::cerr << "loom-server: cannot open the working directory of guest " << guest_id << ": " << own_and_free(err) << std::endl;
+  else if (err) loom_free_string(err);
+  if (!c) return nullptr;
+  // The guest's own settings win after the first visit: the free source is written once, when the directory is new.
+  const json cfg = parse_or_empty(own_and_free(loom_get_config(c)));
+  if (!source["provider"].is_null() && !(cfg.is_object() && cfg.contains("loom_guest_source"))) {
+    json terms = source["data_terms"];
+    terms["provider"] = source["provider"];
+    terms["display_name"] = source["display_name"];
+    json patch = {{"base_url", source["base_url"]}, {"default_model", source["model"]}, {"loom_provider_terms", terms},
+                  {"loom_guest_source", source["provider"]}};
+    (void)loom_set_config_json(c, patch.dump().c_str());
+  }
+  guest_ctx_[guest_id] = c;
+  guest_source_[guest_id] = source;
+  return c;
+}
+
+json App::guest_source(const std::string& guest_id) {
+  std::lock_guard lk(pool_mu_);
+  auto it = guest_source_.find(guest_id);
+  return it == guest_source_.end() ? json(nullptr) : it->second;
+}
+
+void App::sweep_guests_if_due() {
+  const auto& g = accounts_->settings().guests;
+  const std::int64_t now = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+  std::int64_t due = next_guest_sweep_.load();
+  if (now < due || !next_guest_sweep_.compare_exchange_strong(due, now + std::max<std::int64_t>(g.sweep_interval_seconds, 0))) return;
+  auto gone = accounts_->sweep_guests();
+  if (!gone) return;
+  for (const auto& id : *gone) {
+    LoomContext* c = nullptr;
+    {
+      std::lock_guard lk(pool_mu_);
+      if (auto it = guest_ctx_.find(id); it != guest_ctx_.end()) { c = it->second; guest_ctx_.erase(it); }
+      guest_source_.erase(id);
+    }
+    if (c) loom_shutdown(c);
+    (void)accounts_->remove_guest_dir(id);
+  }
 }
 
 bool App::init() {
@@ -487,6 +624,7 @@ void App::register_middleware() {
   svr_.set_pre_routing_handler([this, body_refusal, cross_site](const httplib::Request& req, httplib::Response& res) {
     t_request_ctx = nullptr;
     t_user.reset();
+    t_guest.reset();
     t_session_token.clear();
     // Request framing and size are judged before any body byte is read, for every path (a rejected request
     // closes the connection so unread body bytes cannot be taken for the next request).
@@ -509,9 +647,26 @@ void App::register_middleware() {
           t_request_ctx = context_for_user((*u)->id);
         }
       }
+      const bool guests_on = accounts_->settings().guests.enabled;
+      if (guests_on) sweep_guests_if_due();
+      if (guests_on && !t_user && !token.empty()) {  // R103 B1: a guest session (same cookie, own table and directory)
+        auto g = accounts_->find_guest_session(token);
+        if (g && *g) {
+          t_guest = **g;
+          t_session_token = token;
+          t_request_ctx = context_for_guest((*g)->id);
+        }
+      }
       const bool is_public =
           (req.method == "GET" && (req.path == "/api/auth/me" || req.path == "/api/healthz")) ||
-          (req.method == "POST" && (req.path == "/api/auth/login" || req.path == "/api/auth/register"));
+          (req.method == "POST" && (req.path == "/api/auth/login" || req.path == "/api/auth/register" ||
+                                    (guests_on && req.path == "/api/auth/guest")));
+      // R103 §3.2: what concerns the server or other people is not a guest's (routes that exist or will).
+      if (t_guest && (req.path.rfind("/api/admin/", 0) == 0 || req.path.rfind("/api/accounts/", 0) == 0)) {
+        res.set_header("Connection", "close");
+        send_error(res, "auth", "not available without an account", 403);
+        return httplib::Server::HandlerResponse::Handled;
+      }
       // CSRF: a cookie is attached by the browser to whatever site asks; a request that names a foreign
       // origin never acts with it. Bearer-token requests carry no ambient credential and are exempt.
       if (accounts_->settings().isolation.csrf_check_origin && cross_site(req)) {
@@ -1748,13 +1903,26 @@ json user_json(const loom::accounts::User& u) { return {{"id", u.id}, {"login", 
 }  // namespace
 
 void App::route_auth() {
+  auto guest_json = [this](const loom::accounts::Guest& g) {
+    const std::int64_t ttl = accounts_->settings().guests.idle_ttl_seconds;
+    return json{{"id", g.id}, {"started", g.started}, {"last_seen", g.last_seen},
+                {"expires", ttl > 0 ? json(g.last_seen + ttl) : json(nullptr)}, {"idle_ttl_seconds", ttl},
+                {"model_source", guest_source(g.id)}};
+  };
   // Single-user mode: the endpoint exists so the web UI can tell the two modes apart.
-  svr_.Get("/api/auth/me", [this](const httplib::Request&, httplib::Response& res) {
+  svr_.Get("/api/auth/me", [this, guest_json](const httplib::Request&, httplib::Response& res) {
     json out = {{"accounts", accounts_ != nullptr}};
     if (accounts_) {
       out["authenticated"] = t_user.has_value();
       out["registration"] = accounts_->settings().registration;
       if (t_user) out["user"] = user_json(*t_user);
+      const auto& g = accounts_->settings().guests;
+      if (g.enabled) {
+        out["guests"] = {{"enabled", true}, {"start", g.start}, {"idle_ttl_seconds", g.idle_ttl_seconds},
+                         {"first_answer_notice", g.raw.value("first_answer_notice", json::object())},
+                         {"model_sources", g.raw.value("model_sources", json::array())}};
+        if (t_guest) out["guest"] = guest_json(*t_guest);
+      }
     }
     res.set_content(out.dump(), "application/json");
   });
@@ -1773,6 +1941,20 @@ void App::route_auth() {
       res.set_content(json{{"user", user_json(u)}, {"token", s->token}, {"expires", s->expires}}.dump(),
                       "application/json");
     };
+    // R103 B1: a session without an account. Behind guests.enabled (preset false); an existing guest gets its own back.
+    svr_.Post("/api/auth/guest", [this, guest_json](const httplib::Request& req, httplib::Response& res) {
+      if (!accounts_ || !accounts_->settings().guests.enabled) { send_error(res, "not_found", "guests are not enabled", 404); return; }
+      if (t_user) { send_error(res, "invalid_argument", "already signed in", 409); return; }
+      if (t_guest) { res.set_content(json{{"guest", guest_json(*t_guest)}}.dump(), "application/json"); return; }
+      auto g = accounts_->create_guest_session();
+      if (!g) { send_error(res, "internal", "cannot create a guest session", 500); return; }
+      const auto& cs = accounts_->settings().cookie;
+      res.set_header("Set-Cookie", cookie_header(cs, g->token, accounts_->settings().session_lifetime_seconds, wants_secure(cs, req)));
+      (void)context_for_guest(g->guest_id);
+      loom::accounts::Guest made{g->guest_id, g->started, g->started};
+      res.status = 201;
+      res.set_content(json{{"guest", guest_json(made)}, {"token", g->token}}.dump(), "application/json");
+    });
     svr_.Post("/api/auth/login", [this, start_session](const httplib::Request& req, httplib::Response& res) {
       if (!accounts_) { send_error(res, "not_found", "accounts are not enabled", 404); return; }
       json body;
@@ -1835,7 +2017,8 @@ void App::route_auth() {
     });
     svr_.Post("/api/auth/logout", [this](const httplib::Request& req, httplib::Response& res) {
       if (!accounts_) { send_error(res, "not_found", "accounts are not enabled", 404); return; }
-      (void)accounts_->revoke_session(t_session_token);
+      if (t_guest) (void)accounts_->revoke_guest_session(t_session_token);  // the sweep removes its directory
+      else (void)accounts_->revoke_session(t_session_token);
       const auto& cs = accounts_->settings().cookie;
       res.set_header("Set-Cookie", cookie_header(cs, "", 0, wants_secure(cs, req)));
       res.set_content(json{{"ok", true}}.dump(), "application/json");

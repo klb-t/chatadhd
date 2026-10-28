@@ -49,3 +49,36 @@ test('texts come from the accounts catalog; a missing catalog falls back to ids'
   assert.equal(a.registrationOffer('closed'), 'none');
   assert.equal(a.registrationOffer('invite'), 'invite');
 });
+
+test('R103/R105 guests: auto start skips the gate; a guest session is the full app; texts pl+en from the pack', () => {
+  const guests = { enabled: true, start: 'auto', idle_ttl_seconds: 86400, first_answer_notice: { on: true, ask_again: 'per_device' } };
+  const fresh = { accounts: true, authenticated: false, registration: 'closed', guests };
+  assert.equal(a.startsGuestAutomatically(fresh), true);
+  assert.equal(a.startsGuestAutomatically({ ...fresh, guests: { ...guests, start: 'explicit' } }), false);
+  assert.equal(a.startsGuestAutomatically({ ...fresh, guests: { enabled: false } }), false);
+  assert.equal(a.startsGuestAutomatically({ accounts: false }), false);
+  const st = a.authStateFromMe({ ...fresh, guest: { id: 'g_00112233aabbccdd', idle_ttl_seconds: 60, model_source: { provider: 'groq', model: 'm' } } });
+  assert.equal(st.phase, 'guest');
+  assert.equal(st.guest.idleTtlSeconds, 60);
+  assert.equal(st.guests.notice.askAgain, 'per_device');
+  assert.equal(a.showsApp(st), true);
+  assert.equal(a.authReduce(st, { type: 'unauthorized' }).phase, 'signed_out');
+  // no guests offer: an unauthenticated answer stays signed_out even with a guest object
+  assert.equal(a.authStateFromMe({ accounts: true, authenticated: false, registration: 'open', guest: { id: 'g_1' } }).phase, 'signed_out');
+  const pl = pack.entries.find(row => row.key === 'presentation.accounts').value.locales.pl;
+  for (const id of ['guest.notice_title', 'guest.notice_body_browser', 'guest.notice_body_session', 'guest.persisted', 'guest.not_persisted', 'guest.period_unknown', 'guest.download', 'guest.load', 'guest.model_line', 'guest.start'])
+    assert.ok(typeof en[id] === 'string' && typeof pl[id] === 'string', id);
+});
+
+test('R103 §3.5: the notice period follows what the browser store reported', async () => {
+  const g = await loader.load('src/context/guest-store.ts');
+  assert.deepEqual(g.noticePeriod({ available: false, persisted: null, freeBytes: null }), { body: 'guest.notice_body_session', period: null });
+  assert.equal(g.noticePeriod({ available: true, persisted: true, freeBytes: 1 }).period, 'guest.persisted');
+  assert.equal(g.noticePeriod({ available: true, persisted: false, freeBytes: 1 }).period, 'guest.not_persisted');
+  assert.equal(g.noticePeriod({ available: true, persisted: null, freeBytes: null }).period, 'guest.period_unknown');
+  assert.equal(g.humanSeconds(86400), '1 d');
+  assert.equal(g.humanSeconds(7200), '2 h');
+  assert.equal(g.humanBytes(1536), '1.5 KB');
+  assert.equal(g.isBundle({ schema: 'loom.guest_bundle/1', conversations: [] }), true);
+  assert.equal(g.isBundle({ schema: 'x', conversations: [] }), false);
+});

@@ -49,6 +49,19 @@ struct Isolation {
   bool git_allow_repo_config = false;
 };
 
+// Guest sessions (R103 B1): use without an account. Every value is a preset of the server_accounts profile
+// (`guests`), nothing here is a rule. A guest gets a session (same cookie as an account) and its own working data
+// directory <accounts_root>/<workdir_subdir>/<guest id>/, removed after idle_ttl_seconds without a request.
+struct GuestSettings {
+  bool enabled = false;                       // preset false: the public address gets guests only after B2 (abuse protection)
+  std::string start = "auto";                 // auto = the web starts a guest session on the first visit; explicit = a button
+  std::string workdir_subdir = "guests";
+  std::int64_t idle_ttl_seconds = 86400;      // 0 = never by itself
+  std::int64_t sweep_interval_seconds = 60;   // how often expired guests are looked for (on requests)
+  std::string keys_file;                      // provider keys of the operator (KEY=VALUE), read into memory only
+  Json raw = Json::object();                  // the whole `guests` object (notice, workdir, model_sources ...) for the web
+};
+
 struct Settings {
   std::string registration;  // open | invite | closed
   std::int64_t session_lifetime_seconds = 0;
@@ -64,6 +77,7 @@ struct Settings {
   // R20: bound on simultaneous Argon2id evaluations (each holds its full memory). -1 = CPU count, 0 = unlimited.
   std::int64_t hash_max_concurrent = -1, hash_wait_seconds = 5;
   std::int64_t login_max_length = 128;  // R20: characters; 0 = no limit
+  GuestSettings guests;
 };
 
 // Effective server_accounts profile (+ <root>/profiles overlay) and the named Argon2id preset.
@@ -78,6 +92,16 @@ struct Session {
   std::string token;  // raw token, returned ONCE by create_session
   std::string user_id;
   std::int64_t expires = 0;  // unix seconds
+};
+
+struct GuestSession {
+  std::string token;  // raw token, returned ONCE by create_guest_session
+  std::string guest_id;
+  std::int64_t started = 0, expires = 0;  // unix seconds; expires = the idle deadline at creation
+};
+struct Guest {
+  std::string id;
+  std::int64_t started = 0, last_seen = 0;
 };
 
 class AccountStore {
@@ -113,6 +137,21 @@ class AccountStore {
   std::int64_t throttle_wait(const std::string& login, const std::string& client);
   void record_failure(const std::string& login, const std::string& client);
   void record_success(const std::string& login);
+
+  // Guests (R103 B1). A guest session lives in its own table (token stored only as SHA-256, like account
+  // sessions); find_guest_session refreshes last_seen and drops a session idle longer than guests.idle_ttl_seconds
+  // or older than session_lifetime_seconds.
+  Result<GuestSession> create_guest_session();
+  Result<std::optional<Guest>> find_guest_session(const std::string& token);
+  Status revoke_guest_session(const std::string& token);
+  std::filesystem::path guest_dir(const std::string& guest_id) const;
+  std::filesystem::path guests_root() const;
+  // Deletes the expired guest sessions and returns the ids whose working directory must go: those just expired and
+  // every directory under guests_root() without a live session (left by a restart). The caller closes their runtimes
+  // first and then removes the directories (remove_guest_dir).
+  Result<std::vector<std::string>> sweep_guests();
+  Status remove_guest_dir(const std::string& guest_id);
+  static bool valid_guest_id(const std::string& id);
 
   // registration=invite: a code is shown once and stored only as SHA-256; consume = single use.
   Result<std::string> create_invite();

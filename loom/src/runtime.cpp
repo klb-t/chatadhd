@@ -262,6 +262,11 @@ Result<RuntimeOptions> RuntimeOptions::from_json(const Json& j) {
         if (!r.is_string()) return Error(Errc::InvalidArgument, "path_roots must be an array of strings");
         o.path_roots.push_back(r.get<std::string>());
       }
+    } else if (k == "credential_overlay" && v.is_object()) {
+      for (auto c = v.begin(); c != v.end(); ++c) {
+        if (!c.value().is_string()) return Error(Errc::InvalidArgument, "credential_overlay values must be strings");
+        o.credential_overlay[c.key()] = c.value().get<std::string>();
+      }
     } else if (k == "log_level" && v.is_string()) {
       std::string s = v.get<std::string>();
       if (s == "debug") o.log_level = log::Level::Debug;
@@ -355,6 +360,7 @@ Result<std::unique_ptr<Runtime>> Runtime::open(const RuntimeOptions& opts) {
 
   impl->config = std::make_unique<Config>(p.config);
   impl->secrets = std::make_unique<Secrets>(p.secrets);
+  if (!opts.credential_overlay.empty()) impl->secrets->set_overlay(opts.credential_overlay);
 
   DbOptions dbo;
   dbo.enable_fts = opts.enable_fts;
