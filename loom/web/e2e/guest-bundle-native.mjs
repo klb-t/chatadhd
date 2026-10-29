@@ -164,7 +164,9 @@ try {
     const p2 = await ctx.newPage();
     await p2.goto(base);
     await p2.getByTestId("guest-restored").waitFor({ timeout: 30000 });
-    assert.ok((await p2.getByTestId("guest-restored").innerText()).includes(say("guest.restored", { count: "1" })));
+    const restoredText = await p2.getByTestId("guest-restored").innerText();
+    // the count is every conversation that came back: the live one and the one in the trash
+    assert.ok(restoredText.includes(say("guest.restored", { count: "2" })), restoredText);
     const me = (await api(p2, "GET", "/api/auth/me")).json;
     assert.ok(me.guest?.id && me.guest.id !== firstGuest, "a new guest");
     await new Promise((r) => setTimeout(r, 3000));  // a re-analysis, if any, would have started by now
@@ -191,6 +193,7 @@ try {
     assert.ok((await p2.getByTestId("guest-wipe-confirm").innerText()).includes(say("guest.wipe_confirm").slice(0, 30)));
     await p2.getByTestId("guest-wipe-no").click();
     assert.ok(await storedBundle(p2));
+    await p2.evaluate(() => { localStorage.setItem("loom.e2e.marker", "1"); sessionStorage.setItem("loom.e2e.marker", "1"); });
     await p2.getByTestId("guest-wipe").click();
     const gone = p2.waitForEvent("load");
     await p2.getByTestId("guest-wipe-yes").click();
@@ -199,7 +202,8 @@ try {
     const me3 = (await api(p2, "GET", "/api/auth/me")).json;
     assert.ok(me3.guest?.id && me3.guest.id !== me.guest.id, "the session ended; a fresh guest");
     assert.equal((await api(p2, "GET", "/api/conversations")).json.length, 0);
-    assert.equal(await p2.evaluate(() => localStorage.length + sessionStorage.length), 0, "the app's local/session storage is empty");
+    // what was stored before is gone (a fresh page writes its own first values again, so the check is on markers)
+    assert.equal(await p2.evaluate(() => localStorage.getItem("loom.e2e.marker") ?? sessionStorage.getItem("loom.e2e.marker")), null, "local/session storage cleared");
     await p2.close();
   });
 
