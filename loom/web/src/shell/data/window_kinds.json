@@ -486,15 +486,12 @@
    "label": {
     "pl": "Kosz"
    },
-   "component": null,
+   "component": "TrashWindow",
    "params": [
     "filter"
    ],
-   "status": "planned",
-   "reason": {
-    "pl": "Kosz (PULPIT_R101 §5): odwracalny krok przed dzisiejszym nieodwracalnym kasowaniem — akcje conversation.trash/untrash, memory.trash/untrash i okno kosza buduje pakiet D4; dziś węzeł trash: istnieje tylko jako adres."
-   },
-   "note": "R101 D1: rodzaj zarejestrowany jako planned; adres trash: jest prefiksem w graph_views.pack → node_addresses.",
+   "status": "present",
+   "note": "R101 D4: the trash window - the kernel's trash.list (conversations, memory entries, pins) plus the page's own layouts (trashed_at); Przywróć, Usuń na zawsze and Opróżnij kosz (both with consent: confirm:trash.empty / the page's question for a layout).",
    "state_keys": [
     "params"
    ]

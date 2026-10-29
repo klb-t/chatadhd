@@ -6,7 +6,7 @@ import layoutsFile from "../data/layouts.json";
 import { check, createState, type JournalEntry, type WLayout, type WState } from "./model";
 
 export const NAMED_SCHEMA = "loom.window_layout/2";
-export interface NamedLayout { schema: string; id: string; label: string; layout: WLayout; saved: string; device_class?: string }
+export interface NamedLayout { schema: string; id: string; label: string; layout: WLayout; saved: string; device_class?: string; /** R101 D4: in the trash since (layout.trash) */ trashed_at?: string }
 /** A device class: the first rule whose width range holds the screen wins (preset `device_classes` in layouts.json; an open list). */
 export interface DeviceClassRule { id: string; max_width?: number; min_width?: number }
 interface NamedData { device_classes?: DeviceClassRule[]; journal_limit?: number; layout_reset?: Record<string, string>; journal_writers?: number; journal_inherit?: string[]; active_levels?: string[] }
@@ -49,9 +49,20 @@ export function readNamed(value: unknown): NamedLayout[] {
     const id = typeof e.id === "string" && e.id ? e.id : key ?? slug(e.label);
     if (out.some((x) => x.id === id)) continue;
     out.push({ schema: NAMED_SCHEMA, id, label: e.label, layout: e.layout, saved: typeof e.saved === "string" ? e.saved : "",
-      ...(typeof e.device_class === "string" ? { device_class: e.device_class } : {}) });
+      ...(typeof e.device_class === "string" ? { device_class: e.device_class } : {}), ...(typeof e.trashed_at === "string" && e.trashed_at ? { trashed_at: e.trashed_at } : {}) });
   }
   return out;
+}
+
+/** R101 D4: the layouts not in the trash (what menus, the desktop and apply see). */
+export const liveNamed = (list: NamedLayout[]): NamedLayout[] => list.filter((x) => !x.trashed_at);
+/** layout.trash: the document gets trashed_at; layout.untrash erases it; emptying the trash is deleteNamed (layout.delete). */
+export function trashNamed(list: NamedLayout[], id: string, now: string | null): NamedLayout[] {
+  return list.map((x) => {
+    if (x.id !== id) return x;
+    // untrash writes "" (read as not trashed): the stored value is merged by patches, so an absent key would keep the old date
+    return { ...x, trashed_at: now ?? "" };
+  });
 }
 
 /** A name of a sentence or a menu (id, label in any case, with or without quotes) to a saved layout. */

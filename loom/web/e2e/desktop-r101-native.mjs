@@ -10,6 +10,8 @@
 // „pulpit jako ikony” (the graph goes), „pulpit jako start” (a tile for every kind of window_kinds.json, the planned ones greyed),
 // „pulpit graf żywy” (the graph behind follows the focus of the navigator window), „pusty pulpit”, pulpit_karta, pulpit_polka, and
 // desktop_minimized=icons (a minimized chat is an icon at the bottom; a tap restores it).
+// R101 D4 (§5, §14 row D4): „Do kosza” on a conversation icon → off the list, badge 1 on the trash → the Trash window lists it →
+// „przywróć z kosza …” by a sentence → back on the list; „Opróżnij kosz” asks first.
 // With M1_SHOTS_DIR=<dir> the screenshots go there.
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
@@ -83,7 +85,8 @@ try {
       const labels = await p.getByTestId("desktop-icon").allInnerTexts();
       assert.deepEqual(labels.map(t => t.split("\n").pop().trim()), ["Ty", "Moje projekty", "Rozmowy", "Nowy czat", "Mój graf", "Ustawienia", "Kosz"]);
       const trash = p.locator('[data-testid="desktop-icon"][data-address="trash:"]');
-      assert.equal(await trash.getAttribute("data-status"), "planned"); assert.ok(await trash.isDisabled(), "the trash is greyed until D4, with its reason");
+      // R101 D4: the trash is a window now - no longer greyed
+      assert.equal(await trash.getAttribute("data-status"), "available"); assert.ok(!(await trash.isDisabled()), "the trash opens (D4)");
       const graph = p.getByTestId("desktop-graph");
       await p.waitForFunction(() => Number(document.querySelector('[data-testid="desktop-graph"]')?.getAttribute("data-nodes")) > 3, null, { timeout: 15000 });
       assert.ok(Number(await graph.getAttribute("data-edges")) > 0, "real edges behind");
@@ -331,6 +334,70 @@ try {
     });
     await p.context().close();
     await setKey("desktop_minimized", null);
+
+    // ---------- R101 D4: the trash ----------
+    const run = (action, args) => api("POST", "/api/actions/run", { action, element: { class: "application" }, args });
+    const listed = async (q = "") => (await api("GET", "/api/conversations?limit=500" + q)).map(c => c.id);
+    const title = `Kosz próba ${device}`;
+    const conv = await api("POST", "/api/conversations", { title });
+    await run("window.pin", { target: `conv:${conv.id}` });
+    p = await fresh();
+    const trashIcon = p => p.locator('[data-testid="desktop-icon"][data-address="trash:"]');
+    await step(`${device}: D4 - „Do kosza” on a conversation icon → off the list, the trash icon shows 1`, async () => {
+      await closeChat(p); await seen(p);
+      await p.waitForFunction(() => document.querySelector('[data-testid="desktop-icons"]')?.getAttribute("data-state") === "ok", null, { timeout: 15000 });
+      const icon = p.locator(`[data-testid="desktop-icon"][data-address="conv:${conv.id}"]`);
+      await icon.waitFor();
+      assert.equal(await p.getByTestId("desktop-trash-badge").count(), 0, "an empty trash has no badge");
+      await icon.click({ button: "right" });
+      await p.getByTestId("desktop-icon-trash").click();
+      await p.getByTestId("desktop-trash-badge").waitFor();
+      assert.equal((await p.getByTestId("desktop-trash-badge").innerText()).trim(), "1");
+      assert.equal(await trashIcon(p).getAttribute("data-badge"), "1");
+      assert.ok(!(await listed()).includes(conv.id), "the list hides a trashed conversation");
+      assert.ok((await listed("&trashed=only")).includes(conv.id), "it is in the trash");
+      await stableShot(p, path.join(SHOTS, `${device}-desktop-trash-badge.png`));
+    });
+    await step(`${device}: D4 - tap the trash → the Trash window lists it by kind with the date and where from`, async () => {
+      await trashIcon(p).click();
+      await covered(p);
+      await p.getByTestId("panel-trash").waitFor();
+      const item = p.locator(`[data-testid="trash-item"][data-id="${conv.id}"]`);
+      await item.waitFor();
+      assert.equal(await item.getAttribute("data-kind"), "conversation");
+      assert.ok((await item.innerText()).includes(title));
+      assert.ok((await item.innerText()).includes("desktop"), "where from");
+      await stableShot(p, path.join(SHOTS, `${device}-trash-window.png`));
+      await p.getByTestId("close-panel").click();
+      await seen(p);
+    });
+    await step(`${device}: D4 - „przywróć z kosza …” by a sentence → back on the list`, async () => {
+      await p.getByTestId("desktop-sentence-input").fill(`przywróć z kosza ${title}`);
+      await p.getByTestId("desktop-sentence-send").click();
+      await covered(p);
+      let back = false; for (const end = Date.now() + 15000; Date.now() < end && !back; await new Promise(r => setTimeout(r, 200))) back = (await listed()).includes(conv.id);
+      assert.ok(back, "the sentence brought the conversation back");
+      assert.ok(!(await listed("&trashed=only")).includes(conv.id));
+    });
+    await step(`${device}: D4 - „Opróżnij kosz” asks first; „Nie” keeps everything; „Przywróć” brings it back`, async () => {
+      await run("conversation.trash", { query: conv.id, from: "list" });
+      await closeChat(p); await seen(p);
+      await p.getByTestId("desktop-trash-badge").waitFor();
+      await trashIcon(p).click();
+      await p.getByTestId("panel-trash").waitFor();
+      await p.locator(`[data-testid="trash-item"][data-id="${conv.id}"]`).waitFor();
+      await p.getByTestId("trash-empty").click();
+      await p.getByTestId("trash-consent").waitFor();
+      assert.ok((await p.getByTestId("trash-consent").innerText()).includes("nie da się cofnąć"));
+      await p.getByTestId("trash-consent-no").click();
+      await p.getByTestId("trash-consent").waitFor({ state: "detached" });
+      assert.ok((await listed("&trashed=only")).includes(conv.id), "a no deletes nothing");
+      await p.locator(`[data-testid="trash-item"][data-id="${conv.id}"]`).getByTestId("trash-restore").click();
+      await p.locator(`[data-testid="trash-item"][data-id="${conv.id}"]`).waitFor({ state: "detached" });
+      assert.ok((await listed()).includes(conv.id));
+      await p.getByTestId("trash-empty-now").waitFor();
+    });
+    await p.context().close();
   }
   await step("no page errors", async () => assert.deepEqual(errors, []));
 } catch (e) { failed = true; console.error(e); }

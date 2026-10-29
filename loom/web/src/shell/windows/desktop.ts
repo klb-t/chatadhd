@@ -10,7 +10,7 @@ import { focusWindow, openWindow, type WindowData, WINDOW_DATA } from "./ops";
 import { oneEntry } from "./steps";
 import { KINDS, type Kind } from "./registry";
 
-type Words = Record<string, { pl?: string; en?: string }>;
+export type Words = Record<string, { pl?: string; en?: string }>;
 export interface DesktopData {
   sections: string[];
   sections_known: Record<string, { opens_window?: boolean; note?: string }>;

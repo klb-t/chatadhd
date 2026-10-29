@@ -299,6 +299,14 @@ textarea { resize: vertical; }
 /* R101 D3 (PULPIT §8): desktop_minimized=icons - the minimized windows as a strip of small icons at the bottom of the desktop (a taskbar) */
 .desktop-minimized-strip { position: fixed; left: 0; right: 0; bottom: 0; display: flex; flex-wrap: wrap; gap: 4px; padding: 6px 4px; border-top: 1px solid var(--border); background: color-mix(in srgb, var(--card) 80%, transparent); z-index: 2; }
 .desktop-icon-small { flex-direction: row; padding: 4px 8px; }
+.desktop-icon { position: relative; }
+.desktop-icon-badge { position: absolute; top: 2px; right: 6px; min-width: 20px; height: 20px; padding: 0 5px; border-radius: 10px; background: var(--danger, #c0392b); color: #fff; font-size: 12px; line-height: 20px; text-align: center; }
+.desktop-icon-menu { position: fixed; left: 50%; top: 40%; transform: translate(-50%, -50%); z-index: 30; display: flex; flex-direction: column; gap: 6px; padding: 10px; background: var(--card); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 6px 24px rgba(0,0,0,.25); }
+.trash-window { padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+.trash-window ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 6px; }
+.trash-window li { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.trash-item-title { font-weight: 600; }
+.trash-consent { padding: 10px; border: 1px solid var(--border); border-radius: 10px; background: var(--card); display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .desktop-icon-small .desktop-icon-glyph { width: 32px; height: 32px; font-size: 16px; border-radius: 10px; }
 .desktop-card h3 { margin: 0 0 6px; }
 .desktop-more { align-self: flex-start; min-height: 44px; padding: 8px 12px; border-radius: 10px; border: 1px solid var(--border); background: var(--card); color: inherit; }

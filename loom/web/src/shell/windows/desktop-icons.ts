@@ -163,6 +163,7 @@ export function pinsFrom(desktopNode: string, nodes: { id: string; kind?: string
   for (const n of nodes) {
     if (n.id === desktopNode) continue;
     const m = meta.get(n.id) ?? {};
+    if (m.trash) continue;   // R101 D4: a pin in the trash (link metadata.trash) is not drawn; it waits in the Trash window
     const address = typeof m.address === "string" && m.address ? m.address : typeof n.metadata?.address === "string" ? (n.metadata.address as string) : (n.label ?? n.id);
     const order = num(m.order);
     rows.push({ node: n.id, address, nodeLabel: n.label ?? address, nodeKind: n.kind ?? "", order: order === undefined ? Number.MAX_SAFE_INTEGER : order,

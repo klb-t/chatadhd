@@ -204,6 +204,98 @@
   "declare_unknown": {
    "pl": "Nie znam takiego wyglądu pulpitu: „{word}”. Znane: {known}.",
    "en": "I do not know such a desktop: “{word}”. Known: {known}."
+  },
+  "trash_title": {
+   "pl": "Kosz",
+   "en": "Trash"
+  },
+  "trash_empty_now": {
+   "pl": "Kosz jest pusty.",
+   "en": "The trash is empty."
+  },
+  "trash_restore": {
+   "pl": "Przywróć",
+   "en": "Restore"
+  },
+  "trash_delete": {
+   "pl": "Usuń na zawsze",
+   "en": "Delete for good"
+  },
+  "trash_empty": {
+   "pl": "Opróżnij kosz",
+   "en": "Empty the trash"
+  },
+  "trash_confirm_one": {
+   "pl": "Usunąć na zawsze „{title}”? Tego nie da się cofnąć.",
+   "en": "Delete “{title}” for good? This cannot be undone."
+  },
+  "trash_confirm_all": {
+   "pl": "Opróżnić kosz ({count})? Rozmowy znikną razem z wiadomościami, wpisy pamięci zostaną zapomniane, przypięcia i układy usunięte. Tego nie da się cofnąć.",
+   "en": "Empty the trash ({count})? Conversations go with their messages, memory entries are forgotten, pins and layouts removed. This cannot be undone."
+  },
+  "trash_yes": {
+   "pl": "Tak, usuń",
+   "en": "Yes, delete"
+  },
+  "trash_no": {
+   "pl": "Nie",
+   "en": "No"
+  },
+  "trash_from": {
+   "pl": "z: {from}",
+   "en": "from: {from}"
+  },
+  "trash_kind_conversation": {
+   "pl": "Rozmowy",
+   "en": "Conversations"
+  },
+  "trash_kind_memory": {
+   "pl": "Wpisy pamięci",
+   "en": "Memory entries"
+  },
+  "trash_kind_pin": {
+   "pl": "Przypięcia",
+   "en": "Pins"
+  },
+  "trash_kind_layout": {
+   "pl": "Układy",
+   "en": "Layouts"
+  },
+  "trash_error": {
+   "pl": "Nie udało się: {error}",
+   "en": "It failed: {error}"
+  },
+  "trash_retention_due": {
+   "pl": "{count} rzeczy leży w koszu dłużej niż {days} dni (ustawienie trash_retention_days). Usunąć je teraz na zawsze — czy celowo?",
+   "en": "{count} things have been in the trash longer than {days} days (setting trash_retention_days). Delete them for good now — is that intended?"
+  },
+  "trash_retention_run": {
+   "pl": "Usuń starsze",
+   "en": "Delete the older ones"
+  },
+  "trash_retention_short": {
+   "pl": "Ustawienie trash_retention_days jest krótsze niż 7 dni — rzeczy mogą zniknąć z kosza, zanim się zorientujesz. Czy celowo?",
+   "en": "The setting trash_retention_days is under 7 days — things may leave the trash before you notice. Is that intended?"
+  },
+  "icon_menu_trash": {
+   "pl": "Do kosza",
+   "en": "To the trash"
+  },
+  "icon_menu_close": {
+   "pl": "Zamknij menu",
+   "en": "Close the menu"
+  },
+  "trash_badge": {
+   "pl": "w koszu: {count}",
+   "en": "in the trash: {count}"
+  },
+  "layout_trashed": {
+   "pl": "Układ „{name}” jest w koszu; „przywróć układ {name} z kosza” go odda.",
+   "en": "The layout “{name}” is in the trash; “restore the layout {name} from the trash” brings it back."
+  },
+  "layout_untrashed": {
+   "pl": "Układ „{name}” wrócił z kosza.",
+   "en": "The layout “{name}” is back from the trash."
   }
  },
  "sections_more": [
@@ -837,5 +929,10 @@
    "none"
   ],
   "note": "setting desktop_minimized (PULPIT §8, §9): where a minimized window shows on the desktop - shelf (the list section restore), icons (a strip of icons at the bottom of the desktop, a taskbar), both, none [examples; presets per device class]. An unknown value is the preset with the advisory desktop_minimized_unknown."
+ },
+ "trash": {
+  "note": "R101 D4 (PULPIT_R101 §5): the trash window and the drop on the trash. drop_on_trash (setting; preset target): target = the thing of the icon (conv: -> conversation.trash, memory: -> memory.trash; another address -> its pin), pin = only the icon [examples]. retention_short_days: the threshold of the advisory trash_retention_short (preset 7).",
+  "drop_on_trash_preset": "target",
+  "retention_short_days": 7
  }
 }

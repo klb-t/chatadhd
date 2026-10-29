@@ -309,6 +309,17 @@
               "pl": "Po ile wiadomości i węzłów ładuje się na raz; nic nie jest tracone.",
               "en": "How many messages and nodes load at once; nothing is lost."
             }
+          },
+          {
+            "id": "kosz",
+            "label": {
+              "pl": "Kosz",
+              "en": "Trash"
+            },
+            "why": {
+              "pl": "Co znaczy „do kosza”, kto widzi rzeczy z kosza i kiedy kosz się opróżnia.",
+              "en": "What „to the trash” means, who sees trashed things and when the trash is emptied."
+            }
           }
         ]
       },

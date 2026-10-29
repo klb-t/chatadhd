@@ -18,6 +18,7 @@ import { DESKTOP, minimizedWindows, say, type DesktopPath, type DesktopSettings,
 import { DESKTOP_X, allIcons, backdropLayout, iconGrid, iconOf, liveFocus, minimizedMode, resolveDeclaration, type BackEdge, type BackNode, type DesktopIcon, type PinRow } from "./desktop-icons";
 import type { Values } from "./coupling";
 import { loadAround, loadPins } from "./desktop-load";
+import { TRASH_CHANGED, trashBadge, trashStepOf, trashable } from "./desktop-trash";
 
 export interface DesktopProps {
   layout: WLayout;
@@ -43,6 +44,8 @@ export interface DesktopProps {
   coupling?: Values;
   /** R101 D3: the setting desktop_minimized (shelf | icons | both | none; unset = the preset per device class). */
   minimizedSetting?: unknown;
+  /** R101 D4: the setting drop_on_trash (target | pin; unset = the preset target): what „Do kosza” on an icon moves. */
+  dropOnTrash?: unknown;
 }
 
 /** The faint graph behind the icons: one canvas, drawn when its data or its size changes; real nodes and real edges only. */
@@ -72,7 +75,7 @@ function GraphBackdrop({ nodes, edges, alpha, edgeAlpha, lang, focus }: { nodes:
     title={say(DESKTOP.words, "graph_label", lang, { n: String(laid.pos.size), e: String(laid.edges.length) })} />;
 }
 
-export default function Desktop({ layout, cover, lang, settings, entries, paths: sectionPaths, layouts, title, openKind, restore, loadLayout, sentence, enableEmergency, api, deviceClass = "desktop", declaration, openIcon, coupling, minimizedSetting }: DesktopProps) {
+export default function Desktop({ layout, cover, lang, settings, entries, paths: sectionPaths, layouts, title, openKind, restore, loadLayout, sentence, enableEmergency, api, deviceClass = "desktop", declaration, openIcon, coupling, minimizedSetting, dropOnTrash }: DesktopProps) {
   const w = DESKTOP.words;
   const [text, setText] = useState("");
   const [kept, setKept] = useState(false);
@@ -92,6 +95,28 @@ export default function Desktop({ layout, cover, lang, settings, entries, paths:
   const [card, setCard] = useState<{ label: string; kind: string; items: { address: string; label: string }[]; state: "idle" | "ok" | "error" }>({ label: "", kind: "", items: [], state: "idle" });
   const [pins, setPins] = useState<{ rows: PinRow[]; state: "idle" | "loading" | "ok" | "error"; error?: string }>({ rows: [], state: "idle" });
   const [around, setAround] = useState<{ nodes: BackNode[]; edges: BackEdge[] }>({ nodes: [], edges: [] });
+  // R101 D4: the trash icon carries the count of the trash (badge <- count); refreshed when the desktop shows and when the trash changes
+  const [trashCount, setTrashCount] = useState(0);
+  const [reload, setReload] = useState(0);
+  const [menuFor, setMenuFor] = useState<DesktopIcon | null>(null);
+  useEffect(() => {
+    if (covered || !api?.actions) return;
+    let live = true;
+    const read = () => api.actions!.run({ action: "trash.list", element: { class: "application" }, args: {} })
+      .then((r) => { const d = r.result?.data as { count?: number } | undefined; if (live && typeof d?.count === "number") setTrashCount(d.count); })
+      .catch((e) => console.debug("desktop: the trash is not read", e));
+    read();
+    const on = () => { read(); setReload((n) => n + 1); };
+    window.addEventListener(TRASH_CHANGED, on);
+    return () => { live = false; window.removeEventListener(TRASH_CHANGED, on); };
+  }, [covered, api]);
+  const toTrash = async (ic: DesktopIcon) => {
+    setMenuFor(null);
+    if (!api?.actions) return;
+    const st = trashStepOf(ic.address, dropOnTrash, decl.pins?.focus);
+    try { await api.actions.run({ action: st.action, element: { class: "application" }, args: st.args }); } catch (e) { console.debug("desktop: to the trash failed", e); }
+    window.dispatchEvent(new Event(TRASH_CHANGED));
+  };
   useEffect(() => {
     if (covered || !api) return;
     let live = true;
@@ -105,7 +130,7 @@ export default function Desktop({ layout, cover, lang, settings, entries, paths:
       .then((r) => { if (live) setCard({ label: r.focus.label || r.focus.address, kind: r.focus.kind, items: (r.children ?? []).slice(0, decl.card!.limit).map((c) => ({ address: c.address, label: c.label || c.address })), state: "ok" }); })
       .catch((e) => { console.debug("desktop: the card is not read", e); if (live) setCard((c) => ({ ...c, state: "error" })); });
     return () => { live = false; };
-  }, [covered, api, showIcons, decl, lang, wantsRecent]);
+  }, [covered, api, showIcons, decl, lang, wantsRecent, reload]);
   useEffect(() => {
     if (covered || !api) return;
     let alive = true;
@@ -168,10 +193,18 @@ export default function Desktop({ layout, cover, lang, settings, entries, paths:
         {icons.map((ic, i) => (
           <button key={ic.node} type="button" className="desktop-icon" data-testid="desktop-icon" data-address={ic.address} data-kind={ic.kind ?? ""} data-status={ic.status} data-source={ic.source ?? ""}
             disabled={ic.status !== "available"} title={ic.reason ?? ic.label} aria-label={ic.reason ? `${ic.label}. ${ic.reason}` : ic.label}
-            style={{ gridColumn: grid.cells[i].col + 1, gridRow: grid.cells[i].row + 1 }} onClick={() => tap(ic)}>
+            style={{ gridColumn: grid.cells[i].col + 1, gridRow: grid.cells[i].row + 1 }} onClick={() => tap(ic)}
+            onContextMenu={trashable(ic.address) && api?.actions ? (e) => { e.preventDefault(); e.stopPropagation(); setMenuFor(ic); } : undefined}
+            data-badge={ic.address.startsWith("trash:") ? trashBadge(trashCount) : undefined}>
             <span className="desktop-icon-glyph" aria-hidden="true">{ic.glyph}</span>
+            {ic.address.startsWith("trash:") && trashCount > 0 && <span className="desktop-icon-badge" data-testid="desktop-trash-badge" aria-label={say(w, "trash_badge", lang, { count: String(trashCount) })}>{trashBadge(trashCount)}</span>}
             {(decl.icon?.labelLines ?? 2) > 0 && <span className="desktop-icon-label" style={{ WebkitLineClamp: decl.icon?.labelLines ?? 2 }}>{ic.label}</span>}
           </button>))}
+        {menuFor && (
+          <div className="desktop-icon-menu" role="menu" data-testid="desktop-icon-menu" data-address={menuFor.address}>
+            <button type="button" role="menuitem" data-testid="desktop-icon-trash" onClick={() => toTrash(menuFor)}>{say(w, "icon_menu_trash", lang)}</button>
+            <button type="button" role="menuitem" data-testid="desktop-icon-menu-close" onClick={() => setMenuFor(null)}>{say(w, "icon_menu_close", lang)}</button>
+          </div>)}
         {(decl.pins ? pins.state === "ok" : true) && !icons.length && <p className="desktop-hint" data-testid="desktop-advisory" data-code="desktop_empty">{say(w, "desktop_empty", lang)}</p>}
         {pins.state === "error" && <p className="desktop-hint" role="status" data-testid="desktop-advisory" data-code="desktop_pins_error">{say(w, "icons_error", lang, { error: pins.error ?? "" })}</p>}
       </div>) : null;

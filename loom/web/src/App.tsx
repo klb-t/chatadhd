@@ -36,7 +36,7 @@ import { DEFAULT_LAYOUT, JOURNAL_LIMIT, LAYOUTS, START_VIEW_PRESET, layoutOfMode
 import WindowHost from "./shell/windows/WindowHost";
 import { WINDOW_CTX, activePanelOf, baseWindow, layoutState, panelKind, restoreFront, setPanel, switchLayout, visibleOverlay } from "./shell/windows/session";
 import { createState, redo as redoLayout, undo as undoLayout, type WState, type Win } from "./shell/windows/model";
-import { activePatch, deleteNamed, namedPatch, deviceClassOf, findNamed, journalPatch, labelOf, lastOwn, readActive, readNamed, readWriterJournal, renameNamed, replaceLayout, resetTarget, saveNamed, shippedId, type JournalWho } from "./shell/windows/named";
+import { activePatch, deleteNamed, namedPatch, deviceClassOf, findNamed, journalPatch, labelOf, lastOwn, readActive, readNamed, readWriterJournal, renameNamed, replaceLayout, resetTarget, saveNamed, shippedId, liveNamed, trashNamed, type JournalWho } from "./shell/windows/named";
 import { mergePatch } from "./api/merge-patch";
 import { clientIdentity, installationIdentity } from "./context/client-session";
 import { layoutIdOfMode } from "./shell/windows/migrate";
@@ -48,6 +48,8 @@ import { shellLanguage } from "./shell/language";
 import { cssVariables, mergeData } from "./shell/animation";
 import { glyphVariables } from "./shell/disclosure-glyphs";
 import { PANEL_LABELS, PANEL_TEXT_IDS, type PanelId } from "./shell/panels";
+import { TrashWindow } from "./shell/windows/TrashWindow";
+import { TRASH_CHANGED } from "./shell/windows/desktop-trash";
 import { useLayer } from "./shell/use-layer";
 import { useArrange } from "./shell/windows/useArrange";
 import { useCoupling, type CouplingHook } from "./shell/windows/useCoupling";
@@ -110,6 +112,8 @@ export default function App() {
   const [navigatorPerspectives, setNavigatorPerspectives] = useState<string[]>([]);   // M1-W1a: perspectives the navigator opens with (from "Pokaż w grafie")
   const [navigatorFocus, setNavigatorFocus] = useState("");   // M1-W0: where menu ⋮ › Graf opens the navigator ("" = root)
   const [convRefreshKey, setConvRefreshKey] = useState(0);
+  // R101 D4: the list of conversations is read again when something went to the trash or came back (the kernel hides trashed ones)
+  useEffect(() => { const on = () => setConvRefreshKey((k) => k + 1); window.addEventListener(TRASH_CHANGED, on); return () => window.removeEventListener(TRASH_CHANGED, on); }, []);
   const [knowledgeOpen, setKnowledgeOpen] = useState(false);
   const [chatVisible, setChatVisible] = useState(true);
   // P17 5: on a narrow screen the navigation is a menu under the header; on a wide one it is part of the header and wraps. Same buttons either way.
@@ -193,7 +197,7 @@ export default function App() {
       // W5: the own layout active on this device class (window_layout_active) opens first; layout_mode=windows opens the last own layout
       // (the active one, else the most recently saved) and `layout:<id>` may name an own one; with no own layout the start is as before W5
       const cls = deviceClassOf(window.innerWidth);
-      const named = readNamed(cfg.window_layouts);
+      const named = liveNamed(readNamed(cfg.window_layouts));   // R101 D4: a layout in the trash does not open
       const modeId = layoutIdOfMode(cfg.layout_mode, (WINDOW_DATA as { layout_modes?: Record<string, string> }).layout_modes).id;
       const activeId = readActive(cfg.window_layout_active, cls, journalWhoRef.current.installation);
       const own = (activeId ? findNamed(named, activeId) : undefined) ?? findNamed(named, modeId) ?? (modeId === "last" ? lastOwn(named, null) : null) ?? null;
@@ -301,7 +305,7 @@ export default function App() {
       },
       /** An own layout first, then a shipped one; the label applied, or null when the name names none. */
       apply(name: string): string | null {
-        const own = findNamed(named(), name);
+        const own = findNamed(liveNamed(named()), name);
         if (own) { moveTo(replaceLayout(winRef.current, own.layout, "layout.apply")); setLayoutKnown(true); setActive(own.id); return own.label; }
         const id = shippedId(name, LAYOUTS);
         if (!id) return null;
@@ -313,6 +317,11 @@ export default function App() {
         if (r.conflict) return r.conflict;
         writeNamed(r.list);
         return null;
+      },
+      /** R101 D4: layout.trash / layout.untrash - trashed_at in the layout document (reversible); emptying the trash is remove (layout.delete). */
+      trash(id: string, on: boolean) {
+        writeNamed(trashNamed(named(), id, on ? new Date().toISOString() : null));
+        if (on && readActive(configRef.current.window_layout_active, cls(), journalWhoRef.current.installation) === id) setActive(null);
       },
       remove(id: string) {
         writeNamed(deleteNamed(named(), id));
@@ -474,6 +483,12 @@ export default function App() {
           detail.outcome = ok(t(done ? `layout_receipt_${op}` : `layout_receipt_nothing_${op}`), { state: done ? "ok" : "noop" });
         }
         else if (op === "reset") detail.outcome = ok(t("layout_receipt_reset", { name: layoutOps.reset() }));
+        else if (op === "trash" || op === "untrash") {
+          // R101 D4: a sentence moves an own layout to the trash or brings it back (reversible, so direct)
+          const own = findNamed(readNamed(configRef.current.window_layouts), name);
+          if (!own) detail.outcome = fail(t(shippedId(name, LAYOUTS) ? "layout_receipt_shipped" : "layout_receipt_none", { name }));
+          else { layoutOps.trash(own.id, op === "trash"); window.dispatchEvent(new Event(TRASH_CHANGED)); detail.outcome = ok(sayDesktop(DESKTOP.words, op === "trash" ? "layout_trashed" : "layout_untrashed", uiLanguageRef.current, { name: own.label })); }
+        }
         else if (op === "rename" || op === "delete") {
           // W7: a sentence renames or deletes an own layout (delete only after the proposal and a yes: layout.delete is not direct)
           const own = findNamed(readNamed(configRef.current.window_layouts), name);
@@ -630,7 +645,7 @@ export default function App() {
   };
   // W5: what the sheet „Układ ▾” shows (the own layouts of the person, the one active on this device class, the shipped ones)
   const shellLayouts = useMemo<ShellLayouts>(() => {
-    const own = readNamed(config.window_layouts);
+    const own = liveNamed(readNamed(config.window_layouts));   // R101 D4: a layout in the trash waits in the Trash window
     return {
       own: own.map(l => ({ id: l.id, label: l.label, active: l.id === ownActive })),
       shipped: Object.keys(LAYOUTS).map(id => ({ id, label: labelOf(LAYOUTS[id], uiLanguage), current: ownActive === null && win.layout.id === id })),
@@ -730,7 +745,7 @@ export default function App() {
   const desktop = <Desktop layout={win.layout} cover={deskCover} lang={uiLanguage} settings={deskSettings} entries={deskEntries} paths={deskPaths} layouts={deskLayouts}
     title={windowLabel} openKind={deskOpen} restore={(id) => moveTo(restoreFromDesktop(winRef.current, id))} loadLayout={deskLoad}
     sentence={(text) => { deskOpen({ chat: true }); handSentence(text, DESKTOP.sentence.send !== false); }} enableEmergency={() => saveSetting("desktop_emergency_path", true)}
-    api={api} deviceClass={deviceClass} declaration={config.desktop_declaration} openIcon={deskIcon} coupling={coupling.values} minimizedSetting={config.desktop_minimized} />;
+    api={api} deviceClass={deviceClass} declaration={config.desktop_declaration} openIcon={deskIcon} coupling={coupling.values} minimizedSetting={config.desktop_minimized} dropOnTrash={config.drop_on_trash} />;
   const advice = useMemo(() => {
     const more = [...styleAdvice, ...mount.advisories];
     return more.length ? [...coupling.advisories, ...more] : coupling.advisories;
@@ -762,6 +777,8 @@ export default function App() {
                 {p === "conversations" && <ConversationList key={convRefreshKey} activeConvId={activeConvId}
                   onSelect={id => { setActiveConvId(id); closePanel(); deskOpen({ chat: true }); }} onCreated={id => { onConversationCreated(id); closePanel(); deskOpen({ chat: true }); }} onActivity={sidebarActivity} />}
                 {p === "memory" && <MemoryPanel />}
+                {p === "trash" && <TrashWindow api={api} lang={uiLanguage} layouts={readNamed(config.window_layouts)} retentionDays={config.trash_retention_days}
+                  onLayout={(op, id) => { if (op === "delete") layoutOps.remove(id); else layoutOps.trash(id, false); setConvRefreshKey((k) => k + 1); }} />}
                 {p === "import" && <ImportPanel onImported={() => setConvRefreshKey((k) => k + 1)} />}
                 {p === "context" && <ContextSlider convId={activeConvId} />}
                 {p === "settings" && kind === "settings_fields" && <SettingsPanel />}

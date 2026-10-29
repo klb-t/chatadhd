@@ -1,7 +1,7 @@
 // The panels of the shell: what the + menu (and a message) may ask to open. App.tsx draws them; the composer menu checks a panel it is
 // given against this list, so an entry that names a panel the app does not have is said, not a dead row.
 export const SHELL_PANELS = ["graph", "memory", "import", "context", "settings", "logs", "operations", "methods", "analysis", "onboarding",
-  "user-knowledge", "graph-entry", "perspectives", "view-engine", "navigator", "request", "conversations"] as const;
+  "user-knowledge", "graph-entry", "perspectives", "view-engine", "navigator", "request", "conversations", "trash"] as const;
 export type PanelId = typeof SHELL_PANELS[number];
 
 /** The English label of each panel in the Workshop navigation: used when the panel has no word of its own in PANEL_TEXT_IDS. */
@@ -23,6 +23,7 @@ export const PANEL_LABELS: Record<PanelId, string> = {
   navigator: "Navigator",
   request: "Request to the model",
   conversations: "Conversations",
+  trash: "Trash",
 };
 
 // Panels whose name comes from the shell words (data, PL/EN by ui_language); the others keep their English label.
