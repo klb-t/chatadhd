@@ -547,6 +547,18 @@ TEST_SUITE("chat_ops") {
     int proposals = 0;
     for (const char* lang : {"pl", "en"}) {
       Fixture f;  // one conversation per language: a sentence that is a command opens a proposal, the next one does not answer it
+      // The world the example sentences talk about. Since M1-R101-D4 the reversible trash steps are direct (they run at once), so what their
+      // examples name has to exist: a conversation about holidays, a memory entry about coffee, and one entry already in the trash for the
+      // sentence that restores "holidays" from it (the conversation trashed by the first sentence is back by then). A direct sentence that names
+      // nothing found is a separate case below: it answers in words that it found nothing, it is not shown as done.
+      {
+        const bool pl = std::string(lang) == "pl";
+        (void)unwrap(f.rt->db().create_conv(pl ? "Rozmowa o wakacjach" : "Talk about holidays"));
+        auto& mem = f.rt->memory();
+        (void)unwrap(mem.add_node(pl ? "Rano przy kawie czytam wiadomości" : "I drink my coffee without sugar"));
+        const std::string old = unwrap(mem.add_node(pl ? "wakacje w Tatrach" : "holidays in the Tatras"));
+        REQUIRE(mem.update_node(old, Json{{"active", false}, {"metadata", Json{{"trash", Json{{"at", "2026-10-01T00:00:00Z"}, {"by", "user"}, {"was_active", true}}}}}}));
+      }
       for (const std::string& id : ids) {
         const std::string expected = outcome_of.count(id) ? outcome_of.at(id) : std::string("pending");
         // a continuation is reached from the proposal of another action, never from a sentence of its own: it has none to send
@@ -581,6 +593,17 @@ TEST_SUITE("chat_ops") {
       }
     }
     CHECK(proposals >= 80);
+    // a direct sentence whose words name nothing that exists runs at once and says so; it never reports a change that did not happen
+    for (const auto& [sentence, word] : std::vector<std::pair<std::string, std::string>>{{"przenieś rozmowę o nartach do kosza", "nartach"},
+                                                                                         {"restore from the trash skiing", "skiing"}}) {
+      Fixture f;
+      const auto out = f.input(sentence);
+      REQUIRE(out.handled);
+      const Json p = f.meta(out).at("action_proposal");
+      CHECK_MESSAGE(p.at("status") != "executed", sentence);
+      CHECK_MESSAGE(p.at("status") != "pending", sentence);
+      CHECK_MESSAGE(f.text_of(out).find(word) != std::string::npos, sentence << " -> " << f.text_of(out));
+    }
   }
 
   TEST_CASE("any level of abstraction: the model method names an action of the application without an element, and the same words reach it as a command") {
