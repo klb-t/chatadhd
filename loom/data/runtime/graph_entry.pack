@@ -3816,7 +3816,9 @@
           "loom_view_effective",
           "loom_view_interaction",
           "loom_view_model",
-          "loom_view_write"
+          "loom_view_write",
+          "loom_working_copy_export",
+          "loom_working_copy_import"
         ]
       },
       "http": {
@@ -3888,6 +3890,7 @@
           "GET /api/view-interaction",
           "GET /api/view-model",
           "GET /api/views/([A-Za-z0-9_.-]+)",
+          "GET /api/working-copy/bundle",
           "PATCH /api/config",
           "PATCH /api/config/:id",
           "PATCH /api/conversations/:id",
@@ -4001,6 +4004,7 @@
           "POST /api/view-interaction",
           "POST /api/view-model",
           "POST /api/views/write",
+          "POST /api/working-copy/bundle",
           "PUT /api/config/:id"
         ]
       },
