@@ -5,9 +5,10 @@ import type { Conversation } from "../api/types";
 import type { UserProfileHost } from "../api/onboarding-host";
 import ChatView from "../components/ChatView";
 import SemanticStatus from "../components/SemanticStatus";
+import appPackage from "../../package.json";
 import DiagnosticsSheet from "../components/DiagnosticsSheet";
 import SemanticDot from "./SemanticDot";
-import { useShellText } from "./text";
+import { useShellText, productName } from "./text";
 import LayoutsSheet, { type ShellLayouts } from "./LayoutsSheet";
 import { CHAT_MENU, menuEntries, parseMenuAction, resolveNavigatorFocus, type SheetId } from "./menu";
 import { useLayer } from "./use-layer";
@@ -112,7 +113,14 @@ export default function ChatShell({ profileHost, convId, onSelect, onCreated, re
   if (sheet === "layouts" && windows?.layouts) sheetBody = <LayoutsSheet layouts={windows.layouts} done={() => setSheet(null)} />;
   if (sheet === "semantic") sheetBody = <SemanticStatus profileHost={profileHost} />;
   if (sheet === "diagnostics") sheetBody = <DiagnosticsSheet convId={convId} />;
-  const sheetTitle = sheet === "windows" ? t("windows_title") : sheet === "layouts" ? t("layouts_title") : sheet === "views" ? t("views_title") : sheet === "diagnostics" ? t("menu_diagnostics") : t("menu_semantic");
+  // About: the one place of the shell that says "Loom" on purpose - the library the app is built on (data: ui_shell about_* words).
+  if (sheet === "about") sheetBody = <div data-testid="about-sheet" style={{ display: "flex", flexDirection: "column", gap: 8, padding: 8 }}>
+    <strong data-testid="about-name">{productName()}</strong>
+    <span data-testid="about-version">{t("about_version", { version: appPackage.version })}</span>
+    <span data-testid="about-built-on" data-audit-skip>{t("about_built_on")}</span>
+    <small data-audit-skip>{t("about_name_hint")}</small>
+  </div>;
+  const sheetTitle = sheet === "windows" ? t("windows_title") : sheet === "layouts" ? t("layouts_title") : sheet === "views" ? t("views_title") : sheet === "diagnostics" ? t("menu_diagnostics") : sheet === "about" ? t("about_title") : t("menu_semantic");
 
   return (
     <div className="shell-root" data-testid="chat-shell" {...inertAttr(behindOverlay)}>

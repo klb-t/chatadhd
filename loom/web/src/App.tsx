@@ -30,7 +30,7 @@ import { STYLES, findProfile, inheritLabel, refKey, refOf, refOfDoc, resolveStyl
 import ChatShell from "./shell/ChatShell";
 import PerspectivesPanel from "./components/PerspectivesPanel";
 import ViewEnginePanel from "./components/ViewEnginePanel";
-import { ShellLanguage, ShellText, shellTranslator } from "./shell/text";
+import { ShellLanguage, ShellText, shellTranslator, productName } from "./shell/text";
 import { themeFromConfig } from "./shell/theme";
 import { DEFAULT_LAYOUT, JOURNAL_LIMIT, LAYOUTS, START_VIEW_PRESET, layoutOfMode, parseShellHash, readSaved, resolveLayoutId, resolveStartView, startViewOrder, writeSaved } from "./shell/start-view";
 import WindowHost from "./shell/windows/WindowHost";
@@ -440,6 +440,8 @@ export default function App() {
   // r2:b4: the document speaks the shell's language (index.html ships lang="en"); a screen reader (TalkBack) then picks the Polish voice.
   useEffect(() => { document.documentElement.lang = uiLanguage; }, [uiLanguage]);
   const t = useMemo(() => shellTranslator(uiShell.feature, uiLanguage), [uiShell.feature, uiLanguage]);
+  const productLabel = productName();   // set by shellTranslator from the ui_shell word product_name
+  useEffect(() => { document.title = productLabel; }, [productLabel]);
   const installedAdapters = useMemo(() => createLoomProfileRegistry(api, profileUi), [profileUi]);
   const installedProfile = useMemo(() => primaryProfile ? registerProfile(installedAdapters, primaryProfile) : null, [installedAdapters, primaryProfile]);
 
@@ -796,7 +798,7 @@ export default function App() {
                     return ![...(gaps?.requiredGaps ?? []), ...(gaps?.optionalGaps ?? [])].some(gap => gap.action_id === action.id);
                   }).map(action => ({
                     operation: action.operation, capability: action.capability, status: "native" as const,
-                    detail: "Installed Loom adapter; source-service equivalence unverified.", evidence: ["host profile registry"],
+                    detail: "Installed adapter; source-service equivalence unverified.", evidence: ["host profile registry"],
                   }))} />}
   </>);
   const panels = activePanel && (

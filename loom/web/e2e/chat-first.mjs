@@ -225,7 +225,15 @@ try {
       await page.reload({ waitUntil: "domcontentloaded" });
       await page.getByTestId("shell-menu-toggle").click();
       assert.match(await page.getByTestId("shell-menu-workshop").innerText(), /Warsztat/);
-      assert.deepEqual(await page.getByRole("menuitem").allInnerTexts(), ["Graf", "Ustawienia", "Ty", "Ta rozmowa w grafie", "Okna", "Układ ▾", "Widoki i okna", "Analiza w tle", "Diagnostyka", "Pokaż zapytanie", "Warsztat (narzędzia zaawansowane)"]);   // W-gaps: + Pokaż zapytanie
+      assert.deepEqual(await page.getByRole("menuitem").allInnerTexts(), ["Graf", "Ustawienia", "Ty", "Ta rozmowa w grafie", "Okna", "Układ ▾", "Widoki i okna", "Analiza w tle", "Diagnostyka", "Pokaż zapytanie", "O aplikacji", "Warsztat (narzędzia zaawansowane)"]);   // W-gaps: + Pokaż zapytanie; M1-NAZWA-PRODUKTU: + O aplikacji
+      // M1-NAZWA-PRODUKTU: the tab and the About sheet say ChatADHD; Loom appears there only as the library the app is built on
+      assert.equal(await page.title(), "ChatADHD");
+      await page.getByTestId("shell-menu-about").click();
+      const about = await page.getByTestId("about-sheet").innerText();
+      assert.match(about, /ChatADHD/); assert.match(about, /Zbudowane na bibliotece Loom/);
+      assert.doesNotMatch(await page.getByTestId("shell-title").innerText(), /Loom/);
+      await page.reload({ waitUntil: "domcontentloaded" });
+      await page.getByTestId("shell-menu-toggle").click();
       // R67: the text audit of Diagnostyka (the explanatory words are Polish; its ids, checksums and raw traces are marked as technical detail)
       await page.getByTestId("shell-menu-diagnostics").click();
       await page.locator("[data-testid=diagnostics]").waitFor();

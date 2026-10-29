@@ -2347,8 +2347,8 @@
         },
         "export.loom": {
           "label": {
-            "en": "Loom export",
-            "pl": "Eksport Loom"
+            "en": "ChatADHD export",
+            "pl": "Eksport ChatADHD"
           },
           "parent": "export",
           "traits": [
@@ -2921,8 +2921,8 @@
         },
         "vendor:loom": {
           "label": {
-            "en": "From Loom",
-            "pl": "Od Loom"
+            "en": "From ChatADHD",
+            "pl": "Od ChatADHD"
           },
           "description": "Made by this application (its own export)."
         },
@@ -5076,8 +5076,8 @@
           "github_repo"
         ],
         "note": {
-          "en": "Loom HTTP server and GitHub sync endpoint.",
-          "pl": "Serwer HTTP Loom i punkt synchronizacji GitHub."
+          "en": "ChatADHD HTTP server and GitHub sync endpoint.",
+          "pl": "Serwer HTTP ChatADHD i punkt synchronizacji GitHub."
         }
       }
     },
@@ -5279,8 +5279,8 @@
               "data_directory"
             ],
             "label": {
-              "en": "Holds the Loom data (conversations, graph, settings)",
-              "pl": "Trzyma dane Loom (rozmowy, graf, ustawienia)"
+              "en": "Holds the ChatADHD data (conversations, graph, settings)",
+              "pl": "Trzyma dane ChatADHD (rozmowy, graf, ustawienia)"
             }
           }
         },

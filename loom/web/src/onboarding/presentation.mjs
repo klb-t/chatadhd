@@ -179,8 +179,13 @@ export function featureInLanguage(feature, language, { partial = false } = {}) {
   if (!record(catalog) || (!partial && Object.keys(feature.catalog).some(key => typeof catalog[key] !== "string"))) return feature;
   return { ...feature, locale: language, catalog };
 }
+/** The name of the product on screen: one setting (the word `product_name` of the ui_shell catalog, so an overlay can change it); a text
+ * may use {{product}}. "Loom" is the name of the library and appears only where that is meant (About, documentation, self-knowledge). */
+let currentProduct = "ChatADHD";
+export function setProductName(name) { if (typeof name === "string" && name.trim() !== "") currentProduct = name; }
+export function productName() { return currentProduct; }
 export function featureMessage(feature, id, parameters = {}) {
   const template = feature.catalog[id];
   if (typeof template !== "string") throw new PresentationError("error.presentation_message", { id });
-  return formatTemplate(template, parameters);
+  return formatTemplate(template, "product" in parameters ? parameters : { product: productName(), ...parameters });
 }

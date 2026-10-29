@@ -10,6 +10,8 @@ export function looksLikeDeveloperText(line) {
   const text = line.trim();
   if (text.length < 3) return null;
   if (/^https?:\/\//.test(text)) return null;
+  // M1-NAZWA-PRODUKTU: the app is ChatADHD; "Loom" is the library and is said only in About (marked data-audit-skip), documentation and self-knowledge.
+  if (/\bLoom\b/.test(text)) return "library name on screen (the app is ChatADHD)";
   if (KEY.test(text) && !/^\d/.test(text) && !/\b\d+\.\d+\b/.test(text.replace(KEY, ""))) {
     const m = text.match(KEY)[0];
     if (!/^[a-z]+\.(?:com|org|io|ai|net)$/.test(m)) return "raw key: " + m;

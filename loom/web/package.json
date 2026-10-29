@@ -46,6 +46,7 @@
     "test:semantic-question": "node tests/conversation-view/semantic-question.test.mjs",
     "test:shell": "node tests/shell/shell.test.mjs",
     "test:shell-history": "node tests/shell/history.test.mjs",
+    "test:product-name": "node tests/shell/product-name.test.mjs",
     "test:shell-menu": "node tests/shell/menu.test.mjs",
     "test:windows-model": "node tests/shell/windows-model.test.mjs",
     "test:windows-registry": "node tests/shell/windows-registry.test.mjs",

@@ -17,7 +17,7 @@
     <string name="conn_err_https_required">Wymagany jest HTTPS. Zwykły HTTP można dopuścić poniżej, tylko dla adresu w sieci lokalnej.</string>
     <string name="conn_err_http_not_lan">Zwykły HTTP jest dozwolony tylko dla adresów sieci lokalnej (192.168.x.x, 10.x.x.x, *.local…).</string>
     <string name="conn_err_unreachable">Nie można połączyć z serwerem: %1$s</string>
-    <string name="conn_err_not_loom">Ten adres nie wygląda na serwer Loom (HTTP %1$d).</string>
+    <string name="conn_err_not_loom">Ten adres nie wygląda na serwer ChatADHD (HTTP %1$d).</string>
     <!-- F2: lokalizacja danych (ustawienie), ostrzeżenie dla pamięci współdzielonej, przenoszenie z weryfikacją, klucze API w Keystore -->
     <string name="storage_open">Lokalizacja danych…</string>
     <string name="storage_auto_migrate_opt">Przenieś dane ze współdzielonej do prywatnej pamięci automatycznie (raz, kopia i weryfikacja; stary folder zostaje)</string>

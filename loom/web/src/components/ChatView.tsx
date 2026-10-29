@@ -46,7 +46,7 @@ import GraphChatSettings from "../graph/GraphChatSettings";
 import ScopeExplain from "./ScopeExplain";
 import MicButton from "../shell/MicButton";
 import Disclosure from "../shell/Disclosure";
-import { needsProviderKey, useShellLanguage, useShellText, type ShellT } from "../shell/text";
+import { needsProviderKey, productName, useShellLanguage, useShellText, type ShellT } from "../shell/text";
 import { sourceHistoryUnavailable } from "../shell/source-notice";
 import { requestOpenPanel as requestPanel } from "../context/open-settings";
 import { createPortal } from "react-dom";
@@ -1656,7 +1656,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
         </div>}
         <textarea
           value={input}
-          placeholder={chat ? t("composer_placeholder") : profile?.composer.placeholder ?? "Message Loom…"}
+          placeholder={chat ? t("composer_placeholder") : profile?.composer.placeholder ?? `Message ${productName()}…`}
           rows={1}
           data-testid="chat-input"
           onChange={(e) => { setInput(e.target.value); recordDraft(e.target.value, convId ?? null); setQueuedNote((note) => (note === "failed" ? null : note)); }}

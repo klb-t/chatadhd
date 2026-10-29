@@ -34,8 +34,8 @@
       {
         "id": "loom",
         "label": {
-          "pl": "Loom (preset)",
-          "en": "Loom (preset)"
+          "pl": "ChatADHD (preset)",
+          "en": "ChatADHD (preset)"
         },
         "why": {
           "pl": "Zwykły czat z pełnym kontekstem: instrukcja, to, co wiem o Tobie, reguły o Tobie, pamięć, projekt, rozmowa i powiązania z grafu. Początek żądania jest taki sam w każdej turze, więc dostawca może go zapamiętać i bywa taniej.",
@@ -72,8 +72,8 @@
       {
         "id": "loom_legacy",
         "label": {
-          "pl": "Loom (dawny)",
-          "en": "Loom (legacy)"
+          "pl": "ChatADHD (dawny)",
+          "en": "ChatADHD (legacy)"
         },
         "why": {
           "pl": "Tak jak było przed zmianą: dokładnie te same bajty żądania, bez części o Tobie. Do powrotu, gdy coś ma wyglądać jak dawniej.",
@@ -152,8 +152,8 @@
           "en": "Economical"
         },
         "why": {
-          "pl": "Jak Loom, ale rozmowa bez wypełniaczy i dygresji, a pamięć z grafu płytsza i mniejsza. Mniej tokenów w każdej turze.",
-          "en": "Like Loom, but the conversation without fillers and digressions, and the graph memory shallower and smaller. Fewer tokens in every turn."
+          "pl": "Jak ChatADHD, ale rozmowa bez wypełniaczy i dygresji, a pamięć z grafu płytsza i mniejsza. Mniej tokenów w każdej turze.",
+          "en": "Like ChatADHD, but the conversation without fillers and digressions, and the graph memory shallower and smaller. Fewer tokens in every turn."
         },
         "order": "stability",
         "sources": {
