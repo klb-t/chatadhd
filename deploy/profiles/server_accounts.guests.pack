@@ -1,0 +1,12 @@
+{
+  "schema": "loom.runtime_profile_overlay/1",
+  "domain": "server_accounts",
+  "overrides": {
+    "guests": {
+      "enabled": true
+    },
+    "throttle": {
+      "trust_forwarded_for": true
+    }
+  }
+}
