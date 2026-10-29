@@ -216,7 +216,13 @@ if [ -n "$DOMAIN" ]; then
     advise "caddy validate failed: the old Caddyfile is back, guests run without the Caddy wall (the server limits still apply)"
   fi
   run $SUDO systemctl reload caddy
-  advise "tools/gcp/aliases.sh (documents branch) regenerates $CADDYFILE without this import; add the import there before its next run"
+  # aliases.sh (documents branch) regenerates the Caddyfile; advise only when that copy lacks the guests import.
+  ALIASES_SH="${ALIASES_SH:-$HOME/chatadhd/tools/gcp/aliases.sh}"
+  if [ ! -f "$ALIASES_SH" ]; then
+    advise "could not check $ALIASES_SH (missing; set ALIASES_SH): if aliases.sh regenerates $CADDYFILE, it must import chatadhd-guests"
+  elif ! grep -q "chatadhd-guests" "$ALIASES_SH"; then
+    advise "$ALIASES_SH regenerates $CADDYFILE without the chatadhd-guests import; add it there before its next run"
+  fi
 fi
 
 # ── 6. switch and start ─────────────────────────────────────────────────────────────────────────────────────────
