@@ -74,6 +74,21 @@ bool is_non_public_address(std::string_view ip) {
 #endif
 }
 
+Status check_listed_host(std::string_view url, const std::vector<std::string>& hosts) {
+  if (hosts.empty()) return {};
+  const std::string host = lower(host_of(url));
+  if (host.empty()) return {};
+  for (const auto& h : hosts) {
+    const std::string a = lower(h);
+    if (a.empty()) continue;
+    if (host == a || (host.size() > a.size() && host.compare(host.size() - a.size(), a.size(), a) == 0 &&
+                      host[host.size() - a.size() - 1] == '.'))
+      return {};
+  }
+  return Error(Errc::InvalidArgument, "a session without an account connects only to the hosts of the listed model providers ('" + host +
+                                          "' is not one); the operator can add a host in the server_accounts profile (guests.protection.outbound)");
+}
+
 Status check_public_url(std::string_view url, const std::vector<std::string>& allow_hosts) {
 #if defined(_WIN32)
   (void)url;

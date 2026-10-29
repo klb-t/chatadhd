@@ -479,6 +479,24 @@ Result<std::vector<std::string>> AccountStore::sweep_guests() {
   return gone;
 }
 
+Result<std::int64_t> AccountStore::live_guest_count() {
+  const std::int64_t now = now_s(), ttl = settings_.guests.idle_ttl_seconds;
+  std::lock_guard lk(mu_);
+  LOOM_TRY_ASSIGN(auto st, db_.prepare("SELECT COUNT(*) FROM guest_sessions WHERE expires>=? AND (?=0 OR ?-last_seen<=?)"));
+  st.bind_all(now, ttl, now, ttl);
+  LOOM_TRY_ASSIGN(bool row, st.step());
+  return row ? st.get_int(0) : std::int64_t(0);
+}
+
+Result<bool> AccountStore::invite_valid(const std::string& code) {
+  if (code.empty()) return false;
+  std::lock_guard lk(mu_);
+  LOOM_TRY_ASSIGN(auto st, db_.prepare("SELECT 1 FROM invites WHERE code_hash=? AND used_by IS NULL"));
+  st.bind_all(token_hash(code));
+  LOOM_TRY_ASSIGN(bool row, st.step());
+  return row;
+}
+
 Status AccountStore::remove_guest_dir(const std::string& guest_id) {
   if (!valid_guest_id(guest_id)) return Error(Errc::InvalidArgument, "not a guest id");
   std::error_code ec;

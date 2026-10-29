@@ -48,7 +48,10 @@ overlay("server_accounts", {
   guests: { enabled: true, start: "auto", sweep_interval_seconds: 0, keys_file: path.join(tmp, "keys.env"),
             first_answer_notice: { on: true, ask_again: "per_device" },
             workdir: { subdir: "guests", idle_ttl_seconds: TTL, max_bytes: 0, keep_after_session: "ask" },
-            secrets_routes: "write_only_session", model_sources: ["byok", "pool", "free", "local"] },
+            secrets_routes: "write_only_session", model_sources: ["byok", "pool", "free", "local"],
+            // R103 B2: the proof of work stays at its preset (solved by the page in a Web Worker); one model request per
+            // minute so the second question meets the limit.
+            protection: { per_session: { chat_per_minute: 1 } } },
 });
 overlay("free_providers", {
   providers: [{ id: "mock_free", display_name: "Mock darmowy", base_url: `http://127.0.0.1:${mockPort}`, auth_env: "MOCK_FREE_KEY", auth_secret: "api_key",
@@ -109,6 +112,24 @@ try {
     const convs = JSON.parse((await inPage(page, "/api/conversations")).body);
     assert.equal(convs.length, 1);
     convId = convs[0].id;
+  });
+
+  await step("R103 B2: over a limit -> the server's words, the wait in words and the alternatives, never an empty refusal", async () => {
+    await page.getByTestId("chat-input").fill("Drugie pytanie w tej samej minucie.");
+    await page.getByTestId("send-chat").click();
+    const box = page.getByTestId("guest-limit");
+    await box.waitFor({ timeout: 15000 });
+    assert.equal(await box.getAttribute("data-mechanism"), "session_chat_minute");
+    const wait = Number(await box.getAttribute("data-wait"));
+    assert.ok(wait >= 1 && wait <= 60, `wait ${wait}`);
+    const said = await page.getByTestId("guest-limit-text").innerText();
+    assert.ok(said.length > 10 && !said.includes("{{") && /\d/.test(said), said);
+    const waitLine = await page.getByTestId("guest-limit-wait").innerText();
+    assert.ok(waitLine.startsWith(say("guest.limit_wait", { wait: "" }).split("{{")[0].trim().slice(0, 20)) && /\d+ (s|min)/.test(waitLine), waitLine);
+    assert.ok((await page.getByTestId("guest-limit-alternatives").innerText()).length > 10);
+    assert.equal(await page.getByTestId("guest-limit-own-key").count(), 1);
+    await page.screenshot({ path: path.join(SHOTS, "guest-2b-limit.png") });
+    await page.getByTestId("guest-limit-close").click();
   });
 
   await step("the bundle is in the browser store (IndexedDB) after the answer", async () => {

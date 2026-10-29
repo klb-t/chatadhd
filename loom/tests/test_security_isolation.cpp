@@ -142,6 +142,13 @@ TEST_SUITE("security_isolation") {
     CHECK_FALSE(net::check_public_url("http://[::1]:8080/"));
     CHECK(net::check_public_url("http://127.0.0.1:11434/v1", {"127.0.0.1"}));
     CHECK(net::check_public_url("https://93.184.216.34/"));
+    // R103 B2: the outbound allow-list of guest runtimes (host or a subdomain; empty list = not in use).
+    CHECK(net::check_listed_host("https://api.groq.com/openai/v1", {"api.groq.com"}));
+    CHECK(net::check_listed_host("https://eu.api.groq.com/x", {"groq.com"}));
+    CHECK_FALSE(net::check_listed_host("https://evilgroq.com/x", {"groq.com"}));
+    CHECK_FALSE(net::check_listed_host("http://169.254.169.254/latest", {"api.groq.com"}));
+    CHECK_FALSE(net::check_listed_host("https://user@example.org/", {"api.groq.com"}));
+    CHECK(net::check_listed_host("https://anything.example/", {}));
   }
 
   TEST_CASE("an account runtime sends no request to the private network") {

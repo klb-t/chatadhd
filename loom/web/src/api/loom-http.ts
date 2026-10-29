@@ -24,7 +24,7 @@ import type {
   Task,
 } from "./types";
 import { isLoomError, readInteractionBindings, readPerspectivesList, readScopeResolution, readSideBySide, readViewEngineList, readViewModel } from "./types";
-import { AUTH_REQUIRED_EVENT } from "./auth";
+import { AUTH_REQUIRED_EVENT, announceLimit } from "./auth";
 import type { KnowledgeApi } from "./knowledge";
 import { readGraphEntry, type GraphEntryOptions, type GraphEntryView } from "./graph-entry";
 import type { GraphPacketStoreRequest, GraphPacketStoreResult } from "./graph-packets";
@@ -192,6 +192,7 @@ export class LoomHttpApi implements LoomApi {
     }
     if (keepError && isLoomError(parsed)) return parsed as T;
     if (!res.ok || isLoomError(parsed)) {
+      if (!res.ok) announceLimit(res.status, parsed);  // R103 B2: a guest-protection refusal is shown with its wait
       const msg = isLoomError(parsed) ? parsed.error.message : `HTTP ${res.status}`;
       throw new HttpError(res.status, msg);
     }
@@ -244,6 +245,7 @@ export class LoomHttpApi implements LoomApi {
           try {
             const parsed: unknown = JSON.parse(await res.text());
             if (isLoomError(parsed)) reason = parsed.error.message;
+            announceLimit(res.status, parsed);  // R103 B2: the wait and the alternatives are shown by the guest layer
           } catch { /* not JSON: the status stands */ }
           handlers.onError?.(reason);
           return;

@@ -19,5 +19,8 @@ namespace loom::net {
 
 bool is_non_public_address(std::string_view ip_literal);
 Status check_public_url(std::string_view url, const std::vector<std::string>& allow_hosts = {});
+// Outbound allow-list (R103 B2, guest runtimes): a URL whose host is neither one of `hosts` nor a subdomain of one
+// is refused. An empty list allows every host (the list is then not in use).
+Status check_listed_host(std::string_view url, const std::vector<std::string>& hosts);
 
 }  // namespace loom::net

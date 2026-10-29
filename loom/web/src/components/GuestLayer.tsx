@@ -8,6 +8,8 @@ import {
   ANSWER_DONE_EVENT, browserStore, collectBundle, humanBytes, humanSeconds, isBundle, noticePeriod, requestPersistence,
   restoreBundle, type GuestBundle,
 } from "../context/guest-store";
+import { GUEST_LIMIT_EVENT, type GuestLimitDetail } from "../api/auth";
+import { SETTINGS_PANEL, requestOpenPanel } from "../context/open-settings";
 
 const NEVER_KEY = "loom.guest.notice.never";
 const RESTORED_KEY = "loom.guest.restored";
@@ -30,6 +32,24 @@ export default function GuestLayer({ guest, guests, text, onSignIn, children }: 
   const [restored, setRestored] = useState<number | null>(null);
   const [saved, setSaved] = useState<string | null>(null);
   const answered = useRef(false);
+  // R103 B2: a refusal of the guest protection - its words, the wait counted down in words, and the alternatives.
+  const [limit, setLimit] = useState<(GuestLimitDetail & { until: number | null }) | null>(null);
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    const onLimit = (e: Event) => {
+      const d = (e as CustomEvent<GuestLimitDetail>).detail;
+      setLimit({ ...d, until: d.retryAfter ? Date.now() + d.retryAfter * 1000 : null });
+      setNow(Date.now());
+    };
+    window.addEventListener(GUEST_LIMIT_EVENT, onLimit);
+    return () => window.removeEventListener(GUEST_LIMIT_EVENT, onLimit);
+  }, []);
+  useEffect(() => {
+    if (!limit?.until) return;
+    const t = window.setInterval(() => setNow(Date.now()), 1000);
+    return () => window.clearInterval(t);
+  }, [limit]);
+  const waitLeft = limit?.until ? Math.max(0, Math.ceil((limit.until - now) / 1000)) : null;
   const fileInput = useRef<HTMLInputElement>(null);
   const askAgain = guests.notice.askAgain;
   const noticeKey = askAgain === "per_session" ? `${NEVER_KEY}.${guest.id}` : NEVER_KEY;
@@ -126,6 +146,23 @@ export default function GuestLayer({ guest, guests, text, onSignIn, children }: 
               <button type="button" data-testid="guest-sign-in" onClick={onSignIn}>{text("guest.notice_sign_in")}</button>
               <button type="button" data-testid="guest-never" onClick={() => { writeFlag(storage, noticeKey); setNotice(false); }}>{text("guest.notice_never")}</button>
               <button type="button" data-testid="guest-notice-close" onClick={() => setNotice(false)}>{text("guest.notice_close")}</button>
+            </div>
+          </div>
+        )}
+        {limit && (
+          <div role="alert" data-testid="guest-limit" data-mechanism={limit.mechanism} data-wait={waitLeft ?? ""}
+            style={{ pointerEvents: "auto", background: "var(--surface, #222)", color: "inherit", border: "1px solid var(--border, #555)", borderRadius: 10, padding: "10px 12px" }}>
+            <p data-testid="guest-limit-text" style={{ margin: "0 0 6px" }}>{limit.text}</p>
+            {waitLeft !== null && (
+              <p data-testid="guest-limit-wait" style={{ margin: "0 0 6px" }}>
+                {waitLeft > 0 ? text("guest.limit_wait", { wait: humanSeconds(waitLeft) }) : text("guest.limit_ready")}
+              </p>
+            )}
+            <p data-testid="guest-limit-alternatives" style={{ margin: "0 0 6px", fontSize: 13 }}>{limit.alternatives || text("guest.limit_alternatives")}</p>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+              <button type="button" data-testid="guest-limit-own-key" onClick={() => requestOpenPanel(SETTINGS_PANEL)}>{text("guest.limit_own_key")}</button>
+              <button type="button" data-testid="guest-limit-sign-in" onClick={onSignIn}>{text("guest.notice_sign_in")}</button>
+              <button type="button" data-testid="guest-limit-close" onClick={() => setLimit(null)}>{text("guest.notice_close")}</button>
             </div>
           </div>
         )}

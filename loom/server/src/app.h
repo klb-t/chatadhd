@@ -12,6 +12,7 @@
 
 #include "loom/accounts.h"
 #include "loom/loom.h"
+#include "guest_guard.h"
 
 namespace loom_server {
 
@@ -98,6 +99,11 @@ class App {
   // most every guests.sweep_interval_seconds, on requests.
   void sweep_guests_if_due();
   nlohmann::json guest_source(const std::string& guest_id);
+  // R103 B2: admission of one guest request (sizes, working-folder ceiling, buckets); true = answered (refused).
+  bool refuse_guest_request(const httplib::Request& req, httplib::Response& res);
+  // R103 B2: a 429 (or other status) with retry_after, the mechanism and words in the request's language.
+  void send_limit(const httplib::Request& req, httplib::Response& res, const std::string& mechanism, std::int64_t retry_after,
+                  int status = 429, const std::string& limit = {});
 
   // Route groups (implemented in app.cpp), split only for readability -
   // all register handlers on svr_.
@@ -129,6 +135,7 @@ class App {
   std::unordered_map<std::string, LoomContext*> guest_ctx_;  // closed by the guest sweep
   std::unordered_map<std::string, nlohmann::json> guest_source_;  // which free provider/model a guest runtime got, and why
   std::atomic<std::int64_t> next_guest_sweep_{0};
+  GuestGuard guard_;  // R103 B2: guest protection (buckets, proof of work, rejection counters)
   httplib::Server svr_;
   std::atomic<bool> running_{false};
 };

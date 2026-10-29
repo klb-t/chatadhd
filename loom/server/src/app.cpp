@@ -5,6 +5,7 @@
 #include <cctype>
 #include <chrono>
 #include <charconv>
+#include <cmath>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -334,6 +335,10 @@ thread_local LoomContext* t_request_ctx = nullptr;
 thread_local std::optional<loom::accounts::User> t_user;
 thread_local std::string t_session_token;
 thread_local std::optional<loom::accounts::Guest> t_guest;
+// R103 B2: the guest request admitted on this thread (released by the logger after its answer, a stream included, was written).
+thread_local std::string t_admitted_guest;
+thread_local bool t_admitted_model = false;
+std::string client_address(const httplib::Request& req, bool trust_forwarded);
 
 // R18 options shared by account and guest runtimes.
 json isolated_options(const loom::accounts::Isolation& iso, const std::string& data_dir) {
@@ -455,6 +460,26 @@ LoomContext* App::context_for_guest(const std::string& guest_id) {
   auto it = guest_ctx_.find(guest_id);
   if (it != guest_ctx_.end()) return it->second;
   json options = isolated_options(accounts_->settings().isolation, accounts_->guest_dir(guest_id).string());
+  // R103 B2: a guest runtime reaches only the hosts of the free provider manifests (plus outbound.extra_hosts).
+  if (const json out = guard_.presets().value("outbound", json::object()); out.value("only_provider_hosts", false)) {
+    json hosts = out.value("extra_hosts", json::array());
+    if (!hosts.is_array()) hosts = json::array();
+    if (const auto fp = loom::RuntimeProfile::load("free_providers", accounts_->root()); fp) {
+      const json providers = fp->values().value("providers", json::array());
+      for (const auto& p : providers) {
+        if (!p.is_object()) continue;
+        std::string u = p.value("base_url", std::string());
+        if (const auto s = u.find("://"); s != std::string::npos) u = u.substr(s + 3);
+        u = u.substr(0, u.find_first_of("/?#"));
+        if (const auto at = u.rfind('@'); at != std::string::npos) u = u.substr(at + 1);
+        if (!u.empty() && u.front() == '[') u = u.substr(1, u.find(']') == std::string::npos ? std::string::npos : u.find(']') - 1);
+        else u = u.substr(0, u.find(':'));
+        if (!u.empty()) hosts.push_back(u);
+      }
+    }
+    if (hosts.empty()) hosts.push_back("invalid.");  // nothing listed: nothing reachable, never everything
+    options["only_hosts"] = hosts;
+  }
   std::map<std::string, std::string> overlay;
   json source = {{"provider", nullptr}, {"why", "free_providers_unreadable"}};
   if (auto fp = loom::RuntimeProfile::load("free_providers", accounts_->root()); fp)
@@ -494,6 +519,10 @@ void App::sweep_guests_if_due() {
   auto gone = accounts_->sweep_guests();
   if (!gone) return;
   for (const auto& id : *gone) {
+    // R103 B2: a guest with a request still running (an answer being written) is not closed under it; its session is
+    // already gone, so the next sweep finds the directory without a live session and closes it once the request ended.
+    if (guard_.inflight(id) > 0) continue;
+    guard_.forget(id);
     LoomContext* c = nullptr;
     {
       std::lock_guard lk(pool_mu_);
@@ -503,6 +532,73 @@ void App::sweep_guests_if_due() {
     if (c) loom_shutdown(c);
     (void)accounts_->remove_guest_dir(id);
   }
+  guard_.prune();
+}
+
+void App::send_limit(const httplib::Request& req, httplib::Response& res, const std::string& mechanism, std::int64_t retry_after,
+                     int status, const std::string& limit) {
+  std::string lang = req.get_header_value("Accept-Language");
+  lang = lang.substr(0, lang.find_first_of(",;-_ "));
+  std::transform(lang.begin(), lang.end(), lang.begin(), [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+  const json w = guard_.words(lang, mechanism, retry_after, limit);
+  json body = {{"error", {{"code", status == 429 ? "rate_limited" : "guest_limit"}, {"message", w.value("text", mechanism)}}},
+               {"limit", {{"mechanism", mechanism}}},
+               {"words", w}};
+  if (retry_after > 0) {
+    body["retry_after"] = retry_after;
+    res.set_header("Retry-After", std::to_string(retry_after));
+  }
+  res.status = status;
+  res.set_header("Connection", "close");
+  res.set_content(body.dump(-1, ' ', false, json::error_handler_t::replace), "application/json");
+}
+
+bool App::refuse_guest_request(const httplib::Request& req, httplib::Response& res) {
+  const json sizes = guard_.presets().value("sizes", json::object());
+  const bool upload = req.method == "POST" && (req.path == "/api/import" || req.path == "/api/media/transcribe" || req.path == "/api/client/blob/upload");
+  const bool writes = req.method == "POST" || req.method == "PUT" || req.method == "PATCH";
+  std::uint64_t len = 0;
+  if (req.has_header("Content-Length")) {
+    const std::string text = req.get_header_value("Content-Length");
+    (void)std::from_chars(text.data(), text.data() + text.size(), len);
+  }
+  const std::uint64_t size_cap = sizes.value(upload ? "max_upload_bytes" : "max_body_bytes", std::uint64_t(0));
+  if (size_cap != 0 && len > size_cap) {
+    guard_.count_rejection("size_body");
+    send_limit(req, res, "size_body", 0, 413, std::to_string(size_cap / 1048576) + " MB");
+    return true;
+  }
+  // R103 B1 gap closed: the working folder's ceiling (guests.workdir.max_bytes, 0 = none) before any write.
+  const json wd = accounts_->settings().guests.raw.value("workdir", json::object());
+  const std::uint64_t dir_cap = wd.value("max_bytes", std::uint64_t(0));
+  if (dir_cap != 0 && writes) {
+    std::uint64_t used = 0;
+    std::error_code ec;
+    for (auto it = std::filesystem::recursive_directory_iterator(accounts_->guest_dir(t_guest->id), ec);
+         !ec && it != std::filesystem::recursive_directory_iterator(); it.increment(ec)) {
+      std::error_code fe;
+      if (it->is_regular_file(fe)) used += it->file_size(fe);
+    }
+    if (used + len > dir_cap) {
+      guard_.count_rejection("workdir_full");
+      send_limit(req, res, "workdir_full", 0, 413, std::to_string(dir_cap / 1048576) + " MB");
+      return true;
+    }
+  }
+  bool model = false;
+  const std::string route = req.method + " " + req.path;
+  const json routes = guard_.presets().value("model_routes", json::array());
+  for (const auto& r : routes)
+    if (r.is_string() && r.get<std::string>() == route) model = true;
+  const std::string address = client_address(req, accounts_->settings().throttle.trust_forwarded_for);
+  const auto v = guard_.admit_request(t_guest->id, address, model);
+  if (!v) {
+    send_limit(req, res, v.mechanism, v.retry_after);
+    return true;
+  }
+  t_admitted_guest = t_guest->id;
+  t_admitted_model = model;
+  return false;
 }
 
 bool App::init() {
@@ -518,6 +614,8 @@ bool App::init() {
       return false;
     }
     accounts_ = std::move(*store);
+    const auto& gs = accounts_->settings().guests;
+    guard_.configure(gs.raw.value("protection", json::object()), gs.sweep_interval_seconds);
   } else {
     const char* data_dir = opts_.data_dir.empty() ? nullptr : opts_.data_dir.c_str();
     ctx_ = loom_init(data_dir);
@@ -626,6 +724,10 @@ void App::register_middleware() {
     t_user.reset();
     t_guest.reset();
     t_session_token.clear();
+    if (!t_admitted_guest.empty()) {  // a request on this thread ended without reaching the logger
+      guard_.finish(t_admitted_guest, t_admitted_model);
+      t_admitted_guest.clear();
+    }
     // Request framing and size are judged before any body byte is read, for every path (a rejected request
     // closes the connection so unread body bytes cannot be taken for the next request).
     if (const int refused = body_refusal(req); refused != 0) {
@@ -658,7 +760,8 @@ void App::register_middleware() {
         }
       }
       const bool is_public =
-          (req.method == "GET" && (req.path == "/api/auth/me" || req.path == "/api/healthz")) ||
+          (req.method == "GET" && (req.path == "/api/auth/me" || req.path == "/api/healthz" ||
+                                   (guests_on && req.path == "/api/auth/guest/challenge"))) ||
           (req.method == "POST" && (req.path == "/api/auth/login" || req.path == "/api/auth/register" ||
                                     (guests_on && req.path == "/api/auth/guest")));
       // R103 §3.2: what concerns the server or other people is not a guest's (routes that exist or will).
@@ -679,6 +782,8 @@ void App::register_middleware() {
         send_error(res, "auth", "sign in required", 401);
         return httplib::Server::HandlerResponse::Handled;
       }
+      // R103 B2: a guest request passes the guest protection (a signed-in account never does).
+      if (t_guest && refuse_guest_request(req, res)) return httplib::Server::HandlerResponse::Handled;
       return httplib::Server::HandlerResponse::Unhandled;
     }
     if (!opts_.bearer_token.empty()) {
@@ -692,6 +797,13 @@ void App::register_middleware() {
       }
     }
     return httplib::Server::HandlerResponse::Unhandled;
+  });
+
+  // R103 B2: the logger runs after the answer (a stream included) was written - the end of an admitted guest request.
+  svr_.set_logger([this](const httplib::Request&, const httplib::Response&) {
+    if (t_admitted_guest.empty()) return;
+    guard_.finish(t_admitted_guest, t_admitted_model);
+    t_admitted_guest.clear();
   });
 
   // Every response: no sniffing, no framing, no referrer, and API answers (sessions, config, secrets lists)
@@ -889,15 +1001,31 @@ void App::route_chat() {
 
     auto queue = std::make_shared<SseQueue>();
     LoomContext* ctx = rctx();
-    auto thread_ptr = std::make_shared<std::thread>([ctx, request_json, queue]() {
+    const std::string guest = t_guest ? t_guest->id : std::string();
+    auto thread_ptr = std::make_shared<std::thread>([this, ctx, request_json, queue, guest]() {
+      // A guest's stream is closed only after its answer was counted (below), so its next request sees the count.
+      struct Sink { SseQueue* q; bool hold; } sink{queue.get(), !guest.empty()};
       const char* result = loom_chat_ex(
           ctx, request_json.c_str(),
           [](const char* chunk, int done, void* ud) {
-            auto* q = static_cast<SseQueue*>(ud);
-            q->push_data(chunk ? chunk : "{}");
-            if (done) q->close();
+            auto* s = static_cast<Sink*>(ud);
+            s->q->push_data(chunk ? chunk : "{}");
+            if (done && !s->hold) s->q->close();
           },
-          queue.get());
+          &sink);
+      // R103 B2: a guest's answer counts against its output-token buckets - the provider's usage, else an estimate.
+      if (!guest.empty() && result) {
+        const json r = json::parse(result, nullptr, false);
+        double tokens = -1;
+        if (r.is_object() && r.contains("usage") && r["usage"].is_object()) {
+          const json& u = r["usage"];
+          for (const char* k : {"completion_tokens", "output_tokens"})
+            if (u.contains(k) && u[k].is_number()) tokens = u[k].get<double>();
+        }
+        if (tokens < 0 && r.is_object() && r.contains("text") && r["text"].is_string())
+          tokens = std::ceil(static_cast<double>(r["text"].get_ref<const std::string&>().size()) / guard_.chars_per_token());
+        guard_.charge_output(guest, tokens);
+      }
       loom_free_string(result);
       queue->close();  // defensive: guarantees the provider always terminates
     });
@@ -1942,10 +2070,45 @@ void App::route_auth() {
                       "application/json");
     };
     // R103 B1: a session without an account. Behind guests.enabled (preset false); an existing guest gets its own back.
+    // R103 B2: the proof-of-work challenge for starting a guest session ({bits: 0} = none needed).
+    svr_.Get("/api/auth/guest/challenge", [this](const httplib::Request&, httplib::Response& res) {
+      if (!accounts_ || !accounts_->settings().guests.enabled) { send_error(res, "not_found", "guests are not enabled", 404); return; }
+      res.set_content(guard_.challenge(guard_.pow_bits(accounts_->live_guest_count().value_or(0))).dump(), "application/json");
+    });
+    // R103 B2: what the guest protection did - rejections per mechanism, admitted counts, the pool's day; no content.
+    // For signed-in accounts (a guest gets 403: it concerns the server, not the visit).
+    svr_.Get("/api/pool/summary", [this](const httplib::Request&, httplib::Response& res) {
+      if (!accounts_) { send_error(res, "not_found", "accounts are not enabled", 404); return; }
+      if (!t_user) { send_error(res, "auth", "not available without an account", 403); return; }
+      json out = guard_.summary();
+      out["guests_enabled"] = accounts_->settings().guests.enabled;
+      out["live_guest_sessions"] = accounts_->live_guest_count().value_or(0);
+      out["presets"] = guard_.presets().value("per_session", json::object());
+      res.set_content(out.dump(), "application/json");
+    });
     svr_.Post("/api/auth/guest", [this, guest_json](const httplib::Request& req, httplib::Response& res) {
       if (!accounts_ || !accounts_->settings().guests.enabled) { send_error(res, "not_found", "guests are not enabled", 404); return; }
       if (t_user) { send_error(res, "invalid_argument", "already signed in", 409); return; }
       if (t_guest) { res.set_content(json{{"guest", guest_json(*t_guest)}}.dump(), "application/json"); return; }
+      // R103 B2: global load and the client address first, then the proof of work (an invitation may skip it).
+      const json body = req.body.empty() ? json::object() : json::parse(req.body, nullptr, false);
+      const std::int64_t live = accounts_->live_guest_count().value_or(0);
+      const std::string invite = body.is_object() ? body.value("invite", std::string()) : std::string();
+      const bool invited = !invite.empty() && guard_.pow_skipped_for_invited() && accounts_->invite_valid(invite).value_or(false);
+      const int min_bits = guard_.pow_bits(0);  // the base difficulty; a challenge issued under load carries more
+      if (min_bits > 0 && !invited) {
+        const std::string why = guard_.verify(body.is_object() ? body.value("challenge", std::string()) : std::string(),
+                                              body.is_object() ? body.value("nonce", std::string()) : std::string(), min_bits);
+        if (!why.empty()) {
+          guard_.count_rejection(why);
+          send_limit(req, res, why, 0, 403);
+          return;
+        }
+      }
+      if (const auto v = guard_.admit_start(client_address(req, accounts_->settings().throttle.trust_forwarded_for), live); !v) {
+        send_limit(req, res, v.mechanism, v.retry_after);
+        return;
+      }
       auto g = accounts_->create_guest_session();
       if (!g) { send_error(res, "internal", "cannot create a guest session", 500); return; }
       const auto& cs = accounts_->settings().cookie;

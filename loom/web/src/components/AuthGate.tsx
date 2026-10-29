@@ -26,6 +26,8 @@ export default function AuthGate({ children }: { children: ReactNode }) {
   const guestText = useCallback((id: AccountsTextId, parameters = {}) => accountText(guestFeature, id, parameters), [guestFeature]);
 
   const [guestOffer, setGuestOffer] = useState(false);
+  // R103 B2: why a visit without an account could not start (the server's words with the wait), shown above sign-in.
+  const [startRefusal, setStartRefusal] = useState<string | null>(null);
   const phaseRef = useRef(state.phase);
   phaseRef.current = state.phase;
   const refresh = useCallback(async () => {
@@ -34,6 +36,7 @@ export default function AuthGate({ children }: { children: ReactNode }) {
     if (result.ok && startsGuestAutomatically(result.body)) {
       const started = await authApi.guest();
       if (started.ok) result = await authApi.me();
+      setStartRefusal(started.ok || started.status === 404 ? null : started.reason);
     }
     if (result.ok) {
       const g = (result.body as { guests?: { enabled?: boolean } } | null)?.guests;
@@ -60,8 +63,11 @@ export default function AuthGate({ children }: { children: ReactNode }) {
   if (state.phase === "error")
     return <div className="auth-screen" data-testid="auth-error"><p>{text("error.unreachable", { reason: state.reason })}</p></div>;
   if (state.phase === "signed_out")
-    return <SignIn registration={state.registration} text={text} onDone={refresh}
-      onGuest={guestOffer ? () => { void authApi.guest().then(refresh); } : undefined} />;
+    return <>
+      {startRefusal && <p role="alert" data-testid="guest-start-refused" className="auth-screen-note">{startRefusal}</p>}
+      <SignIn registration={state.registration} text={text} onDone={refresh}
+        onGuest={guestOffer ? () => { void authApi.guest().then((r) => { setStartRefusal(r.ok ? null : r.reason); return refresh(); }); } : undefined} />
+    </>;
   if (state.phase === "guest")
     return (
       <AccountContext.Provider value={session}>

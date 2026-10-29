@@ -67,6 +67,20 @@ class Server:
         self.proc.wait(timeout=15)
 
 
+def solve_pow(base: str, s=requests) -> dict:
+    """R103 B2: the proof of work a guest session needs (SHA-256(challenge:nonce) with `bits` leading zero bits)."""
+    c = s.get(base + "/api/auth/guest/challenge", timeout=10).json()
+    bits = c.get("bits", 0)
+    if not bits:
+        return {}
+    n = 0
+    while True:
+        d = hashlib.sha256(f"{c['challenge']}:{n}".encode()).digest()
+        if int.from_bytes(d, "big") >> (256 - bits) == 0:
+            return {"challenge": c["challenge"], "nonce": str(n)}
+        n += 1
+
+
 def chat(s: requests.Session, base: str, conv_id: str, text: str) -> str:
     r = s.post(base + "/api/chat", json={"conv_id": conv_id, "message": text}, timeout=60, stream=True)
     assert r.status_code == 200, (r.status_code, r.text)
@@ -122,14 +136,14 @@ def main() -> int:
                 assert r.status_code in (200, 201), (r.status_code, r.text)
 
                 ga, gb = requests.Session(), requests.Session()
-                ra = ga.post(b + "/api/auth/guest", json={}, timeout=30)
+                ra = ga.post(b + "/api/auth/guest", json=solve_pow(b, ga), timeout=30)
                 assert ra.status_code == 201, (ra.status_code, ra.text)
                 assert FAKE_KEY not in ra.text
                 id_a = ra.json()["guest"]["id"]
-                assert gb.post(b + "/api/auth/guest", json={}, timeout=30).status_code == 201
+                assert gb.post(b + "/api/auth/guest", json=solve_pow(b, gb), timeout=30).status_code == 201
                 id_b = gb.get(b + "/api/auth/me", timeout=10).json()["guest"]["id"]
                 assert id_a != id_b and id_a.startswith("g_")
-                again = ga.post(b + "/api/auth/guest", json={}, timeout=30)  # the same guest gets itself back
+                again = ga.post(b + "/api/auth/guest", json=solve_pow(b, ga), timeout=30)  # the same guest gets itself back
                 assert again.status_code == 200 and again.json()["guest"]["id"] == id_a
                 me_a = ga.get(b + "/api/auth/me", timeout=10)
                 src = me_a.json()["guest"]["model_source"]
@@ -203,7 +217,7 @@ def main() -> int:
                 assert "Konto właściciela" in titles
                 # logout of a guest ends it at once (its directory goes with the next sweep)
                 gc = requests.Session()
-                id_c = gc.post(b + "/api/auth/guest", json={}, timeout=30).json()["guest"]["id"]
+                id_c = gc.post(b + "/api/auth/guest", json=solve_pow(b, gc), timeout=30).json()["guest"]["id"]
                 assert gc.post(b + "/api/auth/logout", json={}, timeout=10).status_code == 200
                 acc.get(b + "/api/healthz", timeout=10)
                 assert not (root / "guests" / id_c).exists()

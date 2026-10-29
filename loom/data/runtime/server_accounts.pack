@@ -1,8 +1,8 @@
 {
   "schema": "loom.runtime_profile/1",
   "domain": "server_accounts",
-  "revision": 5,
-  "description": "loom-server accounts (P1). All values are presets, not rules (owner rule). registration: open = anyone may create an account, invite = only with a code made by 'loom-server user invite', closed = accounts are created by the operator CLI only. Sessions are random tokens stored only as SHA-256. Argon2id parameters come from the named preset of the storage_security pack (crypto.params.argon2id_presets); stored hashes carry their own parameters, so changing the preset never invalidates existing passwords. Overlay: <accounts_root>/profiles/server_accounts.pack. throttle (R43, security reason: stops online password guessing, which Argon2id cost alone only slows): after free_attempts failed logins for one login (per_login) or from one client address (per_ip) further attempts are refused with 429 for base_delay_seconds * 2^(failures - free_attempts), capped at max_delay_seconds; failures are forgotten after reset_seconds without a new one. mode off disables it. The address is the TCP peer unless trust_forwarded_for is true (set it only behind your own reverse proxy). Isolation (R18, security review): confine_paths = every filesystem path a request supplies (catalog/archive/knowledge sources, a repo, a local storage target, a prompt folder) must lie inside the user's own data directory or one of path_roots, so one account cannot read another's data or the accounts database; false lifts it (single-operator installs). block_private_hosts = outbound requests of an account to loopback/private/link-local addresses are refused (stops using the server as a proxy into its own network) except to the hosts in allow_private_hosts (e.g. a local model server). csrf.check_origin = a state-changing request that carries an Origin (or Sec-Fetch-Site: cross-site) naming another site than the one it was sent to is refused, unless that origin is in csrf.allowed_origins. expose_server_logs = /api/logs shows the process-wide log, which mixes all users, so it is off for accounts. Hashing (R20): hashing.max_concurrent = how many Argon2id evaluations (login, register, password change) may run at the same time, because each takes its full memory (rfc9106_second = 64 MiB): -1 = number of CPUs (preset), 0 = unlimited, N = at most N. A request that finds every slot taken waits up to hashing.wait_seconds (preset 5) and is then answered 503 with Retry-After; 0 = refuse at once. login_max_length (R20): the longest login (counted in characters) that register and login accept; 0 = no limit. Longer names are refused with 400 before any hashing or throttle bookkeeping, so one request cannot grow the account tables or the throttle memory. Operator ceilings (R20 follow-up): zip.max_total_bytes / zip.max_ratio (0 = no ceiling) and git.allow_repo_config bound what an account may set in its own config.json (loom_zip_*, loom_git_allow_repo_config): the effective value is the more restrictive of the two, so a user can tighten but not loosen; they protect the server's disk and the server's processes. Single-user and local runtimes have no ceiling. Guests (R103 B1, presets): guests.enabled (false = no use without an account; the public address gets guests only after the abuse protection of package B2), guests.start (auto = the first visit starts a guest session and shows the full interface without any gate; explicit = only on a button), guests.first_answer_notice (one non-blocking notice after the first answer; ask_again per_device | per_session | never), guests.workdir (subdir under the accounts root holding one ordinary Loom data directory per guest; idle_ttl_seconds = the directory and the session disappear after that long without a request, 0 = never by itself; max_bytes = operator ceiling, 0 = none, enforced from B2; keep_after_session ask | never | always), guests.sweep_interval_seconds (how often expired guests are looked for), guests.keys_file (KEY=VALUE file of the operator's provider keys; read into memory and handed to a guest runtime through credential_overlay, never written to the guest directory; empty = none), guests.model_sources (order of model sources, open list), guests.secrets_routes (write_only_session = a guest never reads a key, pool keys are never listed).",
+  "revision": 6,
+  "description": "loom-server accounts (P1). All values are presets, not rules (owner rule). registration: open = anyone may create an account, invite = only with a code made by 'loom-server user invite', closed = accounts are created by the operator CLI only. Sessions are random tokens stored only as SHA-256. Argon2id parameters come from the named preset of the storage_security pack (crypto.params.argon2id_presets); stored hashes carry their own parameters, so changing the preset never invalidates existing passwords. Overlay: <accounts_root>/profiles/server_accounts.pack. throttle (R43, security reason: stops online password guessing, which Argon2id cost alone only slows): after free_attempts failed logins for one login (per_login) or from one client address (per_ip) further attempts are refused with 429 for base_delay_seconds * 2^(failures - free_attempts), capped at max_delay_seconds; failures are forgotten after reset_seconds without a new one. mode off disables it. The address is the TCP peer unless trust_forwarded_for is true (set it only behind your own reverse proxy). Isolation (R18, security review): confine_paths = every filesystem path a request supplies (catalog/archive/knowledge sources, a repo, a local storage target, a prompt folder) must lie inside the user's own data directory or one of path_roots, so one account cannot read another's data or the accounts database; false lifts it (single-operator installs). block_private_hosts = outbound requests of an account to loopback/private/link-local addresses are refused (stops using the server as a proxy into its own network) except to the hosts in allow_private_hosts (e.g. a local model server). csrf.check_origin = a state-changing request that carries an Origin (or Sec-Fetch-Site: cross-site) naming another site than the one it was sent to is refused, unless that origin is in csrf.allowed_origins. expose_server_logs = /api/logs shows the process-wide log, which mixes all users, so it is off for accounts. Hashing (R20): hashing.max_concurrent = how many Argon2id evaluations (login, register, password change) may run at the same time, because each takes its full memory (rfc9106_second = 64 MiB): -1 = number of CPUs (preset), 0 = unlimited, N = at most N. A request that finds every slot taken waits up to hashing.wait_seconds (preset 5) and is then answered 503 with Retry-After; 0 = refuse at once. login_max_length (R20): the longest login (counted in characters) that register and login accept; 0 = no limit. Longer names are refused with 400 before any hashing or throttle bookkeeping, so one request cannot grow the account tables or the throttle memory. Operator ceilings (R20 follow-up): zip.max_total_bytes / zip.max_ratio (0 = no ceiling) and git.allow_repo_config bound what an account may set in its own config.json (loom_zip_*, loom_git_allow_repo_config): the effective value is the more restrictive of the two, so a user can tighten but not loosen; they protect the server's disk and the server's processes. Single-user and local runtimes have no ceiling. Guests (R103 B1, presets): guests.enabled (false = no use without an account; the public address gets guests only after the abuse protection of package B2), guests.start (auto = the first visit starts a guest session and shows the full interface without any gate; explicit = only on a button), guests.first_answer_notice (one non-blocking notice after the first answer; ask_again per_device | per_session | never), guests.workdir (subdir under the accounts root holding one ordinary Loom data directory per guest; idle_ttl_seconds = the directory and the session disappear after that long without a request, 0 = never by itself; max_bytes = operator ceiling, 0 = none, enforced from B2; keep_after_session ask | never | always), guests.sweep_interval_seconds (how often expired guests are looked for), guests.keys_file (KEY=VALUE file of the operator's provider keys; read into memory and handed to a guest runtime through credential_overlay, never written to the guest directory; empty = none), guests.model_sources (order of model sources, open list), guests.secrets_routes (write_only_session = a guest never reads a key, pool keys are never listed). Guest protection (R103 B2, guests.protection, every number a preset; 0 = no limit, the mechanism is then off): pow (proof of work when a guest session starts, instead of a captcha: GET /api/auth/guest/challenge gives a challenge, the client finds a nonce so that SHA-256(challenge:nonce) starts with `bits` zero bits; bits_under_load applies once the live guest sessions reach load_share of global.live_sessions; challenge_ttl_seconds; invited off = a valid invitation code skips it); per_session token buckets (chat_per_minute, chat_per_day, output_tokens_per_day counted from the provider's usage or estimated as characters / estimate_chars_per_token, parallel_streams, api_per_minute for every API request); per_address (the client address, behind your own proxy with throttle.trust_forwarded_for; an address is a hint, not a person — NAT — so these are looser and the words say there is a lot of traffic from the address): sessions_per_hour, chat_per_minute; global: live_sessions, pool_chat_per_day and pool_output_tokens_per_day (the daily ceiling of the operator's free-key pool shared by all guests); sizes: max_body_bytes, max_upload_bytes for guests (lower than the server's); outbound: only_provider_hosts = a guest runtime reaches only the hosts of the free provider manifests plus extra_hosts (false = every public host); model_routes = which requests count as model requests (open list). Exceeding a limit answers 429 with retry_after (seconds) and words in the request's language from `words` (open map of languages); rejections are counted per mechanism (no content) in GET /api/pool/summary.",
   "defaults": {
     "registration": "closed",
     "session_lifetime_seconds": 2592000,
@@ -76,7 +76,80 @@
         "pool",
         "free",
         "local"
-      ]
+      ],
+      "protection": {
+        "pow": {
+          "bits": 18,
+          "bits_under_load": 21,
+          "load_share": 0.5,
+          "challenge_ttl_seconds": 300,
+          "invited": "off"
+        },
+        "per_session": {
+          "chat_per_minute": 20,
+          "chat_per_day": 300,
+          "output_tokens_per_day": 200000,
+          "estimate_chars_per_token": 4,
+          "parallel_streams": 2,
+          "api_per_minute": 600
+        },
+        "per_address": {
+          "sessions_per_hour": 20,
+          "chat_per_minute": 60
+        },
+        "global": {
+          "live_sessions": 200,
+          "pool_chat_per_day": 5000,
+          "pool_output_tokens_per_day": 3000000
+        },
+        "sizes": {
+          "max_body_bytes": 1048576,
+          "max_upload_bytes": 52428800
+        },
+        "outbound": {
+          "only_provider_hosts": true,
+          "extra_hosts": []
+        },
+        "model_routes": [
+          "POST /api/chat"
+        ],
+        "words": {
+          "en": {
+            "pow_required": "Starting a visit without an account needs a short computation in the browser first (it protects the free models from scripts). Reload the page and it happens by itself.",
+            "pow_invalid": "The browser's computation did not check out or is too old. Reload the page to try again.",
+            "session_chat_minute": "That was many questions in one minute. You can ask again in {{wait}}.",
+            "session_chat_day": "The free questions of this visit for today are used up. The next one is possible in {{wait}}.",
+            "session_output_tokens_day": "The free models have written a lot for this visit today. More is possible in {{wait}}.",
+            "session_parallel_streams": "Answers are already being written in other tabs. Wait for one to finish ({{wait}}).",
+            "session_api_minute": "Very many requests in one minute from this visit. It goes on in {{wait}}.",
+            "address_sessions_hour": "A lot of traffic from this address today — many visits without an account have started from it. A new one is possible in {{wait}}.",
+            "address_chat_minute": "A lot of traffic from this address right now. You can ask again in {{wait}}.",
+            "global_live_sessions": "Very many people are using the server without an account right now. Try again in {{wait}}.",
+            "pool_chat_day": "The free models of this server are used up for today. It goes on in {{wait}}.",
+            "pool_output_tokens_day": "The free models of this server have written their daily share. It goes on in {{wait}}.",
+            "size_body": "This is more than a visit without an account can send at once ({{limit}}).",
+            "workdir_full": "The working folder of this visit is full ({{limit}}). Download the archive or sign in to keep more.",
+            "alternatives": "Meanwhile you can use your own key, another model source, or sign in."
+          },
+          "pl": {
+            "pow_required": "Wizyta bez konta zaczyna się od krótkiego obliczenia w przeglądarce (chroni darmowe modele przed skryptami). Odśwież stronę, a zrobi się samo.",
+            "pow_invalid": "Obliczenie przeglądarki się nie zgadza albo jest za stare. Odśwież stronę, żeby spróbować jeszcze raz.",
+            "session_chat_minute": "To było dużo pytań w jedną minutę. Kolejne możesz zadać za {{wait}}.",
+            "session_chat_day": "Darmowe pytania tej wizyty na dziś się skończyły. Następne będzie możliwe za {{wait}}.",
+            "session_output_tokens_day": "Darmowe modele napisały dziś dla tej wizyty dużo tekstu. Więcej będzie możliwe za {{wait}}.",
+            "session_parallel_streams": "W innych kartach już powstają odpowiedzi. Poczekaj, aż któraś się skończy ({{wait}}).",
+            "session_api_minute": "Bardzo dużo żądań z tej wizyty w jedną minutę. Dalej za {{wait}}.",
+            "address_sessions_hour": "Z tego adresu jest dziś dużo ruchu — zaczęło się z niego wiele wizyt bez konta. Nowa będzie możliwa za {{wait}}.",
+            "address_chat_minute": "Z tego adresu jest teraz dużo ruchu. Kolejne pytanie możesz zadać za {{wait}}.",
+            "global_live_sessions": "Bardzo wiele osób korzysta teraz z serwera bez konta. Spróbuj za {{wait}}.",
+            "pool_chat_day": "Darmowe modele tego serwera są na dziś wyczerpane. Dalej za {{wait}}.",
+            "pool_output_tokens_day": "Darmowe modele tego serwera napisały już swoją dzienną część. Dalej za {{wait}}.",
+            "size_body": "To więcej, niż wizyta bez konta może wysłać naraz ({{limit}}).",
+            "workdir_full": "Folder roboczy tej wizyty jest pełny ({{limit}}). Pobierz archiwum albo zaloguj się, żeby trzymać więcej.",
+            "alternatives": "W tym czasie możesz użyć własnego klucza, innego źródła modelu albo się zalogować."
+          }
+        }
+      }
     }
   },
   "value_schema": {
@@ -490,6 +563,148 @@
             "items": {
               "type": "string",
               "minLength": 1
+            }
+          },
+          "protection": {
+            "type": "object",
+            "description": "Abuse and cost protection of guests (R103 B2). Every number is a preset; 0 = no limit.",
+            "properties": {
+              "pow": {
+                "type": "object",
+                "properties": {
+                  "bits": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "x-unit": "bits"
+                  },
+                  "bits_under_load": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "x-unit": "bits"
+                  },
+                  "load_share": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "challenge_ttl_seconds": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "x-unit": "seconds"
+                  },
+                  "invited": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "off | on (open value)."
+                  }
+                }
+              },
+              "per_session": {
+                "type": "object",
+                "properties": {
+                  "chat_per_minute": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "chat_per_day": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "output_tokens_per_day": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "x-unit": "tokens"
+                  },
+                  "estimate_chars_per_token": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "parallel_streams": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "api_per_minute": {
+                    "type": "integer",
+                    "minimum": 0
+                  }
+                }
+              },
+              "per_address": {
+                "type": "object",
+                "properties": {
+                  "sessions_per_hour": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "chat_per_minute": {
+                    "type": "integer",
+                    "minimum": 0
+                  }
+                }
+              },
+              "global": {
+                "type": "object",
+                "properties": {
+                  "live_sessions": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "pool_chat_per_day": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "pool_output_tokens_per_day": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "x-unit": "tokens"
+                  }
+                }
+              },
+              "sizes": {
+                "type": "object",
+                "properties": {
+                  "max_body_bytes": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "x-unit": "bytes"
+                  },
+                  "max_upload_bytes": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "x-unit": "bytes"
+                  }
+                }
+              },
+              "outbound": {
+                "type": "object",
+                "properties": {
+                  "only_provider_hosts": {
+                    "type": "boolean"
+                  },
+                  "extra_hosts": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                }
+              },
+              "model_routes": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "words": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              }
             }
           }
         }

@@ -160,6 +160,9 @@ struct RuntimeOptions {
   // to the hosts in allow_hosts. Default false.
   bool block_private_hosts = false;
   std::vector<std::string> allow_hosts;
+  // Outbound allow-list (R103 B2, guest runtimes of loom-server): when non-empty, every outbound request must go to
+  // one of these hosts or a subdomain of one (net::check_listed_host). Empty (default) = not in use.
+  std::vector<std::string> only_hosts;
   // Operator ceilings for an account runtime (server_accounts zip/git): the effective zip and git setting is the
   // more restrictive of these and the account's config.json. Unset = no ceiling (single-user runtime).
   std::optional<std::int64_t> zip_max_total_bytes;

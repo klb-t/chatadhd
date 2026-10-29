@@ -150,6 +150,10 @@ class AccountStore {
   // every directory under guests_root() without a live session (left by a restart). The caller closes their runtimes
   // first and then removes the directories (remove_guest_dir).
   Result<std::vector<std::string>> sweep_guests();
+  // R103 B2: guest sessions alive now (not expired, not idle past the TTL) - the load measure of the guest protection.
+  Result<std::int64_t> live_guest_count();
+  // R103 B2: true when `code` is an unused invitation (checked, not consumed) - an invited guest skips the proof of work.
+  Result<bool> invite_valid(const std::string& code);
   Status remove_guest_dir(const std::string& guest_id);
   static bool valid_guest_id(const std::string& id);
 

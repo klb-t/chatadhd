@@ -67,8 +67,10 @@ class ForwardingTransport final : public net::HttpTransport {
     guard_ = true;
     allow_hosts_ = std::move(allow_hosts);
   }
+  void set_only_hosts(std::vector<std::string> hosts) { only_hosts_ = std::move(hosts); }
   Result<net::HttpResponse> send(const net::HttpRequest& req, const net::StreamSink* sink,
                                  const CancelToken* cancel) override {
+    LOOM_TRY(net::check_listed_host(req.url, only_hosts_));
     if (guard_) LOOM_TRY(net::check_public_url(req.url, allow_hosts_));
     auto t = get();
     if (!t) return Error(Errc::Unavailable, "no HTTP transport configured");
@@ -84,6 +86,7 @@ class ForwardingTransport final : public net::HttpTransport {
   std::shared_ptr<net::HttpTransport> target_;
   bool guard_ = false;
   std::vector<std::string> allow_hosts_;
+  std::vector<std::string> only_hosts_;
 };
 
 std::vector<std::string> event_log_types(const Config& cfg) {
@@ -249,6 +252,11 @@ Result<RuntimeOptions> RuntimeOptions::from_json(const Json& j) {
         if (!r.is_string()) return Error(Errc::InvalidArgument, "allow_hosts must be an array of strings");
         o.allow_hosts.push_back(r.get<std::string>());
       }
+    } else if (k == "only_hosts" && v.is_array()) {
+      for (const auto& r : v) {
+        if (!r.is_string()) return Error(Errc::InvalidArgument, "only_hosts must be an array of strings");
+        o.only_hosts.push_back(r.get<std::string>());
+      }
     } else if (k == "zip_max_total_bytes" && v.is_number()) {
       o.zip_max_total_bytes = v.get<std::int64_t>();
     } else if (k == "zip_max_ratio" && v.is_number()) {
@@ -404,6 +412,7 @@ Result<std::unique_ptr<Runtime>> Runtime::open(const RuntimeOptions& opts) {
   ctx.analyzer = impl->analyzer.get();
   auto forwarding = std::make_shared<ForwardingTransport>(parts.http());
   if (opts.block_private_hosts) forwarding->set_guard(opts.allow_hosts);
+  if (!opts.only_hosts.empty()) forwarding->set_only_hosts(opts.only_hosts);
   impl->http = forwarding;
   ctx.http = impl->http.get();
   ctx.http_shared = impl->http;
