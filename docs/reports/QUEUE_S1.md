@@ -1,5 +1,7 @@
 # Kolejka S1 — stan 2026-10-27 12:15 UTC (nagłówek daty aktualizuje ten, kto pisze wpis; gcp pisze od 24.10)
 
+## Rytm testów (decyzja koordynatora 2026-10-30 po pytaniu właściciela, czy testujemy za często; zapis sesji chatadhd): na każdy pakiet tylko szybkie testy jego obszaru (wybrane `ctest -R` i skrypty e2e danego obszaru, minuty); pełna bramka `tools/gate.sh` raz na partię 2–4 pakietów, przed zgłoszeniem sha do FF; czerwona bramka partii → bisekcja po pakietach. CI na main dalej przy każdym FF. Odwrót: pełna bramka na każdy pakiet (jak do 2026-10-29). Równolegle do 3 agentów, każdy w osobnym worktree; do 2 bramek naraz w osobnych worktree przy ≥ 5 GB wolnego dysku (64 GB RAM od restartu 2026-10-29).
+
 
 ## PRIORYTETY NA NOC 2026-10-29/30 (koordynator gcp; właściciel: „priorytety ustal od najważniejszych przez najciekawsze i inne dalej”, „nie czekajcie nigdy na mnie”)
 Najważniejsze:
