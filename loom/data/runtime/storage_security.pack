@@ -355,6 +355,166 @@
         "configured": false,
         "note": "any other provider: register a backend kind (BackendRegistry) and describe it here as data; s3 and webdav kinds cover most services"
       },
+      "browser_opfs_sqlite": {
+        "class": "device",
+        "label": {
+          "en": "Browser — SQLite database (OPFS)",
+          "pl": "Przeglądarka — baza SQLite (OPFS)"
+        },
+        "path": "OPFS /.loom-store (SQLite-WASM, VFS opfs-sahpool); tables as in the kernel",
+        "access": "scripts of the same origin; browser profile",
+        "encryption": {
+          "algorithm": "none",
+          "key_custody": "none",
+          "rotation": "none"
+        },
+        "sync": {
+          "rule": "none",
+          "conflict": "n/a"
+        },
+        "capabilities": [
+          "read",
+          "write",
+          "list",
+          "watch"
+        ],
+        "available_on": [
+          "web"
+        ],
+        "jurisdiction": {
+          "known": false
+        },
+        "status": "implemented",
+        "traits": {
+          "durable": {
+            "value": true,
+            "source": "plugin"
+          },
+          "survives_site_data_clear": {
+            "value": false,
+            "source": "platform documentation (site data)"
+          },
+          "offline": {
+            "value": true,
+            "source": "plugin"
+          },
+          "shared_across_devices": {
+            "value": false,
+            "source": "plugin"
+          },
+          "encrypted_at_rest": {
+            "value": "none",
+            "source": "configuration (WebCrypto planned: B8)"
+          },
+          "readers": {
+            "value": "this browser",
+            "source": "plugin"
+          },
+          "persisted": {
+            "value": "unknown",
+            "source": "measured at start: navigator.storage.persist()"
+          },
+          "quota_bytes": {
+            "value": "unknown",
+            "unit": "B",
+            "source": "measured at start: navigator.storage.estimate()"
+          },
+          "free_bytes": {
+            "value": "unknown",
+            "unit": "B",
+            "source": "measured at start: navigator.storage.estimate()"
+          },
+          "ops": {
+            "value": [
+              "incremental_write",
+              "sql",
+              "lock",
+              "export_bundle"
+            ],
+            "source": "plugin (loom/web/src/context/opfs-sqlite-store.ts)"
+          },
+          "max_object_bytes": {
+            "value": "unknown",
+            "source": "origin quota, no per-value limit; to measure"
+          }
+        }
+      },
+      "browser_indexeddb": {
+        "class": "device",
+        "label": {
+          "en": "Browser — bundle (IndexedDB)",
+          "pl": "Przeglądarka — paczka (IndexedDB)"
+        },
+        "path": "IndexedDB loom-guest-store / bundles / current (loom.guest_bundle/2 text)",
+        "access": "scripts of the same origin; browser profile",
+        "encryption": {
+          "algorithm": "none",
+          "key_custody": "none",
+          "rotation": "none"
+        },
+        "sync": {
+          "rule": "none",
+          "conflict": "n/a"
+        },
+        "capabilities": [
+          "read",
+          "write",
+          "list"
+        ],
+        "available_on": [
+          "web"
+        ],
+        "jurisdiction": {
+          "known": false
+        },
+        "status": "implemented",
+        "traits": {
+          "durable": {
+            "value": true,
+            "source": "plugin"
+          },
+          "survives_site_data_clear": {
+            "value": false,
+            "source": "platform documentation (site data)"
+          },
+          "offline": {
+            "value": true,
+            "source": "plugin"
+          },
+          "shared_across_devices": {
+            "value": false,
+            "source": "plugin"
+          },
+          "encrypted_at_rest": {
+            "value": "none",
+            "source": "configuration (WebCrypto planned: B8)"
+          },
+          "readers": {
+            "value": "this browser",
+            "source": "plugin"
+          },
+          "persisted": {
+            "value": "unknown",
+            "source": "measured at start: navigator.storage.persist()"
+          },
+          "quota_bytes": {
+            "value": "unknown",
+            "unit": "B",
+            "source": "measured at start: navigator.storage.estimate()"
+          },
+          "free_bytes": {
+            "value": "unknown",
+            "unit": "B",
+            "source": "measured at start: navigator.storage.estimate()"
+          },
+          "ops": {
+            "value": [
+              "whole_bundle_write"
+            ],
+            "source": "plugin (loom/web/src/context/store-registry.ts)"
+          }
+        }
+      },
       "browser": {
         "class": "device",
         "label": {

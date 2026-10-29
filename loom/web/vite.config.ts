@@ -14,6 +14,10 @@ export default defineConfig({
       },
     },
   },
+  // PH29 P1: the SQLite-WASM worker is an ES module (the library finds sqlite3.wasm through import.meta.url); the
+  // package is served from the app's own files (no CDN) and is not pre-bundled in dev (its README's advice).
+  worker: { format: "es" },
+  optimizeDeps: { exclude: ["@sqlite.org/sqlite-wasm"] },
   build: {
     outDir: "dist",
     sourcemap: true,
