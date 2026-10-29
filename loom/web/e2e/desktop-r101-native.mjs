@@ -398,6 +398,7 @@ try {
       await p.getByTestId("trash-empty-now").waitFor();
     });
     await p.context().close();
+    await run("window.unpin", { target: `conv:${conv.id}` });   // the next device starts from the preset pins
   }
   await step("no page errors", async () => assert.deepEqual(errors, []));
 } catch (e) { failed = true; console.error(e); }
