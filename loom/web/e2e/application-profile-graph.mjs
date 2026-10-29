@@ -30,7 +30,9 @@ const authUrl = moduleUrl(transpile("../src/api/auth.ts").replaceAll('from "./po
 const runtime = await import(runtimeUrl);
 const graph = await import(moduleUrl(transpile("../src/profiles/graph.ts").replaceAll('from "./runtime"', `from "${runtimeUrl}"`)));
 const conversationViewUrl = moduleUrl(transpile("../src/api/conversation-view.ts"));
+const sendGateUrl = moduleUrl(transpile("../src/api/send-gate.ts"));
 const { LoomHttpApi } = await import(moduleUrl(transpile("../src/api/loom-http.ts").replaceAll('from "./conversation-view"', `from "${conversationViewUrl}"`)
+  .replaceAll('from "./send-gate"', `from "${sendGateUrl}"`)
   .replaceAll('from "./types"', `from "${typesUrl}"`)
   .replaceAll('from "./graph-entry"', `from "${graphEntryUrl}"`)
   .replaceAll('from "./operations"', `from "${operationsUrl}"`)
