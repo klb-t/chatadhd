@@ -293,6 +293,12 @@
       ],
       "reason": "the one literal is the slot plan of the Ty (party:self) subgraph, built while graph.navigate or graph.card projects that node; roles_resolved opens the model Catalogue and never builds a node, so it cannot reach this read",
       "count": 1
+    },
+    {
+      "file": "loom/src/chat/chat_engine.cpp",
+      "key": "conversations_hide_trashed",
+      "reason": "read by ChatEngine::resume_last at start (a trashed conversation does not become the current one, R101 D4), not by chat.send; settings_fields.pack names this reader",
+      "count": 1
     }
   ],
   "read_elsewhere": [],

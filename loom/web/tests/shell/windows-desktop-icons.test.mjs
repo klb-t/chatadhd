@@ -15,7 +15,7 @@ let seed = Number(process.env.LOOM_DESKI_SEED ?? 2002);
 const rnd = () => { seed = (seed * 1103515245 + 12345) % 2147483648; return seed / 2147483648; };
 const pick = a => a[Math.floor(rnd() * a.length)];
 const PANELS = ['graph', 'navigator', 'settings', 'memory', 'import', 'logs', 'context', 'methods', 'analysis', 'operations', 'perspectives',
-  'onboarding', 'user-knowledge', 'graph-entry', 'view-engine', 'request', 'conversations'];
+  'onboarding', 'user-knowledge', 'graph-entry', 'view-engine', 'request', 'conversations', 'trash'];
 const entries = D.kindEntries(id => PANELS.includes(id), 'czat', 'pl');
 
 test('declaration: unset = pulpit_graf (pins with the first pins, the graph behind with a budget per device class); pulpit_ikony has no graph', () => {
@@ -92,7 +92,7 @@ test('generative: icon_grid never loses, stacks or overflows an icon, whatever t
   console.log(`[desktop-icons] grids: ${RUNS}, ${cells} icons placed, none lost or stacked`);
 });
 
-test('icons: the first pins open their windows (Rozmowy = the conversation list); trash greyed with its reason; unknown prefix = fallback', () => {
+test('icons: the first pins open their windows (Rozmowy = the conversation list); the trash opens its window (D4); unknown prefix = fallback', () => {
   const rows = I.resolveDeclaration(undefined, 'phone').pins.seed.map((address, order) => ({ node: `n_${order}`, address, nodeLabel: address, nodeKind: 'x', order }));
   const icons = rows.map(r => I.iconOf(r, 'pl', entries));
   const by = Object.fromEntries(icons.map(i => [i.address, i]));
@@ -103,7 +103,7 @@ test('icons: the first pins open their windows (Rozmowy = the conversation list)
   assert.deepEqual(by['party:self'].open, { target: { panel: 'navigator' }, focus: 'party:self' });
   assert.equal(by['area:knowledge'].open.focus, 'area:knowledge');
   assert.equal(by['kind:settings'].status, 'available');
-  assert.equal(by['trash:'].status, 'planned'); assert.ok(by['trash:'].reason.length > 3);
+  assert.equal(by['trash:'].status, 'available'); assert.deepEqual(by['trash:'].open.target, { panel: 'trash' });   // R101 D4
   assert.equal(I.iconOf({ node: 'n', address: 'kind:request_inspector', nodeLabel: 'kind:request_inspector', nodeKind: 'window_kind', order: 0 }, 'pl', entries).status, 'available', 'P0 gap: request opens now');
   const odd = I.iconOf({ node: 'n', address: 'weird:x', nodeLabel: 'weird:x', nodeKind: 'address', order: 0, labelOverride: 'Moje' }, 'en', entries);
   assert.equal(odd.label, 'Moje'); assert.equal(odd.open.focus, 'weird:x');

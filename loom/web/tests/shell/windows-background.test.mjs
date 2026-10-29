@@ -34,7 +34,7 @@ test('the desktop is a window of mode background seen through the adapter; a lay
   const k = R.KINDS.find(x => x.id === 'desktop');
   assert.equal(k.mode, 'background');
   assert.equal(k.component, 'Desktop');
-  assert.equal(R.KINDS.find(x => x.id === 'trash').status, 'planned');
+  assert.equal(R.KINDS.find(x => x.id === 'trash').status, 'present');   // R101 D4: the trash window
 });
 
 test('close on the desktop is a noop with desktop_not_closable; dock/float/move/maximize/minimize = desktop_fixed; open = desktop_one', () => {
@@ -84,7 +84,7 @@ test('the desktop kind is listed on the desktop (never hidden) with the reason t
   const d = e.find(x => x.kind === 'desktop');
   assert.equal(d.status, 'cannot_open');
   assert.ok(d.reason.length > 20);
-  assert.equal(e.find(x => x.kind === 'trash').status, 'planned');
+  assert.notEqual(e.find(x => x.kind === 'trash').status, 'planned');   // R101 D4
 });
 
 // ---------- generative ----------

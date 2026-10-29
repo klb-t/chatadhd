@@ -107,7 +107,17 @@
         "desktop.declare",
         "artifact.open",
         "artifact.copy",
-        "artifact.save"
+        "artifact.save",
+        "trash.list",
+        "trash.restore",
+        "conversation.trash",
+        "conversation.untrash",
+        "memory.trash",
+        "memory.untrash",
+        "pin.trash",
+        "pin.untrash",
+        "layout.trash",
+        "layout.untrash"
       ]
     },
     "on_reject": {

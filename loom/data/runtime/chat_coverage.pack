@@ -3129,11 +3129,7 @@
           "memory.trash",
           "pin.trash"
         ],
-        "surfaces": {
-          "http": [
-            "GET /api/conversations?trashed=hide|show|only"
-          ]
-        },
+        "surfaces": {},
         "examples": {
           "pl": "przenieś rozmowę o wakacjach do kosza",
           "en": "move the conversation about holidays to the trash"
