@@ -17,5 +17,5 @@ gcloud workflows deploy resize-vm --location "$REGION" --source "$here/resize_vm
   --description "one-off machine type change (chatadhd tools/gcp/resize_vm.sh)" >/dev/null
 [ "$DEPLOY_ONLY" = 1 ] && { echo "workflow resize-vm deployed; not run"; exit 0; }
 arg="$(printf '{"project":"%s","zone":"%s","instance":"%s","machine_type":"%s"}' "$PROJECT" "$ZONE" "$INSTANCE" "$TYPE")"
-gcloud workflows run resize-vm --location "$REGION" --data "$arg" --async
+gcloud workflows execute resize-vm --location "$REGION" --data "$arg"
 echo "resize to $TYPE started; the VM stops now and comes back in a few minutes"
