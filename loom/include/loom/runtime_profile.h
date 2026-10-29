@@ -4,6 +4,7 @@
 #pragma once
 
 #include <filesystem>
+#include <memory>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -30,10 +31,10 @@ class RuntimeProfile {
   Result<RuntimeProfile> with_patch(const Json& patch) const;
   Result<RuntimeProfile> with_overlay(const Json& document) const;
 
-  const Json& values() const noexcept { return values_; }
-  const Json& definition() const noexcept { return definition_; }
-  const Json& defaults() const { return definition_.at("defaults"); }
-  const Json& value_schema() const { return definition_.at("value_schema"); }
+  const Json& values() const noexcept { return *values_; }
+  const Json& definition() const noexcept { return *definition_; }
+  const Json& defaults() const { return definition_->at("defaults"); }
+  const Json& value_schema() const { return definition_->at("value_schema"); }
   // Preset construction sources, not user-layer origins. Raw byte identity
   // is deliberately separate from the historical definition/values hash.
   const Json& source_provenance() const noexcept { return source_provenance_; }
@@ -46,8 +47,13 @@ class RuntimeProfile {
   static std::vector<std::string> domains();
 
  private:
-  Json definition_;
-  Json values_;
+  // Immutable after construction and shared by copies (copy = two reference counts, not a deep copy of a document that
+  // can be hundreds of KB: the embedded presets are copied on every load()). Nothing writes through these pointers, so
+  // copies held by different runtimes and threads read the same tree concurrently (const nlohmann reads only); a new
+  // value set (overlay, overrides, patch) always builds a new tree. Never null.
+  static std::shared_ptr<const Json> null_json();
+  std::shared_ptr<const Json> definition_ = null_json();
+  std::shared_ptr<const Json> values_ = null_json();
   std::string domain_;
   std::string hash_;
   Json source_provenance_ = Json::array();

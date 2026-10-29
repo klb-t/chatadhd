@@ -244,13 +244,19 @@ Result<RuntimeProfile> RuntimeProfile::from_definition(const Json& definition, c
   LOOM_TRY(validate_schema(*schema, "/value_schema"));
   LOOM_TRY(validate_value(*defaults, *schema, "/defaults"));
   RuntimeProfile out;
-  out.definition_ = definition;
-  out.values_ = *defaults;
+  Json values = *defaults;
   out.domain_ = std::move(domain);
-  overlay(out.values_, overrides);
-  LOOM_TRY(validate_value(out.values_, *schema, "/values"));
-  out.hash_ = Sha256::hex(json::canonical(Json{{"definition", definition}, {"values", out.values_}}));
+  overlay(values, overrides);
+  LOOM_TRY(validate_value(values, *schema, "/values"));
+  out.hash_ = Sha256::hex(json::canonical(Json{{"definition", definition}, {"values", values}}));
+  out.definition_ = std::make_shared<const Json>(definition);
+  out.values_ = std::make_shared<const Json>(std::move(values));
   return out;
+}
+
+std::shared_ptr<const Json> RuntimeProfile::null_json() {
+  static const auto empty = std::make_shared<const Json>();
+  return empty;
 }
 
 Result<RuntimeProfile> RuntimeProfile::builtin(std::string_view domain) {
@@ -304,7 +310,7 @@ Result<RuntimeProfile> RuntimeProfile::load(std::string_view domain, const std::
 Result<RuntimeProfile> RuntimeProfile::with_overrides(const Json& overrides) const {
   if (!overrides.is_object()) return invalid("/overrides", "expected a partial object");
   if (overrides.empty()) return *this;
-  Json changes = values_;
+  Json changes = *values_;
   overlay(changes, overrides);
   return with_values(changes);
 }
@@ -312,14 +318,14 @@ Result<RuntimeProfile> RuntimeProfile::with_overrides(const Json& overrides) con
 Result<RuntimeProfile> RuntimeProfile::with_values(const Json& values) const {
   LOOM_TRY(validate_value(values, value_schema(), "/values"));
   RuntimeProfile out = *this;
-  out.values_ = values;
-  out.hash_ = Sha256::hex(json::canonical(Json{{"definition", definition_}, {"values", values}}));
+  out.hash_ = Sha256::hex(json::canonical(Json{{"definition", *definition_}, {"values", values}}));
+  out.values_ = std::make_shared<const Json>(values);
   return out;
 }
 
 Result<RuntimeProfile> RuntimeProfile::with_patch(const Json& patch) const {
   if (!patch.is_array()) return invalid("/patch", "expected RFC 6902 operation array");
-  try { return with_values(values_.patch(patch)); }
+  try { return with_values(values_->patch(patch)); }
   catch (const Json::exception& e) { return invalid("/patch", e.what()); }
 }
 
@@ -340,12 +346,12 @@ Result<RuntimeProfile> RuntimeProfile::with_overlay(const Json& doc) const {
 
 Json RuntimeProfile::inspection() const {
   return Json{{"schema", "loom.runtime_profile_effective/1"}, {"domain", domain_},
-              {"revision", definition_["revision"]}, {"hash", hash_}, {"is_builtin", is_builtin()},
-              {"values", values_}, {"value_schema", value_schema()}, {"definition", definition_},
+              {"revision", (*definition_)["revision"]}, {"hash", hash_}, {"is_builtin", is_builtin()},
+              {"values", *values_}, {"value_schema", value_schema()}, {"definition", *definition_},
               {"defaults", defaults()}, {"source_provenance", source_provenance_}};
 }
 
-bool RuntimeProfile::is_builtin() const noexcept { return exact_equal(values_, definition_.at("defaults")); }
+bool RuntimeProfile::is_builtin() const noexcept { return exact_equal(*values_, definition_->at("defaults")); }
 
 std::vector<std::string> RuntimeProfile::domains() {
   std::vector<std::string> out;
