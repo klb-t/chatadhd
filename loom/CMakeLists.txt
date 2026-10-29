@@ -410,6 +410,13 @@ if(LOOM_BUILD_TESTS)
     set_tests_properties(server.guest_protection_mechanisms PROPERTIES
       ENVIRONMENT "LOOM_SERVER_BIN=$<TARGET_FILE:loom-server>;PYTHONDONTWRITEBYTECODE=1"
       TIMEOUT 900)
+    # zero: every limit at 0 = no limit, exceeding the presets (21 sessions, 63 model requests); its own part because on ASan
+    # a guest start costs ~4.5 s and a model request ~6 s of server CPU (measured 2026-10-29).
+    add_test(NAME server.guest_protection_zero
+      COMMAND ${Python3_EXECUTABLE} ${LOOM_ROOT}/server/tests/test_server_guest_protection.py zero)
+    set_tests_properties(server.guest_protection_zero PROPERTIES
+      ENVIRONMENT "LOOM_SERVER_BIN=$<TARGET_FILE:loom-server>;PYTHONDONTWRITEBYTECODE=1"
+      TIMEOUT 900)
     add_test(NAME server.security
       COMMAND ${Python3_EXECUTABLE} ${LOOM_ROOT}/server/tests/test_server_security.py)
     # 68 s on a dev build (2026-10-28); ASan runs it ~5x slower and the suite grew (11b-11d, catalogue routes), so 300 s
