@@ -29,7 +29,7 @@ const locales = viewPack.entries.find(r => r.key === "presentation.accounts").va
 // pack locale the page shows, so it checks the data, not one language.
 let words = locales.pl;
 const say = (id, params = {}) => { assert.ok(typeof words[id] === "string", `the pack has the word ${id}`); return words[id].replace(/\{\{(\w+)\}\}/g, (_, k) => params[k] ?? ""); };
-const TTL = 6;
+const TTL = 10;  // margin for a loaded gate machine: a guest must not idle out between two steps
 const FAKE_KEY = "sk-guest-e2e-not-a-real-key";
 
 const freePort = () => new Promise((res, rej) => { const s = net.createServer(); s.listen(0, "127.0.0.1", () => { const { port } = s.address(); s.close(() => res(port)); }); s.on("error", rej); });

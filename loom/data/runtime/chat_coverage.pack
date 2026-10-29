@@ -3225,12 +3225,13 @@
         "id": "session",
         "category": "session",
         "reason": {
-          "en": "Signing in, out, registering and changing the own password are the session of the transport (the account of the server); a password never passes through the conversation, and the kernel does not see who is signed in.",
-          "pl": "Logowanie, wylogowanie, rejestracja i zmiana własnego hasła to sesja transportu (konto serwera); hasło nie przechodzi przez rozmowę, a jądro nie widzi, kto jest zalogowany."
+          "en": "Signing in, out, registering, changing the own password and starting a session without an account (guest, R103) are the session of the transport (the account of the server); a password never passes through the conversation, the kernel does not see who is signed in, and a guest session exists before any conversation.",
+          "pl": "Logowanie, wylogowanie, rejestracja, zmiana własnego hasła i rozpoczęcie sesji bez konta (gość, R103) to sesja transportu (konto serwera); hasło nie przechodzi przez rozmowę, jądro nie widzi, kto jest zalogowany, a sesja gościa powstaje przed jakąkolwiek rozmową."
         },
         "surfaces": {
           "http": [
             "GET /api/auth/me",
+            "POST /api/auth/guest",
             "POST /api/auth/login",
             "POST /api/auth/logout",
             "POST /api/auth/password",

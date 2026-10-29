@@ -26,7 +26,11 @@ BIN = os.environ.get("LOOM_SERVER_BIN", "loom-server")
 HERE = Path(__file__).resolve().parent
 MOCK = HERE.parent.parent / "web" / "e2e" / "mock_llm_server.py"
 FAKE_KEY = "sk-guest-test-not-a-real-key-0123456789"  # a test value for the mock; no real key is used anywhere
-TTL = 4
+# Idle time after which a guest is removed. The guests are created only after the account's registration (Argon2id
+# can take seconds on a loaded machine) and every guest is used again well within this window; only the TTL phase
+# leaves them idle. Measured cause of a gate failure with 4 s: the registration ran while guest A was idle, A was
+# (correctly) swept, and the next listing answered 401.
+TTL = 12
 
 
 def free_port() -> int:
@@ -113,6 +117,10 @@ def main() -> int:
                 assert me0["guests"]["enabled"] and me0["guests"]["start"] == "auto" and "guest" not in me0, me0
                 assert requests.get(b + "/api/conversations", timeout=10).status_code == 401
 
+                acc = requests.Session()
+                r = acc.post(b + "/api/auth/register", json={"login": "owner", "password": "owner-password-1"}, timeout=60)
+                assert r.status_code in (200, 201), (r.status_code, r.text)
+
                 ga, gb = requests.Session(), requests.Session()
                 ra = ga.post(b + "/api/auth/guest", json={}, timeout=30)
                 assert ra.status_code == 201, (ra.status_code, ra.text)
@@ -152,10 +160,7 @@ def main() -> int:
                 assert "provider_terms" in msgs.text and "The test provider keeps nothing." in msgs.text, msgs.text[:2000]
                 print("PASS guest chat through the free model; key in memory only")
 
-                # 3. an account on the same server
-                acc = requests.Session()
-                r = acc.post(b + "/api/auth/register", json={"login": "owner", "password": "owner-password-1"}, timeout=60)
-                assert r.status_code in (200, 201), (r.status_code, r.text)
+                # 3. an account on the same server (registered before the guests: see TTL)
                 conv_o = acc.post(b + "/api/conversations", json={"title": "Konto właściciela"}, timeout=10).json()["id"]
                 user_dir = next((root / "users").iterdir())
                 me_acc = acc.get(b + "/api/auth/me", timeout=10).json()
@@ -167,7 +172,9 @@ def main() -> int:
                                  f"/api/conversations/{other_conv}/export?format=json"):
                         r = who.get(b + path, timeout=10)
                         assert r.status_code >= 400 or ("Ala ma kota" not in r.text and "Konto" not in r.text), (path, r.status_code, r.text[:300])
-                    titles = [c.get("title") for c in who.get(b + "/api/conversations", timeout=10).json()]
+                    listing = who.get(b + "/api/conversations", timeout=10)
+                    assert listing.status_code == 200 and isinstance(listing.json(), list), (listing.status_code, listing.text[:300])
+                    titles = [c.get("title") for c in listing.json()]
                     assert "Rozmowa gościa A" not in titles or who is ga
                     assert "Konto właściciela" not in titles or who is acc
                 for p in (str(dir_a), str(dir_a / "chatadhd.db"), str(user_dir), str(root / "accounts.sqlite"), str(root),
@@ -182,6 +189,7 @@ def main() -> int:
                 print("PASS isolation: two guests and an account")
 
                 # 5. after idle_ttl: the session no longer works and the directory is gone; the account stays
+                assert ga.get(b + "/api/auth/me", timeout=10).json()["guest"]["id"] == id_a  # alive while used
                 deadline = time.time() + TTL + 1.5
                 while time.time() < deadline:
                     acc.get(b + "/api/healthz", timeout=10)
