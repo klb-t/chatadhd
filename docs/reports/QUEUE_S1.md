@@ -1,5 +1,7 @@
 # Kolejka S1 — stan 2026-10-27 12:15 UTC (nagłówek daty aktualizuje ten, kto pisze wpis; gcp pisze od 24.10)
 
+## Luka „wolny czat gościa” (sesja chatadhd, 2026-10-29, po 3b761ba2): jedno żądanie czatu gościa na atrapie dostawcy trwa ok. 0,5 s lokalnie i ok. 1,5 s na CI (pomiar z server.guest_protection) — za wolno jak na atrapę. Kandydaci: `prepare_guest_source` (wybór źródła przy każdym żądaniu?), otwieranie kontekstu gościa. Do zmierzenia profilerem i naprawy osobnym pakietem. Także: wspólny helper e2e do transpilacji src/api/*.ts z rekurencyjnym mapowaniem importów (po D4).
+
 ## Luka „zgubione dotknięcie” (sesja chatadhd, 2026-10-28, aab5dff3): w e2e conversation-view-native drugie dotknięcie „read-conversation-sources” po nieudanym wysłaniu czasem nie wysyła żadnego POST /view (odtworzone lokalnie 1/10; CI 499bba03). Naprawiony obok prawdziwy wyścig (odświeżenie metadanych porzucało wynik jawnego odczytu), ale test dostał powtórzenie dotknięcia (do 5 razy) — to MASKUJE możliwy błąd UX. Plan: ślad Playwrighta przy porażce (DOM w chwili dotknięcia) → poprawka produktu → usunąć powtórzenia z testu.
 
 ## Kolejka sesji chatadhd (2026-10-28): R101 P0 (mechanizm pulpitu, w toku) → D1…D10 wg `PULPIT_R101_2026-10-28.md` §14 → W11 (projekt `W11A_STRUKTURA_PROJEKTU_2026-10-28.md` gotowy i sprawdzony). Luka po serii D: NavigatorMap rysuje SVG (element DOM na znak) — przenieść na WebGL/canvas jak pulpit (three.js jest w zależnościach), bo przy tysiącach węzłów będzie wolno. `tools/gate.sh` ma od 5f07287e krok `onbpack` (gen_onboarding_pack --check).
