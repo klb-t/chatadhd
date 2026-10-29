@@ -89,8 +89,8 @@
           "pl": "Eksport Grok (xAI)"
         },
         "loom": {
-          "en": "Loom export",
-          "pl": "Eksport Loom"
+          "en": "ChatADHD export",
+          "pl": "Eksport ChatADHD"
         },
         "unknown": {
           "en": "Export of an unrecognised provider",

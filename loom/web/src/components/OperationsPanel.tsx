@@ -131,7 +131,7 @@ export default function OperationsPanel({ operations, profiles = [], adapterEvid
     </section>
     <section aria-label="Operation capabilities">
       <h3>Operation capabilities</h3>
-      <p>Statuses describe installed Loom adapters. Matching an original application's workflow requires separate evidence.</p>
+      <p>Statuses describe installed adapters. Matching an original application's workflow requires separate evidence.</p>
       {evidence.map(entry => <div className="operation-evidence" key={JSON.stringify([entry.operation, entry.capability])} data-testid="operation-evidence" data-operation={entry.operation} data-status={entry.status}>
         <code>{entry.operation}</code>: <span>{entry.status}</span><p>{entry.detail}</p><details><summary>Evidence</summary><pre>{JSON.stringify(entry, null, 2)}</pre></details>
       </div>)}

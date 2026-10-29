@@ -400,11 +400,11 @@ function ApplicationView({ profile: inputProfile, profiles: inputProfiles, viewI
         {profile.evidence.gaps.map((gap, index) => <p key={index}>{gap}</p>)}
         <details><summary>Profile JSON and bindings</summary><pre>{source?.text ?? JSON.stringify(profile, null, 2)}</pre></details>
         <ul>{profile.evidence.sources.map((source, i) => <li key={i}><a href={source.url} target="_blank" rel="noopener noreferrer">Reference {i + 1}</a>{source.revision && ` @ ${source.revision}`} {source.note}</li>)}</ul>
-        <p>Installed Loom adapters execute these operations. Live inference requires the selected provider; original-service parity is unverified.</p>
+        <p>Installed adapters execute these operations. Live inference requires the selected provider; original-service parity is unverified.</p>
         <label>Workflow inputs (JSON)<textarea aria-label="Workflow inputs JSON" value={workflowInputs} onChange={e => setWorkflowInputs(e.target.value)} /></label>
         <p>Profiles select the fields stored in workflow variables. Input fields are passed only to the selected action; existing profiles without bindings use this JSON as their payload.</p>
         <ul>{profile.actions.map(action => <li key={action.id}>{action.label}: {
-          [...availability.requiredGaps, ...availability.optionalGaps].some(g => g.action_id === action.id) ? "unavailable" : "Loom adapter available"
+          [...availability.requiredGaps, ...availability.optionalGaps].some(g => g.action_id === action.id) ? "unavailable" : "adapter available"
         }</li>)}</ul>
         {profile.workflows.map(workflow => {
           const state = currentProfileSession?.workflows[workflow.id] ?? workflow.initial;

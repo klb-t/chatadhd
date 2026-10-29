@@ -183,8 +183,8 @@
             "data_directory"
           ],
           "label": {
-            "en": "Holds the Loom data (conversations, graph, settings)",
-            "pl": "Trzyma dane Loom (rozmowy, graf, ustawienia)"
+            "en": "Holds the ChatADHD data (conversations, graph, settings)",
+            "pl": "Trzyma dane ChatADHD (rozmowy, graf, ustawienia)"
           }
         }
       },

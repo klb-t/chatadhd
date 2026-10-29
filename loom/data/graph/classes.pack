@@ -427,8 +427,8 @@
     },
     "vendor:loom": {
       "label": {
-        "en": "From Loom",
-        "pl": "Od Loom"
+        "en": "From ChatADHD",
+        "pl": "Od ChatADHD"
       },
       "description": "Made by this application (its own export)."
     },
@@ -1779,8 +1779,8 @@
     },
     "export.loom": {
       "label": {
-        "en": "Loom export",
-        "pl": "Eksport Loom"
+        "en": "ChatADHD export",
+        "pl": "Eksport ChatADHD"
       },
       "parent": "export",
       "traits": [

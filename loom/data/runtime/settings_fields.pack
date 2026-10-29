@@ -27,7 +27,7 @@
         "edit": "read_only",
         "label_pl": "tylko_odczyt",
         "enforced": true,
-        "meaning": "Maintained by Loom; writes through config APIs are rejected."
+        "meaning": "Maintained by the app; writes through config APIs are rejected."
       },
       {
         "id": "require_confirmation",

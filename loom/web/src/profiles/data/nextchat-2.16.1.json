@@ -44,18 +44,18 @@
       {
         "url": "https://github.com/ChatGPTNextWeb/NextChat/blob/557a2cce357749c6fb3176d42e03ff6f7de4d355/app/components/chat-list.tsx",
         "revision": "557a2cce357749c6fb3176d42e03ff6f7de4d355",
-        "note": "Conversation-list selection is implemented through selectSession; Loom uses its own stable conversation IDs."
+        "note": "Conversation-list selection is implemented through selectSession; ChatADHD uses its own stable conversation IDs."
       }
     ],
     "gaps": [
       "This maps selected NextChat 2.16.1 source behavior; it does not establish fidelity to any version of ChatGPT, Claude or Gemini's native app.",
       "No pixel comparison was run against a deployed NextChat instance. Fonts, icons, avatars, per-role bubble surfaces, exact borders, responsive message percentages, draggable/narrow sidebar and mobile navigation remain partial.",
-      "The 900-pixel content width is a Loom desktop projection of a 1200-pixel source window minus the 300-pixel sidebar, not the source's responsive layout. The muted token reuses source text color; border alpha is rounded to an 8-bit hex color.",
+      "The 900-pixel content width is a ChatADHD desktop projection of a 1200-pixel source window minus the 300-pixel sidebar, not the source's responsive layout. The muted token reuses source text color; border alpha is rounded to an 8-bit hex color.",
       "Alternative Alt/Ctrl/Shift/Meta Enter settings, Safari keyCode 229 handling, prompt hints, colon commands and ArrowUp last-input recall are not reproduced by the selected composer preset.",
-      "Loom edits preserve prior versions; the source mutates stored message content in place. The source Retry deletes the original user/assistant rows before resending and is intentionally not advertised as implemented.",
+      "ChatADHD edits preserve prior versions; the source mutates stored message content in place. The source Retry deletes the original user/assistant rows before resending and is intentionally not advertised as implemented.",
       "Masks, source context compression, artifacts, images, MCP/plugins, voice/realtime chat, provider-specific request compilation and source persistence require additional adapters; model and context choices remain independent.",
-      "Source Stop can stop all pending responses; the current Loom control cancels its selected request/subscription rather than reproducing the global pool behavior.",
-      "conversation-review and Inspect Loom knowledge are explicit Loom additions, not claims about NextChat's native workflow."
+      "Source Stop can stop all pending responses; the current ChatADHD control cancels its selected request/subscription rather than reproducing the global pool behavior.",
+      "conversation-review and Inspect ChatADHD knowledge are explicit ChatADHD additions, not claims about NextChat's native workflow."
     ]
   },
   "presentation": {
@@ -80,7 +80,7 @@
     { "id": "cancel", "label": "Stop", "operation": "chat.cancel", "capability": "chat.cancel", "required": true },
     { "id": "rename", "label": "Rename chat", "operation": "chat.rename", "capability": "chat.rename", "required": true },
     { "id": "edit", "label": "Edit message", "operation": "message.edit", "capability": "message.edit", "required": true },
-    { "id": "knowledge", "label": "Inspect Loom knowledge", "operation": "knowledge.open", "capability": "knowledge.open", "required": false }
+    { "id": "knowledge", "label": "Inspect ChatADHD knowledge", "operation": "knowledge.open", "capability": "knowledge.open", "required": false }
   ],
   "workflows": [
     {

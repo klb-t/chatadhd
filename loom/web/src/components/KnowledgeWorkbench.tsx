@@ -95,7 +95,7 @@ export default function KnowledgeWorkbench({ onClose, onDataChanged, profileHost
   return <section className={`knowledge-workbench kb-profile-${workspace.profile}`} aria-label="Knowledge workbench" data-testid="knowledge-workbench">
     <header className="kb-heading"><div><h2>Knowledge workbench</h2><p>Compose views, choose parameter links, or unlink an independent reference. Perspectives are saved in this browser.</p></div>
       <button className="icon-btn" aria-label="Close knowledge workbench" onClick={onClose}>×</button></header>
-    {!knowledge ? <div className="empty-state" role="status">The knowledge workbench is not available through this Android bridge yet. Open Loom through its HTTP server to use knowledge analysis.</div> : <>
+    {!knowledge ? <div className="empty-state" role="status">The knowledge workbench is not available through this Android bridge yet. Open the app through its HTTP server to use knowledge analysis.</div> : <>
       <div className="kb-toolbar">
         <label>Knowledge run<select aria-label="Knowledge run" value={runId} onChange={(event) => { setWorkspace((w) => setWorkspaceRun(w, event.target.value)); setInspection(null); }}>
           {!runs.some((r) => r.id === runId) && <option value={runId}>{runId ? `Unavailable · ${runId}` : "No run yet"}</option>}
@@ -246,7 +246,7 @@ function RunControls({ knowledge, onDone }: { knowledge: KnowledgeApi; onDone: (
     finally { setRunning(false); }
   };
   return <details className="kb-run-controls"><summary>Analyze sources</summary>
-    <div className="kb-run-form"><label>Paths on the Loom server, one per line<textarea aria-label="Analysis source paths" rows={2} placeholder="/data/exports/archive.zip" value={sources} onChange={(event) => setSources(event.target.value)} /></label>
+    <div className="kb-run-form"><label>Paths on the server, one per line<textarea aria-label="Analysis source paths" rows={2} placeholder="/data/exports/archive.zip" value={sources} onChange={(event) => setSources(event.target.value)} /></label>
       <label className="kb-check"><input type="checkbox" checked={full} onChange={(event) => setFull(event.target.checked)} />Import all catalogued source content (full mode)</label>
       <label className="kb-check"><input type="checkbox" checked={priors} onChange={(event) => setPriors(event.target.checked)} />Include candidate principles from the data pack</label>
       <label className="kb-check"><input type="checkbox" checked={useModel} disabled={running} onChange={(event) => setUseModel(event.target.checked)} />Use the configured semantic model for candidate proposals</label>
@@ -625,7 +625,7 @@ function CatalogPane({ knowledge, onSelect, refresh, onImported, parameters, cha
   };
   return <div className="kb-catalog">
     <details className="kb-detail"><summary>Catalog a source without importing</summary>
-      <label>Paths on the Loom server<textarea aria-label="Catalog source paths" rows={2} value={sources} onChange={(event) => setSources(event.target.value)} placeholder="/data/exports/archive.zip" /></label>
+      <label>Paths on the server<textarea aria-label="Catalog source paths" rows={2} value={sources} onChange={(event) => setSources(event.target.value)} placeholder="/data/exports/archive.zip" /></label>
       <button disabled={busy || !sources.trim()} onClick={() => action(() => knowledge.catalogScan({ sources: sources.split("\n").map((path) => path.trim()).filter(Boolean), retain_raw: "selected" }), true)}>Scan sources</button>
     </details>
     <button disabled={busy} onClick={() => action(async () => { const scores = await knowledge.catalogScore({ llm: "off" }); const selection = await knowledge.catalogSelect(); return { scores, selection }; }, true)}>Score and select with catalog profile</button>

@@ -17,7 +17,7 @@
     <string name="conn_err_https_required">HTTPS is required. Plain HTTP can be allowed below, for a LAN address only.</string>
     <string name="conn_err_http_not_lan">Plain HTTP is allowed only for LAN addresses (192.168.x.x, 10.x.x.x, *.local…).</string>
     <string name="conn_err_unreachable">Cannot reach the server: %1$s</string>
-    <string name="conn_err_not_loom">This address does not look like a Loom server (HTTP %1$d).</string>
+    <string name="conn_err_not_loom">This address does not look like a ChatADHD server (HTTP %1$d).</string>
     <!-- F2: data location (a setting), warning for shared storage, move with verification, Keystore-sealed API keys -->
     <string name="storage_open">Data location…</string>
     <string name="storage_auto_migrate_opt">Move data from shared to private storage automatically (once, copy and verify; the old folder is kept)</string>

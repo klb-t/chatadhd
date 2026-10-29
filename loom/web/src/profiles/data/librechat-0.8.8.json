@@ -34,7 +34,7 @@
       {
         "url": "https://github.com/LibreChat-AI/LibreChat/blob/e8f3be08623663d4ad7f7241e693c94469b63bb0/client/src/style.css",
         "revision": "e8f3be08623663d4ad7f7241e693c94469b63bb0",
-        "note": "Dark-theme color projection; six Loom tokens cannot preserve every source component surface."
+        "note": "Dark-theme color projection; six ChatADHD tokens cannot preserve every source component surface."
       },
       {
         "url": "https://github.com/LibreChat-AI/LibreChat/blob/e8f3be08623663d4ad7f7241e693c94469b63bb0/client/src/components/UnifiedSidebar/constants.ts",
@@ -44,7 +44,7 @@
       {
         "url": "https://github.com/LibreChat-AI/LibreChat/blob/e8f3be08623663d4ad7f7241e693c94469b63bb0/client/src/components/Chat/Messages/Content/EditMessage.tsx",
         "revision": "e8f3be08623663d4ad7f7241e693c94469b63bb0",
-        "note": "Source distinguishes saving an edit from rerunning a turn; this profile exposes only the Loom edit equivalent."
+        "note": "Source distinguishes saving an edit from rerunning a turn; this profile exposes only the ChatADHD edit equivalent."
       }
     ],
     "gaps": [
@@ -52,9 +52,9 @@
       "No pixel comparison was run against a deployed LibreChat instance. Fonts, icons, typed message blocks, parallel responses, responsive breakpoints, sidebar resizing and collapsed/mobile navigation remain partial.",
       "The source has more theme surfaces than the six profile tokens. The 896-pixel desktop column is a fixed projection of the source's responsive XL column, not its complete layout.",
       "Custom shortcut overrides, Ctrl/Meta+Shift+Enter, during-run steering, queueing, interrupt-and-send and answer-mode composer routing are not reproduced.",
-      "Loom edits preserve prior versions. LibreChat save-only, update-and-rerun, answer rerun and complete branch navigation are distinct operations not reproduced by message.edit alone.",
-      "Agents, MCP, Skills, attachments, artifacts, provider-specific request assembly, service memory, resumable streams and multi-user authorization need additional adapters; the selected Loom provider and context remain independent.",
-      "conversation-review and Inspect Loom knowledge are explicit Loom additions, not claims about LibreChat's native workflow."
+      "ChatADHD edits preserve prior versions. LibreChat save-only, update-and-rerun, answer rerun and complete branch navigation are distinct operations not reproduced by message.edit alone.",
+      "Agents, MCP, Skills, attachments, artifacts, provider-specific request assembly, service memory, resumable streams and multi-user authorization need additional adapters; the selected ChatADHD provider and context remain independent.",
+      "conversation-review and Inspect ChatADHD knowledge are explicit ChatADHD additions, not claims about LibreChat's native workflow."
     ]
   },
   "presentation": {
@@ -79,7 +79,7 @@
     { "id": "cancel", "label": "Stop", "operation": "chat.cancel", "capability": "chat.cancel", "required": true },
     { "id": "rename", "label": "Rename chat", "operation": "chat.rename", "capability": "chat.rename", "required": true },
     { "id": "edit", "label": "Edit message", "operation": "message.edit", "capability": "message.edit", "required": true },
-    { "id": "knowledge", "label": "Inspect Loom knowledge", "operation": "knowledge.open", "capability": "knowledge.open", "required": false }
+    { "id": "knowledge", "label": "Inspect ChatADHD knowledge", "operation": "knowledge.open", "capability": "knowledge.open", "required": false }
   ],
   "workflows": [
     {

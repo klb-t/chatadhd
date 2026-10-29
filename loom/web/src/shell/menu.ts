@@ -13,7 +13,7 @@ export type MenuTarget =
   | { kind: "knowledge" }
   | { kind: "unknown"; action: string };
 
-export const SHEETS = ["views", "semantic", "diagnostics", "windows", "layouts"] as const;   // windows: the switcher „Okna” (W2, switcher.style sheet)
+export const SHEETS = ["views", "semantic", "diagnostics", "windows", "layouts", "about"] as const;   // windows: the switcher „Okna” (W2, switcher.style sheet)
 export type SheetId = typeof SHEETS[number];
 
 /** The entries of the menu in the layout `czat`, in the order of the data. */

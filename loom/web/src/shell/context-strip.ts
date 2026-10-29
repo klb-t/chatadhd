@@ -29,7 +29,7 @@ export function pendingParts(waiting: Record<string, unknown>, t: ShellT, profil
 
 export interface StripView {
   mode: StripMode;
-  /** "Profil: Loom (preset)" or "Profil: z ustawień". */
+  /** "Profil: ChatADHD (preset)" or "Profil: z ustawień". */
   profileText: string;
   profileKnown: boolean;
   pending: string[];

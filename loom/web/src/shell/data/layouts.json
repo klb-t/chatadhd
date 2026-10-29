@@ -64,6 +64,11 @@
           "action": "panel:request"
         },
         {
+          "id": "about",
+          "label": "menu_about",
+          "action": "sheet:about"
+        },
+        {
           "id": "connection",
           "label": "menu_connection",
           "action": "connection",

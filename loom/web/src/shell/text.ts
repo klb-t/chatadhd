@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import { featureInLanguage, featureMessage } from "../onboarding/presentation.mjs";
+import { featureInLanguage, featureMessage, setProductName, productName } from "../onboarding/presentation.mjs";
 
 type Feature = Parameters<typeof featureMessage>[0];
 export type ShellT = (id: string, params?: Record<string, string>) => string;
@@ -9,11 +9,14 @@ export type ShellT = (id: string, params?: Record<string, string>) => string;
  * on a Polish screen — the key-parity unit tests keep the catalogs complete, this keeps a gap visible instead of switching the screen. */
 export function shellTranslator(feature: Feature | null | undefined, language: string): ShellT {
   const f = feature ? featureInLanguage(feature, language, { partial: true }) : null;
+  if (f && typeof f.catalog.product_name === "string") setProductName(f.catalog.product_name);
   return (id, params = {}) => {
     if (!f) return id;
     try { return featureMessage(f, id, params); } catch { return id; }
   };
 }
+/** The product name on screen (see presentation.mjs): for places outside the catalogs (tab title, placeholders). */
+export { productName };
 export const ShellText = createContext<ShellT>((id) => id);
 export const useShellText = (): ShellT => useContext(ShellText);
 /** The language of the shell words (ui_language or the browser's): for labels that come from data as {en, pl}. */

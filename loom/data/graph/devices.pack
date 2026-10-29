@@ -237,8 +237,8 @@
         "github_repo"
       ],
       "note": {
-        "en": "Loom HTTP server and GitHub sync endpoint.",
-        "pl": "Serwer HTTP Loom i punkt synchronizacji GitHub."
+        "en": "ChatADHD HTTP server and GitHub sync endpoint.",
+        "pl": "Serwer HTTP ChatADHD i punkt synchronizacji GitHub."
       }
     }
   }

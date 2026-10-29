@@ -254,7 +254,7 @@ export function messageAddress(id: string): string {
   return `msg:${id.startsWith("m_") ? id.slice(2) : id}`;
 }
 
-/** The line under an answer: "Kontekst: Loom (preset) · pozycji: 12 · ~1240 tok. — zobacz"; without a receipt, the missing word in its place. */
+/** The line under an answer: "Kontekst: ChatADHD (preset) · pozycji: 12 · ~1240 tok. — zobacz"; without a receipt, the missing word in its place. */
 export function lineText(receipt: ContextReceipt | null, t: ShellT, language: string): string {
   if (!receipt) return t("line", { summary: t("missing") });
   const profile = profileName(receipt, language) ?? t("line.profile_none");
