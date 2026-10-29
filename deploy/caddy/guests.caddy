@@ -1,0 +1,25 @@
+# ChatADHD — the first wall in front of loom-server for use without an account (R103 B2). For package B3 to apply.
+#
+# Every number here is a PRESET (owner rule: nothing is a fixed cap); raise or remove any of them. None of them
+# replaces the limits inside loom-server (server_accounts.pack -> guests.protection): only the server knows which
+# session and which key a request belongs to. Caddy only stops floods early and cheaply.
+#
+# How to use (B3):
+#   1. In the site block of /etc/caddy/Caddyfile (managed by deploy/install.sh) add:   import /etc/caddy/chatadhd-guests.caddy
+#      and copy this file there. The reverse_proxy of the site block stays as it is (it sets X-Forwarded-For to the
+#      real client address, overwriting whatever the client sent).
+#   2. loom-server MUST then trust that header, or every guest shares the address 127.0.0.1 and the per-address limits
+#      hit everybody at once: overlay <accounts_root>/profiles/server_accounts.pack with
+#        {"schema":"loom.runtime_profile_overlay/1","domain":"server_accounts","overrides":{"throttle":{"trust_forwarded_for":true}}}
+#   3. Part B (guests-ratelimit.caddy, imported the same way) needs Caddy built with the rate-limit module (github.com/mholt/caddy-ratelimit):
+#        xcaddy build --with github.com/mholt/caddy-ratelimit      (check: caddy list-modules | grep rate_limit)
+#      and, in the global options block at the top of the Caddyfile:   order rate_limit before reverse_proxy
+#      Without the module, do not import guests-ratelimit.caddy — part A works with a stock Caddy.
+#   4. caddy validate --config /etc/caddy/Caddyfile && systemctl reload caddy
+
+# ── Part A: stock Caddy ────────────────────────────────────────────────────────────────────────────────────────
+# Starting a guest session carries only a challenge and a nonce: a large body there is never legitimate.
+@guest_start path /api/auth/guest /api/auth/guest/challenge
+request_body @guest_start {
+	max_size 4KB
+}

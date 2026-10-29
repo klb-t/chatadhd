@@ -1,0 +1,24 @@
+# ChatADHD — part B of the guest wall (R103 B2): needs Caddy built with github.com/mholt/caddy-ratelimit; see guests.caddy
+# for the steps (import it next to guests.caddy only when `caddy list-modules | grep rate_limit` shows the module).
+
+# ── Part B: caddy-ratelimit module (sliding windows per client address) ───────────────────────────────────────
+# Presets a little looser than the server's per-address limits (sessions_per_hour 20, chat_per_minute 60), so the
+# server answers first with its own words and retry_after; Caddy catches only what is clearly a script.
+rate_limit {
+	zone guest_start {
+		match {
+			path /api/auth/guest /api/auth/guest/challenge
+		}
+		key {remote_host}
+		events 60
+		window 1h
+	}
+	zone api_flood {
+		match {
+			path /api/*
+		}
+		key {remote_host}
+		events 1200
+		window 1m
+	}
+}

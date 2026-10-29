@@ -3205,6 +3205,19 @@
         }
       },
       {
+        "id": "guest_protection_summary",
+        "category": "health",
+        "reason": {
+          "en": "Counters of the guest protection for the server's operator (rejections per mechanism, the free pool's day, R103 B2): an operational probe without any content, not something to ask the model; a guest gets 403.",
+          "pl": "Liczniki ochrony gości dla operatora serwera (odrzucenia według mechanizmu, dzień darmowej puli, R103 B2): sonda operacyjna bez żadnej treści, nie coś do pytania modelu; gość dostaje 403."
+        },
+        "surfaces": {
+          "http": [
+            "GET /api/pool/summary"
+          ]
+        }
+      },
+      {
         "id": "pipeline_stages",
         "category": "internal",
         "reason": {
@@ -3225,12 +3238,13 @@
         "id": "session",
         "category": "session",
         "reason": {
-          "en": "Signing in, out, registering, changing the own password and starting a session without an account (guest, R103) are the session of the transport (the account of the server); a password never passes through the conversation, the kernel does not see who is signed in, and a guest session exists before any conversation.",
-          "pl": "Logowanie, wylogowanie, rejestracja, zmiana własnego hasła i rozpoczęcie sesji bez konta (gość, R103) to sesja transportu (konto serwera); hasło nie przechodzi przez rozmowę, jądro nie widzi, kto jest zalogowany, a sesja gościa powstaje przed jakąkolwiek rozmową."
+          "en": "Signing in, out, registering, changing the own password and starting a session without an account (guest, R103, with its proof-of-work challenge, R103 B2) are the session of the transport (the account of the server); a password never passes through the conversation, the kernel does not see who is signed in, and a guest session exists before any conversation.",
+          "pl": "Logowanie, wylogowanie, rejestracja, zmiana własnego hasła i rozpoczęcie sesji bez konta (gość, R103, z wyzwaniem dowodu pracy, R103 B2) to sesja transportu (konto serwera); hasło nie przechodzi przez rozmowę, jądro nie widzi, kto jest zalogowany, a sesja gościa powstaje przed jakąkolwiek rozmową."
         },
         "surfaces": {
           "http": [
             "GET /api/auth/me",
+            "GET /api/auth/guest/challenge",
             "POST /api/auth/guest",
             "POST /api/auth/login",
             "POST /api/auth/logout",
