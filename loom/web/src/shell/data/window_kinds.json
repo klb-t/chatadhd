@@ -493,7 +493,8 @@
    "status": "present",
    "note": "R101 D4: the trash window - the kernel's trash.list (conversations, memory entries, pins) plus the page's own layouts (trashed_at); Przywróć, Usuń na zawsze and Opróżnij kosz (both with consent: confirm:trash.empty / the page's question for a layout).",
    "state_keys": [
-    "params"
+    "params",
+    "scroll"
    ]
   }
  ],

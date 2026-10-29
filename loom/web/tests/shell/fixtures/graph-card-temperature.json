@@ -587,6 +587,18 @@
       "decision": "applicable",
       "label": "Wygląd pulpitu",
       "implementation": "planned"
+    },
+    {
+      "id": "layout.trash",
+      "decision": "applicable",
+      "label": "Przenieś układ do kosza",
+      "implementation": "planned"
+    },
+    {
+      "id": "layout.untrash",
+      "decision": "applicable",
+      "label": "Przywróć układ z kosza",
+      "implementation": "planned"
     }
   ],
   "breadcrumbs": [
