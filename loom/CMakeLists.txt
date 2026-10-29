@@ -396,11 +396,18 @@ if(LOOM_BUILD_TESTS)
     set_tests_properties(server.guest_vertex PROPERTIES
       ENVIRONMENT "LOOM_SERVER_BIN=$<TARGET_FILE:loom-server>;PYTHONDONTWRITEBYTECODE=1"
       TIMEOUT 240)
-    # R103 B2: guest protection - load from one address at the presets (≈ 2.5 min on a dev build: every model request
-    # of the debug server takes ≈ 0.9 s), every mechanism, proof of work, counters, 0 = no limit.
+    # R103 B2: guest protection, in two parts so each ends well inside its limit on a ~5x slower ASan runner (2026-10-29:
+    # the whole test took 213 s on dev and hit 900 s on CI asan). Every count runs on a frozen injected clock.
+    # load: one address at the presets, proof of work, counters (≈ 65 s on dev; every debug model request ≈ 1 s).
     add_test(NAME server.guest_protection
-      COMMAND ${Python3_EXECUTABLE} ${LOOM_ROOT}/server/tests/test_server_guest_protection.py)
+      COMMAND ${Python3_EXECUTABLE} ${LOOM_ROOT}/server/tests/test_server_guest_protection.py load)
     set_tests_properties(server.guest_protection PROPERTIES
+      ENVIRONMENT "LOOM_SERVER_BIN=$<TARGET_FILE:loom-server>;PYTHONDONTWRITEBYTECODE=1"
+      TIMEOUT 900)
+    # mechanisms: every other mechanism on its own server, and every preset at 0 = no limit.
+    add_test(NAME server.guest_protection_mechanisms
+      COMMAND ${Python3_EXECUTABLE} ${LOOM_ROOT}/server/tests/test_server_guest_protection.py mechanisms)
+    set_tests_properties(server.guest_protection_mechanisms PROPERTIES
       ENVIRONMENT "LOOM_SERVER_BIN=$<TARGET_FILE:loom-server>;PYTHONDONTWRITEBYTECODE=1"
       TIMEOUT 900)
     add_test(NAME server.security

@@ -3,8 +3,10 @@
 
 #include <algorithm>
 #include <cctype>
+#include <cmath>
 #include <chrono>
 #include <cstdio>
+#include <fstream>
 #include <thread>
 
 #include "loom/runtime_profile.h"
@@ -124,6 +126,9 @@ Result<Settings> load_settings(const std::filesystem::path& root) {
     s.guests.start = g.value("start", std::string("auto"));
     s.guests.sweep_interval_seconds = g.value("sweep_interval_seconds", std::int64_t(60));
     s.guests.keys_file = g.value("keys_file", std::string());
+    // The guests' test clock lives with the protection's (one file for every guest timing; the pack has no value).
+    if (const Json* pc = json::find(g, "protection"); pc && pc->is_object() && pc->contains("clock") && (*pc)["clock"].is_object())
+      s.guests.clock_file = (*pc)["clock"].value("file", std::string());
     if (g.contains("workdir") && g["workdir"].is_object()) {
       const Json& w = g["workdir"];
       s.guests.workdir_subdir = w.value("subdir", std::string("guests"));
@@ -412,11 +417,21 @@ bool AccountStore::valid_guest_id(const std::string& id) {
 std::filesystem::path AccountStore::guests_root() const { return root_ / settings_.guests.workdir_subdir; }
 std::filesystem::path AccountStore::guest_dir(const std::string& guest_id) const { return guests_root() / guest_id; }
 
+std::int64_t AccountStore::guest_now() const {
+  const std::string& file = settings_.guests.clock_file;
+  if (file.empty()) return now_s();
+  std::lock_guard lk(clock_mu_);
+  std::ifstream f(file);
+  double v = 0;
+  if (f >> v) clock_last_ = static_cast<std::int64_t>(std::floor(v));
+  return clock_last_ >= 0 ? clock_last_ : now_s();
+}
+
 Result<GuestSession> AccountStore::create_guest_session() {
   GuestSession g;
   g.token = cs::to_hex(random_bytes(settings_.session_token_bytes));
   g.guest_id = "g_" + cs::to_hex(random_bytes(8));
-  g.started = now_s();
+  g.started = guest_now();
   const std::int64_t ttl = settings_.guests.idle_ttl_seconds;
   const std::int64_t life = settings_.session_lifetime_seconds;
   g.expires = g.started + (ttl > 0 ? std::min(ttl, life) : life);
@@ -438,7 +453,7 @@ Result<std::optional<Guest>> AccountStore::find_guest_session(const std::string&
   LOOM_TRY_ASSIGN(bool row, st.step());
   if (!row) return std::optional<Guest>{};
   Guest g{st.get_text(0), st.get_int(1), st.get_int(2)};
-  const std::int64_t exp = st.get_int(3), now = now_s();
+  const std::int64_t exp = st.get_int(3), now = guest_now();
   st = sql::Stmt();
   const std::int64_t ttl = settings_.guests.idle_ttl_seconds;
   if (exp < now || (ttl > 0 && now - g.last_seen > ttl)) return std::optional<Guest>{};  // the sweep removes it with its directory
@@ -454,7 +469,7 @@ Status AccountStore::revoke_guest_session(const std::string& token) {
 
 Result<std::vector<std::string>> AccountStore::sweep_guests() {
   std::vector<std::string> gone;
-  const std::int64_t now = now_s(), ttl = settings_.guests.idle_ttl_seconds;
+  const std::int64_t now = guest_now(), ttl = settings_.guests.idle_ttl_seconds;
   std::vector<std::string> live;
   {
     std::lock_guard lk(mu_);
@@ -480,7 +495,7 @@ Result<std::vector<std::string>> AccountStore::sweep_guests() {
 }
 
 Result<std::int64_t> AccountStore::live_guest_count() {
-  const std::int64_t now = now_s(), ttl = settings_.guests.idle_ttl_seconds;
+  const std::int64_t now = guest_now(), ttl = settings_.guests.idle_ttl_seconds;
   std::lock_guard lk(mu_);
   LOOM_TRY_ASSIGN(auto st, db_.prepare("SELECT COUNT(*) FROM guest_sessions WHERE expires>=? AND (?=0 OR ?-last_seen<=?)"));
   st.bind_all(now, ttl, now, ttl);

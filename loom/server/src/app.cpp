@@ -695,7 +695,7 @@ json App::guest_source(const std::string& guest_id) {
 
 void App::sweep_guests_if_due() {
   const auto& g = accounts_->settings().guests;
-  const std::int64_t now = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+  const std::int64_t now = accounts_->guest_now();
   std::int64_t due = next_guest_sweep_.load();
   if (now < due || !next_guest_sweep_.compare_exchange_strong(due, now + std::max<std::int64_t>(g.sweep_interval_seconds, 0))) return;
   auto gone = accounts_->sweep_guests();
@@ -799,6 +799,9 @@ bool App::init() {
     accounts_ = std::move(*store);
     const auto& gs = accounts_->settings().guests;
     guard_.configure(gs.raw.value("protection", json::object()), gs.sweep_interval_seconds);
+    loom::accounts::AccountStore* store_ptr = accounts_.get();
+    tokens_.set_clock([store_ptr] { return store_ptr->guest_now(); });
+    cooldowns_.set_clock([store_ptr] { return store_ptr->guest_now(); });
     spend_.open(accounts_->root() / "guest_spend.json");
   } else {
     const char* data_dir = opts_.data_dir.empty() ? nullptr : opts_.data_dir.c_str();

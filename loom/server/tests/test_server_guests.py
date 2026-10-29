@@ -30,7 +30,17 @@ FAKE_KEY = "sk-guest-test-not-a-real-key-0123456789"  # a test value for the moc
 # can take seconds on a loaded machine) and every guest is used again well within this window; only the TTL phase
 # leaves them idle. Measured cause of a gate failure with 4 s: the registration ran while guest A was idle, A was
 # (correctly) swept, and the next listing answered 401.
+# Since 2026-10-29 the guest sessions run on the injected test clock (guests.protection.clock.file): it is frozen while the test
+# works, so no session can expire behind a slow server (CI asan: a 401 after 56 s with the real clock), and the TTL
+# phase advances it explicitly instead of sleeping.
 TTL = 12
+CLOCK0 = 1_000_000
+
+
+def set_clock(path: Path, seconds: float) -> None:
+    tmp = path.with_suffix(".tmp")
+    tmp.write_text(f"{seconds}\n")
+    tmp.replace(path)
 
 
 def free_port() -> int:
@@ -105,11 +115,14 @@ def main() -> int:
             assert not (root / "guests").exists()
             print("PASS preset: guests off")
 
+            clock = Path(tmp) / "clock"
+            set_clock(clock, CLOCK0)
             keys = Path(tmp) / "keys.env"
             keys.write_text(f"# test keys file\nexport MOCK_FREE_KEY=\"{FAKE_KEY}\"\nOTHER=1\n")
             overlay(root, "server_accounts", {
                 "registration": "open", "allow_private_hosts": ["127.0.0.1"],
                 "guests": {"enabled": True, "start": "auto", "sweep_interval_seconds": 0, "keys_file": str(keys),
+                           "protection": {"clock": {"file": str(clock)}},
                            "first_answer_notice": {"on": True, "ask_again": "per_device"},
                            "workdir": {"subdir": "guests", "idle_ttl_seconds": TTL, "max_bytes": 0, "keep_after_session": "ask"},
                            "secrets_routes": "write_only_session", "model_sources": ["byok", "pool", "free", "local"]}})
@@ -204,10 +217,11 @@ def main() -> int:
 
                 # 5. after idle_ttl: the session no longer works and the directory is gone; the account stays
                 assert ga.get(b + "/api/auth/me", timeout=10).json()["guest"]["id"] == id_a  # alive while used
-                deadline = time.time() + TTL + 1.5
-                while time.time() < deadline:
-                    acc.get(b + "/api/healthz", timeout=10)
-                    time.sleep(0.5)
+                # one second short of the TTL nothing is swept (the clock is frozen otherwise, so this holds on any machine)
+                set_clock(clock, CLOCK0 + TTL - 1)
+                acc.get(b + "/api/conversations", timeout=10)
+                assert dir_a.exists() and dir_b.exists()
+                set_clock(clock, CLOCK0 + 2 * TTL + 1)  # idle longer than the TTL counted from the last request
                 acc.get(b + "/api/conversations", timeout=10)  # any request sweeps (sweep_interval_seconds 0)
                 assert ga.get(b + "/api/conversations", timeout=10).status_code == 401
                 assert "guest" not in ga.get(b + "/api/auth/me", timeout=10).json()

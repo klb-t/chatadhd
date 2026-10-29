@@ -59,6 +59,11 @@ struct GuestSettings {
   std::int64_t idle_ttl_seconds = 86400;      // 0 = never by itself
   std::int64_t sweep_interval_seconds = 60;   // how often expired guests are looked for (on requests)
   std::string keys_file;                      // provider keys of the operator (KEY=VALUE), read into memory only
+  // Test hook (2026-10-29): `guests.protection.clock.file` (absent in the pack; only a test overlay sets it) names a
+  // file holding one number of seconds that is "now" for the protection buckets and challenges (guest_guard.h) and, from
+  // here, for the guest sessions (start, idle TTL, lifetime, sweep, live count) and the server's guest timing (sweep
+  // schedule, service-account token refresh, provider cool-downs). Empty = the real clocks (production unchanged).
+  std::string clock_file;
   Json raw = Json::object();                  // the whole `guests` object (notice, workdir, model_sources ...) for the web
 };
 
@@ -155,6 +160,9 @@ class AccountStore {
   // R103 B2: true when `code` is an unused invitation (checked, not consumed) - an invited guest skips the proof of work.
   Result<bool> invite_valid(const std::string& code);
   Status remove_guest_dir(const std::string& guest_id);
+  // "Now" in unix seconds for everything about guests: guests.clock.file when set (an unreadable file keeps the last
+  // value read; never read yet = the real clock), else the real clock.
+  std::int64_t guest_now() const;
   static bool valid_guest_id(const std::string& id);
 
   // registration=invite: a code is shown once and stored only as SHA-256; consume = single use.
@@ -173,6 +181,8 @@ class AccountStore {
   std::mutex hash_mu_;
   std::condition_variable hash_cv_;
   std::int64_t hash_active_ = 0;
+  mutable std::mutex clock_mu_;
+  mutable std::int64_t clock_last_ = -1;
   friend class HashSlot;
   struct Fails { std::int64_t count = 0, last = 0; };
   std::mutex tmu_;

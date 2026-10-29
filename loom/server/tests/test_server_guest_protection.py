@@ -145,6 +145,9 @@ def limited(r, mechanism: str, status: int = 429, retry: bool = True) -> dict:
 
 
 def main() -> int:
+    # Two CTest entries run one part each (server.guest_protection = load, server.guest_protection_mechanisms), so each
+    # ends well inside its limit on a ~5x slower ASan runner; no argument = both.
+    parts = set(sys.argv[1:]) or {"load", "mechanisms"}
     mock_port = free_port()
     mock = http.server.ThreadingHTTPServer(("127.0.0.1", mock_port), Mock)
     threading.Thread(target=mock.serve_forever, daemon=True).start()
@@ -175,198 +178,214 @@ def main() -> int:
             overlay(root, "free_providers", providers)
             return Server(root), root
 
-        # ── 1. load from one address at the presets; the signed-in account is unaffected ──────────────────────
-        srv, root1 = server({})
-        b = srv.base
-        try:
-            acc = requests.Session()
-            assert acc.post(b + "/api/auth/register", json={"login": "marcin", "password": "marcin-password-1"}, timeout=60).status_code in (200, 201)
-            account_ok, account_total = [0], [0]
-            stop = threading.Event()
-
-            def account_load():  # the account works the whole time the guests hammer the server
-                while not stop.is_set():
-                  try:
-                    for r in (acc.get(b + "/api/conversations", timeout=30),
-                              acc.post(b + "/api/conversations", json={"title": "account work"}, timeout=30),
-                              acc.get(b + "/api/auth/me", timeout=30)):
-                        account_total[0] += 1
-                        account_ok[0] += r.status_code in (200, 201)
-                    time.sleep(0.05)
-                  except requests.RequestException:
-                    return
-            t = threading.Thread(target=account_load)
-            t.start()
-            t0 = time.time()
-            started, refused, pow_s = [], {}, []
-            for _ in range(30):
-                p0 = time.time()
-                s = requests.Session()
-                body = solve(b, s)
-                pow_s.append(time.time() - p0)
-                _, r = start_guest(b, s, body)
-                if r.status_code == 201:
-                    started.append(s)
-                else:
-                    m = limited(r, "address_sessions_hour")["limit"]["mechanism"]
-                    refused[m] = refused.get(m, 0) + 1
-            print(f"MEASURE sessions_from_one_address passed={len(started)} of 30 refused={refused} "
-                  f"pow_bits={requests.get(b + '/api/auth/guest/challenge', timeout=10).json()['bits']} "
-                  f"pow_python_avg_s={sum(pow_s) / len(pow_s):.2f} elapsed_s={time.time() - t0:.1f}")
-            assert len(started) == 20, len(started)  # preset per_address.sessions_per_hour
-            # one session, sequential model requests, clock frozen: exactly the bucket (preset chat_per_minute 20)
-            t1 = time.time()
-            rs = [chat(started[0], b) for _ in range(40)]
-            one = [r.status_code for r in rs]
-            print(f"MEASURE chats_one_session passed={one.count(200)} of 40 elapsed_s={time.time() - t1:.1f} (clock frozen)")
-            assert one == [200] * 20 + [429] * 20, one
-            assert limited(rs[-1], "session_chat_minute")["retry_after"] == 3  # 20/min refills 1 per 3 s
-            # refill: the clock advances 3 s -> exactly one more, 6 s -> exactly two more
-            advance(root1, 3)
-            assert [chat(started[0], b).status_code for _ in range(2)] == [200, 429]
-            advance(root1, 6)
-            assert [chat(started[0], b).status_code for _ in range(3)] == [200, 200, 429]
-            advance(root1, 60)  # every per-minute bucket is full again
-            # several sessions of the same address: the address bucket (preset 60/min) is the wall
-            t2 = time.time()
-            counts = {"passed": 0}
-            mech = {}
-            lock = threading.Lock()
-
-            def hammer(s):
-                for _ in range(20):
-                    r = chat(s, b)
-                    with lock:
-                        if r.status_code == 200:
-                            counts["passed"] += 1
-                        else:
-                            m = limited(r, r.json()["limit"]["mechanism"])["limit"]["mechanism"]
-                            mech[m] = mech.get(m, 0) + 1
-            workers = [threading.Thread(target=hammer, args=(s,)) for s in started[1:7]]
-            for w in workers:
-                w.start()
-            for w in workers:
-                w.join()
-            many = counts["passed"]
-            print(f"MEASURE chats_six_sessions_parallel_one_address passed={many} of 120 refused={mech} elapsed_s={time.time() - t2:.1f}")
-            assert many == 60 and mech == {"address_chat_minute": 60}, (many, mech)  # preset per_address.chat_per_minute
-            stop.set()
-            t.join()
-            print(f"MEASURE account_marcin_requests_during_load ok={account_ok[0]} of {account_total[0]}")
-            assert account_total[0] > 0 and account_ok[0] == account_total[0], (account_ok, account_total)
-            summary = acc.get(b + "/api/pool/summary", timeout=10)
-            assert summary.status_code == 200, summary.text
-            sj = summary.json()
-            assert sj["rejections"]["address_sessions_hour"] == 10 and sj["rejections"]["session_chat_minute"] == 22, sj
-            assert sj["rejections"]["address_chat_minute"] == 60 and sj["admitted"]["model_requests"] == 23 + 60, sj
-            assert "hello" not in summary.text and FAKE_KEY not in summary.text
-            assert started[0].get(b + "/api/pool/summary", timeout=10).status_code == 403  # not a guest's business
-            assert requests.get(b + "/api/pool/summary", timeout=10).status_code == 401
-        finally:
-            srv.stop()
-        print("PASS load at the presets: sessions and model requests bounded, the account unaffected, counters")
-
-        # ── 2. proof of work ─────────────────────────────────────────────────────────────────────────────────
-        srv, root = server({"pow": {"bits": 10}})
-        b = srv.base
-        try:
-            limited(start_guest(b, body={})[1], "pow_required", 403, retry=False)
-            c = requests.get(b + "/api/auth/guest/challenge", timeout=10).json()
-            assert c["bits"] == 10 and c["algorithm"] == "sha256_leading_zero_bits", c
-            bad = next(str(n) for n in range(10 ** 6)
-                       if int.from_bytes(hashlib.sha256(f"{c['challenge']}:{n}".encode()).digest(), "big") >> 246 != 0)
-            limited(start_guest(b, body={"challenge": c["challenge"], "nonce": bad})[1], "pow_invalid", 403, retry=False)
-            forged = c["challenge"].rsplit(".", 1)[0].replace(".10.", ".1.") + "." + c["challenge"].rsplit(".", 1)[1]
-            limited(start_guest(b, body={"challenge": forged, "nonce": "0"})[1], "pow_invalid", 403, retry=False)
-            good = solve(b, requests)
-            assert start_guest(b, body=good)[1].status_code == 201
-            limited(start_guest(b, body=good)[1], "pow_invalid", 403, retry=False)  # single use
-            late = solve(b, requests)
-            advance(root, 301)  # preset challenge_ttl_seconds 300: a challenge older than that is refused
-            limited(start_guest(b, body=late)[1], "pow_invalid", 403, retry=False)
-            assert start_guest(b)[1].status_code == 201  # a fresh one, at the new time, passes
-            pl = requests.post(b + "/api/auth/guest", json={}, headers={"Accept-Language": "pl-PL,pl;q=0.9"}, timeout=10).json()
-            assert pl["words"]["language"] == "pl" and "przeglądar" in pl["words"]["text"], pl
-        finally:
-            srv.stop()
-        code = subprocess.run([BIN, "user", "invite", "--accounts-root", str(root)], capture_output=True, text=True, timeout=60).stdout.strip()
-        srv = Server(root)
-        try:
-            assert code and start_guest(srv.base, body={"invite": code})[1].status_code == 201  # invited: no proof of work
-            limited(start_guest(srv.base, body={"invite": "not-a-code"})[1], "pow_required", 403, retry=False)
-        finally:
-            srv.stop()
-        print("PASS proof of work: required, bad/forged/reused refused, invitation skips it, words in the browser's language")
-
-        # ── 3. every other mechanism ─────────────────────────────────────────────────────────────────────────
-        def case(protection, mechanism, run, status=429, retry=True, workdir=None):
-            srv, _ = server(deep({"pow": {"bits": 0}}, protection), workdir)
+        if "load" in parts:
+            # ── 1. load from one address at the presets; the signed-in account is unaffected ──────────────────────
+            srv, root1 = server({})
+            b = srv.base
             try:
-                j = limited(run(srv.base), mechanism, status, retry)
-                print(f"PASS {mechanism}: {status}" + (f" retry_after={j['retry_after']} s" if retry else ""))
+                acc = requests.Session()
+                assert acc.post(b + "/api/auth/register", json={"login": "marcin", "password": "marcin-password-1"}, timeout=60).status_code in (200, 201)
+                account_ok, account_total = [0], [0]
+                stop = threading.Event()
+
+                def account_load():  # the account works the whole time the guests hammer the server
+                    while not stop.is_set():
+                      try:
+                        for r in (acc.get(b + "/api/conversations", timeout=30),
+                                  acc.post(b + "/api/conversations", json={"title": "account work"}, timeout=30),
+                                  acc.get(b + "/api/auth/me", timeout=30)):
+                            account_total[0] += 1
+                            account_ok[0] += r.status_code in (200, 201)
+                        time.sleep(0.25)  # steady work, not a second load: each round adds a conversation the listing reads
+                      except requests.RequestException:
+                        return
+                t = threading.Thread(target=account_load)
+                t.start()
+                t0 = time.time()
+                started, refused, pow_s = [], {}, []
+                # Under the frozen clock every count is exact, so one request past each wall proves it (2026-10-29: fewer requests,
+                # so a 5x slower ASan server ends well inside the CTest limit; before: 30 sessions, 40 + 120 chats, 25 + 70 at 0).
+                for _ in range(21):
+                    p0 = time.time()
+                    s = requests.Session()
+                    body = solve(b, s)
+                    pow_s.append(time.time() - p0)
+                    _, r = start_guest(b, s, body)
+                    if r.status_code == 201:
+                        started.append(s)
+                    else:
+                        m = limited(r, "address_sessions_hour")["limit"]["mechanism"]
+                        refused[m] = refused.get(m, 0) + 1
+                print(f"MEASURE sessions_from_one_address passed={len(started)} of 21 refused={refused} "
+                      f"pow_bits={requests.get(b + '/api/auth/guest/challenge', timeout=10).json()['bits']} "
+                      f"pow_python_avg_s={sum(pow_s) / len(pow_s):.2f} elapsed_s={time.time() - t0:.1f}")
+                assert len(started) == 20 and refused == {"address_sessions_hour": 1}, (len(started), refused)  # preset per_address.sessions_per_hour
+                # one session, sequential model requests, clock frozen: exactly the bucket (preset chat_per_minute 20)
+                t1 = time.time()
+                rs = [chat(started[0], b) for _ in range(21)]
+                one = [r.status_code for r in rs]
+                print(f"MEASURE chats_one_session passed={one.count(200)} of 21 elapsed_s={time.time() - t1:.1f} (clock frozen)")
+                assert one == [200] * 20 + [429], one
+                assert limited(rs[-1], "session_chat_minute")["retry_after"] == 3  # 20/min refills 1 per 3 s
+                # refill: the clock advances 3 s -> exactly one more, 6 s -> exactly two more
+                advance(root1, 3)
+                assert [chat(started[0], b).status_code for _ in range(2)] == [200, 429]
+                advance(root1, 6)
+                assert [chat(started[0], b).status_code for _ in range(3)] == [200, 200, 429]
+                advance(root1, 60)  # every per-minute bucket is full again
+                # several sessions of the same address: the address bucket (preset 60/min) is the wall
+                t2 = time.time()
+                counts = {"passed": 0}
+                mech = {}
+                lock = threading.Lock()
+
+                def hammer(s):
+                    for _ in range(16):  # 4 x 16 = 64: past the address wall (60), each session under its own (20)
+                        r = chat(s, b)
+                        with lock:
+                            if r.status_code == 200:
+                                counts["passed"] += 1
+                            else:
+                                m = limited(r, r.json()["limit"]["mechanism"])["limit"]["mechanism"]
+                                mech[m] = mech.get(m, 0) + 1
+                workers = [threading.Thread(target=hammer, args=(s,)) for s in started[1:5]]
+                for w in workers:
+                    w.start()
+                for w in workers:
+                    w.join()
+                many = counts["passed"]
+                print(f"MEASURE chats_six_sessions_parallel_one_address passed={many} of 64 refused={mech} elapsed_s={time.time() - t2:.1f}")
+                assert many == 60 and mech == {"address_chat_minute": 4}, (many, mech)  # preset per_address.chat_per_minute
+                stop.set()
+                t.join()
+                print(f"MEASURE account_marcin_requests_during_load ok={account_ok[0]} of {account_total[0]}")
+                assert account_total[0] > 0 and account_ok[0] == account_total[0], (account_ok, account_total)
+                summary = acc.get(b + "/api/pool/summary", timeout=10)
+                assert summary.status_code == 200, summary.text
+                sj = summary.json()
+                assert sj["rejections"]["address_sessions_hour"] == 1 and sj["rejections"]["session_chat_minute"] == 3, sj
+                assert sj["rejections"]["address_chat_minute"] == 4 and sj["admitted"]["model_requests"] == 23 + 60, sj
+                assert "hello" not in summary.text and FAKE_KEY not in summary.text
+                assert started[0].get(b + "/api/pool/summary", timeout=10).status_code == 403  # not a guest's business
+                assert requests.get(b + "/api/pool/summary", timeout=10).status_code == 401
             finally:
                 srv.stop()
+            print("PASS load at the presets: sessions and model requests bounded, the account unaffected, counters")
 
-        def nth_chat(n, sessions=1):
-            def run(base):
-                ss = [start_guest(base)[0] for _ in range(sessions)]
-                r = None
-                for i in range(n):
-                    r = chat(ss[i % sessions], base)
-                    if i < n - 1:
-                        assert r.status_code == 200, (i, r.status_code, r.text[:200])
-                return r
-            return run
-
-        case({"per_session": {"chat_per_minute": 2}}, "session_chat_minute", nth_chat(3))
-        case({"per_session": {"chat_per_day": 2}}, "session_chat_day", nth_chat(3))
-        case({"per_session": {"output_tokens_per_day": 1}}, "session_output_tokens_day", nth_chat(2))
-        case({"per_session": {"api_per_minute": 3}}, "session_api_minute",
-             lambda base: [s.get(base + "/api/conversations", timeout=10) for s in [start_guest(base)[0]] for _ in range(4)][-1])
-        case({"per_address": {"chat_per_minute": 2}}, "address_chat_minute", nth_chat(3, sessions=2))
-        case({"global": {"pool_chat_per_day": 2}}, "pool_chat_day", nth_chat(3, sessions=3))
-        case({"global": {"pool_output_tokens_per_day": 1}}, "pool_output_tokens_day", nth_chat(2, sessions=2))
-        case({"per_address": {"sessions_per_hour": 2}}, "address_sessions_hour",
-             lambda base: [start_guest(base)[1] for _ in range(3)][-1])
-        case({"global": {"live_sessions": 2}}, "global_live_sessions", lambda base: [start_guest(base)[1] for _ in range(3)][-1])
-        case({"sizes": {"max_body_bytes": 64}}, "size_body",
-             lambda base: start_guest(base)[0].post(base + "/api/chat", json={"message": "x" * 200}, timeout=10), 413, False)
-        case({}, "workdir_full", lambda base: chat(start_guest(base)[0], base), 413, False,
-             workdir={"max_bytes": 1})
-
-        def parallel(base):
-            MOCK_DELAY["s"] = 0.7
+            # ── 2. proof of work ─────────────────────────────────────────────────────────────────────────────────
+            srv, root = server({"pow": {"bits": 10}})
+            b = srv.base
             try:
-                s = start_guest(base)[0]
-                first = threading.Thread(target=lambda: chat(s, base))
-                first.start()
-                time.sleep(0.4)
-                r = chat(s, base)
-                first.join()
-                return r
+                limited(start_guest(b, body={})[1], "pow_required", 403, retry=False)
+                c = requests.get(b + "/api/auth/guest/challenge", timeout=10).json()
+                assert c["bits"] == 10 and c["algorithm"] == "sha256_leading_zero_bits", c
+                bad = next(str(n) for n in range(10 ** 6)
+                           if int.from_bytes(hashlib.sha256(f"{c['challenge']}:{n}".encode()).digest(), "big") >> 246 != 0)
+                limited(start_guest(b, body={"challenge": c["challenge"], "nonce": bad})[1], "pow_invalid", 403, retry=False)
+                forged = c["challenge"].rsplit(".", 1)[0].replace(".10.", ".1.") + "." + c["challenge"].rsplit(".", 1)[1]
+                limited(start_guest(b, body={"challenge": forged, "nonce": "0"})[1], "pow_invalid", 403, retry=False)
+                good = solve(b, requests)
+                assert start_guest(b, body=good)[1].status_code == 201
+                limited(start_guest(b, body=good)[1], "pow_invalid", 403, retry=False)  # single use
+                late = solve(b, requests)
+                advance(root, 301)  # preset challenge_ttl_seconds 300: a challenge older than that is refused
+                limited(start_guest(b, body=late)[1], "pow_invalid", 403, retry=False)
+                assert start_guest(b)[1].status_code == 201  # a fresh one, at the new time, passes
+                pl = requests.post(b + "/api/auth/guest", json={}, headers={"Accept-Language": "pl-PL,pl;q=0.9"}, timeout=10).json()
+                assert pl["words"]["language"] == "pl" and "przeglądar" in pl["words"]["text"], pl
             finally:
-                MOCK_DELAY["s"] = 0.0
-        case({"per_session": {"parallel_streams": 1}}, "session_parallel_streams", parallel)
+                srv.stop()
+            code = subprocess.run([BIN, "user", "invite", "--accounts-root", str(root)], capture_output=True, text=True, timeout=60).stdout.strip()
+            srv = Server(root)
+            try:
+                assert code and start_guest(srv.base, body={"invite": code})[1].status_code == 201  # invited: no proof of work
+                limited(start_guest(srv.base, body={"invite": "not-a-code"})[1], "pow_required", 403, retry=False)
+            finally:
+                srv.stop()
+            print("PASS proof of work: required, bad/forged/reused refused, invitation skips it, words in the browser's language")
 
-        # ── 4. a preset at 0 = no limit ──────────────────────────────────────────────────────────────────────
-        zero = {"pow": {"bits": 0}, "per_session": {"chat_per_minute": 0, "chat_per_day": 0, "output_tokens_per_day": 0,
-                                                     "parallel_streams": 0, "api_per_minute": 0},
-                "per_address": {"sessions_per_hour": 0, "chat_per_minute": 0},
-                "global": {"live_sessions": 0, "pool_chat_per_day": 0, "pool_output_tokens_per_day": 0},
-                "sizes": {"max_body_bytes": 0, "max_upload_bytes": 0}}
-        srv, _ = server(zero, {"max_bytes": 0})
-        try:
-            ss = []
-            for _ in range(25):
-                s, r = start_guest(srv.base, body={})
-                assert r.status_code == 201, r.text
-                ss.append(s)
-            codes = [chat(ss[0], srv.base).status_code for _ in range(70)]
-            assert codes.count(200) == 70, codes
-            assert requests.get(srv.base + "/api/auth/guest/challenge", timeout=10).json() == {"bits": 0}
-        finally:
-            srv.stop()
-        print("PASS every limit at 0: 25 sessions without proof of work and 70 model requests from one address, none refused")
+        if "mechanisms" in parts:
+            # ── 3. every other mechanism ─────────────────────────────────────────────────────────────────────────
+            def case(protection, mechanism, run, status=429, retry=True, workdir=None):
+                srv, _ = server(deep({"pow": {"bits": 0}}, protection), workdir)
+                try:
+                    j = limited(run(srv.base), mechanism, status, retry)
+                    print(f"PASS {mechanism}: {status}" + (f" retry_after={j['retry_after']} s" if retry else ""))
+                finally:
+                    srv.stop()
+
+            def nth_chat(n, sessions=1):
+                def run(base):
+                    ss = [start_guest(base)[0] for _ in range(sessions)]
+                    r = None
+                    for i in range(n):
+                        r = chat(ss[i % sessions], base)
+                        if i < n - 1:
+                            assert r.status_code == 200, (i, r.status_code, r.text[:200])
+                    return r
+                return run
+
+            case({"per_session": {"chat_per_minute": 2}}, "session_chat_minute", nth_chat(3))
+            case({"per_session": {"chat_per_day": 2}}, "session_chat_day", nth_chat(3))
+            case({"per_session": {"output_tokens_per_day": 1}}, "session_output_tokens_day", nth_chat(2))
+            case({"per_session": {"api_per_minute": 3}}, "session_api_minute",
+                 lambda base: [s.get(base + "/api/conversations", timeout=10) for s in [start_guest(base)[0]] for _ in range(4)][-1])
+            case({"per_address": {"chat_per_minute": 2}}, "address_chat_minute", nth_chat(3, sessions=2))
+            case({"global": {"pool_chat_per_day": 2}}, "pool_chat_day", nth_chat(3, sessions=3))
+            case({"global": {"pool_output_tokens_per_day": 1}}, "pool_output_tokens_day", nth_chat(2, sessions=2))
+            case({"per_address": {"sessions_per_hour": 2}}, "address_sessions_hour",
+                 lambda base: [start_guest(base)[1] for _ in range(3)][-1])
+            case({"global": {"live_sessions": 2}}, "global_live_sessions", lambda base: [start_guest(base)[1] for _ in range(3)][-1])
+            case({"sizes": {"max_body_bytes": 64}}, "size_body",
+                 lambda base: start_guest(base)[0].post(base + "/api/chat", json={"message": "x" * 200}, timeout=10), 413, False)
+            case({}, "workdir_full", lambda base: chat(start_guest(base)[0], base), 413, False,
+                 workdir={"max_bytes": 1})
+
+            def parallel(base):
+                MOCK_DELAY["s"] = 0.7
+                try:
+                    s = start_guest(base)[0]
+                    first = threading.Thread(target=lambda: chat(s, base))
+                    first.start()
+                    time.sleep(0.4)
+                    r = chat(s, base)
+                    first.join()
+                    return r
+                finally:
+                    MOCK_DELAY["s"] = 0.0
+            case({"per_session": {"parallel_streams": 1}}, "session_parallel_streams", parallel)
+
+            # ── 4. a preset at 0 = no limit ──────────────────────────────────────────────────────────────────────
+            zero = {"pow": {"bits": 0}, "per_session": {"chat_per_minute": 0, "chat_per_day": 0, "output_tokens_per_day": 0,
+                                                         "parallel_streams": 0, "api_per_minute": 0},
+                    "per_address": {"sessions_per_hour": 0, "chat_per_minute": 0},
+                    "global": {"live_sessions": 0, "pool_chat_per_day": 0, "pool_output_tokens_per_day": 0},
+                    "sizes": {"max_body_bytes": 0, "max_upload_bytes": 0}}
+            srv, _ = server(zero, {"max_bytes": 0})
+            try:
+                ss = []
+                for _ in range(21):  # one past the preset per_address.sessions_per_hour (20)
+                    s, r = start_guest(srv.base, body={})
+                    assert r.status_code == 201, r.text
+                    ss.append(s)
+                # 3 sessions x 21 in parallel from one address: past the address preset (60) and each past the session preset (20);
+                # parallel because one session's growing conversation made 61 sequential answers the slowest part (93 s on dev)
+                codes, lock0 = [], threading.Lock()
+
+                def burst(s):
+                    got = [chat(s, srv.base).status_code for _ in range(21)]
+                    with lock0:
+                        codes.extend(got)
+                ws = [threading.Thread(target=burst, args=(s,)) for s in ss[:3]]
+                for w in ws:
+                    w.start()
+                for w in ws:
+                    w.join()
+                assert len(codes) == 63 and codes.count(200) == 63, codes
+                assert requests.get(srv.base + "/api/auth/guest/challenge", timeout=10).json() == {"bits": 0}
+            finally:
+                srv.stop()
+            print("PASS every limit at 0: 21 sessions without proof of work and 63 model requests from one address (21 per session), none refused")
     mock.shutdown()
     return 0
 

@@ -12,7 +12,6 @@ import json
 import sys
 import tempfile
 import threading
-import time
 from pathlib import Path
 
 try:
@@ -22,7 +21,7 @@ except ImportError:
     sys.exit(0)
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from test_server_guests import Server, free_port, overlay, solve_pow  # noqa: E402
+from test_server_guests import CLOCK0, Server, free_port, overlay, set_clock, solve_pow  # noqa: E402
 
 TOKEN_PREFIX = "ya29.fake-test-token-"  # test values from the fake; no real token is used anywhere
 SECOND_KEY = "sk-second-test-key-0123456789"
@@ -116,9 +115,14 @@ def main() -> int:
         root.mkdir()
         keys = Path(tmp) / "keys.env"
         keys.write_text(f"SECOND_KEY={SECOND_KEY}\n")
+        # The guests' timing (token expiry, cool-down, sessions) runs on the injected test clock, frozen unless the test
+        # moves it: on a slow server (CI asan) the first token can no longer be refreshed behind the test's back.
+        clock = Path(tmp) / "clock"
+        set_clock(clock, CLOCK0)
         overlay(root, "server_accounts", {
             "registration": "open", "allow_private_hosts": ["127.0.0.1"],
             "guests": {"enabled": True, "start": "auto", "sweep_interval_seconds": 0, "keys_file": str(keys),
+                       "protection": {"clock": {"file": str(clock)}},
                        "workdir": {"subdir": "guests", "idle_ttl_seconds": 600, "max_bytes": 0, "keep_after_session": "ask"}}})
         terms = {"retention": "per_vertex_terms", "human_review": "no", "training": "no", "observed_at": "2026-10-29",
                  "source_url": "test", "source_rating": "test", "summary": {"pl": "Testowy Vertex.", "en": "Test Vertex."}}
@@ -155,7 +159,7 @@ def main() -> int:
             assert auth == f"Bearer {TOKEN_PREFIX}1" and body["model"] == "google/gemini-3.5-flash", (auth, body.get("model"))
             print("PASS request shape: path, model id, Bearer token from the metadata server")
             # 2. refresh before expiry (expires_in 6, refresh_before 3): a later request carries a new token
-            time.sleep(3.5)
+            set_clock(clock, CLOCK0 + 3)  # 6 - 3 = 3 s left = refresh_before: due now
             chat_text(ga, b, ca, "second")
             assert Fake.calls[-1][1].startswith("Bearer " + TOKEN_PREFIX) and Fake.calls[-1][1] != auth, Fake.calls[-1][1]
             print("PASS token refreshed in memory before expiry")
@@ -181,7 +185,9 @@ def main() -> int:
             assert cfg.get("loom_provider_terms", {}).get("provider") == "second", cfg.get("loom_provider_terms")
             print("PASS 429 -> provider on cool-down, guest switched explicitly (model_source.switched, receipt terms)")
             # 5. the cool-down ends: a new guest gets Vertex again; the daily budget then switches it (budget_day)
-            time.sleep(4.5)
+            # still cooling down however long the requests above took: the clock has not moved
+            assert "vertex_gemini" in acc.get(b + "/api/pool/summary", timeout=10).json()["exhausted"]
+            set_clock(clock, CLOCK0 + 3 + 4)  # the cool-down (4 s from the 429) is over
             gb, cb = new_guest(b)
             assert source(gb, b)["provider"] == "vertex_gemini"
             chat_text(gb, b, cb, "fifth")  # third paid answer: 3 × price >= per_day (2.5 × price)

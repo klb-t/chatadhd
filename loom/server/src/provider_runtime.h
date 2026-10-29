@@ -20,6 +20,7 @@
 #include <ctime>
 #include <filesystem>
 #include <fstream>
+#include <functional>
 #include <map>
 #include <mutex>
 #include <optional>
@@ -40,8 +41,17 @@ inline std::string utc_day(std::int64_t t) {
   return buf;
 }
 
+// "Now" in unix seconds for the guests' timing. The server sets it to AccountStore::guest_now (guests.protection.clock.file, a
+// test hook; unset = the real clock), so a test advances token expiry and cool-downs explicitly instead of sleeping.
+using NowFn = std::function<std::int64_t()>;
+
 class MetadataTokens {
  public:
+  void set_clock(NowFn f) {
+    std::lock_guard lk(mu_);
+    now_ = std::move(f);
+  }
+
   struct Token {
     std::string value;
     std::int64_t expires_at = 0;
@@ -51,7 +61,7 @@ class MetadataTokens {
   // why (optional) receives a short reason without any secret when no token is available.
   std::optional<Token> get(const std::string& base, std::int64_t refresh_before, std::string* why = nullptr) {
     std::lock_guard lk(mu_);
-    const std::int64_t now = unix_now();
+    const std::int64_t now = now_ ? now_() : unix_now();
     auto& t = cache_[base];
     if (!t.value.empty() && t.expires_at - now > refresh_before) return t;
     if (fail_until_[base] > now) {
@@ -98,6 +108,7 @@ class MetadataTokens {
 
  private:
   std::mutex mu_;
+  NowFn now_;
   std::map<std::string, Token> cache_;
   std::map<std::string, std::int64_t> fail_until_;
   std::map<std::string, std::string> last_why_;
@@ -178,28 +189,34 @@ class SpendLedger {
 
 class ProviderCooldowns {
  public:
+  void set_clock(NowFn f) {
+    std::lock_guard lk(mu_);
+    now_ = std::move(f);
+  }
   void exhaust(const std::string& provider, std::int64_t seconds, const std::string& why) {
     std::lock_guard lk(mu_);
-    until_[provider] = unix_now() + seconds;
+    until_[provider] = now() + seconds;
     why_[provider] = why;
   }
   // "" when usable now, else the reason.
   std::string blocked(const std::string& provider) {
     std::lock_guard lk(mu_);
     auto it = until_.find(provider);
-    if (it == until_.end() || it->second <= unix_now()) return {};
+    if (it == until_.end() || it->second <= now()) return {};
     return why_[provider];
   }
   nlohmann::json snapshot() {
     std::lock_guard lk(mu_);
     nlohmann::json out = nlohmann::json::object();
-    const auto now = unix_now();
+    const auto t = now();
     for (const auto& [p, u] : until_)
-      if (u > now) out[p] = {{"why", why_[p]}, {"seconds_left", u - now}};
+      if (u > t) out[p] = {{"why", why_[p]}, {"seconds_left", u - t}};
     return out;
   }
 
  private:
+  std::int64_t now() const { return now_ ? now_() : unix_now(); }  // called with mu_ held
+  NowFn now_;
   std::mutex mu_;
   std::map<std::string, std::int64_t> until_;
   std::map<std::string, std::string> why_;
