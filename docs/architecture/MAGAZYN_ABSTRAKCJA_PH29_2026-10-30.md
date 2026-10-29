@@ -16,8 +16,8 @@ uruchamiania w przeglądarce.
 - Nie ma „gościa” jako osobnego rodzaju użytkownika. Każdy użytkownik ma zero, jeden albo wiele podłączonych magazynów;
   nasze konto to tylko jeden z możliwych magazynów plus dodatki (pula kluczy, synchronizacja).
 - Każdy magazyn jest wpisem w danych z opisem swoich cech. Lista magazynów i lista cech są otwarte.
-- To cechy (a nie to, czy ktoś jest zalogowany) decydują, co aplikacja mówi po pierwszej odpowiedzi i gdzie co zapisuje.
-- Zasady wyboru magazynu („rozmowy muszą przetrwać wyczyszczenie przeglądarki”) też są danymi z presetami, do zmiany.
+- Propozycja (koordynator): to cechy (a nie to, czy ktoś jest zalogowany) decydują, co aplikacja mówi po pierwszej odpowiedzi i gdzie co zapisuje.
+- Przykład zasady wyboru (koordynator, nie słowa właściciela): rozmowy wymagają trwałości, `requires: {durable: true}`; preset do zmiany. Zasady wyboru magazynu też są danymi z presetami.
 - Jądro już ma podobny mechanizm dla serwera i komputera (`storage_security.pack`); rozszerzamy go o cechy i przenosimy
   ten sam opis do przeglądarki, zamiast budować drugi, równoległy.
 - Pierwsza nowa wtyczka: prawdziwa baza SQLite w przeglądarce (OPFS). Daje zapis tylko tego, co się zmieniło, ten sam układ
@@ -28,7 +28,7 @@ uruchamiania w przeglądarce.
 
 **Słowa właściciela (dosłownie):**
 
-- PH29, 2026-10-13 (`SLOWA_WLASCICIELA_2026-10-16.md:261`): „serwer z apką webową i kontami Oferujemy i wszystkie bajery tak
+- PH29, 2026-10-13 (`docs/architecture/SLOWA_WLASCICIELA_2026-10-16.md:261`): „serwer z apką webową i kontami Oferujemy i wszystkie bajery tak
   jak dostawcy, przez telefon lub innego rodzaju apki też można się podłączyć do konta, ale że dowolny Storage można podłączyć
   i wszystko dowolnie konfigurować, to można nasze konta olać.”
 - 2026-10-29 (spec `s_876d3e3a2863`, poprawka R103): „A ja teraz dopiero załapałem że Wprowadziłem niepotrzebną komplikację bo
@@ -38,7 +38,9 @@ uruchamiania w przeglądarce.
   bieżącą  rozmową. ustawienia przeglądarki pewnie dają do dyspozycji trochę keszu to można wykorzystać Ale zgłaszamy
   użytkownikowi że najlepiej wydzielić katalog na przykład albo skorzystać z konta chmurowego, żeby zapewnić trwałość i
   ciągłość pracy”
-- Zapis dopisku w B8 (`BEZ_LOGOWANIA_R103_2026-10-28.md:479-484`, streszczenie koordynatora zatwierdzonych słów): „gość” nie
+- (To nie są słowa właściciela, tylko streszczenie koordynatora; patrz niżej.)
+
+**Streszczenie koordynatora** (zapis dopisku w B8, `BEZ_LOGOWANIA_R103_2026-10-28.md:479-484`, zatwierdzonych słów): „gość” nie
   jest osobnym rodzajem użytkownika — to użytkownik bez naszego konta z dowolnym podłączonym magazynem; bez magazynu aplikacja
   ma tylko ROM (kod, presety, wbudowana wiedza) i bieżącą rozmowę. […] Cechy magazynu (trwałość, limit, widoczność,
   synchronizacja) są danymi i to one decydują o komunikacie po pierwszej odpowiedzi.
@@ -63,7 +65,7 @@ Sprawdzenie z filozofią: nic tu nie ogranicza użytkownika; jedyne listy zamkni
 
 Magazyn to wpis w danych: `{id, kind, label, traits, config, status}`. `kind` wskazuje wtyczkę (rodzaj obsługi),
 `traits` opisuje cechy, `config` mówi, gdzie i jak (ścieżka, adres, odwołanie do sekretu — nigdy sam sekret), `status` mówi,
-czy wtyczka istnieje (`implemented` / `planned` — jak dziś w `BackendRegistry`). Wtyczka niezaimplementowana jest widoczna
+czy wtyczka istnieje (otwarty tekst; `implemented` / `planned` to presety-przykłady, użyte dziś w `BackendRegistry`). Wtyczka niezaimplementowana jest widoczna
 w interfejsie i wyszarzona z powodem (reguła przekazania do testu, BEZ_LOGOWANIA §11).
 
 Operacje wtyczki to wspólne minimum plus opcje ogłaszane jako cechy. Minimum (już istnieje w dwóch kształtach, §4):
@@ -72,7 +74,7 @@ zmian, blokada między kartami) wtyczka zgłasza w `traits.ops`, a wywołujący 
 
 ### 2.2 Cechy jako dane (lista przykładów, otwarta)
 
-Cecha to para nazwa → wartość. Wartość jest **otwarta**: logiczna, liczba z jednostką, zakres, tekst albo `unknown`. Cecha
+Cecha to para nazwa → wartość. Wartość jest **otwarta**: logiczna, liczba z jednostką, zakres, tekst albo `unknown` (te rodzaje to format danych; powód: serializacja w JSON, 2026-10-30; otwarcie: nowy rodzaj wartości przez wersję formatu). Cecha
 zależna od urządzenia lub chwili (limit miejsca, czy przeglądarka przyznała trwałość) ma źródło i datę — to datowana
 obserwacja (rejestr R59), nie stała. Przykłady:
 
@@ -107,8 +109,8 @@ i współdzielony katalog Androida — te już są wpisami jądra. Repozytorium 
 
 ### 2.4 Zasada wyboru (polityka) jako dane
 
-Dziś jądro ma `placement`: dla każdej kategorii danych (rozmowy, blob-y, pamięć, ustawienia, …) uporządkowaną listę
-magazynów z rolą (`primary`, `replica`, `cache`, `egress`). Rozszerzenie: kategoria może dodatkowo podać **wymagania** i
+Obserwacja z kodu 2026-10-30: jądro ma `placement`: dla każdej kategorii danych (rozmowy, blob-y, pamięć, ustawienia, …) uporządkowaną listę
+magazynów z rolą (przykłady, lista otwarta: `primary`, `replica`, `cache`, `egress`). Rozszerzenie: kategoria może dodatkowo podać **wymagania** i
 **preferencje** wyrażone przez cechy, np. (przykład, preset do zmiany):
 
 ```
@@ -119,8 +121,8 @@ magazynów z rolą (`primary`, `replica`, `cache`, `egress`). Rozszerzenie: kate
 `targets: "auto"` = silnik wybiera spośród podłączonych magazynów te, które spełniają `requires`, w kolejności `prefers`;
 jawna lista (jak dziś) zawsze wygrywa. Gdy żaden podłączony magazyn nie spełnia wymagań, nic nie jest blokowane: dane idą tam,
 gdzie się da (w ostateczności do pamięci procesu), a osoba dostaje **nieblokującą uwagę** z dowodem (która cecha brakuje, w
-którym magazynie) i propozycjami magazynów, które ją mają. To jest dokładnie komunikat po pierwszej odpowiedzi z R105:
-jego treść powstaje z cech, nie z „zalogowany/niezalogowany”. Jak często pytać, aż do „nigdy”, to preset (jak `declined`).
+którym magazynie) i propozycjami magazynów, które ją mają. Zbliżone do komunikatu po pierwszej odpowiedzi z R105 (nie to samo):
+jego treść powstaje z cech, nie z „zalogowany/niezalogowany”; treść z cech to propozycja koordynatora. Jak często pytać, aż do „nigdy”, to preset (jak `declined`).
 
 Łączenie magazynów (przykłady, nie wyczerpują): ten sam zbiór danych w dwóch magazynach (szybki lokalny jako `primary`,
 chmura jako `replica`); podział kategorii (rozmowy w folderze, cache embeddingów tylko w przeglądarce); magazyn tylko do
@@ -137,7 +139,7 @@ tylko tam, gdzie chodzi o rzeczy naprawdę zależne od konta (pula, limity publi
 ### 2.6 Listy zamknięte (z powodem i datą)
 
 - Operacje minimum wtyczki (zapisz/odczytaj/wypisz/usuń/sprawdź) — zamknięte, bo to kontrakt interfejsu; nowe operacje idą
-  przez `traits.ops`. Powód: jeden interfejs dla wywołujących. Data: 2026-10-30. Otwarcie: wersja kontraktu wtyczki.
+  przez `traits.ops`. Powód: jeden interfejs dla wywołujących; konieczne dla wywołujących. Data: 2026-10-30. Otwarcie: wersja kontraktu wtyczki.
 - Wartości `persist()` i `estimate()` — narzuca je platforma (standard Storage). Data: 2026-10-30.
 Nic więcej nie jest zamknięte.
 
@@ -145,19 +147,18 @@ Nic więcej nie jest zamknięte.
 
 Opis magazynów i polityki to jeden zestaw danych (`storage_security.pack` + nakładka w `<data>/profiles`). Wykonawców jest
 dwóch: jądro C++ (`StorageService`, serwer, desktop, Android) i warstwa web (TypeScript, przeglądarka). Rejestr wtyczek web ma
-ten sam kształt co `BackendRegistry` (`{kind, status, factory}`), a web dostaje opis przez istniejące API profilu (do
-sprawdzenia w pakiecie P2, §8). Gdy kiedyś jądro pobiegnie w przeglądarce (P6), wykonawca web może zniknąć bez zmiany danych.
+ten sam kształt co `BackendRegistry` (`{kind, status, factory}`), a web dostaje opis przez istniejące API profilu (zakłada się, że tak jest; niesprawdzone — luka 1; do sprawdzenia w pakiecie P2, §8). Gdy kiedyś jądro pobiegnie w przeglądarce (P6), wykonawca web może zniknąć bez zmiany danych.
 
 ## 3. Pierwsza wtyczka: OPFS + SQLite-WASM w przeglądarce
 
 ### 3.1 Co daje ponad paczkę B1b w IndexedDB
 
-Dziś przeglądarka trzyma jedną paczkę jako tekst pod jednym kluczem i po każdej zmianie zapisuje ją całą (INDEX.md, luka 5
-raportu B1b). OPFS + SQLite daje:
+Dziś (obserwacja 2026-10-30) przeglądarka trzyma jedną paczkę jako tekst pod jednym kluczem i po każdej zmianie zapisuje ją całą (INDEX.md, luka 5
+raportu B1b). Między innymi (przykłady) OPFS + SQLite daje:
 
 1. **Zapis przyrostowy** — zmienione wiersze, w jednej transakcji, zamiast całego pliku.
 2. **Ten sam układ tabel co jądro** — DDL z `loom/src/db/schema_sql.inc` dla tabel z listy dozwolonych paczki
-   (`working_copy.cpp:170-175`); paczka i baza są dwiema postaciami tych samych wierszy, bez nowego formatu.
+   (`working_copy.cpp:170-175`, lista = preset w danych); paczka i baza są dwiema postaciami tych samych wierszy, bez nowego formatu.
 3. **Duże dane** — OPFS ma limit całego originu (zwykle procent wolnego dysku; obserwacja do pomiaru), nie limit wartości
    IndexedDB w pamięci; zapytania bez wczytywania całości.
 4. **Podstawę pod pracę offline** i pod jądro w przeglądarce (P6): to już jest prawdziwa baza danych.
@@ -180,9 +181,11 @@ przeglądarka robi pełne porównanie (D5).
 
 ### 3.4 Wiele kart
 
-Dziś: ostatni zapis wygrywa (luka 6 B1b). Plan: tryb VFS `opfs-sahpool` (nie wymaga nagłówków COOP/COEP, których serwer dziś nie
-wysyła — sprawdzone grepem 2026-10-30; jedno połączenie na raz — obserwacja o bibliotece, do potwierdzenia w dokumentacji
-sqlite.org przy P1). Baza działa w dedykowanym Workerze jednej karty-lidera wybranej przez `navigator.locks`; pozostałe karty
+*Warunkowe: cały paragraf zależy od sprawdzenia w P1 (zachowanie `opfs-sahpool`, luka 2); „jedno połączenie na raz” to założenie, a nie ustalenie — liczba połączeń i wybór lidera są ustawieniem (preset: jeden lider).*
+
+Dziś: ostatni zapis wygrywa (luka 6 B1b). Plan: tryb VFS `opfs-sahpool` (nie wymaga nagłówków COOP/COEP; obserwacja 2026-10-30 (grep):
+serwer dziś ich nie wysyła; wybór VFS zmienia się, gdy nagłówki się pojawią, D7; jedno połączenie na raz — założenie o
+bibliotece, niesprawdzone, do potwierdzenia w dokumentacji sqlite.org przy P1). Baza działa w dedykowanym Workerze jednej karty-lidera wybranej przez `navigator.locks`; pozostałe karty
 wysyłają zapisy przez `BroadcastChannel`. Gdy lider zniknie, blokadę przejmuje następna karta. Przeglądarka bez OPFS lub bez
 Web Locks: wtyczka wyszarzona z powodem, zostaje IndexedDB.
 
@@ -192,31 +195,31 @@ Web Locks: wtyczka wyszarzona z powodem, zostaje IndexedDB.
   `free_bytes` tej wtyczki (z datą pomiaru), więc trafiają do komunikatu z §2.4 zamiast do osobnego `noticePeriod`.
 - Brak miejsca (`QuotaExceededError`): zapis nie znika po cichu — uwaga z liczbami i propozycją magazynu z większym limitem.
 - Czyszczenie: „Wyczyść wszystko z tej przeglądarki” już usuwa cały katalog OPFS (`guest-store.ts:158-169`); wtyczka musi
-  wcześniej zamknąć bazę w Workerze (inaczej uchwyty blokują usunięcie) — test w P1.
+  wcześniej zamknąć bazę w Workerze (przypuszczenie: inaczej uchwyty blokują usunięcie) — test w P1.
 
 ### 3.6 Zależność
 
 Nowa biblioteka web: `@sqlite.org/sqlite-wasm` (oficjalna, sqlite.org), wersja przypięta dokładnie. To kod, nie nowy dostawca
-— żadne dane nie wychodzą z przeglądarki. FTS5 w tej kompilacji: do sprawdzenia (jądro używa FTS5, `CMakeLists.txt:109`);
-indeks pełnotekstowy i tak nie jest w paczce, więc P1 go nie potrzebuje.
+— żadne dane nie wychodzą z przeglądarki. FTS5 w tej kompilacji: nie wymagany w P1 (zakres pakietu); dostępność do sprawdzenia (jądro używa FTS5,
+`CMakeLists.txt:109`); nie wyłączany z konfiguracji.
 
 ## 4. Co już jest (obserwacja datowana 2026-10-30, `w2b2@172bf32e`)
 
 - `loom/include/loom/storage_backend.h:46-58` — interfejs `StorageBackend` (put/get/stat/list/remove/probe);
   `:82-87` rejestr rodzajów (`local`, `s3`, `webdav`, `gdrive` — `storage_backend.cpp:41-47`, wszystkie `implemented`);
   `:90-139` `StorageService`: `placement` per kategoria z rolami, kworum zapisu, odczyt z kolejnością preferencji, `transfer`.
-- `loom/data/runtime/storage_security.pack:206` (`local_dir`) … `:358-385` (`browser`) — 11 wpisów magazynów z polami
+- `loom/data/runtime/storage_security.pack:206` (`local_dir`) … `:358-385` (`browser`) — 11 wpisów (dane z 2026-10-30) magazynów z polami
   `class`, `access`, `encryption`, `sync`, `capabilities` (lista operacji: read/write/list/watch), `available_on`,
   `jurisdiction`; `:558` `placement`, `:680` `allowed_storages`; kategorie danych (18, m.in. `conversations`, `blobs`,
   `browser_state`). Brak: cech trwałości, limitu, kosztu; brak `requires`/`prefers`; wpis `browser` mówi
   „localStorage / sessionStorage”, nie zna IndexedDB/OPFS.
 - `loom/include/loom/working_copy.h:30-46` — paczka `loom.guest_bundle/2`: eksport/import, lista dozwolonych tabel,
-  `content_sha256`; `working_copy.cpp:170-175` lista tabel (preset).
+  `content_sha256`; `working_copy.cpp:170-175` lista tabel (domyślny zestaw w danych, preset).
 - `loom/server/src/app.cpp:1417` `GET` i `:1428` `POST /api/working-copy/bundle`.
 - `loom/web/src/context/guest-store.ts:24-30` interfejs `GuestStore` (save/load/list/wipe), `:52-63` wtyczka IndexedDB,
   `:97-106` `persist()`/`estimate()`, `:109` `noticePeriod` (komunikat z dwóch stanów), `:158-169` czyszczenie (IndexedDB,
   OPFS, localStorage, sessionStorage, wylogowanie). `GuestLayer.tsx:80-90` start: trwałość, odczyt paczki, odtworzenie.
-- Dwa interfejsy magazynu (C++ i TS) i dwa słowniki („storage”, „schowek”/„guest store”) — do zbliżenia w P2.
+- Dwa interfejsy magazynu (C++ i TS; obserwacja 2026-10-30) i dwa słowniki („storage”, „schowek”/„guest store”) — do zbliżenia w P2.
 
 ## 5. Pakiety (każdy ≈ 50–80 wywołań narzędzi, commit + karta wznowienia)
 
@@ -240,7 +243,7 @@ zgłasza uwagę z brakującą cechą); e2e: ta sama sesja z IndexedDB i z OPFS d
 Akceptacja: jedna nowa wiadomość = transfer rzędu jej wierszy; restart serwera → pełne porównanie bez utraty danych.
 
 **P4 — folder osoby (File System Access).** Ta sama baza SQLite zapisywana do wskazanego folderu jako migawka plus paczka
-(SQLite w zwykłym folderze bez blokad między procesami — tylko migawki, D6); odnawianie uprawnienia po restarcie. Akceptacja:
+(preset: migawka, bo SQLite w zwykłym folderze bez blokad między procesami bywa niebezpieczny, D6; tryb żywej bazy dostępny w ustawieniu, z niewiążącą podpowiedzią); odnawianie uprawnienia po restarcie. Akceptacja:
 e2e w Chromium z folderem testowym; plik bazy otwiera się w `loom` CLI.
 
 **P5 — konto = magazyn.** Kopia na serwerze konta jako wpis magazynu; logowanie dodaje magazyn, wylogowanie odłącza; usunięcie
@@ -263,9 +266,9 @@ Kolejność P1 → P2 → P3 → P4 → P5 to preset koordynatora; odwrócenie: 
   paczki w OPFS. Odwrócenie: opcja importu sprawdzająca skróty wierszy zamiast sumy całości.
 - **D5** Zmiany przyrostowe przez wyzwalacze tymczasowe (bez zmiany schematu na dysku, niezmiennik zgodności z Pythonem
   nietknięty). Odwrócenie: rozszerzenie sesji SQLite (`SQLITE_ENABLE_SESSION`) albo stała tabela dziennika z migracją.
-- **D6** SQLite w folderze osoby tylko jako migawka, nie żywa baza (ta sama zasada co w `storage_backend.h:10-12`: WAL na
-  dysku sieciowym lub synchronizowanym jest niebezpieczny). Odwrócenie: tryb żywej bazy jako opcja z ostrzeżeniem.
-- **D7** VFS `opfs-sahpool` + lider przez Web Locks (bez COOP/COEP). Odwrócenie: VFS `opfs` z nagłówkami COOP/COEP na serwerze.
+- **D6** Preset: SQLite w folderze osoby jako migawka (podobna uwaga w `storage_backend.h:10-12`: WAL na dysku sieciowym lub
+  synchronizowanym bywa niebezpieczny). Tryb żywej bazy dostępny w ustawieniu, z niewiążącą podpowiedzią; nic nie jest zablokowane.
+- **D7** VFS `opfs-sahpool` + lider przez Web Locks (bez COOP/COEP; obserwacja 2026-10-30: serwer nie wysyła nagłówków — wybór zmienia się, gdy się pojawią). Odwrócenie: VFS `opfs` z nagłówkami COOP/COEP na serwerze.
 - **D8** Pierwsza wtyczka to OPFS, nie folder ani chmura (zgodnie z kolejką `QUEUE_S1.md:10`). Odwrócenie: kolejność pakietów.
 
 ## 7. Pytania do właściciela
@@ -281,13 +284,30 @@ sprzeczności z wymaganiami. Magazyny chmurowe osoby (Drive, WebDAV) to jej wła
 3. Safari/Firefox: dostępność OPFS w Workerze i Web Locks — do pomiaru w Playwright (WebKit, Firefox), nie tylko Chromium.
 4. Załączniki i blob-y (`attachments/`, `blobs/`) dalej poza paczką (luka 2 B1b); OPFS to naturalne miejsce, ale wymaga
    rozszerzenia paczki — do B7.
-5. Android i desktop: abstrakcja obejmuje je przez jądro, ale wybór magazynu w ich interfejsie nie jest zaprojektowany tutaj.
-6. Konflikty przy dwóch magazynach `primary` na różnych urządzeniach (synchronizacja dwukierunkowa) — poza zakresem; dziś
-   pierwszeństwo ma kolejność `placement`.
+5. Android i desktop: abstrakcja obejmuje je przez jądro, ale wybór magazynu w ich interfejsie nie jest zaprojektowany tutaj — luka, nie „poza zakresem”.
+6. Konflikty przy dwóch magazynach `primary` na różnych urządzeniach (synchronizacja dwukierunkowa) — luka, nie „poza zakresem”;
+   obserwacja 2026-10-30: pierwszeństwo ma kolejność `placement`.
 7. Pokrycie przestrzeni możliwości: test własności polityki (P2) obejmuje kombinacje cech; kombinacje wtyczek × przeglądarek
    są pokryte tylko tym, co Playwright uruchamia — reszta to luka zgłaszana w raportach.
 
 ## Kontrola przed użyciem
 
-Oczekuje: tani przegląd (Haiku) czterech antywzorców z CLAUDE.md („Check before use”) i pytanie R60 — przed startem P1.
-Wyniki trafią tutaj jako twierdzenia do weryfikacji, poprawki jako dopisek.
+Dopisek z 2026-10-29/30, po tanim przeglądzie czterech antywzorców z CLAUDE.md („Check before use”). Wyniki przeglądu to były
+twierdzenia do weryfikacji; zastosowano je jako poprawki tekstu (bez zmiany projektu).
+
+Blokujące (7):
+
+1. §0: zdanie „rozmowy muszą przetrwać wyczyszczenie przeglądarki” nie było cytatem właściciela — oznaczone jako przykład
+   koordynatora (`requires: {durable: true}`, preset).
+2. §2.4: „dokładnie komunikat z R105” zmienione na „zbliżone (nie to samo)”; treść z cech to propozycja koordynatora.
+3. P4 i D6: tryb żywej bazy w folderze nie jest już tylko odwróceniem — preset to migawka, tryb żywej bazy dostępny w ustawieniu.
+4. §3.4: oznaczony jako warunkowy wobec sprawdzenia w P1; „jedno połączenie na raz” to założenie i ustawienie.
+5. §2.7: „web czyta pack przez API profilu” zapisane jako założenie niesprawdzone (luka 1).
+6. §2.1: `status` to otwarty tekst; `implemented`/`planned` to presety-przykłady.
+7. §3.4 i D7: brak nagłówków COOP/COEP to obserwacja z 2026-10-30; wybór VFS zmienia się, gdy się pojawią.
+
+Brzmieniowe: „Propozycja (koordynator)” w §0; streszczenie koordynatora pod własnym nagłówkiem w §1; pełna ścieżka do
+`SLOWA_WLASCICIELA`; FTS5 (nie wymagany w P1, dostępność do sprawdzenia, nie wyłączany); luki 5 i 6 pozostają lukami; lista tabel
+paczki jako domyślny zestaw w danych; notatki o stanie obecnym oznaczone jako obserwacje datowane; przypuszczenie o uchwytach w
+§3.5; role w `placement` jako przykłady (lista otwarta); rodzaje wartości cech z powodem i datą; „konieczne dla wywołujących”
+w §2.6; „Między innymi (przykłady)” w §3.1.
