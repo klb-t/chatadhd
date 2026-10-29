@@ -6165,9 +6165,15 @@
       "by": "owner",
       "date": "2026-10-29",
       "text": "„i mówiłem o modelu epistemicznym” — 'Lem' to LEM, jego model epistemiczny (dziś LEM-Workbench; most M4 w ECOSYSTEM_INTEGRATION_2026-10-11), nie ogólny LLM. Pomysł: trenować/rozwijać LEM na danych z ChatADHD (graf, oceny epistemiczne, korekty właściciela)."
+     },
+     {
+      "state": "corrected",
+      "by": "owner",
+      "date": "2026-10-29",
+      "text": "„i sesja generalnie nic nie publikuje Chyba że później wyraźnie poproszę,zapisuje tylko lokalnie”"
      }
     ],
-    "corrected_text": "„i mówiłem o modelu epistemicznym” — 'Lem' to LEM, jego model epistemiczny (dziś LEM-Workbench; most M4 w ECOSYSTEM_INTEGRATION_2026-10-11), nie ogólny LLM. Pomysł: trenować/rozwijać LEM na danych z ChatADHD (graf, oceny epistemiczne, korekty właściciela).",
+    "corrected_text": "„i sesja generalnie nic nie publikuje Chyba że później wyraźnie poproszę,zapisuje tylko lokalnie”",
     "by": "owner",
     "date": "2026-10-29"
    },
