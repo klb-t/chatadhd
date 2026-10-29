@@ -11,6 +11,8 @@ import {
 import { GUEST_LIMIT_EVENT, type GuestLimitDetail } from "../api/auth";
 import { SETTINGS_PANEL, requestOpenPanel } from "../context/open-settings";
 import { setSendGate, termsNeedConsent } from "../api/send-gate";
+import { selectStore, writePolicy, type StoreSelection } from "../context/store-registry";
+import type { StorePlugin, Traits } from "../context/store-plugin";
 
 const NEVER_KEY = "loom.guest.notice.never";
 const RESTORED_KEY = "loom.guest.restored";
@@ -38,6 +40,14 @@ export default function GuestLayer({ guest, guests, text, onSignIn, children }: 
   const [saved, setSaved] = useState<string | null>(null);
   const [wipeAsk, setWipeAsk] = useState(false);
   const answered = useRef(false);
+  // PH29 P1: the store chosen from the registry by its traits (OPFS + SQLite first, the IndexedDB bundle as fallback).
+  const storeRef = useRef<StorePlugin | null>(null);
+  const [sel, setSel] = useState<(Omit<StoreSelection, "plugins"> & { traits: Traits }) | null>(null);
+  const showTraits = useCallback(async (s: StoreSelection) => {
+    const traits = s.plugin ? await s.plugin.traits() : {};
+    setSel({ plugin: s.plugin, candidates: s.candidates, advisories: s.advisories, policy: s.policy, traits });
+  }, []);
+  const selection = useRef<StoreSelection | null>(null);
   // R103 B1b: nothing is saved before the restore decision: a save of the still-empty new working copy (the desktop
   // writes its first pins at once) must never overwrite the bundle that is about to come back.
   const ready = useRef(false);
@@ -78,9 +88,20 @@ export default function GuestLayer({ guest, guests, text, onSignIn, children }: 
     } catch { /* no session storage: no message */ }
     void (async () => {
       const p = await requestPersistence();
-      let available = typeof indexedDB !== "undefined";
       let bundle: GuestBundle | null = null;
-      try { bundle = await browserStore.load(); } catch { available = false; }
+      const s = await selectStore();
+      selection.current = s;
+      storeRef.current = s.plugin;
+      let available = s.plugin !== null;
+      try { bundle = s.plugin ? await s.plugin.load() : null; } catch { available = false; }
+      // A store chosen for the first time (e.g. OPFS after the IndexedDB bundle of B1b) is empty: what another usable
+      // store of this browser holds is brought back from there; the next save writes it into the chosen store.
+      if (!bundle || bundleSize(bundle) === 0)
+        for (const p of s.plugins) {
+          if (p === s.plugin || !s.candidates.find((c) => c.id === p.id)?.available) continue;
+          try { const other = await p.load(); if (other && bundleSize(other) > 0) { bundle = other; break; } } catch { /* nothing there */ }
+        }
+      if (live) void showTraits(s);
       if (!live) return;
       setStore({ ...p, available });
       if (!bundle || bundleSize(bundle) === 0) { ready.current = true; return; }
@@ -96,13 +117,18 @@ export default function GuestLayer({ guest, guests, text, onSignIn, children }: 
     return () => { live = false; };
   }, []);
 
+  const [saving, setSaving] = useState(0);
   const save = useCallback(async () => {
     if (!ready.current) return;
+    setSaving((n) => n + 1);
     try {
       const bundle = await collectBundle();
-      await browserStore.save(bundle);
+      if (!storeRef.current) throw new Error("no store");
+      await storeRef.current.save(bundle);
       setSaved(bundle.saved_at);
-    } catch { setStore((s) => ({ ...s, available: false })); }
+      if (selection.current) void showTraits(selection.current);
+    } catch (e) { console.warn("[store] save failed", e); setStore((s) => ({ ...s, available: false })); }
+    finally { setSaving((n) => n - 1); }
   }, []);
 
   // Changes other than answers (layout, pins, trash, memory, settings): one save after they settle.
@@ -150,7 +176,9 @@ export default function GuestLayer({ guest, guests, text, onSignIn, children }: 
 
   const wipe = async () => {
     setWipeAsk(false);
-    await wipeEverything();
+    // Every store of the registry is cleared (closing its database first), then the rest of the site's data.
+    for (const p of selection.current?.plugins ?? []) { try { await p.wipe(); } catch { /* nothing stored there */ } }
+    await wipeEverything(storeRef.current ?? browserStore);
     window.location.reload();
   };
 
@@ -185,7 +213,7 @@ export default function GuestLayer({ guest, guests, text, onSignIn, children }: 
   return (
     <>
       {children}
-      <div className="guest-layer" data-testid="guest-layer" data-guest-id={guest.id} data-saved-at={saved ?? ""}
+      <div className="guest-layer" data-testid="guest-layer" data-guest-id={guest.id} data-saved-at={saved ?? ""} data-saving={saving}
         style={{ position: "fixed", left: 8, right: 8, bottom: 112, zIndex: 50, pointerEvents: "none", display: "flex", flexDirection: "column", gap: 6, alignItems: "stretch", maxWidth: 640, margin: "0 auto" }}>
         {notice && (
           <div role="status" data-testid="guest-notice" data-period={which.period ?? "session"}
@@ -257,6 +285,32 @@ export default function GuestLayer({ guest, guests, text, onSignIn, children }: 
           <button type="button" data-testid="guest-wipe" onClick={() => setWipeAsk(true)}
             style={{ fontSize: 11, padding: "0 6px", marginLeft: 4 }}>{text("guest.wipe")}</button>
         </p>
+        {sel && (
+          <details data-testid="guest-store" data-store={sel.plugin?.id ?? ""} data-integrity={String(sel.traits.integrity?.value ?? "")}
+            data-fallback={String(sel.traits.bundle_fallback?.value ?? "")} data-leader={String(sel.traits.leader_tab?.value ?? "")}
+            style={{ pointerEvents: "auto", margin: 0, fontSize: 12, opacity: 0.85 }}>
+            <summary>{text("guest.store", { label: sel.plugin?.label ?? "-" })}</summary>
+            {sel.advisories.filter((a) => a.kind === "store_unavailable" || a.kind === "store_fallback" || a.kind === "store_requirements_unmet").map((a, i) => (
+              <p key={i} role="status" data-testid="guest-store-advisory" data-kind={a.kind} data-plugin={a.plugin ?? ""} style={{ margin: "2px 0" }}>
+                {a.plugin === sel.plugin?.id ? text("guest.store_fallback", { label: sel.plugin?.label ?? "", reason: a.reason ?? (a.missing ?? []).join(", ") })
+                  : `${a.plugin ?? ""}: ${text("guest.store_unavailable", { reason: a.reason ?? (a.missing ?? []).join(", ") })}`}
+              </p>
+            ))}
+            <label style={{ display: "block", margin: "4px 0" }}>{text("guest.store_choice")}{" "}
+              <select data-testid="guest-store-choice" value={Array.isArray(sel.policy.targets) ? sel.policy.targets[0] : "auto"}
+                onChange={(e) => { writePolicy(e.target.value === "auto" ? null : { targets: [e.target.value] }); window.location.reload(); }}>
+                <option value="auto">{text("guest.store_auto")}</option>
+                {sel.candidates.map((c) => <option key={c.id} value={c.id}>{c.id}{c.available ? "" : ` (${text("guest.store_unavailable", { reason: c.reason ?? "" })})`}</option>)}
+              </select>
+            </label>
+            <p style={{ margin: "2px 0" }}>{text("guest.store_traits")}</p>
+            <ul data-testid="guest-store-traits" style={{ margin: 0, paddingLeft: 16 }}>
+              {Object.entries(sel.traits).map(([k, t]) => (
+                <li key={k} data-trait={k} title={`${t.source ?? ""} ${t.observed_at ?? ""}`}>{k}: {Array.isArray(t.value) ? t.value.join(", ") : String(t.value)}{t.unit ? ` ${t.unit}` : ""}</li>
+              ))}
+            </ul>
+          </details>
+        )}
         <input ref={fileInput} type="file" accept="application/json,.json" hidden data-testid="guest-load-input"
           onChange={(e) => { const f = e.target.files?.[0]; if (f) void load(f); e.target.value = ""; }} />
       </div>

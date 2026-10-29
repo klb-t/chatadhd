@@ -102,6 +102,8 @@
     "test:m1-me": "node e2e/m1-me-native.mjs",
     "test:guest-mode": "node e2e/guest-mode-native.mjs",
     "test:guest-bundle": "node e2e/guest-bundle-native.mjs",
+    "test:opfs-store": "node e2e/opfs-store-native.mjs",
+    "test:store-plugins": "node --test tests/store/store.test.mjs",
     "test:m1-navigator": "node e2e/m1-navigator-native.mjs",
     "test:m1-settings": "node e2e/m1-settings-native.mjs",
     "test:m1-context-sent": "node e2e/m1-context-sent-native.mjs",
@@ -128,6 +130,7 @@
     "test:testids-doc": "node tests/shell/testids-doc.test.mjs"
   },
   "dependencies": {
+    "@sqlite.org/sqlite-wasm": "3.53.4-build2",
     "dompurify": "^3.2.4",
     "marked": "^12.0.2",
     "react": "^18.3.1",

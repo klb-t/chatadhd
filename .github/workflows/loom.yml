@@ -296,6 +296,8 @@ jobs:
           npm run test:m1-me
           npm run test:guest-mode
           npm run test:guest-bundle
+          npm run test:store-plugins
+          npm run test:opfs-store
           npm run test:auth-state
           npm run test:m1-import-truth
           npm run test:windows-w2
