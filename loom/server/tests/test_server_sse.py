@@ -36,7 +36,8 @@ def start(extra, data):
     process = subprocess.Popen([BINARY, "--host", "127.0.0.1", "--port", str(port), "--data-dir", data, *extra],
                                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     base = f"http://127.0.0.1:{port}"
-    deadline = time.time() + 15
+    # A start timeout is not a product assertion: a sanitizer build on a loaded shard needs far longer than a dev build.
+    deadline = time.time() + float(os.environ.get("LOOM_TEST_SERVER_START_SECONDS", "120"))
     while time.time() < deadline:
         try:
             if requests.get(base + "/api/healthz", timeout=1).status_code == 200:

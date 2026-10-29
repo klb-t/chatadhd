@@ -95,7 +95,8 @@ class Server:
         self.base = f"http://127.0.0.1:{self.port}"
         self.proc = subprocess.Popen([BIN, "--port", str(self.port), "--accounts-root", str(root)],
                                      stderr=subprocess.PIPE, text=True)
-        deadline = time.time() + 20
+        # A start timeout is not a product assertion: a sanitizer build on a loaded shard needs far longer than a dev build.
+        deadline = time.time() + float(os.environ.get("LOOM_TEST_SERVER_START_SECONDS", "120"))
         while time.time() < deadline:
             try:
                 if requests.get(self.base + "/api/healthz", timeout=1).status_code == 200:
@@ -145,9 +146,11 @@ def limited(r, mechanism: str, status: int = 429, retry: bool = True) -> dict:
 
 
 def main() -> int:
-    # Two CTest entries run one part each (server.guest_protection = load, server.guest_protection_mechanisms), so each
-    # ends well inside its limit on a ~5x slower ASan runner; no argument = both.
-    parts = set(sys.argv[1:]) or {"load", "mechanisms"}
+    # Three CTest entries run one part each (server.guest_protection = load, ..._mechanisms, ..._zero), so each ends
+    # well inside its limit on an ASan runner; no argument = all. Measured 2026-10-29 on ASan: starting a guest session costs
+    # the server ~4.5 s of CPU and every model request ~6 s (dev: ~1 s); proof of work in Python ~0.27 s and an Argon2id
+    # registration ~1 s are negligible. So the cost of a part is (guest starts + model requests) x those figures.
+    parts = set(sys.argv[1:]) or {"load", "mechanisms", "zero"}
     mock_port = free_port()
     mock = http.server.ThreadingHTTPServer(("127.0.0.1", mock_port), Mock)
     threading.Thread(target=mock.serve_forever, daemon=True).start()
@@ -180,7 +183,15 @@ def main() -> int:
 
         if "load" in parts:
             # ── 1. load from one address at the presets; the signed-in account is unaffected ──────────────────────
-            srv, root1 = server({})
+            # The limits are the numbers of the preset divided down so the part ends well inside its limit on ASan: sessions
+            # stay at the preset (20), the model-request walls are 4 per session per minute and 8 per address per minute
+            # instead of 20 / 60 (the same buckets and counters; the preset numbers themselves are asserted from the pack).
+            pk = json.loads((Path(__file__).resolve().parents[2] / "data" / "runtime" / "server_accounts.pack").read_text())
+            pre = pk["defaults"]["guests"]["protection"]
+            assert pre["per_address"]["sessions_per_hour"] == 20 and pre["per_address"]["chat_per_minute"] == 60, pre["per_address"]
+            assert pre["per_session"]["chat_per_minute"] == 20 and pre["pow"]["bits"] == 18, pre
+            SCM, ACM = 4, 8
+            srv, root1 = server({"per_session": {"chat_per_minute": SCM}, "per_address": {"chat_per_minute": ACM}})
             b = srv.base
             try:
                 acc = requests.Session()
@@ -222,25 +233,26 @@ def main() -> int:
                 assert len(started) == 20 and refused == {"address_sessions_hour": 1}, (len(started), refused)  # preset per_address.sessions_per_hour
                 # one session, sequential model requests, clock frozen: exactly the bucket (preset chat_per_minute 20)
                 t1 = time.time()
-                rs = [chat(started[0], b) for _ in range(21)]
+                rs = [chat(started[0], b) for _ in range(SCM + 1)]
                 one = [r.status_code for r in rs]
-                print(f"MEASURE chats_one_session passed={one.count(200)} of 21 elapsed_s={time.time() - t1:.1f} (clock frozen)")
-                assert one == [200] * 20 + [429], one
-                assert limited(rs[-1], "session_chat_minute")["retry_after"] == 3  # 20/min refills 1 per 3 s
-                # refill: the clock advances 3 s -> exactly one more, 6 s -> exactly two more
-                advance(root1, 3)
+                print(f"MEASURE chats_one_session passed={one.count(200)} of {SCM + 1} elapsed_s={time.time() - t1:.1f} (clock frozen)")
+                assert one == [200] * SCM + [429], one
+                refill = 60 // SCM  # SCM/min refills 1 per 15 s
+                assert limited(rs[-1], "session_chat_minute")["retry_after"] == refill
+                # refill: the clock advances one interval -> exactly one more, two intervals -> exactly two more
+                advance(root1, refill)
                 assert [chat(started[0], b).status_code for _ in range(2)] == [200, 429]
-                advance(root1, 6)
+                advance(root1, 2 * refill)
                 assert [chat(started[0], b).status_code for _ in range(3)] == [200, 200, 429]
                 advance(root1, 60)  # every per-minute bucket is full again
-                # several sessions of the same address: the address bucket (preset 60/min) is the wall
+                # several sessions of the same address: the address bucket (here ACM per minute) is the wall
                 t2 = time.time()
                 counts = {"passed": 0}
                 mech = {}
                 lock = threading.Lock()
 
                 def hammer(s):
-                    for _ in range(16):  # 4 x 16 = 64: past the address wall (60), each session under its own (20)
+                    for _ in range(3):  # 4 x 3 = 12: past the address wall (ACM = 8), each session under its own (SCM = 4)
                         r = chat(s, b)
                         with lock:
                             if r.status_code == 200:
@@ -254,8 +266,8 @@ def main() -> int:
                 for w in workers:
                     w.join()
                 many = counts["passed"]
-                print(f"MEASURE chats_six_sessions_parallel_one_address passed={many} of 64 refused={mech} elapsed_s={time.time() - t2:.1f}")
-                assert many == 60 and mech == {"address_chat_minute": 4}, (many, mech)  # preset per_address.chat_per_minute
+                print(f"MEASURE chats_six_sessions_parallel_one_address passed={many} of {4 * 3} refused={mech} elapsed_s={time.time() - t2:.1f}")
+                assert many == ACM and mech == {"address_chat_minute": 12 - ACM}, (many, mech)
                 stop.set()
                 t.join()
                 print(f"MEASURE account_marcin_requests_during_load ok={account_ok[0]} of {account_total[0]}")
@@ -264,7 +276,7 @@ def main() -> int:
                 assert summary.status_code == 200, summary.text
                 sj = summary.json()
                 assert sj["rejections"]["address_sessions_hour"] == 1 and sj["rejections"]["session_chat_minute"] == 3, sj
-                assert sj["rejections"]["address_chat_minute"] == 4 and sj["admitted"]["model_requests"] == 23 + 60, sj
+                assert sj["rejections"]["address_chat_minute"] == 12 - ACM and sj["admitted"]["model_requests"] == SCM + 3 + ACM, sj
                 assert "hello" not in summary.text and FAKE_KEY not in summary.text
                 assert started[0].get(b + "/api/pool/summary", timeout=10).status_code == 403  # not a guest's business
                 assert requests.get(b + "/api/pool/summary", timeout=10).status_code == 401
@@ -355,6 +367,7 @@ def main() -> int:
                     MOCK_DELAY["s"] = 0.0
             case({"per_session": {"parallel_streams": 1}}, "session_parallel_streams", parallel)
 
+        if "zero" in parts:
             # ── 4. a preset at 0 = no limit ──────────────────────────────────────────────────────────────────────
             zero = {"pow": {"bits": 0}, "per_session": {"chat_per_minute": 0, "chat_per_day": 0, "output_tokens_per_day": 0,
                                                          "parallel_streams": 0, "api_per_minute": 0},
@@ -364,7 +377,7 @@ def main() -> int:
             srv, _ = server(zero, {"max_bytes": 0})
             try:
                 ss = []
-                for _ in range(21):  # one past the preset per_address.sessions_per_hour (20)
+                for _ in range(21):  # one past the preset per_address.sessions_per_hour (20); sequential: the server creates sessions one at a time
                     s, r = start_guest(srv.base, body={})
                     assert r.status_code == 201, r.text
                     ss.append(s)
