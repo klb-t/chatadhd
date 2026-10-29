@@ -1,5 +1,16 @@
 # Kolejka S1 — stan 2026-10-27 12:15 UTC (nagłówek daty aktualizuje ten, kto pisze wpis; gcp pisze od 24.10)
 
+
+## PRIORYTETY NA NOC 2026-10-29/30 (koordynator gcp; właściciel: „priorytety ustal od najważniejszych przez najciekawsze i inne dalej”, „nie czekajcie nigdy na mnie”)
+Najważniejsze:
+1. ChatADHD — wdrożenie gościa rano bez niespodzianek: zbudować pakiet serwera z main (27d539bf+) i przejść `tools/gcp/deploy_guests.sh --dry-run --tarball <pakiet>`; błąd budowy naprawić w nocy.
+2. ChatADHD — „wolny czat gościa”: start sesji gościa ~4,5 s CPU serwera pod ASan, ~1 s dev; zmierzyć w release i usunąć zbędną pracę w `context_for_guest` (pierwsze wrażenie publicznego czatu).
+3. WatchDog i AGEDS — własne kolejki (sesje projektowe); scalenia i wdrożenia czekają na właściciela.
+Najciekawsze:
+4. ChatADHD — PH29/R103: magazyn jako abstrakcja z cechami jako danymi (B8 §dopisek 29.10); najpierw projekt (krótki, Opus), potem wtyczka OPFS+SQLite jako pierwsza nowa.
+5. Ekosystem (R106) — materiał do LEM: przeczytać LEM-Workbench (klon tylko do odczytu), uzupełnić HOMOMORFIZMY_MATERIAL.md; analiza dopiero na Fable.
+Dalej: helper e2e, D5…D10, R102, W11 (kolejność z karty wznowienia 4c8a0ada).
+
 ## KARTA WZNOWIENIA sesji chatadhd (2026-10-29, przed restartem VM na 64 GB)
 - Stan: `claude/m1-w1` = 27d539bf (B1b pełna paczka gościa + nazwa produktu ChatADHD + poprawka ASan e11f5c91), bramka `b1ball` ZIELONA (ctest 276/276, web 119 PASSED). Nic nie biegnie; worktree `~/wt/w2b2` (gałąź `w2b2`) = 27d539bf, czysty; build w `~/wt/w2b2/loom/build/dev`.
 - Procedura: pakiet → agent w `~/wt/w2b2` (albo osobny worktree przy pracy równoległej) → `bash tools/gate.sh <worktree> <etykieta>` z `PLAYWRIGHT_HOST_PLATFORM_OVERRIDE=ubuntu24.04-x64 PATH=$HOME/.venvs/loom311/bin:$PATH` (jedna bramka naraz, `free -m` przed) → push FF na `claude/m1-w1` → raport do koordynatora `gcp` (FF na main po zielonym CI).
