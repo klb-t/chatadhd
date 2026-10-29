@@ -3797,6 +3797,7 @@
           "loom_semantic_wake",
           "loom_set_config",
           "loom_set_config_json",
+          "loom_set_credential_overlay",
           "loom_set_http_transport",
           "loom_set_log_level",
           "loom_set_log_sink",

@@ -10,9 +10,11 @@ import {
 } from "../context/guest-store";
 import { GUEST_LIMIT_EVENT, type GuestLimitDetail } from "../api/auth";
 import { SETTINGS_PANEL, requestOpenPanel } from "../context/open-settings";
+import { setSendGate, termsNeedConsent } from "../api/send-gate";
 
 const NEVER_KEY = "loom.guest.notice.never";
 const RESTORED_KEY = "loom.guest.restored";
+const TERMS_KEY = "loom.guest.terms";  // + provider + observed_at: a new observation of the terms asks again
 
 function readFlag(storage: () => Storage, key: string): boolean {
   try { return storage().getItem(key) === "1"; } catch { return false; }
@@ -32,6 +34,11 @@ export default function GuestLayer({ guest, guests, text, onSignIn, children }: 
   const [restored, setRestored] = useState<number | null>(null);
   const [saved, setSaved] = useState<string | null>(null);
   const answered = useRef(false);
+  // R103 B3: the source can change while the guest works (§4.4 switch); /api/auth/me is read again after each answer.
+  const [src, setSrc] = useState(guest.modelSource);
+  // R103 B3 (§4.3): the tap before the first message to a source whose data terms need it.
+  const [consent, setConsent] = useState<null | ((ok: boolean) => void)>(null);
+  const [declined, setDeclined] = useState(false);
   // R103 B2: a refusal of the guest protection - its words, the wait counted down in words, and the alternatives.
   const [limit, setLimit] = useState<(GuestLimitDetail & { until: number | null }) | null>(null);
   const [now, setNow] = useState(() => Date.now());
@@ -93,6 +100,9 @@ export default function GuestLayer({ guest, guests, text, onSignIn, children }: 
   useEffect(() => {
     const onAnswer = () => {
       void save();
+      void fetch("/api/auth/me", { credentials: "same-origin" }).then((r) => r.json())
+        .then((me: { guest?: { model_source?: typeof src } }) => { if (me?.guest?.model_source) setSrc(me.guest.model_source); })
+        .catch(() => { /* the line keeps the last known source */ });
       if (answered.current) return;
       answered.current = true;
       if (guests.notice.on && askAgain !== "never" && !readFlag(storage, noticeKey)) setNotice(true);
@@ -124,11 +134,30 @@ export default function GuestLayer({ guest, guests, text, onSignIn, children }: 
   const ttl = humanSeconds(guest.idleTtlSeconds);
   const which = noticePeriod(store);
   const period = which.period ? text(which.period, { free: humanBytes(store.freeBytes), ttl }) : text("guest.period_unknown", { ttl });
-  const src = guest.modelSource;
-  const terms = src && typeof src.data_terms === "object" && src.data_terms !== null
-    ? (src.data_terms as { summary?: Record<string, string> }).summary : undefined;
+  const dataTerms = src && typeof src.data_terms === "object" && src.data_terms !== null
+    ? (src.data_terms as { summary?: Record<string, string>; source_url?: string; observed_at?: string }) : undefined;
+  const terms = dataTerms?.summary;
   const lang = typeof navigator !== "undefined" ? (navigator.language ?? "").split("-")[0] : "";
   const termsText = terms ? (terms[lang] ?? Object.values(terms)[0] ?? "") : "";
+  const providerName = String(src?.display_name ?? src?.provider ?? "");
+  const termsKey = `${TERMS_KEY}.${String(src?.provider ?? "")}.${String(dataTerms?.observed_at ?? "")}`;
+  const switched = src && typeof src.switched === "object" && src.switched !== null ? (src.switched as { from?: string; why?: string }) : null;
+  const needsTap = Boolean(src && typeof src.model === "string" && src.model && termsNeedConsent(dataTerms));
+
+  // The gate is installed only while the current source needs a tap that this device has not given yet.
+  useEffect(() => {
+    if (!needsTap || readFlag(() => localStorage, termsKey)) { setSendGate(null); return; }
+    setSendGate(() => new Promise<boolean>((resolve) => {
+      setDeclined(false);
+      setConsent(() => (ok: boolean) => {
+        setConsent(null);
+        if (ok) { writeFlag(() => localStorage, termsKey); setSendGate(null); }
+        else { setDeclined(true); requestOpenPanel(SETTINGS_PANEL); }
+        resolve(ok);
+      });
+    }));
+    return () => setSendGate(null);
+  }, [needsTap, termsKey]);
 
   return (
     <>
@@ -166,11 +195,30 @@ export default function GuestLayer({ guest, guests, text, onSignIn, children }: 
             </div>
           </div>
         )}
+        {consent && (
+          <div role="dialog" aria-modal="false" data-testid="guest-terms-consent" data-provider={String(src?.provider ?? "")}
+            style={{ pointerEvents: "auto", background: "var(--surface, #222)", color: "inherit", border: "1px solid var(--border, #555)", borderRadius: 10, padding: "10px 12px" }}>
+            <strong>{text("guest.terms_consent_title", { provider: providerName })}</strong>
+            <p data-testid="guest-terms-consent-body" style={{ margin: "6px 0" }}>
+              {text("guest.terms_consent_body", { terms: termsText, source: String(dataTerms?.source_url ?? ""), date: String(dataTerms?.observed_at ?? "") })}
+            </p>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+              <button type="button" data-testid="guest-terms-send" onClick={() => consent(true)}>{text("guest.terms_send")}</button>
+              <button type="button" data-testid="guest-terms-other" onClick={() => consent(false)}>{text("guest.terms_other")}</button>
+            </div>
+          </div>
+        )}
+        {declined && !consent && <p role="status" data-testid="guest-terms-declined" style={{ pointerEvents: "auto", margin: 0, fontSize: 12 }}>{text("guest.terms_declined")}</p>}
+        {switched && switched.from && (
+          <p role="status" data-testid="guest-switched" style={{ pointerEvents: "auto", margin: 0, fontSize: 12 }}>
+            {text("guest.switched", { from: switched.from, why: String(switched.why ?? ""), provider: providerName })}
+          </p>
+        )}
         {restored !== null && <p role="status" data-testid="guest-restored" style={{ pointerEvents: "auto", margin: 0, fontSize: 12, opacity: 0.85 }}>{text("guest.restored", { count: String(restored) })}</p>}
         <p data-testid="guest-model-line" style={{ pointerEvents: "auto", margin: 0, fontSize: 12, opacity: 0.8 }}
           title={termsText ? `${text("guest.terms_title")}: ${termsText}` : undefined}>
           {src && typeof src.model === "string" && src.model
-            ? text("guest.model_line", { model: src.model, provider: String(src.display_name ?? src.provider ?? ""), terms: termsText })
+            ? text("guest.model_line", { model: src.model, provider: providerName, terms: termsText })
             : text("guest.no_model", { reason: String(src?.why ?? "unknown") })}
         </p>
         <input ref={fileInput} type="file" accept="application/json,.json" hidden data-testid="guest-load-input"

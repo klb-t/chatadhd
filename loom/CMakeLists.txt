@@ -390,6 +390,12 @@ if(LOOM_BUILD_TESTS)
     set_tests_properties(server.guests PROPERTIES
       ENVIRONMENT "LOOM_SERVER_BIN=$<TARGET_FILE:loom-server>;PYTHONDONTWRITEBYTECODE=1"
       TIMEOUT 240)
+    # R103 B3: a service-account source (Vertex) against a local fake: request shape, token refresh, spend, 429 -> switch.
+    add_test(NAME server.guest_vertex
+      COMMAND ${Python3_EXECUTABLE} ${LOOM_ROOT}/server/tests/test_server_guest_vertex.py)
+    set_tests_properties(server.guest_vertex PROPERTIES
+      ENVIRONMENT "LOOM_SERVER_BIN=$<TARGET_FILE:loom-server>;PYTHONDONTWRITEBYTECODE=1"
+      TIMEOUT 240)
     # R103 B2: guest protection - load from one address at the presets (≈ 2.5 min on a dev build: every model request
     # of the debug server takes ≈ 0.9 s), every mechanism, proof of work, counters, 0 = no limit.
     add_test(NAME server.guest_protection

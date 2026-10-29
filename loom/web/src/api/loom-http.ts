@@ -25,6 +25,7 @@ import type {
 } from "./types";
 import { isLoomError, readInteractionBindings, readPerspectivesList, readScopeResolution, readSideBySide, readViewEngineList, readViewModel } from "./types";
 import { AUTH_REQUIRED_EVENT, announceLimit } from "./auth";
+import { sendGate } from "./send-gate";
 import type { KnowledgeApi } from "./knowledge";
 import { readGraphEntry, type GraphEntryOptions, type GraphEntryView } from "./graph-entry";
 import type { GraphPacketStoreRequest, GraphPacketStoreResult } from "./graph-packets";
@@ -348,7 +349,18 @@ export class LoomHttpApi implements LoomApi {
   chat(req: ChatRequest, handlers: StreamHandlers<ChatChunk>): Unsubscribe {
     // R103: an answer that finished is announced, so the guest layer can save the history and show its notice.
     const announce = () => { if (typeof window !== "undefined") window.dispatchEvent(new CustomEvent("loom:answer-done", { detail: { conv_id: req.conv_id ?? null } })); };
-    return this.streamSse("POST", "/api/chat", req, { ...handlers, onDone: () => { handlers.onDone?.(); announce(); } });
+    const go = () => this.streamSse("POST", "/api/chat", req, { ...handlers, onDone: () => { handlers.onDone?.(); announce(); } });
+    // R103 B3 (§4.3): a guest's first message to a source whose data terms need a tap waits for it.
+    const gate = sendGate();
+    if (!gate) return go();
+    let cancelled = false;
+    let unsubscribe: Unsubscribe | null = null;
+    void gate().then((ok) => {
+      if (cancelled) return;
+      if (ok) unsubscribe = go();
+      else handlers.onError?.("not_sent_data_terms");
+    });
+    return () => { cancelled = true; unsubscribe?.(); };
   }
   async cancelChat(requestId: string): Promise<void> {
     await this.req("POST", "/api/chat/cancel", { request_id: requestId });

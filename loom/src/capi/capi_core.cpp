@@ -471,6 +471,22 @@ LOOM_API int loom_set_secret(LoomContext* ctx, const char* key, const char* valu
   });
 }
 
+LOOM_API int loom_set_credential_overlay(LoomContext* ctx, const char* overlay_json) {
+  return guard_int("loom_set_credential_overlay", [&] {
+    LOOM_CAPI_REQUIRE_CTX_INT(ctx);
+    if (!overlay_json) return LOOM_E_INVALID_ARGUMENT;
+    const Json j = Json::parse(overlay_json, nullptr, false);
+    if (!j.is_object()) return LOOM_E_INVALID_ARGUMENT;
+    std::map<std::string, std::string> overlay;
+    for (auto it = j.begin(); it != j.end(); ++it) {
+      if (!it.value().is_string()) return LOOM_E_INVALID_ARGUMENT;
+      overlay[it.key()] = it.value().get<std::string>();
+    }
+    ctx->rt->secrets().set_overlay(std::move(overlay));
+    return LOOM_OK;
+  });
+}
+
 LOOM_API int loom_has_secret(LoomContext* ctx, const char* key) {
   return guard_int("loom_has_secret", [&] {
     LOOM_CAPI_REQUIRE_CTX_INT(ctx);

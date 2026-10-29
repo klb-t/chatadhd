@@ -56,7 +56,8 @@ overlay("server_accounts", {
 overlay("free_providers", {
   providers: [{ id: "mock_free", display_name: "Mock darmowy", base_url: `http://127.0.0.1:${mockPort}`, auth_env: "MOCK_FREE_KEY", auth_secret: "api_key",
                 active_when: "key_present", enabled: true,
-                data_terms: { retention: "none_by_default", human_review: false, training: "no", observed_at: "2026-10-28", source_url: "test", source_rating: "test",
+                // R103 B3: retention other than "none…" -> the explicit tap before the first send (§4.3) is part of the path.
+                data_terms: { retention: "per_test_terms", human_review: false, training: "no", observed_at: "2026-10-28", source_url: "test", source_rating: "test",
                               summary: { pl: "Testowy dostawca nic nie zapisuje.", en: "The test provider keeps nothing." } } }],
   free_model_choice: { rank_source: "table", require: { training: "no" }, table: [{ model: "mock/e2e-model", provider: "mock_free", quality: 1 }] },
 });
@@ -93,7 +94,15 @@ try {
   await step("question -> answer of the free model -> one notice with the period from the store", async () => {
     await page.getByTestId("chat-input").fill(QUESTION);
     await page.getByTestId("send-chat").click();
+    // R103 B3 (§4.3): the first message waits for the tap; the dialog says what the provider does and where we know it from.
+    const consent = page.getByTestId("guest-terms-consent");
+    await consent.waitFor({ timeout: 10000 });
+    const consentText = await consent.innerText();
+    assert.ok(consentText.includes("Testowy dostawca nic nie zapisuje.") && consentText.includes("2026-10-28"), consentText);
+    await page.screenshot({ path: path.join(SHOTS, "guest-1b-terms-consent.png") });
+    await page.getByTestId("guest-terms-send").click();
     await page.getByText("Hello from the mock model!").first().waitFor({ timeout: 20000 });
+    assert.equal(await consent.count(), 0, "the tap is asked once per provider and observation of its terms");
     const notice = page.getByTestId("guest-notice");
     await notice.waitFor({ timeout: 10000 });
     const kind = await notice.getAttribute("data-period");

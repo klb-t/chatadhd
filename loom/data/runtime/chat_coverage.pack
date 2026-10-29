@@ -3263,6 +3263,7 @@
         "surfaces": {
           "c_abi": [
             "loom_set_secret",
+            "loom_set_credential_overlay",
             "loom_delete_secret",
             "loom_crypto_setup",
             "loom_crypto_unlock",

@@ -113,7 +113,9 @@ export type AccountsTextId =
   | "guest.start" | "guest.notice_title" | "guest.notice_body_browser" | "guest.notice_body_session" | "guest.notice_choose_store"
   | "guest.notice_sign_in" | "guest.notice_never" | "guest.notice_close" | "guest.download" | "guest.load" | "guest.restored"
   | "guest.model_line" | "guest.no_model" | "guest.terms_title" | "guest.period_unknown" | "guest.persisted" | "guest.not_persisted"
-  | "guest.limit_ready" | "guest.limit_alternatives" | "guest.limit_own_key";
+  | "guest.limit_ready" | "guest.limit_alternatives" | "guest.limit_own_key"
+  | "guest.terms_consent_title" | "guest.terms_consent_body" | "guest.terms_send" | "guest.terms_other" | "guest.terms_declined"
+  | "guest.switched";
 
 /** Text from the catalog, or the id (and reason) when the catalog is unusable. */
 export function accountText(feature: PresentationFeature | null, id: AccountsTextId,

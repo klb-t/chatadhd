@@ -1,8 +1,8 @@
 {
   "schema": "loom.runtime_profile/1",
   "domain": "free_providers",
-  "revision": 1,
-  "description": "Model sources for guests (R103 §4, B1). Every entry is DATA and a preset: providers, models, limits and data terms are dated observations (observed_at, source_url, source_rating) to refresh, never rules. An entry is used only when enabled is true and its condition holds (active_when key_present = its auth_env name is present in the operator's keys file, server_accounts guests.keys_file; the key goes to the guest runtime in memory through credential_overlay and never into the guest directory). disabled_reason says why an entry is out of the guest queue on the operator's key and since when (provider terms are treated like law: a closed choice with a reason and a date). data_terms.summary (pl/en) is shown to the guest before the first send and copied into every receipt (provider_terms). budget on a paid entry is a spending preset (EUR per day/week, share of each credit, advisory threshold). free_model_choice: which model a guest without his own key gets; table = an example ranking with dates (quality 0..1), require = data-terms condition on the operator's key, reevaluate = when the choice is computed again (B1 computes it when the guest runtime opens; per_message comes with the quota counters of B4). test_providers: extra entries an operator overlay may add (tests use a mock).",
+  "revision": 2,
+  "description": "Model sources for guests (R103 §4, B1). Every entry is DATA and a preset: providers, models, limits and data terms are dated observations (observed_at, source_url, source_rating) to refresh, never rules. An entry is used only when enabled is true and its condition holds (active_when key_present = its auth_env name is present in the operator's keys file, server_accounts guests.keys_file; the key goes to the guest runtime in memory through credential_overlay and never into the guest directory). disabled_reason says why an entry is out of the guest queue on the operator's key and since when (provider terms are treated like law: a closed choice with a reason and a date). data_terms.summary (pl/en) is shown to the guest before the first send and copied into every receipt (provider_terms). budget on a paid entry is a spending preset (EUR per day/week, share of each credit, advisory threshold). free_model_choice.tier_order (R103 B3) = sources of these tiers are tried first, in this order, then by quality (preset: free keys before the operator's paid credits; empty = quality only); free_model_choice: which model a guest without his own key gets; table = an example ranking with dates (quality 0..1), require = data-terms condition on the operator's key, reevaluate = when the choice is computed again (B1 computes it when the guest runtime opens; per_message comes with the quota counters of B4). active_when service_account (R103 B3) = a short-lived OAuth access token of the machine's service account from the metadata server (auth.metadata_base, refreshed auth.refresh_before_seconds before expiry, memory only; {project} in base_url comes from the metadata server unless project is set). pricing = dated price per million tokens with its source (to_eur = dated conversion), used with the provider's usage for the spend counter (accounts root guest_spend.json, numbers only; GET /api/pool/summary spend). exhaustion_markers = text in a provider error that means exhausted (429, quota); the provider is then skipped for exhausted_cooldown_seconds and the guest is switched by fallback order, told in model_source.switched (R103 §4.4). data_terms_prompt = when the guest is asked before sending (first_use, every_session, every_message; never only for his own key). test_providers: extra entries an operator overlay may add (tests use a mock).",
   "defaults": {
     "providers": [
       {
@@ -106,17 +106,12 @@
         "auth_secret": "api_key",
         "tier": "paid_credits",
         "location": "global",
-        "active_when": "wired_in_b3",
-        "enabled": false,
-        "disabled_reason": {
-          "pl": "Połączenie z kontem usługi maszyny powstaje w pakiecie B3; nigdy nie używa danych konta właściciela z /var/lib/chatadhd.",
-          "en": "The VM service-account connection is wired in package B3; it never uses the owner's account data from /var/lib/chatadhd.",
-          "since": "2026-10-28"
-        },
+        "active_when": "service_account",
+        "enabled": true,
         "models": [
           {
-            "id": "gemini-3.5-flash",
-            "notes": "przykład / example"
+            "id": "google/gemini-3.5-flash",
+            "notes": "przykład / example; on the OpenAI-compatible Vertex endpoint the id carries the publisher prefix google/"
           }
         ],
         "budget": {
@@ -126,7 +121,8 @@
             "per_day": 1.0,
             "share_of_each_credit": 0.1,
             "advisory_at_share": 0.8,
-            "counter": "usage ledger of the guest runtime (B3)"
+            "counter": "guest_spend.json in the accounts root (B3); amounts_eur empty = credit amounts unknown, only per_day applies",
+            "amounts_eur": []
           },
           "beyond_credits": {
             "per_day": 1.0,
@@ -147,7 +143,33 @@
             "en": "Vertex AI does not train on customer data (by default, kept so); data goes to Google Cloud on the operator's account; Vertex caching is on."
           }
         },
-        "fallback_order": 5
+        "fallback_order": 30,
+        "auth": {
+          "metadata_base": "http://metadata.google.internal",
+          "refresh_before_seconds": 300,
+          "scope_needed": "https://www.googleapis.com/auth/cloud-platform"
+        },
+        "project": "",
+        "pricing": {
+          "currency": "USD",
+          "input_per_million": 1.5,
+          "cached_input_per_million": 0.15,
+          "output_per_million": 9.0,
+          "to_eur": 0.92,
+          "observed_at": "2026-10-29",
+          "source_url": "https://cloud.google.com/vertex-ai/generative-ai/pricing",
+          "source_rating": "aggregator (official page did not list 3.5 Flash in the fetched copy; third-party trackers agree on 1.50/9.00 USD)",
+          "note": "thinking tokens are billed as output; to_eur is a dated approximate conversion, not a quote"
+        },
+        "exhaustion_markers": [
+          "429",
+          "RESOURCE_EXHAUSTED",
+          "quota",
+          "rate limit"
+        ],
+        "exhausted_cooldown_seconds": 60,
+        "data_terms_prompt": "first_use",
+        "equivalent_to": []
       },
       {
         "id": "gemini_api_free",
@@ -237,7 +259,7 @@
       "rank_source": "table",
       "table": [
         {
-          "model": "gemini-3.5-flash",
+          "model": "google/gemini-3.5-flash",
           "provider": "vertex_gemini",
           "quality": 0.85,
           "observed_at": "2026-10-28",
@@ -274,7 +296,11 @@
         "latency_p50"
       ],
       "min_remaining_quota": 0.05,
-      "reevaluate": "per_session"
+      "reevaluate": "per_session",
+      "tier_order": [
+        "free",
+        "paid_credits"
+      ]
     },
     "terms": {
       "commercial_use": "ask_owner"

@@ -138,11 +138,19 @@ class Secrets : public JsonStore {
   std::string get_string(std::string_view key) const;  // "" if missing or not a string
   bool has(std::string_view key) const;                // non-empty string value
   // R103 §3.4: credentials handed to this runtime in memory only (loom_init_ex "credential_overlay"), read before
-  // secrets.json and never written to it, listed or exported. Set once, before the runtime is used.
-  void set_overlay(std::map<std::string, std::string> overlay) { overlay_ = std::move(overlay); }
-  bool from_overlay(std::string_view key) const { return overlay_.count(std::string(key)) != 0; }
+  // secrets.json and never written to it, listed or exported. Replaceable while the runtime runs (R103 B3: a
+  // short-lived access token refreshed by the server, loom_set_credential_overlay); reads and writes are locked.
+  void set_overlay(std::map<std::string, std::string> overlay) {
+    std::lock_guard lk(overlay_mu_);
+    overlay_ = std::move(overlay);
+  }
+  bool from_overlay(std::string_view key) const {
+    std::lock_guard lk(overlay_mu_);
+    return overlay_.count(std::string(key)) != 0;
+  }
 
  private:
+  mutable std::mutex overlay_mu_;
   std::map<std::string, std::string> overlay_;
 };
 

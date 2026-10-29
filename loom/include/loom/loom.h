@@ -234,6 +234,10 @@ LOOM_API void loom_set_config(LoomContext* ctx, const char* key, const char* val
 LOOM_API int loom_set_config_json(LoomContext* ctx, const char* patch_json);
 /* Secrets are write-only through the ABI: values are never returned. */
 LOOM_API int loom_set_secret(LoomContext* ctx, const char* key, const char* value);
+/* R103 B3: replaces the in-memory credential overlay of this runtime (the loom_init_ex option
+ * "credential_overlay": {"name": "value"}), e.g. a refreshed short-lived access token. Values are
+ * read before secrets.json and are never written to it, listed, exported or returned. */
+LOOM_API int loom_set_credential_overlay(LoomContext* ctx, const char* overlay_json);
 /* 1 = set and non-empty, 0 = not set, negative = error. */
 LOOM_API int loom_has_secret(LoomContext* ctx, const char* key);
 LOOM_API int loom_delete_secret(LoomContext* ctx, const char* key);

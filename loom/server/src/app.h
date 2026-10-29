@@ -13,6 +13,7 @@
 #include "loom/accounts.h"
 #include "loom/loom.h"
 #include "guest_guard.h"
+#include "provider_runtime.h"
 
 namespace loom_server {
 
@@ -99,6 +100,13 @@ class App {
   // most every guests.sweep_interval_seconds, on requests.
   void sweep_guests_if_due();
   nlohmann::json guest_source(const std::string& guest_id);
+  // R103 B3: the free/paid source for a new guest runtime (overlay receives the key or access token, memory only).
+  nlohmann::json choose_guest_source(std::map<std::string, std::string>& overlay);
+  // R103 B3: before a guest's model request: refresh a short-lived token, or switch the guest to the next source when
+  // its provider is exhausted, over budget or without a token (§4.4, told in model_source.switched).
+  void prepare_guest_source(const std::string& guest_id);
+  // R103 B3: after a guest's answer: spend from usage × price, exhaustion markers → cool-down.
+  void settle_guest_answer(const std::string& provider, const nlohmann::json& result);
   // R103 B2: admission of one guest request (sizes, working-folder ceiling, buckets); true = answered (refused).
   bool refuse_guest_request(const httplib::Request& req, httplib::Response& res);
   // R103 B2: a 429 (or other status) with retry_after, the mechanism and words in the request's language.
@@ -136,6 +144,12 @@ class App {
   std::unordered_map<std::string, nlohmann::json> guest_source_;  // which free provider/model a guest runtime got, and why
   std::atomic<std::int64_t> next_guest_sweep_{0};
   GuestGuard guard_;  // R103 B2: guest protection (buckets, proof of work, rejection counters)
+  // R103 B3: the guests' paid/service-account sources: access tokens (memory only), spend per day, exhausted providers.
+  MetadataTokens tokens_;
+  SpendLedger spend_;
+  ProviderCooldowns cooldowns_;
+  std::mutex budget_note_mu_;
+  std::map<std::string, std::string> budget_note_day_;  // provider -> day the advisory was last written to the log
   httplib::Server svr_;
   std::atomic<bool> running_{false};
 };

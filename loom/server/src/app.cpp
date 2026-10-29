@@ -388,7 +388,12 @@ std::map<std::string, std::string> read_keys_file(std::string path, const std::v
 // when its provider is enabled, its condition holds (key_present = its auth_env is in the keys file, none = no key)
 // and its data terms satisfy `require`. Returns {provider, model, base_url, data_terms, quality, why} or
 // {provider: null, why}; `secret`/`secret_name` (not part of the public answer) carry the overlay.
-json choose_free_model(const json& fp, const std::string& keys_file, std::map<std::string, std::string>& overlay) {
+// R103 B3: `resolve` handles any other active_when (e.g. service_account: a token from the metadata server) and may
+// rewrite base_url ({project}); it returns "" when the entry is usable, else the reason it is skipped. `blocked` gives
+// the reason a provider is out right now (exhausted, over budget), "" when it is not.
+using SourceResolver = std::function<std::string(const json& prov, std::string& key, std::string& base_url)>;
+json choose_free_model(const json& fp, const std::string& keys_file, std::map<std::string, std::string>& overlay,
+                       const SourceResolver& resolve = {}, const std::function<std::string(const json&)>& blocked = {}) {
   const json providers = fp.value("providers", json::array());
   const json choice = fp.value("free_model_choice", json::object());
   std::vector<std::string> wanted;
@@ -398,7 +403,20 @@ json choose_free_model(const json& fp, const std::string& keys_file, std::map<st
   const json require = choice.value("require", json::object());
   json table = choice.value("table", json::array());
   if (!table.is_array()) table = json::array();
-  std::stable_sort(table.begin(), table.end(), [](const json& a, const json& b) {
+  // R103 B3: tier_order (e.g. free keys before the operator's paid credits) first, then quality; a tier not listed goes last.
+  const json tiers = choice.value("tier_order", json::array());
+  auto tier_rank = [&](const json& row) -> std::size_t {
+    std::string tier;
+    for (const auto& p : providers)
+      if (p.is_object() && p.value("id", std::string()) == row.value("provider", std::string())) tier = p.value("tier", std::string());
+    if (tiers.is_array())
+      for (std::size_t i = 0; i < tiers.size(); ++i)
+        if (tiers[i].is_string() && tiers[i].get<std::string>() == tier) return i;
+    return tiers.is_array() ? tiers.size() : 0;
+  };
+  std::stable_sort(table.begin(), table.end(), [&](const json& a, const json& b) {
+    const auto ta = tier_rank(a), tb = tier_rank(b);
+    if (ta != tb) return ta < tb;
     return a.value("quality", 0.0) > b.value("quality", 0.0);
   });
   json skipped = json::array();
@@ -409,22 +427,30 @@ json choose_free_model(const json& fp, const std::string& keys_file, std::map<st
       if (p.is_object() && p.value("id", std::string()) == pid) prov = &p;
     if (!prov) { skipped.push_back({{"provider", pid}, {"why", "no_provider_entry"}}); continue; }
     if (!prov->value("enabled", false)) { skipped.push_back({{"provider", pid}, {"why", "disabled"}}); continue; }
+    if (blocked) {
+      if (const std::string b = blocked(*prov); !b.empty()) { skipped.push_back({{"provider", pid}, {"why", b}}); continue; }
+    }
     const std::string when = prov->value("active_when", std::string("key_present"));
     const std::string env = prov->value("auth_env", std::string());
     std::string key;
-    if (when == "key_present") {
-      auto it = keys.find(env);
-      if (it == keys.end()) { skipped.push_back({{"provider", pid}, {"why", "no_key"}, {"key_name", env}}); continue; }
-      key = it->second;
-    } else if (when != "none") { skipped.push_back({{"provider", pid}, {"why", when}}); continue; }
+    std::string base_url = prov->value("base_url", std::string());
     const json terms = prov->value("data_terms", json::object());
     bool ok = true;
     for (auto it = require.begin(); it != require.end(); ++it)
       if (!terms.contains(it.key()) || terms[it.key()] != it.value()) ok = false;
     if (!ok) { skipped.push_back({{"provider", pid}, {"why", "data_terms_require"}}); continue; }
+    if (when == "key_present") {
+      auto it = keys.find(env);
+      if (it == keys.end()) { skipped.push_back({{"provider", pid}, {"why", "no_key"}, {"key_name", env}}); continue; }
+      key = it->second;
+    } else if (when != "none") {
+      const std::string why = resolve ? resolve(*prov, key, base_url) : when;
+      if (!why.empty()) { skipped.push_back({{"provider", pid}, {"why", why}}); continue; }
+    }
     if (!key.empty()) overlay[prov->value("auth_secret", std::string("api_key"))] = key;
     return {{"provider", pid}, {"display_name", prov->value("display_name", pid)}, {"model", row.value("model", std::string())},
-            {"base_url", prov->value("base_url", std::string())}, {"data_terms", terms}, {"quality", row.value("quality", json(nullptr))},
+            {"base_url", base_url}, {"data_terms", terms}, {"quality", row.value("quality", json(nullptr))},
+            {"auth_kind", prov->value("auth_kind", std::string("key"))}, {"tier", prov->value("tier", std::string())},
             {"observed_at", row.value("observed_at", json(nullptr))}, {"source", row.value("source", json(nullptr))},
             {"why", "best_in_table"}, {"skipped", skipped}};
   }
@@ -481,9 +507,7 @@ LoomContext* App::context_for_guest(const std::string& guest_id) {
     options["only_hosts"] = hosts;
   }
   std::map<std::string, std::string> overlay;
-  json source = {{"provider", nullptr}, {"why", "free_providers_unreadable"}};
-  if (auto fp = loom::RuntimeProfile::load("free_providers", accounts_->root()); fp)
-    source = choose_free_model(fp->values(), accounts_->settings().guests.keys_file, overlay);
+  json source = choose_guest_source(overlay);
   if (!overlay.empty()) options["credential_overlay"] = overlay;
   const char* err = nullptr;
   LoomContext* c = loom_init_ex(options.dump().c_str(), &err);
@@ -503,6 +527,162 @@ LoomContext* App::context_for_guest(const std::string& guest_id) {
   guest_ctx_[guest_id] = c;
   guest_source_[guest_id] = source;
   return c;
+}
+
+namespace {
+// R103 B3: the reason a provider entry is out right now: a cool-down after an exhaustion marker, or its budget
+// (budget.credits.per_day in EUR; budget.credits.amounts_eur × share_of_each_credit as a total cap when the credits are
+// listed). "" = usable.
+std::string provider_blocked(const json& prov, SpendLedger& spend, ProviderCooldowns& cool) {
+  const std::string pid = prov.value("id", std::string());
+  if (std::string c = cool.blocked(pid); !c.empty()) return c;
+  const json budget = prov.value("budget", json::object());
+  const json credits = budget.is_object() ? budget.value("credits", json::object()) : json::object();
+  if (!credits.is_object() || !prov.contains("pricing")) return {};
+  const double per_day = credits.value("per_day", 0.0);
+  if (per_day > 0 && spend.eur_today(pid) >= per_day) return "budget_day";
+  double cap = 0;
+  if (const json amounts = credits.value("amounts_eur", json::array()); amounts.is_array())
+    for (const auto& a : amounts)
+      if (a.is_number()) cap += a.get<double>() * credits.value("share_of_each_credit", 0.0);
+  if (cap > 0 && spend.eur_total(pid) >= cap) return "budget_credit_share";
+  return {};
+}
+
+const json* find_provider(const json& fp, const std::string& pid) {
+  const json& providers = fp.contains("providers") ? fp["providers"] : fp;
+  if (!providers.is_array()) return nullptr;
+  for (const auto& p : providers)
+    if (p.is_object() && p.value("id", std::string()) == pid) return &p;
+  return nullptr;
+}
+}  // namespace
+
+json App::choose_guest_source(std::map<std::string, std::string>& overlay) {
+  auto fp = loom::RuntimeProfile::load("free_providers", accounts_->root());
+  if (!fp) return {{"provider", nullptr}, {"why", "free_providers_unreadable"}};
+  const SourceResolver resolve = [this](const json& prov, std::string& key, std::string& base_url) -> std::string {
+    const std::string when = prov.value("active_when", std::string());
+    if (when != "service_account") return when.empty() ? std::string("no_condition") : when;
+    const json auth = prov.value("auth", json::object());
+    std::string why;
+    const auto tok = tokens_.get(auth.value("metadata_base", std::string("http://metadata.google.internal")),
+                                 auth.value("refresh_before_seconds", std::int64_t{300}), &why);
+    if (!tok) return why.empty() ? std::string("no_service_account") : why;
+    std::string project = prov.value("project", std::string());
+    if (project.empty()) project = tok->project;
+    if (base_url.find("{project}") != std::string::npos) {
+      if (project.empty()) return "no_project";
+      base_url.replace(base_url.find("{project}"), 9, project);
+    }
+    key = tok->value;
+    return {};
+  };
+  return choose_free_model(fp->values(), accounts_->settings().guests.keys_file, overlay, resolve,
+                           [this](const json& prov) { return provider_blocked(prov, spend_, cooldowns_); });
+}
+
+void App::prepare_guest_source(const std::string& guest_id) {
+  json source;
+  LoomContext* c = nullptr;
+  {
+    std::lock_guard lk(pool_mu_);
+    auto it = guest_source_.find(guest_id);
+    auto ct = guest_ctx_.find(guest_id);
+    if (it == guest_source_.end() || ct == guest_ctx_.end()) return;
+    source = it->second;
+    c = ct->second;
+  }
+  if (!source.is_object() || source["provider"].is_null()) return;
+  // The guest's own choice wins: only a runtime still on the source the server gave it is refreshed or switched.
+  const json cfg = parse_or_empty(own_and_free(loom_get_config(c)));
+  if (!cfg.is_object() || cfg.value("loom_guest_source", std::string()) != source.value("provider", std::string()) ||
+      cfg.value("base_url", std::string()) != source.value("base_url", std::string()))
+    return;
+  auto fp = loom::RuntimeProfile::load("free_providers", accounts_->root());
+  if (!fp) return;
+  const std::string pid = source.value("provider", std::string());
+  const json* prov = find_provider(fp->values(), pid);
+  std::string why = prov ? provider_blocked(*prov, spend_, cooldowns_) : std::string("no_provider_entry");
+  if (why.empty() && prov && prov->value("active_when", std::string()) == "service_account") {
+    const json auth = prov->value("auth", json::object());
+    const auto tok = tokens_.get(auth.value("metadata_base", std::string("http://metadata.google.internal")),
+                                 auth.value("refresh_before_seconds", std::int64_t{300}), &why);
+    if (tok) {
+      // Same token as before = nothing to do; a refreshed one replaces the runtime's in-memory overlay.
+      std::map<std::string, std::string> overlay{{prov->value("auth_secret", std::string("api_key")), tok->value}};
+      (void)loom_set_credential_overlay(c, json(overlay).dump().c_str());
+      return;
+    }
+    if (why.empty()) why = "no_service_account";
+  }
+  if (why.empty()) return;
+  // R103 §4.4: an explicit switch by fallback order, never a silent one — the next source and why are recorded in
+  // model_source.switched (GET /api/auth/me) and in the receipt's provider_terms.
+  std::map<std::string, std::string> overlay;
+  json next = choose_guest_source(overlay);
+  json patch;
+  if (next["provider"].is_null()) {
+    next["switched"] = {{"from", pid}, {"why", why}, {"at", unix_now()}};
+    patch = {{"loom_guest_source", "none"}};
+  } else {
+    json terms = next["data_terms"];
+    terms["provider"] = next["provider"];
+    terms["display_name"] = next["display_name"];
+    next["switched"] = {{"from", pid}, {"why", why}, {"at", unix_now()}};
+    patch = {{"base_url", next["base_url"]}, {"default_model", next["model"]}, {"loom_provider_terms", terms},
+             {"loom_guest_source", next["provider"]}};
+  }
+  (void)loom_set_credential_overlay(c, json(overlay).dump().c_str());
+  (void)loom_set_config_json(c, patch.dump().c_str());
+  std::lock_guard lk(pool_mu_);
+  guest_source_[guest_id] = next;
+}
+
+void App::settle_guest_answer(const std::string& pid, const json& r) {
+  if (pid.empty() || !r.is_object()) return;
+  auto fp = loom::RuntimeProfile::load("free_providers", accounts_->root());
+  if (!fp) return;
+  const json* prov = find_provider(fp->values(), pid);
+  if (!prov) return;
+  if (r.contains("error") && !r["error"].is_null()) {
+    const std::string err = r["error"].dump(-1, ' ', false, json::error_handler_t::replace);
+    json markers = prov->value("exhaustion_markers", json::array({"429", "RESOURCE_EXHAUSTED", "quota", "rate limit"}));
+    for (const auto& m : markers)
+      if (m.is_string() && !m.get<std::string>().empty() && err.find(m.get<std::string>()) != std::string::npos) {
+        cooldowns_.exhaust(pid, prov->value("exhausted_cooldown_seconds", std::int64_t{60}), "provider_exhausted");
+        std::cerr << "loom-server: guest source " << pid << " answered with an exhaustion marker; next source by fallback order"
+                  << std::endl;
+        break;
+      }
+  }
+  const json pricing = prov->value("pricing", json::object());
+  if (!pricing.is_object() || pricing.empty() || !r.contains("usage") || !r["usage"].is_object()) return;
+  const json& u = r["usage"];
+  auto num = [&](const json& o, const char* k) { return o.contains(k) && o[k].is_number() ? o[k].get<double>() : -1.0; };
+  double in = std::max(num(u, "prompt_tokens"), num(u, "input_tokens"));
+  double total = num(u, "total_tokens");
+  double out = std::max(num(u, "completion_tokens"), num(u, "output_tokens"));
+  if (u.contains("completion_tokens_details") && u["completion_tokens_details"].is_object())
+    out = std::max(out, 0.0) + std::max(num(u["completion_tokens_details"], "reasoning_tokens"), 0.0);
+  if (in < 0) in = 0;
+  if (total > 0) out = std::max(out, total - in);  // thinking tokens are billed as output
+  if (out < 0) out = 0;
+  const double eur = (in * pricing.value("input_per_million", 0.0) + out * pricing.value("output_per_million", 0.0)) / 1e6 *
+                     pricing.value("to_eur", 1.0);
+  spend_.charge(pid, in, out, eur);
+  const json credits = prov->value("budget", json::object()).value("credits", json::object());
+  const double per_day = credits.value("per_day", 0.0), share = credits.value("advisory_at_share", 0.8);
+  const double today = spend_.eur_today(pid);
+  if (per_day > 0 && today >= share * per_day) {
+    std::lock_guard lk(budget_note_mu_);
+    const std::string d = utc_day(unix_now());
+    if (budget_note_day_[pid] != d) {
+      budget_note_day_[pid] = d;
+      std::cerr << "loom-server: guest budget advisory: " << pid << " spent " << today << " EUR of " << per_day
+                << " EUR today (advisory at " << share * 100 << " %)" << std::endl;
+    }
+  }
 }
 
 json App::guest_source(const std::string& guest_id) {
@@ -598,6 +778,7 @@ bool App::refuse_guest_request(const httplib::Request& req, httplib::Response& r
   }
   t_admitted_guest = t_guest->id;
   t_admitted_model = model;
+  if (model) prepare_guest_source(t_guest->id);
   return false;
 }
 
@@ -616,6 +797,7 @@ bool App::init() {
     accounts_ = std::move(*store);
     const auto& gs = accounts_->settings().guests;
     guard_.configure(gs.raw.value("protection", json::object()), gs.sweep_interval_seconds);
+    spend_.open(accounts_->root() / "guest_spend.json");
   } else {
     const char* data_dir = opts_.data_dir.empty() ? nullptr : opts_.data_dir.c_str();
     ctx_ = loom_init(data_dir);
@@ -1002,7 +1184,11 @@ void App::route_chat() {
     auto queue = std::make_shared<SseQueue>();
     LoomContext* ctx = rctx();
     const std::string guest = t_guest ? t_guest->id : std::string();
-    auto thread_ptr = std::make_shared<std::thread>([this, ctx, request_json, queue, guest]() {
+    std::string guest_provider;
+    if (!guest.empty())
+      if (const json src = guest_source(guest); src.is_object() && src.contains("provider") && src["provider"].is_string())
+        guest_provider = src["provider"].get<std::string>();
+    auto thread_ptr = std::make_shared<std::thread>([this, ctx, request_json, queue, guest, guest_provider]() {
       // A guest's stream is closed only after its answer was counted (below), so its next request sees the count.
       struct Sink { SseQueue* q; bool hold; } sink{queue.get(), !guest.empty()};
       const char* result = loom_chat_ex(
@@ -1025,6 +1211,7 @@ void App::route_chat() {
         if (tokens < 0 && r.is_object() && r.contains("text") && r["text"].is_string())
           tokens = std::ceil(static_cast<double>(r["text"].get_ref<const std::string&>().size()) / guard_.chars_per_token());
         guard_.charge_output(guest, tokens);
+        settle_guest_answer(guest_provider, r);
       }
       loom_free_string(result);
       queue->close();  // defensive: guarantees the provider always terminates
@@ -2084,6 +2271,10 @@ void App::route_auth() {
       out["guests_enabled"] = accounts_->settings().guests.enabled;
       out["live_guest_sessions"] = accounts_->live_guest_count().value_or(0);
       out["presets"] = guard_.presets().value("per_session", json::object());
+      // R103 B3: money and tokens of the paid guest sources today (numbers only), exhausted providers, token refreshes.
+      out["spend"] = spend_.snapshot();
+      out["exhausted"] = cooldowns_.snapshot();
+      out["token_refreshes"] = tokens_.refreshes();
       res.set_content(out.dump(), "application/json");
     });
     svr_.Post("/api/auth/guest", [this, guest_json](const httplib::Request& req, httplib::Response& res) {
