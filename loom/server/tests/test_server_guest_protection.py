@@ -55,6 +55,19 @@ class Mock(http.server.BaseHTTPRequestHandler):
         self.wfile.flush()
 
 
+CLOCK0 = 1_000_000.0
+
+
+def set_clock(root: Path, seconds: float) -> None:
+    tmp = root / "clock.tmp"
+    tmp.write_text(repr(seconds))
+    tmp.replace(root / "clock")  # atomic: the server never reads half a number
+
+
+def advance(root: Path, seconds: float) -> None:
+    set_clock(root, float((root / "clock").read_text()) + seconds)
+
+
 def free_port() -> int:
     s = socket.socket()
     s.bind(("127.0.0.1", 0))
@@ -152,7 +165,10 @@ def main() -> int:
             case_no[0] += 1
             root = Path(tmp) / f"root{case_no[0]}"
             root.mkdir()
-            g = {"protection": protection}
+            # The guard's clock is frozen (protection.clock.file): refill and challenge age move only when the test
+            # rewrites the file, so every count below is exact on a fast laptop and on a slow ASan runner alike.
+            set_clock(root, CLOCK0)
+            g = {"protection": deep({"clock": {"file": str(root / "clock")}}, protection)}
             if workdir:
                 g["workdir"] = workdir
             overlay(root, "server_accounts", deep(accounts, {"guests": g}))
@@ -160,7 +176,7 @@ def main() -> int:
             return Server(root), root
 
         # ── 1. load from one address at the presets; the signed-in account is unaffected ──────────────────────
-        srv, _ = server({})
+        srv, root1 = server({})
         b = srv.base
         try:
             acc = requests.Session()
@@ -198,14 +214,19 @@ def main() -> int:
                   f"pow_bits={requests.get(b + '/api/auth/guest/challenge', timeout=10).json()['bits']} "
                   f"pow_python_avg_s={sum(pow_s) / len(pow_s):.2f} elapsed_s={time.time() - t0:.1f}")
             assert len(started) == 20, len(started)  # preset per_address.sessions_per_hour
-            # one session, sequential model requests
+            # one session, sequential model requests, clock frozen: exactly the bucket (preset chat_per_minute 20)
             t1 = time.time()
-            one = [chat(started[0], b).status_code for _ in range(40)]
-            el = time.time() - t1
-            print(f"MEASURE chats_one_session passed={one.count(200)} of 40 elapsed_s={el:.1f} (bucket 20/min refills 1 per 3 s)")
-            # preset per_session.chat_per_minute: a full bucket of 20 plus what refilled while the requests ran
-            assert 20 <= one.count(200) <= 20 + int(el / 3) + 1, one
-            assert one.count(429) > 0, one
+            rs = [chat(started[0], b) for _ in range(40)]
+            one = [r.status_code for r in rs]
+            print(f"MEASURE chats_one_session passed={one.count(200)} of 40 elapsed_s={time.time() - t1:.1f} (clock frozen)")
+            assert one == [200] * 20 + [429] * 20, one
+            assert limited(rs[-1], "session_chat_minute")["retry_after"] == 3  # 20/min refills 1 per 3 s
+            # refill: the clock advances 3 s -> exactly one more, 6 s -> exactly two more
+            advance(root1, 3)
+            assert [chat(started[0], b).status_code for _ in range(2)] == [200, 429]
+            advance(root1, 6)
+            assert [chat(started[0], b).status_code for _ in range(3)] == [200, 200, 429]
+            advance(root1, 60)  # every per-minute bucket is full again
             # several sessions of the same address: the address bucket (preset 60/min) is the wall
             t2 = time.time()
             counts = {"passed": 0}
@@ -226,10 +247,9 @@ def main() -> int:
                 w.start()
             for w in workers:
                 w.join()
-            many, el2 = counts["passed"], time.time() - t2
-            print(f"MEASURE chats_six_sessions_parallel_one_address passed={many} of 120 refused={mech} elapsed_s={el2:.1f}")
-            assert many <= 60 + int(el2) + 1, many  # preset per_address.chat_per_minute = 60 (refills 1 per s)
-            assert mech.get("address_chat_minute", 0) > 0, mech
+            many = counts["passed"]
+            print(f"MEASURE chats_six_sessions_parallel_one_address passed={many} of 120 refused={mech} elapsed_s={time.time() - t2:.1f}")
+            assert many == 60 and mech == {"address_chat_minute": 60}, (many, mech)  # preset per_address.chat_per_minute
             stop.set()
             t.join()
             print(f"MEASURE account_marcin_requests_during_load ok={account_ok[0]} of {account_total[0]}")
@@ -237,8 +257,8 @@ def main() -> int:
             summary = acc.get(b + "/api/pool/summary", timeout=10)
             assert summary.status_code == 200, summary.text
             sj = summary.json()
-            assert sj["rejections"]["address_sessions_hour"] == 10 and sj["rejections"]["session_chat_minute"] >= one.count(429), sj
-            assert sj["rejections"]["address_chat_minute"] >= 1 and sj["admitted"]["model_requests"] == one.count(200) + many, sj
+            assert sj["rejections"]["address_sessions_hour"] == 10 and sj["rejections"]["session_chat_minute"] == 22, sj
+            assert sj["rejections"]["address_chat_minute"] == 60 and sj["admitted"]["model_requests"] == 23 + 60, sj
             assert "hello" not in summary.text and FAKE_KEY not in summary.text
             assert started[0].get(b + "/api/pool/summary", timeout=10).status_code == 403  # not a guest's business
             assert requests.get(b + "/api/pool/summary", timeout=10).status_code == 401
@@ -261,6 +281,10 @@ def main() -> int:
             good = solve(b, requests)
             assert start_guest(b, body=good)[1].status_code == 201
             limited(start_guest(b, body=good)[1], "pow_invalid", 403, retry=False)  # single use
+            late = solve(b, requests)
+            advance(root, 301)  # preset challenge_ttl_seconds 300: a challenge older than that is refused
+            limited(start_guest(b, body=late)[1], "pow_invalid", 403, retry=False)
+            assert start_guest(b)[1].status_code == 201  # a fresh one, at the new time, passes
             pl = requests.post(b + "/api/auth/guest", json={}, headers={"Accept-Language": "pl-PL,pl;q=0.9"}, timeout=10).json()
             assert pl["words"]["language"] == "pl" and "przeglądar" in pl["words"]["text"], pl
         finally:

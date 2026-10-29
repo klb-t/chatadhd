@@ -6,6 +6,13 @@
 // day, parallel answers, every API request per minute), per client address (sessions per hour, model requests per
 // minute — looser, an address is a hint, not a person), global (live guest sessions, the daily ceiling of the
 // operator's free-key pool). Rejections are counted per mechanism, never with content. Nothing here sees a message.
+//
+// Clock (2026-10-29, test hook): every bucket and the proof-of-work age read one clock. By default it is the real one
+// (steady clock for buckets, system clock for challenges). `protection.clock.file` (absent in the pack; a test overlay
+// sets it) names a file holding one number of seconds: while it is set, that number is "now" for both, so a test
+// freezes refill and advances time by rewriting the file — its counts then do not depend on how fast the machine is.
+// An unreadable file keeps the last value read. To remove the hook: drop clock_file_ and read_clock(), mono()/wall()
+// go back to the real clocks only.
 #pragma once
 
 #include <algorithm>
@@ -14,6 +21,7 @@
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
+#include <fstream>
 #include <map>
 #include <mutex>
 #include <random>
@@ -41,6 +49,9 @@ class GuestGuard {
     std::lock_guard lk(mu_);
     p_ = protection.is_object() ? protection : json::object();
     sweep_interval_ = std::max<std::int64_t>(1, sweep_interval_seconds);
+    clock_file_.clear();
+    if (const auto c = p_.find("clock"); c != p_.end() && c->is_object()) clock_file_ = c->value("file", std::string());
+    clock_last_ = 0;
     std::random_device rd;
     key_.clear();
     for (int i = 0; i < 32; ++i) key_.push_back(static_cast<char>(rd() & 0xff));
@@ -222,36 +233,45 @@ class GuestGuard {
   }
 
  private:
-  struct Bucket { double tokens = -1, last = 0; };  // tokens < 0 = full (never used)
+  struct Bucket { double tokens = 0, last = 0; bool fresh = true; };  // fresh = full (never used)
   struct Session { Bucket api, chat_minute, chat_day, output_day; std::int64_t streams = 0, inflight = 0; };
   struct Address { Bucket sessions, chat_minute; };
 
-  static double mono() {
+  // The injected clock (see the header comment); called with mu_ held.
+  double read_clock() const {
+    std::ifstream f(clock_file_);
+    double v = 0;
+    if (f >> v) clock_last_ = v;
+    return clock_last_;
+  }
+  double mono() const {
+    if (!clock_file_.empty()) return read_clock();
     return std::chrono::duration<double>(std::chrono::steady_clock::now().time_since_epoch()).count();
   }
-  static std::int64_t wall() {
+  std::int64_t wall() const {
+    if (!clock_file_.empty()) return static_cast<std::int64_t>(std::floor(read_clock()));
     return std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
   }
-  static void refill(Bucket& b, double cap, double period) {
+  void refill(Bucket& b, double cap, double period) const {
     const double now = mono();
-    if (b.tokens < 0 && b.last == 0) b.tokens = cap;
-    else b.tokens = std::min(cap, b.tokens + (now - b.last) * cap / period);
+    if (b.fresh) b.tokens = cap, b.fresh = false;
+    else b.tokens = std::min(cap, b.tokens + std::max(0.0, now - b.last) * cap / period);
     b.last = now;
   }
   // Seconds until `cost` tokens are there (0 = now); cap 0 = no limit.
-  static std::int64_t peek(Bucket& b, double cap, double period, double cost) {
+  std::int64_t peek(Bucket& b, double cap, double period, double cost) const {
     if (cap <= 0) return 0;
     refill(b, cap, period);
     if (b.tokens >= cost) return 0;
     return std::max<std::int64_t>(1, static_cast<std::int64_t>(std::ceil((cost - b.tokens) * period / cap)));
   }
-  static void take(Bucket& b, double cap, double period, double cost) {
+  void take(Bucket& b, double cap, double period, double cost) const {
     if (cap <= 0) return;
     refill(b, cap, period);
     b.tokens -= cost;
   }
-  static void charge(Bucket& b, double cap, double period, double cost) { take(b, cap, period, cost); }
-  static json left(Bucket b, double cap, double period) {
+  void charge(Bucket& b, double cap, double period, double cost) const { take(b, cap, period, cost); }
+  json left(Bucket b, double cap, double period) const {
     if (cap <= 0) return nullptr;  // no limit
     refill(b, cap, period);
     return static_cast<std::int64_t>(std::max(0.0, b.tokens));
@@ -275,6 +295,8 @@ class GuestGuard {
   json p_ = json::object();
   std::int64_t sweep_interval_ = 60;
   std::string key_;
+  std::string clock_file_;
+  mutable double clock_last_ = 0;
   std::unordered_map<std::string, Session> sessions_;
   std::unordered_map<std::string, Address> addresses_;
   std::unordered_map<std::string, std::int64_t> spent_;
