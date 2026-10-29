@@ -10,20 +10,20 @@
 // from the kernel's own answer to the same question. With M1_SHOTS_DIR=<dir> the screenshots go there, otherwise to a fresh temp dir.
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import net from "node:net";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { auditPage } from "./m1-audit.mjs";
 import { request, runChild } from "./harness-lifecycle.mjs";
 import { stableShot, trackRequests } from "./stable-shot.mjs";
+import { makeTmpDir } from "./tmp-dirs.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const LOOM = path.resolve(here, "../..");
 const SERVER_BIN = process.env.LOOM_SERVER_BIN || path.join(LOOM, "build/dev/server/loom-server");
 const DIST = path.join(LOOM, "web/dist");
-const SHOTS = process.env.M1_SHOTS_DIR || mkdtempSync(path.join(tmpdir(), "loom-m1-me-shots-"));
+const SHOTS = process.env.M1_SHOTS_DIR || makeTmpDir("loom-m1-me-shots-", { evidence: true });
 const CHROMIUM = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE || "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
 if (!existsSync(SERVER_BIN) || !existsSync(path.join(DIST, "index.html"))) { console.error("[m1-me] build loom-server and `npm run build` first"); process.exit(2); }
 mkdirSync(SHOTS, { recursive: true });
@@ -39,7 +39,7 @@ async function chromium() { try { return (await import("playwright")).chromium; 
 async function until(what, check, ms = 15000) { for (const end = Date.now() + ms; Date.now() < end;) { const v = await check(); if (v) return v; await new Promise(r => setTimeout(r, 120)); } throw new Error(`timed out waiting for ${what}`); }
 
 const mockPort = await freePort(), port = await freePort();
-const dataDir = mkdtempSync(path.join(tmpdir(), "loom-m1-me-"));
+const dataDir = makeTmpDir("loom-m1-me-");
 // A note written before M1 has no recorded origin: the kernel says "pochodzenie niezapisane - starsza notatka" for it.
 writeFileSync(path.join(dataDir, "memory.json"), JSON.stringify([{ id: "0e2e00000001", content: "Lubię herbatę bez cukru", parent_id: null, node_type: "text", active: true, depth: 0, weight: 1.0, tags: [], created: "2026-09-01T10:00:00Z", metadata: {} }], null, 2));
 const mock = spawn("python3", [path.join(here, "mock_llm_server.py"), String(mockPort)], { stdio: "ignore" });

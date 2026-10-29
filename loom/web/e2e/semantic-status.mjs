@@ -4,17 +4,17 @@
 // database or R40 tests. No model transport or external service is contacted.
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { createServer } from "node:http";
-import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { build } from "esbuild";
 import { chromium } from "playwright";
 import { closeHttpFixture, suiteCompletionGuard } from "./harness-lifecycle.mjs";
+import { makeTmpDir } from "./tmp-dirs.mjs";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
-const directory = process.env.SEMANTIC_STATUS_EVIDENCE_DIR || mkdtempSync(path.join(tmpdir(), "loom-semantic-status-"));
+const directory = process.env.SEMANTIC_STATUS_EVIDENCE_DIR || makeTmpDir("loom-semantic-status-", { evidence: true });
 mkdirSync(directory, { recursive: true });
 assert.equal(existsSync(path.join(directory, "receipt-before.json")), false, "Use a fresh evidence directory; retain earlier receipts.");
 const sources = ["e2e/semantic-status.mjs", "e2e/harness-lifecycle.mjs", "src/App.tsx", "src/components/SemanticStatus.tsx", "src/context/semantic-queue.ts",

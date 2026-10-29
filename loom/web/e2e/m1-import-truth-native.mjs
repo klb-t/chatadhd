@@ -11,19 +11,19 @@
 // (6) 0 model requests; the text audit (m1-audit.mjs) finds nothing on any screenshot.
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
-import { existsSync, mkdirSync, mkdtempSync, readFileSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { existsSync, mkdirSync, readFileSync } from "node:fs";
 import net from "node:net";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { auditPage } from "./m1-audit.mjs";
 import { stableShot, trackRequests } from "./stable-shot.mjs";
+import { makeTmpDir } from "./tmp-dirs.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const LOOM = path.resolve(here, "../..");
 const SERVER_BIN = process.env.LOOM_SERVER_BIN || path.join(LOOM, "build/dev/server/loom-server");
 const DIST = path.join(LOOM, "web/dist");
-const SHOTS = process.env.M1_SHOTS_DIR || mkdtempSync(path.join(tmpdir(), "loom-m1-import-truth-shots-"));
+const SHOTS = process.env.M1_SHOTS_DIR || makeTmpDir("loom-m1-import-truth-shots-", { evidence: true });
 const CHROMIUM = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE || "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
 const FIXTURE = path.join(LOOM, "tests/fixtures/exports/anthropic_2026_full.zip");
 if (!existsSync(SERVER_BIN) || !existsSync(path.join(DIST, "index.html")) || !existsSync(FIXTURE)) { console.error("[m1-import-truth] build loom-server and `npm run build` first"); process.exit(2); }
@@ -40,7 +40,7 @@ async function chromium() { try { return (await import("playwright")).chromium; 
 
 const mockPort = await freePort(), port = await freePort();
 const mock = spawn("python3", [path.join(here, "mock_llm_server.py"), String(mockPort)], { stdio: "ignore" });
-const server = spawn(SERVER_BIN, ["--host", "127.0.0.1", "--port", String(port), "--data-dir", mkdtempSync(path.join(tmpdir(), "loom-m1-import-truth-")), "--static-dir", DIST], { stdio: "ignore", cwd: LOOM });
+const server = spawn(SERVER_BIN, ["--host", "127.0.0.1", "--port", String(port), "--data-dir", makeTmpDir("loom-m1-import-truth-"), "--static-dir", DIST], { stdio: "ignore", cwd: LOOM });
 const base = `http://127.0.0.1:${port}`;
 const AUDIT = [];
 let browser, failed = false;

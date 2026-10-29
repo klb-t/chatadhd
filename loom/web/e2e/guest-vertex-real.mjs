@@ -10,17 +10,17 @@
 // answer the page saw, any file of the accounts root, or the server log. Prints requests, tokens and spend.
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
-import { createWriteStream, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, statSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { createWriteStream, existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from "node:fs";
 import net from "node:net";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { makeTmpDir } from "./tmp-dirs.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const LOOM = path.resolve(here, "../..");
 const SERVER_BIN = process.env.LOOM_SERVER_BIN || path.join(LOOM, "build/dev/server/loom-server");
 const DIST = path.join(LOOM, "web/dist");
-const SHOTS = process.env.M1_SHOTS_DIR || mkdtempSync(path.join(tmpdir(), "loom-guest-vertex-shots-"));
+const SHOTS = process.env.M1_SHOTS_DIR || makeTmpDir("loom-guest-vertex-shots-", { evidence: true });
 const TTL = 15;
 const QUESTION = "Odpowiedz jednym krótkim zdaniem po polsku: ile to dwa plus dwa?";  // synthetic, no owner data
 mkdirSync(SHOTS, { recursive: true });
@@ -30,7 +30,7 @@ async function until(what, check, ms = 60000) { for (const end = Date.now() + ms
 const walk = (d) => readdirSync(d, { withFileTypes: true }).flatMap(e => e.isDirectory() ? walk(path.join(d, e.name)) : [path.join(d, e.name)]);
 
 const port = await freePort();
-const tmp = mkdtempSync(path.join(tmpdir(), "loom-guest-vertex-"));
+const tmp = makeTmpDir("loom-guest-vertex-");
 const root = path.join(tmp, "root");
 mkdirSync(path.join(root, "profiles"), { recursive: true });
 writeFileSync(path.join(root, "profiles", "server_accounts.pack"), JSON.stringify({ schema: "loom.runtime_profile_overlay/1", domain: "server_accounts", overrides: {

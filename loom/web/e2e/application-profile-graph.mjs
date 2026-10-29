@@ -4,12 +4,12 @@
 import assert from "node:assert/strict";
 import { spawn, spawnSync } from "node:child_process";
 import { createHash, webcrypto } from "node:crypto";
-import { existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { createServer } from "node:net";
-import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { loadTsModule } from "./ts-module.mjs";
+import { makeTmpDir } from "./tmp-dirs.mjs";
 
 const webRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const loomRoot = path.resolve(webRoot, "..");
@@ -257,7 +257,7 @@ try {
   if (!offlineOnly) {
     const serverBin = process.env.LOOM_SERVER_BIN || path.join(loomRoot, "build/dev/server/loom-server");
     assert.ok(existsSync(serverBin), `Build loom-server first: ${serverBin}`);
-    nativeDir = mkdtempSync(path.join(tmpdir(), "loom-profile-graph-"));
+    nativeDir = makeTmpDir("loom-profile-graph-");
     writeFileSync(path.join(nativeDir, "models.json"), JSON.stringify([{ id: "synthetic/unused", name: "Unused cached fixture", context_length: 8192 }]) + "\n");
     writeFileSync(path.join(nativeDir, "config.json"), JSON.stringify({ semantic_analysis: false }));
     const port = await freePort(), base = `http://127.0.0.1:${port}`, token = "synthetic-loopback-profile-test";

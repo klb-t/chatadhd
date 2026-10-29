@@ -4,11 +4,11 @@
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
 import { createServer } from "node:http";
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
+import { makeTmpDir } from "./tmp-dirs.mjs";
 
 const webRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const loomRoot = path.resolve(webRoot, "..");
@@ -21,7 +21,7 @@ if (evidenceDir) {
   mkdirSync(evidenceDir, { recursive: true });
   for (const name of ["results.json", "server.log", "failure.png"]) assert.ok(!existsSync(path.join(evidenceDir, name)), "Use a fresh evidence directory; failed attempts must remain intact.");
 }
-const dataDir = mkdtempSync(path.join(tmpdir(), "loom-interface-2-"));
+const dataDir = makeTmpDir("loom-interface-2-");
 const mediaTemp = path.join(dataDir, "media-temp");
 mkdirSync(mediaTemp);
 writeFileSync(path.join(dataDir, "models.json"), JSON.stringify([

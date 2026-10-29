@@ -2,15 +2,15 @@
 // Offline HTTP double; compiler spans/captures are the W4 golden fixture.
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
-import { readFileSync, existsSync, mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
+import { readFileSync, existsSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
 import { spawn } from "node:child_process";
 import path from "node:path";
-import { tmpdir } from "node:os";
 import { stopChild } from "./harness-lifecycle.mjs";
 import { createServer } from "node:http";
 import { fileURLToPath } from "node:url";
 import { build } from "esbuild";
 import { chromium } from "playwright";
+import { makeTmpDir } from "./tmp-dirs.mjs";
 const web = fileURLToPath(new URL("../", import.meta.url));
 const fixture = JSON.parse(readFileSync(new URL("../../src/packet/tests/reply-fixtures.json", import.meta.url), "utf8")).cases[1];
 const candidate = { schema: "loom.chat_graph_reply/1", mode: "answer_as_graph", status: "candidate", text: fixture.expected.response_text,
@@ -131,7 +131,7 @@ try{
   assert.equal(await page.evaluate(()=>window.graphText(window.readGraph({graph_reply:{schema:"loom.chat_graph_reply/1",text:"Readable original answer",status:"schema_error"}}),"fallback")),"Readable original answer");assert.match(await page.getByTestId("gr-recorded-json").textContent(),/retained-source/);
   pass("Schema failure preserves readable text, exact retained response and source references");
   if(process.argv.includes("--native")) {
-    const dataDir=mkdtempSync(path.join(tmpdir(),"loom-graph-chat-native-"));
+    const dataDir=makeTmpDir("loom-graph-chat-native-");
     const evidenceDir=process.env.LOOM_GRAPH_CHAT_EVIDENCE_DIR;
     const nativeEvidence=[],providerEvidence=[];
     if(evidenceDir)mkdirSync(evidenceDir,{recursive:true});

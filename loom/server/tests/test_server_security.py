@@ -9,6 +9,7 @@ import os
 import socket
 import subprocess
 import sys
+import shutil
 import tempfile
 import time
 from pathlib import Path
@@ -121,6 +122,16 @@ def sse_events(r):
 
 def main() -> int:
     tmp = Path(tempfile.mkdtemp(prefix="loom_security_"))
+    try:
+        return _run(tmp)
+    finally:
+        if os.environ.get("LOOM_KEEP_TMP"):
+            print(f"[tmp] kept {tmp}")
+        else:
+            shutil.rmtree(tmp, ignore_errors=True)
+
+
+def _run(tmp: Path) -> int:
     root = tmp / "accounts"
     write_profile(root, argon2id_preset="owasp_min")
     for name, pw in (("alice", "alice-password"), ("bob", "bob-password!")):

@@ -20,12 +20,12 @@
 // Prereq: loom-server built (LOOM_BUILD_SERVER=ON). No browser, no provider.
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
-import { chmodSync, existsSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { chmodSync, existsSync, rmSync, writeFileSync } from "node:fs";
 import net from "node:net";
-import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { createAccount, request, runChild, stopChild, suiteCompletionGuard } from "./harness-lifecycle.mjs";
+import { makeTmpDir } from "./tmp-dirs.mjs";
 
 const loom = path.resolve(fileURLToPath(new URL("../", import.meta.url)), "..");
 const serverBin = process.env.LOOM_SERVER_BIN || path.join(loom, "build/dev/server/loom-server");
@@ -37,7 +37,7 @@ const blockMs = keepAliveSeconds * 1000 + 600;  // longer than the server keeps 
 const groups = [];
 const complete = suiteCompletionGuard("stale-connection", 5, groups);
 const servers = [];
-const root = mkdtempSync(path.join(tmpdir(), "loom-stale-connection-"));
+const root = makeTmpDir("loom-stale-connection-");
 
 function freePort() {
   return new Promise((resolve, reject) => {

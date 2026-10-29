@@ -6,11 +6,11 @@ import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { spawn } from "node:child_process";
 import { createServer } from "node:http";
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
+import { makeTmpDir } from "./tmp-dirs.mjs";
 
 const webRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const loomRoot = path.resolve(webRoot, "..");
@@ -23,7 +23,7 @@ if (evidenceDir) {
   mkdirSync(evidenceDir, { recursive: true });
   for (const name of ["results.json", "server.log", "failure.png"]) assert.ok(!existsSync(path.join(evidenceDir, name)), "Use a fresh evidence directory; failed attempts must remain intact.");
 }
-const dataDir = mkdtempSync(path.join(tmpdir(), "loom-usage-policy-ui-"));
+const dataDir = makeTmpDir("loom-usage-policy-ui-");
 const configPath = path.join(dataDir, "config.json"), ledgerPath = path.join(dataDir, "usage-policy.sqlite");
 writeFileSync(configPath, JSON.stringify({ semantic_analysis: false, base_url: "http://127.0.0.1:1", default_model: "offline/ledger-fixture" }));
 writeFileSync(path.join(dataDir, "models.json"), "[]");

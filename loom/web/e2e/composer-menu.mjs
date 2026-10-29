@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 // P33: the + menu next to the message field. Real loom-server + mock LLM + Chromium at phone width (390x844), Polish labels.
 import { spawn } from "node:child_process";
-import { mkdtempSync, existsSync, mkdirSync } from "node:fs";
+import { existsSync, mkdirSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import net from "node:net";
 import assert from "node:assert/strict";
 import { fileURLToPath } from "node:url";
+import { makeTmpDir } from "./tmp-dirs.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const LOOM = path.resolve(here, "../..");
@@ -29,7 +30,7 @@ const until = async (what, probe, ms = 10000) => {
 
 const mockPort = await freePort();
 const mock = spawn("python3", [path.join(here, "mock_llm_server.py"), String(mockPort)], { stdio: "ignore" });
-const dataDir = mkdtempSync(path.join(tmpdir(), "loom-composer-menu-"));
+const dataDir = makeTmpDir("loom-composer-menu-");
 const port = await freePort();
 const server = spawn(SERVER_BIN, ["--host", "127.0.0.1", "--port", String(port), "--data-dir", dataDir, "--static-dir", DIST], { stdio: "ignore", cwd: LOOM });
 const base = `http://127.0.0.1:${port}`;

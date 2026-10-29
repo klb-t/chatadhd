@@ -4,13 +4,13 @@
 import assert from "node:assert/strict";
 import { spawn, spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { createServer } from "node:http";
-import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 import { closeHttpFixture, stopChild, suiteCompletionGuard } from "./harness-lifecycle.mjs";
+import { makeTmpDir } from "./tmp-dirs.mjs";
 
 const webRoot = fileURLToPath(new URL("../", import.meta.url));
 const loomRoot = path.dirname(webRoot), repoRoot = path.dirname(loomRoot);
@@ -18,10 +18,10 @@ const serverBin = process.env.LOOM_SERVER_BIN || path.join(loomRoot, "build/dev/
 const dist = process.env.LOOM_WEB_DIST || path.join(webRoot, "dist");
 assert.ok(existsSync(serverBin), `Current native server is required: ${serverBin}`);
 assert.ok(existsSync(path.join(dist, "index.html")), `Current production bundle is required: ${dist}`);
-const directory = process.env.APP_NATIVE_EVIDENCE_DIR || mkdtempSync(path.join(tmpdir(), "loom-app-native-evidence-"));
+const directory = process.env.APP_NATIVE_EVIDENCE_DIR || makeTmpDir("loom-app-native-evidence-", { evidence: true });
 mkdirSync(directory, { recursive: true });
 assert.ok(!existsSync(path.join(directory, "results.json")), "Use a fresh evidence directory; retain negative receipts.");
-const dataDir = mkdtempSync(path.join(tmpdir(), "loom-app-native-data-"));
+const dataDir = makeTmpDir("loom-app-native-data-");
 const hash = file => createHash("sha256").update(readFileSync(file)).digest("hex");
 function treeFiles(root) {
   return readdirSync(root, { withFileTypes: true }).flatMap(entry => {

@@ -12,19 +12,19 @@
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
 import { createServer } from "node:http";
-import { existsSync, mkdtempSync, readFileSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { existsSync, readFileSync } from "node:fs";
 import net from "node:net";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { stableShot, trackRequests } from "./stable-shot.mjs";
+import { makeTmpDir } from "./tmp-dirs.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const LOOM = path.resolve(here, "../..");
 const SERVER_BIN = process.env.LOOM_SERVER_BIN || path.join(LOOM, "build/dev/server/loom-server");
 const DIST = path.join(LOOM, "web/dist");
 const CHROMIUM = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE || "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
-const SHOTS = process.env.M1_SHOTS_DIR || mkdtempSync(path.join(tmpdir(), "loom-wgaps-shots-"));
+const SHOTS = process.env.M1_SHOTS_DIR || makeTmpDir("loom-wgaps-shots-", { evidence: true });
 if (!existsSync(SERVER_BIN) || !existsSync(path.join(DIST, "index.html"))) { console.error("[windows-gaps] build loom-server and `npm run build` first"); process.exit(2); }
 
 const received = [];
@@ -52,7 +52,7 @@ const RIGHTY = { ...JSON.parse(readFileSync(path.join(LOOM, "web/src/profiles/da
 RIGHTY.presentation = { ...RIGHTY.presentation, sidebar: { ...(RIGHTY.presentation?.sidebar ?? {}), side: "right", width: 400 } };
 
 const port = await freePort();
-const server = spawn(SERVER_BIN, ["--host", "127.0.0.1", "--port", String(port), "--data-dir", mkdtempSync(path.join(tmpdir(), "loom-wgaps-")), "--static-dir", DIST], { stdio: "ignore", cwd: LOOM });
+const server = spawn(SERVER_BIN, ["--host", "127.0.0.1", "--port", String(port), "--data-dir", makeTmpDir("loom-wgaps-"), "--static-dir", DIST], { stdio: "ignore", cwd: LOOM });
 const base = `http://127.0.0.1:${port}`;
 let browser, failed = false, dump = async () => "";
 const step = async (name, fn) => { if (failed) return; try { await fn(); console.log(`[windows-gaps] PASS ${name}`); } catch (e) { failed = true; console.error(`[windows-gaps] FAIL ${name}\n${e.stack}\n--- the screen says:\n${await dump().catch(() => "?")}`); } };

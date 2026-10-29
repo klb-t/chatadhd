@@ -5,14 +5,14 @@ import assert from "node:assert/strict";
 import { spawn, spawnSync } from "node:child_process";
 import { webcrypto } from "node:crypto";
 import { createServer } from "node:http";
-import { existsSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { existsSync, readFileSync, rmSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { build } from "esbuild";
 import { chromium } from "playwright";
 import { closeHttpFixture, stopChild, suiteCompletionGuard } from "./harness-lifecycle.mjs";
 import { loadTsModule } from "./ts-module.mjs";
+import { makeTmpDir } from "./tmp-dirs.mjs";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 const loomRoot = path.resolve(root, "..");
@@ -179,7 +179,7 @@ try {
 if (nativeMode) {
   const serverBin = process.env.LOOM_SERVER_BIN || path.join(loomRoot, "build/dev/server/loom-server");
   assert.ok(existsSync(serverBin), `Build native server first: ${serverBin}`);
-  const nativeDir = mkdtempSync(path.join(tmpdir(), "loom-capability-native-"));
+  const nativeDir = makeTmpDir("loom-capability-native-");
   const probe = createServer(); await new Promise(resolve => probe.listen(0, "127.0.0.1", resolve));
   const port = probe.address().port; await new Promise(resolve => probe.close(resolve));
   const base = `http://127.0.0.1:${port}`;

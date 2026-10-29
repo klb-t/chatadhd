@@ -9,13 +9,13 @@
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
 import { createServer } from "node:http";
-import { existsSync, mkdtempSync, rmSync } from "node:fs";
+import { existsSync, rmSync } from "node:fs";
 import { DatabaseSync } from "node:sqlite";
-import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 import { stopChild, suiteCompletionGuard } from "./harness-lifecycle.mjs";
+import { makeTmpDir } from "./tmp-dirs.mjs";
 
 const webRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const loomRoot = path.resolve(webRoot, "..");
@@ -144,7 +144,7 @@ function lookAlong(p, dir) {
 const sub = (a, b) => a.map((v, i) => v - b[i]);
 
 try {
-  const dataDir = mkdtempSync(path.join(tmpdir(), "loom-p28x-")); dirs.push(dataDir);
+  const dataDir = makeTmpDir("loom-p28x-"); dirs.push(dataDir);
   await start(dataDir);
   await api("PATCH", "/api/config", { semantic_analysis: false });
   await api("PUT", "/api/config/ui_language", { value: "pl" });

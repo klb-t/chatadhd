@@ -7,8 +7,21 @@ import json
 import os
 from pathlib import Path
 import tempfile
+import shutil
 import threading
 import unittest
+
+
+def _remove_test_dir(test, directory):
+    """Remove the temp dir this test created, unless LOOM_KEEP_TMP is set or the test failed (evidence: path printed)."""
+    outcome = getattr(test, "_outcome", None)   # unittest <= 3.11 keeps this test's errors on the outcome, 3.12+ on the result
+    result = getattr(outcome, "result", None)
+    seen = list(getattr(outcome, "errors", [])) + list(getattr(result, "failures", [])) + list(getattr(result, "errors", []))
+    failed = any(case is test and info is not None for case, info in seen)
+    if os.environ.get("LOOM_KEEP_TMP") or failed:
+        print(f"[tmp] kept {directory}")
+    else:
+        shutil.rmtree(directory, ignore_errors=True)
 
 
 def encoded(value):
@@ -196,6 +209,7 @@ class ActiveTaskRevisionHttpTest(unittest.TestCase):
         self.addCleanup(self.thread.join, 5)
         self.addCleanup(self.server.shutdown)
         self.directory = tempfile.mkdtemp(prefix='loom-w1-revision-http-')
+        self.addCleanup(_remove_test_dir, self, self.directory)
         print(f'W1 retained synthetic HTTP database: {self.directory}')
         self.ctx = None
         self.addCleanup(self.close_runtime)

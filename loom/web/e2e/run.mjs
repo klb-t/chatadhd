@@ -14,11 +14,12 @@
 // /opt/node22/lib/node_modules/playwright (bare "import playwright from
 // 'playwright'" can't see global node_modules under ESM resolution).
 import { spawn } from "node:child_process";
-import { mkdtempSync, rmSync, existsSync, mkdirSync, writeFileSync } from "node:fs";
+import { rmSync, existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import net from "node:net";
 import { fileURLToPath } from "node:url";
+import { makeTmpDir } from "./tmp-dirs.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const WEB_ROOT = path.resolve(__dirname, "..");
@@ -120,7 +121,7 @@ async function main() {
   mkdirSync(SCREENSHOT_DIR, { recursive: true });
   console.log("[e2e] screenshots and failure files: " + SCREENSHOT_DIR);
 
-  const dataDir = mkdtempSync(path.join(tmpdir(), "loom-e2e-data-"));
+  const dataDir = makeTmpDir("loom-e2e-data-");
   const mockPort = await freePort();
   const serverPort = await freePort();
   const mockBase = `http://127.0.0.1:${mockPort}`;

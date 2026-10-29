@@ -9,18 +9,18 @@
 // back from the browser store: the conversation and its graph come back. Every word is taken from the pack.
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import net from "node:net";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { request } from "./harness-lifecycle.mjs";
+import { makeTmpDir } from "./tmp-dirs.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const LOOM = path.resolve(here, "../..");
 const SERVER_BIN = process.env.LOOM_SERVER_BIN || path.join(LOOM, "build/dev/server/loom-server");
 const DIST = path.join(LOOM, "web/dist");
-const SHOTS = process.env.M1_SHOTS_DIR || mkdtempSync(path.join(tmpdir(), "loom-guest-shots-"));
+const SHOTS = process.env.M1_SHOTS_DIR || makeTmpDir("loom-guest-shots-", { evidence: true });
 if (!existsSync(SERVER_BIN) || !existsSync(path.join(DIST, "index.html"))) { console.error("[guest] build loom-server and `npm run build` first"); process.exit(2); }
 mkdirSync(SHOTS, { recursive: true });
 const viewPack = JSON.parse(readFileSync(path.join(LOOM, "data/profiles/conversation_view.pack"), "utf8"));
@@ -38,7 +38,7 @@ async function chromium() { try { return (await import("playwright")).chromium; 
 async function until(what, check, ms = 20000) { for (const end = Date.now() + ms; Date.now() < end;) { const v = await check(); if (v) return v; await new Promise(r => setTimeout(r, 150)); } throw new Error(`timed out waiting for ${what}`); }
 
 const mockPort = await freePort(), port = await freePort();
-const tmp = mkdtempSync(path.join(tmpdir(), "loom-guest-"));
+const tmp = makeTmpDir("loom-guest-");
 const root = path.join(tmp, "root");
 mkdirSync(path.join(root, "profiles"), { recursive: true });
 writeFileSync(path.join(tmp, "keys.env"), `MOCK_FREE_KEY=${FAKE_KEY}\n`);

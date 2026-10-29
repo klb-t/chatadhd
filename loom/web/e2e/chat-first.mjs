@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 // P20 (R56): the start screen is a standard chat app. Real loom-server + mock LLM + Chromium, at 390x844 and 1280x800.
 import { spawn } from "node:child_process";
-import { mkdtempSync, existsSync, mkdirSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { existsSync, mkdirSync } from "node:fs";
 import path from "node:path";
 import net from "node:net";
 import assert from "node:assert/strict";
 import { fileURLToPath } from "node:url";
 import { auditPage } from "./m1-audit.mjs";
+import { makeTmpDir } from "./tmp-dirs.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const LOOM = path.resolve(here, "../..");
@@ -29,7 +29,7 @@ let server, base = "";
 async function freshServer() {
   server?.kill("SIGTERM");
   const port = await freePort();
-  server = spawn(SERVER_BIN, ["--host", "127.0.0.1", "--port", String(port), "--data-dir", mkdtempSync(path.join(tmpdir(), "loom-chat-first-")), "--static-dir", DIST], { stdio: "ignore", cwd: LOOM });
+  server = spawn(SERVER_BIN, ["--host", "127.0.0.1", "--port", String(port), "--data-dir", makeTmpDir("loom-chat-first-"), "--static-dir", DIST], { stdio: "ignore", cwd: LOOM });
   base = `http://127.0.0.1:${port}`;
   await waitUp(`${base}/api/healthz`);
 }

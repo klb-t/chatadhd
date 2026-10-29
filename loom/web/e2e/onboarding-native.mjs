@@ -4,12 +4,12 @@
 import assert from "node:assert/strict";
 import { spawn, spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { createServer } from "node:http";
-import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { stopChild, suiteCompletionGuard } from "./harness-lifecycle.mjs";
+import { makeTmpDir } from "./tmp-dirs.mjs";
 
 const loomRoot = fileURLToPath(new URL("../../", import.meta.url));
 const serverBin = process.env.LOOM_SERVER_BIN || path.join(loomRoot, "build/dev/server/loom-server");
@@ -20,7 +20,7 @@ if (evidenceDir) {
   mkdirSync(evidenceDir, { recursive: true });
   for (const name of ["results.json", "server.log"]) assert.ok(!existsSync(path.join(evidenceDir, name)), "Use a fresh evidence directory; preserve negative attempts.");
 }
-const dataDir = mkdtempSync(path.join(tmpdir(), "loom-onboarding-native-"));
+const dataDir = makeTmpDir("loom-onboarding-native-");
 writeFileSync(path.join(dataDir, "config.json"), JSON.stringify({ semantic_analysis: false, base_url: "http://127.0.0.1:1", default_model: "offline/onboarding-native" }));
 writeFileSync(path.join(dataDir, "models.json"), "[]");
 const probe = createServer();

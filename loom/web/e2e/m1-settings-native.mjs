@@ -12,12 +12,12 @@
 // With M1_SHOTS_DIR=<dir> the screenshots go there (the report docs/reports/M1_CHECKPOINT_0/), otherwise to e2e/screenshots.
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
-import { existsSync, mkdirSync, mkdtempSync, readFileSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { existsSync, mkdirSync, readFileSync } from "node:fs";
 import net from "node:net";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { stableShot, trackRequests } from "./stable-shot.mjs";
+import { makeTmpDir } from "./tmp-dirs.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const LOOM = path.resolve(here, "../..");
@@ -41,7 +41,7 @@ async function waitUp(url) { for (const end = Date.now() + 20000; Date.now() < e
 async function chromium() { try { return (await import("playwright")).chromium; } catch { return (await import("/opt/node22/lib/node_modules/playwright/index.mjs")).chromium; } }
 
 const port = await freePort();
-const server = spawn(SERVER_BIN, ["--host", "127.0.0.1", "--port", String(port), "--data-dir", mkdtempSync(path.join(tmpdir(), "loom-m1-settings-")), "--static-dir", DIST], { stdio: "ignore", cwd: LOOM });
+const server = spawn(SERVER_BIN, ["--host", "127.0.0.1", "--port", String(port), "--data-dir", makeTmpDir("loom-m1-settings-"), "--static-dir", DIST], { stdio: "ignore", cwd: LOOM });
 const base = `http://127.0.0.1:${port}`;
 let browser, failed = false;
 const step = async (name, fn) => { try { await fn(); console.log(`[m1-settings] PASS ${name}`); } catch (e) { failed = true; console.error(`[m1-settings] FAIL ${name}\n${e.stack}`); } };

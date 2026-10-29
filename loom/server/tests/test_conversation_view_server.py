@@ -10,6 +10,7 @@ from pathlib import Path
 import socket
 import subprocess
 import tempfile
+import shutil
 import time
 import unittest
 import urllib.error
@@ -17,6 +18,18 @@ import urllib.request
 import zipfile
 
 CANARY = "SYNTHETIC_P4_HTTP_PAYLOAD_90571"
+
+
+def _remove_test_dir(test, directory):
+    """Remove the temp dir this test created, unless LOOM_KEEP_TMP is set or the test failed (evidence: path printed)."""
+    outcome = getattr(test, "_outcome", None)   # unittest <= 3.11 keeps this test's errors on the outcome, 3.12+ on the result
+    result = getattr(outcome, "result", None)
+    seen = list(getattr(outcome, "errors", [])) + list(getattr(result, "failures", [])) + list(getattr(result, "errors", []))
+    failed = any(case is test and info is not None for case, info in seen)
+    if os.environ.get("LOOM_KEEP_TMP") or failed:
+        print(f"[tmp] kept {directory}")
+    else:
+        shutil.rmtree(directory, ignore_errors=True)
 
 
 def encoded(value):
@@ -29,6 +42,7 @@ class ConversationViewServerTest(unittest.TestCase):
         if not self.binary or not Path(self.binary).is_file():
             self.fail("built LOOM_SERVER_BIN is required for the registered server gate")
         self.directory = Path(tempfile.mkdtemp(prefix="loom-p4-view-server-"))
+        self.addCleanup(_remove_test_dir, self, self.directory)   # registered first = runs last, after the server is stopped
         self.data = self.directory / "store"
         self.data.mkdir()
         (self.data / "profiles").mkdir()

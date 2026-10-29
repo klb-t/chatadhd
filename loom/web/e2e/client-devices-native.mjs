@@ -10,13 +10,13 @@ import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
 import { createServer as createHttpServer } from "node:http";
 import { createHash } from "node:crypto";
-import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import net from "node:net";
-import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 import { suiteCompletionGuard } from "./harness-lifecycle.mjs";
+import { makeTmpDir } from "./tmp-dirs.mjs";
 
 const web = fileURLToPath(new URL("../", import.meta.url));
 const loom = path.resolve(web, "..");
@@ -61,7 +61,7 @@ const fake = createHttpServer(async (request, response) => {
 await new Promise(resolve => fake.listen(0, "127.0.0.1", resolve));
 const fakeBase = "http://127.0.0.1:" + fake.address().port;
 
-const data = mkdtempSync(path.join(tmpdir(), "loom-client-devices-"));
+const data = makeTmpDir("loom-client-devices-");
 mkdirSync(path.join(data, "profiles"), { recursive: true });
 // The speech provider of the media profile is data: this overlay points it at the test double.
 writeFileSync(path.join(data, "profiles/media.pack"), JSON.stringify({ schema: "loom.runtime_profile_overlay/1", domain: "media",
@@ -261,7 +261,7 @@ try {
   });
   await check("\"przeanalizuj ten folder\": the browser picks a folder, its files go up one by one, the answer is a manifest, and the archive analysis runs on them", async () => {
     // a folder on the machine of the browser: two files, one in a subfolder, and an empty one
-    const picked = path.join(mkdtempSync(path.join(tmpdir(), "loom-pick-folder-")), "notes");
+    const picked = path.join(makeTmpDir("loom-pick-folder-"), "notes");
     mkdirSync(path.join(picked, "sub"), { recursive: true });
     writeFileSync(path.join(picked, "plan.md"), "# Atlas plan\n\nWe decided to ship the Atlas release on Friday.\n");
     writeFileSync(path.join(picked, "sub", "ideas.txt"), "Idea: build the Atlas importer first.\nBug: the importer drops accents.\n");

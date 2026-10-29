@@ -13,13 +13,13 @@
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
 import { createServer as createHttpServer } from "node:http";
-import { existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import net from "node:net";
-import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 import { suiteCompletionGuard, stopChild, request, createAccount } from "./harness-lifecycle.mjs";
+import { makeTmpDir } from "./tmp-dirs.mjs";
 
 const web = fileURLToPath(new URL("../", import.meta.url));
 const loom = path.resolve(web, "..");
@@ -37,7 +37,7 @@ const complete = suiteCompletionGuard("first-steps-ui", 6, groups);
 let mock, server, browser;
 const providerRequests = [];
 let serverLog = "";
-const root = mkdtempSync(path.join(tmpdir(), "loom-first-steps-"));
+const root = makeTmpDir("loom-first-steps-");
 
 function freePort() {
   return new Promise((resolve, reject) => {

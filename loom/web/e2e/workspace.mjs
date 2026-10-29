@@ -4,18 +4,18 @@
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
 import { createServer } from "node:http";
-import { existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
+import { makeTmpDir } from "./tmp-dirs.mjs";
 const web = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const loom = path.resolve(web,"..");
 const binary = process.env.LOOM_SERVER_BIN || path.join(loom,"build/dev/server/loom-server");
 assert.ok(existsSync(binary), "Build native server first or set LOOM_SERVER_BIN");
 const evidenceDir=process.env.WORKSPACE_EVIDENCE_DIR;
 if(evidenceDir){mkdirSync(evidenceDir,{recursive:true});assert.ok(!existsSync(path.join(evidenceDir,"workspace-perspective.json")),"Use a fresh evidence directory; previous results are retained.");}
-const dir=mkdtempSync(path.join(tmpdir(),"loom-workspace-"));
+const dir=makeTmpDir("loom-workspace-");
 const probe=createServer(); await new Promise(r=>probe.listen(0,"127.0.0.1",r));
 const port=probe.address().port; await new Promise(r=>probe.close(r));
 const base=`http://127.0.0.1:${port}`;

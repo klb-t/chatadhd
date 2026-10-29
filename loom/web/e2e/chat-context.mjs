@@ -6,11 +6,11 @@
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
 import { createServer } from "node:http";
-import { existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
+import { makeTmpDir } from "./tmp-dirs.mjs";
 
 const webRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const loomRoot = path.resolve(webRoot, "..");
@@ -23,7 +23,7 @@ if (evidenceDir) {
   mkdirSync(evidenceDir, { recursive: true });
   assert.ok(!existsSync(path.join(evidenceDir, "chat-context-payloads.json")), "Use a fresh evidence directory; previous payloads are retained.");
 }
-const dataDir = mkdtempSync(path.join(tmpdir(), "loom-chat-context-"));
+const dataDir = makeTmpDir("loom-chat-context-");
 let recordedTrace, savedMessages, page;
 const provider = createServer(async (req, res) => {
   if (req.method !== "POST") { res.writeHead(404).end(); return; }

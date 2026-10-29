@@ -12,13 +12,13 @@
 // Widok ▾ saves navigator_layout; Back closes the layers in order (card → steps → panel) through window.__loomBack.
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import net from "node:net";
 import path from "node:path";
 import { auditPage } from "./m1-audit.mjs";
 import { fileURLToPath } from "node:url";
 import { stableShot, trackRequests } from "./stable-shot.mjs";
+import { makeTmpDir } from "./tmp-dirs.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const LOOM = path.resolve(here, "../..");
@@ -42,7 +42,7 @@ async function waitUp(url) { for (const end = Date.now() + 20000; Date.now() < e
 async function chromium() { try { return (await import("playwright")).chromium; } catch { return (await import("/opt/node22/lib/node_modules/playwright/index.mjs")).chromium; } }
 
 const port = await freePort();
-const server = spawn(SERVER_BIN, ["--host", "127.0.0.1", "--port", String(port), "--data-dir", mkdtempSync(path.join(tmpdir(), "loom-m1-navigator-")), "--static-dir", DIST], { stdio: "ignore", cwd: LOOM });
+const server = spawn(SERVER_BIN, ["--host", "127.0.0.1", "--port", String(port), "--data-dir", makeTmpDir("loom-m1-navigator-"), "--static-dir", DIST], { stdio: "ignore", cwd: LOOM });
 const base = `http://127.0.0.1:${port}`;
 const AUDIT = [];   // the lines a screenshot's screen shows that look like developer text (m1-audit.mjs)
 let browser, failed = false;
@@ -313,7 +313,7 @@ try {
   {
     const fixture = path.join(here, "../tests/shell/fixtures/graph-card-temperature.json");
     const fresh = JSON.stringify(await cardOf(), null, 2).split(conv).join("c_000000000000") + "\n";
-    const tmp = path.join(mkdtempSync(path.join(tmpdir(), "loom-m1-card-")), "graph-card-temperature.json");
+    const tmp = path.join(makeTmpDir("loom-m1-card-"), "graph-card-temperature.json");
     writeFileSync(tmp, fresh);
     const committed = existsSync(fixture) ? readFileSync(fixture, "utf8") : "";
     if (fresh !== committed) {

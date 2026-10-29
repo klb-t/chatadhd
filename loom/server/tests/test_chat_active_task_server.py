@@ -9,11 +9,24 @@ from pathlib import Path
 import socket
 import subprocess
 import tempfile
+import shutil
 import threading
 import time
 import unittest
 import urllib.error
 import urllib.request
+
+
+def _remove_test_dir(test, directory):
+    """Remove the temp dir this test created, unless LOOM_KEEP_TMP is set or the test failed (evidence: path printed)."""
+    outcome = getattr(test, "_outcome", None)   # unittest <= 3.11 keeps this test's errors on the outcome, 3.12+ on the result
+    result = getattr(outcome, "result", None)
+    seen = list(getattr(outcome, "errors", [])) + list(getattr(result, "failures", [])) + list(getattr(result, "errors", []))
+    failed = any(case is test and info is not None for case, info in seen)
+    if os.environ.get("LOOM_KEEP_TMP") or failed:
+        print(f"[tmp] kept {directory}")
+    else:
+        shutil.rmtree(directory, ignore_errors=True)
 
 
 def encoded(value):
@@ -27,6 +40,7 @@ class ActiveTaskServerTest(unittest.TestCase):
             self.skipTest("built LOOM_SERVER_BIN required")
         # Preserve this synthetic fixture and logs for failed-run inspection.
         self.directory = Path(tempfile.mkdtemp(prefix="loom-w1-server-"))
+        self.addCleanup(_remove_test_dir, self, self.directory)   # registered first = runs last, after the server is stopped
         self.calls = []
         self.next_status = 200
         fixture = self

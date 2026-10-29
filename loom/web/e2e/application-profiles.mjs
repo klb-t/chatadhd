@@ -4,11 +4,11 @@
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
 import { createServer } from "node:http";
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
+import { makeTmpDir } from "./tmp-dirs.mjs";
 
 const webRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const loomRoot = path.resolve(webRoot, "..");
@@ -21,7 +21,7 @@ if (evidenceDir) {
   mkdirSync(evidenceDir, { recursive: true });
   assert.ok(!existsSync(path.join(evidenceDir, "application-profiles-results.json")), "Use a fresh evidence directory; earlier results are retained.");
 }
-const dataDir = mkdtempSync(path.join(tmpdir(), "loom-application-profiles-"));
+const dataDir = makeTmpDir("loom-application-profiles-");
 writeFileSync(path.join(dataDir, "models.json"), JSON.stringify([
   { id: "mock/view-one", name: "Local view one", context_length: 8192 },
   { id: "mock/view-two", name: "Local view two", context_length: 8192 },

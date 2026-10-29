@@ -4,11 +4,11 @@
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
 import { createServer } from "node:http";
-import { existsSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { existsSync, readFileSync, rmSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
+import { makeTmpDir } from "./tmp-dirs.mjs";
 
 const webRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const loomRoot = path.resolve(webRoot, "..");
@@ -16,7 +16,7 @@ const serverBin = process.env.LOOM_SERVER_BIN || path.join(loomRoot, "build/dev/
 const dist = path.join(webRoot, "dist");
 assert.ok(existsSync(serverBin), `Build loom-server first: ${serverBin}`);
 assert.ok(existsSync(path.join(dist, "index.html")), "Run npm run build first");
-const dataDir = mkdtempSync(path.join(tmpdir(), "loom-imported-source-"));
+const dataDir = makeTmpDir("loom-imported-source-");
 const probe = createServer();
 await new Promise(resolve => probe.listen(0, "127.0.0.1", resolve));
 const port = probe.address().port;

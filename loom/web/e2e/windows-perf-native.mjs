@@ -14,11 +14,12 @@
 // unless LOOM_PERF_STRICT=1 and a `gross` preset is crossed.
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
-import { existsSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
-import { tmpdir, cpus, totalmem } from "node:os";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { cpus, totalmem } from "node:os";
 import net from "node:net";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { makeTmpDir } from "./tmp-dirs.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const LOOM = path.resolve(here, "../..");
@@ -28,7 +29,7 @@ const CHROMIUM = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE || "/opt/pw-browsers
 const P = JSON.parse(readFileSync(path.join(here, "windows-perf.presets.json"), "utf8"));
 const COUNTS = (process.env.LOOM_PERF_COUNTS || "").split(",").map(Number).filter((n) => Number.isFinite(n) && n >= 1);
 const counts = COUNTS.length ? COUNTS : P.counts;
-const OUT = process.env.LOOM_PERF_OUT || mkdtempSync(path.join(tmpdir(), "loom-windows-perf-"));
+const OUT = process.env.LOOM_PERF_OUT || makeTmpDir("loom-windows-perf-", { evidence: true });
 const STRICT = process.env.LOOM_PERF_STRICT === "1";
 if (!existsSync(SERVER_BIN) || !existsSync(path.join(DIST, "index.html"))) { console.error("[windows-perf] build loom-server and `npm run build` first"); process.exit(2); }
 
@@ -47,7 +48,7 @@ const version = browser.version();
 
 async function run(policy, n) {
   const port = await freePort();
-  const server = spawn(SERVER_BIN, ["--host", "127.0.0.1", "--port", String(port), "--data-dir", mkdtempSync(path.join(tmpdir(), "loom-perf-")), "--static-dir", DIST], { stdio: "ignore", cwd: LOOM });
+  const server = spawn(SERVER_BIN, ["--host", "127.0.0.1", "--port", String(port), "--data-dir", makeTmpDir("loom-perf-"), "--static-dir", DIST], { stdio: "ignore", cwd: LOOM });
   const base = `http://127.0.0.1:${port}`;
   const ctx = await browser.newContext({ viewport: P.viewport });
   const tag = `${policy}/${n}`;

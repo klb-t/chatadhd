@@ -5,12 +5,12 @@
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
 import { createServer } from "node:http";
-import { existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 import { stopChild, suiteCompletionGuard } from "./harness-lifecycle.mjs";
+import { makeTmpDir } from "./tmp-dirs.mjs";
 
 const webRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const loomRoot = path.resolve(webRoot, "..");
@@ -56,7 +56,7 @@ try {
   const cachedShell = "/root/.cache/ms-playwright/chromium_headless_shell-1194/chrome-linux/headless_shell";
   const executablePath = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE || (existsSync(cachedShell) ? cachedShell : undefined);
   browser = await chromium.launch({ headless: true, ...(executablePath ? { executablePath } : {}) });
-  const dataDir = mkdtempSync(path.join(tmpdir(), "loom-graph-entry-")); dirs.push(dataDir);
+  const dataDir = makeTmpDir("loom-graph-entry-"); dirs.push(dataDir);
   const base = await start(dataDir);
   const page = await browser.newPage();
   page.on("pageerror", error => pageErrors.push(error.message));
@@ -102,7 +102,7 @@ try {
     await page.getByTestId("graph-entry-panel").waitFor();
     await area(page, "perspectives").waitFor();
     await stopChild(child);
-    const overlayDir = mkdtempSync(path.join(tmpdir(), "loom-graph-entry-overlay-")); dirs.push(overlayDir);
+    const overlayDir = makeTmpDir("loom-graph-entry-overlay-"); dirs.push(overlayDir);
     mkdirSync(path.join(overlayDir, "profiles"));
     writeFileSync(path.join(overlayDir, "profiles/graph_entry.pack"), JSON.stringify({
       schema: "loom.runtime_profile_overlay/1", domain: "graph_entry", overrides: { areas: { perspectives: { hidden: true } } } }));

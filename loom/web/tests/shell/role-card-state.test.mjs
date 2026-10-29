@@ -8,12 +8,12 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
 import { createServer } from 'node:http';
-import { existsSync, mkdtempSync, rmSync } from 'node:fs';
+import { existsSync, rmSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
-import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createModuleLoader } from '../product-perspective/loader.mjs';
+import { makeTmpDir } from '../../e2e/tmp-dirs.mjs';
 const loader = await createModuleLoader();
 const st = await loader.load('src/components/role-card-state.ts');
 const webRoot = fileURLToPath(new URL('../../', import.meta.url)), loomRoot = path.resolve(webRoot, '..');
@@ -36,7 +36,7 @@ async function freePort() {
   await new Promise(resolve => probe.close(resolve));
   return port;
 }
-const dataDir = mkdtempSync(path.join(tmpdir(), 'loom-role-card-'));
+const dataDir = makeTmpDir('loom-role-card-');
 const port = await freePort(), base = `http://127.0.0.1:${port}`;
 const child = spawn(serverBin, ['--host', '127.0.0.1', '--port', String(port), '--data-dir', dataDir], { cwd: loomRoot, stdio: ['ignore', 'pipe', 'pipe'] });
 let serverLog = '';

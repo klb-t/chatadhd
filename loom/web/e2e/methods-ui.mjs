@@ -5,8 +5,7 @@ import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
 import { createHash } from "node:crypto";
 import { createServer } from "node:http";
-import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { existsSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { gunzipSync } from "node:zlib";
@@ -14,6 +13,7 @@ import { build } from "esbuild";
 import { chromium } from "playwright";
 import { closeHttpFixture, runChild, stopChild, suiteCompletionGuard } from "./harness-lifecycle.mjs";
 import { loadTsModule } from "./ts-module.mjs";
+import { makeTmpDir } from "./tmp-dirs.mjs";
 
 const web = fileURLToPath(new URL("../", import.meta.url)), loom = path.resolve(web, "..");
 const nativeMode = process.argv.includes("--native"), groups = [], expected = nativeMode ? 14 : 11;
@@ -287,7 +287,7 @@ try {
   });
 
   if (nativeMode) {
-    nativeDir = mkdtempSync(path.join(tmpdir(), "loom-method-ui-native-")); await startNative();
+    nativeDir = makeTmpDir("loom-method-ui-native-"); await startNative();
     const seed = await runChild("python3", ["-c", `import json,gzip,sys
 f=json.load(gzip.open(sys.argv[1],'rt'));p={k:f['packet'][k] for k in ['entities','claims','sources']};p['vocabulary']=f['contract']['vocabulary'];p['selection']={'members':[{'combination_version_id':f['contract']['bindings']['combination_version_id']}],'parameter_layers':['method','combination','member','selection','user']}
 print(json.dumps({'method_registry':{'profile':p,'receipt_ids':[],'selection':{'parameters':{'retained_owner_overlay':314}},'preserve':{'sibling':'Żółć','native_float':1.0}},'graph_reply':{'mode':'off','untouched':True}},ensure_ascii=False))`, path.join(loom, "src/packet/tests/method-registry-variants/nested-combination.json.gz")]);
