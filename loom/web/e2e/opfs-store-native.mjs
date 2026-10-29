@@ -17,18 +17,19 @@
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
 import { createHash } from "node:crypto";
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
-import { cpus, hostname, tmpdir } from "node:os";
+import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { cpus, hostname } from "node:os";
 import net from "node:net";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { request } from "./harness-lifecycle.mjs";
+import { makeTmpDir } from "./tmp-dirs.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const LOOM = path.resolve(here, "../..");
 const SERVER_BIN = process.env.LOOM_SERVER_BIN || path.join(LOOM, "build/dev/server/loom-server");
 const DIST = path.join(LOOM, "web/dist");
-const SHOTS = process.env.M1_SHOTS_DIR || mkdtempSync(path.join(tmpdir(), "loom-opfs-store-shots-"));
+const SHOTS = process.env.M1_SHOTS_DIR || makeTmpDir("loom-opfs-store-shots-", { evidence: true });
 const BIG_MB = Number(process.env.OPFS_E2E_BIG_MB ?? 50);  // preset: the design's acceptance size
 if (!existsSync(SERVER_BIN) || !existsSync(path.join(DIST, "index.html"))) { console.error("[opfs-store] build loom-server and `npm run build` first"); process.exit(2); }
 mkdirSync(SHOTS, { recursive: true });
@@ -45,7 +46,7 @@ async function chromium() { try { return (await import("playwright")).chromium; 
 async function until(what, check, ms = 20000) { for (const end = Date.now() + ms; Date.now() < end;) { const v = await check(); if (v) return v; await new Promise(r => setTimeout(r, 150)); } throw new Error(`timed out waiting for ${what}`); }
 
 const mockPort = await freePort(), port = await freePort();
-const tmp = mkdtempSync(path.join(tmpdir(), "loom-opfs-store-"));
+const tmp = makeTmpDir("loom-opfs-store-");
 const root = path.join(tmp, "root");
 mkdirSync(path.join(root, "profiles"), { recursive: true });
 writeFileSync(path.join(tmp, "keys.env"), `MOCK_FREE_KEY=${FAKE_KEY}\n`);
