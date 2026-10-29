@@ -190,8 +190,13 @@ def main() -> int:
             assert src["provider"] == "second" and src["switched"]["why"] == "budget_day", src
             assert Fake.calls[-1][0] == "/second/chat/completions"
             print("PASS daily budget reached -> switched (budget_day)")
-        finally:
+        except Exception:
             srv.stop()
+            print((srv.proc.stderr.read() if srv.proc.stderr else "")[-3000:])
+            raise
+        finally:
+            if srv.proc.poll() is None:
+                srv.stop()
             log = srv.proc.stderr.read() if srv.proc.stderr else ""
             fake.shutdown()
         # 6. the token never reaches a file or the log

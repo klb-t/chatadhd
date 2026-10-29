@@ -602,7 +602,8 @@ void App::prepare_guest_source(const std::string& guest_id) {
   auto fp = loom::RuntimeProfile::load("free_providers", accounts_->root());
   if (!fp) return;
   const std::string pid = source.value("provider", std::string());
-  const json* prov = find_provider(fp->values(), pid);
+  const json fpv = fp->values();  // bound first: find_provider points into it
+  const json* prov = find_provider(fpv, pid);
   std::string why = prov ? provider_blocked(*prov, spend_, cooldowns_) : std::string("no_provider_entry");
   if (why.empty() && prov && prov->value("active_when", std::string()) == "service_account") {
     const json auth = prov->value("auth", json::object());
@@ -643,7 +644,8 @@ void App::settle_guest_answer(const std::string& pid, const json& r) {
   if (pid.empty() || !r.is_object()) return;
   auto fp = loom::RuntimeProfile::load("free_providers", accounts_->root());
   if (!fp) return;
-  const json* prov = find_provider(fp->values(), pid);
+  const json fpv = fp->values();  // bound first: find_provider points into it
+  const json* prov = find_provider(fpv, pid);
   if (!prov) return;
   if (r.contains("error") && !r["error"].is_null()) {
     const std::string err = r["error"].dump(-1, ' ', false, json::error_handler_t::replace);

@@ -223,6 +223,18 @@ TEST_SUITE("capi") {
     CHECK(loom_delete_secret(c.ctx, "api_key") == LOOM_OK);
     CHECK(loom_delete_secret(c.ctx, "api_key") == LOOM_E_NOT_FOUND);
     CHECK(loom_has_secret(c.ctx, "api_key") == 0);
+
+    // R103 B3: a replaceable in-memory overlay (a refreshed access token): read first, never listed or written.
+    CHECK(loom_set_credential_overlay(c.ctx, R"({"api_key": "ya29.overlay-one"})") == LOOM_OK);
+    CHECK(loom_has_secret(c.ctx, "api_key") == 1);
+    CHECK(take(loom_list_secret_keys(c.ctx)) == Json::array());
+    CHECK(loom_set_credential_overlay(c.ctx, R"({"api_key": "ya29.overlay-two"})") == LOOM_OK);
+    CHECK(loom_set_credential_overlay(c.ctx, R"({"api_key": 1})") == LOOM_E_INVALID_ARGUMENT);
+    CHECK(loom_set_credential_overlay(c.ctx, "[]") == LOOM_E_INVALID_ARGUMENT);
+    CHECK(loom_set_credential_overlay(c.ctx, nullptr) == LOOM_E_INVALID_ARGUMENT);
+    if (auto sj = loom::fsutil::read_file(c.dir.path() / "secrets.json")) CHECK(sj->find("ya29.overlay") == std::string::npos);
+    CHECK(loom_set_credential_overlay(c.ctx, "{}") == LOOM_OK);
+    CHECK(loom_has_secret(c.ctx, "api_key") == 0);
   }
 
   TEST_CASE("events: subscribe, emit, unsubscribe; logs") {
