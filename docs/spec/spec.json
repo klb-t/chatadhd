@@ -6159,9 +6159,15 @@
       "by": "owner",
       "date": "2026-10-29",
       "text": "„dokładnie kompetencje to głównie moje prompty” — dowodem kompetencji są przede wszystkim jego wypowiedzi (prompty) do agentów: wymagania, filozofia, korekty; dokumentacja pokazuje je z kontekstem i skutkiem."
+     },
+     {
+      "state": "corrected",
+      "by": "owner",
+      "date": "2026-10-29",
+      "text": "„i mówiłem o modelu epistemicznym” — 'Lem' to LEM, jego model epistemiczny (dziś LEM-Workbench; most M4 w ECOSYSTEM_INTEGRATION_2026-10-11), nie ogólny LLM. Pomysł: trenować/rozwijać LEM na danych z ChatADHD (graf, oceny epistemiczne, korekty właściciela)."
      }
     ],
-    "corrected_text": "„dokładnie kompetencje to głównie moje prompty” — dowodem kompetencji są przede wszystkim jego wypowiedzi (prompty) do agentów: wymagania, filozofia, korekty; dokumentacja pokazuje je z kontekstem i skutkiem.",
+    "corrected_text": "„i mówiłem o modelu epistemicznym” — 'Lem' to LEM, jego model epistemiczny (dziś LEM-Workbench; most M4 w ECOSYSTEM_INTEGRATION_2026-10-11), nie ogólny LLM. Pomysł: trenować/rozwijać LEM na danych z ChatADHD (graf, oceny epistemiczne, korekty właściciela).",
     "by": "owner",
     "date": "2026-10-29"
    },
