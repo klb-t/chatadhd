@@ -283,9 +283,15 @@
      "by": "owner",
      "date": "2026-10-29",
      "text": "„tak wyniki są tylko takie po prostu żepo świeżym starcie apkałebowanie nie ma żadnej pamięcipoza ROM i bieżącą  rozmową. ustawienia przeglądarki pewnie dają do dyspozycji trochę keszu to można wykorzystać Ale zgłaszamy użytkownikowi że najlepiej wydzielić katalog na przykład albo skorzystać z konta chmurowego, żeby zapewnić trwałość i ciągłość pracy” — skutek PH29 dla web: bez podłączonego magazynu aplikacja ma tylko pamięć roboczą i bieżącą rozmowę; pamięć przeglądarki (IndexedDB, cache) to magazyn tymczasowy; komunikat po pierwszej odpowiedzi proponuje trwały magazyn: wydzielony katalog na dysku (przykład; File System Access) albo konto chmurowe (przykład) — lista otwarta."
+    },
+    {
+     "state": "corrected",
+     "by": "owner",
+     "date": "2026-10-29",
+     "text": "„rOm” — chodziło o ROM, nie RAM: po świeżym starcie bez magazynu aplikacja ma tylko to, co wbudowane i tylko do odczytu (kod, presety, wbudowana wiedza i pomoc), oraz bieżącą rozmowę."
     }
    ],
-   "corrected_text": "„tak wyniki są tylko takie po prostu żepo świeżym starcie apkałebowanie nie ma żadnej pamięcipoza ROM i bieżącą  rozmową. ustawienia przeglądarki pewnie dają do dyspozycji trochę keszu to można wykorzystać Ale zgłaszamy użytkownikowi że najlepiej wydzielić katalog na przykład albo skorzystać z konta chmurowego, żeby zapewnić trwałość i ciągłość pracy” — skutek PH29 dla web: bez podłączonego magazynu aplikacja ma tylko pamięć roboczą i bieżącą rozmowę; pamięć przeglądarki (IndexedDB, cache) to magazyn tymczasowy; komunikat po pierwszej odpowiedzi proponuje trwały magazyn: wydzielony katalog na dysku (przykład; File System Access) albo konto chmurowe (przykład) — lista otwarta.",
+   "corrected_text": "„rOm” — chodziło o ROM, nie RAM: po świeżym starcie bez magazynu aplikacja ma tylko to, co wbudowane i tylko do odczytu (kod, presety, wbudowana wiedza i pomoc), oraz bieżącą rozmowę.",
    "by": "owner",
    "date": "2026-10-29"
   },
