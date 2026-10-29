@@ -396,6 +396,12 @@ if(LOOM_BUILD_TESTS)
     set_tests_properties(server.guest_vertex PROPERTIES
       ENVIRONMENT "LOOM_SERVER_BIN=$<TARGET_FILE:loom-server>;PYTHONDONTWRITEBYTECODE=1"
       TIMEOUT 240)
+    # R103 B1b: the working-copy bundle - generative secret scan of its bytes, exact restore with 0 model requests.
+    add_test(NAME server.guest_bundle
+      COMMAND ${Python3_EXECUTABLE} ${LOOM_ROOT}/server/tests/test_server_guest_bundle.py)
+    set_tests_properties(server.guest_bundle PROPERTIES
+      ENVIRONMENT "LOOM_SERVER_BIN=$<TARGET_FILE:loom-server>;PYTHONDONTWRITEBYTECODE=1"
+      TIMEOUT 240)
     # R103 B2: guest protection, in two parts so each ends well inside its limit on a ~5x slower ASan runner (2026-10-29:
     # the whole test took 213 s on dev and hit 900 s on CI asan). Every count runs on a frozen injected clock.
     # load: one address at the presets, proof of work, counters (≈ 65 s on dev; every debug model request ≈ 1 s).

@@ -113,8 +113,8 @@ try {
       const r = indexedDB.open("loom-guest-store", 1);
       r.onsuccess = () => { const t = r.result.transaction("bundles", "readonly").objectStore("bundles").get("current"); t.onsuccess = () => res(t.result); };
     }));
-    assert.equal(stored.schema, "loom.guest_bundle/1");
-    assert.ok(stored.conversations[0].content.includes("dwa plus dwa"));
+    assert.equal(stored.schema, "loom.guest_bundle/2");  // R103 B1b: the whole working copy
+    assert.ok(stored.text.includes("dwa plus dwa"));
   });
 
   await step("handover: B2 proof of work still required; an account works next to the guests; pool summary", async () => {

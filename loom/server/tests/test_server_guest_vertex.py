@@ -163,6 +163,12 @@ def main() -> int:
             chat_text(ga, b, ca, "second")
             assert Fake.calls[-1][1].startswith("Bearer " + TOKEN_PREFIX) and Fake.calls[-1][1] != auth, Fake.calls[-1][1]
             print("PASS token refreshed in memory before expiry")
+            # R103 B1b: the working-copy bundle never carries the access token (in this runtime's overlay right now)
+            rb = ga.get(b + "/api/working-copy/bundle", timeout=10)
+            assert rb.status_code == 200 and rb.json()["schema"] == "loom.guest_bundle/2", rb.text[:300]
+            assert TOKEN_PREFIX not in rb.text and SECOND_KEY not in rb.text
+            assert all(c.value not in rb.text for c in ga.cookies)
+            print("PASS the working-copy bundle carries no access token, key or session cookie")
             # 3. spend from usage × price
             summ = acc.get(b + "/api/pool/summary", timeout=10).json()
             v = summ["spend"]["providers"]["vertex_gemini"]

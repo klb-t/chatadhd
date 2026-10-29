@@ -38,6 +38,9 @@ export default function GuestLayer({ guest, guests, text, onSignIn, children }: 
   const [saved, setSaved] = useState<string | null>(null);
   const [wipeAsk, setWipeAsk] = useState(false);
   const answered = useRef(false);
+  // R103 B1b: nothing is saved before the restore decision: a save of the still-empty new working copy (the desktop
+  // writes its first pins at once) must never overwrite the bundle that is about to come back.
+  const ready = useRef(false);
   // R103 B3: the source can change while the guest works (§4.4 switch); /api/auth/me is read again after each answer.
   const [src, setSrc] = useState(guest.modelSource);
   // R103 B3 (§4.3): the tap before the first message to a source whose data terms need it.
@@ -71,7 +74,7 @@ export default function GuestLayer({ guest, guests, text, onSignIn, children }: 
     let live = true;
     try {
       const n = sessionStorage.getItem(RESTORED_KEY);
-      if (n !== null) { sessionStorage.removeItem(RESTORED_KEY); setRestored(Number(n)); }
+      if (n !== null) { sessionStorage.removeItem(RESTORED_KEY); if (Number(n) > 0) setRestored(Number(n)); }
     } catch { /* no session storage: no message */ }
     void (async () => {
       const p = await requestPersistence();
@@ -80,20 +83,21 @@ export default function GuestLayer({ guest, guests, text, onSignIn, children }: 
       try { bundle = await browserStore.load(); } catch { available = false; }
       if (!live) return;
       setStore({ ...p, available });
-      if (!bundle || bundleSize(bundle) === 0) return;
+      if (!bundle || bundleSize(bundle) === 0) { ready.current = true; return; }
       try {
         const have = await (await fetch("/api/conversations?limit=1", { credentials: "same-origin" })).json();
-        if (Array.isArray(have) && have.length > 0) return;
+        if (Array.isArray(have) && have.length > 0) { ready.current = true; return; }
         const n = await restoreBundle(bundle, fetch, "replace");
         // The panels already read the empty working copy; a reload shows the restored one everywhere at once.
         try { sessionStorage.setItem(RESTORED_KEY, String(n)); } catch { /* the count is only a message */ }
         if (live) window.location.reload();
-      } catch { /* a failed restore leaves the bundle in place for the next try */ }
+      } catch { /* a failed restore leaves the bundle in place for the next try (and nothing overwrites it now) */ }
     })();
     return () => { live = false; };
   }, []);
 
   const save = useCallback(async () => {
+    if (!ready.current) return;
     try {
       const bundle = await collectBundle();
       await browserStore.save(bundle);

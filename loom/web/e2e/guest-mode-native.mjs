@@ -149,9 +149,11 @@ try {
       const r = indexedDB.open("loom-guest-store", 1);
       r.onsuccess = () => { const t = r.result.transaction("bundles", "readonly").objectStore("bundles").get("current"); t.onsuccess = () => res(t.result); };
     }));
-    assert.equal(stored.schema, "loom.guest_bundle/1");
-    assert.equal(stored.conversations.length, 1);
-    assert.ok(stored.conversations[0].content.includes("ala@example.com"));
+    // R103 B1b: the whole working copy (v2, the server's exact text); the full path is guest-bundle-native.mjs
+    assert.equal(stored.schema, "loom.guest_bundle/2");
+    assert.equal(JSON.parse(stored.text).content.tables.conversations.rows.length, 1);
+    assert.ok(stored.text.includes("ala@example.com"));
+    assert.ok(!stored.text.includes(FAKE_KEY), "the key never enters the bundle");
     await until("graph of the first session", async () => JSON.parse((await inPage(page, "/api/graph/nodes")).body)?.length > 0 || null);
   });
 
