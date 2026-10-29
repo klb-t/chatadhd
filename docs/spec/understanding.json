@@ -168,6 +168,20 @@
    "by": "koordynator (zgoda właściciela 2026-10-28: auto-akceptacja parafraz bez wyraźnego kontrargumentu)",
    "date": "2026-10-28"
   },
+  "s_6fad4bfe72f2": {
+   "state": "corrected",
+   "history": [
+    {
+     "state": "corrected",
+     "by": "owner",
+     "date": "2026-10-29",
+     "text": "„dokładnie kompetencje to głównie moje prompty” — dowodem kompetencji są przede wszystkim jego wypowiedzi (prompty) do agentów: wymagania, filozofia, korekty; dokumentacja pokazuje je z kontekstem i skutkiem."
+    }
+   ],
+   "corrected_text": "„dokładnie kompetencje to głównie moje prompty” — dowodem kompetencji są przede wszystkim jego wypowiedzi (prompty) do agentów: wymagania, filozofia, korekty; dokumentacja pokazuje je z kontekstem i skutkiem.",
+   "by": "owner",
+   "date": "2026-10-29"
+  },
   "s_728a73b626a0": {
    "state": "approved",
    "history": [

@@ -28,9 +28,9 @@ Pozycji razem: **530**.
 
 | Rozumienie (R61) | liczba |
 |---|---|
-| none | 513 |
+| none | 512 |
 | approved | 12 |
-| corrected | 5 |
+| corrected | 6 |
 
 | W których plikach | liczba |
 |---|---|
@@ -626,7 +626,7 @@ Pozycji razem: **530**.
 - `s_876d3e3a2863` **R103** — Korzystanie bez logowania: darmowe API, pula kluczy właściciela, historia u użytkownika — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L957)
 - `s_831a5fde86e9` **R104** — Budżet próbny dla każdego, profil w pamięci lokalnej, darmowo dla niekomercyjnych — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L962)
 - `s_006a12993c58` **R105** — Gość: zwykły interfejs, najlepszy darmowy model, ostrzeżenie o utracie rozmowy wg metryki wartości — _bez statusu_ · rozumienie: corrected · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L969)
-- `s_6fad4bfe72f2` **R106** — Sesja ekosystemu: pomysły ponad projektami (np. trenowanie własnego LLM na danych ChatADHD) i dokumentacja kompetencji właściciela — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L974)
+- `s_6fad4bfe72f2` **R106** — Sesja ekosystemu: pomysły ponad projektami (np. trenowanie własnego LLM na danych ChatADHD) i dokumentacja kompetencji właściciela — _bez statusu_ · rozumienie: corrected · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L974)
 - `s_18ec73967a7b` **owner:decision-rebuild-don-t-recover** — Decision — rebuild, don't recover — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L979)
 - `s_223e1568b3b9` **owner:ui-reference** — UI reference — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L987)
 

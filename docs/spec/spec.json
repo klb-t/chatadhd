@@ -6152,7 +6152,18 @@
    "theme": "owner_requirements",
    "theme_inferred": false,
    "understanding": {
-    "state": "none"
+    "state": "corrected",
+    "history": [
+     {
+      "state": "corrected",
+      "by": "owner",
+      "date": "2026-10-29",
+      "text": "„dokładnie kompetencje to głównie moje prompty” — dowodem kompetencji są przede wszystkim jego wypowiedzi (prompty) do agentów: wymagania, filozofia, korekty; dokumentacja pokazuje je z kontekstem i skutkiem."
+     }
+    ],
+    "corrected_text": "„dokładnie kompetencje to głównie moje prompty” — dowodem kompetencji są przede wszystkim jego wypowiedzi (prompty) do agentów: wymagania, filozofia, korekty; dokumentacja pokazuje je z kontekstem i skutkiem.",
+    "by": "owner",
+    "date": "2026-10-29"
    },
    "quotes": [
     {
