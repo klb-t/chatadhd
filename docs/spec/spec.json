@@ -5990,9 +5990,15 @@
       "by": "owner",
       "date": "2026-10-29",
       "text": "„A ja teraz dopiero załapałem że Wprowadziłem niepotrzebną komplikację bo przecież było mówione że zarówno łapka webowa jak i androidowa jak i desktopowa mają mieć możliwość podłączenia dowolnego magazynu, lokalnego chmurowego jakiegokolwiek, a logowanie i nasze konto to jest zupełnie opcjonalne” — R103 to szczególny przypadek PH29: nie ma osobnego rodzaju użytkownika „gość”; jest użytkownik bez naszego konta, z dowolnym podłączonym magazynem (pamięć przeglądarki to jeden z nich). Konto daje tylko dodatki (np. pulę kluczy, synchronizację). Paczki B7/B8 mają to ujednolicić; zrobione B1–B3 zostają (paczka danych gościa = przenośna kopia robocza)."
+     },
+     {
+      "state": "corrected",
+      "by": "owner",
+      "date": "2026-10-29",
+      "text": "„tak wyniki są tylko takie po prostu żepo świeżym starcie apkałebowanie nie ma żadnej pamięcipoza ROM i bieżącą  rozmową. ustawienia przeglądarki pewnie dają do dyspozycji trochę keszu to można wykorzystać Ale zgłaszamy użytkownikowi że najlepiej wydzielić katalog na przykład albo skorzystać z konta chmurowego, żeby zapewnić trwałość i ciągłość pracy” — skutek PH29 dla web: bez podłączonego magazynu aplikacja ma tylko pamięć roboczą i bieżącą rozmowę; pamięć przeglądarki (IndexedDB, cache) to magazyn tymczasowy; komunikat po pierwszej odpowiedzi proponuje trwały magazyn: wydzielony katalog na dysku (przykład; File System Access) albo konto chmurowe (przykład) — lista otwarta."
      }
     ],
-    "corrected_text": "„A ja teraz dopiero załapałem że Wprowadziłem niepotrzebną komplikację bo przecież było mówione że zarówno łapka webowa jak i androidowa jak i desktopowa mają mieć możliwość podłączenia dowolnego magazynu, lokalnego chmurowego jakiegokolwiek, a logowanie i nasze konto to jest zupełnie opcjonalne” — R103 to szczególny przypadek PH29: nie ma osobnego rodzaju użytkownika „gość”; jest użytkownik bez naszego konta, z dowolnym podłączonym magazynem (pamięć przeglądarki to jeden z nich). Konto daje tylko dodatki (np. pulę kluczy, synchronizację). Paczki B7/B8 mają to ujednolicić; zrobione B1–B3 zostają (paczka danych gościa = przenośna kopia robocza).",
+    "corrected_text": "„tak wyniki są tylko takie po prostu żepo świeżym starcie apkałebowanie nie ma żadnej pamięcipoza ROM i bieżącą  rozmową. ustawienia przeglądarki pewnie dają do dyspozycji trochę keszu to można wykorzystać Ale zgłaszamy użytkownikowi że najlepiej wydzielić katalog na przykład albo skorzystać z konta chmurowego, żeby zapewnić trwałość i ciągłość pracy” — skutek PH29 dla web: bez podłączonego magazynu aplikacja ma tylko pamięć roboczą i bieżącą rozmowę; pamięć przeglądarki (IndexedDB, cache) to magazyn tymczasowy; komunikat po pierwszej odpowiedzi proponuje trwały magazyn: wydzielony katalog na dysku (przykład; File System Access) albo konto chmurowe (przykład) — lista otwarta.",
     "by": "owner",
     "date": "2026-10-29"
    },
