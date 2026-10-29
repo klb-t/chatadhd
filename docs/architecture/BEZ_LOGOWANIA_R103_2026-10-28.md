@@ -476,6 +476,12 @@ Właściciel: „wdróż wszystko, czata po wprowadzeniu darmowych funkcjonalno�
    WebCrypto zgodne z `crypto_suite.h`; kopia serwerowa na życzenie z kodem odzyskania. Akceptacja: e2e na atrapie WebDAV w
    ctest; Drive na prawdziwym koncie testowym koordynatora (raport mówi, które dane były testowe); plik zaszyfrowany otwiera
    się w CLI `loom`.
+   **Dopisek właściciela 2026-10-29 (R103 poprawki, PH29):** „gość” nie jest osobnym rodzajem użytkownika — to użytkownik bez
+   naszego konta z dowolnym podłączonym magazynem; bez magazynu aplikacja ma tylko ROM (kod, presety, wbudowana wiedza) i
+   bieżącą rozmowę. Wtyczki na start (lista otwarta): pamięć przeglądarki — IndexedDB, OPFS z SQLite, Cache API dla plików
+   aplikacji — jako tymczasowe (prośba `navigator.storage.persist()`, stan `estimate()`); katalog wskazany przez użytkownika
+   (File System Access) i konto chmurowe jako trwałe. Cechy magazynu (trwałość, limit, widoczność, synchronizacja) są danymi
+   i to one decydują o komunikacie po pierwszej odpowiedzi.
 9. **B9 Model lokalny na maszynie** — usługa llama.cpp (systemd, port lokalny), wpis `local`, kolejka z miejscem w kolejce;
    **pomiar** tokenów/s i RAM na 8 vCPU dla dwóch–trzech modeli (np. 1–4 B parametrów, Q4) — liczby do `places.json`, model
    domyślny po pomiarze. Akceptacja: raport z pomiarem; serwer bez modelu nie psuje reszty.
