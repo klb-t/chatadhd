@@ -99,7 +99,12 @@ const storePanel = async (page) => {
   const traits = Object.fromEntries(await page.$$eval('[data-testid="guest-store-traits"] li', (lis) => lis.map((li) => [li.getAttribute("data-trait"), li.textContent.replace(/^[^:]+:\s*/, "")])));
   return { store: await attr("data-store"), integrity: await attr("data-integrity"), fallback: await attr("data-fallback"), leader: await attr("data-leader"), traits };
 };
-const savedAfter = async (page, before) => until("a save", async () => { const s = await page.getByTestId("guest-layer").getAttribute("data-saved-at"); return (s && s !== before) ? s : null; }, 120000);
+// a save happened after `before` and no save is still running (closing a tab mid-save would lose that save)
+const savedAfter = async (page, before) => until("a save", async () => {
+  const el = page.getByTestId("guest-layer");
+  const s = await el.getAttribute("data-saved-at");
+  return (s && s !== before && (await el.getAttribute("data-saving")) === "0") ? s : null;
+}, 120000);
 const ask = async (page, q, n) => {
   await page.getByTestId("chat-input").fill(q);
   await page.getByTestId("send-chat").click();
@@ -182,6 +187,9 @@ try {
     await ask(tab2, "Druga karta: notatka o kardamonie.", 1);
     await savedAfter(tab2, s0);  // the save went through the leader (tab 1 holds the database)
     const n = (await api(tab2, "GET", "/api/conversations")).json.length;
+    const t2 = (await storePanel(tab2)).traits;
+    console.log("[opfs-store] tab2 after its save", JSON.stringify({ rows: t2.last_write_rows, bytes: t2.last_write_bytes, n }));
+    assert.ok(Number(String(t2.last_write_rows ?? "0")) > 0, "the second tab's save wrote rows through the leader");
     requestsBefore = (await mockCount()).requests;
     await page.close(); await tab2.close();
     await ctx.clearCookies();
@@ -213,7 +221,8 @@ try {
     }
     // Only conversations + messages; the one REAL column (weight) is written as the kernel writes doubles.
     const weightIx = col(mt, "weight");
-    const { formatDouble } = await import("../src/context/canonical-json.ts");
+    // the template's weight is a whole number (1.0); a whole double is written "1.0" by the kernel
+    const formatDouble = (x) => (Number.isInteger(x) ? x.toFixed(1) : String(x));
     const dumpRow = (r) => "[" + r.map((v, i) => (i === weightIx ? formatDouble(Number(v)) : JSON.stringify(v))).join(",") + "]";
     const content = `{"tables":{"conversations":{"columns":${JSON.stringify(ct.columns)},"rows":[${JSON.stringify(conv)}]},"messages":{"columns":${JSON.stringify(mt.columns)},"rows":[${rows.map(dumpRow).join(",")}]}}}`;
     const sha = createHash("sha256").update(content).digest("hex");

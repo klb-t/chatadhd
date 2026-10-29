@@ -21,7 +21,7 @@ export interface OpfsSqliteConfig {
 }
 
 export const OPFS_SQLITE_PRESET: OpfsSqliteConfig = {
-  name: "loom-store-opfs-sqlite", exclusive: true, probeTimeoutMs: 15000,
+  name: "loom-store-opfs-sqlite", exclusive: true, probeTimeoutMs: 30000,
   vfsName: "loom-opfs-sahpool", directory: ".loom-store", dbName: "/working-copy.sqlite3",
 };
 
@@ -94,6 +94,7 @@ export function createOpfsSqliteStore(cfg: OpfsSqliteConfig = OPFS_SQLITE_PRESET
         t.fts5 = observed(Boolean(obs.fts5), "sqlite_compileoption_used + CREATE VIRTUAL TABLE probe");
         t.integrity = observed(String(obs.integrity ?? "unknown"), "PRAGMA integrity_check");
         t.leader_tab = observed(leader?.isLeader() ?? false, "navigator.locks");
+        t.open_retries = observed(Number(obs.open_retries ?? 0), "worker: attempts to take the pool's access handles");
         if (obs.fallback) t.bundle_fallback = observed(String(obs.fallback), "D4: the server's original text is kept");
       }
       if (last) {

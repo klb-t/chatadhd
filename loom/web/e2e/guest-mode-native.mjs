@@ -74,6 +74,9 @@ try {
   await waitUp(`${base}/api/healthz`);
   browser = await (await chromium()).launch({ executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE || undefined });
   const ctx = await browser.newContext({ viewport: { width: 1280, height: 800 }, locale: "pl-PL" });
+  // PH29 P1: this test checks the IndexedDB bundle store, so it pins that plugin (the person's own choice, `loom.store.policy`);
+  // the OPFS + SQLite store (the preset's first choice) is covered by opfs-store-native.mjs.
+  await ctx.addInitScript(() => { try { localStorage.setItem("loom.store.policy", JSON.stringify({ targets: ["browser_indexeddb"] })); } catch {} });
   const page = await ctx.newPage();
   let firstGuest = null, convId = null;
 

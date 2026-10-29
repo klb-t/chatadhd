@@ -117,8 +117,10 @@ export default function GuestLayer({ guest, guests, text, onSignIn, children }: 
     return () => { live = false; };
   }, []);
 
+  const [saving, setSaving] = useState(0);
   const save = useCallback(async () => {
     if (!ready.current) return;
+    setSaving((n) => n + 1);
     try {
       const bundle = await collectBundle();
       if (!storeRef.current) throw new Error("no store");
@@ -126,6 +128,7 @@ export default function GuestLayer({ guest, guests, text, onSignIn, children }: 
       setSaved(bundle.saved_at);
       if (selection.current) void showTraits(selection.current);
     } catch { setStore((s) => ({ ...s, available: false })); }
+    finally { setSaving((n) => n - 1); }
   }, []);
 
   // Changes other than answers (layout, pins, trash, memory, settings): one save after they settle.
@@ -210,7 +213,7 @@ export default function GuestLayer({ guest, guests, text, onSignIn, children }: 
   return (
     <>
       {children}
-      <div className="guest-layer" data-testid="guest-layer" data-guest-id={guest.id} data-saved-at={saved ?? ""}
+      <div className="guest-layer" data-testid="guest-layer" data-guest-id={guest.id} data-saved-at={saved ?? ""} data-saving={saving}
         style={{ position: "fixed", left: 8, right: 8, bottom: 112, zIndex: 50, pointerEvents: "none", display: "flex", flexDirection: "column", gap: 6, alignItems: "stretch", maxWidth: 640, margin: "0 auto" }}>
         {notice && (
           <div role="status" data-testid="guest-notice" data-period={which.period ?? "session"}

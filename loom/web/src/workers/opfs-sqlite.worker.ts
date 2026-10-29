@@ -15,7 +15,8 @@ type Db = {
 };
 type Stmt = { bind(v: unknown[]): Stmt; stepReset(): Stmt; step(): boolean; get(i: number): unknown; columnCount: number; pointer: number; finalize(): void; reset(): Stmt };
 
-interface OpenArgs { vfsName?: string; directory?: string; dbName?: string; initialCapacity?: number }
+interface OpenArgs { vfsName?: string; directory?: string; dbName?: string; initialCapacity?: number; retryMs?: number }
+let openRetries = 0;
 interface Bundle { [k: string]: CJson }
 interface TableJson { columns: string[]; rows: CJson[][] }
 
@@ -42,7 +43,14 @@ async function open(a: OpenArgs) {
   if (db) return observations();
   opened = { vfsName: "loom-opfs-sahpool", directory: ".loom-store", dbName: "/working-copy.sqlite3", initialCapacity: 6, ...a };
   sqlite3 ??= await (sqlite3InitModule as unknown as (o?: unknown) => Promise<any>)({ print: () => {}, printErr: () => {} });
-  pool = await sqlite3.installOpfsSAHPoolVfs({ name: opened.vfsName, directory: opened.directory, initialCapacity: opened.initialCapacity });
+  // Observation 2026-10-29 (Chromium, Playwright): the Web Lock of a closed tab is released BEFORE its worker has let go
+  // of the pool's access handles, so the next leader's first attempt can fail with "Access Handles cannot be created";
+  // it tries again for `retryMs` (preset) before the plugin reports itself unavailable.
+  const until = Date.now() + (opened.retryMs ?? 15000);
+  for (let delay = 50; ; delay = Math.min(delay * 2, 1000)) {
+    try { pool = await sqlite3.installOpfsSAHPoolVfs({ name: opened.vfsName, directory: opened.directory, initialCapacity: opened.initialCapacity }); break; }
+    catch (e) { openRetries += 1; if (Date.now() + delay > until) throw e; await new Promise((r) => setTimeout(r, delay)); }
+  }
   db = new pool.OpfsSAHPoolDb(opened.dbName) as Db;
   db.exec("PRAGMA journal_mode=DELETE; PRAGMA synchronous=NORMAL;");
   db.exec("CREATE TABLE IF NOT EXISTS _store_meta (key TEXT PRIMARY KEY, value TEXT)");
@@ -58,7 +66,7 @@ function observations() {
     try { d.exec("CREATE VIRTUAL TABLE temp._fts5_probe USING fts5(x); DROP TABLE temp._fts5_probe;"); } catch { fts5 = false; }
   }
   return { sqlite_version: String(d.selectValue("SELECT sqlite_version()")), vfs: "opfs-sahpool", vfs_name: opened.vfsName,
-           fts5, file_count: pool?.getFileCount?.() ?? null, capacity: pool?.getCapacity?.() ?? null,
+           fts5, open_retries: openRetries, file_count: pool?.getFileCount?.() ?? null, capacity: pool?.getCapacity?.() ?? null,
            source_access: parseExact("[1.0]").exact };
 }
 
@@ -112,8 +120,12 @@ async function save(text: string) {
     db!.transaction(() => { setMeta("original_text", text); setMeta("fallback", "not_v2"); });
     return { rows_written: 0, rows_deleted: 0, bytes_written: text.length, fallback: "not_v2", ms: performance.now() - t0 };
   }
+  // A bundle older than the stored one (a late save from another tab) is not written over it.
+  const stored = meta("saved_at");
+  if (stored !== null && typeof b.saved_at === "string" && b.saved_at < stored)
+    return { rows_written: 0, rows_deleted: 0, bytes_written: 0, skipped: "older_than_stored", fallback: meta("fallback"), ms: Math.round(performance.now() - t0) };
   const content = (b.content ?? {}) as Record<string, CJson>;
-  const tables = (content.tables ?? {}) as Record<string, TableJson>;
+  const tables = (content.tables ?? {}) as unknown as Record<string, TableJson>;
   // D4: can this browser reproduce the server's hash? (number source access + canonical dump + key order)
   const want = String(((b.integrity ?? {}) as Record<string, CJson>).content_sha256 ?? "");
   const canonical = parsed.exact && keyOrderSafe(content) && (await sha256Hex(canonicalDump(content, lex))) === want;
@@ -167,6 +179,7 @@ async function save(text: string) {
     const skText = canonicalDump(skeleton as CJson, lex);
     if (lex.size !== before) setMeta("double_lexemes", JSON.stringify([...lex.values()]));
     if (meta("skeleton") !== skText) { setMeta("skeleton", skText); bytes += skText.length; }
+    if (typeof b.saved_at === "string") setMeta("saved_at", b.saved_at);
     if (canonical) { setMeta("original_text", null); setMeta("fallback", null); }
     else { setMeta("original_text", text); setMeta("fallback", parsed.exact ? "hash_mismatch" : "no_number_source"); bytes += text.length; }
   });
@@ -191,7 +204,7 @@ async function exportText(): Promise<string | null> {
   if (sk === null) return null;
   const b = parseExact(sk, known()).value as Bundle;
   const content = b.content as Record<string, CJson>;
-  const tables = content.tables as Record<string, TableJson>;
+  const tables = content.tables as unknown as Record<string, TableJson>;
   for (const [t, tab] of Object.entries(tables)) {
     const sel = `SELECT ${tab.columns.map(q).join(",")} FROM ${q(t)}`;
     let st: Stmt;
@@ -239,8 +252,13 @@ async function handle(op: string, args: any): Promise<unknown> {
 }
 
 const scope = self as unknown as { postMessage(m: unknown): void; onmessage: ((e: MessageEvent<{ id: number; op: string; args: unknown }>) => void) | null };
+// One operation at a time, in arrival order: a save awaits hashing before its transaction, and two saves interleaved
+// would let an older bundle land after a newer one.
+let queue: Promise<unknown> = Promise.resolve();
 scope.onmessage = (e) => {
   const { id, op, args } = e.data;
-  handle(op, args).then((value) => scope.postMessage({ id, ok: true, value }),
+  const run = queue.then(() => handle(op, args));
+  queue = run.catch(() => undefined);
+  run.then((value) => scope.postMessage({ id, ok: true, value }),
     (err: unknown) => scope.postMessage({ id, ok: false, error: String((err as Error)?.message ?? err), name: (err as Error)?.name }));
 };
