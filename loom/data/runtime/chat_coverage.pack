@@ -3433,6 +3433,24 @@
         }
       },
       {
+        "id": "working_copy_bundle",
+        "category": "transport",
+        "reason": {
+          "en": "The person's own store (R103 B1b: the browser, a file) saves the whole working copy as one bundle after each answer and change, and puts it back into a new session; the client does it by itself, the person's words are not involved, and the chat already exports a conversation (export.conversation). The bundle never carries a secret.",
+          "pl": "Schowek osoby (R103 B1b: przeglądarka, plik) zapisuje całą kopię roboczą jako jedną paczkę po każdej odpowiedzi i zmianie i wkłada ją do nowej sesji; robi to klient sam, bez słów osoby, a czat już eksportuje rozmowę (export.conversation). Paczka nigdy nie zawiera sekretu."
+        },
+        "surfaces": {
+          "c_abi": [
+            "loom_working_copy_export",
+            "loom_working_copy_import"
+          ],
+          "http": [
+            "GET /api/working-copy/bundle",
+            "POST /api/working-copy/bundle"
+          ]
+        }
+      },
+      {
         "id": "device_plumbing",
         "category": "transport",
         "reason": {

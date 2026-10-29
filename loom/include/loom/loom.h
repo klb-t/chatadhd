@@ -239,6 +239,13 @@ LOOM_API int loom_set_secret(LoomContext* ctx, const char* key, const char* valu
  * read before secrets.json and are never written to it, listed, exported or returned. */
 LOOM_API int loom_set_credential_overlay(LoomContext* ctx, const char* overlay_json);
 /* 1 = set and non-empty, 0 = not set, negative = error. */
+/* R103 B1b: the whole working copy as one versioned bundle ("loom.guest_bundle/2": rows of an allow-list of tables,
+ * memory, config; never secrets.json, the credential overlay or session tokens; sha256 integrity). options_json:
+ * {"tables":[..], "include_memory":true, "include_config":true}; NULL = presets. */
+LOOM_API const char* loom_working_copy_export(LoomContext* ctx, const char* options_json);
+/* Restores such a bundle without running analysis or calling a model. options_json: {"mode":"merge"|"replace",
+ * "keep_config_keys":[..], "verify":true}. Returns {"restored":{...},"analysis_runs":0} or {"error":...}. */
+LOOM_API const char* loom_working_copy_import(LoomContext* ctx, const char* bundle_json, const char* options_json);
 LOOM_API int loom_has_secret(LoomContext* ctx, const char* key);
 LOOM_API int loom_delete_secret(LoomContext* ctx, const char* key);
 /* ["api_key", ...] names only. */

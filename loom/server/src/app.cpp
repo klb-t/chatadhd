@@ -1412,6 +1412,44 @@ void App::route_config_secrets() {
   svr_.Get("/api/settings/fields", [this](const httplib::Request&, httplib::Response& res) {
     send_loom(res, loom_settings_fields(rctx()));
   });
+  // R103 B1b: the whole working copy as one bundle (loom.guest_bundle/2) for the person's own store, and its restore
+  // without analysis. Never carries secrets.json, the credential overlay or a session token (allow-list in the kernel).
+  svr_.Get("/api/working-copy/bundle", [this](const httplib::Request&, httplib::Response& res) {
+    const std::string raw = own_and_free(loom_working_copy_export(rctx(), nullptr));
+    const json parsed = parse_or_empty(raw);
+    if (parsed.is_object() && parsed.contains("error")) {
+      res.status = status_for_error_code(parsed["error"].value("code", std::string("internal")));
+      res.set_content(raw, "application/json");
+      return;
+    }
+    res.set_header("Cache-Control", "no-store");
+    res.set_content(raw, "application/json; charset=utf-8");
+  });
+  svr_.Post("/api/working-copy/bundle", [this](const httplib::Request& req, httplib::Response& res) {
+    LoomContext* ctx = rctx();
+    json opts = json::object();
+    if (req.has_param("mode")) opts["mode"] = req.get_param_value("mode");
+    // A guest keeps the free source this session was given (its terms are the ones shown before sending); the
+    // bundle's model choice comes back only when it was made on the same source.
+    if (t_guest) {
+      json keep = json::array({"loom_guest_source", "loom_provider_terms"});
+      const json cur = parse_or_empty(own_and_free(loom_get_config(ctx)));
+      const json in = parse_or_empty(req.body);
+      const json in_cfg = in.is_object() && in.contains("content") && in["content"].is_object()
+                              ? in["content"].value("config", json::object()) : json::object();
+      const json cur_src = cur.is_object() ? cur.value("loom_guest_source", json()) : json();
+      const json in_src = in_cfg.is_object() ? in_cfg.value("loom_guest_source", json()) : json();
+      if (cur_src != in_src) { keep.push_back("base_url"); keep.push_back("default_model"); }
+      opts["keep_config_keys"] = keep;
+    }
+    std::lock_guard config_guard(native_ui::config_mutex());
+    const std::string raw = own_and_free(loom_working_copy_import(ctx, req.body.c_str(), opts.dump().c_str()));
+    const json parsed = parse_or_empty(raw);
+    if (parsed.is_object() && parsed.contains("error"))
+      res.status = status_for_error_code(parsed["error"].value("code", std::string("internal")));
+    res.set_content(raw, "application/json");
+  });
+
   svr_.Get("/api/config", [this](const httplib::Request&, httplib::Response& res) {
     send_loom(res, loom_get_config(rctx()));
   });

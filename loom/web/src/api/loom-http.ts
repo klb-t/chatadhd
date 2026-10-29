@@ -198,6 +198,10 @@ export class LoomHttpApi implements LoomApi {
       throw new HttpError(res.status, msg);
     }
     captureWire?.(text);
+    // R103 B1b: a change of the working copy (layout, pins, trash, memory, settings...) lets the person's store save it
+    // (debounced there). Reads, the session and the bundle itself are not changes.
+    if (method !== "GET" && typeof window !== "undefined" && !path.startsWith("/api/auth/") && !path.startsWith("/api/working-copy/"))
+      window.dispatchEvent(new CustomEvent("loom:working-copy-changed", { detail: { method, path } }));
     return parsed as T;
   }
 

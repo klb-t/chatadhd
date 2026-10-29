@@ -148,6 +148,24 @@ class Secrets : public JsonStore {
     std::lock_guard lk(overlay_mu_);
     return overlay_.count(std::string(key)) != 0;
   }
+  // R103 B1b: every credential value this runtime knows (secrets.json strings + the overlay), for guards that prove a
+  // value never leaves (the working-copy bundle). Never log or return them.
+  std::vector<std::string> values_for_guard() const {
+    std::vector<std::string> v;
+    const Json a = all();
+    if (a.is_object())
+      for (auto it = a.begin(); it != a.end(); ++it)
+        if (it->is_string()) v.push_back(it->get<std::string>());
+    std::lock_guard lk(overlay_mu_);
+    for (const auto& kv : overlay_) v.push_back(kv.second);
+    return v;
+  }
+  std::vector<std::string> overlay_keys() const {
+    std::vector<std::string> v;
+    std::lock_guard lk(overlay_mu_);
+    for (const auto& kv : overlay_) v.push_back(kv.first);
+    return v;
+  }
 
  private:
   mutable std::mutex overlay_mu_;

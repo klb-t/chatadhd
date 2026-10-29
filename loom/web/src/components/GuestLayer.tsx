@@ -5,8 +5,8 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import type { AccountsTextId, GuestInfo, GuestsOffer } from "../context/auth-state";
 import {
-  ANSWER_DONE_EVENT, browserStore, collectBundle, humanBytes, humanSeconds, isBundle, noticePeriod, requestPersistence,
-  restoreBundle, type GuestBundle,
+  ANSWER_DONE_EVENT, WORKING_COPY_CHANGED_EVENT, browserStore, bundleFromText, bundleSize, bundleText, collectBundle,
+  humanBytes, humanSeconds, noticePeriod, requestPersistence, restoreBundle, wipeEverything, type GuestBundle,
 } from "../context/guest-store";
 import { GUEST_LIMIT_EVENT, type GuestLimitDetail } from "../api/auth";
 import { SETTINGS_PANEL, requestOpenPanel } from "../context/open-settings";
@@ -15,6 +15,9 @@ import { setSendGate, termsNeedConsent } from "../api/send-gate";
 const NEVER_KEY = "loom.guest.notice.never";
 const RESTORED_KEY = "loom.guest.restored";
 const TERMS_KEY = "loom.guest.terms";  // + provider + observed_at: a new observation of the terms asks again
+// R103 B1b: a change of the working copy (layout, pins, trash, memory, settings) is saved this long after the last one
+// (preset; an answer saves at once).
+export const SAVE_DEBOUNCE_MS = 1200;
 
 function readFlag(storage: () => Storage, key: string): boolean {
   try { return storage().getItem(key) === "1"; } catch { return false; }
@@ -33,6 +36,7 @@ export default function GuestLayer({ guest, guests, text, onSignIn, children }: 
   const [notice, setNotice] = useState(false);
   const [restored, setRestored] = useState<number | null>(null);
   const [saved, setSaved] = useState<string | null>(null);
+  const [wipeAsk, setWipeAsk] = useState(false);
   const answered = useRef(false);
   // R103 B3: the source can change while the guest works (§4.4 switch); /api/auth/me is read again after each answer.
   const [src, setSrc] = useState(guest.modelSource);
@@ -76,11 +80,11 @@ export default function GuestLayer({ guest, guests, text, onSignIn, children }: 
       try { bundle = await browserStore.load(); } catch { available = false; }
       if (!live) return;
       setStore({ ...p, available });
-      if (!bundle || bundle.conversations.length === 0) return;
+      if (!bundle || bundleSize(bundle) === 0) return;
       try {
         const have = await (await fetch("/api/conversations?limit=1", { credentials: "same-origin" })).json();
         if (Array.isArray(have) && have.length > 0) return;
-        const n = await restoreBundle(bundle);
+        const n = await restoreBundle(bundle, fetch, "replace");
         // The panels already read the empty working copy; a reload shows the restored one everywhere at once.
         try { sessionStorage.setItem(RESTORED_KEY, String(n)); } catch { /* the count is only a message */ }
         if (live) window.location.reload();
@@ -96,6 +100,15 @@ export default function GuestLayer({ guest, guests, text, onSignIn, children }: 
       setSaved(bundle.saved_at);
     } catch { setStore((s) => ({ ...s, available: false })); }
   }, []);
+
+  // Changes other than answers (layout, pins, trash, memory, settings): one save after they settle.
+  useEffect(() => {
+    let t: number | undefined;
+    const onChange = () => { window.clearTimeout(t); t = window.setTimeout(() => void save(), SAVE_DEBOUNCE_MS); };
+    window.addEventListener(WORKING_COPY_CHANGED_EVENT, onChange);
+    window.addEventListener("loom:trash-changed", onChange);
+    return () => { window.clearTimeout(t); window.removeEventListener(WORKING_COPY_CHANGED_EVENT, onChange); window.removeEventListener("loom:trash-changed", onChange); };
+  }, [save]);
 
   useEffect(() => {
     const onAnswer = () => {
@@ -114,7 +127,7 @@ export default function GuestLayer({ guest, guests, text, onSignIn, children }: 
 
   const download = async () => {
     const bundle = await collectBundle();
-    const url = URL.createObjectURL(new Blob([JSON.stringify(bundle)], { type: "application/json" }));
+    const url = URL.createObjectURL(new Blob([bundleText(bundle)], { type: "application/json" }));
     const a = document.createElement("a");
     a.href = url; a.download = `chatadhd-archive-${bundle.saved_at.slice(0, 10)}.json`;
     document.body.appendChild(a); a.click(); a.remove();
@@ -122,13 +135,19 @@ export default function GuestLayer({ guest, guests, text, onSignIn, children }: 
   };
   const load = async (file: File) => {
     try {
-      const bundle = JSON.parse(await file.text());
-      if (!isBundle(bundle)) return;
+      const bundle = bundleFromText(await file.text());
+      if (!bundle) return;
       const n = await restoreBundle(bundle);
       try { sessionStorage.setItem(RESTORED_KEY, String(n)); } catch { /* the count is only a message */ }
       await save();
       window.location.reload();
     } catch { /* not an archive of ours */ }
+  };
+
+  const wipe = async () => {
+    setWipeAsk(false);
+    await wipeEverything();
+    window.location.reload();
   };
 
   const ttl = humanSeconds(guest.idleTtlSeconds);
@@ -214,12 +233,25 @@ export default function GuestLayer({ guest, guests, text, onSignIn, children }: 
             {text("guest.switched", { from: switched.from, why: String(switched.why ?? ""), provider: providerName })}
           </p>
         )}
+        {wipeAsk && (
+          <div role="alertdialog" data-testid="guest-wipe-confirm"
+            style={{ pointerEvents: "auto", background: "var(--surface, #222)", color: "inherit", border: "1px solid var(--border, #555)", borderRadius: 10, padding: "10px 12px" }}>
+            <p style={{ margin: "0 0 6px" }}>{text("guest.wipe_confirm")}</p>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+              <button type="button" data-testid="guest-wipe-yes" onClick={() => void wipe()}>{text("guest.wipe_yes")}</button>
+              <button type="button" data-testid="guest-wipe-no" onClick={() => setWipeAsk(false)}>{text("guest.wipe_no")}</button>
+            </div>
+          </div>
+        )}
         {restored !== null && <p role="status" data-testid="guest-restored" style={{ pointerEvents: "auto", margin: 0, fontSize: 12, opacity: 0.85 }}>{text("guest.restored", { count: String(restored) })}</p>}
         <p data-testid="guest-model-line" style={{ pointerEvents: "auto", margin: 0, fontSize: 12, opacity: 0.8 }}
           title={termsText ? `${text("guest.terms_title")}: ${termsText}` : undefined}>
           {src && typeof src.model === "string" && src.model
             ? text("guest.model_line", { model: src.model, provider: providerName, terms: termsText })
             : text("guest.no_model", { reason: String(src?.why ?? "unknown") })}
+          {" "}
+          <button type="button" data-testid="guest-wipe" onClick={() => setWipeAsk(true)}
+            style={{ fontSize: 11, padding: "0 6px", marginLeft: 4 }}>{text("guest.wipe")}</button>
         </p>
         <input ref={fileInput} type="file" accept="application/json,.json" hidden data-testid="guest-load-input"
           onChange={(e) => { const f = e.target.files?.[0]; if (f) void load(f); e.target.value = ""; }} />

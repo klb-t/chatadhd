@@ -81,4 +81,17 @@ test('R103 §3.5: the notice period follows what the browser store reported', as
   assert.equal(g.humanBytes(1536), '1.5 KB');
   assert.equal(g.isBundle({ schema: 'loom.guest_bundle/1', conversations: [] }), true);
   assert.equal(g.isBundle({ schema: 'x', conversations: [] }), false);
+  // R103 B1b: v2 = the server's exact text; a file with the server's JSON is accepted, its size counts rows + memory
+  assert.equal(g.isBundle({ schema: 'loom.guest_bundle/2', saved_at: 's', text: '{}' }), true);
+  const raw = JSON.stringify({ schema: 'loom.guest_bundle/2', saved_at: '2026-10-29', content: { tables: { conversations: { columns: ['id'], rows: [['c_1'], ['c_2']] } }, memory: [{ id: 'mem' }] } });
+  const b = g.bundleFromText(raw);
+  assert.equal(b.schema, 'loom.guest_bundle/2');
+  assert.equal(b.text, raw);
+  assert.equal(g.bundleSize(b), 3);
+  assert.equal(g.bundleText(b), raw);
+  assert.equal(g.bundleFromText('not json'), null);
+  assert.equal(g.bundleSize({ schema: 'loom.guest_bundle/1', conversations: [] }), 0);
+  const pl = pack.entries.find(row => row.key === 'presentation.accounts').value.locales.pl;
+  for (const id of ['guest.wipe', 'guest.wipe_confirm', 'guest.wipe_yes', 'guest.wipe_no'])
+    assert.ok(typeof en[id] === 'string' && typeof pl[id] === 'string', id);
 });

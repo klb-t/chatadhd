@@ -115,7 +115,7 @@ export type AccountsTextId =
   | "guest.model_line" | "guest.no_model" | "guest.terms_title" | "guest.period_unknown" | "guest.persisted" | "guest.not_persisted"
   | "guest.limit_ready" | "guest.limit_alternatives" | "guest.limit_own_key"
   | "guest.terms_consent_title" | "guest.terms_consent_body" | "guest.terms_send" | "guest.terms_other" | "guest.terms_declined"
-  | "guest.switched";
+  | "guest.switched" | "guest.wipe" | "guest.wipe_confirm" | "guest.wipe_yes" | "guest.wipe_no";
 
 /** Text from the catalog, or the id (and reason) when the catalog is unusable. */
 export function accountText(feature: PresentationFeature | null, id: AccountsTextId,
