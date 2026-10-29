@@ -971,6 +971,11 @@ Uzupełnienie R103: pula właściciela to budżet próbny (kilka centów, preset
 
 Niezalogowany widzi standardowy pełnoekranowy interfejs (okna, zamykanie itd.) i od razu rozmawia z najlepszym dostępnym darmowym modelem. Przy drugim prompcie albo gdy pierwsza odpowiedź jest wartościowa (metryka wartości odpowiedzi — do zaprojektowania, preset) czat informuje, że użytkownik nie jest zalogowany i bez wskazania miejsca zapisu może stracić rozmowę po końcu sesji lub po okresie wynikającym z dostępnej pamięci na kopie robocze (okres podawany uczciwie).
 
+## R106 — Sesja ekosystemu: pomysły ponad projektami (np. trenowanie własnego LLM na danych ChatADHD) i dokumentacja kompetencji właściciela (owner, 2026-10-29)
+> powiedz czy ja dobrze myślę, bo się zastanawiam, Jakby trzeba było kiedyś udowodnić kompetencje, to nikt nie zrozumie tego kodu na githubie...pomyślałem sobie żeby odpalić jeszcze jedną sesję która jednocześnie by pilnowała ekosystemu (nie mamy nigdzie na przykład nawet chyba jako pomysł zapisanego trenowania Lem na czacie ADHD, A to aż się samo ciśnie) i budowania listy i dokumentacji kompetencji moich, ewentualnie później by się dorzucało jakieś takie zadania ogólne nad wszystkimi projektami ale zbyt schematyczne jak dla ciebie
+
+Osobna, tania sesja: pilnuje ekosystemu wszystkich projektów i zapisuje pomysły, których brakuje (przykład właściciela: trenowanie LLM — 'Lem' to najpewniej LLM z dyktowania — na czacie ADHD); buduje czytelną dla ludzi listę i dokumentację kompetencji właściciela z dowodami z repozytoriów; później zadania ogólne nad wszystkimi projektami. Uwaga: R100 zabrania oddawania jego danych do trenowania u dostawców — własny model trenowany prywatnie to inny przypadek, do rozstrzygnięcia w projekcie.
+
 ## Decision — rebuild, don't recover
 > "nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane"
 
