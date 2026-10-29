@@ -14,7 +14,9 @@
 
 #include <algorithm>
 #include <cmath>
+#include <chrono>
 #include <ctime>
+#include <functional>
 #include <filesystem>
 #include <fstream>
 #include <set>
@@ -229,13 +231,20 @@ bool looks_like_id(const std::string& s, const char* prefix = nullptr) {
 
 // ── conversations ───────────────────────────────────────────────────
 
+bool conv_trashed(const Conversation& c);
+std::string trashed_mode(Ctx& x);
+
 StepOutcome conversations_list(Ctx& x) {
   const int limit = static_cast<int>(x.integer("limit", x.limit("list", 20)));
-  auto convs = x.rt.db().list_convs(limit);
+  // R101 D4: the trash is filtered after reading, so the limit counts what is shown (setting conversations_hide_trashed, argument trashed).
+  const std::string mode = trashed_mode(x);
+  auto convs = x.rt.db().list_convs(mode == "show" ? limit : -1);
   if (!convs) return fail(convs.error());
   std::vector<std::string> lines;
   Json items = Json::array();
   for (const auto& cv : *convs) {
+    if ((mode == "hide" && conv_trashed(cv)) || (mode == "only" && !conv_trashed(cv))) continue;
+    if (static_cast<int>(items.size()) >= limit) break;
     lines.push_back("• " + x.say("conv_line", Json{{"title", cv.title}, {"id", cv.id}, {"updated", cv.updated.substr(0, 10)}}));
     items.push_back(Json{{"id", cv.id}, {"title", cv.title}, {"updated", cv.updated}});
   }
@@ -272,6 +281,75 @@ StepOutcome conversation_delete(Ctx& x) {
   const std::string title = (*existing)->title;
   if (auto st = x.rt.db().delete_conv(id); !st) return fail(st.error());
   return answer(x.say("conversation_deleted", Json{{"title", title}, {"id", id}}), Json{{"id", id}, {"title", title}, {"deleted", true}});
+}
+
+// ── R101 D4: the trash (PULPIT_R101 §5) ─────────────────────────────
+// "To the trash" is a reversible step; "empty" is today's irreversible one (conversation.delete, memory.forget, removing a pin link) and nothing
+// that is irreversible today becomes easier. A conversation in the trash is metadata.trash = {at, from}; ConvPatch.metadata REPLACES the whole
+// JSON, so the flag is written by read-merge-write of the whole metadata (B2; test_trash proves no other key is ever lost). The schema is unchanged.
+
+bool conv_trashed(const Conversation& c) { return c.metadata.is_object() && c.metadata.contains("trash") && c.metadata.at("trash").is_object(); }
+
+// The setting conversations_hide_trashed (unset = the preset true); an explicit "trashed" argument (hide | show | only) wins.
+std::string trashed_mode(Ctx& x) {
+  const std::string given = x.fold(trim_quotes(x.str("trashed")));
+  if (given == "hide" || given == "show" || given == "only") return given;
+  const Json v = x.rt.config().get("conversations_hide_trashed");
+  return v.is_boolean() && !v.get<bool>() ? "show" : "hide";
+}
+
+Status conv_merge_metadata(Ctx& x, const std::string& id, const std::function<void(Json&)>& change) {
+  auto existing = x.rt.db().get_conv(id);
+  if (!existing) return existing.error();
+  if (!*existing) return Error(Errc::NotFound, "conversation not found: " + id);
+  Json meta = (*existing)->metadata.is_object() ? (*existing)->metadata : Json::object();
+  change(meta);
+  ConvPatch patch;
+  patch.metadata = meta;
+  patch.keep_updated = true;   // moving to the trash is not talking in the conversation
+  return x.rt.db().update_conv(id, patch);
+}
+
+// A conversation named by its id, by the element, or by words of its title among the conversations of the wanted state (trashed or not).
+Result<Conversation> conv_named(Ctx& x, bool in_trash) {
+  std::string given = trim_quotes(x.str("query", x.str("id")));
+  if (given.empty()) given = x.conv_id();
+  if (given.empty()) return Error(Errc::InvalidArgument, x.say("trash_what"));
+  if (looks_like_id(given, "c_")) {
+    auto c = x.rt.db().get_conv(given);
+    if (!c) return c.error();
+    if (*c) return **c;
+  }
+  auto all = x.rt.db().list_convs(-1);
+  if (!all) return all.error();
+  const std::string needle = utf8::to_lower(given);
+  std::vector<Conversation> found;
+  for (const auto& c : *all)
+    if (conv_trashed(c) == in_trash && contains_ci(c.title, needle)) found.push_back(c);
+  if (found.empty()) return Error(Errc::NotFound, x.say(in_trash ? "trash_none_conv" : "conversation_none", Json{{"query", given}}));
+  if (found.size() > 1) {
+    std::vector<std::string> lines;
+    for (const auto& c : found) lines.push_back("• " + x.say("conv_line", Json{{"title", c.title}, {"id", c.id}, {"updated", c.updated.substr(0, 10)}}));
+    return Error(Errc::Conflict, x.say("trash_ambiguous", Json{{"count", found.size()}}) + "\n" + join_lines(lines));
+  }
+  return found[0];
+}
+
+StepOutcome conversation_trash(Ctx& x) {
+  auto c = conv_named(x, false);
+  if (!c) return fail(c.error());
+  std::string from = trim_quotes(x.str("from"));
+  if (from.empty()) from = x.element_class().empty() ? "chat" : x.element_class();
+  const Json record{{"at", timeutil::utc_now_iso()}, {"from", from}};
+  if (auto st = conv_merge_metadata(x, c->id, [&](Json& m) { m["trash"] = record; }); !st) return fail(st.error());
+  return answer(x.say("conversation_trashed", Json{{"title", c->title}, {"id", c->id}}), Json{{"id", c->id}, {"title", c->title}, {"trash", record}});
+}
+
+StepOutcome conversation_untrash(Ctx& x) {
+  auto c = conv_named(x, true);
+  if (!c) return fail(c.error());
+  if (auto st = conv_merge_metadata(x, c->id, [](Json& m) { m.erase("trash"); }); !st) return fail(st.error());
+  return answer(x.say("conversation_untrashed", Json{{"title", c->title}, {"id", c->id}}), Json{{"id", c->id}, {"title", c->title}, {"trash", nullptr}});
 }
 
 // ── messages ────────────────────────────────────────────────────────
@@ -674,6 +752,55 @@ StepOutcome memory_restore(Ctx& x) {
   }
   return answer(x.say("memory_restored", Json{{"content", clip(found->content, 400)}, {"id", id}}), Json{{"id", id}, {"restored", Json{{"time", when}, {"entries", restored}}}});
 }
+
+// R101 D4 (B1): memory.trash is a NEW intermediate step, not memory.forget. The entry keeps its words, leaves every conversation (inactive; the
+// context never reads an inactive entry) and carries metadata.trash = {at, by, was_active}; memory.untrash makes it what it was and moves the
+// record to metadata.trash_history. memory.forget stays irreversible as cataloged (emptying the trash is memory.forget, with its consent).
+StepOutcome memory_trash_step(Ctx& x, bool to_trash, const std::string& named = std::string()) {
+  auto& mem = x.rt.memory();
+  const std::string given = named.empty() ? trim_quotes(x.str("query", x.str("id"))) : named;
+  if (utf8::is_blank(given)) return fail(Errc::InvalidArgument, x.say("trash_what"));
+  auto in_trash = [](const MemoryNode& n) { return n.metadata.is_object() && n.metadata.contains("trash"); };
+  std::vector<MemoryNode> found;
+  if (auto exact = mem.get_node(given)) found.push_back(*exact);
+  if (found.empty()) {
+    const std::string needle = utf8::to_lower(given);
+    for (auto& n : mem.get_all())
+      if (in_trash(n) != to_trash && !(n.metadata.is_object() && n.metadata.contains("forgotten")) && contains_ci(n.content, needle)) found.push_back(std::move(n));
+  }
+  if (found.empty()) return fail(Errc::NotFound, x.say("memory_none", Json{{"query", given}}));
+  if (found.size() > 1) {
+    std::vector<std::string> lines;
+    for (const auto& n : found) lines.push_back("• " + x.say("memory_line", Json{{"content", clip(n.content, 200)}, {"id", n.id}}));
+    return fail(Errc::Conflict, x.say("memory_ambiguous", Json{{"count", found.size()}}) + "\n" + join_lines(lines));
+  }
+  const MemoryNode node = found[0];
+  if (in_trash(node) == to_trash)
+    return answer(x.say(to_trash ? "memory_already_trashed" : "memory_not_trashed", Json{{"content", clip(node.content, 400)}, {"id", node.id}}),
+                  Json{{"id", node.id}, {"changed", false}});
+  const std::string when = timeutil::utc_now_iso();
+  Json meta = node.metadata.is_object() ? node.metadata : Json::object();
+  Json fields = Json::object();
+  if (to_trash) {
+    meta["trash"] = Json{{"at", when}, {"by", "user"}, {"was_active", node.active}};
+    fields["active"] = false;
+  } else {
+    Json record = meta.at("trash");
+    record["restored"] = Json{{"time", when}, {"by", "user"}};
+    Json history = meta.value("trash_history", Json::array());
+    if (!history.is_array()) history = Json::array();
+    history.push_back(record);
+    meta["trash_history"] = history;
+    meta.erase("trash");
+    fields["active"] = json::get_bool(record, "was_active", true);
+  }
+  fields["metadata"] = meta;
+  if (auto st = mem.update_node(node.id, fields); !st) return fail(st.error());
+  return answer(x.say(to_trash ? "memory_trashed" : "memory_untrashed", Json{{"content", clip(node.content, 400)}, {"id", node.id}}),
+                Json{{"id", node.id}, {"changed", true}, {"trash", to_trash ? meta.at("trash") : Json(nullptr)}});
+}
+StepOutcome memory_trash(Ctx& x) { return memory_trash_step(x, true); }
+StepOutcome memory_untrash(Ctx& x) { return memory_trash_step(x, false); }
 
 // ── import and export ───────────────────────────────────────────────
 
@@ -2924,6 +3051,176 @@ StepOutcome window_unpin(Ctx& x) {
                 Json{{"pinned", false}, {"changed", !removed.empty()}, {"removed", removed}, {"desktop", desktop}, {"target", target}});
 }
 
+// R101 D4: a pin to the trash = the link pinned_on gets metadata.trash = {at, from} (create_link upserts the whole metadata, so it is read,
+// merged and written back); the desktop draws no trashed pin; pin.untrash erases the field; emptying the trash removes the link.
+Result<std::vector<Link>> pin_links(Ctx& x, const std::string& target, const std::string& desktop) {
+  const Json na = node_addresses_of(x);
+  std::vector<Link> out;
+  auto dnode = x.rt.db().find_node(desktop, address_node_kind(na, desktop));
+  if (!dnode) return dnode.error();
+  std::string tid = target;
+  if (target.rfind("n_", 0) != 0) {
+    auto tnode = x.rt.db().find_node(target, address_node_kind(na, target));
+    if (!tnode) return tnode.error();
+    tid = *tnode ? (*tnode)->id : std::string();
+  }
+  if (!*dnode || tid.empty()) return out;
+  const std::string did = (*dnode)->id;
+  auto links = x.rt.db().get_links(std::string_view(tid), std::string_view("pinned_on"));
+  if (!links) return links.error();
+  for (const auto& l : *links)
+    if (l.src == tid && l.dst == did) out.push_back(l);
+  return out;
+}
+
+StepOutcome pin_trash_step(Ctx& x, bool to_trash) {
+  const std::string target = trim_quotes(x.str("target", x.element_id()));
+  if (target.empty()) return fail(Errc::InvalidArgument, x.say("pin_what"));
+  const std::string desktop = pin_desktop(x, node_addresses_of(x));
+  auto links = pin_links(x, target, desktop);
+  if (!links) return fail(links.error());
+  std::vector<std::string> changed;
+  for (const auto& l : *links) {
+    Json meta = l.metadata.is_object() ? l.metadata : Json::object();
+    if (meta.contains("trash") == to_trash) continue;
+    if (to_trash) meta["trash"] = Json{{"at", timeutil::utc_now_iso()}, {"from", "desktop"}};
+    else meta.erase("trash");
+    auto id = x.rt.db().create_link(l.src, l.dst, "pinned_on", l.weight, meta);
+    if (!id) return fail(id.error());
+    changed.push_back(*id);
+  }
+  const Json vars{{"target", target}, {"desktop", desktop}};
+  return answer(x.say(changed.empty() ? "pin_trash_none" : (to_trash ? "pin_trashed" : "pin_untrashed"), vars),
+                Json{{"changed", !changed.empty()}, {"links", changed}, {"desktop", desktop}, {"target", target}, {"trashed", to_trash}});
+}
+StepOutcome pin_trash(Ctx& x) { return pin_trash_step(x, true); }
+StepOutcome pin_untrash(Ctx& x) { return pin_trash_step(x, false); }
+
+// ── the trash window's kernel side: what is in the trash, bring one back, empty ──
+// trash_retention_days: unset = the preset null (never emptied by itself). A number only marks what is older as `due` and the page asks
+// before the first emptying (advisory trash_retention_due); trash.empty with older_than_days empties just that.
+
+double age_days(const std::string& at) {
+  auto tp = timeutil::parse_iso_utc(at);
+  if (!tp) return 0.0;
+  return std::chrono::duration<double>(timeutil::Clock::now() - *tp).count() / 86400.0;
+}
+
+Result<Json> trash_items(Ctx& x) {
+  Json items = Json::array();
+  auto convs = x.rt.db().list_convs(-1);
+  if (!convs) return convs.error();
+  for (const auto& c : *convs) {
+    if (!conv_trashed(c)) continue;
+    const Json t = c.metadata.at("trash");
+    items.push_back(Json{{"kind", "conversation"}, {"id", c.id}, {"title", c.title}, {"at", json::get_string(t, "at")}, {"from", json::get_string(t, "from")}});
+  }
+  for (const auto& n : x.rt.memory().get_all()) {
+    if (!n.metadata.is_object() || !n.metadata.contains("trash")) continue;
+    const Json t = n.metadata.at("trash");
+    items.push_back(Json{{"kind", "memory"}, {"id", n.id}, {"title", clip(n.content, 120)}, {"at", json::get_string(t, "at")}, {"from", "memory"}});
+  }
+  auto links = x.rt.db().get_links(std::nullopt, std::string_view("pinned_on"));
+  if (!links) return links.error();
+  for (const auto& l : *links) {
+    if (!l.metadata.is_object() || !l.metadata.contains("trash")) continue;
+    const Json t = l.metadata.at("trash");
+    items.push_back(Json{{"kind", "pin"}, {"id", l.id}, {"title", json::get_string(l.metadata, "address")}, {"desktop", json::get_string(l.metadata, "desktop")},
+                         {"at", json::get_string(t, "at")}, {"from", json::get_string(t, "from")}});
+  }
+  return items;
+}
+
+StepOutcome trash_list(Ctx& x) {
+  auto items = trash_items(x);
+  if (!items) return fail(items.error());
+  const Json days = x.rt.config().get("trash_retention_days");
+  Json retention{{"days", days.is_number() ? days : Json(nullptr)}, {"due", 0}};
+  std::vector<std::string> lines;
+  std::size_t due = 0;
+  for (auto& it : *items) {
+    if (days.is_number() && age_days(json::get_string(it, "at")) > days.get<double>()) { it["due"] = true; ++due; }
+    lines.push_back("• " + x.say("trash_line", Json{{"kind", x.say("trash_kind_" + json::get_string(it, "kind"))}, {"title", json::get_string(it, "title")},
+                                                     {"at", json::get_string(it, "at").substr(0, 10)}, {"id", json::get_string(it, "id")}}));
+  }
+  retention["due"] = due;
+  if (lines.empty()) return answer(x.say("trash_empty_now"), Json{{"items", *items}, {"count", 0}, {"retention", retention}});
+  return answer(x.say("trash_head", Json{{"count", lines.size()}}) + "\n" + join_lines(lines), Json{{"items", *items}, {"count", items->size()}, {"retention", retention}});
+}
+
+// „przywróć z kosza …”: one thing of the trash named by its id or by words of its title, of any kind the kernel keeps.
+StepOutcome trash_restore(Ctx& x) {
+  const std::string given = trim_quotes(x.str("query", x.str("id")));
+  if (utf8::is_blank(given)) return fail(Errc::InvalidArgument, x.say("trash_what"));
+  auto items = trash_items(x);
+  if (!items) return fail(items.error());
+  const std::string needle = utf8::to_lower(given);
+  Json found = Json::array();
+  for (const auto& it : *items)
+    if (json::get_string(it, "id") == given || contains_ci(json::get_string(it, "title"), needle)) found.push_back(it);
+  if (found.empty()) return fail(Errc::NotFound, x.say("trash_none", Json{{"query", given}}));
+  if (found.size() > 1) {
+    std::vector<std::string> lines;
+    for (const auto& it : found) lines.push_back("• " + x.say("trash_line", Json{{"kind", x.say("trash_kind_" + json::get_string(it, "kind"))}, {"title", json::get_string(it, "title")},
+                                                                                {"at", json::get_string(it, "at").substr(0, 10)}, {"id", json::get_string(it, "id")}}));
+    return fail(Errc::Conflict, x.say("trash_ambiguous", Json{{"count", found.size()}}) + "\n" + join_lines(lines));
+  }
+  const Json one = found[0];
+  const std::string kind = json::get_string(one, "kind"), id = json::get_string(one, "id");
+  if (kind == "conversation") {
+    if (auto st = conv_merge_metadata(x, id, [](Json& m) { m.erase("trash"); }); !st) return fail(st.error());
+  } else if (kind == "memory") {
+    return memory_trash_step(x, false, id);
+  } else if (kind == "pin") {
+    auto links = x.rt.db().get_links(std::nullopt, std::string_view("pinned_on"));
+    if (!links) return fail(links.error());
+    for (const auto& l : *links) {
+      if (l.id != id) continue;
+      Json meta = l.metadata;
+      meta.erase("trash");
+      if (auto r = x.rt.db().create_link(l.src, l.dst, "pinned_on", l.weight, meta); !r) return fail(r.error());
+    }
+  }
+  return answer(x.say("trash_restored", Json{{"kind", x.say("trash_kind_" + kind)}, {"title", json::get_string(one, "title")}}), Json{{"restored", one}});
+}
+
+// „opróżnij kosz”: today's irreversible steps for each thing in the trash (catalogued irreversible, asked by confirm:trash.empty) - a
+// conversation is deleted with its messages (conversation.delete), a memory entry is forgotten as memory.forget forgets it (its words kept
+// or dropped by the same preset chat_ops forget.keep_content), a trashed pin link is removed. older_than_days / kind narrow it; id empties one.
+StepOutcome trash_empty(Ctx& x) {
+  auto items = trash_items(x);
+  if (!items) return fail(items.error());
+  const Json older = x.arg("older_than_days");
+  const std::string only_kind = trim_quotes(x.str("kind"));
+  const std::string only_id = trim_quotes(x.str("id"));
+  const bool keep = json::get_bool(x.cfg.value("forget", Json::object()), "keep_content", true);
+  const std::string when = timeutil::utc_now_iso();
+  Json done = Json::array();
+  for (const auto& it : *items) {
+    const std::string kind = json::get_string(it, "kind"), id = json::get_string(it, "id");
+    if (!only_kind.empty() && kind != only_kind) continue;
+    if (!only_id.empty() && id != only_id) continue;
+    if (older.is_number() && age_days(json::get_string(it, "at")) <= older.get<double>()) continue;
+    if (kind == "conversation") {
+      if (auto st = x.rt.db().delete_conv(id); !st) return fail(st.error());
+    } else if (kind == "memory") {
+      auto entry = x.rt.memory().get_node(id);
+      if (!entry) continue;
+      Json meta = entry->metadata.is_object() ? entry->metadata : Json::object();
+      const Json t = meta.value("trash", Json::object());
+      meta["forgotten"] = Json{{"time", when}, {"by", "user"}, {"kept", keep}, {"was_active", json::get_bool(t, "was_active", true)}, {"via", "trash.empty"}};
+      meta.erase("trash");
+      Json fields{{"active", false}, {"metadata", meta}};
+      if (!keep) fields["content"] = "";
+      if (auto st = x.rt.memory().update_node(id, fields); !st) return fail(st.error());
+    } else if (kind == "pin") {
+      if (auto st = x.rt.db().delete_link(id); !st) return fail(st.error());
+    }
+    done.push_back(it);
+  }
+  return answer(x.say(done.empty() ? "trash_emptied_none" : "trash_emptied", Json{{"count", done.size()}}), Json{{"emptied", done}, {"count", done.size()}});
+}
+
 using Op = StepOutcome (*)(Ctx&);
 
 const std::map<std::string, Op>& table() {
@@ -2951,7 +3248,10 @@ const std::map<std::string, Op>& table() {
       {"units.define", units_define_op}, {"units.list", units_list_op}, {"units.forget", units_forget_op},
       {"conversation.set_unit", conversation_set_unit_op}, {"conversation.clear_unit", conversation_clear_unit_op},
       {"advisory.answer", advisory_answer}, {"advisory.list", advisory_list}, {"advisory.policy", advisory_policy},
-      {"window.pin", window_pin}, {"window.unpin", window_unpin}};
+      {"window.pin", window_pin}, {"window.unpin", window_unpin},
+      {"conversation.trash", conversation_trash}, {"conversation.untrash", conversation_untrash}, {"memory.trash", memory_trash},
+      {"memory.untrash", memory_untrash}, {"pin.trash", pin_trash}, {"pin.untrash", pin_untrash}, {"trash.list", trash_list},
+      {"trash.restore", trash_restore}, {"trash.empty", trash_empty}};
   return t;
 }
 

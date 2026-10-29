@@ -5598,6 +5598,366 @@
             "chat.send"
           ]
         }
+      },
+      {
+        "key": "conversations_hide_trashed",
+        "scope": "config",
+        "group": "ui",
+        "type": "boolean",
+        "has_default": false,
+        "description": "Whether the list of conversations hides those in the trash (R101 D4, PULPIT_R101 §5.2). Unset = true (preset). false shows them on the list too (marked by metadata.trash). Readers: kernel conversations.list (argument trashed = hide|show|only wins), server GET /api/conversations (?trashed=), ChatEngine::resume_last (a trashed conversation does not become the current one at start).",
+        "status": {
+          "state": "implemented",
+          "by": "M1-R101-D4",
+          "reader": "kernel actions/ops.cpp conversations_list, server GET /api/conversations, ChatEngine::resume_last",
+          "reason": {
+            "pl": "Program czyta to pole przy każdym odczycie.",
+            "en": "The program reads this field on every read."
+          },
+          "today": {
+            "pl": "Rozmowa w koszu znika z listy rozmów; widać ją w oknie Kosz.",
+            "en": "A conversation in the trash leaves the list; the Trash window shows it."
+          }
+        },
+        "human": {
+          "label": {
+            "pl": "Ukrywaj rozmowy z kosza na liście",
+            "en": "Hide trashed conversations from the list"
+          },
+          "why": {
+            "pl": "Kosz zdejmuje rozmowę z listy, ale niczego nie kasuje; możesz też widzieć ją dalej na liście.",
+            "en": "The trash takes a conversation off the list without deleting anything; you may keep seeing it on the list."
+          },
+          "effect": {
+            "pl": "Zmienia listę rozmów przy następnym odczycie.",
+            "en": "Changes the list of conversations at the next read."
+          },
+          "levels": [
+            "person"
+          ],
+          "group": "interfejs",
+          "subgroup": "kosz",
+          "flows": [],
+          "when_unset": {
+            "pl": "tak",
+            "en": "yes"
+          }
+        }
+      },
+      {
+        "key": "trash_retention_days",
+        "scope": "config",
+        "group": "ui",
+        "type": "number",
+        "has_default": false,
+        "description": "After how many days in the trash a thing is due for emptying (R101 D4, PULPIT_R101 §5.2). Unset = null (preset): never emptied by itself. A number marks older things as due (trash.list retention.due) and the Trash window asks before the first emptying (advisory trash_retention_due); a value under 7 raises trash_retention_short. Emptying is trash.empty older_than_days, with its consent.",
+        "status": {
+          "state": "implemented",
+          "by": "M1-R101-D4",
+          "reader": "kernel trash.list (retention.due); web shell/windows/TrashWindow.tsx (advisory before emptying)",
+          "reason": {
+            "pl": "Program czyta to pole przy każdym odczycie.",
+            "en": "The program reads this field on every read."
+          },
+          "today": {
+            "pl": "Kosz nigdy nie opróżnia się sam.",
+            "en": "The trash never empties itself."
+          }
+        },
+        "human": {
+          "label": {
+            "pl": "Po ilu dniach kosz proponuje opróżnienie",
+            "en": "Days after which the trash offers emptying"
+          },
+          "why": {
+            "pl": "Domyślnie nic nie znika samo; liczba dni sprawia, że stare rzeczy z kosza są proponowane do usunięcia — zawsze po pytaniu.",
+            "en": "By default nothing goes by itself; a number makes old things in the trash offered for deletion, always after a question."
+          },
+          "effect": {
+            "pl": "Zmienia okno Kosz przy następnym otwarciu.",
+            "en": "Changes the Trash window the next time it opens."
+          },
+          "levels": [
+            "person"
+          ],
+          "group": "interfejs",
+          "subgroup": "kosz",
+          "flows": [],
+          "when_unset": {
+            "pl": "nigdy samo",
+            "en": "never by itself"
+          }
+        }
+      },
+      {
+        "key": "drop_on_trash",
+        "scope": "config",
+        "group": "ui",
+        "type": "string",
+        "has_default": false,
+        "description": "What dropping an icon on the trash (or its menu entry „Do kosza”, until D6 brings drag) moves to the trash (R101 D4): target (preset) = the thing the icon points to (a conversation by conversation.trash, a memory entry by memory.trash; an address with no trash of its own falls back to the pin), pin = only the icon (pin.trash) [examples]. An unknown value is the preset.",
+        "status": {
+          "state": "implemented",
+          "by": "M1-R101-D4",
+          "reader": "web shell/windows/Desktop.tsx (trashIcon, shell/windows/desktop-trash.ts)",
+          "reason": {
+            "pl": "Program czyta to pole przy każdym odczycie.",
+            "en": "The program reads this field on every read."
+          },
+          "today": {
+            "pl": "Wyrzucenie ikony rozmowy przenosi do kosza samą rozmowę.",
+            "en": "Trashing a conversation icon moves the conversation itself to the trash."
+          }
+        },
+        "human": {
+          "label": {
+            "pl": "Co trafia do kosza z ikoną",
+            "en": "What goes to the trash with an icon"
+          },
+          "why": {
+            "pl": "Ikona na pulpicie wskazuje rzecz; do kosza może trafić rzecz albo tylko ikona.",
+            "en": "An icon points to a thing; the trash can take the thing or only the icon."
+          },
+          "effect": {
+            "pl": "Zmienia następne wyrzucenie ikony.",
+            "en": "Changes the next trashing of an icon."
+          },
+          "levels": [
+            "person"
+          ],
+          "group": "interfejs",
+          "subgroup": "kosz",
+          "flows": [],
+          "when_unset": {
+            "pl": "rzecz (cel ikony)",
+            "en": "the thing (the icon's target)"
+          }
+        }
+      },
+      {
+        "key": "trashed_in_search",
+        "scope": "config",
+        "group": "ui",
+        "type": "boolean",
+        "has_default": false,
+        "description": "Whether search (and context chosen by similarity) sees conversations in the trash (R101 D4, PULPIT_R101 §5.2, B7). Unset = false (preset, chosen after the consumer review: evidence: GET /api/search and the selector index every active message regardless of the conversation's metadata (observed 2026-10-29, server/src/app.cpp, core selector); a trash is what you do not want to meet (Windows/macOS do not index the recycle bin, dated observation)). The list filter alone does not hide a trashed conversation from the other consumers.",
+        "status": {
+          "state": "planned",
+          "by": "M1-R101-D4",
+          "reader": "search (and context chosen by similarity)",
+          "reason": {
+            "pl": "Część programu, która miałaby to czytać — szukanie (search, wybór kontekstu po podobieństwie) — jeszcze nie filtruje kosza (luka dla D5); do tego czasu wartość jest zapisywana, ale nic jej nie czyta.",
+            "en": "The part of the program that would read it — search (and context chosen by similarity) — does not filter the trash yet (a gap for D5); until then the value is stored but nothing reads it."
+          },
+          "today": {
+            "pl": "Dziś rozmowy z kosza są tu jeszcze uwzględniane (jeszcze nie jak preset).",
+            "en": "Today trashed conversations are included here (not yet as the preset)."
+          }
+        },
+        "human": {
+          "label": {
+            "pl": "Czy szukanie widzi rozmowy z kosza",
+            "en": "Whether search sees trashed conversations"
+          },
+          "why": {
+            "pl": "Kosz chowa rozmowę z listy; to pole mówi, czy chowa ją także tutaj.",
+            "en": "The trash hides a conversation from the list; this field says whether it hides it here too."
+          },
+          "effect": {
+            "pl": "Zacznie działać, gdy powstanie czytnik (D5).",
+            "en": "Takes effect once the reader exists (D5)."
+          },
+          "levels": [
+            "person"
+          ],
+          "group": "interfejs",
+          "subgroup": "kosz",
+          "flows": [],
+          "when_unset": {
+            "pl": "nie",
+            "en": "no"
+          }
+        }
+      },
+      {
+        "key": "trashed_in_context",
+        "scope": "config",
+        "group": "ui",
+        "type": "boolean",
+        "has_default": false,
+        "description": "Whether graph memory and the context sent to the provider sees conversations in the trash (R101 D4, PULPIT_R101 §5.2, B7). Unset = false (preset, chosen after the consumer review: evidence: the graph memory selector picks nodes of any conversation (graph_memory), so words of a trashed conversation can still reach a provider; a trashed memory entry is already out (memory.trash makes it inactive). Preset false: what you threw away is not sent off the device). The list filter alone does not hide a trashed conversation from the other consumers.",
+        "status": {
+          "state": "planned",
+          "by": "M1-R101-D4",
+          "reader": "graph memory and the context sent to the provider",
+          "reason": {
+            "pl": "Część programu, która miałaby to czytać — pamięć grafowa i wybór kontekstu wysyłany do dostawcy — jeszcze nie filtruje kosza (luka dla D5); do tego czasu wartość jest zapisywana, ale nic jej nie czyta.",
+            "en": "The part of the program that would read it — graph memory and the context sent to the provider — does not filter the trash yet (a gap for D5); until then the value is stored but nothing reads it."
+          },
+          "today": {
+            "pl": "Dziś rozmowy z kosza są tu jeszcze uwzględniane (jeszcze nie jak preset).",
+            "en": "Today trashed conversations are included here (not yet as the preset)."
+          }
+        },
+        "human": {
+          "label": {
+            "pl": "Czy treść z kosza trafia do modelu",
+            "en": "Whether trashed content goes to the model"
+          },
+          "why": {
+            "pl": "Kosz chowa rozmowę z listy; to pole mówi, czy chowa ją także tutaj.",
+            "en": "The trash hides a conversation from the list; this field says whether it hides it here too."
+          },
+          "effect": {
+            "pl": "Zacznie działać, gdy powstanie czytnik (D5).",
+            "en": "Takes effect once the reader exists (D5)."
+          },
+          "levels": [
+            "person"
+          ],
+          "group": "interfejs",
+          "subgroup": "kosz",
+          "flows": [],
+          "when_unset": {
+            "pl": "nie",
+            "en": "no"
+          }
+        }
+      },
+      {
+        "key": "trashed_analysed",
+        "scope": "config",
+        "group": "ui",
+        "type": "boolean",
+        "has_default": false,
+        "description": "Whether the SemanticWorker (background analysis; paid in the llm/batch modes) sees conversations in the trash (R101 D4, PULPIT_R101 §5.2, B7). Unset = false (preset, chosen after the consumer review: evidence: the worker drains messages with semantic_status pending by a query over messages only (db.cpp pending_semantic), not by the conversation; preset false because analysis can cost money and builds graph nodes of what you threw away). The list filter alone does not hide a trashed conversation from the other consumers.",
+        "status": {
+          "state": "planned",
+          "by": "M1-R101-D4",
+          "reader": "the SemanticWorker (background analysis; paid in the llm/batch modes)",
+          "reason": {
+            "pl": "Część programu, która miałaby to czytać — SemanticWorker (analiza w tle, w trybie llm/batch płatna) — jeszcze nie filtruje kosza (luka dla D5); do tego czasu wartość jest zapisywana, ale nic jej nie czyta.",
+            "en": "The part of the program that would read it — the SemanticWorker (background analysis; paid in the llm/batch modes) — does not filter the trash yet (a gap for D5); until then the value is stored but nothing reads it."
+          },
+          "today": {
+            "pl": "Dziś rozmowy z kosza są tu jeszcze uwzględniane (jeszcze nie jak preset).",
+            "en": "Today trashed conversations are included here (not yet as the preset)."
+          }
+        },
+        "human": {
+          "label": {
+            "pl": "Czy rozmowy z kosza są analizowane w tle",
+            "en": "Whether trashed conversations are analysed in the background"
+          },
+          "why": {
+            "pl": "Kosz chowa rozmowę z listy; to pole mówi, czy chowa ją także tutaj.",
+            "en": "The trash hides a conversation from the list; this field says whether it hides it here too."
+          },
+          "effect": {
+            "pl": "Zacznie działać, gdy powstanie czytnik (D5).",
+            "en": "Takes effect once the reader exists (D5)."
+          },
+          "levels": [
+            "person"
+          ],
+          "group": "interfejs",
+          "subgroup": "kosz",
+          "flows": [],
+          "when_unset": {
+            "pl": "nie",
+            "en": "no"
+          }
+        }
+      },
+      {
+        "key": "trashed_in_export",
+        "scope": "config",
+        "group": "ui",
+        "type": "boolean",
+        "has_default": false,
+        "description": "Whether the export sees conversations in the trash (R101 D4, PULPIT_R101 §5.2, B7). Unset = true (preset, chosen after the consumer review: evidence: export reads conversations by id or all, with their metadata, so metadata.trash travels with them; preset true = a backup holds everything (nothing silently disappears) and the trash flag stays readable). The list filter alone does not hide a trashed conversation from the other consumers.",
+        "status": {
+          "state": "planned",
+          "by": "M1-R101-D4",
+          "reader": "the export",
+          "reason": {
+            "pl": "Część programu, która miałaby to czytać — eksport — jeszcze nie filtruje kosza (luka dla D5); do tego czasu wartość jest zapisywana, ale nic jej nie czyta.",
+            "en": "The part of the program that would read it — the export — does not filter the trash yet (a gap for D5); until then the value is stored but nothing reads it."
+          },
+          "today": {
+            "pl": "Dziś rozmowy z kosza są tu uwzględniane (jak preset).",
+            "en": "Today trashed conversations are included here (as the preset)."
+          }
+        },
+        "human": {
+          "label": {
+            "pl": "Czy eksport zawiera rozmowy z kosza",
+            "en": "Whether an export includes trashed conversations"
+          },
+          "why": {
+            "pl": "Kosz chowa rozmowę z listy; to pole mówi, czy chowa ją także tutaj.",
+            "en": "The trash hides a conversation from the list; this field says whether it hides it here too."
+          },
+          "effect": {
+            "pl": "Zacznie działać, gdy powstanie czytnik (D5).",
+            "en": "Takes effect once the reader exists (D5)."
+          },
+          "levels": [
+            "person"
+          ],
+          "group": "interfejs",
+          "subgroup": "kosz",
+          "flows": [],
+          "when_unset": {
+            "pl": "tak",
+            "en": "yes"
+          }
+        }
+      },
+      {
+        "key": "trashed_in_sync",
+        "scope": "config",
+        "group": "ui",
+        "type": "boolean",
+        "has_default": false,
+        "description": "Whether sync (GitHub) sees conversations in the trash (R101 D4, PULPIT_R101 §5.2, B7). Unset = true (preset, chosen after the consumer review: evidence: sync copies conversations with metadata; leaving trashed ones out would make them vanish on the other device instead of landing in its trash; preset true). The list filter alone does not hide a trashed conversation from the other consumers.",
+        "status": {
+          "state": "planned",
+          "by": "M1-R101-D4",
+          "reader": "sync (GitHub)",
+          "reason": {
+            "pl": "Część programu, która miałaby to czytać — synchronizacja (GitHub) — jeszcze nie filtruje kosza (luka dla D5); do tego czasu wartość jest zapisywana, ale nic jej nie czyta.",
+            "en": "The part of the program that would read it — sync (GitHub) — does not filter the trash yet (a gap for D5); until then the value is stored but nothing reads it."
+          },
+          "today": {
+            "pl": "Dziś rozmowy z kosza są tu uwzględniane (jak preset).",
+            "en": "Today trashed conversations are included here (as the preset)."
+          }
+        },
+        "human": {
+          "label": {
+            "pl": "Czy synchronizacja przenosi rozmowy z kosza",
+            "en": "Whether sync carries trashed conversations"
+          },
+          "why": {
+            "pl": "Kosz chowa rozmowę z listy; to pole mówi, czy chowa ją także tutaj.",
+            "en": "The trash hides a conversation from the list; this field says whether it hides it here too."
+          },
+          "effect": {
+            "pl": "Zacznie działać, gdy powstanie czytnik (D5).",
+            "en": "Takes effect once the reader exists (D5)."
+          },
+          "levels": [
+            "person"
+          ],
+          "group": "interfejs",
+          "subgroup": "kosz",
+          "flows": [],
+          "when_unset": {
+            "pl": "tak",
+            "en": "yes"
+          }
+        }
       }
     ],
     "profile_values": [

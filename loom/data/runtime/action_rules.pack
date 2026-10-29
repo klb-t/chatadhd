@@ -737,6 +737,20 @@
           "en": "Starting again resets the answers you gave or declined (the ones the setting names) to unknown and begins the interview with its first question. The earlier answers stay in the history; the fields you closed with \"never\" stay closed. You confirm it yourself.",
           "pl": "Zaczęcie od nowa przestawia udzielone i odrzucone odpowiedzi (te, które wskazuje ustawienie) na „nieznane” i zaczyna wywiad od pierwszego pytania. Wcześniejsze odpowiedzi zostają w historii; pola zamknięte słowem „nigdy” zostają zamknięte. Zgadzasz się sam."
         }
+      },
+      "confirm:trash.empty": {
+        "id": "confirm:trash.empty",
+        "scope": "app_preset",
+        "target": {
+          "kind": "action",
+          "id": "trash.empty"
+        },
+        "effect": "confirm",
+        "initiator": "application preset",
+        "reason": {
+          "en": "Emptying the trash deletes the conversations in it with all their messages, forgets the memory entries in it and removes the pins in it; it cannot be undone; you confirm each time.",
+          "pl": "Opróżnienie kosza usuwa rozmowy z kosza razem z wiadomościami, zapomina wpisy pamięci z kosza i zdejmuje przypięcia z kosza; nie da się tego cofnąć; potwierdzasz za każdym razem."
+        }
       }
     },
     "extrapolation": {

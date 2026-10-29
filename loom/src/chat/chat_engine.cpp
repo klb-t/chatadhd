@@ -1176,10 +1176,19 @@ void ChatEngine::set_knowledge_context_builder(KnowledgeContextBuilder builder) 
 void ChatEngine::set_attachment_resolver(AttachmentResolver resolver) { attachment_resolver_ = std::move(resolver); }
 
 Status ChatEngine::resume_last() {
-  auto r = db_.list_convs(1);
+  // R101 D4: a conversation in the trash (metadata.trash) does not become the current one, unless the setting conversations_hide_trashed is
+  // false (unset = the preset true). Python reads list_convs(limit=1); without a trashed conversation the result is the same.
+  const Json hide = cfg_.get("conversations_hide_trashed");
+  const bool skip = !(hide.is_boolean() && !hide.get<bool>());
+  auto r = db_.list_convs(skip ? -1 : 1);
   if (!r) return r.error();
   std::lock_guard lk(mu_);
-  conv_ = r->empty() ? std::nullopt : std::optional<Conversation>(r->front());
+  conv_ = std::nullopt;
+  for (const auto& c : *r) {
+    if (skip && c.metadata.is_object() && c.metadata.contains("trash") && c.metadata.at("trash").is_object()) continue;
+    conv_ = c;
+    break;
+  }
   return ok_status();
 }
 

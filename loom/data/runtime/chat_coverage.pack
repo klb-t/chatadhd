@@ -3116,6 +3116,142 @@
           "pl": "pamiętaj odpowiedzi na podpowiedzi przez 30 dni",
           "en": "remember advisory answers for 30 days"
         }
+      },
+      {
+        "id": "trash_move",
+        "title": {
+          "en": "Move to the trash",
+          "pl": "Przenieś do kosza"
+        },
+        "via": "action",
+        "action": "conversation.trash",
+        "also": [
+          "memory.trash",
+          "pin.trash"
+        ],
+        "surfaces": {
+          "http": [
+            "GET /api/conversations?trashed=hide|show|only"
+          ]
+        },
+        "examples": {
+          "pl": "przenieś rozmowę o wakacjach do kosza",
+          "en": "move the conversation about holidays to the trash"
+        },
+        "examples_more": {
+          "pl": [
+            "przenieś tę rozmowę do kosza",
+            "przenieś wpis pamięci o kawie do kosza",
+            "przenieś przypięcie kind:chat do kosza"
+          ],
+          "en": [
+            "move this conversation to the trash",
+            "move the memory entry about coffee to the trash",
+            "move the pin kind:chat to the trash"
+          ]
+        },
+        "note": {
+          "en": "R101 D4 (PULPIT_R101 §5): to the trash is reversible (metadata.trash on a conversation, read-merge-write; memory.trash is a new step before forgetting; a pin link keeps metadata.trash); emptying is today's irreversible step with its consent.",
+          "pl": "R101 D4 (PULPIT_R101 §5): do kosza jest odwracalne (metadata.trash rozmowy przez odczyt–scalenie–zapis; memory.trash to nowy krok przed zapomnieniem; link przypięcia dostaje metadata.trash); opróżnienie to dzisiejszy krok nieodwracalny z potwierdzeniem."
+        }
+      },
+      {
+        "id": "trash_restore",
+        "title": {
+          "en": "Bring back from the trash",
+          "pl": "Przywróć z kosza"
+        },
+        "via": "action",
+        "action": "trash.restore",
+        "also": [
+          "conversation.untrash",
+          "memory.untrash",
+          "pin.untrash"
+        ],
+        "surfaces": {},
+        "examples": {
+          "pl": "przywróć z kosza wakacje",
+          "en": "restore from the trash holidays"
+        },
+        "examples_more": {
+          "pl": [
+            "przywróć rozmowę o wakacjach z kosza",
+            "przywróć wpis pamięci o kawie z kosza",
+            "przywróć przypięcie kind:chat z kosza",
+            "przywróć wakacje z kosza"
+          ],
+          "en": [
+            "restore the conversation about holidays from the trash",
+            "bring back holidays from the trash",
+            "restore the pin kind:chat from the trash"
+          ]
+        },
+        "note": {
+          "en": "R101 D4 (PULPIT_R101 §5): to the trash is reversible (metadata.trash on a conversation, read-merge-write; memory.trash is a new step before forgetting; a pin link keeps metadata.trash); emptying is today's irreversible step with its consent.",
+          "pl": "R101 D4 (PULPIT_R101 §5): do kosza jest odwracalne (metadata.trash rozmowy przez odczyt–scalenie–zapis; memory.trash to nowy krok przed zapomnieniem; link przypięcia dostaje metadata.trash); opróżnienie to dzisiejszy krok nieodwracalny z potwierdzeniem."
+        }
+      },
+      {
+        "id": "trash_empty",
+        "title": {
+          "en": "Empty the trash",
+          "pl": "Opróżnij kosz"
+        },
+        "via": "action",
+        "action": "trash.empty",
+        "surfaces": {},
+        "examples": {
+          "pl": "opróżnij kosz",
+          "en": "empty the trash"
+        },
+        "note": {
+          "en": "R101 D4 (PULPIT_R101 §5): to the trash is reversible (metadata.trash on a conversation, read-merge-write; memory.trash is a new step before forgetting; a pin link keeps metadata.trash); emptying is today's irreversible step with its consent.",
+          "pl": "R101 D4 (PULPIT_R101 §5): do kosza jest odwracalne (metadata.trash rozmowy przez odczyt–scalenie–zapis; memory.trash to nowy krok przed zapomnieniem; link przypięcia dostaje metadata.trash); opróżnienie to dzisiejszy krok nieodwracalny z potwierdzeniem."
+        }
+      },
+      {
+        "id": "trash_list",
+        "title": {
+          "en": "Show the trash",
+          "pl": "Pokaż kosz"
+        },
+        "via": "action",
+        "action": "trash.list",
+        "surfaces": {},
+        "examples": {
+          "pl": "pokaż kosz",
+          "en": "show the trash"
+        },
+        "examples_more": {
+          "pl": [
+            "co jest w koszu?"
+          ],
+          "en": [
+            "what is in the trash?"
+          ]
+        },
+        "note": {
+          "en": "R101 D4 (PULPIT_R101 §5): to the trash is reversible (metadata.trash on a conversation, read-merge-write; memory.trash is a new step before forgetting; a pin link keeps metadata.trash); emptying is today's irreversible step with its consent.",
+          "pl": "R101 D4 (PULPIT_R101 §5): do kosza jest odwracalne (metadata.trash rozmowy przez odczyt–scalenie–zapis; memory.trash to nowy krok przed zapomnieniem; link przypięcia dostaje metadata.trash); opróżnienie to dzisiejszy krok nieodwracalny z potwierdzeniem."
+        }
+      },
+      {
+        "id": "layout_trash",
+        "title": {
+          "en": "Move a layout to the trash and back",
+          "pl": "Układ do kosza i z powrotem"
+        },
+        "via": "client",
+        "action": "layout.trash",
+        "also": [
+          "layout.untrash"
+        ],
+        "surfaces": {},
+        "check": "phrases",
+        "note": {
+          "en": "R101 D4 (PULPIT_R101 §5): to the trash is reversible (metadata.trash on a conversation, read-merge-write; memory.trash is a new step before forgetting; a pin link keeps metadata.trash); emptying is today's irreversible step with its consent.",
+          "pl": "R101 D4 (PULPIT_R101 §5): do kosza jest odwracalne (metadata.trash rozmowy przez odczyt–scalenie–zapis; memory.trash to nowy krok przed zapomnieniem; link przypięcia dostaje metadata.trash); opróżnienie to dzisiejszy krok nieodwracalny z potwierdzeniem."
+        }
       }
     ],
     "not_from_chat": [

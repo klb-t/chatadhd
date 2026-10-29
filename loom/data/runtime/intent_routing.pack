@@ -1954,6 +1954,274 @@
       ],
       "commands": [
         {
+          "id": "trash.conv.this.pl",
+          "action": "conversation.trash",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:przenies|wyrzuc|wrzuc|daj)\\s+(?:te|ta)\\s+(?:rozmowe|konwersacje|czat|watek)\\s+do\\s+kosza\\s*[.!?]*\\s*$",
+          "args": [],
+          "original": [],
+          "element": {
+            "resolve": "current_conversation"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "trash.conv.this.en",
+          "action": "conversation.trash",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:move|put|send|throw)\\s+this\\s+(?:conversation|chat|thread)\\s+(?:to|in|into)\\s+(?:the\\s+)?(?:trash|bin|recycle\\s+bin)\\s*[.!?]*\\s*$",
+          "args": [],
+          "original": [],
+          "element": {
+            "resolve": "current_conversation"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "trash.conv.pl",
+          "action": "conversation.trash",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:przenies|wyrzuc|wrzuc|daj)\\s+(?:rozmowe|konwersacje|czat|watek)\\s+(?:o\\s+|pt\\.?\\s+|pod\\s+tytulem\\s+)?(.+?)\\s+do\\s+kosza\\s*[.!?]*\\s*$",
+          "args": [
+            "query"
+          ],
+          "original": [
+            "query"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "trash.conv.en",
+          "action": "conversation.trash",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:move|put|send|throw)\\s+(?:the\\s+)?(?:conversation|chat|thread)\\s+(?:about\\s+|called\\s+|titled\\s+|named\\s+)?(.+?)\\s+(?:to|in|into)\\s+(?:the\\s+)?(?:trash|bin|recycle\\s+bin)\\s*[.!?]*\\s*$",
+          "args": [
+            "query"
+          ],
+          "original": [
+            "query"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "trash.memory.pl",
+          "action": "memory.trash",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:przenies|wyrzuc|wrzuc)\\s+wpis\\s+(?:pamieci\\s+|z\\s+pamieci\\s+)?(?:o\\s+)?(.+?)\\s+do\\s+kosza\\s*[.!?]*\\s*$",
+          "args": [
+            "query"
+          ],
+          "original": [
+            "query"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "trash.memory.en",
+          "action": "memory.trash",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:move|put|send|throw)\\s+(?:the\\s+)?memory\\s+(?:entry\\s+)?(?:about\\s+)?(.+?)\\s+(?:to|in|into)\\s+(?:the\\s+)?(?:trash|bin|recycle\\s+bin)\\s*[.!?]*\\s*$",
+          "args": [
+            "query"
+          ],
+          "original": [
+            "query"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "trash.pin.pl",
+          "action": "pin.trash",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:przenies|wyrzuc|wrzuc)\\s+przypiecie\\s+(.+?)\\s+do\\s+kosza\\s*[.!?]*\\s*$",
+          "args": [
+            "target"
+          ],
+          "original": [
+            "target"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "trash.pin.en",
+          "action": "pin.trash",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:move|put|send|throw)\\s+(?:the\\s+)?pin\\s+(.+?)\\s+(?:to|in|into)\\s+(?:the\\s+)?(?:trash|bin|recycle\\s+bin)\\s*[.!?]*\\s*$",
+          "args": [
+            "target"
+          ],
+          "original": [
+            "target"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "untrash.conv.pl",
+          "action": "conversation.untrash",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:przywroc|wyjmij|odzyskaj)\\s+(?:rozmowe|konwersacje|czat|watek)\\s+(?:o\\s+)?(.+?)\\s+z\\s+kosza\\s*[.!?]*\\s*$",
+          "args": [
+            "query"
+          ],
+          "original": [
+            "query"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "untrash.conv.en",
+          "action": "conversation.untrash",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:restore|bring\\s+back|recover)\\s+(?:the\\s+)?(?:conversation|chat|thread)\\s+(?:about\\s+|called\\s+)?(.+?)\\s+from\\s+(?:the\\s+)?(?:trash|bin|recycle\\s+bin)\\s*[.!?]*\\s*$",
+          "args": [
+            "query"
+          ],
+          "original": [
+            "query"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "untrash.memory.pl",
+          "action": "memory.untrash",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:przywroc|wyjmij|odzyskaj)\\s+wpis\\s+(?:pamieci\\s+)?(?:o\\s+)?(.+?)\\s+z\\s+kosza\\s*[.!?]*\\s*$",
+          "args": [
+            "query"
+          ],
+          "original": [
+            "query"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "untrash.memory.en",
+          "action": "memory.untrash",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:restore|bring\\s+back|recover)\\s+(?:the\\s+)?memory\\s+(?:entry\\s+)?(?:about\\s+)?(.+?)\\s+from\\s+(?:the\\s+)?(?:trash|bin|recycle\\s+bin)\\s*[.!?]*\\s*$",
+          "args": [
+            "query"
+          ],
+          "original": [
+            "query"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "untrash.pin.pl",
+          "action": "pin.untrash",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:przywroc|wyjmij|odzyskaj)\\s+przypiecie\\s+(.+?)\\s+z\\s+kosza\\s*[.!?]*\\s*$",
+          "args": [
+            "target"
+          ],
+          "original": [
+            "target"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "untrash.pin.en",
+          "action": "pin.untrash",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:restore|bring\\s+back|recover)\\s+(?:the\\s+)?pin\\s+(.+?)\\s+from\\s+(?:the\\s+)?(?:trash|bin|recycle\\s+bin)\\s*[.!?]*\\s*$",
+          "args": [
+            "target"
+          ],
+          "original": [
+            "target"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "trash.restore.pl",
+          "action": "trash.restore",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:przywroc|wyjmij|odzyskaj)\\s+z\\s+kosza\\s+(.+?)\\s*[.!?]*\\s*$",
+          "args": [
+            "query"
+          ],
+          "original": [
+            "query"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "trash.restore.pl2",
+          "action": "trash.restore",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:przywroc|wyjmij|odzyskaj)\\s+(.+?)\\s+z\\s+kosza\\s*[.!?]*\\s*$",
+          "args": [
+            "query"
+          ],
+          "original": [
+            "query"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "trash.restore.en",
+          "action": "trash.restore",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:restore|bring\\s+back|recover)\\s+from\\s+(?:the\\s+)?(?:trash|bin|recycle\\s+bin)\\s+(.+?)\\s*[.!?]*\\s*$",
+          "args": [
+            "query"
+          ],
+          "original": [
+            "query"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "trash.restore.en2",
+          "action": "trash.restore",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:restore|bring\\s+back|recover)\\s+(.+?)\\s+from\\s+(?:the\\s+)?(?:trash|bin|recycle\\s+bin)\\s*[.!?]*\\s*$",
+          "args": [
+            "query"
+          ],
+          "original": [
+            "query"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "trash.empty.pl",
+          "action": "trash.empty",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:oproznij|wyczysc|wyrzuc\\s+wszystko\\s+z)\\s+kosz(?:a)?\\s*[.!?]*\\s*$",
+          "args": [],
+          "original": [],
+          "takes_scope": false
+        },
+        {
+          "id": "trash.empty.en",
+          "action": "trash.empty",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:empty|clear)\\s+(?:the\\s+)?(?:trash|bin|recycle\\s+bin)\\s*[.!?]*\\s*$",
+          "args": [],
+          "original": [],
+          "takes_scope": false
+        },
+        {
+          "id": "trash.list.pl",
+          "action": "trash.list",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:pokaz\\s+(?:mi\\s+)?kosz|otworz\\s+kosz|co\\s+(?:jest|mam)\\s+w\\s+koszu\\??|zawartosc\\s+kosza)\\s*[.!?]*\\s*$",
+          "args": [],
+          "original": [],
+          "takes_scope": false
+        },
+        {
+          "id": "trash.list.en",
+          "action": "trash.list",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:show\\s+(?:me\\s+)?|open\\s+)(?:the\\s+)?(?:trash|bin)|what(?:'s|\\s+is)\\s+in\\s+the\\s+(?:trash|bin)\\??\\s*[.!?]*\\s*$",
+          "args": [],
+          "original": [],
+          "takes_scope": false
+        },
+        {
           "id": "help.can_do.pl",
           "action": "help.can_do",
           "lang": "pl",

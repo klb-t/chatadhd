@@ -1053,7 +1053,31 @@ void App::register_routes() {
 void App::route_conversations() {
   svr_.Get("/api/conversations", [this](const httplib::Request& req, httplib::Response& res) {
     int limit = req.has_param("limit") ? std::atoi(req.get_param_value("limit").c_str()) : 50;
-    send_loom(res, loom_list_conversations(rctx(), limit));
+    if (limit <= 0) limit = 50;
+    // R101 D4: ?trashed=hide|show|only; without it the setting conversations_hide_trashed (unset = the preset true). The trash is filtered
+    // after reading, so `limit` counts what is shown.
+    std::string mode = req.has_param("trashed") ? req.get_param_value("trashed") : std::string();
+    if (mode != "hide" && mode != "show" && mode != "only") {
+      mode = "hide";
+      if (const char* cfg = loom_get_config(rctx())) {
+        const json c = json::parse(cfg, nullptr, false);
+        loom_free_string(cfg);
+        if (c.is_object() && c.contains("conversations_hide_trashed") && c["conversations_hide_trashed"].is_boolean() && !c["conversations_hide_trashed"].get<bool>()) mode = "show";
+      }
+    }
+    if (mode == "show") { send_loom(res, loom_list_conversations(rctx(), limit)); return; }
+    const char* all = loom_list_conversations(rctx(), 1 << 30);
+    json arr = all ? json::parse(all, nullptr, false) : json();
+    if (!arr.is_array()) { send_loom(res, all); return; }
+    loom_free_string(all);
+    json out = json::array();
+    for (const auto& c : arr) {
+      const bool trashed = c.is_object() && c.contains("metadata") && c["metadata"].is_object() && c["metadata"].contains("trash") && c["metadata"]["trash"].is_object();
+      if ((mode == "hide") == trashed) continue;
+      out.push_back(c);
+      if (static_cast<int>(out.size()) >= limit) break;
+    }
+    res.set_content(out.dump(-1, ' ', false, json::error_handler_t::replace), "application/json");
   });
 
   svr_.Post("/api/conversations", [this](const httplib::Request& req, httplib::Response& res) {
