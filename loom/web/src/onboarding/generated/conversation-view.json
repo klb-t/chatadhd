@@ -795,7 +795,13 @@
             "guest.not_persisted": "when the browser needs space ({{free}} free, storage not persistent) and the server copy after {{ttl}} without activity",
             "guest.limit_ready": "You can try again now.",
             "guest.limit_alternatives": "Meanwhile you can use your own key, another model source, or sign in.",
-            "guest.limit_own_key": "Own key or another source"
+            "guest.limit_own_key": "Own key or another source",
+            "guest.terms_consent_title": "Before the first message to {{provider}}",
+            "guest.terms_consent_body": "{{terms}} Source: {{source}} ({{date}}). It goes through the account of this server's operator.",
+            "guest.terms_send": "Send",
+            "guest.terms_other": "Another source or own key",
+            "guest.terms_declined": "Not sent: choose another source or your own key in Settings.",
+            "guest.switched": "{{from}} is not available now ({{why}}); answers now come from {{provider}}."
           },
           "pl": {
             "title": "Zaloguj się do Loom",
@@ -835,7 +841,13 @@
             "guest.not_persisted": "gdy przeglądarce zabraknie miejsca (wolne {{free}}, schowek nietrwały), a kopia na serwerze po {{ttl}} bez ruchu",
             "guest.limit_ready": "Możesz już spróbować ponownie.",
             "guest.limit_alternatives": "W tym czasie możesz użyć własnego klucza, innego źródła modelu albo się zalogować.",
-            "guest.limit_own_key": "Własny klucz albo inne źródło"
+            "guest.limit_own_key": "Własny klucz albo inne źródło",
+            "guest.terms_consent_title": "Przed pierwszą wiadomością do {{provider}}",
+            "guest.terms_consent_body": "{{terms}} Źródło: {{source}} ({{date}}). Wiadomość idzie przez konto operatora tego serwera.",
+            "guest.terms_send": "Wyślij",
+            "guest.terms_other": "Inne źródło albo własny klucz",
+            "guest.terms_declined": "Nie wysłano: wybierz inne źródło albo własny klucz w Ustawieniach.",
+            "guest.switched": "{{from}} jest teraz niedostępny ({{why}}); odpowiada {{provider}}."
           }
         }
       }
