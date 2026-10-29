@@ -127,7 +127,7 @@ export default function GuestLayer({ guest, guests, text, onSignIn, children }: 
       await storeRef.current.save(bundle);
       setSaved(bundle.saved_at);
       if (selection.current) void showTraits(selection.current);
-    } catch { setStore((s) => ({ ...s, available: false })); }
+    } catch (e) { console.warn("[store] save failed", e); setStore((s) => ({ ...s, available: false })); }
     finally { setSaving((n) => n - 1); }
   }, []);
 

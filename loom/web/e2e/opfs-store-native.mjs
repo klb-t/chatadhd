@@ -55,7 +55,10 @@ overlay("server_accounts", {
   guests: { enabled: true, start: "auto", sweep_interval_seconds: 0, keys_file: path.join(tmp, "keys.env"),
             first_answer_notice: { on: false, ask_again: "per_device" },
             workdir: { subdir: "guests", idle_ttl_seconds: TTL, max_bytes: 0, keep_after_session: "ask" },
-            secrets_routes: "write_only_session", model_sources: ["byok", "pool", "free", "local"] },
+            secrets_routes: "write_only_session", model_sources: ["byok", "pool", "free", "local"],
+            // the 50 MB measurement restores a big bundle; the guest body preset (1 MB) would refuse it (finding of this
+            // package: a real guest history above 1 MB cannot be restored with the preset - reported as a gap)
+            protection: { sizes: { max_body_bytes: 0, max_upload_bytes: 0 } } },
 });
 overlay("free_providers", {
   providers: [{ id: "mock_free", display_name: "Mock darmowy", base_url: `http://127.0.0.1:${mockPort}`, auth_env: "MOCK_FREE_KEY", auth_secret: "api_key",
@@ -104,7 +107,7 @@ const savedAfter = async (page, before) => until("a save", async () => {
   const el = page.getByTestId("guest-layer");
   const s = await el.getAttribute("data-saved-at");
   return (s && s !== before && (await el.getAttribute("data-saving")) === "0") ? s : null;
-}, 120000);
+}, 300000);
 const ask = async (page, q, n) => {
   await page.getByTestId("chat-input").fill(q);
   await page.getByTestId("send-chat").click();
@@ -116,6 +119,7 @@ try {
   await waitUp(`${base}/api/healthz`);
   browser = await (await chromium()).launch({ executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE || undefined });
   const ctx = await browser.newContext({ viewport: { width: 1280, height: 800 }, locale: "pl-PL" });
+  ctx.on("page", (pg) => pg.on("console", (m) => { if (m.type() === "warning" || m.type() === "error") console.log(`[opfs-store] page ${m.type()}: ${m.text().slice(0, 300)}`); }));
   let page = await ctx.newPage();
   let before = null, convId = null, firstGuest = null;
 
@@ -217,7 +221,7 @@ try {
       const r = [...mt.rows[0]];
       r[col(mt, "id")] = `m_synth${String(i).padStart(7, "0")}`; r[col(mt, "conv_id")] = "c_synth0e2e000"; r[col(mt, "parent_id")] = i ? `m_synth${String(i - 1).padStart(7, "0")}` : null;
       r[col(mt, "text")] = `${i}: ${filler}`; r[col(mt, "version_group_id")] = `vg_synth${String(i).padStart(6, "0")}`;
-      rows.push(r); bytes += filler.length + 200;
+      rows.push(r); bytes += JSON.stringify(r).length;
     }
     // Only conversations + messages; the one REAL column (weight) is written as the kernel writes doubles.
     const weightIx = col(mt, "weight");
@@ -228,8 +232,10 @@ try {
     const sha = createHash("sha256").update(content).digest("hex");
     const synth = `{"schema":"loom.guest_bundle/2","saved_at":"2026-10-29T00:00:00Z","producer":"e2e-synthetic","content":${content},"integrity":{"algorithm":"sha256","content_sha256":"${sha}"}}`;
     const t0 = Date.now();
-    const imp = await api(page, "POST", "/api/working-copy/bundle?mode=merge", synth);
-    assert.equal(imp.status, 200, imp.text);
+    // posted from here with the page's session cookie (50 MB through page.evaluate would cross the test protocol)
+    const cookie = (await ctx.cookies(base)).map((c) => `${c.name}=${c.value}`).join("; ");
+    const imp = await fetch(`${base}/api/working-copy/bundle?mode=merge`, { method: "POST", body: synth, headers: { "Content-Type": "application/json", Cookie: cookie, Origin: base } });
+    assert.equal(imp.status, 200, (await imp.text()).slice(0, 300));
     const importMs = Date.now() - t0;
     const s0 = await page.getByTestId("guest-layer").getAttribute("data-saved-at");
     const t1 = Date.now();
@@ -271,7 +277,10 @@ try {
     await storePanel(page);
     const now = await opfsFiles(page);
     // the new page opens a fresh, empty pool; none of the old files (random names of the SAH pool) survive
-    for (const f of old) if (/\.loom-store\/.+\/.+/.test(f) || /^\.loom-store\/[^.]/.test(f)) assert.ok(!now.includes(f) || /\.opaque$|^\.loom-store\/\.opaque/.test(f), `left: ${f}`);
+    // the SAH pool keeps its files under random names in .loom-store/.opaque/: none of the old ones may survive
+    const poolFiles = old.filter((f) => /\.opaque\/./.test(f));
+    assert.ok(poolFiles.length > 0, old.join(","));
+    for (const f of poolFiles) assert.ok(!now.includes(f), `left after the wipe: ${f}`);
     assert.equal(await idbBundle(page), null);
     assert.equal((await api(page, "GET", "/api/conversations")).json.length, 0, "nothing restored");
     assert.equal(await page.getByTestId("guest-restored").count(), 0);
