@@ -9,8 +9,8 @@ import { createServer } from "node:http";
 import { createHash } from "node:crypto";
 import { build } from "esbuild";
 import { chromium } from "playwright";
-import ts from "typescript";
 import { closeHttpFixture, suiteCompletionGuard } from "./harness-lifecycle.mjs";
+import { tsModuleUrl } from "./ts-module.mjs";
 
 const sourceFiles = ["onboarding-host.mjs", "harness-lifecycle.mjs", "../src/api/onboarding-host.ts", "../src/api/loom-http.ts", "../src/api/loom-api.ts",
   "../src/api/operations.ts", "../src/api/types.ts", "../src/components/UserProfilePanel.tsx", "../src/components/user-profile-panel.css",
@@ -20,14 +20,8 @@ const sourceSnapshot = () => Object.fromEntries(sourceFiles.map(file => [file,
   createHash("sha256").update(readFileSync(new URL(file, import.meta.url))).digest("hex")]));
 const sourcesBefore = sourceSnapshot();
 
-function moduleUrl(file, replacements = []) {
-  let source = ts.transpileModule(readFileSync(new URL(file, import.meta.url), "utf8"), {
-    compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ES2022 },
-  }).outputText;
-  for (const [from, to] of replacements) source = source.replaceAll(`from "${from}"`, `from "${to}"`);
-  return `data:text/javascript;base64,${Buffer.from(source).toString("base64")}`;
-}
-const nativeUrl = moduleUrl("../src/onboarding/native-snapshot.ts", [["./presentation.mjs", new URL("../src/onboarding/presentation.mjs", import.meta.url).href]]);
+const moduleUrl = file => tsModuleUrl(new URL(file, import.meta.url));
+const nativeUrl = moduleUrl("../src/onboarding/native-snapshot.ts");
 const { createUserProfileHost, NativeProfileSession, USER_PROFILE_IDENTITY_KEY } = await import(moduleUrl(
   "../src/api/onboarding-host.ts", [["../onboarding/native-snapshot", nativeUrl]],
 ));

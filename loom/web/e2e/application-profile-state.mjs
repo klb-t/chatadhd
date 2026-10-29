@@ -1,10 +1,8 @@
 // Offline contract regressions: real adapter availability, declarative workflow execution and restoration.
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import ts from "typescript";
-const source = readFileSync(new URL("../src/profiles/runtime.ts", import.meta.url), "utf8");
-const js = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2020, module: ts.ModuleKind.ES2020 } }).outputText;
-const m = await import(`data:text/javascript;base64,${Buffer.from(js).toString("base64")}`);
+import { loadTsModule } from "./ts-module.mjs";
+const m = await loadTsModule(new URL("../src/profiles/runtime.ts", import.meta.url));
 const schema = JSON.parse(readFileSync(new URL("../../../docs/contracts/application_profile.schema.json", import.meta.url), "utf8"));
 assert.equal(schema.properties.schema.const, m.PROFILE_SCHEMA);
 let groups = 0;

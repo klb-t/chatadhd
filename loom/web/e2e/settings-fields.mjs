@@ -3,11 +3,9 @@
 // points at a real /api/settings/fields response, completeness of that response.
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import ts from "typescript";
+import { loadTsModule } from "./ts-module.mjs";
 
-const source = ts.transpileModule(readFileSync(new URL("../src/settings/field-meta.ts", import.meta.url), "utf8"), {
-  compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ES2022 } }).outputText;
-const m = await import(`data:text/javascript;base64,${Buffer.from(source).toString("base64")}`);
+const m = await loadTsModule(new URL("../src/settings/field-meta.ts", import.meta.url));
 
 const doc = m.parseSettingsFields({ schema: "loom.settings_fields/1", edit_rules: [{ id: "deny", edit: "read_only", enforced: true }],
   fields: [

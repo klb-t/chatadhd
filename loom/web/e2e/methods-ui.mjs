@@ -12,8 +12,8 @@ import { fileURLToPath } from "node:url";
 import { gunzipSync } from "node:zlib";
 import { build } from "esbuild";
 import { chromium } from "playwright";
-import ts from "typescript";
 import { closeHttpFixture, runChild, stopChild, suiteCompletionGuard } from "./harness-lifecycle.mjs";
+import { loadTsModule } from "./ts-module.mjs";
 
 const web = fileURLToPath(new URL("../", import.meta.url)), loom = path.resolve(web, "..");
 const nativeMode = process.argv.includes("--native"), groups = [], expected = nativeMode ? 14 : 11;
@@ -21,10 +21,7 @@ const completion = suiteCompletionGuard("methods-ui", expected, groups);
 async function check(name, fn) { await fn(); groups.push(name); console.log(`[methods-ui] PASS ${name}`); }
 const artifact = name => JSON.parse(gunzipSync(readFileSync(path.join(loom, `src/packet/tests/method-registry-variants/${name}.json.gz`))));
 const golden = artifact("canonical-w3-export"), nested = artifact("nested-combination");
-const helperText = ts.transpileModule(readFileSync(path.join(web, "src/methods/graph-methods.ts"), "utf8"), {
-  compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ES2022 },
-}).outputText;
-const helper = await import(`data:text/javascript;base64,${Buffer.from(helperText).toString("base64")}`);
+const helper = await loadTsModule(path.join(web, "src/methods/graph-methods.ts"));
 const hashConfig = value => createHash("sha256").update(JSON.stringify(value)).digest("hex");
 function profileOf(fixture) {
   return { vocabulary: fixture.contract.vocabulary, entities: fixture.packet.entities, claims: fixture.packet.claims, sources: fixture.packet.sources,

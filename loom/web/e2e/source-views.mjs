@@ -3,14 +3,12 @@ import assert from "node:assert/strict";
 import { createServer } from "node:http";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
-import ts from "typescript";
 import { build } from "esbuild";
 import { chromium } from "playwright";
+import { loadTsModule } from "./ts-module.mjs";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
-const projection = readFileSync(new URL("../src/content/imported-message.ts", import.meta.url), "utf8");
-const jsProjection = ts.transpileModule(projection, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ES2022 } }).outputText;
-const projectionApi = await import(`data:text/javascript;base64,${Buffer.from(jsProjection).toString("base64")}`);
+const projectionApi = await loadTsModule(new URL("../src/content/imported-message.ts", import.meta.url));
 const fixture = JSON.parse(readFileSync(new URL("./fixtures/imported-message-content.json", import.meta.url), "utf8"));
 let groups = 0;
 const check = async (name, run) => { await run(); groups++; console.log(`PASS ${name}`); };

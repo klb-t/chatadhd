@@ -1,10 +1,7 @@
 // Pure runtime tests: propagation, persistence, migrations and profile isolation.
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
-import ts from "typescript";
-const source = readFileSync(new URL("../src/workspace/state.ts", import.meta.url), "utf8");
-const js = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2020, module: ts.ModuleKind.ES2020 } }).outputText;
-const m = await import(`data:text/javascript;base64,${Buffer.from(js).toString("base64")}`);
+import { loadTsModule } from "./ts-module.mjs";
+const m = await loadTsModule(new URL("../src/workspace/state.ts", import.meta.url));
 let cases = 0;
 function check(name, fn) { fn(); cases++; console.log(`PASS ${name}`); }
 check("identity cycles converge and unrelated parameters remain independent", () => {

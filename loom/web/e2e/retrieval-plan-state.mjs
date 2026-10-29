@@ -1,10 +1,7 @@
 // Form semantics that affect the native request, without a provider or DOM.
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
-import ts from "typescript";
-const source = readFileSync(new URL("../src/context/retrieval-plan.ts", import.meta.url), "utf8");
-const js = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2020, module: ts.ModuleKind.ES2020 } }).outputText;
-const { newPlan, newThesis, buildRetrievalPlan } = await import(`data:text/javascript;base64,${Buffer.from(js).toString("base64")}`);
+import { loadTsModule } from "./ts-module.mjs";
+const { newPlan, newThesis, buildRetrievalPlan } = await loadTsModule(new URL("../src/context/retrieval-plan.ts", import.meta.url));
 const draft = newPlan();
 draft.theses[0].text = "  Preserve the authored query\nexactly.  ";
 const inherited = buildRetrievalPlan(draft);

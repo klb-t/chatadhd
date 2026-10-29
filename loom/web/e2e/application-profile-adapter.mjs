@@ -1,17 +1,9 @@
 // Offline contract checks against the actual profile runtime and Loom adapter.
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
-import ts from "typescript";
+import { loadTsModule } from "./ts-module.mjs";
 
-function transpile(file) {
-  return ts.transpileModule(readFileSync(new URL(file, import.meta.url), "utf8"), {
-    compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ES2022 },
-  }).outputText;
-}
-const moduleUrl = source => `data:text/javascript;base64,${Buffer.from(source).toString("base64")}`;
-const runtimeUrl = moduleUrl(transpile("../src/profiles/runtime.ts"));
-const runtime = await import(runtimeUrl);
-const adapter = await import(moduleUrl(transpile("../src/profiles/loom-adapter.ts").replace('from "./runtime"', `from "${runtimeUrl}"`)));
+const runtime = await loadTsModule(new URL("../src/profiles/runtime.ts", import.meta.url));
+const adapter = await loadTsModule(new URL("../src/profiles/loom-adapter.ts", import.meta.url));
 let cases = 0;
 async function check(name, fn) { await fn(); cases++; console.log(`PASS ${name}`); }
 

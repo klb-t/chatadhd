@@ -1,20 +1,14 @@
 #!/usr/bin/env node
 // Real settings/retrieval helpers with authored browser-storage fixtures only.
 import assert from "node:assert/strict";
-import { readFileSync, existsSync, mkdirSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
-import ts from "typescript";
+import { tsModuleUrl } from "./ts-module.mjs";
 
-function moduleUrl(file, replacements = []) {
-  let source = ts.transpileModule(readFileSync(new URL(file, import.meta.url), "utf8"), {
-    compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ES2022 },
-  }).outputText;
-  for (const [from, to] of replacements) source = source.replaceAll(`from "${from}"`, `from "${to}"`);
-  return `data:text/javascript;base64,${Buffer.from(source).toString("base64")}`;
-}
+const moduleUrl = file => tsModuleUrl(new URL(file, import.meta.url));
 const planUrl = moduleUrl("../src/context/retrieval-plan.ts");
 const plans = await import(planUrl);
-const settings = await import(moduleUrl("../src/context/chat-settings.ts", [["./retrieval-plan", planUrl]]));
+const settings = await import(moduleUrl("../src/context/chat-settings.ts"));
 const records = new Map(), groups = [];
 const previous = globalThis.localStorage;
 let rejectKey = null;

@@ -1,21 +1,10 @@
 // Fast adapter contract gate. This exercises the real TypeScript transport;
 // the native stub implements the documented Kotlin/JNI message boundary.
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
-import ts from "typescript";
+import { loadTsModule } from "./ts-module.mjs";
 
-function moduleUrl(source) {
-  return `data:text/javascript;base64,${Buffer.from(ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2020, module: ts.ModuleKind.ES2020 } }).outputText).toString("base64")}`;
-}
-const typesUrl = moduleUrl(await readFile(new URL("../src/api/types.ts", import.meta.url), "utf8"));
-const graphEntryUrl = moduleUrl(await readFile(new URL("../src/api/graph-entry.ts", import.meta.url), "utf8"));
-const mergePatchUrl = moduleUrl(await readFile(new URL("../src/api/merge-patch.ts", import.meta.url), "utf8"));
-const source = (await readFile(new URL("../src/api/loom-jni.ts", import.meta.url), "utf8")).replace('from "./types";', `from "${typesUrl}";`);
-// The first './types' import is type-only and disappears. Replace the value
-// import as well, without relying on its order.
-const sourceWithTypes = source.replaceAll('from "./types";', `from "${typesUrl}";`).replaceAll('from "./graph-entry";', `from "${graphEntryUrl}";`).replaceAll('from "./merge-patch";', `from "${mergePatchUrl}";`);
-const { LoomJniApi } = await import(moduleUrl(sourceWithTypes));
-const { isLoomError } = await import(typesUrl);
+const { LoomJniApi } = await loadTsModule(new URL("../src/api/loom-jni.ts", import.meta.url));
+const { isLoomError } = await loadTsModule(new URL("../src/api/types.ts", import.meta.url));
 
 const calls = [];
 let nativeError = false;

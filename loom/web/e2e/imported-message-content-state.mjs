@@ -1,11 +1,9 @@
 // Real native-import fixture projection checks. No model calls or private exports.
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import ts from "typescript";
+import { loadTsModule } from "./ts-module.mjs";
 
-const source = readFileSync(new URL("../src/content/imported-message.ts", import.meta.url), "utf8");
-const js = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ES2022 } }).outputText;
-const m = await import(`data:text/javascript;base64,${Buffer.from(js).toString("base64")}`);
+const m = await loadTsModule(new URL("../src/content/imported-message.ts", import.meta.url));
 const fixture = JSON.parse(readFileSync(new URL("./fixtures/imported-message-content.json", import.meta.url), "utf8"));
 const find = (provider, key) => fixture.messages[provider].find(message => message.metadata.export.key === key);
 let groups = 0;

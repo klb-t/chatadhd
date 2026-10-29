@@ -6,17 +6,12 @@ import { createServer } from "node:http";
 import { existsSync, readFileSync, mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import ts from "typescript";
 import { chromium } from "playwright";
+import { loadTsModule } from "./ts-module.mjs";
 
 const web = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const dist = path.join(web, "dist");
-const source = readFileSync(path.join(web, "src/profiles/view-state.ts"), "utf8");
-const tsjs = (src) => ts.transpileModule(src, { compilerOptions: { target: ts.ScriptTarget.ES2020, module: ts.ModuleKind.ES2020 } }).outputText;
-// W6: view-state reads its conversation through shell/windows/binding.ts (no imports of its own): mapped to a data: module
-const bindingUrl = `data:text/javascript;base64,${Buffer.from(tsjs(readFileSync(path.join(web, "src/shell/windows/binding.ts"), "utf8"))).toString("base64")}`;
-const js = tsjs(source).replaceAll('from "../shell/windows/binding"', `from "${bindingUrl}"`);
-const state = await import(`data:text/javascript;base64,${Buffer.from(js).toString("base64")}`);
+const state = await loadTsModule(path.join(web, "src/profiles/view-state.ts"));
 const groups = [];
 async function check(name, fn) { await fn(); groups.push(name); console.log(`[profile-view-geometry] PASS ${name}`); }
 const profileKey = JSON.stringify(["loom-default", 2]);

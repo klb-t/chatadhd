@@ -4,41 +4,22 @@
 import assert from "node:assert/strict";
 import { spawn, spawnSync } from "node:child_process";
 import { createHash, webcrypto } from "node:crypto";
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { createServer } from "node:net";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import ts from "typescript";
+import { loadTsModule } from "./ts-module.mjs";
 
 const webRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const loomRoot = path.resolve(webRoot, "..");
 const offlineOnly = process.argv.includes("--offline");
 if (!globalThis.crypto?.subtle) globalThis.crypto = webcrypto;
-function transpile(file) {
-  return ts.transpileModule(readFileSync(new URL(file, import.meta.url), "utf8"), {
-    compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ES2022 },
-  }).outputText + `\n//# sourceURL=${file}\n`;
-}
-const moduleUrl = source => `data:text/javascript;base64,${Buffer.from(source).toString("base64")}`;
-const runtimeUrl = moduleUrl(transpile("../src/profiles/runtime.ts"));
-const typesUrl = moduleUrl(transpile("../src/api/types.ts"));
-const graphEntryUrl = moduleUrl(transpile("../src/api/graph-entry.ts"));
-const operationsUrl = moduleUrl(transpile("../src/api/operations.ts"));
-const powUrl = moduleUrl(transpile("../src/api/pow.ts"));
-const authUrl = moduleUrl(transpile("../src/api/auth.ts").replaceAll('from "./pow"', `from "${powUrl}"`));
-const runtime = await import(runtimeUrl);
-const graph = await import(moduleUrl(transpile("../src/profiles/graph.ts").replaceAll('from "./runtime"', `from "${runtimeUrl}"`)));
-const conversationViewUrl = moduleUrl(transpile("../src/api/conversation-view.ts"));
-const sendGateUrl = moduleUrl(transpile("../src/api/send-gate.ts"));
-const { LoomHttpApi } = await import(moduleUrl(transpile("../src/api/loom-http.ts").replaceAll('from "./conversation-view"', `from "${conversationViewUrl}"`)
-  .replaceAll('from "./send-gate"', `from "${sendGateUrl}"`)
-  .replaceAll('from "./types"', `from "${typesUrl}"`)
-  .replaceAll('from "./graph-entry"', `from "${graphEntryUrl}"`)
-  .replaceAll('from "./operations"', `from "${operationsUrl}"`)
-  .replaceAll('from "./auth"', `from "${authUrl}"`)));
-const mergePatchUrl = moduleUrl(transpile("../src/api/merge-patch.ts"));
-const { LoomJniApi } = await import(moduleUrl(transpile("../src/api/loom-jni.ts").replaceAll('from "./types"', `from "${typesUrl}"`).replaceAll('from "./graph-entry"', `from "${graphEntryUrl}"`).replaceAll('from "./merge-patch"', `from "${mergePatchUrl}"`)));
+const at = file => new URL(file, import.meta.url);
+const runtime = await loadTsModule(at("../src/profiles/runtime.ts"));
+const graph = await loadTsModule(at("../src/profiles/graph.ts"));
+const { LoomHttpApi } = await loadTsModule(at("../src/api/loom-http.ts"));
+const { LoomJniApi } = await loadTsModule(at("../src/api/loom-jni.ts"));
 
 const groups = [], nativeRequests = [], persisted = [];
 const originalFetch = globalThis.fetch;

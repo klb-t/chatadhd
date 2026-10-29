@@ -11,22 +11,14 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { build } from "esbuild";
 import { chromium } from "playwright";
-import ts from "typescript";
 import { closeHttpFixture, stopChild, suiteCompletionGuard } from "./harness-lifecycle.mjs";
+import { loadTsModule } from "./ts-module.mjs";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 const loomRoot = path.resolve(root, "..");
 if (!globalThis.crypto?.subtle) globalThis.crypto = webcrypto;
-function transpile(relative) {
-  return ts.transpileModule(readFileSync(new URL(relative, import.meta.url), "utf8"), {
-    compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ES2022 },
-  }).outputText;
-}
-const url = text => `data:text/javascript;base64,${Buffer.from(text).toString("base64")}`;
-const runtimeUrl = url(transpile("../src/profiles/runtime.ts"));
-const graphUrl = url(transpile("../src/profiles/graph.ts").replaceAll('from "./runtime"', `from "${runtimeUrl}"`));
-const capabilityGraph = await import(url(transpile("../src/profiles/capability-graph.ts").replaceAll('from "./graph"', `from "${graphUrl}"`)));
-const operationsModule = await import(url(transpile("../src/api/operations.ts")));
+const capabilityGraph = await loadTsModule(new URL("../src/profiles/capability-graph.ts", import.meta.url));
+const operationsModule = await loadTsModule(new URL("../src/api/operations.ts", import.meta.url));
 const groups = [];
 const nativeMode = process.argv.includes("--native");
 const expectedGroups = nativeMode ? 8 : 7;

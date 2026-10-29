@@ -6,25 +6,19 @@ import { createServer } from "node:http";
 import { existsSync, readFileSync, mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import ts from "typescript";
 import { chromium } from "playwright";
+import { tsModuleUrl } from "./ts-module.mjs";
 
 const web = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const groups = [];
 async function check(name, run) { await run(); groups.push(name); console.log(`[workflow-checkpoint] PASS ${name}`); }
-function moduleUrl(file, replacements = []) {
-  let source = ts.transpileModule(readFileSync(new URL(file, import.meta.url), "utf8"), {
-    compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ES2022 },
-  }).outputText;
-  for (const [from, to] of replacements) source = source.replaceAll(`from "${from}"`, `from "${to}"`);
-  return `data:text/javascript;base64,${Buffer.from(source).toString("base64")}`;
-}
+const moduleUrl = file => tsModuleUrl(new URL(file, import.meta.url));
 const runtimeUrl = moduleUrl("../src/profiles/runtime.ts");
 const bindingUrl = moduleUrl("../src/shell/windows/binding.ts");   // W6: view-state reads its conversation through a binding
-const viewUrl = moduleUrl("../src/profiles/view-state.ts", [["../shell/windows/binding", bindingUrl]]);
-const graphUrl = moduleUrl("../src/profiles/graph.ts", [["./runtime", runtimeUrl]]);
-const snapshotUrl = moduleUrl("../src/profiles/workflow-snapshot.ts", [["./runtime", runtimeUrl], ["./view-state", viewUrl], ["./graph", graphUrl]]);
-const checkpointUrl = moduleUrl("../src/profiles/workflow-checkpoint.ts", [["./runtime", runtimeUrl], ["./workflow-snapshot", snapshotUrl]]);
+const viewUrl = moduleUrl("../src/profiles/view-state.ts");
+const graphUrl = moduleUrl("../src/profiles/graph.ts");
+const snapshotUrl = moduleUrl("../src/profiles/workflow-snapshot.ts");
+const checkpointUrl = moduleUrl("../src/profiles/workflow-checkpoint.ts");
 const runtime = await import(runtimeUrl), checkpoints = await import(checkpointUrl);
 const fixture = JSON.parse(readFileSync(path.join(web, "src/profiles/data/loom-default-r2.json"), "utf8"));
 fixture.id = "workflow-checkpoint-fixture"; fixture.label = "Workflow checkpoint fixture";

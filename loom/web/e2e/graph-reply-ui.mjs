@@ -9,7 +9,7 @@ import { createServer } from "node:http";
 import { fileURLToPath } from "node:url";
 import { build } from "esbuild";
 import { chromium } from "playwright";
-import ts from "typescript";
+import { loadTsModule } from "./ts-module.mjs";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 const fixturePath = fileURLToPath(new URL("../../src/packet/tests/reply-fixtures.json", import.meta.url));
@@ -21,10 +21,7 @@ assert.equal(fixtureDocument.reference_source_sha256, "50fffaffbf1abcbb2de1b626a
 const fixture = fixtureDocument.cases[1];
 assert.equal(JSON.parse(fixture.request.raw).schema, "loom.graph_reply/2");
 assert.equal(JSON.parse(fixture.request.raw).nodes[0].text, null);
-const inspectionSource = ts.transpileModule(readFileSync(new URL("../src/graph/reply-inspection.ts", import.meta.url), "utf8"), {
-  compilerOptions: { module: ts.ModuleKind.ES2022, target: ts.ScriptTarget.ES2022 },
-}).outputText;
-const inspection = await import(`data:text/javascript;base64,${Buffer.from(inspectionSource).toString("base64")}`);
+const inspection = await loadTsModule(new URL("../src/graph/reply-inspection.ts", import.meta.url));
 const groups = [];
 function pass(name) { groups.push(name); console.log(`[graph-reply-ui] PASS ${name}`); }
 const fragments = inspection.inspectReply(fixture.expected);
