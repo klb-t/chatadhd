@@ -269,6 +269,20 @@
    "by": "owner",
    "date": "2026-10-28"
   },
+  "s_876d3e3a2863": {
+   "state": "corrected",
+   "history": [
+    {
+     "state": "corrected",
+     "by": "owner",
+     "date": "2026-10-29",
+     "text": "„A ja teraz dopiero załapałem że Wprowadziłem niepotrzebną komplikację bo przecież było mówione że zarówno łapka webowa jak i androidowa jak i desktopowa mają mieć możliwość podłączenia dowolnego magazynu, lokalnego chmurowego jakiegokolwiek, a logowanie i nasze konto to jest zupełnie opcjonalne” — R103 to szczególny przypadek PH29: nie ma osobnego rodzaju użytkownika „gość”; jest użytkownik bez naszego konta, z dowolnym podłączonym magazynem (pamięć przeglądarki to jeden z nich). Konto daje tylko dodatki (np. pulę kluczy, synchronizację). Paczki B7/B8 mają to ujednolicić; zrobione B1–B3 zostają (paczka danych gościa = przenośna kopia robocza)."
+    }
+   ],
+   "corrected_text": "„A ja teraz dopiero załapałem że Wprowadziłem niepotrzebną komplikację bo przecież było mówione że zarówno łapka webowa jak i androidowa jak i desktopowa mają mieć możliwość podłączenia dowolnego magazynu, lokalnego chmurowego jakiegokolwiek, a logowanie i nasze konto to jest zupełnie opcjonalne” — R103 to szczególny przypadek PH29: nie ma osobnego rodzaju użytkownika „gość”; jest użytkownik bez naszego konta, z dowolnym podłączonym magazynem (pamięć przeglądarki to jeden z nich). Konto daje tylko dodatki (np. pulę kluczy, synchronizację). Paczki B7/B8 mają to ujednolicić; zrobione B1–B3 zostają (paczka danych gościa = przenośna kopia robocza).",
+   "by": "owner",
+   "date": "2026-10-29"
+  },
   "s_8d5c047ecfb2": {
    "state": "approved",
    "history": [

@@ -28,9 +28,9 @@ Pozycji razem: **530**.
 
 | Rozumienie (R61) | liczba |
 |---|---|
-| none | 512 |
+| none | 511 |
 | approved | 12 |
-| corrected | 6 |
+| corrected | 7 |
 
 | W których plikach | liczba |
 |---|---|
@@ -623,7 +623,7 @@ Pozycji razem: **530**.
 - `s_a50a787171eb` **R100** — Zgoda: wszystkie dane właściciela mogą iść do Google Vertex; warunek: nie publicznie i nie do trenowania; cache Vertex zostaje włączony — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L941)
 - `s_8561825a92fa` **R101** — Interfejs zerowy po zamknięciu ostatniego okna — _bez statusu_ · rozumienie: corrected · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L946)
 - `s_98ec88df70b6` **R102** — Orkiestracja wielomodelowa i geneza tekstu (inspiracja) — _bez statusu_ · rozumienie: corrected · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L951)
-- `s_876d3e3a2863` **R103** — Korzystanie bez logowania: darmowe API, pula kluczy właściciela, historia u użytkownika — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L957)
+- `s_876d3e3a2863` **R103** — Korzystanie bez logowania: darmowe API, pula kluczy właściciela, historia u użytkownika — _bez statusu_ · rozumienie: corrected · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L957)
 - `s_831a5fde86e9` **R104** — Budżet próbny dla każdego, profil w pamięci lokalnej, darmowo dla niekomercyjnych — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L962)
 - `s_006a12993c58` **R105** — Gość: zwykły interfejs, najlepszy darmowy model, ostrzeżenie o utracie rozmowy wg metryki wartości — _bez statusu_ · rozumienie: corrected · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L969)
 - `s_6fad4bfe72f2` **R106** — Sesja ekosystemu: pomysły ponad projektami (np. trenowanie własnego LLM na danych ChatADHD) i dokumentacja kompetencji właściciela — _bez statusu_ · rozumienie: corrected · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L974)
