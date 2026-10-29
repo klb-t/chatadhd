@@ -124,8 +124,10 @@ try {
     assert.ok(wait >= 1 && wait <= 60, `wait ${wait}`);
     const said = await page.getByTestId("guest-limit-text").innerText();
     assert.ok(said.length > 10 && !said.includes("{{") && /\d/.test(said), said);
-    const waitLine = await page.getByTestId("guest-limit-wait").innerText();
-    assert.ok(waitLine.startsWith(say("guest.limit_wait", { wait: "" }).split("{{")[0].trim().slice(0, 20)) && /\d+ (s|min)/.test(waitLine), waitLine);
+    assert.ok(/\d+ (s|min)/.test(said), `the wait in words: ${said}`);
+    await new Promise((r) => setTimeout(r, 2200));  // counted down in place
+    const later = await page.getByTestId("guest-limit-text").innerText();
+    assert.ok(later !== said && /\d+ (s|min)/.test(later), `${said} -> ${later}`);
     assert.ok((await page.getByTestId("guest-limit-alternatives").innerText()).length > 10);
     assert.equal(await page.getByTestId("guest-limit-own-key").count(), 1);
     await page.screenshot({ path: path.join(SHOTS, "guest-2b-limit.png") });

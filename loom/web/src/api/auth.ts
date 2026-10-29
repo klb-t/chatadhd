@@ -46,16 +46,18 @@ export const authApi = {
 
 /** R103 B2: fired when the guest protection refused a request (429/403/413 with `limit`), with the wait and the words. */
 export const GUEST_LIMIT_EVENT = "loom:guest-limit";
-export interface GuestLimitDetail { mechanism: string; retryAfter: number | null; text: string; alternatives: string; status: number }
+export interface GuestLimitDetail { mechanism: string; retryAfter: number | null; text: string; template: string; limit: string; alternatives: string; status: number }
 
 /** Reads a guest-protection refusal from an answer body and announces it; true when it was one. */
 export function announceLimit(status: number, body: unknown): boolean {
-  const b = body as { limit?: { mechanism?: unknown }; retry_after?: unknown; words?: { text?: unknown; alternatives?: unknown } } | null;
+  const b = body as { limit?: { mechanism?: unknown }; retry_after?: unknown; words?: { text?: unknown; template?: unknown; limit?: unknown; alternatives?: unknown } } | null;
   if (!b || typeof b !== "object" || !b.limit || typeof b.limit.mechanism !== "string") return false;
   const detail: GuestLimitDetail = {
     mechanism: b.limit.mechanism, status,
     retryAfter: typeof b.retry_after === "number" ? b.retry_after : null,
     text: typeof b.words?.text === "string" ? b.words.text : "",
+    template: typeof b.words?.template === "string" ? b.words.template : "",
+    limit: typeof b.words?.limit === "string" ? b.words.limit : "",
     alternatives: typeof b.words?.alternatives === "string" ? b.words.alternatives : "",
   };
   if (typeof window !== "undefined") window.dispatchEvent(new CustomEvent<GuestLimitDetail>(GUEST_LIMIT_EVENT, { detail }));

@@ -152,12 +152,12 @@ export default function GuestLayer({ guest, guests, text, onSignIn, children }: 
         {limit && (
           <div role="alert" data-testid="guest-limit" data-mechanism={limit.mechanism} data-wait={waitLeft ?? ""}
             style={{ pointerEvents: "auto", background: "var(--surface, #222)", color: "inherit", border: "1px solid var(--border, #555)", borderRadius: 10, padding: "10px 12px" }}>
-            <p data-testid="guest-limit-text" style={{ margin: "0 0 6px" }}>{limit.text}</p>
-            {waitLeft !== null && (
-              <p data-testid="guest-limit-wait" style={{ margin: "0 0 6px" }}>
-                {waitLeft > 0 ? text("guest.limit_wait", { wait: humanSeconds(waitLeft) }) : text("guest.limit_ready")}
-              </p>
-            )}
+            {/* The server's sentence, its wait counted down in place ({{wait}} of the template); at zero: ready. */}
+            <p data-testid="guest-limit-text" style={{ margin: "0 0 6px" }}>
+              {waitLeft !== null && limit.template.includes("{{wait}}")
+                ? (waitLeft > 0 ? limit.template.split("{{wait}}").join(humanSeconds(waitLeft)).split("{{limit}}").join(limit.limit) : text("guest.limit_ready"))
+                : limit.text}
+            </p>
             <p data-testid="guest-limit-alternatives" style={{ margin: "0 0 6px", fontSize: 13 }}>{limit.alternatives || text("guest.limit_alternatives")}</p>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
               <button type="button" data-testid="guest-limit-own-key" onClick={() => requestOpenPanel(SETTINGS_PANEL)}>{text("guest.limit_own_key")}</button>

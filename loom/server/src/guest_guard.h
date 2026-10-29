@@ -210,7 +210,9 @@ class GuestGuard {
         for (auto pos = t.find(k); pos != std::string::npos; pos = t.find(k)) t.replace(pos, k.size(), v);
       return t;
     };
-    return {{"language", use}, {"text", fill(w.value(mechanism, mechanism))}, {"alternatives", w.value("alternatives", std::string())}};
+    // `template` lets a client count the wait down in the same sentence ({{wait}} / {{limit}} left in).
+    return {{"language", use}, {"text", fill(w.value(mechanism, mechanism))}, {"template", w.value(mechanism, mechanism)},
+            {"limit", limit}, {"alternatives", w.value("alternatives", std::string())}};
   }
   static std::string human_wait(std::int64_t s) {
     if (s < 60) return std::to_string(std::max<std::int64_t>(1, s)) + " s";
