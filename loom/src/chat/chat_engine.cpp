@@ -1,4 +1,5 @@
 // OWNER: wave 2 net/chat/worker. Port of engine/chat_engine.py.
+#include "loom/phase_timing.h"
 #include "loom/chat_engine.h"
 #include "secret_filter.h"
 
@@ -1820,6 +1821,7 @@ Result<std::optional<Json>> ChatEngine::secret_gate(std::string_view text, const
 
 Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& opts_in, const ChatCallbacks& cb,
                                     const CancelToken* cancel) {
+  PhaseTimer pt("chat_send");
   // A file that cannot go to the model (not found, a kind that is not read) is said before anything is stored or sent (P33).
   LOOM_TRY(check_attachments(opts_in.attachments));
   // R67: a message that carries a secret is held or refused before anything is stored, routed or sent (the capi checks first, so the routing
@@ -2000,6 +2002,7 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
     if (!checked) return checked.error();
   }
 
+  pt.mark("resolve_and_compile_trace");
   // 2. Persist the user row and acceptance atomically. create_msg nests a
   // savepoint; only the outer commit makes acceptance durable.
   NewMessage nm;
@@ -2092,6 +2095,7 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
     throw;
   }
 
+  pt.mark("persist_user_and_msg_created");
   // 3. Build the message array (history excludes the message just persisted).
   auto msgs_json = opts.active_task_spec ? Result<Json>(std::move(task_messages)) :
       build_messages(conv.id, text, opts.attachments, opts, user_mid,
@@ -2099,6 +2103,7 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
   if (!msgs_json) return msgs_json.error();
   LOOM_TRY(retain_request_metadata());
 
+  pt.mark("build_messages");
   std::string model = opts.model ? *opts.model : scoped_default_model(db_, cfg_, conv.id);
 
   // 5. Call the API (through the one use-model action).
@@ -2239,7 +2244,9 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
   mreq.hooks.on_raw = [&](std::string_view chunk) { if (graph) graph->capture_chunk(chunk, model); };
   mreq.hooks.on_text = [&](std::string_view part) { if (cb.on_chunk) cb.on_chunk(part); };
   mreq.hooks.on_reasoning = [&](std::string_view part) { if (cb.on_reasoning) cb.on_reasoning(part); };
+  pt.mark("route_payload_prepare");
   llm::VariantResult sent = llm::execute_call(services, mreq, *call);
+  pt.mark("execute_call");
   if (record_wire && sent.state != llm::State::Held && sent.state != llm::State::GateError) {
     std::lock_guard lk(mu_);
     if (auto it = last_provider_request_.find(conv.id); it != last_provider_request_.end()) it->second["dispatched"] = true;
