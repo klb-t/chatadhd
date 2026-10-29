@@ -1,0 +1,33 @@
+# One-off machine-type change for a running VM, run OUTSIDE the VM (GCP Workflows), so it survives the stop it causes:
+# stop → wait until TERMINATED → setMachineType → start. Started from the VM itself by tools/gcp/resize_vm.sh.
+# Argument: {"project","zone","instance","machine_type"}.
+main:
+  params: [a]
+  steps:
+    - stop:
+        call: googleapis.compute.v1.instances.stop
+        args: {project: '${a.project}', zone: '${a.zone}', instance: '${a.instance}'}
+    - wait:
+        call: googleapis.compute.v1.instances.get
+        args: {project: '${a.project}', zone: '${a.zone}', instance: '${a.instance}'}
+        result: s
+    - check:
+        switch:
+          - condition: ${s.status != "TERMINATED"}
+            steps:
+              - pause:
+                  call: sys.sleep
+                  args: {seconds: 10}
+                  next: wait
+    - set_type:
+        call: googleapis.compute.v1.instances.setMachineType
+        args:
+          project: '${a.project}'
+          zone: '${a.zone}'
+          instance: '${a.instance}'
+          body: {machineType: '${"zones/" + a.zone + "/machineTypes/" + a.machine_type}'}
+    - start:
+        call: googleapis.compute.v1.instances.start
+        args: {project: '${a.project}', zone: '${a.zone}', instance: '${a.instance}'}
+    - done:
+        return: '${"now " + a.machine_type}'
