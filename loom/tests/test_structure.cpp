@@ -22,6 +22,7 @@
 #include "test_helpers.h"
 
 using namespace loom;
+using loom::test::unwrap;
 
 namespace {
 
