@@ -1,0 +1,11 @@
+# AGEDS recipient routes without the Caddy password (installed as /etc/caddy/ageds-public.caddy, imported by aliases.sh).
+# Source of the list: AGEDS server/app/http_authz.py RECIPIENT_PUBLIC_ROUTES and docs/ADVOCATE.md "Recipients through the proxy".
+# Order matters: AGEDS must already run in tokens mode (scripts/auth_mode_vm.sh --to tokens --apply) before this file exists;
+# in legacy_open AGEDS answers 403 to any request carrying X-AGEDS-Public-Route.
+# A client may never send the marker itself: it is removed from every request, then set only on these routes.
+request_header -X-AGEDS-Public-Route
+@ageds_public path_regexp ^/(advocate(/(login|logout))?|api/advocate/.*|api/artifacts/[^/]+/content|static/(app\.css|advocate\.css|advocate\.mjs|range-player\.mjs))$
+handle @ageds_public {
+	request_header X-AGEDS-Public-Route 1
+	reverse_proxy 127.0.0.1:8090
+}
