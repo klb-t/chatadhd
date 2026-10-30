@@ -27,6 +27,11 @@ budżetu na gości, więc nie opisywać tego jako jego decyzji.
 (f) R111 (właściciel, 30.10; spec `a815fafc`): pula próbna tylko dla osób z kontem. Warunek tego pakietu: gość bez konta nigdy
 nie dostaje puli, także po zgodzie (test). Zależność: dziś `registration: closed`, więc do otwarcia rejestracji pula jest dla nowych
 osób niedostępna. Powiadomienie właściciela o zużyciu i ruchu (progi w danych) zaprojektować razem z R109, nie w tym pakiecie.
+(g) R112 (właściciel, 30.10, uściślenie R111): gość bez konta ma tylko źródła bezkosztowe, także nasze darmowe klucze. Osoba z darmowym
+kontem dostaje dodatkowo kilka groszy z płatnych źródeł lub kredytów, wszyscy razem do ≈ 1 € dziennie. 1 € to preset i skala
+właściciela. W tym pakiecie: rozdzielić w danych pulę bezkosztową i pulę płatną. Notę przy `vertex_gemini.budget` zastąpić cytatem R112,
+zamiast „datowanego odczytu” z punktu (b). Grosze na osobę to wartość otwarta z presetem. Test: gość nie dostaje puli płatnej
+w żadnym stanie.
 
 ## Luka do zaprojektowania (właściciel, 30.10; przekazał koordynator): zapytania do modeli z urządzenia osoby
 Słowa właściciela: „apka webowa operuje na urządzeniu klienckim i z niego wysyła zapytania”.
