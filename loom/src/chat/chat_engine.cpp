@@ -166,7 +166,6 @@ const std::vector<std::string>& text_exts() {
                                                   ".cpp", ".h", ".sql"};
   return kExts;
 }
-constexpr std::size_t kMaxFileChars = 15000;
 
 std::string lower_ext(const std::filesystem::path& p) {
   std::string e = p.extension().string();
@@ -790,6 +789,7 @@ Json ChatResult::to_json() const {
   if (usage_pending) out["usage_pending"] = *usage_pending;
   if (secret_pending) out["secret_pending"] = *secret_pending;
   if (usage_notices.is_array() && !usage_notices.empty()) out["usage_notices"] = usage_notices;
+  if (attachment_notes.is_array() && !attachment_notes.empty()) out["attachment_notes"] = attachment_notes;
   return out;
 }
 
@@ -1242,12 +1242,51 @@ Status ChatEngine::check_attachments(const std::vector<std::string>& attachments
   return ok_status();
 }
 
+namespace {
+// The words of the attachment notices come from data (runtime/chat_context.pack attachments) in the language of the interface, else en.
+std::string attachment_words(const Json& table, const std::string& lang, const std::map<std::string, std::string>& vars) {
+  std::string t;
+  if (table.is_object()) {
+    t = json::get_string(table, lang);
+    if (t.empty()) t = json::get_string(table, "en");
+  }
+  for (const auto& [k, v] : vars) {
+    const std::string needle = "{" + k + "}";
+    for (std::size_t at = t.find(needle); at != std::string::npos; at = t.find(needle, at + v.size())) t.replace(at, needle.size(), v);
+  }
+  return t;
+}
+}  // namespace
+
 Json ChatEngine::build_content(std::string_view text, const std::vector<std::string>& attachments) const {
+  auto built = build_content_checked(text, attachments, nullptr);
+  return built ? *built : Json(std::string(text));
+}
+
+Result<Json> ChatEngine::build_content_checked(std::string_view text, const std::vector<std::string>& attachments, Json* notes) const {
+  if (notes) *notes = Json::array();
   if (attachments.empty()) return Json(std::string(text));
+
+  LOOM_TRY_ASSIGN(auto profile, RuntimeProfile::load("chat_context", cfg_.path().parent_path()));
+  const Json recipe = profile.values().at("attachments");
+  // The limit and the unreadable-file policy are settings; unset means the preset in data (0 = no limit).
+  const long long max_chars = cfg_integer(cfg_, "chat_attachment_max_chars", recipe.value("text_max_chars", 0LL));
+  const std::string on_unreadable = cfg_string(cfg_, "chat_attachment_on_unreadable", recipe.value("on_unreadable", std::string("refuse")));
+  const std::string lang = cfg_string(cfg_, "ui_language", "en");
 
   Json parts = Json::array();
   // A message of files alone (P33) has no words: no empty text part, which some providers refuse.
   if (!text.empty()) parts.push_back(Json{{"type", "text"}, {"text", std::string(text)}});
+
+  // An existing file that cannot be read never goes to the model silently without it: refuse with the file named, or (setting) send with a warning.
+  const auto unreadable = [&](const std::string& name) -> Status {
+    const std::map<std::string, std::string> vars{{"file", name}};
+    if (on_unreadable != "send_with_warning") return Error(Errc::Io, attachment_words(recipe["unreadable_error"], lang, vars));
+    log::warn("loom.chat_engine", "Attachment cannot be read, sent with a warning: {}", name);
+    parts.push_back(Json{{"type", "text"}, {"text", attachment_words(recipe["unreadable_marker"], lang, vars)}});
+    if (notes) notes->push_back(Json{{"file", name}, {"status", "unreadable"}, {"original_chars", nullptr}, {"kept_chars", nullptr}});
+    return ok_status();
+  };
 
   for (const auto& path_str : attachments) {
     const auto located = locate_attachment(path_str);
@@ -1258,10 +1297,12 @@ Json ChatEngine::build_content(std::string_view text, const std::vector<std::str
     const std::filesystem::path& p = located->first;
     const std::filesystem::path& shown = located->second;
     std::string ext = lower_ext(shown);
+    const std::string name = shown.filename().string();
     if (contains(image_exts(), ext)) {
       auto data = fsutil::read_file(p);
       if (!data) {
         log::error("loom.chat_engine", "Failed to encode image: {}", path_str);
+        LOOM_TRY(unreadable(name));
         continue;
       }
       std::string mime = "image/" + ext.substr(1);
@@ -1272,13 +1313,21 @@ Json ChatEngine::build_content(std::string_view text, const std::vector<std::str
       auto data = fsutil::read_file(p);
       if (!data) {
         log::error("loom.chat_engine", "Failed to read text file: {}", path_str);
+        LOOM_TRY(unreadable(name));
         continue;
       }
       std::string repaired = utf8::repair(*data);
-      std::string file_text(utf8::prefix(repaired, kMaxFileChars));
-      std::string name = shown.filename().string();
-      parts.push_back(
-          Json{{"type", "text"}, {"text", "\n--- FILE: " + name + " ---\n" + file_text + "\n--- END FILE ---"}});
+      const std::size_t original = utf8::length(repaired);
+      const bool cut = max_chars > 0 && original > static_cast<std::size_t>(max_chars);
+      std::string file_text = cut ? std::string(utf8::prefix(repaired, static_cast<std::size_t>(max_chars))) : std::move(repaired);
+      const std::size_t kept = cut ? static_cast<std::size_t>(max_chars) : original;
+      std::string body = "\n--- FILE: " + name + " ---\n" + file_text;
+      if (cut) {
+        body += "\n" + attachment_words(recipe["cut_marker"], lang, {{"file", name}, {"kept", std::to_string(kept)}, {"original", std::to_string(original)}});
+        if (notes) notes->push_back(Json{{"file", name}, {"status", "cut"}, {"original_chars", original}, {"kept_chars", kept}});
+      }
+      body += "\n--- END FILE ---";
+      parts.push_back(Json{{"type", "text"}, {"text", std::move(body)}});
     } else {
       log::warn("loom.chat_engine", "Attachment of a kind that is not read: {}", path_str);
     }
@@ -1702,10 +1751,12 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
     messages.push_back(Json{{"role", "system"}, {"content", reply_text}});
     tail_items["reply_instruction"] = chat::formats::receipt_item("graph_reply_instruction", "graph reply", "instruction", "asks for the answer as a graph (flow " + flow->flow + ")", reply_text);
   }
-  messages.push_back(Json{{"role", "user"}, {"content", build_content(current_text, attachments)}});
+  Json attachment_notes = Json::array();
+  LOOM_TRY_ASSIGN(auto user_content, build_content_checked(current_text, attachments, &attachment_notes));
+  messages.push_back(Json{{"role", "user"}, {"content", std::move(user_content)}});
   tail_items["question"] = chat::formats::receipt_item("question", "the question", "question", "what the person wrote in this turn", current_text);
   if (context_trace) {
-    *context_trace = Json{{"kind", "compiled_messages"}, {"version", 1},
+    *context_trace = Json{{"kind", "compiled_messages"}, {"version", 1}, {"attachments", attachment_notes},
                          {"context_order", {{"name", order_name}, {"classes", known_orders.at(order_name)}}},
                          {"messages", messages}, {"messages_sha256", Sha256::hex(json::dump(messages))},
                          {"history_message_ids", history_ids},
@@ -1776,6 +1827,7 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
         whole["elements_collapsed"] = true;
         whole["elements_collapsed_reason"] = "context_receipt_max_bytes";
       }
+      if (!attachment_notes.empty()) whole["attachments"] = attachment_notes;
       (*context_trace)["receipt"] = chat::formats::receipt_bound(std::move(whole), receipt_store, max_bytes);
     }
     if (capture_native_history) (*context_trace)["_native_history_snapshot"] = std::move(captured_native_history);
@@ -1824,6 +1876,9 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
   PhaseTimer pt("chat_send");
   // A file that cannot go to the model (not found, a kind that is not read) is said before anything is stored or sent (P33).
   LOOM_TRY(check_attachments(opts_in.attachments));
+  // The same for a file that exists but cannot be read (refused with its name unless the setting says send_with_warning), and what was cut.
+  Json attachment_notes_sent = Json::array();
+  if (!opts_in.attachments.empty()) { LOOM_TRY_ASSIGN(auto probe, build_content_checked("", opts_in.attachments, &attachment_notes_sent)); (void)probe; }
   // R67: a message that carries a secret is held or refused before anything is stored, routed or sent (the capi checks first, so the routing
   // model does not read it either; this is the same check for the callers that reach send() directly).
   {
@@ -1920,7 +1975,7 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
   const auto stored_trace = [&](const Json& t) -> Json {
     if (trace_full || !t.is_object()) return t;
     Json slim = Json::object();
-    for (const char* k : {"kind", "version", "context_order", "messages_sha256", "pre_graph_messages_sha256", "selection", "flow", "receipt"})
+    for (const char* k : {"kind", "version", "context_order", "messages_sha256", "pre_graph_messages_sha256", "selection", "flow", "receipt", "attachments"})
       if (t.contains(k)) slim[k] = t.at(k);
     return slim;
   };
@@ -2481,6 +2536,7 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
   result.cancelled = cancelled;
   result.context_trace = trace_full ? std::move(context_trace) : Json(nullptr);
   result.usage_notices = sent.notices;
+  result.attachment_notes = std::move(attachment_notes_sent);
 
   // 8. Auto-title from the first exchange.
   auto all_msgs = db_.count_msgs(conv.id);  // Perf (P19): a count, not the conversation

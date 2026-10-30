@@ -233,6 +233,8 @@ export interface SemanticStatusInfo {
   /** Pending rows this process cannot claim (skipped, data retained). */
   quarantined?: number | null;
   retry_mode?: string;
+  /** The analysis model's own state; absent on older hosts. disabled = switched off after consecutive failures (resuming turns it back on). */
+  llm?: { disabled?: boolean; reason?: string | null; consecutive_failures?: number | null; max_consecutive_failures?: number | null };
   counts_known?: boolean;
   processed: number;
   errors: number;

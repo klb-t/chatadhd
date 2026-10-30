@@ -235,6 +235,94 @@ TEST_SUITE("chat_engine") {
     CHECK(c.size() == 1);  // just the text part
   }
 
+  // Audit 30.10 (finding "attachment cut without notice"): a cut is shown. Data: a synthetic 20000-char file made in the test.
+  TEST_CASE("attachments: the preset limit cuts to exactly 15000 characters, with a marker and exact numbers; 0 = the whole file") {
+    Env env;
+    auto txt = env.td.path() / "big.txt";
+    { std::ofstream f(txt); f << std::string(20000, 'a'); }
+    auto engine = env.engine();
+    Json notes;
+    Json c = unwrap(engine.build_content_checked("q", {txt.string()}, &notes));
+    const std::string body = c[1]["text"].get<std::string>();
+    CHECK(body.find(std::string(15000, 'a') + "\n") != std::string::npos);
+    CHECK(body.find(std::string(15001, 'a')) == std::string::npos);
+    CHECK(body.find("[cut: 15000 of 20000 characters of big.txt were sent; the rest was left out]") != std::string::npos);
+    REQUIRE(notes.size() == 1);
+    CHECK(notes[0] == Json{{"file", "big.txt"}, {"status", "cut"}, {"original_chars", 20000}, {"kept_chars", 15000}});
+
+    env.cfg.set("chat_attachment_max_chars", 0);
+    Json notes0;
+    Json whole = unwrap(engine.build_content_checked("q", {txt.string()}, &notes0));
+    const std::string body0 = whole[1]["text"].get<std::string>();
+    CHECK(body0.find(std::string(20000, 'a')) != std::string::npos);
+    CHECK(body0.find("[cut:") == std::string::npos);
+    CHECK(notes0.empty());
+
+    env.cfg.set("chat_attachment_max_chars", 100);
+    Json notes100;
+    Json small = unwrap(engine.build_content_checked("q", {txt.string()}, &notes100));
+    CHECK(notes100[0]["kept_chars"] == 100);
+    CHECK(small[1]["text"].get<std::string>().find("[cut: 100 of 20000 characters of big.txt") != std::string::npos);
+  }
+
+  TEST_CASE("attachments: the cut reaches the send result and the context receipt") {
+    Env env;
+    auto txt = env.td.path() / "big.txt";
+    { std::ofstream f(txt); f << std::string(20000, 'b'); }
+    env.transport.expect("POST", "https://api.test/chat/completions", net::ScriptedTransport::Reply::json(200, openai_reply("ok")));
+    auto engine = env.engine();
+    ChatOptions opts;
+    opts.stream = false;
+    opts.attachments = {txt.string()};
+    auto r = unwrap(engine.send("see the file", opts));
+    REQUIRE(r.attachment_notes.size() == 1);
+    CHECK(r.attachment_notes[0] == Json{{"file", "big.txt"}, {"status", "cut"}, {"original_chars", 20000}, {"kept_chars", 15000}});
+    const Json msgs = unwrap(env.db->get_msgs(r.conv_id));
+    bool found = false;
+    for (const auto& m : msgs) {
+      if (m.metadata.is_object() && m.metadata.contains("context_trace") && m.metadata["context_trace"]["receipt"].contains("attachments")) {
+        CHECK(m.metadata["context_trace"]["receipt"]["attachments"][0]["original_chars"] == 20000);
+        CHECK(m.metadata["context_trace"]["receipt"]["attachments"][0]["kept_chars"] == 15000);
+        found = true;
+      }
+    }
+    CHECK(found);
+  }
+
+  // Finding "unreadable attachment goes silently": a directory named like a text file exists but cannot be read as a file.
+  TEST_CASE("attachments: an unreadable file refuses the send by default, naming the file; no model call is made") {
+    Env env;
+    auto bad = env.td.path() / "broken.txt";
+    std::filesystem::create_directory(bad);
+    auto engine = env.engine();
+    ChatOptions opts;
+    opts.stream = false;
+    opts.attachments = {bad.string()};
+    auto r = engine.send("what is in the file?", opts);
+    REQUIRE_FALSE(r);
+    CHECK(r.error().message.find("broken.txt") != std::string::npos);
+    CHECK(r.error().message.find("cannot be read") != std::string::npos);
+    CHECK(env.transport.requests().size() == 0);
+  }
+
+  TEST_CASE("attachments: chat_attachment_on_unreadable = send_with_warning sends, with the warning in the text and the result") {
+    Env env;
+    env.cfg.set("chat_attachment_on_unreadable", "send_with_warning");
+    auto bad = env.td.path() / "broken.txt";
+    std::filesystem::create_directory(bad);
+    env.transport.expect("POST", "https://api.test/chat/completions", net::ScriptedTransport::Reply::json(200, openai_reply("ok")));
+    auto engine = env.engine();
+    ChatOptions opts;
+    opts.stream = false;
+    opts.attachments = {bad.string()};
+    auto r = unwrap(engine.send("what is in the file?", opts));
+    REQUIRE(r.attachment_notes.size() == 1);
+    CHECK(r.attachment_notes[0]["file"] == "broken.txt");
+    CHECK(r.attachment_notes[0]["status"] == "unreadable");
+    REQUIRE(env.transport.requests().size() == 1);
+    CHECK(env.transport.requests()[0].body.find("[the attachment broken.txt could not be read and is not included]") != std::string::npos);
+  }
+
   TEST_CASE("configure_reasoning: non-thinking models get no reasoning block") {
     Json payload = Json::object();
     ChatEngine::configure_reasoning(payload, "openai/gpt-4o-mini", std::nullopt);

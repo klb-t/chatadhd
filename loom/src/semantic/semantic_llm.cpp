@@ -5,6 +5,7 @@
 #include "loom/config.h"
 #include "loom/log.h"
 #include "loom/net/http.h"
+#include "loom/runtime_profile.h"
 #include "loom/semantic_analyzer.h"
 #include "loom/use_model.h"
 #include "loom/util/sha256.h"
@@ -80,7 +81,8 @@ void SemanticLLM::record_result(std::uint64_t generation, bool success) {
     failures_.store(0);
   } else {
     int failures = failures_.fetch_add(1) + 1;
-    if (failures >= kMaxConsecutiveFailures) {
+    const int limit = max_consecutive_failures();
+    if (limit > 0 && failures >= limit) {
       disabled_.store(true);
       log::warn("loom.semantic_llm",
                 "Semantic LLM disabled after {} consecutive failures. "
@@ -258,6 +260,20 @@ Json SemanticLLM::merge(Json llm, const Analysis& regex) {
     }
   }
   return llm;
+}
+
+int SemanticLLM::max_consecutive_failures() const {
+  const Json set = cfg_.get("semantic_llm_max_failures", Json(nullptr));
+  if (set.is_number()) return std::max(0, static_cast<int>(set.get<double>()));
+  auto profile = RuntimeProfile::load("worker", cfg_.path().parent_path());
+  if (!profile) return 0;  // no preset readable: nothing is switched off behind the person's back
+  return std::max(0, profile->values().value("llm_max_consecutive_failures", 0));
+}
+
+Json SemanticLLM::state_json() const {
+  const bool disabled = disabled_.load();
+  return Json{{"disabled", disabled}, {"reason", disabled ? Json("consecutive_failures") : Json(nullptr)},
+              {"consecutive_failures", failures_.load()}, {"max_consecutive_failures", max_consecutive_failures()}};
 }
 
 void SemanticLLM::reset_failures() noexcept {
