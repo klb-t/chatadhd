@@ -145,9 +145,12 @@ TEST_SUITE("structure") {
   TEST_CASE("every field of every shipped template has a reader") {
     const auto& tf = structure::template_fields();
     const auto& ef = structure::expect_fields();
-    for (const auto& t : presets().at("templates").items()) {
-      for (const auto& k : t.value().items()) CHECK_MESSAGE(std::find(tf.begin(), tf.end(), k.key()) != tf.end(), t.key() << "." << k.key() << " has no reader");
-      for (const auto& e : t.value().at("expects"))
+    const Json& shipped = presets().at("templates");
+    for (const auto& t : shipped.items()) {
+      const Json& tpl = t.value();
+      for (const auto& k : tpl.items()) CHECK_MESSAGE(std::find(tf.begin(), tf.end(), k.key()) != tf.end(), t.key() << "." << k.key() << " has no reader");
+      const Json& expects = tpl.at("expects");
+      for (const auto& e : expects)
         for (const auto& k : e.items()) CHECK_MESSAGE(std::find(ef.begin(), ef.end(), k.key()) != ef.end(), t.key() << ".expects." << k.key() << " has no reader");
     }
     // and a field nobody reads is said, not dropped
