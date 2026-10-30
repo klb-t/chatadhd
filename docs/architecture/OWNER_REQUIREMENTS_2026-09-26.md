@@ -976,6 +976,13 @@ Niezalogowany widzi standardowy pełnoekranowy interfejs (okna, zamykanie itd.) 
 
 Osobna, tania sesja: pilnuje ekosystemu wszystkich projektów i zapisuje pomysły, których brakuje (przykład właściciela: trenowanie LLM — 'Lem' to najpewniej LLM z dyktowania — na czacie ADHD); buduje czytelną dla ludzi listę i dokumentację kompetencji właściciela z dowodami z repozytoriów; później zadania ogólne nad wszystkimi projektami. Uwaga: R100 zabrania oddawania jego danych do trenowania u dostawców — własny model trenowany prywatnie to inny przypadek, do rozstrzygnięcia w projekcie.
 
+## R107 — Maszyna budzi się, gdy ktoś wchodzi do usługi (WatchDog i inne), i śpi, gdy nikt nie korzysta (owner, 2026-10-30)
+> było umówione że maszyna się będzie włączała jak ktoś wejdzie na Watch doga lub innych z serwisów po to płacimy za stały adres IP.
+> rozmawialiśmy że chodzi o to żeby Marcin nie musiał do mnie dzwonić żebym włączył Watch Dogga
+> ale żeby nie płacić za włączoną maszynę jak nikt nie korzysta
+
+Wejście na adres usługi (WatchDog, czat, AGEDS — lista otwarta) uruchamia zatrzymaną maszynę bez telefonu do właściciela (przykład: prof. Hoffmann otwiera WatchDoga); gdy nikt nie korzysta i nie ma pracy, maszyna się wyłącza, żeby nie płacić. Wcześniejsza ustna umowa nie była zapisana ani zrobiona (koordynator, 2026-10-30). Technika: budzik poza maszyną (np. Cloud Run, darmowy próg) jako stały adres wejściowy + wyłączanie po bezczynności na maszynie; progi jako presety.
+
 ## Decision — rebuild, don't recover
 > "nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane"
 

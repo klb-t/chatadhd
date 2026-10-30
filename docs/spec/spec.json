@@ -5,8 +5,8 @@
  "sources": {
   "owner": {
    "path": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
-   "sha256": "2685117faeac35c25380ae71689f9edf17caa4bde62892fda6eb72129d2ab682",
-   "lines": 993
+   "sha256": "93ed66cbc6ce361ddda60138a855402c863e404aff9334575361be900530c1c2",
+   "lines": 1000
   },
   "slowa": {
    "path": "docs/architecture/SLOWA_WLASCICIELA_2026-10-16.md",
@@ -6254,6 +6254,58 @@
    ]
   },
   {
+   "id": "s_f714289c9a93",
+   "aliases": [
+    "R107"
+   ],
+   "kind": "requirement",
+   "title": "Maszyna budzi się, gdy ktoś wchodzi do usługi (WatchDog i inne), i śpi, gdy nikt nie korzysta",
+   "date": "2026-10-30",
+   "theme": "owner_requirements",
+   "theme_inferred": false,
+   "understanding": {
+    "state": "none"
+   },
+   "quotes": [
+    {
+     "text": "było umówione że maszyna się będzie włączała jak ktoś wejdzie na Watch doga lub innych z serwisów po to płacimy za stały adres IP.\nrozmawialiśmy że chodzi o to żeby Marcin nie musiał do mnie dzwonić żebym włączył Watch Dogga\nale żeby nie płacić za włączoną maszynę jak nikt nie korzysta",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:980-982",
+     "ref": null,
+     "attr": [],
+     "lead": null,
+     "secondary": false
+    }
+   ],
+   "sense": null,
+   "summary": null,
+   "restatement": [
+    {
+     "text": "Wejście na adres usługi (WatchDog, czat, AGEDS — lista otwarta) uruchamia zatrzymaną maszynę bez telefonu do właściciela (przykład: prof. Hoffmann otwiera WatchDoga); gdy nikt nie korzysta i nie ma pracy, maszyna się wyłącza, żeby nie płacić. Wcześniejsza ustna umowa nie była zapisana ani zrobiona (koordynator, 2026-10-30). Technika: budzik poza maszyną (np. Cloud Run, darmowy próg) jako stały adres wejściowy + wyłączanie po bezczynności na maszynie; progi jako presety.",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:984"
+    }
+   ],
+   "commentary": [],
+   "status": null,
+   "gap_text": null,
+   "evidence": [],
+   "next_step": null,
+   "refs": [],
+   "supersedes": [],
+   "superseded_by": [],
+   "supersession_notes": [],
+   "tags": [],
+   "heading_note": "owner, 2026-10-30",
+   "sources": [
+    {
+     "role": "owner",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:979-984"
+    }
+   ],
+   "files": [
+    "owner"
+   ]
+  },
+  {
    "id": "s_18ec73967a7b",
    "aliases": [
     "owner:decision-rebuild-don-t-recover"
@@ -6269,7 +6321,7 @@
    "quotes": [
     {
      "text": "\"nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane\"",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:980",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:987",
      "ref": null,
      "attr": [],
      "lead": null,
@@ -6281,7 +6333,7 @@
    "restatement": [
     {
      "text": "Recovered versions (`history/chatadhd_v0.8.3`, `history/chatadhd_v0.9.0`) and\nthe historical report are sources of requirements, ideas and data assets\n(e.g. `film_structure.json`), and real ground truth for self-discovery tests —\nnot code to merge. Everything is rebuilt in Loom with tests.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:982-985"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:989-992"
     }
    ],
    "commentary": [],
@@ -6298,7 +6350,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:979-985"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:986-992"
     }
    ],
    "files": [
@@ -6324,7 +6376,7 @@
    "restatement": [
     {
      "text": "`workbench_mockup_2026-09-26.webp`: dockable/floating panels (conversation\nlist, active conversation, knowledge graph with active context window, project\nstructure with dimmed high-confidence auto-completable nodes, artifact views\nfor music/video with timeline + storyboard, video player, execution\nenvironment with agent), multi-format ingestion, Loom SDK at the centre.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:988-992"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:995-999"
     }
    ],
    "commentary": [],
@@ -6341,7 +6393,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:987-992"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:994-999"
     }
    ],
    "files": [
