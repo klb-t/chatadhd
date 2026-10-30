@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 import { api } from "../api";
+import { useShellText } from "../shell/text";
 
 const POLL_MS = 3000;
 
 export default function LogPanel() {
+  const tx = useShellText();
   const [lines, setLines] = useState<string[]>([]);
   const [filter, setFilter] = useState("");
   const [auto, setAuto] = useState(true);
@@ -34,7 +36,7 @@ export default function LogPanel() {
           onChange={(e) => setFilter(e.target.value)}
           data-testid="log-filter"
         />
-        <button onClick={refresh}>Refresh</button>
+        <button onClick={refresh}>{tx("lit_refresh")}</button>
         <label style={{ fontSize: 12, whiteSpace: "nowrap" }}>
           <input type="checkbox" checked={auto} onChange={(e) => setAuto(e.target.checked)} /> auto
         </label>

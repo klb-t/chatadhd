@@ -16,6 +16,7 @@ import type { Box } from "./dock";
 import { LAYOUTS } from "../start-view";
 import { applyCouplingFix } from "./coupling";
 import { applyStyleFix } from "./style";
+import { useShellText } from "../../shell/text";
 
 type Lang = "pl" | "en" | string;
 const say = (w: { pl?: string; en?: string } | undefined, lang: Lang) => (lang === "pl" ? w?.pl ?? w?.en : w?.en ?? w?.pl) ?? "";
@@ -52,6 +53,7 @@ export interface ArrangeHook { handlers: ArrangeHandlers; chips: ReactNode; advi
 const NO_EXTRA: WinAdvisory[] = [];
 /** `extra`: advisories of other parts of the window system shown and answered the same way (W6: coupling_cycle and the broken bindings). */
 export function useArrange(win: WState, winRef: { current: WState }, commit: (s: WState) => void, lang: Lang, title: (id: string) => string, extra: WinAdvisory[] = NO_EXTRA): ArrangeHook {
+  const tx = useShellText();
   const [scr, setScr] = useState(screen);
   useEffect(() => {
     const on = () => setScr(screen());
@@ -137,7 +139,7 @@ export function useArrange(win: WState, winRef: { current: WState }, commit: (s:
   }, [lang, load]);
 
   const order = ARRANGE.advisory_button_order ?? ["keep", "dont_ask", "fix"];
-  const choices = ARRANGE.choices ?? [{ id: "keep", label: { pl: "Zostaw", en: "Keep it" } }, { id: "dont_ask", label: { pl: "Zostaw, nie pytaj więcej", en: "Keep it, don't ask again" } }];
+  const choices = ARRANGE.choices ?? [{ id: "keep", label: { pl: "Zostaw", en: tx("lit_keep_it") } }, { id: "dont_ask", label: { pl: tx("lit_zostaw_nie_pytaj_wi_cej"), en: tx("lit_keep_it_don_t_ask_again") } }];
   const node = chips.length ? (
     <div className="win-chips" role="status" aria-live="polite" data-testid="window-advisories">
       {chips.map((a) => {

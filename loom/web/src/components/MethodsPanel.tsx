@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { methodAcceptance, methodClaimActive, methodCommand, methodEntityRole, methodObject, methodPredicateRole,
   methodPretty, methodResultLineage, methodRows, parseMethodObject, parseReceiptIds, saveAcceptedMethodProfile, type MethodJson, type MethodsTransport } from "../methods/graph-methods";
 import "./methods-panel.css";
+import { useShellText } from "../shell/text";
 
 function text(value: unknown): string { return typeof value === "string" ? value : value == null ? "unknown" : JSON.stringify(value); }
 function failure(error: unknown): string { return error instanceof Error ? error.message : String(error); }
@@ -11,6 +12,7 @@ function FullRecord({ value, label }: { value: unknown; label: string }) {
 
 /** Browsing, validation and graph acceptance only; this panel never executes a method. */
 export default function MethodsPanel({ transport = {} }: { transport?: MethodsTransport }) {
+  const t = useShellText();
   const [catalog, setCatalog] = useState<MethodJson | null>(null), [capabilities, setCapabilities] = useState<MethodJson | null>(null);
   const [profileId, setProfileId] = useState(""), [profileDraft, setProfileDraft] = useState("{}"), [receiptsDraft, setReceiptsDraft] = useState("[]");
   const [profileSource, setProfileSource] = useState<MethodJson | null>(null), [saveSlot, setSaveSlot] = useState("");
@@ -152,12 +154,12 @@ export default function MethodsPanel({ transport = {} }: { transport?: MethodsTr
   });
 
   return <section className="methods-panel" data-testid="methods-panel">
-    <h2>Graph methods</h2>
+    <h2>{t("lit_graph_methods")}</h2>
     <p>Methods, parameters, prompts, recipes, presets and combinations are native graph records. Availability comes from the host; measured execution comes from recorded runs.</p>
     {!transport.methods && <p role="status" data-testid="methods-unavailable">Graph method commands are unavailable in this host.</p>}
     {error && <p role="alert">{error}</p>}{notice && <p role="status">{notice}</p>}
     <div className="methods-actions"><button onClick={refresh} disabled={busy || !transport.methods}>Refresh library</button></div>
-    {capabilities && <FullRecord value={capabilities} label="Native capabilities and availability" />}
+    {capabilities && <FullRecord value={capabilities} label={t("lit_native_capabilities_and_availability")} />}
     <div className="methods-profile-fields">
       <label>Method profile<select aria-label="Method profile" value={profileId} onChange={event => chooseProfile(event.target.value)} data-testid="methods-profile"><option value="">New profile / supplied JSON</option>
         {profiles.map(row => <option key={text(row.id)} value={text(row.id)}>{text(row.label ?? row.id)}</option>)}</select></label>
@@ -165,34 +167,34 @@ export default function MethodsPanel({ transport = {} }: { transport?: MethodsTr
       <label>Library receipt IDs (JSON)<textarea value={receiptsDraft} onChange={event => { setReceiptsDraft(event.target.value); setPreview(null); setSnapshot(null); }} spellCheck={false} data-testid="methods-receipts-json" /></label>
     </div>
     <div className="methods-actions"><button onClick={load} disabled={busy || !transport.methods}>Load graph</button></div>
-    <p>A profile selects exact versions and receipt IDs. Parameter precedence, signed weights and nested members remain editable JSON data.</p>
+    <p>{t("lit_a_profile_selects_exact_versions_and_r")}</p>
     <label>Target library<input value={target} onChange={event => { setTarget(event.target.value); setPreview(null); }} data-testid="methods-target" /></label>
     <label>Actor<input value={actor} onChange={event => { setActor(event.target.value); setPreview(null); }} data-testid="methods-actor" /></label>
     <label>Known at (timestamp with timezone)<input value={knownAt} onChange={event => { setKnownAt(event.target.value); setPreview(null); }} data-testid="methods-known-at" /></label>
-    <button onClick={previewProfile} disabled={busy || !transport.methods || !target.trim() || !actor.trim() || !knownAt.trim()}>Validate profile for library</button>
-    <p>Profile validation previews the complete packet before acceptance. Changing an existing immutable definition requires the new-version editor below.</p>
-    {catalog && <FullRecord value={catalog} label="Complete native library catalog" />}
-    {profileSource && <FullRecord value={profileSource} label="Original profile record and source" />}
-    <label>Read native receipt ID<input value={readId} onChange={event => setReadId(event.target.value)} list="methods-receipt-ids" /></label>
+    <button onClick={previewProfile} disabled={busy || !transport.methods || !target.trim() || !actor.trim() || !knownAt.trim()}>{t("lit_validate_profile_for_library")}</button>
+    <p>{t("lit_profile_validation_previews_the_comple")}</p>
+    {catalog && <FullRecord value={catalog} label={t("lit_complete_native_library_catalog")} />}
+    {profileSource && <FullRecord value={profileSource} label={t("lit_original_profile_record_and_source")} />}
+    <label>{t("lit_read_native_receipt_id")}<input value={readId} onChange={event => setReadId(event.target.value)} list="methods-receipt-ids" /></label>
     <datalist id="methods-receipt-ids">{receipts.map(row => <option key={text(row.id ?? row.receipt_id)} value={text(row.id ?? row.receipt_id)} />)}</datalist>
-    <button onClick={read} disabled={busy || !transport.methods || !readId.trim()}>Read receipt</button>
+    <button onClick={read} disabled={busy || !transport.methods || !readId.trim()}>{t("lit_read_receipt")}</button>
     {receiptRead && <div data-testid="methods-receipt-read"><p>Row drift matches: {text(methodObject(receiptRead.row_drift).matches)}</p><FullRecord value={receiptRead} label="Complete native receipt and row drift" /></div>}
 
     {snapshot && <>
       <p data-testid="methods-snapshot">Snapshot: <code>{text(snapshot.snapshot_sha256)}</code>; {entities.length} entities, {claims.length} claims, {methodRows(snapshot.sources).length} sources.</p>
-      <FullRecord value={vocabulary} label="Caller-defined native kinds and predicates" />
-      <FullRecord value={snapshot} label="Complete native snapshot, source captures and receipt hashes" />
-      <label>Filter graph records<input value={filter} onChange={event => setFilter(event.target.value)} /></label>
+      <FullRecord value={vocabulary} label={t("lit_caller_defined_native_kinds_and_predic")} />
+      <FullRecord value={snapshot} label={t("lit_complete_native_snapshot_source_captur")} />
+      <label>{t("lit_filter_graph_records")}<input value={filter} onChange={event => setFilter(event.target.value)} /></label>
       <div className="methods-table-scroll"><table><thead><tr><th>Role / native kind</th><th>Native ID / label</th><th>Status</th><th>Definition / text hash</th><th>Inspect</th></tr></thead><tbody>
         {entities.filter(row => [row.id, row.label, row.kind, methodEntityRole(row, vocabulary)].some(value => text(value).toLocaleLowerCase().includes(filter.toLocaleLowerCase()))).map(row => {
           const attrs = methodObject(row.attrs);
-          return <tr key={text(row.id)} data-testid="methods-entity" data-entity-id={text(row.id)}><td>{methodEntityRole(row, vocabulary) ?? "Unmapped kind"}<small>{text(row.kind)}</small></td>
+          return <tr key={text(row.id)} data-testid="methods-entity" data-entity-id={text(row.id)}><td>{methodEntityRole(row, vocabulary) ?? t("lit_unmapped_kind")}<small>{text(row.kind)}</small></td>
             <td><code>{text(row.id)}</code><small>{text(row.label)}</small></td><td>{text(row.status)}</td><td><code>{text(attrs.definition_sha256 ?? attrs.text_sha256)}</code></td>
-            <td><button onClick={() => chooseEntity(row)}>Inspect record</button></td></tr>;
+            <td><button onClick={() => chooseEntity(row)}>{t("lit_inspect_record")}</button></td></tr>;
         })}</tbody></table></div>
       {selected && <article className="methods-record" data-testid="methods-selected-record">
-        <h3>{text(selected.label ?? selected.id)}</h3><p>{selectedRole ?? "Unmapped kind"}: <code>{entityId}</code></p>
-        <FullRecord value={selected} label="Complete original native entity" />
+        <h3>{text(selected.label ?? selected.id)}</h3><p>{selectedRole ?? t("lit_unmapped_kind")}: <code>{entityId}</code></p>
+        <FullRecord value={selected} label={t("lit_complete_original_native_entity")} />
         {selectedRole === "method_version" && <button onClick={() => setProducerFilter(entityId)} data-testid="methods-results-from-version">Results from this version</button>}
         <div data-testid="methods-edges">{claims.filter(row => row.subject === entityId || row.object === entityId).map(row => <details key={text(row.id)}>
           <summary>{methodPredicateRole(row, vocabulary) ?? text(row.predicate)}: {text(row.subject)} → {text(row.object)} ({methodClaimActive(row) ? "active" : text(methodObject(row.assessment).status)})</summary><pre>{methodPretty(row)}</pre>
@@ -204,40 +206,40 @@ export default function MethodsPanel({ transport = {} }: { transport?: MethodsTr
         {editable && <>
           <label>New version attributes (JSON)<textarea value={attrsDraft} onChange={event => { setAttrsDraft(event.target.value); setPreview(null); }} spellCheck={false} data-testid="methods-version-json" /></label>
           <button onClick={edit} disabled={busy || !target.trim() || !actor.trim() || !knownAt.trim()} data-testid="methods-preview-button">Validate new version</button>
-          <p>The host computes the new identity and hash. Existing version definitions and executed-result relations keep their original IDs.</p>
+          <p>{t("lit_the_host_computes_the_new_identity_and")}</p>
         </>}
       </article>}
       <label>Selection and parameter layers (JSON)<textarea value={selectionDraft} onChange={event => { setSelectionDraft(event.target.value); setResolution(null); setConfigSaved(false); }} spellCheck={false} data-testid="methods-selection-json" /></label>
-      <button onClick={resolve} disabled={busy}>Resolve selection without execution</button>
+      <button onClick={resolve} disabled={busy}>{t("lit_resolve_selection_without_execution")}</button>
       {resolution && <div data-testid="methods-resolution"><p>Resolution: <code>{text(resolution.resolution_sha256)}</code></p>
         {methodRows(resolution.leaves).map((row, index) => <details key={index} data-testid="methods-resolved-leaf"><summary>Occurrence {index + 1}: {text(row.method_version_id)}; available: {text(row.available)}; weight: {text(row.weight)}</summary><pre>{methodPretty(row)}</pre></details>)}
-        <FullRecord value={resolution} label="Complete resolution, repeated paths, parameters and unavailable capabilities" /></div>}
-      <h3>Found-result provenance</h3><p>These links are native Claims. Missing or inactive run/version links stay incomplete; accepting a graph does not verify a producer's execution or content truth.</p>
+        <FullRecord value={resolution} label={t("lit_complete_resolution_repeated_paths_par")} /></div>}
+      <h3>{t("lit_found_result_provenance")}</h3><p>These links are native Claims. Missing or inactive run/version links stay incomplete; accepting a graph does not verify a producer's execution or content truth.</p>
       <label>Producer method-version ID<select aria-label="Producer method-version ID" value={producerFilter} onChange={event => setProducerFilter(event.target.value)} data-testid="methods-producer-filter"><option value="">All recorded producers</option>
         {[...new Set([...producerIds, ...(producerFilter ? [producerFilter] : [])])].map(id => <option key={id} value={id}>{id}</option>)}</select></label>
-      <button onClick={() => setProducerFilter("")}>Show all results</button>
+      <button onClick={() => setProducerFilter("")}>{t("lit_show_all_results")}</button>
       {visibleResults.length === 0 && <p data-testid="methods-no-results">{producerFilter ? "No result provenance Claims for this exact version." : "No result provenance Claims in this graph."}</p>}
       {visibleResults.map(row => <article key={text(row.entity.id)} data-testid="methods-result" data-result-id={text(row.entity.id)} data-complete={row.complete}>
-        <p><code>{text(row.entity.id)}</code> — {row.complete ? "Active method-version and run relations" : "Incomplete active provenance"}</p>
+        <p><code>{text(row.entity.id)}</code> — {row.complete ? t("lit_active_method_version_and_run_relation") : t("lit_incomplete_active_provenance")}</p>
         <p>Method versions: {row.methodVersions.map(version => text(version.id)).join(", ") || "unknown"}; runs: {row.runs.map(runRow => text(runRow.id)).join(", ") || "unknown"}</p>
-        <FullRecord value={row} label="Full result entity, exact endpoints and all provenance Claims" />
+        <FullRecord value={row} label={t("lit_full_result_entity_exact_endpoints_and")} />
       </article>)}
-      <button onClick={results} disabled={busy}>Read native result lineage</button>
+      <button onClick={results} disabled={busy}>{t("lit_read_native_result_lineage")}</button>
       {lineage && <div data-testid="methods-native-lineage"><FullRecord value={lineage} label="Complete native result lineage response" /></div>}
     </>}
     {preview && <div data-testid="methods-version-preview"><p>{previewKind === "version" ? <>New native version: <code>{text(preview.new_version_id)}</code></> : "Validated profile packet; its selection is unchanged."}</p>
-      <FullRecord value={preview} label="Validated packet, version edges, exact selection and CAS expectations" />
+      <FullRecord value={preview} label={t("lit_validated_packet_version_edges_exact_s")} />
       <button onClick={accept} disabled={busy || previewStamp !== stamp} data-testid="methods-accept-button">{previewKind === "version" ? "Accept new version into library" : "Accept profile into library"}</button>
     </div>}
     {receipt && <div data-testid="methods-accepted"><p>Receipt: <code>{text(methodObject(receipt.receipt).id)}</code>; row drift matches: {text(methodObject(receipt.row_drift).matches)}</p>
-      <FullRecord value={receipt} label="Complete acceptance result" /></div>}
+      <FullRecord value={receipt} label={t("lit_complete_acceptance_result")} /></div>}
     {accepted && <div data-testid="methods-config-selection"><p>{configSaved ? "Global native config selection saved and read back." : "Library receipt is committed. Global native config selection has not been saved."}</p>
       <p>Saving uses the selection JSON after native validation. Publication does not select the new version automatically; choose its exact ID explicitly. The accepted graph rows stay unchanged.</p>
       {!snapshot && <label>Selection and parameter layers (JSON)<textarea value={selectionDraft} onChange={event => { setSelectionDraft(event.target.value); setConfigSaved(false); }} spellCheck={false} data-testid="methods-selection-json" /></label>}
       <label>Global native config slot<select aria-label="Global native config slot" value={saveSlot} onChange={event => { setSaveSlot(event.target.value); setConfigSaved(false); }} data-testid="methods-save-slot"><option value="">Choose an existing native config slot</option>
         {configSlots.map(row => <option key={text(row.id)} value={text(row.id)}>{text(row.label ?? row.id)}</option>)}</select></label>
       <button onClick={saveProfile} disabled={busy || !saveSlot || !transport.methods} data-testid="methods-save-config">Save accepted profile selection</button>
-      <FullRecord value={accepted} label="Frozen accepted profile and receipt IDs to save" />
+      <FullRecord value={accepted} label={t("lit_frozen_accepted_profile_and_receipt_id")} />
     </div>}
   </section>;
 }

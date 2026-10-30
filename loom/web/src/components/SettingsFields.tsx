@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { api } from "../api";
 import { SettingsFieldsDoc, defaultLabel, parseSettingsFields, editLabel } from "../settings/field-meta";
+import { useShellText } from "../shell/text";
 
 // Read-only reference table: default presence and edit rule of every settings key.
 export default function SettingsFields() {
+  const t = useShellText();
   const [doc, setDoc] = useState<SettingsFieldsDoc | null>(null);
   const [error, setError] = useState("");
   useEffect(() => {
@@ -15,7 +17,7 @@ export default function SettingsFields() {
     <details data-testid="settings-fields">
       <summary className="section-title">Field reference (default and edit rule)</summary>
       <table>
-        <thead><tr><th>Key</th><th>Default</th><th>Edit rule</th><th>Description</th></tr></thead>
+        <thead><tr><th>{t("lit_key")}</th><th>{t("lit_default")}</th><th>{t("lit_edit_rule")}</th><th>{t("lit_description")}</th></tr></thead>
         <tbody>
           {doc.fields.map((f) => (
             <tr key={`${f.scope}:${f.key}`} data-testid={`settings-field-${f.key}`}>

@@ -3,6 +3,7 @@ import { api } from "../api";
 import { analysisCall, analysisJson, analysisObject, exactAnalysisCommand, methodIdentityClaims, methodVersions, parseAnalysisObject, readAnalysisPrepared,
   type AnalysisObject, type AnalysisPrepared, type AnalysisTransport } from "../api/analysis";
 import "./analysis-panel.css";
+import { useShellText } from "../shell/text";
 
 const errorText = (error: unknown) => error instanceof Error ? error.message : String(error);
 const nativeJson = (value: AnalysisObject, key: string) => {
@@ -13,6 +14,7 @@ const nativeJson = (value: AnalysisObject, key: string) => {
 const defaults = {};
 
 export default function AnalysisPanel({ transport = api }: { transport?: AnalysisTransport }) {
+  const t = useShellText();
   const [catalog, setCatalog] = useState<AnalysisObject[]>([]);
   const [selected, setSelected] = useState("semantic.analysis");
   const [contractDraft, setContractDraft] = useState("");
@@ -122,12 +124,12 @@ export default function AnalysisPanel({ transport = api }: { transport?: Analysi
     if (result.prepared_id !== value.prepared_id || result.request_identity_hash !== value.request_identity_hash)
       throw new Error("Execution returned a different prepared identity. No retry was made.");
     setPrepared(result); setHeld(result.status === "requires_confirmation" ? result : null); setConfirmationRef("");
-    setNotice(result.attempted ? "The single attempt is retained with first-response provenance and validation." : `No provider call was made: ${result.status}.`);
+    setNotice(result.attempted ? t("lit_the_single_attempt_is_retained_with_fi") : `No provider call was made: ${result.status}.`);
   });
   const inspect = () => run(async epoch => {
     if (!prepared) return;
     const result = readAnalysisPrepared(await analysisCall(transport.analysis?.bind(transport), { operation: "inspect", prepared_id: prepared.prepared_id }));
-    if (mounted.current && epoch === generation.current) { setPrepared(result); setHeld(result.status === "requires_confirmation" ? result : null); setNotice("Saved attempt inspected. No provider call was made."); }
+    if (mounted.current && epoch === generation.current) { setPrepared(result); setHeld(result.status === "requires_confirmation" ? result : null); setNotice(t("lit_saved_attempt_inspected_no_provider_ca")); }
   });
   const setMode = (mode: string) => run(async epoch => {
     parseAnalysisObject(contractDraft, "Prompt contract");
@@ -163,7 +165,7 @@ export default function AnalysisPanel({ transport = api }: { transport?: Analysi
       outgoing_claim_ids: identityClaims,
       attrs_remove_paths: ["recipe_sha256", "prompt_sha256", "preset_sha256", "parameter_set_sha256"].map(key => ["definition", key]),
       target: targetDraft.trim(), known_at: new Date().toISOString(), actor: actor.trim() });
-    if (mounted.current && epoch === generation.current) { setVersionPreview(result); setNotice("New immutable method version prepared. Review the native acceptance request before saving."); }
+    if (mounted.current && epoch === generation.current) { setVersionPreview(result); setNotice(t("lit_new_immutable_method_version_prepared")); }
   });
   const acceptVersion = () => run(async epoch => {
     if (!versionPreview || typeof versionPreview.accept_request_json !== "string") throw new Error("Preview a new method version first.");
@@ -186,18 +188,18 @@ export default function AnalysisPanel({ transport = api }: { transport?: Analysi
   const acceptResult = () => run(async epoch => {
     if (!prepared?.result.accept_request_json) throw new Error("This attempt has no native bound result packet.");
     const result = await analysisCall(transport.methods?.bind(transport), { action: "accept", request_json: nativeJson(prepared.result, "accept_request_json") });
-    if (mounted.current && epoch === generation.current) { setResultReceipt(result); setNotice("The result packet and its actual run/version edges were accepted. Model content remains unverified."); }
+    if (mounted.current && epoch === generation.current) { setResultReceipt(result); setNotice(t("lit_the_result_packet_and_its_actual_run_v")); }
   });
 
   const decision = analysisObject(prepared?.result.usage_decision);
   const versions = snapshot ? methodVersions(snapshot) : [];
-  return <section className="analysis-panel" aria-label="Analysis workbench" data-testid="analysis-panel">
-    <h2>Analysis workbench</h2>
+  return <section className="analysis-panel" aria-label={t("lit_analysis_workbench")} data-testid="analysis-panel">
+    <h2>{t("lit_analysis_workbench")}</h2>
     <p>Inspect and edit the native prompt, output schema, parameters and presets. Preparation makes no provider call. Send uses the saved exact request once; credentials stay redacted.</p>
     {!transport.analysis && <p role="status">Native analysis is unavailable in this host. Drafts remain editable.</p>}
     <div className="analysis-actions"><label>Native contract<select aria-label="Native analysis contract" value={selected} onChange={event => setSelected(event.target.value)}>
       {catalog.map(item => <option key={String(item.id)} value={String(item.id)}>{String(item.id)} · v{String(item.version)}</option>)}</select></label>
-      <button disabled={busy || !transport.analysis} onClick={() => void loadContract()}>Load effective contract</button></div>
+      <button disabled={busy || !transport.analysis} onClick={() => void loadContract()}>{t("lit_load_effective_contract")}</button></div>
     {dirty && <p data-testid="analysis-draft-dirty">Unsaved draft. Loading a contract replaces its draft; refreshing a prepared result preserves edits.</p>}
     <label>Prompt contract JSON: prompts, output schema, parameters and presets<textarea data-testid="analysis-contract" value={contractDraft} spellCheck={false} onChange={event => { invalidate(); setContractDraft(event.target.value); }} /></label>
     <div className="analysis-actions" aria-label="Schema validation mode"><span>Schema validation</span>{["strict", "lenient", "off"].map(mode => <button key={mode} disabled={busy} onClick={() => void setMode(mode)}>{mode}</button>)}</div>
@@ -206,7 +208,7 @@ export default function AnalysisPanel({ transport = api }: { transport?: Analysi
     <label>Source and query bindings JSON<textarea data-testid="analysis-bindings" value={bindingsDraft} spellCheck={false} onChange={event => { invalidate(); setBindingsDraft(event.target.value); }} /></label>
     <label>Final provider request patch JSON<textarea data-testid="analysis-request-patch" value={patchDraft} spellCheck={false} onChange={event => { invalidate(); setPatchDraft(event.target.value); }} /></label>
     <label>Execution presets and usage forecasts JSON<textarea data-testid="analysis-execution" value={executionDraft} spellCheck={false} onChange={event => { invalidate(); setExecutionDraft(event.target.value); }} /></label>
-    <p>Expected output tokens, response bytes and cost may be numbers or null. Output caps are presets, not forecasts.</p>
+    <p>{t("lit_expected_output_tokens_response_bytes")}</p>
     <label className="analysis-check"><input type="checkbox" data-testid="analysis-body-override" checked={bodyOverride} onChange={event => { invalidate(); setBodyOverride(event.target.checked); }} />Use the exact edited body bytes</label>
     <label>Complete provider body, including whitespace<textarea data-testid="analysis-body" value={exactBody} spellCheck={false} onChange={event => { invalidate(); setExactBody(event.target.value); setBodyOverride(true); }} /></label>
     <div className="analysis-actions"><button data-testid="analysis-prepare" disabled={busy || !transport.analysis || !contractDraft} onClick={() => void prepare()}>Prepare full query</button>
@@ -223,14 +225,14 @@ export default function AnalysisPanel({ transport = api }: { transport?: Analysi
       <label>Decision reference<input data-testid="analysis-confirm-ref" value={confirmationRef} onChange={event => setConfirmationRef(event.target.value)} /></label>
       <button data-testid="analysis-confirm" disabled={busy || !confirmationRef.trim()} onClick={() => void send(held, { receipt_id: decision.receipt_id, approved: true, ref: confirmationRef.trim() })}>Confirm increase and send the held query</button>
       <button data-testid="analysis-decline" disabled={busy || !confirmationRef.trim()} onClick={() => void send(held, { receipt_id: decision.receipt_id, approved: false, ref: confirmationRef.trim() })}>Decline</button></section>}
-    <details><summary>Save a new graph method version</summary>
-      {!transport.methods || !profiles.length ? <p>Saving requires an available native method profile and an actual immutable version. No local substitute is created.</p> : <>
+    <details><summary>{t("lit_save_a_new_graph_method_version")}</summary>
+      {!transport.methods || !profiles.length ? <p>{t("lit_saving_requires_an_available_native_me")}</p> : <>
         <label>Native method profile<select data-testid="analysis-method-profile" value={profileId} onChange={event => { invalidate(); setProfileId(event.target.value); setSnapshot(null); setMethodProfileJson(null); setMethodReceipts([]); setVersionPreview(null); }}><option value="">Choose profile</option>
           {profiles.map(item => <option key={String(item.id)} value={String(item.id)}>{String(item.id)}</option>)}</select></label>
-        <button disabled={busy || !profileId} onClick={() => void loadProfile()}>Load native method versions</button>
+        <button disabled={busy || !profileId} onClick={() => void loadProfile()}>{t("lit_load_native_method_versions")}</button>
         <label>Version to extend<select data-testid="analysis-method-version" value={versionId} onChange={event => { invalidate(); setVersionId(event.target.value); setVersionPreview(null); }}>
           {versions.map(item => <option key={String(item.id)} value={String(item.id)}>{String(item.label ?? item.id)}</option>)}</select></label>
-        <label>Owner actor<input value={actor} onChange={event => { invalidate(); setActor(event.target.value); setVersionPreview(null); }} /></label>
+        <label>{t("lit_owner_actor")}<input value={actor} onChange={event => { invalidate(); setActor(event.target.value); setVersionPreview(null); }} /></label>
         <label>Native library target<input data-testid="analysis-method-target" value={targetDraft} onChange={event => { invalidate(); setTargetDraft(event.target.value); setVersionPreview(null); }} /></label>
         <label>Result entity kind (declared method data)<input data-testid="analysis-result-kind" value={resultKind} onChange={event => { setResultKind(event.target.value); setVersionPreview(null); }} /></label>
         <button data-testid="analysis-version-preview" disabled={busy || !snapshot || !versionId || !actor.trim() || !targetDraft.trim() || !resultKind.trim()} onClick={() => void previewVersion()}>Preview new immutable version</button>

@@ -29,6 +29,7 @@ def scan(path):
     text = path.read_text(encoding="utf8")
     for line in text.splitlines():
         if SKIP_LINE.search(line): continue
+        line = re.sub(r'(?<![:"\'])\s//\s.*$', '', line)   # a trailing code comment is not shown to anyone
         s = line.strip()
         if "<" not in s and "{" not in s and not s.startswith(('"', "'")): continue
         for m in ATTR.finditer(line):
@@ -45,6 +46,8 @@ def scan(path):
             for m in LIT.finditer(stripped):
                 v = m.group(1)
                 if " " in v or v.endswith(("…", ".", "!", "?")): found[v] += 1
+    for v in [v for v in found if v == "Promise" or v.startswith("new ") or re.fullmatch(r"[a-z_]+", v) or ", g: Record" in v]:
+        del found[v]   # type names, constructors and identifiers that look like words
     return found
 
 def current():

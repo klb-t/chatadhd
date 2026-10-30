@@ -8,12 +8,14 @@ import { pendingParts } from "../shell/context-strip";
 import { useNextRequest } from "../shell/use-next-request";
 import { useShellLanguage } from "../shell/text";
 import { useReceiptWords } from "./use-receipt-words";
+import { useShellText } from "../shell/text";
 
 interface Props {
   convId: string | null;
 }
 
 export default function ContextSlider({ convId }: Props) {
+  const t = useShellText();
   const { presets, error: presetError } = useResourcePresets();
   const { value: parameters, setValue: setParameters, storageError } = useResourceParameters(CONTEXT_PREVIEW_KEY, presets.context_preview.defaults, validContextPreview);
   const [preview, setPreview] = useState<ContextSet | null>(null);
@@ -53,7 +55,7 @@ export default function ContextSlider({ convId }: Props) {
   return (
     <div data-testid="context-slider">
       <div className="form-row">
-        <label htmlFor="ctx-text">Probe text</label>
+        <label htmlFor="ctx-text">{t("lit_probe_text")}</label>
         <textarea id="ctx-text" rows={2} value={parameters.text} onChange={event => setParameters(current => ({ ...current, text: event.target.value }))} />
       </div>
       {(["depth", "max_tokens"] as const).map(key => {

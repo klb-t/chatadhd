@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { inspectReply, packetFailure, packetResult, parseObject, record, type GraphReplyAction, type GraphReplyFragmentAddress, type PacketCommandApi } from "../graph/reply-inspection";
 import "./graph-reply-workbench.css";
 import { addressNativeGraphFragment } from "../graph/chat-graph";
+import { useShellText } from "../shell/text";
 
 export interface GraphReplyWorkbenchProps {
   packet?: PacketCommandApi;
@@ -23,6 +24,7 @@ const errorText = (failure: unknown) => failure instanceof Error ? failure.messa
 const initialHost = (props: GraphReplyWorkbenchProps) => json({ request_id: props.requestId ?? "", turn_id: props.turnId ?? "", model: props.model ?? "", parent_turn_id: null, recipe_sha256: null });
 
 export default function GraphReplyWorkbench(props: GraphReplyWorkbenchProps) {
+  const t = useShellText();
   const { packet, usagePolicy, onAddressFragment } = props;
   const [raw, setRaw] = useState(props.responseText ?? "");
   const [packetJson, setPacketJson] = useState("");
@@ -104,7 +106,7 @@ export default function GraphReplyWorkbench(props: GraphReplyWorkbenchProps) {
           }
         }
         if (guard) {
-          const estimate = parseObject(estimateJson, "Usage estimate");
+          const estimate = parseObject(estimateJson, t("lit_usage_estimate"));
           command.usage_estimate = { ...estimate, operation_id: `graph-reply:${crypto.randomUUID()}` };
         }
       }
@@ -141,46 +143,46 @@ export default function GraphReplyWorkbench(props: GraphReplyWorkbenchProps) {
     finally { if (mounted.current && epoch.current === currentEpoch) setBusy(false); }
   };
   const addressAvailable = props.recordedReply ? !!props.graphReply && !!props.onNativeAddressFragment : !!onAddressFragment;
-  return <section className="graph-reply-workbench" aria-label="Graph reply workbench" data-testid="graph-reply-workbench">
-    <h3>Graph reply workbench</h3>
-    <p>Compile an existing model response, inspect its logical parts, and apply it to a packet. Model content remains unverified.</p>
+  return <section className="graph-reply-workbench" aria-label={t("lit_graph_reply_workbench")} data-testid="graph-reply-workbench">
+    <h3>{t("lit_graph_reply_workbench")}</h3>
+    <p>{t("lit_compile_an_existing_model_response_ins")}</p>
     {props.recordedReply && <section aria-label="Recorded graph reply" data-testid="gr-recorded-reply">
       <p>Status: {String(props.recordedReply.status ?? "unknown")} · mode: {String(props.recordedReply.mode ?? "unknown")} · origin: model · content unverified</p>
       {props.recordedReply.error != null && <p role="alert" data-testid="gr-recorded-error">{json(props.recordedReply.error)} The original message and native capture references are retained.</p>}
       <details><summary>Recorded result, graph context and source captures</summary><pre data-testid="gr-recorded-json">{json(props.recordedReply)}</pre></details>
-      {props.recordedReply.execution_usage != null && <details><summary>Model usage receipts</summary><pre>{json(props.recordedReply.execution_usage)}</pre><p>Review the retained receipt in Usage settings. Confirmation alone does not resume this chat; a new send would create a separate request.</p></details>}
+      {props.recordedReply.execution_usage != null && <details><summary>{t("lit_model_usage_receipts")}</summary><pre>{json(props.recordedReply.execution_usage)}</pre><p>Review the retained receipt in Usage settings. Confirmation alone does not resume this chat; a new send would create a separate request.</p></details>}
     </section>}
     {!packet && <p role="status">Native packet API is unavailable on this transport. The response remains available below.</p>}
     <details className="gr-original"><summary>Original response</summary><pre data-testid="gr-original-response">{props.responseText ?? ""}</pre></details>
-    <label>Raw model response<textarea aria-label="Raw model response" value={raw} spellCheck={false} disabled={busy} onChange={event => { invalidate(); setRaw(event.target.value); }} /></label>
-    <details><summary>Base packet and host metadata</summary>
-      <label>Base GraphPacket JSON<textarea aria-label="Base GraphPacket JSON" value={packetJson} spellCheck={false} disabled={busy} onChange={event => { invalidate(); setPacketJson(event.target.value); }} /></label>
-      <button disabled={!packet || busy} onClick={() => void dispatch("make")}>Create empty packet</button>
-      <label>Host metadata JSON<textarea aria-label="Host metadata JSON" value={hostJson} spellCheck={false} disabled={busy} onChange={event => { invalidate(); setHostJson(event.target.value); }} /></label>
-      <p>Request ID, turn ID and model identify the actual response. Use a new turn ID for a retry. Parent turns must already exist in the packet.</p>
+    <label>{t("lit_raw_model_response")}<textarea aria-label={t("lit_raw_model_response")} value={raw} spellCheck={false} disabled={busy} onChange={event => { invalidate(); setRaw(event.target.value); }} /></label>
+    <details><summary>{t("lit_base_packet_and_host_metadata")}</summary>
+      <label>{t("lit_base_graphpacket_json")}<textarea aria-label={t("lit_base_graphpacket_json")} value={packetJson} spellCheck={false} disabled={busy} onChange={event => { invalidate(); setPacketJson(event.target.value); }} /></label>
+      <button disabled={!packet || busy} onClick={() => void dispatch("make")}>{t("lit_create_empty_packet")}</button>
+      <label>{t("lit_host_metadata_json")}<textarea aria-label={t("lit_host_metadata_json")} value={hostJson} spellCheck={false} disabled={busy} onChange={event => { invalidate(); setHostJson(event.target.value); }} /></label>
+      <p>{t("lit_request_id_turn_id_and_model_identify")}</p>
     </details>
-    <details><summary>Usage estimate</summary>
+    <details><summary>{t("lit_usage_estimate")}</summary>
       <label className="gr-check"><input type="checkbox" checked={guard} disabled={busy} onChange={event => { invalidate(); setGuard(event.target.checked); }} />Request the shared usage policy</label>
-      <label>Usage estimate JSON<textarea aria-label="Usage estimate JSON" value={estimateJson} disabled={busy} spellCheck={false} onChange={event => { invalidate(); setEstimateJson(event.target.value); }} /></label>
+      <label>{t("lit_usage_estimate_json")}<textarea aria-label={t("lit_usage_estimate_json")} value={estimateJson} disabled={busy} spellCheck={false} onChange={event => { invalidate(); setEstimateJson(event.target.value); }} /></label>
       <p>The estimate is caller supplied; unknown dimensions remain null. An operation ID is generated for each new command. Missing policy support produces a visible error.</p>
     </details>
     <div className="gr-actions"><button disabled={!packet || busy} onClick={() => void dispatch("compile_reply")}>Compile candidate</button>
-      <button disabled={!packet || !compiled || busy} onClick={() => void dispatch("validate_compilation")}>Validate compilation</button>
-      <label>Apply policy<select aria-label="Graph reply apply policy" value={acceptance} disabled={busy} onChange={event => { setPending(null); setResult(null); setAcceptance(event.target.value as "preview" | "auto"); }}><option value="preview">Candidate / explicit acceptance</option><option value="auto">Automatic acceptance policy</option></select></label>
-      <button disabled={!packet || !compiled || busy || !!result} onClick={() => void dispatch("apply_compiled_reply")}>Apply compiled reply</button></div>
+      <button disabled={!packet || !compiled || busy} onClick={() => void dispatch("validate_compilation")}>{t("lit_validate_compilation")}</button>
+      <label>{t("lit_apply_policy")}<select aria-label={t("lit_graph_reply_apply_policy")} value={acceptance} disabled={busy} onChange={event => { setPending(null); setResult(null); setAcceptance(event.target.value as "preview" | "auto"); }}><option value="preview">{t("lit_candidate_explicit_acceptance")}</option><option value="auto">{t("lit_automatic_acceptance_policy")}</option></select></label>
+      <button disabled={!packet || !compiled || busy || !!result} onClick={() => void dispatch("apply_compiled_reply")}>{t("lit_apply_compiled_reply")}</button></div>
     {status && <p role="status" data-testid="gr-status">{status}</p>}
     {error && <p role="alert" data-testid="gr-error">{error}</p>}
     {responseEnvelope?.executed === false && responseEnvelope.replayed === true && <p role="status" data-testid="gr-replay-status">Saved response replayed. This request did not execute again. Original admission: {String(record(responseEnvelope.usage_decision).status ?? "unknown")}. Current accounting: {String(record(responseEnvelope.usage_current_decision ?? responseEnvelope.usage_settlement ?? responseEnvelope.usage_decision).status ?? "unknown")}.</p>}
     {pending && <section className="gr-confirm" aria-label="Usage confirmation"><h4>Confirm usage increase</h4><pre data-testid="gr-usage-receipt">{json(pending.decision)}</pre>
       {!usagePolicy && <p role="alert">Usage confirmation API is unavailable. This operation remains held.</p>}
-      <button disabled={busy || !usagePolicy} onClick={() => void confirm(true)}>Confirm increase and retry exact operation</button><button disabled={busy || !usagePolicy} onClick={() => void confirm(false)}>Decline increase</button></section>}
+      <button disabled={busy || !usagePolicy} onClick={() => void confirm(true)}>{t("lit_confirm_increase_and_retry_exact_opera")}</button><button disabled={busy || !usagePolicy} onClick={() => void confirm(false)}>{t("lit_decline_increase")}</button></section>}
     {compiled && <><h4>Compiled response</h4><pre data-testid="gr-rendered-response">{String(compiled.response_text)}</pre><p>Origin: model · content unverified · structural validation does not establish truth.</p>
       <div className="gr-fragments">{fragments.map(fragment => <article key={fragment.entity_id} data-testid="gr-fragment"><header><strong>{fragment.local_id}</strong><span>{fragment.role}</span></header><pre>{fragment.text}</pre>
         <p>Code points: {String(fragment.span.char_start)} + {String(fragment.span.char_len)} · UTF-8 bytes: {String(fragment.span.byte_start)} + {String(fragment.span.byte_len)}</p>
-        <details><summary>Fragment address and provenance</summary><pre>{json(fragment)}</pre></details>
+        <details><summary>{t("lit_fragment_address_and_provenance")}</summary><pre>{json(fragment)}</pre></details>
         <div className="gr-actions"><button disabled={!addressAvailable || busy} onClick={() => void addressFragment("expand", fragment)}>Expand this node</button><button disabled={!addressAvailable || busy} onClick={() => void addressFragment("correct", fragment)}>Correct this node</button></div>
       </article>)}</div>
-      {!addressAvailable && <p>Fragment prompting is unavailable here. Addresses remain available for inspection.</p>}
+      {!addressAvailable && <p>{t("lit_fragment_prompting_is_unavailable_here")}</p>}
       <details><summary>Compilation JSON</summary><pre data-testid="gr-compilation-json">{json(compiled)}</pre></details></>}
     {result && <details open><summary>Applied packet and receipt</summary><pre data-testid="gr-applied-result">{json(result)}</pre></details>}
     {responseEnvelope && <details><summary>Native response and accounting</summary><pre data-testid="gr-native-response">{json(responseEnvelope)}</pre></details>}

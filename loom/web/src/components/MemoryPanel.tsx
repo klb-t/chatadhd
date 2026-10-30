@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 import { api } from "../api";
 import type { MemoryNode } from "../api/types";
+import { useShellText } from "../shell/text";
 
 export default function MemoryPanel() {
+  const t = useShellText();
   const [nodes, setNodes] = useState<MemoryNode[]>([]);
   const [newContent, setNewContent] = useState("");
   const [newParent, setNewParent] = useState("");
@@ -97,7 +99,7 @@ export default function MemoryPanel() {
                 <button className="primary" onClick={() => save(n.id)}>
                   Save
                 </button>
-                <button onClick={() => setEditingId(null)}>Cancel</button>
+                <button onClick={() => setEditingId(null)}>{t("lit_cancel")}</button>
               </div>
             </div>
           ) : (
