@@ -330,4 +330,4 @@ textarea { resize: vertical; }
 /* Guest layer (owner's screenshot 2026-10-30): the layer has its own row below the app; the app fills the rest and never
    lies under the layer. The app roots set their own 100dvh, so inside the frame they take the height of the body. */
 .guest-frame { display: flex; flex-direction: column; height: 100vh; height: 100dvh; min-height: 0; overflow: hidden; }
-.guest-body > .shell-root, .guest-body > .app-root, .guest-body > .dock-root, .guest-body > .win-box > .shell-root, .guest-body > .win-box > .app-root, .guest-body > .win-box > .dock-root { height: 100% !important; max-height: 100% !important; min-height: 0 !important; }
+.guest-body > .shell-root, .guest-body > .app-root, .guest-body > .dock-root, .guest-body > .win-box > .shell-root, .guest-body > .win-box > .app-root, .guest-body > .win-box > .dock-root, .guest-body > .win-box > [style*="display: contents"] > .shell-root, .guest-body > .win-box > [style*="display: contents"] > .app-root, .guest-body > .win-box > [style*="display: contents"] > .dock-root { height: 100% !important; max-height: 100% !important; min-height: 0 !important; }
