@@ -750,15 +750,18 @@ export default function App() {
     if (st.op === "set_param") {
       const l = winRef.current.layout; const win = l.windows.find(w => w.id === st.window);
       if (!win) { showReceipt("drop_failed", sayDesktop(words, "drop_failed", lang, { error: st.window })); return; }
-      const before = st.param === "conversation" ? activeConvId : couplingRef.current?.read(st.window, st.param);
+      // what the page follows today: conversation = the active conversation of the chat, focus = the navigator's focus; the coupling value is written too
+      const before = st.param === "conversation" ? activeConvId : st.param === "focus" ? navigatorFocus : couplingRef.current?.read(st.window, st.param);
       let next = winRef.current;
       next = win.mode === "minimized" ? restoreFromDesktop(next, win.id) : focusWindow(next, win.id);
       moveTo(next);
       if (st.param === "conversation") setActiveConvId(typeof st.value === "string" ? st.value : null);
+      if (st.param === "focus") setNavigatorFocus(typeof st.value === "string" ? st.value : "");
       couplingRef.current?.write(st.window, st.param, st.value);
       const screen = windowLabel(st.window);
       showReceipt("drop_receipt_set_param", sayDesktop(words, "drop_receipt_set_param", lang, { label: x.label, screen }), () => {
         if (st.param === "conversation") setActiveConvId(typeof before === "string" ? before : null);
+        if (st.param === "focus") setNavigatorFocus(typeof before === "string" ? before : "");
         couplingRef.current?.write(st.window, st.param, before);
         showReceipt("drop_receipt_set_param_undo", sayDesktop(words, "drop_receipt_set_param_undo", lang, { screen }));
       });
@@ -789,7 +792,7 @@ export default function App() {
       return;
     }
     showReceipt("drop_do_unknown", sayDesktop(words, "drop_do_unknown", lang, { rule: "?", do: st.op }));
-  }, [activeConvId, moveTo, windowLabel, showReceipt]);
+  }, [activeConvId, navigatorFocus, moveTo, windowLabel, showReceipt]);
   const deskLoad = useCallback((id: string, own: boolean) => {
     if (!own && winRef.current.layout.id === id && ownActive === null) layoutOps.reset(); else layoutOps.apply(own ? (readNamed(configRef.current.window_layouts).find(l => l.id === id)?.label ?? id) : id);
     setLayoutKnown(true);
@@ -980,9 +983,9 @@ export default function App() {
       <aside className={`sidebar${sidebarOpen ? "" : " collapsed"}`} data-testid="sidebar" {...inertAttr(activePanel !== null)}>
         <ConversationList key={convRefreshKey} activeConvId={activeConvId} onSelect={onSelectConversation} onCreated={onConversationCreated} onActivity={sidebarActivity} />
       </aside>);
-    if (w.kind === "chat" && w.id === presetFront) return <div className="chat-host dock-chat" data-window={w.id} data-conversation={activeConvId ?? ""}>{renderMain(w)}</div>;
+    if (w.kind === "chat" && w.id === presetFront) return <div className="chat-host dock-chat" data-window={w.id}>{renderMain(w)}</div>;
     if (w.kind === "chat") return (
-      <div className="chat-host main-panel" data-window={w.id} data-conversation={activeConvId ?? ""} hidden={knowledgeOpen && !chatVisible} {...inertAttr(activePanel !== null)}>
+      <div className="chat-host main-panel" data-window={w.id} hidden={knowledgeOpen && !chatVisible} {...inertAttr(activePanel !== null)}>
         <ApplicationProfiles profileHost={userProfileHost} convId={activeConvId} onConversationCreated={onConversationCreated}
           refreshKey={convRefreshKey} onMessagesChanged={onMessagesChanged} ui={profileUi}
           onPrimaryProfile={setPrimaryProfile} onSharedConversationRestored={setActiveConvId}
@@ -995,10 +998,11 @@ export default function App() {
     return null;   // a kind without a docked view yet (W4+): its leaf is drawn empty, the advisory is the model's
   };
   const dockShown = (w: Win) => !w.collapsed && (w.kind !== "knowledge" || knowledgeOpen);
+  // R101 D6: the conversation the chat shows, readable from the page (data-conversation; "" = none) wherever the chat window is rendered
   function renderMain(w: Win): ReactNode { return w.kind !== "chat" ? null : (
-      <ChatShell profileHost={userProfileHost} convId={activeConvId} onSelect={setActiveConvId} onCreated={onConversationCreated} onShowInGraph={openNavigator}
+      <div style={{ display: "contents" }} data-testid="chat-conversation" data-conversation={activeConvId ?? ""}><ChatShell profileHost={userProfileHost} convId={activeConvId} onSelect={setActiveConvId} onCreated={onConversationCreated} onShowInGraph={openNavigator}
         refreshKey={convRefreshKey} onMessagesChanged={onMessagesChanged} windows={shellWindows} behindOverlay={activePanel !== null || knowledgeOpen}
-        actions={{ panel: (id) => { if (id === "settings") setSettingsView(""); setActivePanel(id as PanelId); }, navigator: (focus) => { setNavigatorFocus(focus); setActivePanel("navigator"); }, knowledge: () => setKnowledgeOpen(true), workshop: () => pickLayout("workshop") }} />); }
+        actions={{ panel: (id) => { if (id === "settings") setSettingsView(""); setActivePanel(id as PanelId); }, navigator: (focus) => { setNavigatorFocus(focus); setActivePanel("navigator"); }, knowledge: () => setKnowledgeOpen(true), workshop: () => pickLayout("workshop") }} /></div>); }
   const host = <WindowHost state={win} renderOverlay={() => panels} grid={grid} renderDocked={w => styled(w, docked(w))} shown={dockShown} title={(w) => windowLabel(w.id)} renderWindow={w => styled(w, renderMain(w))}
     renderPanel={w => styled(w, coupling.provide(w, panelContent(String(w.params.panel) as PanelId, w.kind)))} arrange={arranged.handlers} chips={arranged.chips} keep={mount.keep} />;
   return (

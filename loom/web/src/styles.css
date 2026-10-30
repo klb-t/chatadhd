@@ -324,6 +324,6 @@ textarea { resize: vertical; }
 .win-chip-buttons > button { min-height: 44px; }
 
 /* R101 D6: the receipt of a drop (a chip over everything, with its undo); the drag handle of an icon (drag_start = handle) */
-.desktop-receipt { position: fixed; left: 50%; bottom: 72px; transform: translateX(-50%); z-index: 60; max-width: min(92vw, 560px); box-shadow: 0 6px 24px rgba(0,0,0,.25); }
+.desktop-receipt { position: fixed; right: 12px; bottom: 76px; z-index: 60; max-width: min(80vw, 320px); box-shadow: 0 6px 24px rgba(0,0,0,.25); }
 .desktop-icon-handle { position: absolute; top: 2px; left: 6px; font-size: 14px; line-height: 1; opacity: .7; cursor: grab; padding: 2px 4px; }
 .desktop-icon[data-dragging] { cursor: grabbing; }

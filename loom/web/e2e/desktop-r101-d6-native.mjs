@@ -48,6 +48,11 @@ try {
   const launch = await chromium();
   browser = await launch.launch({ headless: true }).catch(() => launch.launch({ headless: true, executablePath: CHROMIUM }));
   const errors = [];
+  // the first pins of the declaration are written on the first visit (D2); a pin made before it would count as "pins exist" - so one visit first
+  { const c0 = await browser.newContext({ viewport: { width: 1280, height: 800 } }); const p0 = await c0.newPage(); await p0.goto(base + "/"); await p0.getByTestId("chat-input").waitFor();
+    await p0.locator("body").click({ position: { x: 5, y: 400 } }); await p0.keyboard.press("Control+Shift+D");
+    await p0.waitForFunction(() => document.querySelector('[data-testid="desktop-icons"]')?.getAttribute("data-state") === "ok", null, { timeout: 15000 });
+    await p0.locator('[data-testid="desktop-icon"][data-address="trash:"]').waitFor(); await c0.close(); }
   const TITLE = "Rozmowa próbna D6";
   const conv = await api("POST", "/api/conversations", { title: TITLE });
   const CONV = `conv:${conv.id}`;
@@ -69,17 +74,20 @@ try {
       await p.mouse.move(x0 + 10, y0 + 10, { steps: 3 }); await p.mouse.move(x1, y1, { steps: 12 }); await p.mouse.up();
     };
     const receipt = () => p.getByTestId("desktop-receipt");
-    const activeConv = () => p.locator('[data-window="w_chat"][data-conversation]').first().getAttribute("data-conversation");
+    // the chat host carries data-conversation while the chat window is shown (a minimized window is parked without it → null)
+    const activeConv = async () => { const l = p.locator('[data-testid="chat-conversation"]'); return (await l.count()) ? l.first().getAttribute("data-conversation") : null; };
+    let iconLabel = "", initialConv = null;
     const shot = name => p.screenshot({ path: path.join(SHOTS, `d6-${device}-${name}.png`) });
-    const showDesktop = async () => { await p.keyboard.press("Control+Shift+D"); await seen(); };
+    const showDesktop = async () => { if ((await desk().getAttribute("data-cover")) === "none") return; await p.locator("body").click({ position: { x: 5, y: Math.floor(viewport.height / 2) } }).catch(() => {}); await p.keyboard.press("Control+Shift+D"); await seen(); };
 
     await p.goto(base + "/");
     await p.getByTestId("chat-input").waitFor();
 
     await step(`${device}: Ctrl+Shift+D shows the desktop; the drag start of this class comes from gestures.json (${device === "phone" ? "long_press" : "move"})`, async () => {
+      initialConv = await activeConv();   // the chat may already hold a conversation of its own at the first visit
       await showDesktop();
       assert.equal(await p.getByTestId("desktop-icons").getAttribute("data-drag-start"), device === "phone" ? "long_press" : "move");
-      assert.equal(await activeConv(), "", "no conversation is active yet");
+      iconLabel = (await icon(CONV).locator(".desktop-icon-label").innerText()).trim();
     });
     const minimizedChat = () => p.locator(`[data-testid="desktop-minimized-icon"][data-window="w_chat"], [data-testid="desktop-restore-item"][data-window="w_chat"]`).first();
     await step(`${device}: drag the conversation icon onto the (minimized) chat window → the chat comes back showing it, a receipt says so`, async () => {
@@ -89,12 +97,12 @@ try {
       await until("the chat shows the dropped conversation", async () => (await activeConv()) === conv.id);
       await receipt().waitFor();
       assert.equal(await receipt().getAttribute("data-code"), "drop_receipt_set_param");
-      assert.ok((await receipt().innerText()).includes(TITLE), "the receipt names the conversation");
+      assert.ok((await receipt().innerText()).includes(iconLabel), `the receipt names the icon (${iconLabel})`);
       await shot("1-dropped-on-chat");
     });
     await step(`${device}: „Cofnij” on the receipt brings the previous value back (P3)`, async () => {
       await p.getByTestId("desktop-receipt-undo").click();
-      await until("the previous (no) conversation", async () => (await activeConv()) === "");
+      await until(`the previous conversation (${initialConv})`, async () => (await activeConv()) === initialConv);
       assert.equal(await receipt().getAttribute("data-code"), "drop_receipt_set_param_undo");
       await p.getByTestId("desktop-receipt-close").click();
       await receipt().waitFor({ state: "detached" });
@@ -107,7 +115,9 @@ try {
       const cols = Number(await p.getByTestId("desktop-icons").getAttribute("data-columns"));
       await p.keyboard.press("ArrowDown");
       const addrs = await p.locator('[data-testid="desktop-icon"]:not([disabled])').evaluateAll(els => els.map(e => e.getAttribute("data-address")));
-      assert.equal(await p.evaluate(() => document.activeElement?.getAttribute("data-address")), addrs[Math.min(addrs.length - 1, 1 + cols)], `one row down in a grid of ${cols}`);
+      // one row down: the icon under it; a shorter last row: its last icon; a single row: the focus stays (moveIndex of desktop-interact.ts)
+      const n = addrs.length, want = 1 + cols < n ? 1 + cols : Math.floor((n - 1) / cols) > 0 ? n - 1 : 1;
+      assert.equal(await p.evaluate(() => document.activeElement?.getAttribute("data-address")), addrs[want], `one row down in a grid of ${cols} with ${n} icons`);
       await icon("conversations:").focus();
       await p.keyboard.press("Enter");
       await until("a window opened", async () => (await desk().getAttribute("data-cover")) !== "none" || (await p.getByTestId("sidebar").count()) > 0);

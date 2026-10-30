@@ -18,16 +18,23 @@ const int = (lo, hi) => lo + Math.floor(rnd() * (hi - lo + 1));
 // members in any order; `open` and `trashed` are sets (their order is not part of the state)
 const canon = v => JSON.stringify(v, (k, x) => (x && typeof x === 'object' && !Array.isArray(x) ? Object.fromEntries(Object.entries(x).sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))) : (k === 'open' || k === 'trashed') && Array.isArray(x) ? [...x].sort() : x));
 
-const chat = { kind: 'window', id: 'w_chat', windowKind: 'chat', params: ['conversation'] };
-const nav = { kind: 'window', id: 'w_nav', windowKind: 'navigator', params: ['focus', 'zoom', 'pan', 'perspective'] };
+const chat = { kind: 'window', id: 'w_chat', windowKind: 'chat', params: [] };
+const nav = { kind: 'window', id: 'w_nav', windowKind: 'navigator', params: ['zoom', 'pan'] };
 const trash = { kind: 'icon', address: 'trash:' };
 const desk = { kind: 'desktop' };
 const conv = { kind: 'icon', address: 'conv:c_abc123' };
 
-test('presets: a conversation icon on a chat window (any window reading the parameter conversation) sets the parameter to the id', () => {
+test('presets: a conversation icon on a chat window sets its parameter conversation to the id (the rest after the prefix)', () => {
   const r = I.resolveDrop(conv, [chat, desk], 'desktop');
   assert.equal(r.kind, 'step'); assert.equal(r.ruleId, 'conversation_to_chat');
   assert.deepEqual(I.stepOf(r, conv), { op: 'set_param', window: 'w_chat', param: 'conversation', value: 'c_abc123' });
+  // a minimized chat (its icon or shelf entry carries data-window) is the same target
+  assert.equal(I.resolveDrop(conv, [{ ...chat, mode: 'minimized' }, desk], 'phone').ruleId, 'conversation_to_chat');
+});
+test('target by the coupling parameter a kind reads (window_param): a rule of my own on zoom matches the navigator, not the chat', () => {
+  const rules = [{ id: 'z', source: '', target: { window_param: 'zoom' }, do: { set_param: { param: 'zoom', value: 2 } } }];
+  const r = I.resolveDrop(conv, [chat, nav], 'desktop', rules); assert.equal(r.kind, 'step'); assert.equal(r.hit.id, 'w_nav');
+  assert.deepEqual(I.stepOf(r, conv), { op: 'set_param', window: 'w_nav', param: 'zoom', value: 2 });
 });
 test('presets: a graph node icon on the navigator sets its focus to the whole address; the chat does not read focus, so it is not a target', () => {
   const r = I.resolveDrop({ kind: 'icon', address: 'party:self' }, [nav, desk], 'phone');
