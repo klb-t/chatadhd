@@ -13722,6 +13722,147 @@
           "loom/data/runtime/graph_sources.pack#/defaults/sources"
         ]
       },
+      "graph.structure": {
+        "id": "graph.structure",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Show the structure of a node",
+        "description": "W11a: the structure of a node of the one navigable graph against structure templates (runtime/structure_templates.pack, loom.structure_template/1; every shipped template is an example, the list is open): one level of graph.navigate under the root, every expectation of the templates that fit with its state from the ordered state rules of the data (presets such as present, missing, inferred, declined, excess), the missing ones as ghost nodes with a synthetic address that is never stored, and non-blocking advisories for templates of little use (empty or duplicated expects, cycles of extends, unknown operators, inverted cardinality). A root that does not exist gives found:false with the reason. Read only; nothing is written.",
+        "why": {
+          "pl": "Drzewo wokół węzła z tym, czego się pod nim spodziewamy: co jest, czego brakuje (jako widma) i skąd to oczekiwanie."
+        },
+        "labels": {
+          "pl": "Struktura projektu"
+        },
+        "inputs": [
+          "json"
+        ],
+        "outputs": [
+          "json"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/graph/structure.cpp",
+        "port": "actions",
+        "action": "graph.structure",
+        "params": [
+          {
+            "name": "root",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The node to show the structure of: an address (unit:project/x, imp:..., conv:...); empty = the suggestions of roots.",
+              "pl": "Węzeł, którego strukturę pokazujemy: adres (unit:project/x, imp:..., conv:...); puste = podpowiedzi korzeni."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "templates",
+            "type": "array",
+            "required": false,
+            "description": {
+              "en": "Ids of the templates to apply (empty = every template that fits the root).",
+              "pl": "Identyfikatory wzorców do zastosowania (puste = każdy pasujący do korzenia)."
+            },
+            "has_default": false,
+            "edit": "json"
+          },
+          {
+            "name": "show_expected",
+            "type": "boolean",
+            "required": false,
+            "description": {
+              "en": "Whether the ghosts of the missing expectations are listed (default true).",
+              "pl": "Czy pokazywać widma brakujących oczekiwań (domyślnie tak)."
+            },
+            "has_default": false,
+            "edit": "toggle"
+          },
+          {
+            "name": "depth",
+            "type": "integer",
+            "required": false,
+            "description": {
+              "en": "Levels read under the root (default 1; expectations are counted on the first level).",
+              "pl": "Ile poziomów czytamy pod korzeniem (domyślnie 1; oczekiwania liczone na pierwszym)."
+            },
+            "has_default": false,
+            "edit": "number"
+          },
+          {
+            "name": "budget",
+            "type": "integer",
+            "required": false,
+            "description": {
+              "en": "Children read (default: children_limit of the templates profile; 0 = no limit).",
+              "pl": "Ile dzieci czytamy (domyślnie children_limit profilu wzorców; 0 = bez limitu)."
+            },
+            "has_default": false,
+            "edit": "number"
+          },
+          {
+            "name": "declined",
+            "type": "array",
+            "required": false,
+            "description": {
+              "en": "Expectations the person declined (template/expect); W11a-1 takes them from the request only, nothing stores them yet.",
+              "pl": "Oczekiwania, których osoba nie chce (wzorzec/oczekiwanie); W11a-1 bierze je tylko z żądania, nic ich jeszcze nie zapisuje."
+            },
+            "has_default": false,
+            "edit": "json"
+          },
+          {
+            "name": "lang",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Language of the labels (pl or en).",
+              "pl": "Język etykiet (pl lub en)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "conv_id",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The conversation the values are resolved for (default: none).",
+              "pl": "Rozmowa, dla której rozwiązujemy wartości (domyślnie żadna)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/graph/structure"
+        },
+        "result_text": {
+          "pl": "Struktura:",
+          "en": "Structure:"
+        },
+        "reads": [],
+        "implemented_in": [
+          "loom/src/graph/structure.cpp"
+        ],
+        "stores_result": false
+      },
       "graph.card": {
         "id": "graph.card",
         "kind": "atomic",

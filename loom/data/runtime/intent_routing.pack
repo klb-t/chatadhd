@@ -2719,6 +2719,38 @@
           "takes_scope": false
         },
         {
+          "id": "window.open.structure.pl",
+          "action": "window.open",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:pokaz|otworz|wyswietl)\\s+(?:mi\\s+)?(?:strukture|drzewo)(?:\\s+(?:projektu|jednostki|wezla))?(?:\\s+(.+?))?\\s*[.!?]*\\s*$",
+          "args": [
+            "node"
+          ],
+          "original": [
+            "node"
+          ],
+          "set": {
+            "target": "structure"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "window.open.structure.en",
+          "action": "window.open",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:show|open)\\s+(?:me\\s+)?(?:the\\s+)?(?:project\\s+)?(?:structure|tree)(?:\\s+of)?(?:\\s+(?:the\\s+)?(?:project|unit|node))?(?:\\s+(.+?))?\\s*[.!?]*\\s*$",
+          "args": [
+            "node"
+          ],
+          "original": [
+            "node"
+          ],
+          "set": {
+            "target": "structure"
+          },
+          "takes_scope": false
+        },
+        {
           "id": "window.open.beside.pl",
           "action": "window.open",
           "lang": "pl",

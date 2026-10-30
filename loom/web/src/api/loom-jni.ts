@@ -150,6 +150,7 @@ export class LoomJniApi implements LoomApi {
     groupsRemove: (request) => this.callAsync("invoke", { port: "actions", action: "groups.remove", request }),
     // The graph projection can be large: callAsync runs it through startStream on the native background thread.
     graphNavigate: (request = {}) => this.callAsync("invoke", { port: "actions", action: "graph.navigate", request }),
+    graphStructure: (request) => this.callAsync("invoke", { port: "actions", action: "graph.structure", request }),
     graphCard: (request) => this.callAsync("invoke", { port: "actions", action: "graph.card", request }),
     settingsResolved: (request = {}) => this.callAsync("invoke", { port: "actions", action: "settings.resolved", request }),
     rolesResolved: (request = {}) => this.callAsync("invoke", { port: "actions", action: "roles.resolved", request }),

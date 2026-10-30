@@ -19,7 +19,7 @@ test('layouts.json v2: czat and siatka are valid dock trees; czat is the plain c
   for (const l of Object.values(layouts)) assert.deepEqual(M.check(l), [], l.id);
   assert.ok(M.isPlainChatApp(layouts.czat));
   assert.ok(!M.isPlainChatApp(layouts.siatka));
-  assert.equal(file.layouts.czat.menu.length, 13);   // W2: + Okna (switcher sheet); W5: + Układ ▾; W-gaps: + Pokaż zapytanie; nazwa produktu: + O aplikacji
+  assert.equal(file.layouts.czat.menu.length, 14);   // W2: + Okna (switcher sheet); W5: + Układ ▾; W-gaps: + Pokaż zapytanie; nazwa produktu: + O aplikacji; W11a-1: + Struktura projektu
   assert.equal(limit, 50);
 });
 

@@ -64,6 +64,11 @@
           "action": "panel:request"
         },
         {
+          "id": "structure",
+          "label": "ps_title",
+          "action": "panel:structure"
+        },
+        {
           "id": "about",
           "label": "menu_about",
           "action": "sheet:about"
@@ -312,6 +317,7 @@
     "user-knowledge": "user_knowledge",
     "operations": "operations",
     "request": "request_inspector",
+    "structure": "project_structure",
     "conversations": "conversation_list"
   },
   "panel_kinds_by_layout": {
@@ -352,7 +358,10 @@
     "silnik widok": "view-engine",
     "view engine": "view-engine",
     "zapytan": "request",
-    "request": "request"
+    "request": "request",
+    "struktur": "structure",
+    "structure": "structure",
+    "drzew": "structure"
   },
   "window_words_note": "W2: a word of a sentence (folded, no diacritics) to a window: the longest stem a word starts with wins; the value is `chat` (the own chat window) or a panel id. Open map, an example set; an id of a panel is accepted as is.",
   "window_placements": {

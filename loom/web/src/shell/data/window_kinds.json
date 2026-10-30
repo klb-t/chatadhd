@@ -379,17 +379,21 @@
    "label": {
     "pl": "Struktura projektu"
    },
-   "component": null,
+   "component": "ProjectStructure",
    "params": [
-    "root"
+    "root",
+    "templates",
+    "show_expected",
+    "mapping",
+    "depth",
+    "budget"
    ],
-   "status": "planned",
-   "reason": {
-    "pl": "z makiety UI12: drzewo z przyciemnionymi węzłami do uzupełnienia"
-   },
+   "status": "present",
    "state_keys": [
-    "params"
-   ]
+    "params",
+    "scroll"
+   ],
+   "note": "W11a-1: a tree around any root of the graph (a unit, an import, a conversation ...): the children graph.navigate gives, grouped by what the structure templates (runtime/structure_templates.pack, examples) expect, the missing expectations as ghosts never stored; the look of each state is a mapping as data (shell/data/structure_mappings.json, preset me_inferred_opacity). Opened as the shell panel `structure` (switcher, sentence „pokaż strukturę projektu X”). Read only: filling a ghost is W11a-2."
   },
   {
    "id": "execution_env",

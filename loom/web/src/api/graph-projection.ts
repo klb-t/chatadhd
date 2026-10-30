@@ -317,3 +317,29 @@ export interface RomOverrideRequest {
   /** The fields of the ROM item your copy changes (label, why, hidden ...). */
   patch: Record<string, unknown>;
 }
+
+/** W11a-1: graph.structure (POST /api/graph/structure) - a root, the templates that fit it, every expectation with its state, ghosts. */
+export interface StructureCard { min: number; max: number | null }
+export interface StructureExpectation {
+  template: string; applied_by: string; id: string; ref: string; label: string; relation: string; card: StructureCard;
+  child_match: unknown; matched: string[]; count: number; state: string; state_label: string;
+  confidence: number | null; source: string; source_ref: string; ghost?: string; fill?: unknown;
+}
+export interface StructureGhost {
+  address: string; label: string; ghost: true; stored: false; state: string; state_label: string;
+  expected: { relation: string; card: StructureCard; child_match: unknown }; confidence: number | null; source: string; template: string; expect: string; parent: string;
+}
+export interface StructureAdvisory { code: string; fingerprint: string; template: string; expect?: string; text: string; words: { pl: string; en: string }; blocking: false }
+export interface GraphStructureRequest {
+  root?: string; templates?: string[]; show_expected?: boolean; depth?: number; budget?: number; declined?: string[]; lang?: string; conv_id?: string;
+}
+export interface GraphStructureResult {
+  schema: "loom.structure/1"; found: boolean; reason?: string; reason_human?: string; error?: string; root_said?: string;
+  root?: { address: string; label?: string; kind?: string; evidence?: { class?: string } };
+  suggestions?: { address: string; label?: string; items?: { address: string; label: string; kind: string }[]; total?: number; unknown?: string }[];
+  templates_applied?: { id: string; label: string; example: boolean; description?: string; derived_from?: string; source_ref: string }[];
+  expectations?: StructureExpectation[]; ghosts?: StructureGhost[];
+  children?: (GraphNodeRow & { expected_by: string[]; depth?: number })[];
+  counts?: { children: number; expectations: number; present: number; missing: number; ghosts: number; unexpected: number; advisories: number };
+  advisories?: StructureAdvisory[]; show_expected?: boolean; text?: string; profile_error?: string;
+}

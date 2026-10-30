@@ -1,0 +1,459 @@
+{
+  "schema": "loom.runtime_profile/1",
+  "domain": "structure_templates",
+  "revision": 1,
+  "description": "W11a: structure templates as data - what we expect under a node with a given trait (window „Struktura projektu”, action graph.structure, an overlay on graph.navigate; nothing is stored). Every template here is an EXAMPLE, not a requirement; the list is open (user overlay <data_dir>/profiles/structure_templates.pack). Predicates (match, child_match) use a minimal open operator set read by structure.cpp: all, any, not, prefix, kind, field+equals|in|prefix|exists, true; an unknown operator matches nothing and raises an advisory. States, cardinality presets and advisory words are data.",
+  "defaults": {
+    "templates": {
+      "unit_basic": {
+        "schema": "loom.structure_template/1",
+        "example": true,
+        "label": {
+          "pl": "Jednostka (projekt, zespół…): rozmowy, dokumenty, decyzje",
+          "en": "Unit (project, team…): conversations, documents, decisions"
+        },
+        "description": {
+          "pl": "Przykład: pod jednostką spodziewamy się rozmów, dokumentów i decyzji. Dziś graf ma tylko rozmowy jednostki; dokumenty i decyzje pokazują się jako widma.",
+          "en": "Example: under a unit we expect conversations, documents and decisions. Today the graph has only the unit's conversations; documents and decisions show as ghosts."
+        },
+        "match": {
+          "prefix": "unit:"
+        },
+        "expects": [
+          {
+            "id": "conversations",
+            "label": {
+              "pl": "Rozmowy",
+              "en": "Conversations"
+            },
+            "relation": "part_of",
+            "child_match": {
+              "prefix": "conv:"
+            },
+            "card": "at_least_one",
+            "confidence": 0.9,
+            "source": "template"
+          },
+          {
+            "id": "documents",
+            "label": {
+              "pl": "Dokumenty",
+              "en": "Documents"
+            },
+            "relation": "part_of",
+            "child_match": {
+              "kind": "document"
+            },
+            "card": "at_least_one",
+            "confidence": 0.6,
+            "source": "template"
+          },
+          {
+            "id": "decisions",
+            "label": {
+              "pl": "Decyzje",
+              "en": "Decisions"
+            },
+            "relation": "part_of",
+            "child_match": {
+              "kind": "decision"
+            },
+            "card": "many",
+            "confidence": 0.5,
+            "source": "template"
+          }
+        ]
+      },
+      "import_basic": {
+        "schema": "loom.structure_template/1",
+        "example": true,
+        "label": {
+          "pl": "Import: rozmowy, załączniki",
+          "en": "Import: conversations, attachments"
+        },
+        "description": {
+          "pl": "Przykład: pod węzłem importu spodziewamy się rozmów i załączników.",
+          "en": "Example: under an import node we expect conversations and attachments."
+        },
+        "match": {
+          "prefix": "imp:"
+        },
+        "expects": [
+          {
+            "id": "conversations",
+            "label": {
+              "pl": "Rozmowy",
+              "en": "Conversations"
+            },
+            "relation": "part_of",
+            "child_match": {
+              "any": [
+                {
+                  "prefix": "conv:"
+                },
+                {
+                  "kind": "conversation"
+                }
+              ]
+            },
+            "card": "many",
+            "confidence": 0.8,
+            "source": "template"
+          },
+          {
+            "id": "attachments",
+            "label": {
+              "pl": "Załączniki",
+              "en": "Attachments"
+            },
+            "relation": "part_of",
+            "child_match": {
+              "any": [
+                {
+                  "kind": "attachment"
+                },
+                {
+                  "kind": "file"
+                }
+              ]
+            },
+            "card": "many",
+            "confidence": 0.6,
+            "source": "template"
+          }
+        ]
+      },
+      "legal_case": {
+        "schema": "loom.structure_template/1",
+        "example": true,
+        "label": {
+          "pl": "Sprawa prawna: strony, terminy, dokumenty",
+          "en": "Legal case: parties, deadlines, documents"
+        },
+        "description": {
+          "pl": "Przykład wyprowadzony ręcznie z rodzaju projektu legal_case: dotyczy jednostki rodzaju „sprawa” (unit:case/…), dziedziczy oczekiwania wzorca jednostki.",
+          "en": "Example derived by hand from the project kind legal_case: applies to a unit of kind case (unit:case/…), inherits the expectations of the unit template."
+        },
+        "derived_from": "loom/data/project_kinds/legal_case.json",
+        "match": {
+          "prefix": "unit:case/"
+        },
+        "extends": [
+          "unit_basic"
+        ],
+        "expects": [
+          {
+            "id": "parties",
+            "label": {
+              "pl": "Strony",
+              "en": "Parties"
+            },
+            "relation": "part_of",
+            "child_match": {
+              "any": [
+                {
+                  "kind": "person"
+                },
+                {
+                  "kind": "org"
+                }
+              ]
+            },
+            "card": {
+              "min": 2,
+              "max": null
+            },
+            "confidence": 0.7,
+            "source": "template"
+          },
+          {
+            "id": "deadlines",
+            "label": {
+              "pl": "Terminy",
+              "en": "Deadlines"
+            },
+            "relation": "part_of",
+            "child_match": {
+              "kind": "deadline"
+            },
+            "card": "many",
+            "confidence": 0.5,
+            "source": "template"
+          }
+        ]
+      }
+    },
+    "card_presets": {
+      "one": {
+        "min": 1,
+        "max": 1
+      },
+      "optional": {
+        "min": 0,
+        "max": 1
+      },
+      "at_least_one": {
+        "min": 1,
+        "max": null
+      },
+      "many": {
+        "min": 0,
+        "max": null
+      }
+    },
+    "default_card": "many",
+    "inferred_classes": [
+      "inferred",
+      "derived",
+      "extrapolated"
+    ],
+    "states": [
+      {
+        "id": "declined",
+        "when": "declined",
+        "label": {
+          "pl": "odmówiono",
+          "en": "declined"
+        }
+      },
+      {
+        "id": "missing",
+        "when": "below_min",
+        "label": {
+          "pl": "brakuje",
+          "en": "missing"
+        },
+        "ghost": true
+      },
+      {
+        "id": "excess",
+        "when": "above_max",
+        "label": {
+          "pl": "więcej niż oczekiwano",
+          "en": "more than expected"
+        }
+      },
+      {
+        "id": "inferred",
+        "when": "only_inferred",
+        "label": {
+          "pl": "tylko wywnioskowane",
+          "en": "inferred only"
+        }
+      },
+      {
+        "id": "present",
+        "when": "any",
+        "label": {
+          "pl": "jest",
+          "en": "present"
+        }
+      },
+      {
+        "id": "empty",
+        "when": "always",
+        "label": {
+          "pl": "brak, ale niewymagane",
+          "en": "none, not required"
+        }
+      }
+    ],
+    "ghost_address": "{root}#expect/{template}/{expect}",
+    "children_limit": 0,
+    "root_suggestions": [
+      "area:context_projects",
+      "area:imports"
+    ],
+    "root_suggestions_limit": 12,
+    "advisories": {
+      "empty_expects": {
+        "pl": "Wzorzec „{template}” nie ma żadnych oczekiwań — niczego nie dopisze do drzewa.",
+        "en": "Template “{template}” has no expectations — it adds nothing to the tree."
+      },
+      "duplicate_expects": {
+        "pl": "Wzorzec „{template}”: oczekiwania „{expect}” i „{other}” szukają tych samych dzieci.",
+        "en": "Template “{template}”: expectations “{expect}” and “{other}” look for the same children."
+      },
+      "duplicate_expect_id": {
+        "pl": "Wzorzec „{template}”: identyfikator oczekiwania „{expect}” powtarza się; liczę każde osobno.",
+        "en": "Template “{template}”: the expectation id “{expect}” repeats; each is counted on its own."
+      },
+      "extends_cycle": {
+        "pl": "Wzorce dziedziczą w kółko ({chain}); dziedziczenie przerwane w tym miejscu.",
+        "en": "Templates inherit in a circle ({chain}); inheritance stops there."
+      },
+      "unknown_extends": {
+        "pl": "Wzorzec „{template}” dziedziczy po „{other}”, którego nie ma.",
+        "en": "Template “{template}” inherits from “{other}”, which does not exist."
+      },
+      "unknown_operator": {
+        "pl": "Wzorzec „{template}”: nieznany warunek „{op}” — nic go nie spełnia.",
+        "en": "Template “{template}”: unknown condition “{op}” — nothing matches it."
+      },
+      "card_inverted": {
+        "pl": "Wzorzec „{template}”, „{expect}”: najmniej ({min}) jest więcej niż najwięcej ({max}) — zawsze czegoś będzie brakować albo za dużo.",
+        "en": "Template “{template}”, “{expect}”: the minimum ({min}) is above the maximum ({max}) — always too few or too many."
+      },
+      "unknown_card": {
+        "pl": "Wzorzec „{template}”, „{expect}”: nieznana liczność „{card}”; przyjmuję „{fallback}”.",
+        "en": "Template “{template}”, “{expect}”: unknown cardinality “{card}”; using “{fallback}”."
+      },
+      "unknown_template": {
+        "pl": "Nie ma wzorca „{template}”.",
+        "en": "There is no template “{template}”."
+      },
+      "template_not_matching": {
+        "pl": "Wzorzec „{template}” nie pasuje do tego węzła; pomijam go.",
+        "en": "Template “{template}” does not fit this node; skipped."
+      },
+      "no_template": {
+        "pl": "Żaden wzorzec nie pasuje do tego węzła — widać tylko to, co jest.",
+        "en": "No template fits this node — only what exists is shown."
+      },
+      "unknown_field": {
+        "pl": "Wzorzec „{template}”: pole „{field}” nie ma czytelnika — nic go nie czyta.",
+        "en": "Template “{template}”: the field “{field}” has no reader — nothing reads it."
+      },
+      "not_a_template": {
+        "pl": "„{template}” nie jest wzorcem (oczekiwano obiektu).",
+        "en": "“{template}” is not a template (an object was expected)."
+      },
+      "unknown_state_rule": {
+        "pl": "Reguła stanu „{field}” jest nieznana — pomijam ją.",
+        "en": "The state rule “{field}” is unknown — skipped."
+      }
+    },
+    "texts": {
+      "root_missing": {
+        "pl": "Nie ma węzła „{root}” w grafie.",
+        "en": "There is no node “{root}” in the graph."
+      },
+      "root_empty": {
+        "pl": "Wybierz korzeń: jednostkę, import albo inny węzeł grafu.",
+        "en": "Pick a root: a unit, an import or another node of the graph."
+      },
+      "head": {
+        "pl": "Struktura „{label}”: {present} jest, {missing} brakuje.",
+        "en": "Structure of “{label}”: {present} present, {missing} missing."
+      }
+    },
+    "member_readers": [
+      {
+        "root_prefix": "unit:",
+        "reader": "conversations.units",
+        "relation": "part_of",
+        "note": "2026-10-30: graph.navigate lists no children under a unit (graph_sources unit: edges []), only the count of its conversations; this reader adds the member conversations as children of the structure (read only). Remove when the unit source lists them itself."
+      }
+    ]
+  },
+  "value_schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "templates",
+      "card_presets",
+      "default_card",
+      "inferred_classes",
+      "states",
+      "ghost_address",
+      "children_limit",
+      "root_suggestions",
+      "root_suggestions_limit",
+      "advisories",
+      "texts",
+      "member_readers"
+    ],
+    "properties": {
+      "templates": {
+        "type": "object",
+        "title": "The structure templates (loom.structure_template/1) by id: an open list; a malformed one gives an advisory, never a refusal",
+        "x-setting": "/templates",
+        "x-consumer": "loom::structure::evaluate (loom/src/graph/structure.cpp)",
+        "additionalProperties": true
+      },
+      "card_presets": {
+        "type": "object",
+        "title": "Named cardinalities {min, max} (max null = no upper bound)",
+        "x-setting": "/card_presets",
+        "x-consumer": "loom::structure::evaluate (loom/src/graph/structure.cpp)",
+        "additionalProperties": true
+      },
+      "default_card": {
+        "type": "string",
+        "title": "The cardinality preset used when an expectation names none",
+        "x-setting": "/default_card",
+        "x-consumer": "loom::structure::evaluate (loom/src/graph/structure.cpp)"
+      },
+      "inferred_classes": {
+        "type": "array",
+        "title": "Evidence classes counted as inferred (state inferred when only such children match)",
+        "x-setting": "/inferred_classes",
+        "x-consumer": "loom::structure::evaluate (loom/src/graph/structure.cpp)",
+        "items": {
+          "type": "string"
+        }
+      },
+      "states": {
+        "type": "array",
+        "title": "Ordered state rules {id, when, label, ghost?}; the first rule whose condition holds names the state of an expectation",
+        "x-setting": "/states",
+        "x-consumer": "loom::structure::evaluate (loom/src/graph/structure.cpp)",
+        "items": {
+          "type": "object"
+        }
+      },
+      "ghost_address": {
+        "type": "string",
+        "title": "The synthetic address of a ghost node (never stored): placeholders {root}, {template}, {expect}",
+        "x-setting": "/ghost_address",
+        "x-consumer": "loom::structure::evaluate (loom/src/graph/structure.cpp)"
+      },
+      "children_limit": {
+        "type": "integer",
+        "title": "Children read from graph.navigate for one structure (0 = no limit)",
+        "x-setting": "/children_limit",
+        "x-consumer": "loom::structure::evaluate (loom/src/graph/structure.cpp)",
+        "minimum": 0
+      },
+      "root_suggestions": {
+        "type": "array",
+        "title": "Addresses whose children are offered as roots when no root is given (examples)",
+        "x-setting": "/root_suggestions",
+        "x-consumer": "loom::structure::evaluate (loom/src/graph/structure.cpp)",
+        "items": {
+          "type": "string"
+        }
+      },
+      "root_suggestions_limit": {
+        "type": "integer",
+        "title": "Suggestions per address (0 = all)",
+        "x-setting": "/root_suggestions_limit",
+        "x-consumer": "loom::structure::evaluate (loom/src/graph/structure.cpp)",
+        "minimum": 0
+      },
+      "advisories": {
+        "type": "object",
+        "title": "Words of the non-blocking advisories, pl + en",
+        "x-setting": "/advisories",
+        "x-consumer": "loom::structure::evaluate (loom/src/graph/structure.cpp)",
+        "additionalProperties": true
+      },
+      "texts": {
+        "type": "object",
+        "title": "Words of the answer, pl + en",
+        "x-setting": "/texts",
+        "x-consumer": "loom::structure::evaluate (loom/src/graph/structure.cpp)",
+        "additionalProperties": true
+      },
+      "member_readers": {
+        "type": "array",
+        "items": {
+          "type": "object"
+        },
+        "title": "Readers of children graph.navigate does not list (root_prefix, reader mechanism id, relation); an unknown reader is said, never silent",
+        "x-setting": "/member_readers",
+        "x-consumer": "loom::structure::structure (loom/src/graph/structure.cpp)"
+      }
+    }
+  }
+}

@@ -2841,6 +2841,34 @@
         }
       },
       {
+        "id": "project_structure",
+        "title": {
+          "en": "The structure of a project or another node: what is there and what is expected",
+          "pl": "Struktura projektu albo innego węzła: co jest i czego się spodziewamy"
+        },
+        "via": "client",
+        "action": "window.open",
+        "surfaces": {},
+        "examples": {
+          "pl": "pokaż strukturę projektu Alfa",
+          "en": "show the structure of project Alfa"
+        },
+        "examples_more": {
+          "pl": [
+            "pokaż strukturę projektu",
+            "otwórz drzewo jednostki Alfa"
+          ],
+          "en": [
+            "show the project structure",
+            "open the tree of unit Alfa"
+          ]
+        },
+        "note": {
+          "en": "W11a-1: the sentence opens the window project_structure (panel structure) with the root the words name; the window reads graph.structure (read only).",
+          "pl": "W11a-1: zdanie otwiera okno „Struktura projektu” z korzeniem, który nazywają słowa; okno czyta graph.structure (tylko odczyt)."
+        }
+      },
+      {
         "id": "window_layouts",
         "title": {
           "en": "Save and bring back named layouts of windows",
@@ -3343,6 +3371,22 @@
             "GET /api/conversations/:id/view",
             "POST /api/conversations/:id/view",
             "GET /api/messages/:id"
+          ]
+        }
+      },
+      {
+        "id": "graph_structure",
+        "category": "display",
+        "reason": {
+          "en": "What the window „Struktura projektu” draws: the structure of a node is the content of that window; a sentence opens the window (capability project_structure), not this read.",
+          "pl": "To, co rysuje okno „Struktura projektu”: struktura węzła jest treścią tego okna; zdanie otwiera okno (zdolność project_structure), a nie ten odczyt."
+        },
+        "surfaces": {
+          "http": [
+            "POST /api/graph/structure"
+          ],
+          "invoke": [
+            "actions.graph.structure"
           ]
         }
       },
