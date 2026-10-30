@@ -257,7 +257,8 @@ TEST_SUITE("text_genesis") {
       REQUIRE(chains.size() == 2);
       CHECK(chains[0].size() == 3);
       CHECK(chains[1].size() == 1);
-      CHECK(chains[1][0].source.group == chains[1][0].source.id);
+      CHECK(!chains[1][0].source.group.empty());  // create_msg gives every message a group; a lone message is a group of one
+      CHECK(chains[1][0].source.group != chains[0][0].source.group);
     }
   }
 
