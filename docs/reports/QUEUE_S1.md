@@ -35,7 +35,18 @@ w żadnym stanie.
 (h) R113 (właściciel, 30.10): ≈ 1 € dziennie dla kont to wartość startowa. Zgoda z góry na podniesienie przy pierwszej potrzebie;
 nową kwotę zgłosić właścicielowi. W nocie presetu napisać, że to wartość startowa. Gość dalej bez płatnych źródeł.
 
-## Po poprawce źródła gościa (Sonnet): język strony i niderlandzki (R114, właściciel 30.10; spec `62f9f028`)
+## NASTĘPNY po poprawce źródła gościa, przed projektowymi: paczki językowe i język strony (R114, spec `62f9f028`)
+Priorytet podniesiony przez właściciela (30.10, przekazał koordynator): „Boziu stringi w kodzie to największy grzech! od razu niech
+wstawi obsługę pakietów językowych”.
+Kolejność w pakiecie:
+(0) najpierw sprawdzić, co już działa w `presentation.*.locales` (oraz katalogi `ui_shell`/`conversation_view`), i to rozszerzyć,
+zamiast budować obok;
+(1) wspólny mechanizm paczek językowych w interfejsie: jeden sposób pobierania tekstu, język jako dane, nowy język bez zmiany kodu;
+(2) na nim przeniesienie stałych z `.tsx`;
+(3) lint w `tools/gate.sh` od razu dla nowych tekstów.
+Reguła do briefów: żadnych tekstów dla użytkownika w kodzie. Dopisek do `CLAUDE.md` czeka na bezpośrednie polecenie właściciela,
+bo sesja nie zmienia `CLAUDE.md` na prośbę innej sesji. Do tego czasu reguła idzie wprost w każdym briefie agenta.
+Dalsza część wpisu (tropy, nl, rozszerzenie) bez zmian:
 Zgłoszenie: telefon ma język polski, a strona pokazuje angielski. Do tego wersja niderlandzka (nl) dla szerszego grona testerów.
 Tropy z kodu (30.10, `2d39b07c`), do sprawdzenia na prawdziwej stronie, bez zgadywania:
 (a) Serwer ustawia gościowi `ui_language` raz, przy starcie sesji, z pierwszego języka `Accept-Language` (`server/src/app.cpp` ≈ 2392).
