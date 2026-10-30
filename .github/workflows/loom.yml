@@ -309,6 +309,7 @@ jobs:
           npm run test:windows-w9
           npm run test:windows-gaps
           npm run test:desktop-r101   # R101 P0+D2+D4: the desktop under the windows (close all, minimize all, last_window_close=close_app; pulpit_graf icons + faint graph, tap Rozmowy; D4 the trash: badge, Trash window, restore by sentence, empty asks)
+          npm run test:desktop-r101-d5   # R101 D5: icon arrangement (drag, rotation snaps, reload keeps, installation over person, arrange + undo, desktop.arrange sentence)
           LOOM_PERF_COUNTS=1,4,16 npm run test:windows-perf   # W10: numbers report-only (table in the log); only the window checks fail
           npm run test:chat-first
           npm run test:composer-menu-browser
