@@ -82,9 +82,10 @@ export default function GuestLayer({ guest, guests, text, onSignIn, children }: 
   // The store: ask for persistence, then bring back what this browser kept when the working copy is empty.
   useEffect(() => {
     let live = true;
+    let justRestored = false;
     try {
       const n = sessionStorage.getItem(RESTORED_KEY);
-      if (n !== null) { sessionStorage.removeItem(RESTORED_KEY); if (Number(n) > 0) setRestored(Number(n)); }
+      if (n !== null) { justRestored = true; sessionStorage.removeItem(RESTORED_KEY); if (Number(n) > 0) setRestored(Number(n)); }
     } catch { /* no session storage: no message */ }
     void (async () => {
       const p = await requestPersistence();
@@ -104,13 +105,15 @@ export default function GuestLayer({ guest, guests, text, onSignIn, children }: 
       if (live) void showTraits(s);
       if (!live) return;
       setStore({ ...p, available });
-      if (!bundle || bundleSize(bundle) === 0) { ready.current = true; return; }
+      // A bundle may hold no conversation at all (only e.g. desktop pins): the list below stays empty after the restore,
+      // so the page that follows a restore never restores again, or it would reload for ever.
+      if (!bundle || bundleSize(bundle) === 0 || justRestored) { ready.current = true; return; }
       try {
         const have = await (await fetch("/api/conversations?limit=1", { credentials: "same-origin" })).json();
         if (Array.isArray(have) && have.length > 0) { ready.current = true; return; }
         const n = await restoreBundle(bundle, fetch, "replace");
         // The panels already read the empty working copy; a reload shows the restored one everywhere at once.
-        try { sessionStorage.setItem(RESTORED_KEY, String(n)); } catch { /* the count is only a message */ }
+        try { sessionStorage.setItem(RESTORED_KEY, String(n)); } catch { ready.current = true; return; }  // no mark, no reload
         if (live) window.location.reload();
       } catch { /* a failed restore leaves the bundle in place for the next try (and nothing overwrites it now) */ }
     })();
