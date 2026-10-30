@@ -998,6 +998,11 @@ Liczby właściciela to przykład (sam mówi „na przykład”). Odczyt koordyn
 
 Decyzja właściciela do R109 (pakiet z R108). Skutek (odczyt koordynatora, do projektu): nie budujemy teraz ochrony przed obejściem progów przez czyszczenie pamięci przeglądarki. Reagujemy dopiero, gdy ktoś zacznie tak robić. To datowana decyzja z odwrotem, nie ograniczenie silnika. Progi R109 liczone prosto na sesję gościa. Nad nimi twardy limit wydatków na klucz dostawcy puli, w pojedynczych dolarach, jako ustawienie w danych (preset). Kwota to przykład skali, nie stała. Obserwacja do sprawdzenia w projekcie: spend_.snapshot() w /api/pool/summary już liczy pieniądze płatnych źródeł gości na dziś. Limit na klucz rozszerza to, a nie buduje obok.
 
+## R111 — Pula próbna dla użytkowników testowych tylko po utworzeniu darmowego konta; właściciel ma widzieć, kiedy rośnie ruch (owner (przekazał koordynator gcp), 2026-10-30)
+> myślę żeby tą pulę dla użytkowników testowych też dawać tylko po utworzeniu darmowego konta, jakieś ograniczenie musi być, bo jak się ruch zacznie to nawet nie Zobaczymy kiedy
+
+Odczyt koordynatora, do projektu, nie słowa właściciela: pula próbna (R104) tylko dla zalogowanych. To także warunek pakietu poprawki źródła gościa (QUEUE_S1, 30.10): gość bez konta nigdy nie dostaje puli. Zależność: dziś rejestracja jest zamknięta (server_accounts registration: closed), więc do jej otwarcia pula jest dla nowych osób niedostępna. To skutek obecnego ustawienia, nie reguła silnika. Słowa „nawet nie zobaczymy kiedy” rozwiązać jako powiadomienie właściciela o zużyciu i ruchu, z progami w danych (otwarty zbiór, każdy z kanałem i akcją). Projektować razem z R109; podstawą jest istniejący /api/pool/summary i dziennik advisory budżetu w loom-server.
+
 ## Decision — rebuild, don't recover
 > "nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane"
 

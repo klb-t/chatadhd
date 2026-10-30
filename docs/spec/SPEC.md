@@ -5,12 +5,12 @@ Ten plik jest **wygenerowany** z `docs/spec/spec.json` poleceniem `python3 tools
 
 Status pochodzi z pliku luk i jest **obserwacją z podanej daty**, nie ograniczeniem.
 
-Pozycji razem: **534**.
+Pozycji razem: **535**.
 
 | Status (z LUKI) | liczba |
 |---|---|
 | częściowo | 210 |
-| bez statusu (nie ma w LUKI) | 151 |
+| bez statusu (nie ma w LUKI) | 152 |
 | jest | 151 |
 | brak | 16 |
 | nieaktualne | 5 |
@@ -19,7 +19,7 @@ Pozycji razem: **534**.
 | Rodzaj | liczba |
 |---|---|
 | remark | 367 |
-| requirement | 110 |
+| requirement | 111 |
 | philosophy | 36 |
 | statement | 10 |
 | decision | 4 |
@@ -28,14 +28,14 @@ Pozycji razem: **534**.
 
 | Rozumienie (R61) | liczba |
 |---|---|
-| none | 515 |
+| none | 516 |
 | approved | 12 |
 | corrected | 7 |
 
 | W których plikach | liczba |
 |---|---|
 | LUKI + SLOWA | 379 |
-| rejestr R/D | 117 |
+| rejestr R/D | 118 |
 | SLOWA | 34 |
 | LUKI | 4 |
 
@@ -55,7 +55,7 @@ Pozycji razem: **534**.
 | Proces i współpraca | 67 |
 | Pozostałe | 33 |
 | Uzupełnienia (wypowiedzi bez numeru) | 10 |
-| Rejestr wymagań R/D | 117 |
+| Rejestr wymagań R/D | 118 |
 | bez tematu | 3 |
 
 ## Filozofia
@@ -631,8 +631,9 @@ Pozycji razem: **534**.
 - `s_747ada9e6655` **R108** — Na starcie wyraźna zachęta do darmowego konta jednym kliknięciem, żeby nie zużywać naszych limitów (etap Bootstrap) (owner (przekazał koordynator gcp), 2026-10-30) — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L986)
 - `s_8643d0768093` **R109** — Stopnie zużycia wspólnej puli przez jedną osobę: informacja, czerwone ostrzeżenie, odcięcie; progi maleją z liczbą użytkowników (pakiet z R108) (owner (przekazał koordynator gcp), 2026-10-30) — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L991)
 - `s_f411e6e71221` **R110** — Do R109: bez osobnej ochrony przed obejściem przez czyszczenie przeglądarki; twardy limit wydatków na klucz w pojedynczych dolarach (owner (przekazał koordynator gcp), 2026-10-30) — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L996)
-- `s_18ec73967a7b` **owner:decision-rebuild-don-t-recover** — Decision — rebuild, don't recover — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L1001)
-- `s_223e1568b3b9` **owner:ui-reference** — UI reference — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L1009)
+- `s_e19a5c52bd50` **R111** — Pula próbna dla użytkowników testowych tylko po utworzeniu darmowego konta; właściciel ma widzieć, kiedy rośnie ruch (owner (przekazał koordynator gcp), 2026-10-30) — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L1001)
+- `s_18ec73967a7b` **owner:decision-rebuild-don-t-recover** — Decision — rebuild, don't recover — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L1006)
+- `s_223e1568b3b9` **owner:ui-reference** — UI reference — _bez statusu_ · [źródło](../architecture/OWNER_REQUIREMENTS_2026-09-26.md#L1014)
 
 ## Bez tematu
 
