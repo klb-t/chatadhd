@@ -1008,6 +1008,11 @@ Odczyt koordynatora, do projektu, nie słowa właściciela: pula próbna (R104) 
 
 Odczyt koordynatora, do projektu: (1) Gość bez konta dostaje tylko źródła bezkosztowe, także nasze darmowe klucze; nigdy płatne ani kredyty. (2) Osoba z darmowym kontem dostaje dodatkowo kilka groszy z płatnych źródeł lub kredytów; wszystkie osoby razem do około 1 € dziennie na testy. Kwota 1 € to preset w danych; jej skala to decyzja właściciela z tego cytatu („powiedzmy to euro”). Zastępuje to wcześniejszą notę wpisu vertex_gemini w free_providers.pack. Groszy na osobę to wartość otwarta z presetem. (3) „Pula” znaczy teraz dwie rzeczy: rozdzielić w danych pulę bezkosztową i pulę płatną. Pakiet poprawki źródła gościa: gość bez konta ma tylko pulę bezkosztową. Związek: R104, R108, R109, R111.
 
+## R113 — Do R112: kwota ≈ 1 € dziennie dla kont to wartość startowa; zgoda z góry na jej podniesienie przy potrzebie (owner (przekazał koordynator gcp), 2026-10-30)
+> podniesiemy przy pierwszej możliwej potrzebie więc masz z góry na to zgodę teraz jest po prostu ustawione żeby nie zapomnieć że jest duży limit ustawiony
+
+Odczyt koordynatora: 1 € dziennie dla osób z kontem (R112) to wartość startowa (preset). Koordynator może ją podnieść przy pierwszej potrzebie bez pytania i zgłasza właścicielowi nową kwotę. Ograniczenia z tego nie wynikają, to tylko przypomnienie, że limit jest ustawiony. Reguła, że gość bez konta nie dostaje płatnych źródeł (R112, R111), zostaje bez zmian. Zmiana o rząd wielkości (×10) nadal wymaga potwierdzenia właściciela (zasada z CLAUDE.md), chyba że on to rozszerzy.
+
 ## Decision — rebuild, don't recover
 > "nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane"
 

@@ -5,8 +5,8 @@
  "sources": {
   "owner": {
    "path": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
-   "sha256": "faab23173bd8402cfbdd406ebf9687432a4f26ee1eac971a3b180a2d1406cb68",
-   "lines": 1025
+   "sha256": "5d62a668c364878dc35ba46c2ea6d0307c37161eb168e2da3e8305ce3b590dc1",
+   "lines": 1030
   },
   "slowa": {
    "path": "docs/architecture/SLOWA_WLASCICIELA_2026-10-16.md",
@@ -6579,6 +6579,61 @@
    ]
   },
   {
+   "id": "s_c1fb20c0a99d",
+   "aliases": [
+    "R113"
+   ],
+   "kind": "requirement",
+   "title": "Do R112: kwota ≈ 1 € dziennie dla kont to wartość startowa; zgoda z góry na jej podniesienie przy potrzebie (owner (przekazał koordynator gcp), 2026-10-30)",
+   "date": null,
+   "theme": "owner_requirements",
+   "theme_inferred": false,
+   "understanding": {
+    "state": "none"
+   },
+   "quotes": [
+    {
+     "text": "podniesiemy przy pierwszej możliwej potrzebie więc masz z góry na to zgodę teraz jest po prostu ustawione żeby nie zapomnieć że jest duży limit ustawiony",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:1012",
+     "ref": null,
+     "attr": [],
+     "lead": null,
+     "secondary": false
+    }
+   ],
+   "sense": null,
+   "summary": null,
+   "restatement": [
+    {
+     "text": "Odczyt koordynatora: 1 € dziennie dla osób z kontem (R112) to wartość startowa (preset). Koordynator może ją podnieść przy pierwszej potrzebie bez pytania i zgłasza właścicielowi nową kwotę. Ograniczenia z tego nie wynikają, to tylko przypomnienie, że limit jest ustawiony. Reguła, że gość bez konta nie dostaje płatnych źródeł (R112, R111), zostaje bez zmian. Zmiana o rząd wielkości (×10) nadal wymaga potwierdzenia właściciela (zasada z CLAUDE.md), chyba że on to rozszerzy.",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:1014"
+    }
+   ],
+   "commentary": [],
+   "status": null,
+   "gap_text": null,
+   "evidence": [],
+   "next_step": null,
+   "refs": [
+    "s_ab4d24c0cffe",
+    "s_e19a5c52bd50"
+   ],
+   "supersedes": [],
+   "superseded_by": [],
+   "supersession_notes": [],
+   "tags": [],
+   "heading_note": null,
+   "sources": [
+    {
+     "role": "owner",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:1011-1014"
+    }
+   ],
+   "files": [
+    "owner"
+   ]
+  },
+  {
    "id": "s_18ec73967a7b",
    "aliases": [
     "owner:decision-rebuild-don-t-recover"
@@ -6594,7 +6649,7 @@
    "quotes": [
     {
      "text": "\"nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane\"",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:1012",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:1017",
      "ref": null,
      "attr": [],
      "lead": null,
@@ -6606,7 +6661,7 @@
    "restatement": [
     {
      "text": "Recovered versions (`history/chatadhd_v0.8.3`, `history/chatadhd_v0.9.0`) and\nthe historical report are sources of requirements, ideas and data assets\n(e.g. `film_structure.json`), and real ground truth for self-discovery tests —\nnot code to merge. Everything is rebuilt in Loom with tests.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:1014-1017"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:1019-1022"
     }
    ],
    "commentary": [],
@@ -6623,7 +6678,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:1011-1017"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:1016-1022"
     }
    ],
    "files": [
@@ -6649,7 +6704,7 @@
    "restatement": [
     {
      "text": "`workbench_mockup_2026-09-26.webp`: dockable/floating panels (conversation\nlist, active conversation, knowledge graph with active context window, project\nstructure with dimmed high-confidence auto-completable nodes, artifact views\nfor music/video with timeline + storyboard, video player, execution\nenvironment with agent), multi-format ingestion, Loom SDK at the centre.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:1020-1024"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:1025-1029"
     }
    ],
    "commentary": [],
@@ -6666,7 +6721,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:1019-1024"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:1024-1029"
     }
    ],
    "files": [
