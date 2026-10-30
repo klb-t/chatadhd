@@ -507,6 +507,7 @@ Json WorkerStatus::to_json() const {
               {"running", running},
               {"paused", paused}};
   if (usage_pending) out["usage_pending"] = *usage_pending;
+  if (llm.is_object() && !llm.empty()) out["llm"] = llm;
   return out;
 }
 
@@ -583,12 +584,15 @@ void SemanticWorker::pause() {
 }
 
 void SemanticWorker::resume() {
+  // Resuming is also the way to turn the analysis model back on after it was switched off by failures (the counter starts again).
+  if (llm_.disabled_by_errors()) llm_.reset_failures();
   paused_.store(false);
   wake();
 }
 
 WorkerStatus SemanticWorker::status() const {
   WorkerStatus s;
+  s.llm = llm_.state_json();
   {
     auto lock = db_.lock();
     auto counts = db_.conn().prepare("SELECT "

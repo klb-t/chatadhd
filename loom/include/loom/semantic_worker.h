@@ -82,6 +82,8 @@ struct WorkerStatus {
   // Present only while the automatic batch submission awaits the owner's
   // usage confirmation (mode "awaiting_usage_confirmation"); messages stay pending.
   std::optional<Json> usage_pending;
+  // The analysis model's own state (SemanticLLM::state_json): disabled by consecutive failures, with the reason and the count.
+  Json llm = Json::object();
   Json to_json() const;  // Python keys; "rate" formatted "%.1f/s"; + "running","paused"
 };
 

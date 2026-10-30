@@ -12,6 +12,7 @@
 #include "loom/event_bus.h"
 #include "loom/net/http.h"
 #include "loom/runtime.h"
+#include "loom/semantic_llm.h"
 #include "loom/semantic_worker.h"
 #include "loom/usage_policy.h"
 #include "loom/util/fs.h"
@@ -309,5 +310,21 @@ TEST_SUITE("semantic_question") {
     for (const auto& m : f.messages()) notes += m.metadata.is_object() && m.metadata.contains("semantic_refusal");
     CHECK(notes == 1);
     CHECK(f.batch_posts() == 0);
+  }
+
+  // Audit 30.10: the status the web reads shows the analysis model switched off, with the reason and the count; resuming turns it back on.
+  // Data: synthetic failing transport (scripted), real runtime.
+  TEST_CASE("status: llm switched off after the threshold is visible in the worker status; resume re-enables it with counter 0") {
+    Fixture f;
+    f.rt->config().set("base_url", "https://api.test");
+    f.rt->config().set("semantic_llm_max_failures", 3);
+    f.transport->set_fallback(net::ScriptedTransport::Reply::fail(Errc::Network, "down"));
+    for (int i = 0; i < 3; ++i) f.rt->semantic_llm().analyse("This text is long enough to attempt the LLM call every single time.");
+    const Json st = f.rt->worker().status().to_json();
+    CHECK(st["llm"] == Json{{"disabled", true}, {"reason", "consecutive_failures"}, {"consecutive_failures", 3}, {"max_consecutive_failures", 3}});
+    f.rt->worker().resume();
+    const Json after = f.rt->worker().status().to_json();
+    CHECK(after["llm"]["disabled"] == false);
+    CHECK(after["llm"]["consecutive_failures"] == 0);
   }
 }

@@ -77,6 +77,12 @@ export default function SemanticStatus({ profileHost }: { profileHost: UserProfi
     }
   }, [status]);
 
+  // Resuming the worker also turns the analysis model back on (the failure counter starts again).
+  const togglePauseOrResume = useCallback(async () => {
+    setBusy(true);
+    try { setStatus(await api.resumeSemantic()); setError(null); } catch (cause) { setStatus(null); setError(cause); } finally { setBusy(false); }
+  }, []);
+
   const answerUsage = useCallback(async (approved: boolean) => {
     const pending = status?.usage_pending;
     if (!pending?.receipt_id || !api.confirmSemanticUsage) return;
@@ -136,6 +142,15 @@ export default function SemanticStatus({ profileHost }: { profileHost: UserProfi
         feature={(() => { try { return resolvePresentationFeature(p, USAGE_PENDING_FEATURE); } catch { return null; } })()}
         receipt={status.usage_pending} onConfirm={() => void answerUsage(true)}
         onReject={status.usage_pending.status === "denied" ? undefined : () => void answerUsage(false)} />}
+      {status?.llm?.disabled && (() => {
+        const feature = (() => { try { return resolvePresentationFeature(p, SEMANTIC_QUEUE_FEATURE); } catch { return null; } })();
+        const texts = semanticQueueTexts(feature);
+        const view = semanticQueueView(status);
+        return <div data-testid="semantic-llm-disabled">
+          <span data-testid="semantic-llm-disabled-text">{texts.llmDisabled(view.llm?.count ?? null, view.llm?.limit ?? null)}</span>{" "}
+          <button type="button" disabled={busy} data-testid="semantic-llm-reenable" onClick={() => void togglePauseOrResume()}>{texts.llmReenable ?? "re-enable"}</button>
+        </div>;
+      })()}
       {status && api.requeueSemantic && (() => {
         const view = semanticQueueView(status);
         const feature = (() => { try { return resolvePresentationFeature(p, SEMANTIC_QUEUE_FEATURE); } catch { return null; } })();

@@ -185,6 +185,9 @@ struct ChatResult {
   // P18: what the usage ledger only told while admitting the send (a spending limit with on_exceed notify): [{code, period, text: {lang: text}}].
   // Also kept in the assistant message's metadata (usage_notices). Null when there was nothing to tell.
   Json usage_notices = nullptr;
+  // What happened to the attached files: [{file, status: cut|unreadable, original_chars, kept_chars}] (empty = every file went whole).
+  // Also in the context receipt (attachments) and in context_trace.
+  Json attachment_notes = Json::array();
   Json to_json() const;
 };
 
@@ -222,6 +225,9 @@ class ChatEngine {
                               const std::vector<std::string>& attachments, const ChatOptions& opts = {},
                               std::string_view exclude_message_id = "", Json* context_trace = nullptr);
   Json build_content(std::string_view text, const std::vector<std::string>& attachments) const;
+  // The real builder: an existing file that cannot be read is an error (preset chat_attachment_on_unreadable = refuse) or a visible warning;
+  // a text file over chat_attachment_max_chars is cut with a marker. `notes` (optional) receives [{file, status: cut|unreadable, original_chars, kept_chars}].
+  Result<Json> build_content_checked(std::string_view text, const std::vector<std::string>& attachments, Json* notes) const;
   static void configure_reasoning(Json& payload, std::string_view model, const std::optional<std::string>& effort);
 
   std::optional<std::string> last_reasoning() const;

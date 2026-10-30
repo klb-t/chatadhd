@@ -20,6 +20,7 @@
     "test:stale-connection": "node e2e/stale-connection.mjs",
     "test:blocking-guard": "node e2e/blocking-calls-guard.mjs",
     "test:chat-outcomes": "node e2e/chat-outcomes.mjs",
+    "test:guest-wipe": "node tests/conversation-view/guest-wipe.test.mjs",
     "test:usage-pending": "node tests/conversation-view/usage-pending.test.mjs",
     "test:usage-pending-browser": "node e2e/usage-pending-ui.mjs",
     "test:graph-entry-browser": "node e2e/graph-entry-native.mjs",

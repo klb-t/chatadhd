@@ -8,6 +8,19 @@ means views of the **same** project, separately from interpretation alternatives
 See [current report](implicit-structures-2026-10-14.md). No new owner requirement.
 
 
+## S1 / M1-AUDYT-POPRAWKI (2026-10-30, gałąź `pkg-auditfix`): cztery poprawki z audytu filozofii
+
+Źródło: `docs/reports/PHILOSOPHY_AUDIT_2026-10-30.md`. Decyzja koordynatora (odwracalna, patrz ostatnia kolumna).
+
+| Znalezisko | Poprawka | Test | Jak cofnąć |
+|---|---|---|---|
+| (a) „Wyczyść wszystko” ukrywało nieudane kroki | `wipeEverything` zwraca listę kroków (store, opfs, local, session, logout) ze statusem ok / failed + powód / nothing; okno po czyszczeniu pokazuje dokładnie co zostało i dlaczego (teksty `guest.wipe_*` w katalogu pl/en/nl), przycisk „Dalej” przeładowuje | `web/tests/conversation-view/guest-wipe.test.mjs` (wymuszony błąd kroku nazwany w liście i w tekście; wszystko ok = dokładny tekst „wszystko usunięte”) | cofnąć commit; stary zwrot `void` |
+| (b) Ucinanie załączników po cichu (15000 znaków w kodzie) | ustawienie `chat_attachment_max_chars` (nieustawione = preset 15000 z `runtime/chat_context.pack` `attachments.text_max_chars`; 0 = bez limitu); znacznik w wysyłanym tekście (słowa z danych pl/en/nl) i wpis `{file,status:cut,original_chars,kept_chars}` w wyniku (`attachment_notes`), w `context_trace` i w paragonie kontekstu (`receipt.attachments`) | `tests/test_chat_engine.cpp` „attachments: …” (20000 znaków: zachowane dokładnie 15000, znacznik, liczby; 0 = cały plik bez znacznika; 100) | ustaw `chat_attachment_max_chars` = 0 lub zmień preset w danych |
+| (c) Nieczytelny załącznik szedł do modelu bez pliku | `chat_attachment_on_unreadable` (preset `refuse`: błąd z nazwą pliku, żadne wywołanie modelu; `send_with_warning`: wysyła z widocznym ostrzeżeniem w tekście, `attachment_notes` i paragonie) | `tests/test_chat_engine.cpp` (katalog `broken.txt` jako nieczytelny plik; transport scriptowany liczy 0 żądań; z ustawieniem 1 żądanie z ostrzeżeniem) | ustaw `send_with_warning` |
+| (d) Semantic LLM wyłączał się po cichu po 5 porażkach | próg to ustawienie `semantic_llm_max_failures` (preset 5 w `runtime/worker.pack` `llm_max_consecutive_failures`; 0 = nigdy); status `GET /api/semantic/status` ma `llm {disabled, reason, consecutive_failures, max_consecutive_failures}`; `SemanticStatus.tsx` pokazuje stan i przycisk „Włącz model analizy ponownie” (katalog `presentation.semantic_queue`), który woła istniejące `resume` (zeruje licznik) | `tests/test_semantic_llm.cpp` (próg 3: dokładnie 3, stan; re-enable → 0; próg 0 nigdy), `tests/test_semantic_question.cpp` (status przez worker) | próg 0 wyłącza samowyłączanie; `resume` nie zmienia dotychczasowego działania poza resetem |
+
+Dane: wszystkie testy na danych syntetycznych tworzonych w teście (plik 20000 znaków, katalog udający plik, skryptowany transport, wstawki storage); żadnych prawdziwych danych użytkownika ani prawdziwych wywołań dostawcy. Luki: brak testu przeglądarkowego (e2e) okna po czyszczeniu i przycisku ponownego włączenia (tylko testy jednostkowe i tsc); tłumaczenie nl nowych tekstów jest maszynowe (a w `semantic_queue` brak bloku nl - działa łańcuch zapasowy); kolejne wejścia czatu (`estimate`/`prepare`) używają tej samej ścieżki `build_messages`, więc też odmawiają przy nieczytelnym pliku.
+
 ## S1 / M1-GOSC-ZRODLO (2026-10-30): gość bez konta nigdy po cichu nie trafia na płatne źródło
 
 Co zrobiono. (1) W danych (`loom/data/runtime/free_providers.pack`, `source_pools`) pula bezkosztowa `cost_free` (nazwa

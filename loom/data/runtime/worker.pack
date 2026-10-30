@@ -7,6 +7,7 @@
     "drain_batch": 50,
     "idle_poll_ms": 30000,
     "llm_rate_limit": 2.0,
+    "llm_max_consecutive_failures": 5,
     "startup_delay_ms": 3000,
     "batch_threshold": 500,
     "batch_max_messages": 10000,
@@ -89,6 +90,13 @@
         "minimum": 0,
         "maximum": 9223372036854775807,
         "x-unit": "milliseconds"
+      },
+      "llm_max_consecutive_failures": {
+        "x-setting": "/llm_max_consecutive_failures",
+        "x-consumer": "semantic_llm",
+        "description": "Preset of the setting semantic_llm_max_failures: after this many consecutive failed calls the semantic LLM stops being called (the regex analysis continues) and the status shows it disabled with the count; resuming the worker turns it back on. 0 = never disable.",
+        "type": "integer",
+        "minimum": 0
       },
       "llm_rate_limit": {
         "x-setting": "/llm_rate_limit",

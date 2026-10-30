@@ -185,17 +185,47 @@ export async function restoreBundle(bundle: GuestBundle, fetcher: typeof fetch =
   return restoreBundleV1(bundle, fetcher);
 }
 
-/** "Clear everything from this browser": the store, the app's local/session storage and OPFS, then the guest session ends. */
-export async function wipeEverything(store: GuestStore = browserStore, fetcher: typeof fetch = fetch): Promise<void> {
-  try { await store.wipe(); } catch { /* nothing stored */ }
+/** One step of "clear everything": what it was and what came out of it. A step never hides its result. */
+export type WipeStep = { step: "store" | "opfs" | "local" | "session" | "logout"; status: "ok" | "failed" | "nothing"; reason?: string };
+
+const whyFailed = (e: unknown): string => (e instanceof Error ? e.message : String(e)) || "unknown";
+
+/** "Clear everything from this browser": the store, the app's local/session storage and OPFS, then the guest session ends.
+ * Returns the result of every step (ok / failed with its reason / nothing to remove) so the page can say what remained. */
+export async function wipeEverything(store: GuestStore = browserStore, fetcher: typeof fetch = fetch): Promise<WipeStep[]> {
+  const steps: WipeStep[] = [];
+  try { await store.wipe(); steps.push({ step: "store", status: "ok" }); }
+  catch (e) { steps.push({ step: "store", status: "failed", reason: whyFailed(e) }); }
   try {
     const root = await (navigator.storage as unknown as { getDirectory?: () => Promise<FileSystemDirectoryHandle> })?.getDirectory?.();
     const dir = root as unknown as { keys?: () => AsyncIterable<string>; removeEntry: (n: string, o: { recursive: boolean }) => Promise<void> } | undefined;
-    if (dir?.keys) for await (const name of dir.keys()) await dir.removeEntry(name, { recursive: true });
-  } catch { /* no OPFS */ }
-  try { localStorage.clear(); } catch { /* refused */ }
-  try { sessionStorage.clear(); } catch { /* refused */ }
-  try { await fetcher("/api/auth/logout", { method: "POST", credentials: "same-origin" }); } catch { /* the session ends with its TTL */ }
+    if (!dir?.keys) steps.push({ step: "opfs", status: "nothing" });
+    else {
+      let n = 0;
+      for await (const name of dir.keys()) { await dir.removeEntry(name, { recursive: true }); n += 1; }
+      steps.push({ step: "opfs", status: n ? "ok" : "nothing" });
+    }
+  } catch (e) { steps.push({ step: "opfs", status: "failed", reason: whyFailed(e) }); }
+  try { const n = localStorage.length; localStorage.clear(); steps.push({ step: "local", status: n ? "ok" : "nothing" }); }
+  catch (e) { steps.push({ step: "local", status: "failed", reason: whyFailed(e) }); }
+  try { const n = sessionStorage.length; sessionStorage.clear(); steps.push({ step: "session", status: n ? "ok" : "nothing" }); }
+  catch (e) { steps.push({ step: "session", status: "failed", reason: whyFailed(e) }); }
+  try {
+    const r = await fetcher("/api/auth/logout", { method: "POST", credentials: "same-origin" });
+    steps.push(r.ok ? { step: "logout", status: "ok" } : { step: "logout", status: "failed", reason: `HTTP ${r.status}` });
+  } catch (e) { steps.push({ step: "logout", status: "failed", reason: whyFailed(e) }); }
+  return steps;
+}
+
+/** The words shown after a wipe, all from the catalog: the "all removed" text when no step failed, else one line per step
+ * (every step, with its result) under the "what is left" heading. */
+export function wipeReportText(steps: WipeStep[], text: (id: string, params?: Record<string, string>) => string): string[] {
+  if (steps.every((s) => s.status !== "failed")) return [text("guest.wipe_all_ok")];
+  const line = (s: WipeStep): string => text("guest.wipe_step", {
+    step: text(`guest.wipe_s_${s.step}`),
+    result: s.status === "failed" ? text("guest.wipe_r_failed", { reason: s.reason ?? "" }) : text(s.status === "ok" ? "guest.wipe_r_ok" : "guest.wipe_r_nothing"),
+  });
+  return [text("guest.wipe_left"), ...steps.map(line)];
 }
 
 /** v1: every conversation of the working copy, exported in Loom's JSON format (kept for older readers). */

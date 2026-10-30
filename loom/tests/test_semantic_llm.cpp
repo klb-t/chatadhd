@@ -178,6 +178,31 @@ TEST_SUITE("semantic_llm") {
     CHECK(!llm.disabled_by_errors());
   }
 
+  // Audit 30.10: the threshold is a setting (preset 5 in runtime/worker.pack, 0 = never) and the state is readable.
+  TEST_CASE("analyse(): threshold 3 disables after exactly 3 failures, the state shows it, re-enabling resets the counter") {
+    Env env;
+    env.cfg.set("semantic_llm_max_failures", 3);
+    env.transport.set_fallback(net::ScriptedTransport::Reply::fail(Errc::Network, "down"));
+    auto llm = env.llm();
+    for (int i = 0; i < 3; ++i) llm.analyse("This text is long enough to attempt the LLM call every single time.");
+    CHECK(llm.state_json() == Json{{"disabled", true}, {"reason", "consecutive_failures"}, {"consecutive_failures", 3}, {"max_consecutive_failures", 3}});
+    llm.reset_failures();
+    CHECK(llm.state_json() == Json{{"disabled", false}, {"reason", nullptr}, {"consecutive_failures", 0}, {"max_consecutive_failures", 3}});
+    CHECK(llm.enabled());
+  }
+
+  TEST_CASE("analyse(): the preset is 5 (data) and threshold 0 never disables") {
+    Env env;
+    env.transport.set_fallback(net::ScriptedTransport::Reply::fail(Errc::Network, "down"));
+    auto llm = env.llm();
+    CHECK(llm.max_consecutive_failures() == 5);
+    env.cfg.set("semantic_llm_max_failures", 0);
+    for (int i = 0; i < 12; ++i) llm.analyse("This text is long enough to attempt the LLM call every single time.");
+    CHECK(llm.consecutive_failures() == 12);
+    CHECK(!llm.disabled_by_errors());
+    CHECK(llm.state_json()["disabled"] == false);
+  }
+
   TEST_CASE("analyse(): disables itself after 5 consecutive failures") {
     Env env;
     env.transport.set_fallback(net::ScriptedTransport::Reply::fail(Errc::Network, "down"));

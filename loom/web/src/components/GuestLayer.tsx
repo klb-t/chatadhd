@@ -8,7 +8,7 @@ import { useCallback, useEffect, useRef, useState, type ReactNode } from "react"
 import type { AccountsTextId, GuestInfo, GuestsOffer } from "../context/auth-state";
 import {
   ANSWER_DONE_EVENT, WORKING_COPY_CHANGED_EVENT, workingConversations, browserStore, bundleFromText, bundleMissing, bundleSize, bundleText, collectBundle,
-  humanBytes, humanSeconds, noticePeriod, requestPersistence, restoreBundle, wipeEverything, type GuestBundle,
+  humanBytes, humanSeconds, noticePeriod, requestPersistence, restoreBundle, wipeEverything, wipeReportText, type GuestBundle,
 } from "../context/guest-store";
 import { GUEST_LIMIT_EVENT, type GuestLimitDetail } from "../api/auth";
 import { SETTINGS_PANEL, requestOpenPanel } from "../context/open-settings";
@@ -45,6 +45,7 @@ export default function GuestLayer({ guest, guests, text, onSignIn, children }: 
   const [restored, setRestored] = useState<number | null>(null);
   const [saved, setSaved] = useState<string | null>(null);
   const [wipeAsk, setWipeAsk] = useState(false);
+  const [wipeReport, setWipeReport] = useState<string[] | null>(null);
   const answered = useRef(false);
   // PH29 P1: the store chosen from the registry by its traits (OPFS + SQLite first, the IndexedDB bundle as fallback).
   const storeRef = useRef<StorePlugin | null>(null);
@@ -193,8 +194,9 @@ export default function GuestLayer({ guest, guests, text, onSignIn, children }: 
     setWipeAsk(false);
     // Every store of the registry is cleared (closing its database first), then the rest of the site's data.
     for (const p of selection.current?.plugins ?? []) { try { await p.wipe(); } catch { /* nothing stored there */ } }
-    await wipeEverything(storeRef.current ?? browserStore);
-    window.location.reload();
+    const steps = await wipeEverything(storeRef.current ?? browserStore);
+    // The person reads what was removed and what was not (and why) before the page reloads; nothing is hidden.
+    setWipeReport(wipeReportText(steps, (id, params) => text(id as AccountsTextId, params)));
   };
 
   const ttl = humanSeconds(guest.idleTtlSeconds);
@@ -292,6 +294,13 @@ export default function GuestLayer({ guest, guests, text, onSignIn, children }: 
           <p role="status" data-testid="guest-switched" style={{ pointerEvents: "auto", margin: 0, fontSize: 12 }}>
             {text("guest.switched", { from: switched.from, why: String(switched.why ?? ""), provider: providerName })}
           </p>
+        )}
+        {wipeReport && (
+          <div role="alertdialog" data-testid="guest-wipe-report"
+            style={{ pointerEvents: "auto", background: "var(--surface, #222)", color: "inherit", border: "1px solid var(--border, #555)", borderRadius: 10, padding: "10px 12px" }}>
+            {wipeReport.map((line, i) => <p key={i} style={{ margin: "0 0 4px" }}>{line}</p>)}
+            <button type="button" data-testid="guest-wipe-continue" onClick={() => window.location.reload()}>{text("guest.wipe_continue")}</button>
+          </div>
         )}
         {wipeAsk && (
           <div role="alertdialog" data-testid="guest-wipe-confirm"

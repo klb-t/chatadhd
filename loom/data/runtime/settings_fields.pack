@@ -230,6 +230,17 @@
               "pl": "Zapis tego, co dokładnie poszło do modelu przy każdej wiadomości.",
               "en": "The record of what exactly went to the model with each message."
             }
+          },
+          {
+            "id": "zalaczniki",
+            "label": {
+              "pl": "Załączniki",
+              "en": "Attachments"
+            },
+            "why": {
+              "pl": "Ile z załączonego pliku idzie do modelu i co robić z plikiem, którego nie da się odczytać.",
+              "en": "How much of an attached file goes to the model, and what to do with a file that cannot be read."
+            }
           }
         ]
       },
@@ -5650,6 +5661,70 @@
           ],
           "group": "kontekst",
           "subgroup": "slad",
+          "flows": [
+            "chat.send"
+          ]
+        }
+      },
+      {
+        "key": "chat_attachment_max_chars",
+        "scope": "config",
+        "group": "context",
+        "type": "integer",
+        "unit": "characters",
+        "has_default": false,
+        "description": "Most characters of an attached text file sent to the model; the rest is cut and the cut is shown (a marker in the sent text and an entry with the file name, original and kept length in the context receipt and the result). 0 = no limit. Unset = the preset of runtime/chat_context.pack attachments.text_max_chars (15000). Reader: ChatEngine::build_content.",
+        "human": {
+          "label": {"pl": "Limit znaków załączonego pliku tekstowego", "en": "Attached text file character limit"},
+          "why": {"pl": "Ile znaków pliku tekstowego trafia do modelu; reszta jest ucinana, a ucięcie widać w treści i w śladzie „Co wysłaliśmy”. 0 = bez limitu.", "en": "How many characters of a text file go to the model; the rest is cut, and the cut is shown in the text and in the “What we sent” trail. 0 = no limit."},
+          "effect": {"pl": "Większy limit = model widzi więcej pliku, żądanie jest dłuższe i droższe; 0 = cały plik, bez względu na rozmiar.", "en": "A larger limit = the model sees more of the file, the request is longer and dearer; 0 = the whole file, whatever its size."},
+          "levels": [
+            "person"
+          ],
+          "group": "kontekst",
+          "subgroup": "zalaczniki",
+          "flows": [
+            "chat.send"
+          ]
+        }
+      },
+      {
+        "key": "chat_attachment_on_unreadable",
+        "scope": "config",
+        "group": "context",
+        "type": "string",
+        "has_default": false,
+        "description": "What happens when an attached file exists but cannot be read: refuse (preset: the message is not sent, the error names the file) or send_with_warning (the message goes without the file, with a visible warning in the result and the context receipt and a marker in the sent text). Unset = the preset of runtime/chat_context.pack attachments.on_unreadable. Reader: ChatEngine::build_content.",
+        "human": {
+          "label": {"pl": "Co robić z nieczytelnym załącznikiem", "en": "What to do with an unreadable attachment"},
+          "why": {"pl": "Gdy plik załącznika nie daje się odczytać: refuse = nie wysyłaj i powiedz który plik; send_with_warning = wyślij bez pliku, z widocznym ostrzeżeniem.", "en": "When an attached file cannot be read: refuse = do not send and name the file; send_with_warning = send without the file, with a visible warning."},
+          "effect": {"pl": "refuse chroni przed odpowiedzią modelu na pytanie o plik, którego nie widział.", "en": "refuse protects against the model answering about a file it never saw."},
+          "levels": [
+            "person"
+          ],
+          "group": "kontekst",
+          "subgroup": "zalaczniki",
+          "flows": [
+            "chat.send"
+          ]
+        }
+      },
+      {
+        "key": "semantic_llm_max_failures",
+        "scope": "config",
+        "group": "memory",
+        "type": "integer",
+        "has_default": false,
+        "description": "After this many consecutive failed calls of the analysis model the semantic LLM is switched off (analysis continues with the local rules); the status shows it disabled, with the reason and the count, and resuming the semantic worker turns it back on. 0 = never switch off. Unset = the preset of runtime/worker.pack llm_max_consecutive_failures (5). Reader: SemanticLLM::record_result; shown in GET /api/semantic/status as llm.",
+        "human": {
+          "label": {"pl": "Ile porażek wyłącza model analizy", "en": "Failures that switch the analysis model off"},
+          "why": {"pl": "Po tylu kolejnych nieudanych wywołaniach model analizy przestaje być wołany (zostają reguły lokalne), a status pokazuje to z liczbą porażek. 0 = nigdy nie wyłączaj.", "en": "After this many failed calls in a row the analysis model stops being called (local rules continue), and the status shows it with the number of failures. 0 = never switch off."},
+          "effect": {"pl": "Mniej = szybciej przestaje płacić za błędne wywołania; więcej lub 0 = próbuje dalej mimo błędów.", "en": "Fewer = stops paying for failing calls sooner; more or 0 = keeps trying despite errors."},
+          "levels": [
+            "person"
+          ],
+          "group": "kontekst",
+          "subgroup": "analiza",
           "flows": [
             "chat.send"
           ]

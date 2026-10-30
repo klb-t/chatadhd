@@ -17,7 +17,7 @@
 //          guard (a held call is a pause: regex result, no failure counted)
 //        non-200 -> nullopt (logged); content -> strip ``` fences -> JSON
 //     4. success -> reset failures, return merge(llm, regex)
-//        failure/exception -> ++consecutive_failures; >= 5 -> disabled
+//        failure/exception -> ++consecutive_failures; >= max_consecutive_failures() (preset 5, 0 = never) -> disabled
 //        (log warning); return convert_regex(regex)
 //   Changing semantic enabled/model/base URL/API key resets the failure latch
 //   on the next enabled()/analyse() check. Completions from older settings do
@@ -52,7 +52,6 @@ extern const std::string_view kAnalysisPrompt;
 
 class SemanticLLM {
  public:
-  static constexpr int kMaxConsecutiveFailures = 5;
   static constexpr std::size_t kMaxAnalysisChars = 3000;
 
   SemanticLLM(const Config& cfg, const Secrets& secrets, net::HttpTransport& http, const SemanticAnalyzer& regex);
@@ -77,6 +76,11 @@ class SemanticLLM {
 
   int consecutive_failures() const noexcept { return failures_.load(); }
   bool disabled_by_errors() const noexcept { return disabled_.load(); }
+  // Consecutive failures that switch the model off: the setting semantic_llm_max_failures, else the preset of runtime/worker.pack
+  // llm_max_consecutive_failures; 0 = never.
+  int max_consecutive_failures() const;
+  // The state a status shows: {disabled, reason (null | "consecutive_failures"), consecutive_failures, max_consecutive_failures}.
+  Json state_json() const;
   void reset_failures() noexcept;  // Explicit retry, also invalidates old completions.
 
  private:

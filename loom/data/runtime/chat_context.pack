@@ -378,6 +378,25 @@
         "interests": [],
         "network": []
       }
+    },
+    "attachments": {
+      "text_max_chars": 15000,
+      "on_unreadable": "refuse",
+      "cut_marker": {
+        "en": "[cut: {kept} of {original} characters of {file} were sent; the rest was left out]",
+        "pl": "[ucięto: z {file} wysłano {kept} z {original} znaków; resztę pominięto]",
+        "nl": "[ingekort: van {file} zijn {kept} van {original} tekens verzonden; de rest is weggelaten]"
+      },
+      "unreadable_error": {
+        "en": "the attachment {file} cannot be read, so nothing was sent. Fix the file or set chat_attachment_on_unreadable to send_with_warning.",
+        "pl": "nie można odczytać załącznika {file}, więc nic nie wysłano. Napraw plik albo ustaw chat_attachment_on_unreadable na send_with_warning.",
+        "nl": "de bijlage {file} kan niet worden gelezen, dus er is niets verzonden. Herstel het bestand of zet chat_attachment_on_unreadable op send_with_warning."
+      },
+      "unreadable_marker": {
+        "en": "[the attachment {file} could not be read and is not included]",
+        "pl": "[załącznika {file} nie dało się odczytać i nie został dołączony]",
+        "nl": "[de bijlage {file} kon niet worden gelezen en is niet bijgevoegd]"
+      }
     }
   },
   "value_schema": {
@@ -640,6 +659,12 @@
             }
           }
         }
+      },
+      "attachments": {
+        "type": "object",
+        "x-setting": "/attachments",
+        "x-consumer": "chat_engine",
+        "description": "Attached files: text_max_chars is the preset of the setting chat_attachment_max_chars (characters of a text file sent to the model; 0 = no limit); on_unreadable is the preset of chat_attachment_on_unreadable (refuse | send_with_warning); cut_marker, unreadable_error and unreadable_marker are the words ({file}, {kept}, {original}) in en, pl, nl."
       }
     }
   }
