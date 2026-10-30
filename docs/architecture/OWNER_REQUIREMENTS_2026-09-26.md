@@ -988,6 +988,11 @@ Wejście na adres usługi (WatchDog, czat, AGEDS — lista otwarta) uruchamia za
 
 Odczyt koordynatora (do projektu, nie słowa właściciela): darmowe konto u dostawcy modelu, podłączane jednym kliknięciem przez OAuth (przykład: OpenRouter; dostawcy to przykłady). Zachęta wyraźna, ale aplikacja działa dalej bez konta (pula serwera zostaje jako start). Moment i siła zachęty to preset w danych, z „nie pytaj więcej”. Komunikat mówi uczciwie, że z takim kontem osoba ma własny limit, a jej zapytania idą wprost do tego dostawcy. Związek: luka „zapytania do modeli z urządzenia osoby” w QUEUE_S1 (30.10).
 
+## R109 — Stopnie zużycia wspólnej puli przez jedną osobę: informacja, czerwone ostrzeżenie, odcięcie; progi maleją z liczbą użytkowników (pakiet z R108) (owner (przekazał koordynator gcp), 2026-10-30)
+> można na przykład jeśli jeden użytkownik zużyje 10% limitu na wszystkich użytkowników poinformować go, przy 25 na czerwono poinformować przy 50 odciąć. jak będzie więcej niż dwóch użytkowników to odpowiednio obniżyć progi
+
+Liczby właściciela to przykład (sam mówi „na przykład”). Odczyt koordynatora, do projektu, nie słowa właściciela: silnik ogólny. Progi to otwarty zbiór wartości w danych, każdy z własną akcją (informacja, czerwone ostrzeżenie, odcięcie, inne). Zależność progów od liczby użytkowników to formuła-preset, nie stała. Odcięcie dotyczy tylko wspólnej puli: aplikacja oraz własny klucz lub konto dostawcy działają dalej, a komunikat prowadzi do podłączenia konta jednym kliknięciem (R108). Obserwacja z 30.10 na 2d39b07c, do rozszerzenia zamiast budowy obok: guests.protection w loom/data/runtime/server_accounts.pack z licznikiem w loom/server/src/guest_guard.h ma tylko twarde odmowy z progami bezwzględnymi. Na sesję: chat_per_minute, chat_per_day, output_tokens_per_day, parallel_streams. Na adres: chat_per_minute. Globalnie: live_sessions, pool_chat_per_day, pool_output_tokens_per_day. Nie ma: udziału jednej osoby w puli, stopni z akcjami innymi niż odmowa, zależności od liczby użytkowników, śledzenia osoby ponad sesję. /api/pool/summary pokazuje odmowy, przyjęcia i resztę puli na dziś.
+
 ## Decision — rebuild, don't recover
 > "nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane"
 
