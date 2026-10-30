@@ -56,13 +56,22 @@ async function noOverlap(page, label) {
   }
   // inside the viewport, no horizontal spill
   assert.ok(layer.x >= 0 && layer.x + layer.width <= 390 + 0.5 && layer.y + layer.height <= 844 + 0.5, `${label}: the layer stays on the screen ${JSON.stringify(layer)}`);
-  // every control of the layer is the element at its own centre (nothing lies over it)
-  const covered = await page.evaluate(() => [...document.querySelectorAll('[data-testid="guest-layer"] button, [data-testid="guest-layer"] summary')].filter(el => {
-    const r = el.getBoundingClientRect(); if (!r.width || !r.height) return false;
-    const at = document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2);
-    return !(at === el || el.contains(at));
-  }).map(el => el.getAttribute("data-testid") || el.textContent));
-  assert.deepEqual(covered, [], `${label}: covered controls`);
+  // every control of the layer that is inside the layer's own box is the element at its centre (nothing lies over it); one
+  // scrolled out of the layer's box is reachable by scrolling the layer (max 45% of the screen) - except the notice buttons
+  // and the fold toggle, which must always be inside the box.
+  const must = new Set(await page.evaluate(() => ["guest-notice-close", "guest-never", "guest-sign-in", "guest-layer-toggle"].filter(id => document.querySelector(`[data-testid="${id}"]`)).map(id => id)));
+  const bad = await page.evaluate(({ must }) => {
+    const L = document.querySelector('[data-testid="guest-layer"]').getBoundingClientRect();
+    return [...document.querySelectorAll('[data-testid="guest-layer"] button, [data-testid="guest-layer"] summary')].map(el => {
+      const r = el.getBoundingClientRect(); const id = el.getAttribute("data-testid") || el.textContent;
+      if (!r.width || !r.height) return null;
+      const inside = r.y >= L.y - 0.5 && r.y + r.height <= L.y + L.height + 0.5;
+      if (!inside) return must.includes(id) ? `${id}: outside the layer box` : null;
+      const at = document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2);
+      return at === el || el.contains(at) ? null : `${id}: covered`;
+    }).filter(Boolean);
+  }, { must: [...must] });
+  assert.deepEqual(bad, [], `${label}: controls`);
 }
 
 try {

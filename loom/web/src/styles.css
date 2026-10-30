@@ -322,3 +322,8 @@ textarea { resize: vertical; }
 .win-chip { pointer-events: auto; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 8px 10px; border-radius: 10px; background: var(--card); border: 1px solid var(--border); box-shadow: 0 4px 16px rgba(0,0,0,0.35); font-size: 14px; }
 .win-chip-buttons { display: flex; flex-wrap: wrap; gap: 6px; }
 .win-chip-buttons > button { min-height: 44px; }
+
+/* Guest layer (owner's screenshot 2026-10-30): the layer has its own row below the app; the app fills the rest and never
+   lies under the layer. The app roots set their own 100dvh, so inside the frame they take the height of the body. */
+.guest-frame { display: flex; flex-direction: column; height: 100vh; height: 100dvh; min-height: 0; overflow: hidden; }
+.guest-body > .shell-root, .guest-body > .app-root, .guest-body > .dock-root, .guest-body > .win-box > .shell-root, .guest-body > .win-box > .app-root, .guest-body > .win-box > .dock-root { height: 100% !important; max-height: 100% !important; min-height: 0 !important; }

@@ -32,13 +32,32 @@ TYLKO TEST bezkosztowy wpis usługowy, bo prawdziwy Vertex gościa już nie obs�
 Testy i źródło danych (wszystkie dane syntetyczne): jednostkowy `loom/tests/test_guest_source.cpp` (tabele dostawców, klucze,
 budżety i listy `model_sources` generowane losowo ze stałym ziarnem, fałszywy plik kluczy, fałszywy resolver; brak sieci) i
 serwerowy `loom/server/tests/test_server_guest_source.py` (mock modelu `loom/web/e2e/mock_llm_server.py`, fałszywy serwer
-metadanych liczący zapytania, fałszywy plik kluczy; prawdziwych kluczy ani metadanych Google nie dotknięto). Wyniki: patrz niżej.
+metadanych liczący zapytania, fałszywy plik kluczy; prawdziwych kluczy ani metadanych Google nie dotknięto). Wyniki (kompilacja release w `loom/build/rel`, 30.10): `unit.test_guest_source` 5 przypadków (w tym 400 losowych konfiguracji) przeszedł; `server.guest_source`, `server.guests`, `server.guest_vertex`, `server.guest_bundle`, `server.guest_protection*`, `server.accounts`, `server.conversation_view` przeszły; e2e (prawdziwy serwer, mock modelu, syntetyczne dane): `guest-layer-layout`, `guest-mode-native`, `guest-bundle-native`, `opfs-store-native` przeszły; `auth-state.test.mjs` 8/8. Nieuruchomione: `guest-vertex-real.mjs` (prawdziwy Vertex, zabronione), pełna bramka (koordynator).
 
 Luki. (a) Ścieżka wyboru źródła dla osób Z kontem (świadome wypróbowanie płatnych funkcji, ustawienie z presetem, udział na osobę
 `per_person_eur_per_day`) nie jest zrobiona: dziś `choose_guest_source` obsługuje tylko gościa, a rejestracja jest zamknięta;
 dane i `guest_allowed_tiers(..., "account_trial")` są gotowe. (b) `per_person_eur_per_day` jest zapisane, niewymuszane. (c) Web nie ma
 własnego czytelnika `model_sources` (ofertę źródeł ustala serwer; `GET /api/auth/me` nadal zwraca listę). (d) e2e przeglądarkowe
 (`guest-*.mjs`) poprawione tylko w danych (tier, bez `pool`); uruchomienie: patrz wyniki.
+
+Dodatek koordynatora (owner, 30.10, zrzut z telefonu 390 px): (1) Warstwa gościa (`GuestLayer.tsx`) nie leży już nad czatem
+(`position: fixed`), tylko we własnym wierszu pod aplikacją (`.guest-frame`/`.guest-body` w `styles.css`; aplikacja dostaje resztę
+wysokości); wysokość warstwy do 45 % ekranu z przewijaniem. Warstwa jest otwarta przy pierwszym spojrzeniu, potem zwinięta do
+jednej linii z przyciskiem „Szczegóły tej wizyty / Ukryj szczegóły” (stan w `localStorage` `loom.guest.layer`, odwracalny; bez
+localStorage: otwarta). Powiadomienie po pierwszej odpowiedzi, okno zgody, odmowy, potwierdzenie czyszczenia i linia modelu są
+zawsze w warstwie; przycisk czyszczenia i magazyn tylko po rozwinięciu. (2) Test e2e `loom/web/e2e/guest-layer-layout.mjs`
+(`npm run test:guest-layer`, dopisane do `.github/workflows/loom.yml`) przy 390×844: prostokąty warstwy i czatu/pola/„Wyślij” nie
+przecinają się (otwarta, z powiadomieniem, zwinięta, po przeładowaniu, ponownie rozwinięta); przyciski powiadomienia i zwijania
+leżą w polu warstwy i nic ich nie przykrywa. (3) Linia modelu mówi, czym źródło jest naprawdę: `guest.model_line_free` („najlepszy z
+dzisiejszych darmowych modeli”) tylko dla poziomu `free`, `guest.model_line_paid` („źródło płatne”) dla każdego innego poziomu,
+`guest.model_line` (bez twierdzeń o koszcie) gdy poziomu brak; test dokładnych słów po poziomach i językach w
+`web/tests/conversation-view/auth-state.test.mjs`. (4) Linia „Magazyn: …” bierze słowa z katalogu (`guest.store`); sama etykieta
+wtyczki („Przeglądarka — baza SQLite”) pochodzi z wtyczki, nie z katalogu, i zostaje dla pakietu języka. (5) „Nic nie wychodzi poza
+to urządzenie” (`info.why`) NIE było prawdziwe, gdy w rozmowie (wywiadowej) były już wiadomości asystenta z modelem wysłane do
+dostawcy: tekst zależy teraz od stanu (`reachedProvider` w `context/interview.ts`; przy wysłaniu `info.why_sent`: pytania
+formularza zostają na urządzeniu, ale rozmowa zawiera też wiadomości wysłane do dostawcy); test w tym samym pliku. Zastrzeżenie:
+„wysłane do dostawcy” rozpoznaję po wiadomości asystenta z niepustym `model` bez znacznika wywiadu; nie badałem śladu zapytań w jądrze.
+Istniejące e2e (`guest-bundle-native`, `opfs-store-native`) dostały pomocnik rozwijający warstwę przed użyciem „Wyczyść”/magazynu.
 
 Nakładki produkcyjne, które operator MÓGŁBY wstawić (nie zastosowano). Po wdrożeniu kodu nic nie jest konieczne: presety z
 paczki wystarczą, a gość bez kluczy dostaje stan `none`. Aby gość miał darmowe źródło, trzeba pliku kluczy `guests.keys_file`

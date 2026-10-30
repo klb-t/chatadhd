@@ -220,8 +220,7 @@ export default function GuestLayer({ guest, guests, text, onSignIn, children }: 
   }, [needsTap, termsKey]);
 
   return (
-    <div className="guest-frame" data-testid="guest-frame" style={{ display: "flex", flexDirection: "column", height: "100vh", minHeight: 0, overflow: "hidden" }}>
-      <style>{".guest-frame{height:100dvh!important}.guest-body>*{height:100%!important;max-height:100%!important;min-height:0!important}"}</style>
+    <div className="guest-frame" data-testid="guest-frame">
       <div className="guest-body" data-testid="guest-body" style={{ flex: "1 1 auto", minHeight: 0, position: "relative", overflow: "hidden" }}>{children}</div>
       <div className="guest-layer" data-testid="guest-layer" data-open={open ? "true" : "false"} data-guest-id={guest.id} data-saved-at={saved ?? ""} data-saving={saving}
         style={{ flex: "0 0 auto", zIndex: 50, display: "flex", flexDirection: "column", gap: 6, alignItems: "stretch", boxSizing: "border-box", width: "100%", maxHeight: "45dvh", overflowY: "auto", padding: "4px 8px", borderTop: "1px solid var(--border, #555)", background: "var(--surface, #222)" }}>

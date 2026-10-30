@@ -68,6 +68,7 @@ const mock = spawn("python3", [path.join(here, "mock_llm_server.py"), String(moc
 const server = spawn(SERVER_BIN, ["--host", "127.0.0.1", "--port", String(port), "--accounts-root", root, "--static-dir", DIST], { stdio: "ignore", cwd: LOOM });
 const base = `http://127.0.0.1:${port}`;
 let browser, failed = false;
+async function openLayer(p) { await p.getByTestId("guest-layer").waitFor(); if ((await p.getByTestId("guest-layer").getAttribute("data-open")) === "false") await p.getByTestId("guest-layer-toggle").click(); }  // the guest layer is folded after the first visit
 const step = async (name, fn) => { if (failed) return; try { await fn(); console.log(`[guest-bundle] PASS ${name}`); } catch (e) { failed = true; console.error(`[guest-bundle] FAIL ${name}\n${e.stack}`); } };
 const guestDirs = () => { try { return readdirSync(path.join(root, "guests")); } catch { return []; } };
 const api = (page, method, p, body) => page.evaluate(async ([m, u, b]) => {
@@ -191,12 +192,14 @@ try {
     await p2.screenshot({ path: path.join(SHOTS, "guest-bundle-restored.png") });
 
     // "Clear everything from this browser": consent first, "No" keeps everything
+    await openLayer(p2);
     await p2.getByTestId("guest-wipe").click();
     await p2.getByTestId("guest-wipe-confirm").waitFor();
     assert.ok((await p2.getByTestId("guest-wipe-confirm").innerText()).includes(say("guest.wipe_confirm").slice(0, 30)));
     await p2.getByTestId("guest-wipe-no").click();
     assert.ok(await storedBundle(p2));
     await p2.evaluate(() => { localStorage.setItem("loom.e2e.marker", "1"); sessionStorage.setItem("loom.e2e.marker", "1"); });
+    await openLayer(p2);
     await p2.getByTestId("guest-wipe").click();
     const gone = p2.waitForEvent("load");
     await p2.getByTestId("guest-wipe-yes").click();
