@@ -20,6 +20,7 @@
 #include "loom/action_table.h"
 #include "loom/phase_timing.h"
 #include "loom/runtime_profile.h"
+#include "guest_source.h"
 #include "sse_stream.h"
 #include "onboarding-ui-routes.h"
 #include "method-ui-routes.h"
@@ -360,105 +361,7 @@ json isolated_options(const loom::accounts::Isolation& iso, const std::string& d
   return options;
 }
 
-// The operator's keys file (KEY=VALUE lines, optional "export ", quotes, # comments). Only the names asked for are
-// kept; values never reach a log or an answer.
-std::map<std::string, std::string> read_keys_file(std::string path, const std::vector<std::string>& wanted) {
-  std::map<std::string, std::string> out;
-  if (path.empty() || wanted.empty()) return out;
-  if (path.rfind("~/", 0) == 0) {
-    const char* home = std::getenv("HOME");
-    if (!home) return out;
-    path = std::string(home) + path.substr(1);
-  }
-  std::ifstream in(path);
-  std::string line;
-  while (std::getline(in, line)) {
-    while (!line.empty() && (line.back() == '\r' || line.back() == ' ')) line.pop_back();
-    std::size_t b = line.find_first_not_of(" \t");
-    if (b == std::string::npos || line[b] == '#') continue;
-    line = line.substr(b);
-    if (line.rfind("export ", 0) == 0) line = line.substr(7);
-    const auto eq = line.find('=');
-    if (eq == std::string::npos) continue;
-    std::string k = line.substr(0, eq), v = line.substr(eq + 1);
-    if (v.size() >= 2 && (v.front() == '"' || v.front() == '\'') && v.back() == v.front()) v = v.substr(1, v.size() - 2);
-    if (!v.empty() && std::find(wanted.begin(), wanted.end(), k) != wanted.end()) out[k] = v;
-  }
-  return out;
-}
-
-// R103 §4.5: the best free model a guest without his own key gets, from the free_model_choice data. An entry counts
-// when its provider is enabled, its condition holds (key_present = its auth_env is in the keys file, none = no key)
-// and its data terms satisfy `require`. Returns {provider, model, base_url, data_terms, quality, why} or
-// {provider: null, why}; `secret`/`secret_name` (not part of the public answer) carry the overlay.
-// R103 B3: `resolve` handles any other active_when (e.g. service_account: a token from the metadata server) and may
-// rewrite base_url ({project}); it returns "" when the entry is usable, else the reason it is skipped. `blocked` gives
-// the reason a provider is out right now (exhausted, over budget), "" when it is not.
-using SourceResolver = std::function<std::string(const json& prov, std::string& key, std::string& base_url)>;
-json choose_free_model(const json& fp, const std::string& keys_file, std::map<std::string, std::string>& overlay,
-                       const SourceResolver& resolve = {}, const std::function<std::string(const json&)>& blocked = {}) {
-  const json providers = fp.value("providers", json::array());
-  const json choice = fp.value("free_model_choice", json::object());
-  std::vector<std::string> wanted;
-  for (const auto& p : providers)
-    if (p.is_object() && !p.value("auth_env", std::string()).empty()) wanted.push_back(p.value("auth_env", std::string()));
-  const auto keys = read_keys_file(keys_file, wanted);
-  const json require = choice.value("require", json::object());
-  json table = choice.value("table", json::array());
-  if (!table.is_array()) table = json::array();
-  // R103 B3: tier_order (e.g. free keys before the operator's paid credits) first, then quality; a tier not listed goes last.
-  const json tiers = choice.value("tier_order", json::array());
-  auto tier_rank = [&](const json& row) -> std::size_t {
-    std::string tier;
-    for (const auto& p : providers)
-      if (p.is_object() && p.value("id", std::string()) == row.value("provider", std::string())) tier = p.value("tier", std::string());
-    if (tiers.is_array())
-      for (std::size_t i = 0; i < tiers.size(); ++i)
-        if (tiers[i].is_string() && tiers[i].get<std::string>() == tier) return i;
-    return tiers.is_array() ? tiers.size() : 0;
-  };
-  std::stable_sort(table.begin(), table.end(), [&](const json& a, const json& b) {
-    const auto ta = tier_rank(a), tb = tier_rank(b);
-    if (ta != tb) return ta < tb;
-    return a.value("quality", 0.0) > b.value("quality", 0.0);
-  });
-  json skipped = json::array();
-  for (const auto& row : table) {
-    const std::string pid = row.value("provider", std::string());
-    const json* prov = nullptr;
-    for (const auto& p : providers)
-      if (p.is_object() && p.value("id", std::string()) == pid) prov = &p;
-    if (!prov) { skipped.push_back({{"provider", pid}, {"why", "no_provider_entry"}}); continue; }
-    if (!prov->value("enabled", false)) { skipped.push_back({{"provider", pid}, {"why", "disabled"}}); continue; }
-    if (blocked) {
-      if (const std::string b = blocked(*prov); !b.empty()) { skipped.push_back({{"provider", pid}, {"why", b}}); continue; }
-    }
-    const std::string when = prov->value("active_when", std::string("key_present"));
-    const std::string env = prov->value("auth_env", std::string());
-    std::string key;
-    std::string base_url = prov->value("base_url", std::string());
-    const json terms = prov->value("data_terms", json::object());
-    bool ok = true;
-    for (auto it = require.begin(); it != require.end(); ++it)
-      if (!terms.contains(it.key()) || terms[it.key()] != it.value()) ok = false;
-    if (!ok) { skipped.push_back({{"provider", pid}, {"why", "data_terms_require"}}); continue; }
-    if (when == "key_present") {
-      auto it = keys.find(env);
-      if (it == keys.end()) { skipped.push_back({{"provider", pid}, {"why", "no_key"}, {"key_name", env}}); continue; }
-      key = it->second;
-    } else if (when != "none") {
-      const std::string why = resolve ? resolve(*prov, key, base_url) : when;
-      if (!why.empty()) { skipped.push_back({{"provider", pid}, {"why", why}}); continue; }
-    }
-    if (!key.empty()) overlay[prov->value("auth_secret", std::string("api_key"))] = key;
-    return {{"provider", pid}, {"display_name", prov->value("display_name", pid)}, {"model", row.value("model", std::string())},
-            {"base_url", base_url}, {"data_terms", terms}, {"quality", row.value("quality", json(nullptr))},
-            {"auth_kind", prov->value("auth_kind", std::string("key"))}, {"tier", prov->value("tier", std::string())},
-            {"observed_at", row.value("observed_at", json(nullptr))}, {"source", row.value("source", json(nullptr))},
-            {"why", "best_in_table"}, {"skipped", skipped}};
-  }
-  return {{"provider", nullptr}, {"why", "no_free_provider_active"}, {"skipped", skipped}};
-}
+// guest_source.h: read_keys_file, choose_free_model, guest_allowed_tiers (header-only, unit-tested).
 }  // namespace
 
 LoomContext* App::rctx() const { return accounts_ ? t_request_ctx : ctx_; }
@@ -531,6 +434,8 @@ LoomContext* App::context_for_guest(const std::string& guest_id) {
                   {"loom_guest_source", source["provider"]}};
     (void)loom_set_config_json(c, patch.dump().c_str());
   }
+  else if (source["provider"].is_null() && !(cfg.is_object() && cfg.contains("loom_guest_source")))
+    (void)loom_set_config_json(c, json({{"loom_guest_source", "none"}}).dump().c_str());  // explicit "no free source" state
   pt.mark("config");
   guest_ctx_[guest_id] = c;
   guest_source_[guest_id] = source;
@@ -586,29 +491,54 @@ json App::choose_guest_source(std::map<std::string, std::string>& overlay) {
     key = tok->value;
     return {};
   };
-  return choose_free_model(fp->values(), accounts_->settings().guests.keys_file, overlay, resolve,
+  // guests.model_sources decides which pools a guest may be given (R104/R112): "paid" is never served to a guest.
+  const json fpv = fp->values();
+  const auto tiers = guest_allowed_tiers(fpv, accounts_->settings().guests.raw.value("model_sources", json::array({"free"})), "guest");
+  return choose_free_model(fpv, accounts_->settings().guests.keys_file, tiers, overlay, resolve,
                            [this](const json& prov) { return provider_blocked(prov, spend_, cooldowns_); });
 }
 
-void App::prepare_guest_source(const std::string& guest_id) {
+bool App::prepare_guest_source(const std::string& guest_id) {
   json source;
   LoomContext* c = nullptr;
   {
     std::lock_guard lk(pool_mu_);
     auto it = guest_source_.find(guest_id);
     auto ct = guest_ctx_.find(guest_id);
-    if (it == guest_source_.end() || ct == guest_ctx_.end()) return;
+    if (it == guest_source_.end() || ct == guest_ctx_.end()) return true;
     source = it->second;
     c = ct->second;
   }
-  if (!source.is_object() || source["provider"].is_null()) return;
+  if (source.is_object() && source["provider"].is_null()) {
+    // State "none": try again (a key may have appeared); the guest's own key (BYOK) keeps working; otherwise the model
+    // request is refused with the plain message and the way to an own account or key (R108) - never a paid source.
+    std::map<std::string, std::string> overlay;
+    json next = choose_guest_source(overlay);
+    if (!next["provider"].is_null()) {
+      json terms = next["data_terms"];
+      terms["provider"] = next["provider"];
+      terms["display_name"] = next["display_name"];
+      (void)loom_set_credential_overlay(c, json(overlay).dump().c_str());
+      (void)loom_set_config_json(c, json({{"base_url", next["base_url"]}, {"default_model", next["model"]}, {"loom_provider_terms", terms},
+                                           {"loom_guest_source", next["provider"]}}).dump().c_str());
+      std::lock_guard lk(pool_mu_);
+      guest_source_[guest_id] = next;
+      return true;
+    }
+    {
+      std::lock_guard lk(pool_mu_);
+      guest_source_[guest_id] = next;
+    }
+    return loom_has_secret(c, "api_key") == 1;
+  }
+  if (!source.is_object()) return true;
   // The guest's own choice wins: only a runtime still on the source the server gave it is refreshed or switched.
   const json cfg = parse_or_empty(own_and_free(loom_get_config(c)));
   if (!cfg.is_object() || cfg.value("loom_guest_source", std::string()) != source.value("provider", std::string()) ||
       cfg.value("base_url", std::string()) != source.value("base_url", std::string()))
-    return;
+    return true;
   auto fp = loom::RuntimeProfile::load("free_providers", accounts_->root());
-  if (!fp) return;
+  if (!fp) return true;
   const std::string pid = source.value("provider", std::string());
   const json fpv = fp->values();  // bound first: find_provider points into it
   const json* prov = find_provider(fpv, pid);
@@ -621,11 +551,11 @@ void App::prepare_guest_source(const std::string& guest_id) {
       // Same token as before = nothing to do; a refreshed one replaces the runtime's in-memory overlay.
       std::map<std::string, std::string> overlay{{prov->value("auth_secret", std::string("api_key")), tok->value}};
       (void)loom_set_credential_overlay(c, json(overlay).dump().c_str());
-      return;
+      return true;
     }
     if (why.empty()) why = "no_service_account";
   }
-  if (why.empty()) return;
+  if (why.empty()) return true;
   // R103 §4.4: an explicit switch by fallback order, never a silent one — the next source and why are recorded in
   // model_source.switched (GET /api/auth/me) and in the receipt's provider_terms.
   std::map<std::string, std::string> overlay;
@@ -646,6 +576,7 @@ void App::prepare_guest_source(const std::string& guest_id) {
   (void)loom_set_config_json(c, patch.dump().c_str());
   std::lock_guard lk(pool_mu_);
   guest_source_[guest_id] = next;
+  return !next["provider"].is_null() || loom_has_secret(c, "api_key") == 1;
 }
 
 void App::settle_guest_answer(const std::string& pid, const json& r) {
@@ -788,7 +719,18 @@ bool App::refuse_guest_request(const httplib::Request& req, httplib::Response& r
   }
   t_admitted_guest = t_guest->id;
   t_admitted_model = model;
-  if (model) prepare_guest_source(t_guest->id);
+  if (model && !prepare_guest_source(t_guest->id)) {
+    // R108: no cost-free source and no key of the guest's own: say so in plain words and point to an own account/key.
+    const json src = guest_source(t_guest->id);
+    json msg = src.is_object() ? src.value("message", json::object()) : json::object();
+    if (!msg.is_object() || msg.empty())
+      msg = {{"en", "There is no free model source available right now. Connect your own account or API key to continue."},
+             {"pl", "Teraz nie ma dostępnego darmowego źródła modeli. Połącz własne konto lub klucz API, żeby kontynuować."}};
+    json out = {{"error", "no_guest_source"}, {"message", msg}, {"model_source", src}};
+    res.status = 503;
+    res.set_content(out.dump(), "application/json");
+    return true;
+  }
   return false;
 }
 
