@@ -56,14 +56,14 @@ overlay("server_accounts", {
   guests: { enabled: true, start: "auto", sweep_interval_seconds: 0, keys_file: path.join(tmp, "keys.env"),
             first_answer_notice: { on: false, ask_again: "per_device" },
             workdir: { subdir: "guests", idle_ttl_seconds: TTL, max_bytes: 0, keep_after_session: "ask" },
-            secrets_routes: "write_only_session", model_sources: ["byok", "pool", "free", "local"],
+            secrets_routes: "write_only_session", model_sources: ["byok", "free", "local"],
             // the 50 MB measurement restores a big bundle; the guest body preset (1 MB) would refuse it (finding of this
             // package: a real guest history above 1 MB cannot be restored with the preset - reported as a gap)
             protection: { sizes: { max_body_bytes: 0, max_upload_bytes: 0 } } },
 });
 overlay("free_providers", {
   providers: [{ id: "mock_free", display_name: "Mock darmowy", base_url: `http://127.0.0.1:${mockPort}`, auth_env: "MOCK_FREE_KEY", auth_secret: "api_key",
-                active_when: "key_present", enabled: true,
+                tier: "free", active_when: "key_present", enabled: true,
                 data_terms: { retention: "none", human_review: false, training: "no", observed_at: "2026-10-28", source_url: "test", source_rating: "test",
                               summary: { pl: "Testowy dostawca nic nie zapisuje.", en: "The test provider keeps nothing." } } }],
   free_model_choice: { rank_source: "table", require: { training: "no" }, table: [{ model: "mock/e2e-model", provider: "mock_free", quality: 1 }] },

@@ -396,6 +396,12 @@ if(LOOM_BUILD_TESTS)
     set_tests_properties(server.guest_vertex PROPERTIES
       ENVIRONMENT "LOOM_SERVER_BIN=$<TARGET_FILE:loom-server>;PYTHONDONTWRITEBYTECODE=1"
       TIMEOUT 240)
+    # R104/R108/R112: a guest never gets a paid source; no free source -> explicit none state + message.
+    add_test(NAME server.guest_source
+      COMMAND ${Python3_EXECUTABLE} ${LOOM_ROOT}/server/tests/test_server_guest_source.py)
+    set_tests_properties(server.guest_source PROPERTIES
+      ENVIRONMENT "LOOM_SERVER_BIN=$<TARGET_FILE:loom-server>;PYTHONDONTWRITEBYTECODE=1"
+      TIMEOUT 240)
     # R103 B1b: the working-copy bundle - generative secret scan of its bytes, exact restore with 0 model requests.
     add_test(NAME server.guest_bundle
       COMMAND ${Python3_EXECUTABLE} ${LOOM_ROOT}/server/tests/test_server_guest_bundle.py)

@@ -161,7 +161,7 @@ def main() -> int:
                     "guests": {"enabled": True, "sweep_interval_seconds": 0, "keys_file": str(keys)}}
         providers = {
             "providers": [{"id": "mock_free", "display_name": "Mock free", "base_url": f"http://127.0.0.1:{mock_port}",
-                           "auth_env": "MOCK_FREE_KEY", "auth_secret": "api_key", "active_when": "key_present", "enabled": True,
+                           "auth_env": "MOCK_FREE_KEY", "auth_secret": "api_key", "tier": "free", "active_when": "key_present", "enabled": True,
                            "data_terms": {"training": "no", "observed_at": "2026-10-29", "source_url": "test"}}],
             "free_model_choice": {"rank_source": "table", "require": {"training": "no"},
                                   "table": [{"model": "mock/e2e-model", "provider": "mock_free", "quality": 0.5}]}}
