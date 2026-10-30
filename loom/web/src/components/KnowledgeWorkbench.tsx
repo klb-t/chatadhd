@@ -12,6 +12,7 @@ import type { UserProfileHost } from "../api/onboarding-host";
 import PerspectiveControls from "../workspace/PerspectiveControls";
 import { perspectiveDataset } from "../workspace/knowledge-perspective";
 import type { SelectionResult } from "../graph-perspectives/types";
+import { useShellText } from "../shell/text";
 
 import { VIEWS, STORAGE_KEY, SAVED_KEY, loadWorkspace, parseWorkspace, addPane, changeParameter, connect, unlink, duplicatePane, setWorkspaceRun,
   type ViewKind, type Pane, type Parameters, type Parameter, type Workspace } from "../workspace/state";
@@ -48,6 +49,7 @@ function JsonDetail({ label, value, open = false, testId }: { label: string; val
 }
 
 export default function KnowledgeWorkbench({ onClose, onDataChanged, profileHost }: { onClose: () => void; onDataChanged?: () => void; profileHost?: UserProfileHost }) {
+  const t = useShellText();
   const knowledge = api.knowledge;
   const [loaded] = useState(loadWorkspace);
   const [workspace, setWorkspace] = useState(loaded.workspace);
@@ -97,16 +99,16 @@ export default function KnowledgeWorkbench({ onClose, onDataChanged, profileHost
       <button className="icon-btn" aria-label="Close knowledge workbench" onClick={onClose}>×</button></header>
     {!knowledge ? <div className="empty-state" role="status">The knowledge workbench is not available through this Android bridge yet. Open the app through its HTTP server to use knowledge analysis.</div> : <>
       <div className="kb-toolbar">
-        <label>Knowledge run<select aria-label="Knowledge run" value={runId} onChange={(event) => { setWorkspace((w) => setWorkspaceRun(w, event.target.value)); setInspection(null); }}>
-          {!runs.some((r) => r.id === runId) && <option value={runId}>{runId ? `Unavailable · ${runId}` : "No run yet"}</option>}
+        <label>{t("lit_knowledge_run")}<select aria-label={t("lit_knowledge_run")} value={runId} onChange={(event) => { setWorkspace((w) => setWorkspaceRun(w, event.target.value)); setInspection(null); }}>
+          {!runs.some((r) => r.id === runId) && <option value={runId}>{runId ? `Unavailable · ${runId}` : t("lit_no_run_yet")}</option>}
           {runs.map((run) => <option key={run.id} value={run.id}>{run.status} · {run.id}</option>)}
         </select></label>
-        <label>Records per collection<input aria-label="Record limit" type="number" min={1} value={limit} onChange={(event) => { const value = Number(event.target.value); if (Number.isSafeInteger(value) && value > 0) setWorkspace((w) => ({ ...w, limit: value, panes: w.panes.map((p) => p.followRun ? { ...p, parameters: { ...p.parameters, limit: value } } : p) })); }} /></label>
-        <button onClick={() => { setRefresh((key) => key + 1); setInspection(null); }}>Refresh</button>
+        <label>{t("lit_records_per_collection")}<input aria-label={t("lit_record_limit")} type="number" min={1} value={limit} onChange={(event) => { const value = Number(event.target.value); if (Number.isSafeInteger(value) && value > 0) setWorkspace((w) => ({ ...w, limit: value, panes: w.panes.map((p) => p.followRun ? { ...p, parameters: { ...p.parameters, limit: value } } : p) })); }} /></label>
+        <button onClick={() => { setRefresh((key) => key + 1); setInspection(null); }}>{t("lit_refresh")}</button>
         <label>Add view<select aria-label="View type" value={addKind} onChange={(event) => setAddKind(event.target.value as ViewKind)}>{Object.entries(VIEWS).map(([kind, label]) => <option key={kind} value={kind}>{label}</option>)}</select></label>
         <button onClick={() => setWorkspace((w) => addPane(w, addKind))} data-testid="kb-add-view">Add view</button>
-        <label>View profile<select aria-label="View profile" value={workspace.profile} onChange={(event) => setWorkspace((w) => ({ ...w, profile: event.target.value as Workspace["profile"] }))}><option value="adaptive">Adaptive</option><option value="stacked">Stacked</option><option value="compact">Compact</option></select></label>
-        <button onClick={save}>Save perspective</button><button onClick={restore}>Restore perspective</button>
+        <label>{t("lit_view_profile")}<select aria-label={t("lit_view_profile")} value={workspace.profile} onChange={(event) => setWorkspace((w) => ({ ...w, profile: event.target.value as Workspace["profile"] }))}><option value="adaptive">{t("lit_adaptive")}</option><option value="stacked">{t("lit_stacked")}</option><option value="compact">{t("lit_compact")}</option></select></label>
+        <button onClick={save}>{t("lit_save_perspective")}</button><button onClick={restore}>{t("lit_restore_perspective")}</button>
       </div>
       <p className="kb-status" role="status">{saveStatus || "Layout, filters, references and links autosave locally. Data remains on the server. View profiles change presentation only."}</p>
       {storageError && <p className="kb-error" role="alert">{storageError} Autosave is paused; the in-memory workspace still works.</p>}
@@ -126,6 +128,7 @@ function WorkspacePane({ pane, index, profileHost, workspace, setWorkspace, know
   knowledge: KnowledgeApi; runs: KnowledgeRun[]; refresh: number; onDataChanged?: () => void;
   onInspect: (selection: Selection, entities: Map<string, KnowledgeRecord>) => void;
 }) {
+  const t = useShellText();
   const p = pane.parameters;
   const [loaded, setLoaded] = useState<{ key: string; data: Dataset; errors: string[]; fetched: string } | null>(null);
   const [linkSource, setLinkSource] = useState("");
@@ -172,23 +175,23 @@ function WorkspacePane({ pane, index, profileHost, workspace, setWorkspace, know
   const links = workspace.bindings.filter((b) => b.source === pane.id || b.target === pane.id);
   return <section className="kb-pane" data-view-id={pane.id} data-testid={`kb-pane-${pane.kind}`} aria-label={`${VIEWS[pane.kind]} view ${index + 1}`}>
     <header className="kb-pane-header"><h3>{index + 1} · {VIEWS[pane.kind]}</h3><div>
-      <button title="Duplicate as an independent reference" aria-label={`Duplicate ${VIEWS[pane.kind]} view`} onClick={() => setWorkspace((w) => duplicatePane(w, pane.id))}>+</button>
+      <button title={t("lit_duplicate_as_an_independent_reference")} aria-label={`Duplicate ${VIEWS[pane.kind]} view`} onClick={() => setWorkspace((w) => duplicatePane(w, pane.id))}>+</button>
       <button aria-label={`Close ${VIEWS[pane.kind]} view`} onClick={() => setWorkspace((w) => ({ ...unlink(w, pane.id), active: w.active === pane.id ? "" : w.active, panes: w.panes.filter((item) => item.id !== pane.id) }))}>×</button>
     </div></header>
     <details className="kb-view-settings"><summary>View settings & links</summary>
       <code className="kb-id">{pane.id}</code>
       <label className="kb-check"><input type="checkbox" checked={pane.followRun} onChange={(e) => setWorkspace((w) => ({ ...w, panes: w.panes.map((v) => v.id === pane.id ? { ...v, followRun: e.target.checked, parameters: e.target.checked ? { ...v.parameters, run: w.run, limit: w.limit, selection: null } : v.parameters } : v) }))} />Follow workspace run and limit</label>
-      <label>Data run<select aria-label="View data run" value={p.run} onChange={(e) => { change("run", e.target.value); change("selection", null); }} disabled={pane.followRun}>
-        {!usable && <option value={p.run}>{p.run ? `Unavailable · ${p.run}` : "No run yet"}</option>}{runs.map((r) => <option key={r.id} value={r.id}>{r.status} · {r.id}</option>)}
+      <label>{t("lit_data_run")}<select aria-label={t("lit_view_data_run")} value={p.run} onChange={(e) => { change("run", e.target.value); change("selection", null); }} disabled={pane.followRun}>
+        {!usable && <option value={p.run}>{p.run ? `Unavailable · ${p.run}` : t("lit_no_run_yet")}</option>}{runs.map((r) => <option key={r.id} value={r.id}>{r.status} · {r.id}</option>)}
       </select></label>
-      <label>Record limit<input aria-label="View record limit" type="number" min={1} value={p.limit} onChange={(e) => { const n = Number(e.target.value); if (Number.isSafeInteger(n) && n > 0) change("limit", n); }} /></label>
+      <label>{t("lit_record_limit")}<input aria-label={t("lit_view_record_limit")} type="number" min={1} value={p.limit} onChange={(e) => { const n = Number(e.target.value); if (Number.isSafeInteger(n) && n > 0) change("limit", n); }} /></label>
       <div className="kb-actions"><button onClick={() => setWorkspace((w) => unlink(w, pane.id))}>Unlink as reference</button><button onClick={() => change("selection", null)}>Clear view focus</button></div>
       <p className="kb-muted">{links.length} parameter links · {pane.followRun ? "following workspace run" : "independent run"}. Unlink keeps current parameters; it does not freeze server data.</p>
       <label>Follow view<select aria-label="Link source view" value={linkSource} onChange={(e) => setLinkSource(e.target.value)}><option value="">Choose source</option>{workspace.panes.filter((v) => v.id !== pane.id).map((v) => <option key={v.id} value={v.id}>{workspace.panes.indexOf(v) + 1} · {VIEWS[v.kind]}</option>)}</select></label>
-      <label>Parameter<select aria-label="Link parameter" value={linkParameter} onChange={(e) => setLinkParameter(e.target.value as Parameter)}>{(["selection", "filter", "depth", "confidence", "evidence", "fade", "maxNodes"] as Parameter[]).map((k) => <option key={k} value={k}>{k}</option>)}</select></label>
-      <button disabled={!workspace.panes.some((v) => v.id === linkSource)} onClick={() => setWorkspace((w) => connect(w, linkSource, pane.id, linkParameter))}>Link parameter</button>
+      <label>Parameter<select aria-label={t("lit_link_parameter")} value={linkParameter} onChange={(e) => setLinkParameter(e.target.value as Parameter)}>{(["selection", "filter", "depth", "confidence", "evidence", "fade", "maxNodes"] as Parameter[]).map((k) => <option key={k} value={k}>{k}</option>)}</select></label>
+      <button disabled={!workspace.panes.some((v) => v.id === linkSource)} onClick={() => setWorkspace((w) => connect(w, linkSource, pane.id, linkParameter))}>{t("lit_link_parameter")}</button>
       {links.map((link) => <p className="kb-link" key={`${link.source}/${link.target}/${link.parameter}`}>{workspace.panes.findIndex((v) => v.id === link.source) + 1} → {workspace.panes.findIndex((v) => v.id === link.target) + 1} · {link.parameter} <button aria-label={`Detach ${link.parameter} link`} onClick={() => setWorkspace((w) => ({ ...w, bindings: w.bindings.filter((b) => b !== link) }))}>Detach</button></p>)}
-      <JsonDetail label="Data version and execution status" testId="kb-data-version-receipt" value={{ requested_run: p.run, run: run ?? null, retrieved_at: loaded?.key === key ? loaded.fetched : null, projection: pane.kind, status: busy ? "loading" : !usable ? "run unavailable" : errors.length ? "partial" : "loaded", saved_selection: p.selection, snapshot: "Run reference; immutable server snapshot not guaranteed" }} />
+      <JsonDetail label={t("lit_data_version_and_execution_status")} testId="kb-data-version-receipt" value={{ requested_run: p.run, run: run ?? null, retrieved_at: loaded?.key === key ? loaded.fetched : null, projection: pane.kind, status: busy ? "loading" : !usable ? "run unavailable" : errors.length ? "partial" : "loaded", saved_selection: p.selection, snapshot: t("lit_run_reference_immutable_server_snapsho") }} />
     </details>
     <p className="kb-run-status" role="status">{pane.kind === "catalog" ? "Live catalog · not scoped to a knowledge run" : `Run: ${p.run || "none"} · ${!usable ? "unavailable" : busy ? "loading" : run.status}`}{focus && ` · focus: ${displayText(entities.get(focus)?.label || focus)}`}</p>
     {errors.map((e) => <p className="kb-warning" key={e}>{e}</p>)}
@@ -209,6 +212,7 @@ function WorkspacePane({ pane, index, profileHost, workspace, setWorkspace, know
 }
 
 function RunControls({ knowledge, onDone }: { knowledge: KnowledgeApi; onDone: (run: string) => void }) {
+  const t = useShellText();
   const [sources, setSources] = useState("");
   const [full, setFull] = useState(false);
   const [priors, setPriors] = useState(true);
@@ -254,10 +258,10 @@ function RunControls({ knowledge, onDone }: { knowledge: KnowledgeApi; onDone: (
         <p className="kb-muted">Selected source excerpts are sent to the configured model provider and may incur its charges. Proposals remain candidates; they do not become accepted claims automatically.</p>
         <p role="status">{modelConfig ? semanticModel ? `Semantic model: ${semanticModel}` : "No semantic model configured. Set Semantic model in Settings, then refresh here." : modelError ? `Model settings unavailable: ${modelError}` : "Loading model settings…"}</p>
         {modelConfig?.semantic_analysis === false && <p className="kb-warning">Semantic analysis is disabled in Settings. The engine will report model proposals as unavailable until it is enabled.</p>}
-        <button disabled={running} onClick={() => { void loadModelConfig(); }}>Refresh model settings</button>
-        <label>Candidate representation<select aria-label="Semantic candidate representation" value={representation} disabled={running} onChange={(event) => setRepresentation(event.target.value)}><option value="relation_v1">Relation proposals</option><option value="occurrence_graph_v1">Occurrence graph proposals (experimental)</option></select></label>
+        <button disabled={running} onClick={() => { void loadModelConfig(); }}>{t("lit_refresh_model_settings")}</button>
+        <label>{t("lit_candidate_representation")}<select aria-label={t("lit_semantic_candidate_representation")} value={representation} disabled={running} onChange={(event) => setRepresentation(event.target.value)}><option value="relation_v1">{t("lit_relation_proposals")}</option><option value="occurrence_graph_v1">Occurrence graph proposals (experimental)</option></select></label>
         {representation === "occurrence_graph_v1" && <p className="kb-muted">Proposes local entities, claim relationships, scopes and explicit unknowns. Draft checks verify the supplied structure and source spans; interpretation and inference remain unreviewed. Existing views stay open.</p>}
-        <fieldset disabled={running}><legend>Semantic model budget</legend>
+        <fieldset disabled={running}><legend>{t("lit_semantic_model_budget")}</legend>
           <div className="kb-pane-controls">{budgetFields.slice(0, 3).map(({ key, label, suggested_min, suggested_max }) => <label key={key}>{label} (preset suggestion {suggested_min}–{suggested_max})<input aria-label={label} type="number" min={0} max={NATIVE_INT_MAX} step={1} value={Number.isNaN(semanticBudget[key]) ? "" : semanticBudget[key]} onChange={(event) => setSemanticBudget((current) => ({ ...current, [key]: event.target.value === "" ? NaN : Number(event.target.value) }))} /></label>)}</div>
           <details><summary>More semantic limits</summary><div className="kb-pane-controls">{budgetFields.slice(3).map(({ key, label, suggested_min, suggested_max }) => <label key={key}>{label} (preset suggestion {suggested_min}–{suggested_max})<input aria-label={label} type="number" min={0} max={NATIVE_INT_MAX} step={1} value={Number.isNaN(semanticBudget[key]) ? "" : semanticBudget[key]} onChange={(event) => setSemanticBudget((current) => ({ ...current, [key]: event.target.value === "" ? NaN : Number(event.target.value) }))} /></label>)}</div></details>
           <p className="kb-muted">Input limits count prompt and context bytes, including source excerpts. Request limits include cached chunks. Output-token limits apply to each request. Zero requests or zero total input permits no model work. These limits bound work, not its price.</p>
@@ -269,7 +273,7 @@ function RunControls({ knowledge, onDone }: { knowledge: KnowledgeApi; onDone: (
       </div>}
       <p className="kb-muted">Selective mode uses the catalog profile. Original sources are preserved. {useModel ? "Model proposals use the limits above and the current server settings." : "Language-model proposals are off."}</p>
       <div className="kb-actions"><button className="primary" disabled={running || !sources.trim() || (useModel && invalidBudget)} onClick={run}>{running ? "Analyzing…" : "Analyze sources"}</button>
-        {running && <button onClick={() => knowledge.cancel().catch((failure) => setError(errorText(failure)))}>Cancel analysis</button>}</div>
+        {running && <button onClick={() => knowledge.cancel().catch((failure) => setError(errorText(failure)))}>{t("lit_cancel_analysis")}</button>}</div>
       {error && <p className="kb-error" role="alert">{error}</p>}
       {result && <div data-testid="kb-semantic-result">
         <p role="status">Analysis: {displayText(result.status) || "unknown"} · Semantic proposals: {hasSemantic ? displayText(semantic.status) || "status not reported" : "no semantic result reported"}{extractStage?.cache_hit ? " · extract result reused" : ""}</p>
@@ -280,13 +284,13 @@ function RunControls({ knowledge, onDone }: { knowledge: KnowledgeApi; onDone: (
             <p>Accepted proposals: {displayText(semantic.accepted) || "not reported"} · Stored candidate IDs: {asArray(semantic.candidate_ids).length} · Rejected proposals: {displayText(semantic.rejected) || "not reported"}</p>}
           <p>Model requests: {displayText(semantic.requests) || "not reported"} · Cached responses: {displayText(semantic.cache_hits) || "not reported"} · Input bytes: {displayText(semantic.input_bytes) || "not reported"} · Failed requests: {displayText(semantic.failed) || "not reported"} · Omitted observations: {displayText(semantic.omitted_observations) || "not reported"} · Skipped entries: {asArray(semantic.skipped).length}</p>
           <p className="kb-muted">Candidate proposals are unpromoted interpretations. Counts do not establish extraction quality.</p>
-          {!!asArray(semantic.rejections).length && <JsonDetail label="Rejected proposals and reasons" value={semantic.rejections} />}
-          {!!asArray(semantic.skipped).length && <JsonDetail label="Skipped inputs and reasons" value={semantic.skipped} />}
-          {!!asArray(semantic.candidate_ids).length && <JsonDetail label="Stored semantic candidate IDs" value={semantic.candidate_ids} />}
-          <JsonDetail label="Complete semantic result" value={semantic} />
+          {!!asArray(semantic.rejections).length && <JsonDetail label={t("lit_rejected_proposals_and_reasons")} value={semantic.rejections} />}
+          {!!asArray(semantic.skipped).length && <JsonDetail label={t("lit_skipped_inputs_and_reasons")} value={semantic.skipped} />}
+          {!!asArray(semantic.candidate_ids).length && <JsonDetail label={t("lit_stored_semantic_candidate_ids")} value={semantic.candidate_ids} />}
+          <JsonDetail label={t("lit_complete_semantic_result")} value={semantic} />
         </>}
       </div>}
-      {result && <JsonDetail label="Analysis result" value={result} />}
+      {result && <JsonDetail label={t("lit_analysis_result")} value={result} />}
     </div>
   </details>;
 }
@@ -295,6 +299,7 @@ function CandidatePane({ knowledge, run, refresh, onSelect, entities, parameters
   knowledge: KnowledgeApi; run: string; refresh: number;
   onSelect: (kind: string, row: KnowledgeRecord) => void; entities: Map<string, KnowledgeRecord>; parameters: Parameters; change: Change; onResolve: (kind: string, row: KnowledgeRecord) => void;
 }) {
+  const t = useShellText();
   const kind = parameters.candidateKind;
   const setKind = (value: string) => change("candidateKind", value);
   const offset = parameters.offset;
@@ -327,7 +332,7 @@ function CandidatePane({ knowledge, run, refresh, onSelect, entities, parameters
   }, [loadedRows, loadedKey, queryKey, parameters.selection?.id, parameters.selection?.kind, onResolve]);
   return <>
     <div className="kb-pane-controls">
-      <label>Candidate kind<input aria-label="Candidate kind" value={kind} placeholder="All kinds" onChange={(event) => { setKind(event.target.value); setOffset(0); }} /></label>
+      <label>{t("lit_candidate_kind")}<input aria-label={t("lit_candidate_kind")} value={kind} placeholder={t("lit_all_kinds")} onChange={(event) => { setKind(event.target.value); setOffset(0); }} /></label>
       <label>Page size<select aria-label="Candidate page size" value={pageSize} onChange={(event) => { setPageSize(Number(event.target.value)); setOffset(0); }}>{[25, 50, 100].map((value) => <option key={value} value={value}>{value}</option>)}</select></label>
     </div>
     <p className="kb-muted">Candidate proposals remain separate from canonical claims. Select one to inspect its draft claim, exact source quotes and model provenance.</p>
@@ -349,6 +354,7 @@ function CollectionPane({ kind, rows, entities, focus, selection, onSelect, limi
   kind: KnowledgeCollection; rows: KnowledgeRecord[]; entities: Map<string, KnowledgeRecord>;
   focus: string; selection: Selection | null; onSelect: (kind: string, row: KnowledgeRecord) => void; limit: number; parameters: Parameters; change: Change;
 }) {
+  const t = useShellText();
   const filter = parameters.filter;
   const setFilter = (value: string) => change("filter", value);
   const confidence = parameters.confidence;
@@ -369,7 +375,7 @@ function CollectionPane({ kind, rows, entities, focus, selection, onSelect, limi
   const evidences = [...new Set(rows.map((row) => displayText(evidenceOf(row).evidence_class)).filter(Boolean))].sort();
   return <>
     <div className="kb-pane-controls">
-      <input type="search" aria-label={`Filter ${VIEWS[kind]}`} placeholder="Filter this view…" value={filter} onChange={(event) => setFilter(event.target.value)} />
+      <input type="search" aria-label={`Filter ${VIEWS[kind]}`} placeholder={t("lit_filter_this_view")} value={filter} onChange={(event) => setFilter(event.target.value)} />
       <label>Minimum confidence: {confidence}%<input aria-label={`${VIEWS[kind]} minimum confidence`} type="range" min={0} max={100} value={confidence} onChange={(event) => setConfidence(Number(event.target.value))} /></label>
       {!!evidences.length && <select aria-label={`${VIEWS[kind]} evidence class`} value={evidence} onChange={(event) => setEvidence(event.target.value)}><option value="">All evidence classes</option>{evidences.map((item) => <option key={item}>{item}</option>)}</select>}
       {(kind === "claims" || kind === "instances") && <label className="kb-check"><input type="checkbox" checked={follow} onChange={(event) => setFollow(event.target.checked)} />Follow this view’s entity focus</label>}
@@ -389,6 +395,7 @@ function CollectionPane({ kind, rows, entities, focus, selection, onSelect, limi
 }
 
 export function KnowledgeGraph({ data, focus, onSelect, parameters, change, projection }: { data: Dataset; focus: string; onSelect: (kind: string, row: KnowledgeRecord) => void; parameters: Parameters; change: Change; projection?: SelectionResult }) {
+  const t = useShellText();
   const marker = useId().replace(/:/g, "");
   const filter = parameters.filter;
   const setFilter = (value: string) => change("filter", value);
@@ -421,10 +428,10 @@ export function KnowledgeGraph({ data, focus, onSelect, parameters, change, proj
   const edges = claims.filter((claim) => positions.has(displayText(claim.subject)) && positions.has(displayText(claim.object)));
   return <>
     {!projection && <div className="kb-pane-controls">
-      <input type="search" aria-label="Filter graph entities" placeholder="Filter graph entities…" value={filter} onChange={(event) => setFilter(event.target.value)} />
-      <label>Focus depth: {depth}<input aria-label="Graph focus depth" type="range" min={0} max={5} value={depth} onChange={(event) => setDepth(Number(event.target.value))} /></label>
-      <label>Background opacity: {fade}%<input aria-label="Graph background opacity" type="range" min={5} max={100} value={fade} onChange={(event) => setFade(Number(event.target.value))} /></label>
-      <label>Minimum confidence: {confidence}%<input aria-label="Graph minimum confidence" type="range" min={0} max={100} value={confidence} onChange={(event) => setConfidence(Number(event.target.value))} /></label>
+      <input type="search" aria-label={t("lit_filter_graph_entities")} placeholder={t("lit_filter_graph_entities_2")} value={filter} onChange={(event) => setFilter(event.target.value)} />
+      <label>Focus depth: {depth}<input aria-label={t("lit_graph_focus_depth")} type="range" min={0} max={5} value={depth} onChange={(event) => setDepth(Number(event.target.value))} /></label>
+      <label>Background opacity: {fade}%<input aria-label={t("lit_graph_background_opacity")} type="range" min={5} max={100} value={fade} onChange={(event) => setFade(Number(event.target.value))} /></label>
+      <label>Minimum confidence: {confidence}%<input aria-label={t("lit_graph_minimum_confidence")} type="range" min={0} max={100} value={confidence} onChange={(event) => setConfidence(Number(event.target.value))} /></label>
       <label>Node limit<select aria-label="Graph node limit" value={maxNodes} onChange={(event) => setMaxNodes(Number(event.target.value))}>{[30, 60, 120, 300].map((count) => <option key={count}>{count}</option>)}</select></label>
     </div>}
     <div className="kb-count">{nodes.length} / {matching.length} matching entities · {edges.length} relations · select a node to focus linked views</div>
@@ -453,6 +460,7 @@ export function KnowledgeGraph({ data, focus, onSelect, parameters, change, proj
 }
 
 function CandidateStructure({ payload }: { payload: KnowledgeRecord }) {
+  const t = useShellText();
   const proposal = asRecord(payload.proposal), bundle = asRecord(proposal.bundle), validation = asRecord(proposal.validation);
   const entities = asArray(bundle.entity_drafts).map(asRecord), claims = asArray(bundle.claim_drafts).map(asRecord);
   const support = (values: unknown) => <div className="kb-support">{asArray(values).map((value, index) => {
@@ -464,23 +472,24 @@ function CandidateStructure({ payload }: { payload: KnowledgeRecord }) {
     <p className="kb-muted">Draft format checks: {validation.valid === true ? "passed" : validation.valid === false ? "failed" : "not reported"}. Source interpretation and inference remain unreviewed.</p>
     <details className="kb-detail"><summary>Local entity drafts ({entities.length})</summary>{entities.map((entity, index) => <div key={displayText(entity.handle) || index}>
       <h4>{displayText(entity.label || entity.handle)} · {displayText(entity.kind)}</h4><code className="kb-id">{displayText(entity.handle)}</code>
-      <JsonDetail label="Draft attributes" value={entity.attrs} />{support(entity.support)}
+      <JsonDetail label={t("lit_draft_attributes")} value={entity.attrs} />{support(entity.support)}
     </div>)}</details>
     <details className="kb-detail"><summary>Local claim drafts ({claims.length})</summary>{claims.map((claim, index) => <div key={displayText(claim.handle) || index}>
       <h4>{displayText(claim.subject)} · {displayText(claim.predicate)} · {displayText(claim.object || claim.value)}</h4>
       <code className="kb-id">{displayText(claim.handle)}</code>{support(asRecord(asRecord(claim.assessment).basis).support)}
-      <JsonDetail label="Draft qualifiers and old claim premises" value={{ qualifiers: claim.qualifiers, premises: asRecord(claim.assessment).premises }} />
+      <JsonDetail label={t("lit_draft_qualifiers_and_old_claim_premise")} value={{ qualifiers: claim.qualifiers, premises: asRecord(claim.assessment).premises }} />
     </div>)}</details>
-    <JsonDetail label="Draft roots" value={bundle.roots} />
-    <JsonDetail label="Coverage and unsupported spans" value={bundle.coverage} open />
-    <JsonDetail label="Unknowns in proposed structure" value={bundle.unknowns} open />
-    <JsonDetail label="Structure check report" value={validation} />
-    <JsonDetail label="Candidate source packet" value={{ packet_hash: payload.packet_hash, source_packet: payload.source_packet }} />
-    <JsonDetail label="Complete proposed bundle" value={bundle} />
+    <JsonDetail label={t("lit_draft_roots")} value={bundle.roots} />
+    <JsonDetail label={t("lit_coverage_and_unsupported_spans")} value={bundle.coverage} open />
+    <JsonDetail label={t("lit_unknowns_in_proposed_structure")} value={bundle.unknowns} open />
+    <JsonDetail label={t("lit_structure_check_report")} value={validation} />
+    <JsonDetail label={t("lit_candidate_source_packet")} value={{ packet_hash: payload.packet_hash, source_packet: payload.source_packet }} />
+    <JsonDetail label={t("lit_complete_proposed_bundle")} value={bundle} />
   </div>;
 }
 
 function Inspector({ selection, entities }: { selection: Selection | null; entities: Map<string, KnowledgeRecord> }) {
+  const t = useShellText();
   const row = selection?.record;
   const assessment = row ? evidenceOf(row) : {};
   const basis = asRecord(assessment.basis);
@@ -493,34 +502,34 @@ function Inspector({ selection, entities }: { selection: Selection | null; entit
       <h4>{labelOf(row, entities)}</h4><code className="kb-id">{idOf(row)}</code><Evidence row={row} />
       {selection?.kind === "candidates" && <>
         <p className="kb-warning">Unpromoted candidate interpretation · review: {displayText(asRecord(row.eval).review) || "not reported"} · logical semantics: {displayText(asRecord(row.eval).logical_semantics) || "not reported"}</p>
-        {graphProposal ? <CandidateStructure payload={candidatePayload} /> : <JsonDetail label="Draft claim" value={draft} open />}
+        {graphProposal ? <CandidateStructure payload={candidatePayload} /> : <JsonDetail label={t("lit_draft_claim")} value={draft} open />}
         <div className="kb-support"><h4>Located source support</h4>
           {asArray(row.support).map((value, index) => { const support = asRecord(value); return <div key={index}><blockquote>{displayText(support.quote) || "No quote supplied"}</blockquote><code className="kb-id">{displayText(support.observation)}</code><JsonDetail label="Source locator and quote byte span" value={{ locator: support.locator, byte_start: support.byte_start, byte_len: support.byte_len, observation_text_hash: support.observation_text_hash }} /></div>; })}
           {!asArray(row.support).length && <p className="kb-muted">No source support recorded.</p>}
         </div>
-        <JsonDetail label="Model and prompt provenance" value={candidatePayload.provenance} open />
-        <JsonDetail label="Source group" value={candidatePayload.group} />
-        {!graphProposal && <JsonDetail label="Unknowns and premises" value={{ unknowns: proposal.unknowns, premises: asRecord(draft.assessment).premises }} />}
-        <JsonDetail label="Candidate checks and review status" value={row.eval} />
+        <JsonDetail label={t("lit_model_and_prompt_provenance")} value={candidatePayload.provenance} open />
+        <JsonDetail label={t("lit_source_group")} value={candidatePayload.group} />
+        {!graphProposal && <JsonDetail label={t("lit_unknowns_and_premises")} value={{ unknowns: proposal.unknowns, premises: asRecord(draft.assessment).premises }} />}
+        <JsonDetail label={t("lit_candidate_checks_and_review_status")} value={row.eval} />
       </>}
       {!!row.assessment && <>
-        <JsonDetail label="1 · What is claimed?" value={{ subject: row.subject, predicate: row.predicate, object: row.object, value: row.value, qualifiers: row.qualifiers }} />
+        <JsonDetail label={t("lit_1_what_is_claimed")} value={{ subject: row.subject, predicate: row.predicate, object: row.object, value: row.value, qualifiers: row.qualifiers }} />
         <div className="kb-support"><h4>2 · How is it known?</h4>
           {asArray(basis.support).map((value, index) => { const support = asRecord(value); return <div key={index}><blockquote>{displayText(support.quote) || "No quote supplied"}</blockquote><JsonDetail label={`Source locator · ${displayText(support.extractor) || "extractor unspecified"}`} value={support.locator} /><code className="kb-id">{displayText(support.observation)}</code></div>; })}
           {!asArray(basis.support).length && <p className="kb-muted">No observation support recorded.</p>}
-          {!!basis.derivation && <JsonDetail label="Derivation method" value={basis.derivation} open />}
+          {!!basis.derivation && <JsonDetail label={t("lit_derivation_method")} value={basis.derivation} open />}
         </div>
-        <JsonDetail label="3 · How certain?" value={{ evidence_class: assessment.evidence_class, origin: assessment.origin, confidence: assessment.confidence }} />
-        <JsonDetail label="4 · What does it depend on?" value={assessment.premises} />
-        <JsonDetail label="5 · What contradicts it?" value={{ counter: assessment.counter, status: assessment.status, alternatives: assessment.alternatives }} />
-        <JsonDetail label="6 · What follows?" value={assessment.consequences} />
-        <JsonDetail label="7 · What is missing?" value={assessment.open} />
+        <JsonDetail label={t("lit_3_how_certain")} value={{ evidence_class: assessment.evidence_class, origin: assessment.origin, confidence: assessment.confidence }} />
+        <JsonDetail label={t("lit_4_what_does_it_depend_on")} value={assessment.premises} />
+        <JsonDetail label={t("lit_5_what_contradicts_it")} value={{ counter: assessment.counter, status: assessment.status, alternatives: assessment.alternatives }} />
+        <JsonDetail label={t("lit_6_what_follows")} value={assessment.consequences} />
+        <JsonDetail label={t("lit_7_what_is_missing")} value={assessment.open} />
         {!!assessment.expected_property && <JsonDetail label={`Expected property · ${displayText(assessment.check_state)}`} value={assessment.expected_property} open />}
       </>}
-      {!!row.sources && <JsonDetail label="Sources" value={row.sources} open />}
-      {!!row.evidence_for && <JsonDetail label="Supporting observations / decisions" value={row.evidence_for} />}
-      {!!row.counterexamples && <JsonDetail label="Counterexamples and exceptions" value={{ counterexamples: row.counterexamples, exceptions: row.exceptions }} />}
-      <JsonDetail label="All model fields" value={row} />
+      {!!row.sources && <JsonDetail label={t("lit_sources")} value={row.sources} open />}
+      {!!row.evidence_for && <JsonDetail label={t("lit_supporting_observations_decisions")} value={row.evidence_for} />}
+      {!!row.counterexamples && <JsonDetail label={t("lit_counterexamples_and_exceptions")} value={{ counterexamples: row.counterexamples, exceptions: row.exceptions }} />}
+      <JsonDetail label={t("lit_all_model_fields")} value={row} />
     </>}
   </aside>;
 }
@@ -529,6 +538,7 @@ function ContextPane({ knowledge, run, focus, entities, onSelect, data, paramete
   knowledge: KnowledgeApi; run: string; focus: string; entities: Map<string, KnowledgeRecord>;
   onSelect: (kind: string, row: KnowledgeRecord) => void; data: Dataset; parameters: Parameters; change: Change; refresh: number;
 }) {
+  const t = useShellText();
   const text = parameters.text;
   const setText = (value: string) => change("text", value);
   const budget = parameters.budget;
@@ -552,8 +562,8 @@ function ContextPane({ knowledge, run, focus, entities, onSelect, data, paramete
     for (const kind of COLLECTIONS) { const row = data[kind]?.find((candidate) => idOf(candidate) === ref); if (row) { onSelect(kind, row); return; } }
   };
   return <div className="kb-context">
-    <label>Goal / prompt<textarea aria-label="Context goal" rows={3} value={text} placeholder="What should this context help you do?" onChange={(event) => setText(event.target.value)} /></label>
-    <label>Token budget: {budget.toLocaleString()}<input aria-label="Knowledge context token budget" type="range" min={200} max={32000} step={100} value={budget} onChange={(event) => setBudget(Number(event.target.value))} /></label>
+    <label>{t("lit_goal_prompt")}<textarea aria-label={t("lit_context_goal")} rows={3} value={text} placeholder={t("lit_what_should_this_context_help_you_do")} onChange={(event) => setText(event.target.value)} /></label>
+    <label>Token budget: {budget.toLocaleString()}<input aria-label={t("lit_knowledge_context_token_budget")} type="range" min={200} max={32000} step={100} value={budget} onChange={(event) => setBudget(Number(event.target.value))} /></label>
     <label className="kb-check"><input type="checkbox" checked={follow} onChange={(event) => setFollow(event.target.checked)} />Use this view’s entity focus as target</label>
     <p className="kb-muted">Target: {follow && focus ? displayText(entities.get(focus)?.label || focus) : "none selected"}. Token counts are estimates. Previewing does not send a model request. Preview output is not restored from browser storage; rebuild it from the selected run.</p>
     <button className="primary" onClick={build} disabled={!text.trim() || !run || busy}>{busy ? "Selecting…" : "Build context preview"}</button>
@@ -561,12 +571,12 @@ function ContextPane({ knowledge, run, focus, entities, onSelect, data, paramete
     {context && <>
       {requestKey !== builtFor && <p className="kb-warning" role="status">Inputs changed. Rebuild to update this preview.</p>}
       <p className="kb-count">{context.used_tokens.toLocaleString()} / {context.budget_tokens.toLocaleString()} estimated tokens · {context.items.length} included · {context.dropped.length} dropped</p>
-      <JsonDetail label="Selected goal type" value={context.goal} />
+      <JsonDetail label={t("lit_selected_goal_type")} value={context.goal} />
       {["stable", "project", "goal"].map((band) => <section className="kb-context-band" key={band}><h4>{band === "stable" ? "Stable prefix" : band === "project" ? "Project context" : "Goal-specific tail"}</h4>
         {context.items.filter((item) => item.band === band).map((item) => <article key={item.ref} className="kb-context-item">
           <button className="kb-ref" onClick={() => selectRef(item.ref)}>{item.ref_kind} · {item.ref}</button>
           <p>{item.text}</p><p className="kb-muted">{item.why} · {item.tokens} tokens · {item.resolution}</p>
-          <JsonDetail label="Selection factors and dependencies" value={{ factors: item.factors, required_by: item.required_by }} />
+          <JsonDetail label={t("lit_selection_factors_and_dependencies")} value={{ factors: item.factors, required_by: item.required_by }} />
         </article>)}
         {!context.items.some((item) => item.band === band) && <p className="kb-muted">No items selected in this band.</p>}
       </section>)}
@@ -577,6 +587,7 @@ function ContextPane({ knowledge, run, focus, entities, onSelect, data, paramete
 }
 
 function CatalogPane({ knowledge, onSelect, refresh, onImported, parameters, change, onResolve }: { knowledge: KnowledgeApi; onSelect: (kind: string, row: KnowledgeRecord) => void; refresh: number; onImported?: () => void; parameters: Parameters; change: Change; onResolve: (kind: string, row: KnowledgeRecord) => void }) {
+  const t = useShellText();
   const [sources, setSources] = useState("");
   const filter = parameters.filter;
   const setFilter = (value: string) => change("filter", value);
@@ -625,11 +636,11 @@ function CatalogPane({ knowledge, onSelect, refresh, onImported, parameters, cha
   };
   return <div className="kb-catalog">
     <details className="kb-detail"><summary>Catalog a source without importing</summary>
-      <label>Paths on the server<textarea aria-label="Catalog source paths" rows={2} value={sources} onChange={(event) => setSources(event.target.value)} placeholder="/data/exports/archive.zip" /></label>
-      <button disabled={busy || !sources.trim()} onClick={() => action(() => knowledge.catalogScan({ sources: sources.split("\n").map((path) => path.trim()).filter(Boolean), retain_raw: "selected" }), true)}>Scan sources</button>
+      <label>{t("lit_paths_on_the_server")}<textarea aria-label={t("lit_catalog_source_paths")} rows={2} value={sources} onChange={(event) => setSources(event.target.value)} placeholder="/data/exports/archive.zip" /></label>
+      <button disabled={busy || !sources.trim()} onClick={() => action(() => knowledge.catalogScan({ sources: sources.split("\n").map((path) => path.trim()).filter(Boolean), retain_raw: "selected" }), true)}>{t("lit_scan_sources")}</button>
     </details>
-    <button disabled={busy} onClick={() => action(async () => { const scores = await knowledge.catalogScore({ llm: "off" }); const selection = await knowledge.catalogSelect(); return { scores, selection }; }, true)}>Score and select with catalog profile</button>
-    <input type="search" aria-label="Filter catalog" value={filter} onChange={(event) => { setFilter(event.target.value); setOffset(0); }} placeholder="Search titles and sketches…" />
+    <button disabled={busy} onClick={() => action(async () => { const scores = await knowledge.catalogScore({ llm: "off" }); const selection = await knowledge.catalogSelect(); return { scores, selection }; }, true)}>{t("lit_score_and_select_with_catalog_profile")}</button>
+    <input type="search" aria-label={t("lit_filter_catalog")} value={filter} onChange={(event) => { setFilter(event.target.value); setOffset(0); }} placeholder={t("lit_search_titles_and_sketches")} />
     <label className="kb-check"><input type="checkbox" checked={selectedOnly} onChange={(event) => { setSelectedOnly(event.target.checked); setOffset(0); }} />Selected units only</label>
     {error && <p className="kb-error" role="alert">{error}</p>}
     <div className="kb-records">
@@ -644,11 +655,11 @@ function CatalogPane({ knowledge, onSelect, refresh, onImported, parameters, cha
     </div>
     <div className="kb-actions"><button disabled={!offset} onClick={() => setOffset((value) => Math.max(0, value - 50))}>Previous</button><span className="kb-muted">{offset + (rows.length ? 1 : 0)}–{offset + rows.length}</span><button disabled={rows.length < 50} onClick={() => setOffset((value) => value + 50)}>Next</button></div>
     <details className="kb-detail"><summary>Review and import catalog content</summary>
-      <label>Import scope<select aria-label="Catalog import scope" value={mode} onChange={(event) => setMode(event.target.value)}><option value="selective">Selected units</option><option value="full">All catalogued units (full)</option></select></label>
-      <label>Source retention<select aria-label="Catalog retention" value={storeMode} onChange={(event) => setStoreMode(event.target.value)}><option value="copy">Copy content</option><option value="link">Link to original source</option></select></label>
+      <label>{t("lit_import_scope")}<select aria-label={t("lit_catalog_import_scope")} value={mode} onChange={(event) => setMode(event.target.value)}><option value="selective">{t("lit_selected_units")}</option><option value="full">All catalogued units (full)</option></select></label>
+      <label>{t("lit_source_retention")}<select aria-label={t("lit_catalog_retention")} value={storeMode} onChange={(event) => setStoreMode(event.target.value)}><option value="copy">{t("lit_copy_content")}</option><option value="link">{t("lit_link_to_original_source")}</option></select></label>
       <p className="kb-muted">Import scope applies to the catalog, independently of this view's search filter. Linked originals must remain available at their original location.</p>
       <div className="kb-actions"><button disabled={busy} onClick={previewImport}>Preview import</button><button className="primary" disabled={busy || reviewed !== importKey} onClick={() => action(() => knowledge.catalogImport({ mode, store_mode: storeMode, dry_run: false }), true).then((outcome) => { if (outcome) onImported?.(); })}>Import reviewed selection</button></div>
     </details>
-    {result && <JsonDetail label="Latest catalog result" value={result} open />}
+    {result && <JsonDetail label={t("lit_latest_catalog_result")} value={result} open />}
   </div>;
 }

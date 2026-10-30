@@ -1,5 +1,6 @@
 import type { PlanDraft, ThesisDraft } from "../context/retrieval-plan";
 import { newThesis } from "../context/retrieval-plan";
+import { useShellText } from "../shell/text";
 
 interface Props {
   enabled: boolean;
@@ -9,13 +10,14 @@ interface Props {
 }
 
 export default function ContextPlanEditor({ enabled, onEnabled, draft, onChange }: Props) {
+  const t = useShellText();
   function update(key: number, patch: Partial<ThesisDraft>) {
     onChange({ ...draft, theses: draft.theses.map((item) => item.key === key ? { ...item, ...patch } : item) });
   }
   return (
     <div className="chat-context-plan">
       <label className="chat-context-record"><input type="checkbox" checked={enabled} onChange={(e) => onEnabled(e.target.checked)} data-testid="use-context-plan" />Explicit retrieval plan</label>
-      <p>Optional queries you write for this request. No task or thesis is inferred. Editing the plan makes no requests.</p>
+      <p>{t("lit_optional_queries_you_write_for_this_re")}</p>
       {enabled && <>
         <div className="chat-context-fields">
           <label>Plan ID<input value={draft.id} onChange={(e) => onChange({ ...draft, id: e.target.value })} data-testid="context-plan-id" /></label>
@@ -29,19 +31,19 @@ export default function ContextPlanEditor({ enabled, onEnabled, draft, onChange 
             <label>Thesis query<textarea value={item.text} onChange={(e) => update(item.key, { text: e.target.value })} rows={2} data-testid="thesis-text" /></label>
           </div>
           <details>
-            <summary>Thesis anchors, reach and budget</summary>
+            <summary>{t("lit_thesis_anchors_reach_and_budget")}</summary>
             <div className="chat-context-fields">
               <label>Entity anchors<select value={item.targetsMode} onChange={(e) => update(item.key, { targetsMode: e.target.value as ThesisDraft["targetsMode"] })} data-testid="thesis-targets-mode">
-                <option value="inherit">Inherit request targets</option><option value="custom">Specify IDs · empty clears targets</option>
+                <option value="inherit">{t("lit_inherit_request_targets")}</option><option value="custom">Specify IDs · empty clears targets</option>
               </select></label>
               {item.targetsMode === "custom" && <label>Entity IDs · one per line<textarea value={item.targets} onChange={(e) => update(item.key, { targets: e.target.value })} rows={2} data-testid="thesis-targets" /></label>}
               <label>Claim anchors<select value={item.claimsMode} onChange={(e) => update(item.key, { claimsMode: e.target.value as ThesisDraft["claimsMode"] })} data-testid="thesis-claims-mode">
-                <option value="inherit">Inherit request claims</option><option value="custom">Specify IDs · empty clears claims</option>
+                <option value="inherit">{t("lit_inherit_request_claims")}</option><option value="custom">Specify IDs · empty clears claims</option>
               </select></label>
               {item.claimsMode === "custom" && <label>Claim IDs · one per line<textarea value={item.claims} onChange={(e) => update(item.key, { claims: e.target.value })} rows={2} data-testid="thesis-claims" /></label>}
               <label>Thesis graph reach<input type="number" min="0" max="2147483647" step="1" value={item.hops} onChange={(e) => update(item.key, { hops: e.target.value })} placeholder="Inherit request reach" data-testid="thesis-hops" /></label>
               <label>Thesis item detail<select value={item.detail} onChange={(e) => update(item.key, { detail: e.target.value as ThesisDraft["detail"] })} data-testid="thesis-detail">
-                <option value="inherit">Inherit request detail</option><option value="label">Label</option><option value="summary">Summary</option><option value="full">Full</option><option value="raw">Raw</option>
+                <option value="inherit">{t("lit_inherit_request_detail")}</option><option value="label">{t("lit_label")}</option><option value="summary">{t("lit_summary")}</option><option value="full">{t("lit_full")}</option><option value="raw">{t("lit_raw")}</option>
               </select></label>
               <label>Budget weight<input type="number" min="0" step="any" value={item.weight} onChange={(e) => update(item.key, { weight: e.target.value })} data-testid="thesis-weight" /></label>
             </div>

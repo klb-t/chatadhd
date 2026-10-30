@@ -2,6 +2,7 @@ import { useEffect, useState, useSyncExternalStore } from "react";
 import { OnboardingPanel, WhatAppKnows } from "../onboarding";
 import type { UserProfileHost } from "../api/onboarding-host";
 import "./user-profile-panel.css";
+import { useShellText } from "../shell/text";
 
 export interface UserProfilePanelProps {
   view: "onboarding" | "knowledge";
@@ -9,6 +10,7 @@ export interface UserProfilePanelProps {
 }
 
 export default function UserProfilePanel({ view, host }: UserProfilePanelProps) {
+  const t = useShellText();
   const state = useSyncExternalStore(host.subscribe, host.getState, host.getState);
   const [draft, setDraft] = useState(state.userId ?? "");
   const [error, setError] = useState<string | null>(null);
@@ -20,7 +22,7 @@ export default function UserProfilePanel({ view, host }: UserProfilePanelProps) 
   const adapter = host.getAdapter();
   return <section className="user-profile-host" data-testid="user-profile-host">
     <form className="user-profile-selector" onSubmit={event => { event.preventDefault(); choose(draft); }}>
-      <label htmlFor="user-profile-identity">Native profile ID</label>
+      <label htmlFor="user-profile-identity">{t("lit_native_profile_id")}</label>
       <input id="user-profile-identity" data-testid="user-profile-identity" value={draft} onChange={event => setDraft(event.target.value)} autoComplete="off" />
       <div className="user-profile-actions">
         <button type="submit" disabled={!host.available || !draft.trim()} data-testid="user-profile-open">Open profile</button>
@@ -30,7 +32,7 @@ export default function UserProfilePanel({ view, host }: UserProfilePanelProps) 
     </form>
     {error && <p role="alert">{error}</p>}
     {state.storageError && <p role="alert">{state.storageError}</p>}
-    {!host.available && <p>This host has no native onboarding bridge.</p>}
+    {!host.available && <p>{t("lit_this_host_has_no_native_onboarding_bri")}</p>}
     {host.available && !state.userId && <p>Choose an existing profile ID or create a new one. Profile data and history are stored in the native database; only the selected ID is saved in browser settings.</p>}
     {state.userId && adapter && <>
       <div className="user-profile-status">

@@ -71,6 +71,7 @@ interface Props {
 }
 
 function MediaBlock({ block }: { block: ImportedBlock }) {
+  const t = useShellText();
   const [preview, setPreview] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const media = block.media;
@@ -80,18 +81,19 @@ function MediaBlock({ block }: { block: ImportedBlock }) {
   const eligible = media.encoding === "base64" && !!media.data && !!renderer;
   return <div className="imported-media" data-testid="imported-media">
     <p>Media format: {media.mime ?? "not recorded"} · encoding: {media.encoding ?? "not recorded"}.</p>
-    {eligible && <button type="button" onClick={() => { setPreview(!preview); setError(null); }}>{preview ? "Close retained media preview" : "Preview retained media"}</button>}
-    {!eligible && <p>Retained media preview is unavailable for this payload. Original fields remain in raw source.</p>}
+    {eligible && <button type="button" onClick={() => { setPreview(!preview); setError(null); }}>{preview ? t("lit_close_retained_media_preview") : t("lit_preview_retained_media")}</button>}
+    {!eligible && <p>{t("lit_retained_media_preview_is_unavailable")}</p>}
     {preview && !src && <p role="alert">Retained media has invalid encoding.</p>}
-    {src && renderer === "image" && <img src={src} alt="Retained imported source media" onError={() => setError("The browser could not decode the retained media bytes.")} />}
-    {src && renderer === "audio" && <audio src={src} controls preload="none" onError={() => setError("The browser could not decode the retained media bytes.")} />}
-    {src && renderer === "video" && <video src={src} controls preload="none" onError={() => setError("The browser could not decode the retained media bytes.")} />}
+    {src && renderer === "image" && <img src={src} alt={t("lit_retained_imported_source_media")} onError={() => setError(t("lit_the_browser_could_not_decode_the_retai"))} />}
+    {src && renderer === "audio" && <audio src={src} controls preload="none" onError={() => setError(t("lit_the_browser_could_not_decode_the_retai"))} />}
+    {src && renderer === "video" && <video src={src} controls preload="none" onError={() => setError(t("lit_the_browser_could_not_decode_the_retai"))} />}
     {error && <p role="alert">{error}</p>}
     {media.href && <a href={media.href} target="_blank" rel="noopener noreferrer">Open referenced media in a new tab</a>}
   </div>;
 }
 
 function Artifact({ artifact, wrapCode }: { artifact: ImportedArtifact; wrapCode: boolean }) {
+  const t = useShellText();
   const s = useSrc();
   const [mode, setMode] = useState("source");
   const opaqueEvidence = useContext(OpaqueSourceEvidence);
@@ -101,13 +103,13 @@ function Artifact({ artifact, wrapCode }: { artifact: ImportedArtifact; wrapCode
   return <section className="imported-artifact" data-testid="imported-artifact">
     <h4>{artifact.title} · {artifact.type ?? "unrecorded artifact type"}</h4>
     {artifact.path && <p className="imported-source-path">{s("src_pointer", "Source pointer:")} <code>{artifact.path}</code></p>}
-    {artifact.version && <p>Source version: <code>{artifact.version}</code></p>}
+    {artifact.version && <p>{t("lit_source_version")} <code>{artifact.version}</code></p>}
     {artifact.command && <p>Recorded operation: {artifact.command} (source only).</p>}
-    {artifact.parsedFromText && <p>Display derivative parsed from the retained source text.</p>}
-    {!artifact.resolved && <p>The declared artifact payload is not located in retained source.</p>}
-    <label>Artifact view <select value={mode} onChange={event => setMode(event.target.value)}>
-      <option value="source">Source</option>{!opaqueEvidence && <option value="json">Artifact fields</option>}
-      {supportsPreview && <option value="preview">Document preview</option>}
+    {artifact.parsedFromText && <p>{t("lit_display_derivative_parsed_from_the_ret")}</p>}
+    {!artifact.resolved && <p>{t("lit_the_declared_artifact_payload_is_not_l")}</p>}
+    <label>{t("lit_artifact_view")} <select value={mode} onChange={event => setMode(event.target.value)}>
+      <option value="source">{t("lit_source")}</option>{!opaqueEvidence && <option value="json">{t("lit_artifact_fields")}</option>}
+      {supportsPreview && <option value="preview">{t("lit_document_preview")}</option>}
     </select></label>
     {mode === "json" && !opaqueEvidence && <pre>{importedJson(artifact.raw)}</pre>}
     {mode === "source" && artifact.content !== null && <pre className={`imported-source-code${wrapCode ? " wrap" : ""}`}><code data-language={artifact.language ?? ""}>{artifact.content}</code></pre>}
@@ -115,13 +117,14 @@ function Artifact({ artifact, wrapCode }: { artifact: ImportedArtifact; wrapCode
       <p className="imported-preview-note">Document projection: scripts, styling and embedded resources are omitted. Source remains available.</p>
       <div className="imported-artifact-preview" data-testid="imported-artifact-preview" dangerouslySetInnerHTML={isHtml ? importedHtml(artifact.content) : importedMarkdown(artifact.content)} />
     </>}
-    {artifact.content === null && <p>No standalone text content is recorded.</p>}
-    <SourceJson title="Native artifact descriptor" value={artifact.summary} />
+    {artifact.content === null && <p>{t("lit_no_standalone_text_content_is_recorded")}</p>}
+    <SourceJson title={t("lit_native_artifact_descriptor")} value={artifact.summary} />
   </section>;
 }
 
 /** Pure source display: text/JSON and user-clicked citations; no tools, code or media fetches. */
 export default function ImportedMessageContent({ message, includeVisibleText = true, initialView, opaqueSourceEvidence }: Props) {
+  const t = useShellText();
   const s = useSrc();
   const source = useMemo(() => projectImportedMessage(message), [message]);
   const [view, setView] = useState<ImportedSourceView>({ blocks: true, artifacts: true, references: true, wrapCode: false, ...initialView });
@@ -131,7 +134,7 @@ export default function ImportedMessageContent({ message, includeVisibleText = t
     {includeVisibleText && <div className="body" dangerouslySetInnerHTML={importedMarkdown(message.text)} />}
     <details className="imported-source-details" data-testid="imported-source-details">
       <summary>{s("src_summary", "Imported source · {{provider}} · {{blocks}} blocks · {{references}} references · {{artifacts}} artifacts", { provider: source.provider, blocks: String(source.blocks.length), references: String(source.references.length), artifacts: String(source.artifacts.length) })}</summary>
-      <p>{s("src_intro", "Source blocks reflect the original import and remain separate from current message text.")}</p>
+      <p>{s("src_intro", t("lit_source_blocks_reflect_the_original_imp"))}</p>
       <div className="imported-source-controls" aria-label={s("src_options", "Source display options")}>
         {(["blocks", "artifacts", "references", "wrapCode"] as const).map(key => <label key={key}><input type="checkbox" checked={view[key]} onChange={event => setView(current => ({ ...current, [key]: event.target.checked }))} />{key === "wrapCode" ? s("src_wrap", "Wrap code") : s(`src_show_${key}`, `Show ${key}`)}</label>)}
       </div>
@@ -140,27 +143,27 @@ export default function ImportedMessageContent({ message, includeVisibleText = t
         <h4>{s(`src_kind_${block.kind}`, labels[block.kind] ?? block.kind)} · {block.type}{block.toolName && ` · ${block.toolName}`}{block.language && ` · ${block.language}`}</h4>
         {block.path && <p className="imported-source-path">{s("src_pointer", "Source pointer:")} <code>{block.path}</code></p>}
         {block.inferred && <p>{s("src_inferred", "Importer classification is inferred{{guess}}.", { guess: block.guess ? ` (${block.guess})` : "" })}</p>}
-        {!block.resolved && <p>{s("src_unlocated", "The block payload is not independently located. The complete preserved source is available below.")}</p>}
+        {!block.resolved && <p>{s("src_unlocated", t("lit_the_block_payload_is_not_independently"))}</p>}
         {block.segments.map((segment, index) => <div key={index}>
           <strong>{segment.label}</strong>{block.kind === "code" ? <pre className={`imported-source-code${view.wrapCode ? " wrap" : ""}`}><code data-language={block.language ?? ""}>{segment.text}</code></pre> : <pre className="imported-source-text">{segment.text}</pre>}
         </div>)}
         {block.kind === "media" && <MediaBlock block={block} />}
-        <SourceJson title={s("src_raw_block", "Raw source block")} value={block.raw} />
-        <SourceJson title={s("src_native_block", "Native importer block summary")} value={block.summary} />
+        <SourceJson title={s("src_raw_block", t("lit_raw_source_block"))} value={block.raw} />
+        <SourceJson title={s("src_native_block", t("lit_native_importer_block_summary"))} value={block.summary} />
       </section>)}
       {view.artifacts && source.artifacts.map(artifact => <Artifact key={artifact.id} artifact={artifact} wrapCode={view.wrapCode} />)}
       {view.references && source.references.map(reference => <section className="imported-source-reference" key={reference.id} data-testid="imported-source-reference" data-kind={reference.kind}>
         <h4>{s(`src_refkind_${reference.kind.replace(/-/g, "_")}`, reference.kind)}: {reference.label}</h4>
         {reference.path && <p className="imported-source-path">{s("src_pointer", "Source pointer:")} <code>{reference.path}</code></p>}
-        {reference.resolved !== null && <p>{reference.resolved ? s("src_resolved", "Resolved in source archive") : s("src_unresolved", "File bytes unresolved")}{reference.member && ` · ${reference.member}`}</p>}
+        {reference.resolved !== null && <p>{reference.resolved ? s("src_resolved", t("lit_resolved_in_source_archive")) : s("src_unresolved", t("lit_file_bytes_unresolved"))}{reference.member && ` · ${reference.member}`}</p>}
         {reference.blobHash && <p className="imported-source-path">{s("src_hash", "Content hash:")} <code>{reference.blobHash}</code></p>}
         {reference.href && <a href={reference.href} target="_blank" rel="noopener noreferrer">{s("src_open_citation", "Open citation source")}</a>}
         {reference.extractedText !== null && <pre className="imported-source-text">{reference.extractedText}</pre>}
-        <SourceJson title={s("src_raw_ref", "Raw reference")} value={reference.raw} />
-        <SourceJson title={s("src_native_ref", "Native importer reference summary")} value={reference.summary} />
+        <SourceJson title={s("src_raw_ref", t("lit_raw_reference"))} value={reference.raw} />
+        <SourceJson title={s("src_native_ref", t("lit_native_importer_reference_summary"))} value={reference.summary} />
       </section>)}
-      <SourceJson title={s("src_whole", "Complete preserved source message")} value={source.raw} testId="imported-source-raw" />
-      <SourceJson title={s("src_meta", "Complete native export metadata")} value={source.metadata} testId="imported-source-metadata" />
+      <SourceJson title={s("src_whole", t("lit_complete_preserved_source_message"))} value={source.raw} testId="imported-source-raw" />
+      <SourceJson title={s("src_meta", t("lit_complete_native_export_metadata"))} value={source.metadata} testId="imported-source-metadata" />
     </details>
   </div></OpaqueSourceEvidence.Provider>;
 }

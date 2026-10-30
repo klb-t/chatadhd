@@ -20,6 +20,7 @@ import WorkflowRecoveryPanel from "./WorkflowRecoveryPanel";
 import { workflowSnapshotCanContinue, type WorkflowSnapshot, type WorkflowSnapshotDraft } from "../profiles/workflow-snapshot";
 import { readWorkflowCheckpoint, writeWorkflowCheckpoint, writeWorkflowCheckpoints } from "../profiles/workflow-checkpoint";
 import "./application-profiles.css";
+import { useShellText } from "../shell/text";
 
 const STORAGE_KEY = "loom.application.views.v1";
 type View = ApplicationViewState;
@@ -55,6 +56,7 @@ interface Props {
 
 /** Profiles project native conversations; selection can be coupled or independent. */
 export default function ApplicationProfiles(props: Props) {
+  const tx = useShellText();
   const registry = useMemo(() => createLoomProfileRegistry(api, props.ui), [props.ui]);
   const [initial] = useState(() => {
     const profiles = BUILTIN_PROFILE_DOCUMENTS.map(doc => registerProfile(registry, doc));
@@ -175,7 +177,7 @@ export default function ApplicationProfiles(props: Props) {
   async function findNativeProfiles() {
     setLoadingReceipt(true); setError("");
     try {
-      if (!api.knowledge || !api.graphPacketStore) throw new Error("This transport has no native profile storage adapter.");
+      if (!api.knowledge || !api.graphPacketStore) throw new Error(tx("lit_this_transport_has_no_native_profile_s"));
       const runs = await api.knowledge.listRuns();
       const found = runs.flatMap(run => {
         const target = asRecord(run.inputs).graph_packet_target;
@@ -229,12 +231,12 @@ export default function ApplicationProfiles(props: Props) {
         const current = workspaceRef.current;
         commitWorkspace({ ...current, views: [...current.views, newApplicationView(crypto.randomUUID(), current.views[0].profile)] });
       }} data-testid="add-profile-view">Add application view</button>
-      <span>Conversation selection can be shared or independent. Models and context remain independent.</span>
+      <span>{tx("lit_conversation_selection_can_be_shared_o")}</span>
       <details className="profile-native-storage"><summary>Saved profiles</summary><div>
-      <label>Native profile receipt<input aria-label="Native profile receipt ID" value={receiptInput} onChange={e => setReceiptInput(e.target.value)} /></label>
+      <label>{tx("lit_native_profile_receipt")}<input aria-label={tx("lit_native_profile_receipt_id")} value={receiptInput} onChange={e => setReceiptInput(e.target.value)} /></label>
       <button data-testid="load-profile-receipt" disabled={!api.graphPacketStore || loadingReceipt || !receiptInput.trim()} onClick={() => void loadReceipt()}>Load from graph</button>
       <button data-testid="find-native-profiles" disabled={!api.graphPacketStore || !api.knowledge || loadingReceipt} onClick={() => void findNativeProfiles()}>Find recent saved profiles</button>
-      {!!nativeReceipts.length && <select aria-label="Recent native profile receipts" value={nativeReceipts.some(r => r.id === receiptInput) ? receiptInput : ""} onChange={e => setReceiptInput(e.target.value)}>
+      {!!nativeReceipts.length && <select aria-label={tx("lit_recent_native_profile_receipts")} value={nativeReceipts.some(r => r.id === receiptInput) ? receiptInput : ""} onChange={e => setReceiptInput(e.target.value)}>
         <option value="">Select native receipt</option>{nativeReceipts.map(r => <option key={r.id} value={r.id}>{r.id}</option>)}
       </select>}
       </div></details>
@@ -269,6 +271,7 @@ function ApplicationView({ profile: inputProfile, profiles: inputProfiles, viewI
   setCoupling: (coupling: ConversationCoupling) => void; toggleSidebar: () => void;
   operationActivity: (delta: number) => void;
 }) {
+  const tx = useShellText();
   // Workflow adapters select/create in the view that invoked them. Use refs to
   // retain the registry and live send/cancel subscriptions across layout edits.
   const callbacks = useRef({ selectConversation, conversationCreated: props.onConversationCreated });
@@ -373,35 +376,35 @@ function ApplicationView({ profile: inputProfile, profiles: inputProfiles, viewI
     data-profile-view-id={viewId} data-conversation-coupling={conversation.coupling} data-conversation-id={props.convId ?? ""}
     data-sidebar-side={profile.presentation.sidebar.side} data-view-sidebar-open={conversation.sidebarOpen}>
     <div className="application-profile-toolbar">
-      <label>Application view<select aria-label="Application view profile" value={key(profile)} onChange={e => choose(e.target.value)}>
+      <label>{tx("lit_application_view")}<select aria-label={tx("lit_application_view_profile")} value={key(profile)} onChange={e => choose(e.target.value)}>
         {profiles.map(p => <option key={key(p)} value={key(p)} disabled={!profileAvailability(p, registry).supported}>
           {p.label} · {p.target.version ?? "version unverified"} · r{p.profile_revision}
         </option>)}
       </select></label>
-      <label>Conversation selection<select aria-label="Conversation selection" value={conversation.coupling}
+      <label>{tx("lit_conversation_selection")}<select aria-label={tx("lit_conversation_selection")} value={conversation.coupling}
         onChange={event => setCoupling(event.target.value as ConversationCoupling)}>
-        <option value="coupled">Shared selection</option><option value="independent">Independent selection</option>
+        <option value="coupled">{tx("lit_shared_selection")}</option><option value="independent">{tx("lit_independent_selection")}</option>
       </select></label>
       <button data-testid="toggle-view-sidebar" aria-pressed={conversation.sidebarOpen} onClick={toggleSidebar}>
-        {conversation.sidebarOpen ? "Hide view conversations" : "Show view conversations"}
+        {conversation.sidebarOpen ? tx("lit_hide_view_conversations") : tx("lit_show_view_conversations")}
       </button>
       <label className="profile-file">Import profile<input aria-label="Import application profile" type="file" accept=".json,application/json" onChange={event => {
         const file = event.target.files?.[0]; event.target.value = ""; if (file) void importProfile(file);
       }} /></label>
-      {remove && <button onClick={remove}>Close view</button>}
+      {remove && <button onClick={remove}>{tx("lit_close_view")}</button>}
       <details className="profile-details"><summary>Profile and workflows</summary>
         <p>Declared mapping: {profile.evidence.status}; target {profile.target.application_id} / {profile.target.version ?? "unknown version"} / {profile.target.platform}.</p>
         <button data-testid="save-profile-graph" disabled={!api.graphPacketStore || savingGraph} onClick={() => void saveGraph()}>Save profile to graph</button>
-        {!api.graphPacketStore && <p>This transport has no native profile storage adapter.</p>}
-        <p>This saves the profile definition and source to native knowledge storage. Workflow inputs, conversation content and provider settings are separate.</p>
+        {!api.graphPacketStore && <p>{tx("lit_this_transport_has_no_native_profile_s")}</p>}
+        <p>{tx("lit_this_saves_the_profile_definition_and")}</p>
         <p>The profile has its own knowledge run. Automatic latest-run queries may select it; an explicitly selected context run stays unchanged.</p>
-        {!source && <p>The original imported bytes were not saved by the older client. This write uses an explicitly labelled JSON derivative.</p>}
+        {!source && <p>{tx("lit_the_original_imported_bytes_were_not_s")}</p>}
         {graphReceipt?.profile === key(profile) && <p data-testid="profile-graph-receipt">Native receipt: <code>{graphReceipt.id}</code> · run <code>{graphReceipt.run}</code></p>}
         {profile.evidence.gaps.map((gap, index) => <p key={index}>{gap}</p>)}
-        <details><summary>Profile JSON and bindings</summary><pre>{source?.text ?? JSON.stringify(profile, null, 2)}</pre></details>
+        <details><summary>{tx("lit_profile_json_and_bindings")}</summary><pre>{source?.text ?? JSON.stringify(profile, null, 2)}</pre></details>
         <ul>{profile.evidence.sources.map((source, i) => <li key={i}><a href={source.url} target="_blank" rel="noopener noreferrer">Reference {i + 1}</a>{source.revision && ` @ ${source.revision}`} {source.note}</li>)}</ul>
         <p>Installed adapters execute these operations. Live inference requires the selected provider; original-service parity is unverified.</p>
-        <label>Workflow inputs (JSON)<textarea aria-label="Workflow inputs JSON" value={workflowInputs} onChange={e => setWorkflowInputs(e.target.value)} /></label>
+        <label>Workflow inputs (JSON)<textarea aria-label={tx("lit_workflow_inputs_json")} value={workflowInputs} onChange={e => setWorkflowInputs(e.target.value)} /></label>
         <p>Profiles select the fields stored in workflow variables. Input fields are passed only to the selected action; existing profiles without bindings use this JSON as their payload.</p>
         <ul>{profile.actions.map(action => <li key={action.id}>{action.label}: {
           [...availability.requiredGaps, ...availability.optionalGaps].some(g => g.action_id === action.id) ? "unavailable" : "adapter available"
@@ -409,7 +412,7 @@ function ApplicationView({ profile: inputProfile, profiles: inputProfiles, viewI
         {profile.workflows.map(workflow => {
           const state = currentProfileSession?.workflows[workflow.id] ?? workflow.initial;
           return <div key={workflow.id} data-testid="profile-workflow"><span>{workflow.id}: {state}</span>
-            {currentProfileSession?.variables?.[workflow.id] && <details><summary>Selected workflow variables</summary><pre>{JSON.stringify(currentProfileSession.variables[workflow.id], null, 2)}</pre></details>}
+            {currentProfileSession?.variables?.[workflow.id] && <details><summary>{tx("lit_selected_workflow_variables")}</summary><pre>{JSON.stringify(currentProfileSession.variables[workflow.id], null, 2)}</pre></details>}
             {workflow.transitions.filter(t => t.from === state).map(transition => {
               const action = profile.actions.find(a => a.id === transition.action)!;
               const gaps = [...availability.requiredGaps, ...availability.optionalGaps].filter(g => g.action_id === action.id).map(g => g.capability);

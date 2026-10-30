@@ -4,6 +4,7 @@ import type { GraphPacketStoreRequest, GraphPacketStoreResult } from "../api/gra
 import type { ApplicationProfile } from "../profiles/runtime";
 import { makeCapabilityGraphAcceptance } from "../profiles/capability-graph";
 import "./operations-panel.css";
+import { useShellText } from "../shell/text";
 
 export interface OperationsPanelProps {
   operations?: OperationsApi;
@@ -16,6 +17,7 @@ const message = (error: unknown) => error instanceof Error ? error.message : Str
 const profileKey = (profile: ApplicationProfile) => JSON.stringify([profile.id, profile.profile_revision]);
 
 export default function OperationsPanel({ operations, profiles = [], adapterEvidence = [], graphPacketStore, onTranscript }: OperationsPanelProps) {
+  const t = useShellText();
   const [artifacts, setArtifacts] = useState<ArtifactRecord[]>([]);
   const [selected, setSelected] = useState<ArtifactResult | null>(null);
   const [media, setMedia] = useState<MediaStatus | null>(null);
@@ -95,50 +97,50 @@ export default function OperationsPanel({ operations, profiles = [], adapterEvid
   }
 
   return <div className="operations-panel" data-testid="operations-panel">
-    <section aria-label="Artifact browser">
-      <h3>Artifacts</h3>
+    <section aria-label={t("lit_artifact_browser")}>
+      <h3>{t("lit_artifacts")}</h3>
       {!operations && <p className="operations-status">This transport has no artifact adapter.</p>}
       <div className="operations-controls">
-        <label>Kind<input aria-label="Artifact kind" value={kind} onChange={event => setKind(event.target.value)} /></label>
-        <label>Run<input aria-label="Artifact run" value={run} onChange={event => setRun(event.target.value)} /></label>
-        <label>Page size<input aria-label="Artifact page size" type="number" step="1" value={limit} onChange={event => setLimit(event.target.value)} /></label>
-        <button disabled={!operations || loading} onClick={() => void listArtifacts()}>List artifacts</button>
+        <label>{t("lit_kind")}<input aria-label={t("lit_artifact_kind")} value={kind} onChange={event => setKind(event.target.value)} /></label>
+        <label>{t("lit_run")}<input aria-label={t("lit_artifact_run")} value={run} onChange={event => setRun(event.target.value)} /></label>
+        <label>{t("lit_page_size")}<input aria-label={t("lit_artifact_page_size")} type="number" step="1" value={limit} onChange={event => setLimit(event.target.value)} /></label>
+        <button disabled={!operations || loading} onClick={() => void listArtifacts()}>{t("lit_list_artifacts")}</button>
       </div>
-      <p>Listing reads metadata. Content is loaded only when you choose Read content.</p>
+      <p>{t("lit_listing_reads_metadata_content_is_load")}</p>
       {artifactError && <p role="alert">{artifactError}</p>}
-      {artifacts.length > 0 && <table><thead><tr><th>Title / ID</th><th>Kind / MIME</th><th>Action</th></tr></thead><tbody>
+      {artifacts.length > 0 && <table><thead><tr><th>{t("lit_title_id")}</th><th>{t("lit_kind_mime")}</th><th>{t("lit_action")}</th></tr></thead><tbody>
         {artifacts.map(artifact => <tr key={artifact.id} data-testid="artifact-row"><td>{artifact.title || artifact.id}<br /><code>{artifact.id}</code></td>
-          <td>{artifact.kind}<br />{artifact.mime}</td><td><button disabled={reading} onClick={() => void readArtifact(artifact.id)}>Read content</button></td></tr>)}
+          <td>{artifact.kind}<br />{artifact.mime}</td><td><button disabled={reading} onClick={() => void readArtifact(artifact.id)}>{t("lit_read_content")}</button></td></tr>)}
       </tbody></table>}
       {selected && <div className="operations-result" data-testid="artifact-content"><p>{selected.artifact.title || selected.artifact.id}</p>
-        <pre>{selected.content ?? "This artifact has no content."}</pre><details><summary>Artifact metadata</summary><pre>{JSON.stringify(selected.artifact, null, 2)}</pre></details></div>}
+        <pre>{selected.content ?? t("lit_this_artifact_has_no_content")}</pre><details><summary>{t("lit_artifact_metadata")}</summary><pre>{JSON.stringify(selected.artifact, null, 2)}</pre></details></div>}
     </section>
-    <section aria-label="File transcription">
-      <h3>Voice transcription</h3>
-      <p>Select an audio file and request transcription through the configured native provider.</p>
+    <section aria-label={t("lit_file_transcription")}>
+      <h3>{t("lit_voice_transcription")}</h3>
+      <p>{t("lit_select_an_audio_file_and_request_trans")}</p>
       {mediaError && <p role="alert">Media status: {mediaError}</p>}
       {media && <p data-testid="asr-status">ASR: {media.asr?.configured ? `configured (${media.asr.available.join(", ")})` : "unavailable — no provider configured"}</p>}
-      <label>Audio file<input aria-label="Transcription audio file" type="file" accept="audio/*" onChange={event => { setFile(event.target.files?.[0] ?? null); setTranscript(null); }} /></label>
+      <label>{t("lit_audio_file")}<input aria-label={t("lit_transcription_audio_file")} type="file" accept="audio/*" onChange={event => { setFile(event.target.files?.[0] ?? null); setTranscript(null); }} /></label>
       <div className="operations-controls">
-        <label>Provider<input aria-label="Transcription provider" placeholder="Configured default" value={provider} onChange={event => setProvider(event.target.value)} /></label>
-        <label>Language<input aria-label="Transcription language" placeholder="Provider default" value={language} onChange={event => setLanguage(event.target.value)} /></label>
-        <button disabled={!operations?.transcribe || !file || transcribing || media?.asr?.configured === false} onClick={() => void transcribe()}>Transcribe file</button>
+        <label>{t("lit_provider")}<input aria-label={t("lit_transcription_provider")} placeholder={t("lit_configured_default")} value={provider} onChange={event => setProvider(event.target.value)} /></label>
+        <label>{t("lit_language")}<input aria-label={t("lit_transcription_language")} placeholder={t("lit_provider_default")} value={language} onChange={event => setLanguage(event.target.value)} /></label>
+        <button disabled={!operations?.transcribe || !file || transcribing || media?.asr?.configured === false} onClick={() => void transcribe()}>{t("lit_transcribe_file")}</button>
       </div>
       {transcriptionError && <p role="alert">{transcriptionError}</p>}
       {transcript && <div className="operations-result" data-testid="transcription-result"><pre>{transcript.text}</pre>
-        {onTranscript && <button onClick={() => void useTranscript()}>Use transcript</button>}
-        <details><summary>Transcription result</summary><pre>{JSON.stringify(transcript, null, 2)}</pre></details></div>}
+        {onTranscript && <button onClick={() => void useTranscript()}>{t("lit_use_transcript")}</button>}
+        <details><summary>{t("lit_transcription_result")}</summary><pre>{JSON.stringify(transcript, null, 2)}</pre></details></div>}
     </section>
-    <section aria-label="Operation capabilities">
-      <h3>Operation capabilities</h3>
+    <section aria-label={t("lit_operation_capabilities")}>
+      <h3>{t("lit_operation_capabilities")}</h3>
       <p>Statuses describe installed adapters. Matching an original application's workflow requires separate evidence.</p>
       {evidence.map(entry => <div className="operation-evidence" key={JSON.stringify([entry.operation, entry.capability])} data-testid="operation-evidence" data-operation={entry.operation} data-status={entry.status}>
-        <code>{entry.operation}</code>: <span>{entry.status}</span><p>{entry.detail}</p><details><summary>Evidence</summary><pre>{JSON.stringify(entry, null, 2)}</pre></details>
+        <code>{entry.operation}</code>: <span>{entry.status}</span><p>{entry.detail}</p><details><summary>{t("lit_evidence")}</summary><pre>{JSON.stringify(entry, null, 2)}</pre></details>
       </div>)}
       {selectedProfile && <div className="operations-controls"><label>Profile for capability snapshot<select aria-label="Capability snapshot profile" value={profileKey(selectedProfile)} onChange={event => setProfileSelection(event.target.value)}>
         {profiles.map(profile => <option key={profileKey(profile)} value={profileKey(profile)}>{profile.label} · r{profile.profile_revision}</option>)}
-      </select></label><button disabled={!graphPacketStore || savingGraph} onClick={() => void saveEvidence()}>Save capability snapshot to graph</button></div>}
-      <p>The snapshot stores individual capability entities linked by their native parent and profile identity. It adds no execution authority.</p>
+      </select></label><button disabled={!graphPacketStore || savingGraph} onClick={() => void saveEvidence()}>{t("lit_save_capability_snapshot_to_graph")}</button></div>}
+      <p>{t("lit_the_snapshot_stores_individual_capabil")}</p>
       {graphError && <p role="alert">{graphError}</p>}
       {graphResult && <p data-testid="capability-graph-receipt">Native receipt: <code>{graphResult.receipt.id}</code> · run <code>{graphResult.receipt.run_id}</code></p>}
     </section>

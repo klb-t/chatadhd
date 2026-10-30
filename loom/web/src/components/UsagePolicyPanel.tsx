@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { api } from "../api";
 import type { ConfigMap } from "../api/types";
 import "./usage-policy.css";
+import { useShellText } from "../shell/text";
 
 type JsonObject = Record<string, unknown>;
 interface PolicyTransport {
@@ -25,10 +26,11 @@ function describe(value: unknown): string {
 function errorText(error: unknown) { return error instanceof Error ? error.message : String(error); }
 
 function ResourceTable({ resources }: { resources: unknown }) {
+  const t = useShellText();
   const rows = Object.entries(object(resources));
-  if (!rows.length) return <p>No resource diagnostics returned.</p>;
+  if (!rows.length) return <p>{t("lit_no_resource_diagnostics_returned")}</p>;
   return <div className="usage-table-scroll"><table className="usage-resource-table">
-    <thead><tr><th>Resource / unit</th><th>Baseline</th><th>Source / samples</th><th>Estimate</th><th>Reserved</th><th>Projected</th><th>Growth</th><th>Confirmation</th></tr></thead>
+    <thead><tr><th>{t("lit_resource_unit")}</th><th>{t("lit_baseline")}</th><th>{t("lit_source_samples")}</th><th>{t("lit_estimate")}</th><th>{t("lit_reserved")}</th><th>{t("lit_projected")}</th><th>{t("lit_growth")}</th><th>{t("lit_confirmation")}</th></tr></thead>
     <tbody>{rows.map(([name, raw]) => {
       const row = object(raw);
       return <tr key={name} data-triggering={row.requires_confirmation === true}>
@@ -36,7 +38,7 @@ function ResourceTable({ resources }: { resources: unknown }) {
         <td>{describe(row.baseline_source)} / {describe(row.baseline_samples)}</td>
         <td>{describe(row.estimate)}</td><td>{describe(row.reserved)}<small>Known lower bound: {describe(row.reserved_lower_bound)}</small></td>
         <td>{describe(row.projected)}<small>{describe(row.projection_status)}; lower bound: {describe(row.projected_lower_bound)}</small></td>
-        <td>{row.ratio == null ? "unknown" : `×${String(row.ratio)}`}</td><td>{row.requires_confirmation === true ? "Required" : "Not triggered"}</td>
+        <td>{row.ratio == null ? "unknown" : `×${String(row.ratio)}`}</td><td>{row.requires_confirmation === true ? "Required" : t("lit_not_triggered")}</td>
       </tr>;
     })}</tbody>
   </table></div>;
@@ -47,6 +49,7 @@ export default function UsagePolicyPanel({ transport = api, onConfigSaved }: {
   transport?: PolicyTransport;
   onConfigSaved?: (config: ConfigMap) => void;
 }) {
+  const t = useShellText();
   const [settings, setSettings] = useState<JsonObject | null>(null);
   const [policyDraft, setPolicyDraft] = useState("");
   const [policyDirty, setPolicyDirty] = useState(false);
@@ -107,7 +110,7 @@ export default function UsagePolicyPanel({ transport = api, onConfigSaved }: {
     setNotice("Policy override previewed without saving configuration or opening the ledger. This advisory snapshot is not an execution approval.");
   });
   const estimateOperation = (action: "preview" | "request") => run(async () => {
-    const estimate = parseObject(estimateDraft, "Estimate");
+    const estimate = parseObject(estimateDraft, t("lit_estimate"));
     const result = await command({ action, estimate });
     if (action === "preview") { setPreview(result); setNotice("Preview only: no reservation, execution approval or dispatch."); }
     else { setReceipt(result); setReceiptStale(false); setConfirmationRef(""); setNotice("Admission request recorded in the policy ledger. No operation was dispatched."); }
@@ -140,13 +143,13 @@ export default function UsagePolicyPanel({ transport = api, onConfigSaved }: {
 
   return <section className="usage-policy-panel" data-testid="usage-policy-panel" aria-label="Usage policy">
     <div className="section-title">Usage policy and growth confirmation</div>
-    <p>These controls read and write the usage-policy ledger. They do not dispatch imports, chat, models or other operations. Production adapters must adopt the policy lifecycle separately.</p>
+    <p>{t("lit_these_controls_read_and_write_the_usag")}</p>
     <p>Defaults are editable presets. A cohort groups comparable operations and resource units chosen by the caller. Unknown usage is shown as unknown; it never means zero.</p>
     {error && <div role="alert" data-testid="usage-policy-error">{error}</div>}
     {notice && <p role="status" data-testid="usage-policy-notice">{notice}</p>}
     <button onClick={refreshSettings} disabled={busy || !transport.usagePolicy} data-testid="usage-settings-refresh">Refresh policy settings</button>
     {settings && <>
-      <p>Source: <strong>{describe(settings.source)}</strong>. Ledger: <code>{describe(settings.ledger_path)}</code>. Preset application: <code>{describe(object(settings.capabilities).preset_application)}</code>.</p>
+      <p>{t("lit_source_2")} <strong>{describe(settings.source)}</strong>. {t("lit_ledger")} <code>{describe(settings.ledger_path)}</code>. {t("lit_preset_application")} <code>{describe(object(settings.capabilities).preset_application)}</code>.</p>
       {(settings.hashes || settings.preset_source || settings.override_semantics) && <details><summary>Policy snapshot source and hashes</summary><pre data-testid="usage-settings-metadata">{pretty({ preset_source: settings.preset_source, preset_document: settings.preset_document, override_semantics: settings.override_semantics, hashes: settings.hashes })}</pre></details>}
       <div className="usage-settings-values">
         <details><summary>Preset</summary><pre data-testid="usage-preset">{pretty(settings.preset)}</pre></details>
@@ -156,18 +159,18 @@ export default function UsagePolicyPanel({ transport = api, onConfigSaved }: {
       <div className="form-row"><label htmlFor="usage-policy-json">Complete policy object (including arbitrary cohorts, resource names and extensions)</label>
         <textarea id="usage-policy-json" className="usage-json-editor" rows={12} value={policyDraft} onChange={event => { setPolicyDraft(event.target.value); setPolicyDirty(true); }} data-testid="usage-policy-json" />
       </div>
-      <p>Saving replaces the complete top-level <code>loom_usage_policy</code> value. Nested objects are not merge-patched; null is a stored value. An empty override restores preset values and remains a stored override. Outstanding receipts keep their own snapshots.</p>
+      <p>{t("lit_saving_replaces_the_complete_top_level")} <code>loom_usage_policy</code> {t("lit_usage_policy_value_rest")}</p>
       <div className="usage-actions">
         <button onClick={previewPolicy} disabled={busy || !transport.usagePolicy} data-testid="usage-policy-preview">Preview policy override</button>
         <button onClick={savePolicy} disabled={busy} data-testid="usage-policy-save">Save complete policy</button>
       </div>
       {policyPreview && <details open data-testid="usage-policy-preview-result"><summary>Advisory policy override preview — no settings saved</summary>
-        <p>Effective policy changed: <strong>{describe(object(policyPreview.preview).effective_changed)}</strong>. Persisted: <strong>{describe(object(policyPreview.preview).persisted)}</strong>.</p>
+        <p>{t("lit_effective_policy_changed")} <strong>{describe(object(policyPreview.preview).effective_changed)}</strong>. {t("lit_persisted")} <strong>{describe(object(policyPreview.preview).persisted)}</strong>.</p>
         <p>The snapshot hashes identify parsed JSON. Previewing is not a compare-and-set write; settings may change before saving.</p>
         {policyDraft !== previewedPolicyDraft && <p role="status">The draft changed after this preview. The response below describes the captured override.</p>}
         <pre data-testid="usage-policy-preview-json">{pretty(policyPreview)}</pre>
       </details>}
-      <details><summary>Host capabilities</summary><pre>{pretty(settings.capabilities)}</pre></details>
+      <details><summary>{t("lit_host_capabilities")}</summary><pre>{pretty(settings.capabilities)}</pre></details>
     </>}
     <div className="section-title">Estimate and admission ledger</div>
     <div className="form-row"><label htmlFor="usage-estimate-json">Estimate: operation ID, comparable cohort and resource amounts (null = unknown)</label>
@@ -179,10 +182,10 @@ export default function UsagePolicyPanel({ transport = api, onConfigSaved }: {
     </div>
     {preview && <details open data-testid="usage-preview-result"><summary>Preview — {describe(preview.status)}, no authorization</summary><ResourceTable resources={preview.resources} /><pre>{pretty(preview)}</pre></details>}
     {receipt && <div className="usage-receipt" data-testid="usage-receipt">
-      <h3>Recorded receipt</h3>
-      <p>Operation: <code>{describe(receipt.operation_id)}</code>. Cohort: <code>{describe(receipt.baseline_key)}</code>.</p>
+      <h3>{t("lit_recorded_receipt")}</h3>
+      <p>{t("lit_operation")} <code>{describe(receipt.operation_id)}</code>. {t("lit_cohort")} <code>{describe(receipt.baseline_key)}</code>.</p>
       <p>Receipt: <code data-testid="usage-receipt-id">{describe(receipt.receipt_id)}</code>. Status: <strong>{describe(receipt.status)}</strong>. Ledger authorization: <strong>{describe(receipt.authorized)}</strong>.</p>
-      <p>This receipt addresses its recorded estimate below. Editing the draft above does not change it. An authorization is not proof of dispatch and cannot authorize another operation.</p>
+      <p>{t("lit_this_receipt_addresses_its_recorded_es")}</p>
       <ResourceTable resources={receipt.resources} />
       <details open><summary>Exact estimate, policy snapshot and full receipt</summary><pre data-testid="usage-receipt-json">{pretty(receipt)}</pre></details>
       {receiptStale && <p role="alert" data-testid="usage-receipt-stale">Confirmation failed. This receipt is locked until you explicitly refresh and review it. No automatic retry or approval.</p>}
@@ -201,14 +204,14 @@ export default function UsagePolicyPanel({ transport = api, onConfigSaved }: {
     <div className="form-row"><label htmlFor="usage-inspect-cohort">Comparable cohort / baseline key</label><input id="usage-inspect-cohort" value={cohort} onChange={event => setCohort(event.target.value)} data-testid="usage-inspect-cohort" /></div>
     <button onClick={inspect} disabled={busy || !cohort.trim() || !transport.usagePolicy} data-testid="usage-inspect">Inspect ledger</button>
     {inspection && <div data-testid="usage-inspection">
-      <p>Inspected cohort: <code>{describe(inspection.baseline_key)}</code></p>
-      <details open><summary>Baselines and reservations</summary><pre>{pretty({ baseline: inspection.baseline, reservations: inspection.reservations })}</pre></details>
+      <p>{t("lit_inspected_cohort")} <code>{describe(inspection.baseline_key)}</code></p>
+      <details open><summary>{t("lit_baselines_and_reservations")}</summary><pre>{pretty({ baseline: inspection.baseline, reservations: inspection.reservations })}</pre></details>
       {operations.map((operation, index) => <details key={`${String(operation.operation_id)}-${index}`} data-testid="usage-inspected-operation">
         <summary>{describe(operation.operation_id)} — {describe(operation.status)}; remaining: {pretty(operation.remaining)}</summary>
-        <p>Actual measurement provenance and unknown dimensions are retained in the complete operation record. Completion or cancellation must be recorded by the execution adapter or an explicit recovery action.</p>
+        <p>{t("lit_actual_measurement_provenance_and_unkn")}</p>
         <pre>{pretty(operation)}</pre>
       </details>)}
-      <details><summary>Full inspection, including recorded events</summary><pre>{pretty(inspection)}</pre></details>
+      <details><summary>{t("lit_full_inspection_including_recorded_eve")}</summary><pre>{pretty(inspection)}</pre></details>
     </div>}
   </section>;
 }
