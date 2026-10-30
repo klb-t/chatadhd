@@ -136,8 +136,9 @@ TEST_SUITE("structure") {
     CHECK(empty.at("reason") == "root_empty");
     CHECK(empty.at("suggestions").is_array());
     CHECK(!empty.at("suggestions").empty());
-    f.confirmed("units.define", Json{{"kind", "project"}, {"id", "beta"}, {"label", "Beta"}});
-    const Json unknown = f.structure(Json{{"root", "unit:project/beta"}, {"templates", Json::array({"nie_ma_takiego", "import_basic"})}});
+    // a unit is a node of the graph only while a conversation names it (graph_sources unit, read_units): an area is used here
+    const Json unknown = f.structure(Json{{"root", "area:context_projects"}, {"templates", Json::array({"nie_ma_takiego", "import_basic"})}});
+    INFO(unknown.dump());
     CHECK(has_advisory(unknown, "unknown_template"));
     CHECK(has_advisory(unknown, "template_not_matching"));
     CHECK(unknown.at("templates_applied").empty());
@@ -202,7 +203,7 @@ TEST_SUITE("structure") {
     CHECK(expectation(r, "t/inf")->at("state") == "inferred");
     CHECK(expectation(r, "t/one")->at("state") == "excess");
     // the person's order: present before excess
-    data["states"] = Json::array({Json{{"id", "present"}, {"when", "any"}}, Json{{"id", "missing"}, {"when", "below_min"}, {"ghost", true}}, Json{{"id", "odd"}, {"when", "nonsense"}}});
+    data["states"] = Json::array({Json{{"id", "odd"}, {"when", "nonsense"}}, Json{{"id", "present"}, {"when", "any"}}, Json{{"id", "missing"}, {"when", "below_min"}, {"ghost", true}}});
     const Json r2 = structure::evaluate(data, Json{{"address", "r"}}, children, Json::object());
     CHECK(expectation(r2, "t/one")->at("state") == "present");
     CHECK(has_advisory(r2, "unknown_state_rule"));

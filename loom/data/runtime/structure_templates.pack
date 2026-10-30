@@ -336,7 +336,15 @@
         "pl": "Struktura „{label}”: {present} jest, {missing} brakuje.",
         "en": "Structure of “{label}”: {present} present, {missing} missing."
       }
-    }
+    },
+    "member_readers": [
+      {
+        "root_prefix": "unit:",
+        "reader": "conversations.units",
+        "relation": "part_of",
+        "note": "2026-10-30: graph.navigate lists no children under a unit (graph_sources unit: edges []), only the count of its conversations; this reader adds the member conversations as children of the structure (read only). Remove when the unit source lists them itself."
+      }
+    ]
   },
   "value_schema": {
     "type": "object",
@@ -352,7 +360,8 @@
       "root_suggestions",
       "root_suggestions_limit",
       "advisories",
-      "texts"
+      "texts",
+      "member_readers"
     ],
     "properties": {
       "templates": {
@@ -435,6 +444,15 @@
         "x-setting": "/texts",
         "x-consumer": "loom::structure::evaluate (loom/src/graph/structure.cpp)",
         "additionalProperties": true
+      },
+      "member_readers": {
+        "type": "array",
+        "items": {
+          "type": "object"
+        },
+        "title": "Readers of children graph.navigate does not list (root_prefix, reader mechanism id, relation); an unknown reader is said, never silent",
+        "x-setting": "/member_readers",
+        "x-consumer": "loom::structure::structure (loom/src/graph/structure.cpp)"
       }
     }
   }

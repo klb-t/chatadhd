@@ -2,7 +2,7 @@
 // W11a-1: the window „Struktura projektu” (kind project_structure, panel structure) on the REAL loom-server, phone 390x844. No model and
 // no network: a local fake provider is configured only so the chat has a provider (the window sentences are routed by the kernel without
 // a model). TEST DATA (synthetic, in a temp data dir only): a unit „Alfa” with two conversations, defined through units.define /
-// conversation.set_unit as a person would (asked, then confirmed), a unit „Pusty”, and a person's overlay of structure_templates with one
+// conversation.set_unit as a person would (asked, then confirmed), a unit „Pusty” with one conversation (a unit is a node of the graph only while a conversation names it), and a person's overlay of structure_templates with one
 // template of little use (empty expects) that fits only „Pusty". Nothing of it ships.
 // 1 the sentence „pokaż strukturę projektu Alfa” opens the window with root = the unit: conversations present (2), documents as a ghost
 // 2 viewing writes nothing: the data dir is byte-identical before and after re-reads (show_expected off/on, a root typed again)
@@ -77,9 +77,9 @@ try {
   await api("POST", "/api/secrets/api_key", { value: "local-fake-provider-only" });
   await confirmed("/api/units/define", { kind: "project", id: "alfa", label: "Alfa" });
   await confirmed("/api/units/define", { kind: "project", id: "pusty", label: "Pusty" });
-  for (const title of ["Rozmowa jeden", "Rozmowa dwa"]) {
+  for (const [title, unit] of [["Rozmowa jeden", "alfa"], ["Rozmowa dwa", "alfa"], ["Rozmowa w pustym", "pusty"]]) {
     const c = await api("POST", "/api/conversations", { title });
-    await confirmed("/api/conversation/set_unit", { conv_id: c.id, kind: "project", id: "alfa" });
+    await confirmed("/api/conversation/set_unit", { conv_id: c.id, kind: "project", id: unit });
   }
   const launch = await chromium();
   browser = await launch.launch({ headless: true }).catch(() => launch.launch({ headless: true, executablePath: CHROMIUM }));

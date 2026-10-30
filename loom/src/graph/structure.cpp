@@ -6,6 +6,7 @@
 #include <map>
 #include <optional>
 
+#include "loom/db.h"
 #include "loom/log.h"
 #include "loom/runtime_profile.h"
 
@@ -366,6 +367,39 @@ Json suggestions(const projection::Env& env, const Json& data) {
   return out;
 }
 
+
+// Children graph.navigate does not list (data: member_readers). "conversations.units": the conversations whose metadata.units names the
+// unit of the root (unit:<kind>/<id>), each as the navigator's own row of that conversation (graph.navigate on it, budget 1).
+Result<Json> read_members(const projection::Env& env, const std::string& reader, const std::string& root, const std::string& prefix) {
+  Json out = Json::array();
+  if (reader != "conversations.units") return Error(Errc::NotFound, "unknown member reader '" + reader + "'");
+  if (!env.db) return Error(Errc::Unavailable, "database_unavailable");
+  const std::string rest = root.substr(prefix.size());
+  const std::size_t slash = rest.find('/');
+  if (slash == std::string::npos) return out;
+  const std::string kind = rest.substr(0, slash), id = rest.substr(slash + 1);
+  std::vector<std::string> ids;
+  {
+    auto lock = env.db->lock();
+    LOOM_TRY_ASSIGN(auto st, env.db->conn().prepare("SELECT id, metadata FROM conversations WHERE json_extract(metadata, '$.units') IS NOT NULL ORDER BY created"));
+    while (true) {
+      LOOM_TRY_ASSIGN(bool more, st.step());
+      if (!more) break;
+      const Json meta = json::parse_or(st.get_text(1), Json::object());
+      const Json units = meta.is_object() ? meta.value("units", Json::object()) : Json::object();
+      if (units.is_object() && json::get_string(units, kind) == id) ids.push_back(st.get_text(0));
+    }
+  }
+  for (const auto& cid : ids) {
+    auto nav = projection::navigate(env, Json{{"focus", cid}, {"limit", 1}});
+    Json row = nav ? nav->value("focus", Json::object()) : Json{{"address", cid}, {"label", cid}, {"unknown", nav.error().message}};
+    row["depth"] = 1;
+    row["via"] = reader;
+    out.push_back(std::move(row));
+  }
+  return out;
+}
+
 }  // namespace
 
 Result<Json> structure(const projection::Env& env, const Json& request) {
@@ -413,7 +447,19 @@ Result<Json> structure(const projection::Env& env, const Json& request) {
       return base;
     }
     const Json focus = nav->value("focus", Json::object());
-    const Json children = nav->value("children", Json::array());
+    Json children = nav->value("children", Json::array());
+    Json reader_notes = Json::array();
+    const std::string focus_address = json::get_string(focus, "address", root);
+    for (const auto& m : data.value("member_readers", Json::array())) {
+      const std::string pre = json::get_string(m, "root_prefix");
+      if (pre.empty() || focus_address.rfind(pre, 0) != 0) continue;
+      auto extra = read_members(env, json::get_string(m, "reader"), focus_address, pre);
+      if (!extra) { reader_notes.push_back(Json{{"reader", json::get_string(m, "reader")}, {"error", extra.error().message}}); continue; }
+      std::set<std::string> have;
+      for (const auto& c : children) have.insert(json::get_string(c, "address"));
+      for (const auto& e : *extra)
+        if (have.insert(json::get_string(e, "address")).second) children.push_back(e);
+    }
     Json out = evaluate(data, focus, children, req);
     out["schema"] = "loom.structure/1";
     out["found"] = true;
@@ -422,6 +468,7 @@ Result<Json> structure(const projection::Env& env, const Json& request) {
     out["navigate"] = Json{{"counts", nav->value("counts", Json::object())}, {"breadcrumbs", nav->value("breadcrumbs", Json::array())},
                            {"limit", nav->value("limit", Json::object())}, {"edges", nav->value("edges", Json::array())}};
     if (base.contains("profile_error")) out["profile_error"] = base.at("profile_error");
+    if (!reader_notes.empty()) out["reader_errors"] = reader_notes;
     const Json counts = out.at("counts");
     out["text"] = text_of(data, "head", lang, Json{{"label", focus.value("label", root)}, {"present", counts.value("present", 0)}, {"missing", counts.value("missing", 0)}});
     return out;
