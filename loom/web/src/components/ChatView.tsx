@@ -57,7 +57,7 @@ import { contextTraceRows } from "./context-trace-rows";
 import { loadSelectorProfiles, useContextModify } from "./use-context-modify";
 import { modifySentence, profileChoices, type ProfileChoice } from "./context-receipt-state";
 import { InterviewCardDecision, InterviewChips, InterviewInfoLine, InterviewLevelCards, InterviewStartCard, useInterviewCard, useInterviewWords } from "./InterviewCards";
-import { isInterviewMessages, levelCards, repliesTarget, waitingQuestion } from "../context/interview";
+import { isInterviewMessages, reachedProvider, levelCards, repliesTarget, waitingQuestion } from "../context/interview";
 import ContextStrip from "../shell/ContextStrip";
 import ModelProvenance from "../shell/ModelProvenance";
 import { lastReceiptProfile, pendingParts } from "../shell/context-strip";
@@ -1255,7 +1255,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
       </p>}
       {conversationView && conversationView.resources.length > 0 && <ConversationSourceView key={convId} view={conversationView}
         profileHost={profileHost} catalog={sourceCatalog} busy={sourceBusy} onRead={readSources} onReload={() => { if (convId) void refreshMessages(convId); }} />}
-      {interviewConv && convId && <InterviewInfoLine t={interviewT} convId={convId} refreshKey={messages.length} language={shellLanguage} variant={variant} />}
+      {interviewConv && convId && <InterviewInfoLine t={interviewT} convId={convId} refreshKey={messages.length} language={shellLanguage} variant={variant} sent={reachedProvider(messages)} />}
       <div className="chat-scroll" ref={scrollRef} onScroll={e => { if (e.currentTarget.scrollTop < 40 && pageInfo?.truncated) void loadOlder(); }}>
         {pageInfo?.truncated && <div className="chat-older" data-testid="chat-older">
           <span data-testid="chat-older-count">{olderMessages.length + messages.length} / {pageInfo.total}</span>{" "}

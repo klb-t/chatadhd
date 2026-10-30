@@ -125,6 +125,16 @@ json choose_free_model(const json& fp, const std::string& keys_file, const std::
     return a.value("quality", 0.0) > b.value("quality", 0.0);
   });
   json skipped = json::array();
+  {  // rows of tiers that may not be given are reported up front (they sort last and would never be reached)
+    json kept = json::array();
+    for (const auto& row : table) {
+      if (tier_rank(row) < allowed_tiers.size()) { kept.push_back(row); continue; }
+      bool seen = false;
+      for (const auto& k : skipped) if (k["provider"] == row.value("provider", std::string())) seen = true;
+      if (!seen) skipped.push_back({{"provider", row.value("provider", std::string())}, {"why", "tier_not_allowed"}, {"tier", tier_of(row)}});
+    }
+    table = kept;
+  }
   for (const auto& row : table) {
     const std::string pid = row.value("provider", std::string());
     const json* prov = nullptr;

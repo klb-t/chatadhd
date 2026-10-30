@@ -127,7 +127,7 @@ export function InterviewChips({ t, idle, disabled, onSay }: { t: ShellT; idle: 
 }
 
 /** The line at the top of an interview conversation: no model, a form only, and how many questions are left (from the kernel's status). */
-export function InterviewInfoLine({ t, convId, refreshKey, language, variant }: { t: ShellT; convId: string; refreshKey: number; language: string; variant: "chat" | "workshop" }) {
+export function InterviewInfoLine({ t, convId, refreshKey, language, variant, sent }: { t: ShellT; convId: string; refreshKey: number; language: string; variant: "chat" | "workshop"; sent?: boolean }) {
   const [status, setStatus] = useState<InterviewStatus | null>(null);
   useEffect(() => {
     let current = true;
@@ -140,7 +140,7 @@ export function InterviewInfoLine({ t, convId, refreshKey, language, variant }: 
   return (
     <div className="interview-info" role="status" data-testid="interview-info" data-variant={variant} data-progress={status?.kind === "active" ? String(status.remaining ?? "") : undefined}>
       <strong data-testid="interview-info-line">{t("info.line")}</strong>
-      <span data-testid="interview-info-why">{t("info.why")}</span>
+      <span data-testid="interview-info-why" data-sent={sent ? "true" : "false"}>{t(sent ? "info.why_sent" : "info.why")}</span>
       {progress && <span data-testid="interview-info-progress">{progress}</span>}
     </div>
   );

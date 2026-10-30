@@ -95,3 +95,39 @@ test('R103 §3.5: the notice period follows what the browser store reported', as
   for (const id of ['guest.wipe', 'guest.wipe_confirm', 'guest.wipe_yes', 'guest.wipe_no'])
     assert.ok(typeof en[id] === 'string' && typeof pl[id] === 'string', id);
 });
+
+test('the guest model line says what the source really is (tier from data): free, paid, unknown - exact words per tier and language', async () => {
+  const gl = await loader.load('src/context/guest-line.ts');
+  const pl = pack.entries.find(row => row.key === 'presentation.accounts').value.locales.pl;
+  const fill = (w, k) => w.replace('{{model}}', 'M').replace('{{provider}}', 'P').replace('{{terms}}', 'T');
+  assert.equal(gl.modelLineId('free'), 'guest.model_line_free');
+  assert.equal(gl.modelLineId('paid_credits'), 'guest.model_line_paid');
+  assert.equal(gl.modelLineId('anything else'), 'guest.model_line_paid');  // not free = never called free
+  assert.equal(gl.modelLineId(undefined), 'guest.model_line');
+  assert.equal(gl.modelLineId(''), 'guest.model_line');
+  assert.equal(fill(en['guest.model_line_free']), "Answers: M (P), the best of today's free models. T");
+  assert.equal(fill(en['guest.model_line_paid']), 'Answers: M (P), a paid source (not one of the free models). T');
+  assert.equal(fill(en['guest.model_line']), 'Answers: M (P). T');
+  assert.equal(fill(pl['guest.model_line_free']), 'Odpowiada: M (P), najlepszy z dzisiejszych darmowych modeli. T');
+  assert.equal(fill(pl['guest.model_line_paid']), 'Odpowiada: M (P), źródło płatne (nie jeden z darmowych modeli). T');
+  assert.ok(!/free|darmow/.test(en['guest.model_line'] + pl['guest.model_line']), 'the neutral line makes no claim about cost');
+  assert.ok(!/free|darmow/.test(en['guest.model_line_paid'].replace('not one of the free models', '') + pl['guest.model_line_paid'].replace('nie jeden z darmowych modeli', '')));
+});
+
+test('"Nothing leaves this device" is said only while no message of the conversation went to a model provider', async () => {
+  const iv = await loader.load('src/context/interview.ts');
+  const view = pack.entries.find(row => row.key === 'presentation.interview').value.locales;
+  const form = { role: 'assistant', model: 'profile.interview', metadata: { interview: { kind: 'question' } } };
+  const sent = { role: 'assistant', model: 'google/gemini-3.5-flash', metadata: {} };
+  assert.equal(iv.reachedProvider([]), false);
+  assert.equal(iv.reachedProvider([{ role: 'user', model: null }, { role: 'assistant', model: null, metadata: {} }]), false);
+  assert.equal(iv.reachedProvider([sent]), true);
+  assert.equal(iv.reachedProvider([{ role: 'user' }, sent]), true);
+  for (const loc of ['en', 'pl']) {
+    assert.ok(typeof view[loc]['info.why'] === 'string' && typeof view[loc]['info.why_sent'] === 'string', loc);
+    assert.notEqual(view[loc]['info.why'], view[loc]['info.why_sent']);
+  }
+  assert.equal(view.en['info.why'], 'Nothing leaves this device.');
+  assert.match(view.en['info.why_sent'], /sent to a model provider/);
+  assert.equal(iv.reachedProvider([form]), false);
+});

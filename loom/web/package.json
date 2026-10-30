@@ -102,6 +102,7 @@
     "test:m1-me": "node e2e/m1-me-native.mjs",
     "test:guest-mode": "node e2e/guest-mode-native.mjs",
     "test:guest-bundle": "node e2e/guest-bundle-native.mjs",
+    "test:guest-layer": "node e2e/guest-layer-layout.mjs",
     "test:opfs-store": "node e2e/opfs-store-native.mjs",
     "test:store-plugins": "node --test tests/store/store.test.mjs",
     "test:m1-navigator": "node e2e/m1-navigator-native.mjs",
