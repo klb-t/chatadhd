@@ -3,6 +3,17 @@
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
 
+## Luka do zaprojektowania (właściciel, 30.10; przekazał koordynator): zapytania do modeli z urządzenia osoby
+Słowa właściciela: „apka webowa operuje na urządzeniu klienckim i z niego wysyła zapytania”.
+Obserwacja z 30.10 na `2d39b07c`: w `loom/web/src` nie ma żadnego adresu dostawcy ani `fetch` na adres zewnętrzny, więc
+każde zapytanie do modelu idzie przez serwer i naszą pulę.
+Projekt na Fable: osoba trzyma własny klucz na urządzeniu, a przeglądarka łączy się wprost z dostawcą, tam gdzie dostawca na to pozwala.
+Do tego logowanie OAuth do dostawcy (przykład: OpenRouter). Pula serwera zostaje jako start. Dostawcy to przykłady: mechanizm ma
+być ogólny. Co dostawca dopuszcza (zapytania z przeglądarki, OAuth, przepływ PKCE) zapisujemy jako datowane obserwacje
+z oceną źródła, nie jako ograniczenia. Wybór trasy dla każdego dostawcy i modelu to ustawienie z presetem.
+Do sprawdzenia w projekcie: gdzie leży klucz w przeglądarce (OPFS/IndexedDB, szyfrowanie, PH29), paragon RI-2 i potwierdzenie ×10
+bez serwera, pierwsze wysłanie do nowego dostawcy. Nie przerywać bieżących agentów; ruszy w następnej partii.
+
 ## Luka (koordynator, 30.10): strona nie zapisuje, dlaczego się przeładowuje
 Po poprawce pętli przeładowań gościa (`hotfix-reload`, `e94ba029`) nadal nie widać, co wywołało przeładowanie.
 Do zrobienia: zapis zdarzeń klienta (przeładowanie i jego powód, przywrócenie kopii, błąd zapisu magazynu) do przeglądania
