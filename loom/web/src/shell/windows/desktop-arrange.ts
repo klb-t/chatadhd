@@ -159,8 +159,19 @@ export function placeIcons(addresses: readonly string[], arr: ResolvedArrangemen
         let col = Math.min(cols - 1, Math.max(0, Math.round(x / cellW))), row = Math.max(0, Math.round(y / cellPx));
         if (arr.snap) { x = col * cellW; y = row * cellPx; }
         else { col = Math.min(cols - 1, Math.floor(x / cellW + 1e-9)); row = Math.floor(y / cellPx + 1e-9); }
-        placed.set(a, { address: a, col, row, x, y, pinned: true }); continue;
+        if (taken.has(key(col, row))) {
+          // two hand positions on one cell: the later one goes to the next free cell (row-major), as in grid mode
+          let i = row * cols + col; do { i++; col = i % cols; row = Math.floor(i / cols); } while (taken.has(key(col, row)));
+          x = col * cellW; y = row * cellPx;
+          advisories.push({ code: "arrangement_cell_taken", vars: { address: a } });
+        }
+        taken.add(key(col, row));
+        placed.set(a, { address: a, col, row, x, y, pinned: true });
       }
+    }
+    // the flowing icons come after ALL hand-placed ones, so none lands under a pinned icon
+    for (const a of uniq) {
+      if (placed.has(a)) continue;
       let c: [number, number];
       do c = it.next().value as [number, number]; while (taken.has(key(c[0], c[1])));
       taken.add(key(c[0], c[1]));
