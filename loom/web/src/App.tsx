@@ -56,6 +56,7 @@ import { useCoupling, type CouplingHook } from "./shell/windows/useCoupling";
 import { couplingDataOf } from "./shell/windows/coupling";
 import ArtifactWindow from "./shell/artifacts/ArtifactWindow";
 import RequestInspector from "./shell/RequestInspector";
+import ProjectStructure from "./components/ProjectStructure";
 import { ARTIFACTS, OPEN_ARTIFACT_EVENT, artifactOf, scriptsOn } from "./shell/artifacts/artifacts";
 import { runArrangeStep, STEP_DATA } from "./shell/windows/steps";
 import { bindingsOf, paramOfWord, paramWord, paramsOfKind } from "./shell/windows/coupling";
@@ -599,6 +600,12 @@ export default function App() {
       const deviceClass = deviceClassOf(window.innerWidth);
       const { state, receipt } = runWindowStep(winRef.current, detail.action, detail.args ?? {}, known, deviceClass, undefined, windowDataRef.current);
       moveTo(state);
+      // W11a-1: the node a sentence named („pokaż strukturę projektu Alfa”) becomes the first parameter of a window kind that reads one (root)
+      if (detail.action === "window.open" && receipt.state === "ok" && typeof args.node === "string" && args.node.trim() && receipt.windows[0]) {
+        const opened = state.layout.windows.find(w => w.id === receipt.windows[0]);
+        const param = paramsOfKind(String(opened?.params?.panel ?? opened?.kind ?? "")).find(x => x === "root" || x === "focus");
+        if (opened && param) couplingRef.current?.setValue(opened.id, param, args.node.trim());
+      }
       const say = (r: WindowReceipt): string => {
         const names = r.windows.map(windowLabel).join(", ");
         if (r.state === "none") return t("window_receipt_none", { word: r.word ?? "" });
@@ -776,6 +783,7 @@ export default function App() {
                 {p === "perspectives" && <PerspectivesPanel convId={activeConvId} />}
                 {p === "view-engine" && <ViewEnginePanel />}
                 {p === "request" && <RequestInspector api={api} convId={activeConvId} />}
+                {p === "structure" && <ProjectStructure api={api} profileHost={userProfileHost} convId={activeConvId} language={uiLanguage} meInferredOpacity={config.me_inferred_opacity} />}
                 {p === "conversations" && <ConversationList key={convRefreshKey} activeConvId={activeConvId}
                   onSelect={id => { setActiveConvId(id); closePanel(); deskOpen({ chat: true }); }} onCreated={id => { onConversationCreated(id); closePanel(); deskOpen({ chat: true }); }} onActivity={sidebarActivity} />}
                 {p === "memory" && <MemoryPanel />}

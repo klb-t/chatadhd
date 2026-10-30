@@ -32,6 +32,8 @@ import type {
   GraphCardResult,
   GraphNavigateRequest,
   GraphNavigateResult,
+  GraphStructureRequest,
+  GraphStructureResult,
   RolesResolved,
   RomOverrideRequest,
   SettingsResolved,
@@ -165,6 +167,8 @@ export interface ActionsApi {
   groupsRemove(request: RemoveRequest): Promise<ActionRun>;
   /** M1-K0 graph projection (read only, nothing written to the graph): one level of the navigable graph around a focus. */
   graphNavigate(request?: GraphNavigateRequest): Promise<GraphNavigateResult>;
+  /** W11a-1: the structure of a node against the structure templates (read only). Optional: a transport without it says the window is unavailable. */
+  graphStructure?(request: GraphStructureRequest): Promise<GraphStructureResult>;
   /** Everything about one node: value and why, inheritance, relations by edge kind, the actions that fit it, evidence per property. */
   graphCard(request: { address: string; lang?: string; conv_id?: string }): Promise<GraphCardResult>;
   /** Every setting in its group with the value in words, the level that supplied it and the whole chain. */

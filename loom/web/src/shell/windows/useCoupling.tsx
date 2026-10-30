@@ -22,6 +22,8 @@ export interface CouplingHook {
   /** W8 (W6 gap A): the current values (saved with the last layout, never journalled) and their restore after a reload. */
   values: Values;
   restore: (v: Values | null | undefined, layout: WState["layout"]) => void;
+  /** W11a-1: a value of a window parameter set from outside the component (a sentence that named the root), through the same propagation. */
+  setValue: (id: string, param: string, value: unknown) => void;
 }
 
 /** W8: a restored value waits for the first read - until the component reports the restored value back (it has applied it), its own
@@ -113,5 +115,8 @@ export function useCoupling(win: WState, winRef: { current: WState }, commit: (s
     commit(next);
     put(afterBind(next.layout, valuesRef.current, id, param, opts()).values);
   }, [winRef, commit, put]);
-  return { provide, extraMenu, onExtra, chain, advisories, bindAll, unbindAll, cycleChain, values, restore };
+  const setValue = useCallback((id: string, param: string, value: unknown) => {
+    put(setParam(winRef.current.layout, valuesRef.current, id, param, value, opts()).values);
+  }, [put, winRef]);   // eslint-disable-line react-hooks/exhaustive-deps
+  return { provide, extraMenu, onExtra, chain, advisories, bindAll, unbindAll, cycleChain, values, restore, setValue };
 }

@@ -7,7 +7,7 @@
   "modes_note": "The vocabulary of §5.1; an unknown mode is read as independent with the advisory unknown_binding (nothing is dropped).",
   "channels": ["conversation", "focus", "time_range", "perspective", "zoom", "pan", "selection", "turn", "mapping"],
   "channels_note": "A seed of channel names (examples). Any string names a channel.",
-  "kind_params": { "navigator": ["zoom", "pan"], "graph": [], "chat": [] },
+  "kind_params": { "navigator": ["zoom", "pan"], "graph": [], "chat": [], "structure": ["root", "templates", "show_expected", "mapping", "depth", "budget"] },
   "kind_params_note": "Which parameters a window of a kind actually reads and writes today (no fake controls: a parameter appears in the menu ⋯ only where a component follows it). Open: a kind not listed offers nothing yet. W7 gap: focus node, perspective, time position and mapping of the navigator.",
   "params": {
     "zoom": { "pl": "przybliżenie", "en": "zoom" },

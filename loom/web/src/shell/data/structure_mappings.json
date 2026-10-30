@@ -1,0 +1,39 @@
+{
+  "schema": "loom.structure_mapping/1",
+  "note": "W11a-1: how a state of an expectation (graph.structure: missing, inferred, excess, declined, present, empty ... - an open list of the kernel's data) is drawn in the window „Struktura projektu”. A mapping is data: a preset id here, or an object {states: {<state>: <signs>}} given as the window parameter `mapping`. Signs are an open list read by structure-state.ts (opacity, border, icon, color, size, order, hidden, weight); a sign the page does not read is said, never dropped silently. A value {setting: key} reads a setting of the person (preset: me_inferred_opacity, the same as on the screen „Ty”). Every preset is an example.",
+  "default": "me_inferred_opacity",
+  "presets": {
+    "me_inferred_opacity": {
+      "label": { "pl": "Półprzezroczyste (jak wywnioskowane na ekranie „Ty”)", "en": "Translucent (like inferred entries on the “You” screen)" },
+      "states": {
+        "missing": { "opacity": { "setting": "me_inferred_opacity" }, "border": "dashed", "icon": "◌" },
+        "inferred": { "opacity": { "setting": "me_inferred_opacity" } },
+        "declined": { "opacity": 0.35, "icon": "⊘" }
+      }
+    },
+    "dashed": {
+      "label": { "pl": "Kreskowana ramka, pełny kolor", "en": "Dashed frame, full colour" },
+      "states": {
+        "missing": { "border": "dashed", "icon": "＋" },
+        "inferred": { "border": "dotted" }
+      }
+    },
+    "loud": {
+      "label": { "pl": "Wyraźne: kolor i znak ostrzeżenia", "en": "Loud: colour and a warning sign" },
+      "states": {
+        "missing": { "color": "#c0392b", "icon": "⚠", "weight": "bold", "order": -1 },
+        "excess": { "color": "#b9770e", "icon": "↑" }
+      }
+    },
+    "hide_missing": {
+      "label": { "pl": "Ukryj brakujące", "en": "Hide the missing ones" },
+      "states": { "missing": { "hidden": true } }
+    }
+  },
+  "signs": ["opacity", "border", "icon", "color", "size", "order", "hidden", "weight"],
+  "advisories": {
+    "nothing_visible": { "pl": "Przy tym wyglądzie brakujących nie widać wcale (ukryte albo całkiem przezroczyste) — czy tak ma być?", "en": "With this look the missing ones cannot be seen at all (hidden or fully transparent) — is that intended?" },
+    "unknown_preset": { "pl": "Nie ma wyglądu „{{id}}”; używam „{{fallback}}”.", "en": "There is no look “{{id}}”; using “{{fallback}}”." },
+    "unknown_sign": { "pl": "Znak „{{sign}}” w wyglądzie „{{id}}” nie ma czytelnika na tej stronie — nic go nie rysuje.", "en": "The sign “{{sign}}” of the look “{{id}}” has no reader on this page — nothing draws it." }
+  }
+}

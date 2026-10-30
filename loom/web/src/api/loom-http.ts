@@ -117,6 +117,7 @@ export class LoomHttpApi implements LoomApi {
     groupsDefine: (request) => this.req("POST", "/api/groups/define", request),
     groupsRemove: (request) => this.req("POST", "/api/groups/remove", request),
     graphNavigate: (request = {}) => this.req("POST", "/api/graph/navigate", request),
+    graphStructure: (request) => this.req("POST", "/api/graph/structure", request),
     graphCard: (request) => this.req("POST", "/api/graph/card", request),
     settingsResolved: (request = {}) => this.req("POST", "/api/settings/resolved", request),
     rolesResolved: (request = {}) => this.req("POST", "/api/roles/resolved", request),
