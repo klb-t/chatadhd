@@ -589,6 +589,12 @@
       "implementation": "planned"
     },
     {
+      "id": "desktop.arrange",
+      "decision": "applicable",
+      "label": "Uporządkuj ikony",
+      "implementation": "planned"
+    },
+    {
       "id": "layout.trash",
       "decision": "applicable",
       "label": "Przenieś układ do kosza",

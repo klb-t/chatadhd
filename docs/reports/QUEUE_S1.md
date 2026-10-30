@@ -55,6 +55,18 @@ Web, NIEPOPRAWIONE (za duże na ostatnie 5 % limitu). Przyczyny według logu, do
 - `test:m1-navigator`: karta z jądra różni się od zapisanego wzorca `tests/shell/fixtures/graph-card-temperature.json`, po nowych
   akcjach katalogu (G2/W11a/audyt). Odświeżyć wzorzec świadomie, po sprawdzeniu, że różnica to tylko nowe akcje.
 
+**Naprawa web (pkg-webfix, 30.10):** 9 czerwonych skryptów, wszystkie 9 przechodzą lokalnie (binarka serwera z worktree bramki, tylko do odczytu; dane testowe jak w skryptach: mock modelu, wiersz pinu syntetyczny).
+- `guest-layer` — PRODUKT: warstwa gościa nachodziła na pole czatu, bo reguła wysokości `.guest-body > .win-box > .shell-root` nie sięgała korzenia schowanego za nowym opakowaniem `display: contents` (`chat-conversation`); dodano selektor w `styles.css`.
+- `guest-restore-no-loop` — TEST (produkt słuszny): test wpisuje paczkę do IndexedDB, a preset wybiera teraz OPFS+SQLite, którego własna (niepusta) kopia z pierwszej wizyty wygrywa; test przypina politykę `browser_indexeddb` jak `guest-layer`/`guest-bundle`. Nowa sesja z paczką, której brakuje wierszy, przeładowuje się raz; reszta wizyt zero.
+- `guest-bundle` i `opfs-store` — TEST (produkt zamierzony, audyt a): po „Wyczyść” pojawia się raport (`guest-wipe-report`), przeładowanie dopiero po „Dalej” (`guest-wipe-continue`); test sprawdza, że raport nie jest pusty, i klika Dalej.
+- `chat-first` — TEST: lista pozycji menu dostała „Struktura projektu” (graph.structure, W11a) — to słowo z katalogu, produkt poprawny.
+- `imported-message-content-browser` — TEST: odizolowany komponent bez dostawcy `ShellText` pokazywał klucze `lit_*`; test dostaje teraz prawdziwy katalog ui_shell (jak w aplikacji). Uwaga na przyszłość: aplikacja bez wczytanego katalogu pokazałaby klucz zamiast słowa (to samo robi każdy ekran przy `t()` bez katalogu).
+- `graph-help` — TEST (katalog nl poprawny): pomoc starej mapy odsyła do „⋮ › Graaf”, tak jak nazywa się pozycja w menu nl (`menu_graph`); test oczekiwał tylko „Graf/Graph”, teraz porównuje ze słowem menu danego języka.
+- `semantic-queue` — TEST (produkt słuszny): pole `llm` (audyt d) jest nieznane = `null`, nie 0; test dopisuje `llm: null` do oczekiwanego widoku.
+- `m1-navigator` — FIXTURE odświeżony: jedyna różnica to nowa akcja katalogu `desktop.arrange` („Uporządkuj ikony”, planned; commit 6aaf5c20 R101 D5) w liście akcji karty temperatury (6 linii). Nie G2/W11a/audyt, ale ta sama natura (nowa akcja katalogu tej partii).
+- Sprawdzone: `tsc --noEmit` czysty, `tools/lint_ui_strings.py` ok. Nie dotykano C++/pack, nie uruchamiano bramki. Zostało: `interface-2`, `interface-2-native`, `product-integration` (poza listą), pełna bramka na tym drzewie.
+
+
 **Następny krok:**
 1. Bramka zielona → podać sha `90f60bfb` koordynatorowi. Scalenie do `main` (przewinięcie) robi koordynator. Do ultrareview
    dopiero po decyzji koordynatora.
