@@ -97,10 +97,15 @@ def missing():
             if isinstance(v, dict) and "locales" in v:
                 langs |= set(v["locales"]); table[v["feature"]] = v["locales"]
     total = sorted(langs); rc = 0
+    cats = json.loads((ROOT / "tools/ui_plural_categories.json").read_text(encoding="utf8"))
+    every = {c for k, v in cats.items() if k[0] != "_" for c in v} | {"zero", "one", "two", "few", "many", "other"}
+    def needed(lg, key):
+        tail = key.rsplit(".", 1)[-1]
+        return not (tail in every and lg in cats and tail not in cats[lg])
     allkeys = sum(len(set().union(*[set(c) for c in loc.values()])) for loc in table.values())
     print(f"texts collected: {allkeys} keys in {len(table)} catalogs; languages: {', '.join(total)}")
     for lg in total:
-        gaps = {ft: sorted(set().union(*[set(c) for c in loc.values()]) - set(loc.get(lg, {}))) for ft, loc in table.items()}
+        gaps = {ft: sorted(k for k in set().union(*[set(c) for c in loc.values()]) - set(loc.get(lg, {})) if needed(lg, k)) for ft, loc in table.items()}
         gaps = {k: v for k, v in gaps.items() if v}
         print(f"  {lg}: {sum(len(v) for v in gaps.values())} missing" + ("".join(f"\n    {k}: {len(v)}" for k, v in gaps.items())))
     return rc

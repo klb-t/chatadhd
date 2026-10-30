@@ -85,6 +85,41 @@
             "exact_wire": "Dokładny JSON natywnego widoku",
             "decoded_projection": "Tekst i podsumowania są zdekodowaną projekcją widoku. Liczby w nieznanych polach mogą być tu zaokrąglone. Dokładna odpowiedź natywna jest dostępna w dowodach źródła.",
             "wire_unavailable": "Dokładna odpowiedź natywna jest niedostępna dla tej odpowiedzi hosta."
+          },
+          "nl": {
+            "title": "Verwezen gesprekbronnen",
+            "local_read": "Lees gekoppelde bronnen lokaal",
+            "reading": "Gekoppelde bronnen worden gelezen…",
+            "read_scope": "Deze actie leest de bijgevoegde bron voor deze lokale weergave. Ze geeft geen toestemming om broninhoud naar een model of andere dienst te sturen. De adapter kan de hele container lezen.",
+            "readonly": "Dit bronbericht is een alleen-lezen weergave met vastgezette versie. Bewerken, een opgeslagen versie herstellen en het verzenden van brongeschiedenis zijn niet beschikbaar.",
+            "egress_unavailable": "Het verzenden van brongeschiedenis is niet beschikbaar: de lokale leesactie heeft geen koppeling voor het vrijgeven aan een model.",
+            "details": "Bronversies, toegangsresultaten en leesbewijs",
+            "unavailable": "De bronweergave is niet beschikbaar. Opgeslagen berichten en expliciete bronstatussen blijven zichtbaar.",
+            "complete": "Bronweergave volledig",
+            "partial": "Bronweergave gedeeltelijk",
+            "configuration": "Configuratie van lokaal lezen",
+            "projection_storage": "Bewaring van afgeleide projectie",
+            "content_index": "Inhoudsindex van de bron",
+            "snapshot": "Bewaar een afgeleide snapshot",
+            "transient": "Houd deze leesactie in het geheugen",
+            "sketch": "Bewaar een inhoudsschets",
+            "none": "Maak geen inhoudsindex",
+            "retention": "Dit zijn de momenteel geldende instellingen voor het lezen van bronnen. Een tijdelijke leesactie verwijdert eerdere snapshots niet en bevestigt niet dat er geen historische inhoud is.",
+            "configuration_unavailable": "De leesconfiguratie is niet beschikbaar; bekijk de diagnostiek voordat u leest.",
+            "source_message": "Verwijzing en mogelijkheden",
+            "reload": "Laad bronmetadata opnieuw (zonder inhoud te lezen)",
+            "empty": "De herkende bron heeft geen berichten.",
+            "install": "Installeer de labels van de lokale-bronweergave in dit profiel",
+            "feature_missing": "Dit profiel heeft geen geaccepteerde catalogus voor de lokale-bronweergave. Het installeren van de declaratie behoudt bestaande instellingen en uitsluitingen.",
+            "source_status": "Bronstatus: {{status}}; mapping: {{mapping}}; huidig: {{current}}",
+            "status_unavailable": "niet beschikbaar",
+            "status_unknown": "onbekend",
+            "status_partial": "gedeeltelijk",
+            "status_complete": "volledig",
+            "host_unavailable": "Deze host toont alleen opgeslagen berichten. Het lezen van gekoppelde brongeschiedenis is niet beschikbaar.",
+            "exact_wire": "Exacte native weergave-JSON",
+            "decoded_projection": "Tekst en samenvattingen zijn gedecodeerde weergaveprojecties. Numerieke tokens in onbekende velden kunnen hier afgerond zijn. Bekijk het exacte native antwoord in het bronbewijs.",
+            "wire_unavailable": "Bewijs van het exacte native antwoord is niet beschikbaar voor dit hostantwoord."
           }
         }
       }
@@ -132,6 +167,23 @@
             "queued_failed": "Rozmowa nie wczytała się, więc nic nie wysłano. Twój tekst został w polu.",
             "stream_ended": "Strumień odpowiedzi skończył się, zanim doszedł wynik. Dla tej wiadomości nic więcej nie przyjdzie; wyślij ją jeszcze raz, jeśli potrzebujesz odpowiedzi.",
             "empty_answer": "Model odpowiedział bez tekstu."
+          },
+          "nl": {
+            "source_history_omitted": "Gekoppelde brongeschiedenis wordt niet in dit bericht opgenomen. Alleen de in dit gesprek opgeslagen berichten worden verzonden.",
+            "reason": "Reden: {{explanation}} (code: {{reason}})",
+            "reason.source_egress_not_bound": "er is nog geen koppeling die toestaat dat broninhoud naar een model wordt gestuurd",
+            "reason.unrecognized": "de gespreksweergave meldt dat deze geschiedenis niet kan worden opgenomen",
+            "view_unavailable": "De gespreksweergave kon niet worden geladen ({{reason}}). Verzenden werkt nog: het bericht wordt verzonden met de in dit gesprek opgeslagen berichten; gekoppelde brongeschiedenis, indien aanwezig, is niet opgenomen.",
+            "view_loading": "Verzenden wacht tot de weergave van dit gesprek is geladen.",
+            "source_read_in_flight": "Verzenden wacht terwijl gekoppelde bronnen lokaal worden gelezen, zodat er geen bericht wordt verzonden terwijl de weergave verandert. Het gaat verder zodra het lezen klaar is.",
+            "setting_label": "Blokkeer verzenden wanneer gekoppelde brongeschiedenis niet kan worden opgenomen",
+            "setting_help": "Uit: het bericht wordt alleen met de opgeslagen berichten verzonden en een melding zegt wat ontbreekt. Aan: verzenden blijft in zulke gesprekken uitgeschakeld totdat u dit uitzet.",
+            "blocked_by_setting": "Verzenden wordt geblokkeerd door uw instelling “{{setting}}”. Zet die uit om alleen met de opgeslagen berichten te verzenden.",
+            "unblock": "Zet deze blokkade uit",
+            "queued_waiting": "Wachten tot het gesprek is geladen… uw bericht wordt verzonden zodra het er is.",
+            "queued_failed": "Het gesprek is niet geladen, dus er is niets verzonden. Uw tekst staat nog in het veld.",
+            "stream_ended": "De antwoordstroom eindigde voordat er een resultaat kwam. Er komt niets meer voor dit bericht; verstuur het opnieuw als u een antwoord nodig hebt.",
+            "empty_answer": "Het model antwoordde zonder tekst."
           }
         }
       }
@@ -181,6 +233,24 @@
             "limit_dismiss": "OK",
             "limit_dismissed": "Nic nie wysłano. Twój tekst wrócił do pola wiadomości.",
             "confirm_failed": "Nie udało się wysłać potwierdzenia ({{reason}})."
+          },
+          "nl": {
+            "title": "Bevestiging vereist",
+            "explanation": "Dit bericht is niet verzonden. Het verwachte gebruik ligt ver boven uw recente basislijn voor dit model, daarom wordt het u eerst gevraagd. Er is niets begrensd; u beslist.",
+            "baseline_key": "Vergelijkingsgroep: {{key}}",
+            "resource": "{{name}}: verwacht {{projected}}, basislijn {{baseline}}, groei {{ratio}}",
+            "unknown": "onbekend",
+            "confirm": "Bevestig en verstuur",
+            "reject": "Wijs af",
+            "restored": "Uw tekst staat weer in het invoerveld.",
+            "rejected": "Afgewezen. Er is niets verzonden.",
+            "limit_title": "Uitgavenlimiet",
+            "limit_explanation": "Dit bericht is niet verzonden: het wordt vastgehouden door de uitgavenlimiet die u hebt ingesteld. Verder is er niets begrensd; u beslist.",
+            "limit_refused_explanation": "Dit bericht is niet verzonden: u hebt deze limiet op weigeren gezet. Wijzig dit in de instellingen of zeg \"stel een maandlimiet in ...\".",
+            "limit_confirm": "Toch verzenden",
+            "limit_dismiss": "OK",
+            "limit_dismissed": "Er is niets verzonden. Uw tekst staat weer in het invoerveld.",
+            "confirm_failed": "De bevestiging kon niet worden verzonden ({{reason}})."
           }
         }
       }
@@ -377,6 +447,60 @@
             "guardian_exceptions": "Wyjątki: {{list}}",
             "guardian_instruction": "Jedno polecenie w miejsce serii doprecyzowań (Twoje wiadomości zostają bez zmian): {{instruction}}",
             "guardian_note": "Przyjęcie zapisuje tylko Twoją własną nakładkę i regułę tej rozmowy; możesz to cofnąć."
+          },
+          "nl": {
+            "title": "Opdracht wacht op uw antwoord",
+            "title_confirmation": "De regels vragen u om bevestiging",
+            "plan": "Plan: {{plan}}",
+            "cost": "Schatting: {{cost}} (relatief, 1 = één gewone modelaanroep), modelaanroepen: {{calls}}, verzonden bytes: {{bytes}}",
+            "confirm_needed": "Bevestiging nodig: {{what}}",
+            "unknown": "onbekend",
+            "confirm": "Voer uit",
+            "reject": "Laat vallen",
+            "usage_hint": "De modelaanroep wordt vastgehouden door de gebruikswacht; bevestig hem hieronder.",
+            "answer_failed": "Het antwoord kon niet worden verzonden ({{reason}}).",
+            "rejected": "Laten vallen. Er is niets uitgevoerd.",
+            "status_executed": "Klaar",
+            "status_rejected": "Laten vallen",
+            "status_denied": "Niet toegestaan door de regels",
+            "status_unavailable": "Kan nog niet draaien",
+            "status_waiting": "Wacht op een antwoord",
+            "status_stale": "Niet meer geldig",
+            "cost_money": "Geld: ongeveer {{low}} tot {{high}} {{currency}} (uit de grootte van de invoer en de vermelde prijs van het model; geen limiet)",
+            "cost_money_unknown": "Geld: onbekend ({{reason}}); lees dit niet als gratis",
+            "produced": "Opgeslagen in de graaf ({{target}}): {{nodes}}",
+            "title_definition": "Voorstel om uit te breiden wat de toepassing kan",
+            "args": "Argumenten gelezen uit uw woorden: {{args}}",
+            "args_open": "Niet opgegeven (de standaarden gelden): {{params}}",
+            "definition_define_action": "Een nieuwe actie \"{{id}}\": alleen geschreven naar uw eigen overlay ({{overlay}}); u kunt haar later verwijderen",
+            "definition_define_sequence": "Een keten die u blijft herhalen, opgeslagen als de actie \"{{id}}\" (uw eigen overlay: {{overlay}})",
+            "definition_define_group": "Een groep \"{{id}}\" voor wat uw klassen gemeen hebben (uw eigen overlay: {{overlay}})",
+            "rule_replaces": "Vervangt de regel die u eerder voor hetzelfde instelde",
+            "offer": "Verstuur mijn zin als bericht",
+            "offer_hint": "Er is niets naar het model gestuurd. Uw zin kan er nog steeds als gewoon bericht naartoe.",
+            "offer_sent": "Uw zin is als bericht verzonden",
+            "offer_declined": "Uw zin blijft onverzonden",
+            "offer_failed": "De zin kon niet worden verzonden ({{reason}}).",
+            "status_undone": "Teruggenomen",
+            "written": "Geschreven naar uw eigen overlay ({{overlay}}) als \"{{id}}\"",
+            "written_entry": "Het item dat is geschreven",
+            "undo": "Neem terug",
+            "undone": "Teruggenomen: verwijderd uit uw eigen overlay",
+            "undo_failed": "Het kon niet worden teruggenomen ({{reason}}).",
+            "status_cancelled": "Geannuleerd",
+            "written_rule": "Regel geschreven naar uw eigen overlay ({{overlay}}) als \"{{id}}\"",
+            "undone_rule": "Regel uitgeschakeld: ze geldt niet meer",
+            "title_guardian": "De bewaker zag iets wat het onthouden waard is",
+            "guardian_claim": "Wat hij zag: {{claim}}",
+            "guardian_scope": "Voor {{scope}}; gewicht {{weight}} uit {{count}} voorvallen, {{evidence}} van uw berichten als bewijs",
+            "guardian_scope_message": "dit bericht",
+            "guardian_scope_conversation": "dit gesprek",
+            "guardian_scope_task_kind": "dit soort taak",
+            "guardian_scope_person": "alles wat u doet",
+            "guardian_scope_global": "overal",
+            "guardian_exceptions": "Uitzonderingen: {{list}}",
+            "guardian_instruction": "Eén instructie in plaats van de reeks verduidelijkingen (uw berichten blijven zoals ze zijn): {{instruction}}",
+            "guardian_note": "Accepteren schrijft alleen uw eigen overlay en een regel van dit gesprek; u kunt het terugnemen."
           }
         }
       }
@@ -440,6 +564,31 @@
             "send_failed": "Nie udało się wysłać odpowiedzi ({{reason}}).",
             "permission_hint": "Przeglądarka lub system poprosi o zgodę ({{permission}}), gdy to się zacznie.",
             "unsupported": "Ta przeglądarka nie ma jak tego zrobić ({{reason}}); odmów albo anuluj przebieg."
+          },
+          "nl": {
+            "title": "Uw apparaat heeft een stap uit te voeren",
+            "waiting": "De run is gepauzeerd totdat dit apparaat antwoordt; ondertussen draait er niets anders.",
+            "start_record": "Start opname",
+            "stop_record": "Stop en verstuur",
+            "recording": "Opname: {{seconds}} s",
+            "do_capture_image": "Maak de foto",
+            "do_pick_file": "Kies een bestand",
+            "do_pick_folder": "Kies een map",
+            "do_clipboard_read": "Lees het klembord",
+            "do_clipboard_write": "Kopieer naar het klembord",
+            "do_notify": "Toon de melding",
+            "do_play_audio": "Speel de opname af",
+            "do_request_permission": "Vraag om toestemming",
+            "do_unsupported": "Deze client kan dit niet",
+            "decline": "Nu niet",
+            "cancel": "Annuleer de run",
+            "sending": "Het antwoord wordt naar de kernel verzonden...",
+            "uploading": "De bestanden van de map worden verzonden: {{done}} van {{total}}",
+            "sent": "Het antwoord is verzonden.",
+            "failed": "Het apparaat kon het niet doen ({{reason}}).",
+            "send_failed": "Het antwoord kon niet worden verzonden ({{reason}}).",
+            "permission_hint": "Uw browser of systeem vraagt om toestemming ({{permission}}) wanneer dit start.",
+            "unsupported": "Deze browser kan dit niet ({{reason}}); weiger het of annuleer de run."
           }
         }
       }
@@ -475,6 +624,17 @@
             "mode_explicit_requeue": "Tylko gdy sam ponowię",
             "mode_automatic": "Automatycznie",
             "action_failed": "Nie udało się wykonać żądania ({{reason}})."
+          },
+          "nl": {
+            "stalled": "Vastgelopen: {{count}}",
+            "quarantined": "Overgeslagen: {{count}}",
+            "unknown": "onbekend",
+            "requeue": "Zet mislukte + vastgelopen opnieuw in de wachtrij",
+            "requeued": "{{count}} opnieuw in de wachtrij gezet ({{failed}} mislukt, {{stalled}} vastgelopen).",
+            "retry_mode": "Opnieuw proberen",
+            "mode_explicit_requeue": "Alleen wanneer ik ze opnieuw in de wachtrij zet",
+            "mode_automatic": "Automatisch",
+            "action_failed": "Het verzoek kon niet worden voltooid ({{reason}})."
           }
         }
       }
@@ -514,6 +674,19 @@
             "status_approved": "Kontynuowano",
             "status_declined": "Wstrzymano",
             "status_stale": "Nieaktualne"
+          },
+          "nl": {
+            "title": "De achtergrondanalyse wacht op u",
+            "explanation": "Er is niets verzonden. Het verwachte gebruik van deze analyse ligt ver boven uw gebruikelijke niveau voor deze taak, daarom wordt het u eerst gevraagd. Er is niets begrensd; u beslist.",
+            "baseline_key": "Vergelijkingsgroep: {{key}}",
+            "resource": "{{name}}: verwacht {{projected}}, basislijn {{baseline}}, groei {{ratio}}",
+            "unknown": "onbekend",
+            "confirm": "Ga door",
+            "reject": "Pauzeer de analyse",
+            "confirm_failed": "Het antwoord kon niet worden verzonden ({{reason}}).",
+            "status_approved": "Doorgegaan",
+            "status_declined": "Gepauzeerd",
+            "status_stale": "Verouderd"
           }
         }
       }
@@ -577,6 +750,27 @@
             "state.never": "nigdy",
             "issues": "{{count}} problemów w danych wejścia",
             "empty": "Nie skonfigurowano żadnych obszarów."
+          },
+          "nl": {
+            "title": "Ingang van de graaf",
+            "loading": "De ingangsweergave van de graaf wordt geladen…",
+            "error": "De ingangsweergave van de graaf kon niet worden geladen ({{reason}}).",
+            "areas": "Gebieden",
+            "seed": "Startelementen",
+            "count.unknown": "onbekend",
+            "count.unknown_reason": "onbekend ({{reason}})",
+            "count.value": "{{value}}",
+            "count.by": "{{name}}: {{value}}",
+            "expand": "Open",
+            "expand_unavailable": "Nog geen weergave opent dit gebied",
+            "origin.cell": "gegenereerd uit de assen",
+            "hidden": "verborgen",
+            "slot.state": "{{label}}: {{state}}",
+            "state.unknown": "onbekend",
+            "state.declined": "geweigerd",
+            "state.never": "nooit",
+            "issues": "{{count}} configuratieproblemen in de ingangsgegevens",
+            "empty": "Er zijn geen gebieden geconfigureerd."
           }
         }
       }
@@ -958,7 +1152,11 @@
             "store.browser_indexeddb": "Browser — pakket (IndexedDB)",
             "guest.reason_missing": "ontbreekt: {{what}}",
             "guest.reason_not_probed": "niet gecontroleerd (een eerdere keuze werkt)",
-            "guest.store_none": "geen"
+            "guest.store_none": "geen",
+            "guest.model_line_free": "Antwoorden: {{model}} ({{provider}}), het beste van de gratis modellen van vandaag. {{terms}}",
+            "guest.model_line_paid": "Antwoorden: {{model}} ({{provider}}), een betaalde bron (niet een van de gratis modellen). {{terms}}",
+            "guest.layer_show": "Details van dit bezoek",
+            "guest.layer_hide": "Verberg details"
           }
         }
       }
@@ -4783,6 +4981,54 @@
             "all_fields.show": "Pokaż Wszystkie pola",
             "all_fields.hide": "Ukryj Wszystkie pola",
             "all_fields.why": "To dawny ekran ustawień w całości: połączenie, modele, klucze, tabela wszystkich kluczy z regułami edycji i edytor JSON (konfiguracja ekspercka). Nic z niego nie zniknęło; jest po angielsku, bo jego słów nie ma jeszcze w katalogu."
+          },
+          "nl": {
+            "title": "Instellingen",
+            "intro": "{{groups}}. Elke heeft velden met een beschrijving: waarvoor het dient, wat het wijzigt en waar de waarde vandaan komt. Tik op een groep en dan op een veld; “⋯” bij een veld opent zijn kaart, waar het kan worden gewijzigd.",
+            "loading": "Instellingen worden geladen…",
+            "error": "De instellingen konden niet worden geladen ({{reason}}).",
+            "error.no_actions": "de app heeft geen verbinding met de acties van de kernel (noch de server noch de Android-shell gaf er een)",
+            "retry": "Probeer opnieuw",
+            "groups.aria": "Instellingsgroepen",
+            "group.open": "Open de groep {{label}}",
+            "group.back": "Terug naar de instellingsgroepen",
+            "group.empty": "Deze groep heeft geen velden.",
+            "total.line": "In totaal: {{fields}} · {{yours}}",
+            "count.fields.one": "{{n}} veld",
+            "count.fields.other": "{{n}} velden",
+            "count.groups.one": "{{n}} groep",
+            "count.groups.other": "{{n}} groepen",
+            "count.yours": "{{n}} van u",
+            "count.line": "{{fields}} · {{yours}}",
+            "yours.help": "“Van u” zijn de velden waaraan u een waarde hebt gegeven (voor uzelf, een gesprek, een project…). Een preset en een preset die in uw instellingen is bewaard tellen niet mee.",
+            "filter.changed": "Toon alleen gewijzigde",
+            "filter.help": "Gewijzigde velden zijn de velden die u hebt ingesteld.",
+            "filter.empty": "U hebt hier nog niets ingesteld: elk veld heeft zijn presetwaarde.",
+            "subgroup.none": "Algemeen",
+            "field.card": "Kaart van het veld {{label}}: wijzig het, waar de waarde vandaan komt",
+            "field.value": "Nu",
+            "field.effect": "Wat het wijzigt",
+            "field.flows": "Flows die het lezen",
+            "field.flows.none": "Geen flow leest dit veld vandaag.",
+            "field.edit": "Wijzig",
+            "planned.reason": "Waarom het nog niet werkt",
+            "edit.optional": "Kan worden gewijzigd",
+            "edit.required": "Vereist: de app werkt niet zonder",
+            "edit.requires_confirmation": "Een wijziging vraagt om uw bevestiging",
+            "edit.read_only": "Alleen lezen",
+            "status.planned": "gepland",
+            "status.implemented": "klaar",
+            "status.present": "in de app",
+            "status.partial": "deels in de app",
+            "status.missing": "ontbreekt",
+            "status.calibration": "kalibratie",
+            "chip.profile": "profiel: {{profile}}",
+            "chip.none": "nergens ingesteld",
+            "hidden.line": "Door u verborgen velden: {{count}}",
+            "proposals.title": "Modelvoorstellen bij velden",
+            "all_fields.show": "Toon Alle velden",
+            "all_fields.hide": "Verberg Alle velden",
+            "all_fields.why": "Dit is het voormalige instellingenscherm in zijn geheel: verbinding, modellen, sleutels, de tabel van elke sleutel met zijn bewerkingsregel en de JSON-editor (expertconfiguratie). Er is niets van verdwenen; het staat in het Engels omdat de woorden nog niet in de catalogus staan."
           }
         }
       }
@@ -5265,6 +5511,46 @@
             "chip.next.say": "dalej",
             "proposal.yes": "Tak",
             "proposal.no": "Nie"
+          },
+          "nl": {
+            "card.title": "Laten we kennismaken",
+            "card.body": "Ik bouw uw profiel op in een gesprek. De eerste vraag: hoe goed moet ik u kennen.",
+            "card.privacy": "Dit is een gesprek zonder model, alleen een formulier: niets verlaat dit apparaat.",
+            "card.start": "Start",
+            "card.later": "Later",
+            "card.never": "Vraag nooit",
+            "card.later_note": "“Later” verbergt deze kaart tot de app de volgende keer wordt gestart.",
+            "card.never_note": "“Vraag nooit” verbergt deze kaart voorgoed. U kunt haar terugbrengen in de instellingen, in het veld “Kaart eerste stappen”.",
+            "card.starting": "Het gesprek wordt geopend…",
+            "card.failed": "Kon niet starten: {{reason}}",
+            "info.line": "Een gesprek zonder model — alleen een formulier",
+            "info.why": "Niets verlaat dit apparaat.",
+            "info.why_sent": "De vragen van dit formulier blijven op dit apparaat, maar dit gesprek bevat ook berichten die naar een modelaanbieder zijn gestuurd.",
+            "info.progress": "Resterende vragen: {{n}}",
+            "info.level_pending": "Kies eerst hoe goed ik u moet kennen",
+            "info.finished": "Ik heb op dit niveau geen vragen meer",
+            "level.asks": "Wat ik zal vragen",
+            "level.stores": "Wat ik zal noteren",
+            "level.model_sees": "Wat het model zal zien",
+            "level.aria": "Kies het niveau: {{label}}",
+            "level.hint": "Tik op een niveau of schrijf in uw eigen woorden, bijvoorbeeld “vraag niet naar gezondheid”.",
+            "chips.order": "skip decline never review status",
+            "chips.aria": "Snelle antwoorden",
+            "chip.skip.label": "Overslaan",
+            "chip.skip.say": "overslaan",
+            "chip.decline.label": "Nu niet",
+            "chip.decline.say": "nu niet",
+            "chip.never.label": "Nooit",
+            "chip.never.say": "nooit",
+            "chip.review.label": "Samenvatting",
+            "chip.review.say": "samenvatting",
+            "chip.status.label": "Hoeveel nog",
+            "chip.status.say": "hoeveel nog",
+            "chips.idle": "next review status",
+            "chip.next.label": "Ga door",
+            "chip.next.say": "ga door",
+            "proposal.yes": "Ja",
+            "proposal.no": "Nee"
           }
         }
       }

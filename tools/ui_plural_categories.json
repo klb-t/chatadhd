@@ -1,0 +1,6 @@
+{
+ "_note": "DATA: CLDR plural categories a language uses; a key `x.<category>` is required in a language only when the language uses that category (a language not listed uses all). Used by tools/lint_ui_strings.py --missing.",
+ "en": ["zero", "one", "other"],
+ "nl": ["one", "other"],
+ "pl": ["one", "few", "many", "other"]
+}
