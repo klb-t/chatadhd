@@ -24,6 +24,8 @@ V=build/dev/verification; mkdir -p "$V"
 STEP=clangsyntax; step clangsyntax python3 "$TOOLS/clang_inc_check.py" "$ROOT/loom/build/dev"
 # K3-1 (2026-10-23): the embedded K3 packs (dimensions, address syntax) and their sha256 pins must match the data files
 [ -f "$ROOT/loom/src/graph/gen_k3_packs.py" ] && { STEP=k3packs; step k3packs bash -c "cd \"$ROOT\" && python3 loom/src/graph/gen_k3_packs.py --check"; }
+# R102 G1 (2026-10-30): the embedded text segmentation pack must match loom/data/text/segmentation.pack
+[ -f "$ROOT/loom/src/text/gen_text_pack.py" ] && { STEP=textpack; step textpack bash -c "cd \"$ROOT\" && python3 loom/src/text/gen_text_pack.py --check"; }
 [ -f "$ROOT/loom/src/onboarding/gen_onboarding_pack.py" ] && { STEP=onbpack; step onbpack bash -c "cd \"$ROOT\" && python3 loom/src/onboarding/gen_onboarding_pack.py --check"; }   # generated words (builtin.inc, web copy) match the packs (RI-2b gate 2026-10-28)
 STEP=ctest;     step ctest bash -c "ctest --preset dev --show-only=json-v1 > $V/ctest-manifest.json && ctest --preset dev --no-tests=error -j3 --test-output-size-passed 10485760 --test-output-size-failed 10485760 --output-junit $PWD/$V/ctest.xml"
 cd "$ROOT"

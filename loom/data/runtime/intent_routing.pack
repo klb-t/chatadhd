@@ -6176,6 +6176,94 @@
             "patch"
           ],
           "takes_scope": false
+        },
+        {
+          "id": "genesis.origin.pl",
+          "action": "genesis.origin",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:skad|z\\s+czego)\\s+(?:pochodzi|sie\\s+wzielo|wzielo\\s+sie|sie\\s+wzial|sie\\s+wziela)\\s+(?:to\\s+)?(?:zdanie|fragment|tekst|akapit)[\\s:\\\"„“]*(.+?)[\\\"„”“]*\\s*[.!?]*\\s*$",
+          "args": [
+            "text"
+          ],
+          "original": [
+            "text"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "genesis.origin.en",
+          "action": "genesis.origin",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?where\\s+(?:does|did|is)\\s+(?:the\\s+|this\\s+)?(?:sentence|fragment|text|paragraph)[\\s:\\\"„“]*(.+?)[\\\"„”“]*\\s+(?:come\\s+)?from\\s*[.!?]*\\s*$",
+          "args": [
+            "text"
+          ],
+          "original": [
+            "text"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "genesis.replaced.pl",
+          "action": "genesis.replaced",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:co\\s+zastapilo|czym\\s+zastapiono|co\\s+sie\\s+stalo\\s+ze?|co\\s+stalo\\s+sie\\s+ze?)\\s+(?:tym\\s+|to\\s+)?(?:zdaniem|zdanie|fragmentem|fragment)[\\s:\\\"„“]*(.+?)[\\\"„”“]*\\s*[.!?]*\\s*$",
+          "args": [
+            "text"
+          ],
+          "original": [
+            "text"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "genesis.replaced.en",
+          "action": "genesis.replaced",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:what\\s+replaced|what\\s+happened\\s+to)\\s+(?:the\\s+|this\\s+)?(?:sentence|fragment)[\\s:\\\"„“]*(.+?)[\\\"„”“]*\\s*[.!?]*\\s*$",
+          "args": [
+            "text"
+          ],
+          "original": [
+            "text"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "genesis.missing.pl",
+          "action": "genesis.missing",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:czego\\s+brakuje|co\\s+zniknelo|co\\s+ubylo|co\\s+usunieto)\\s+(?:w|z)\\s+(?:tej\\s+)?(?:wersji|wiadomosci|odpowiedzi)(?:\\s+(?:wzgledem|w\\s+porownaniu\\s+do|w\\s+porownaniu\\s+z|w\\s+stosunku\\s+do)\\s+poprzedniej)?\\s*[.!?]*\\s*$",
+          "args": [],
+          "original": [],
+          "takes_scope": false
+        },
+        {
+          "id": "genesis.missing.en",
+          "action": "genesis.missing",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:what\\s+is\\s+missing|what\\s+disappeared|what\\s+was\\s+removed)\\s+(?:in|from)\\s+(?:this\\s+)?(?:version|message|answer)(?:\\s+(?:against|compared\\s+to|compared\\s+with|versus)\\s+(?:the\\s+)?previous(?:\\s+one)?)?\\s*[.!?]*\\s*$",
+          "args": [],
+          "original": [],
+          "takes_scope": false
+        },
+        {
+          "id": "genesis.materialize.pl",
+          "action": "genesis.materialize",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:zapisz|utrwal|zbuduj|nanies)\\s+geneze\\s+(?:tekstu\\s+)?(?:tej\\s+)?(?:rozmowy|wiadomosci)(?:\\s+(?:w|do)\\s+grafie|\\s+w\\s+grafie)?\\s*[.!?]*\\s*$",
+          "args": [],
+          "original": [],
+          "takes_scope": false
+        },
+        {
+          "id": "genesis.materialize.en",
+          "action": "genesis.materialize",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:record|save|build|write)\\s+(?:the\\s+)?(?:text\\s+)?genesis\\s+of\\s+(?:this\\s+)?(?:conversation|message)(?:\\s+(?:in|into|to)\\s+the\\s+graph)?\\s*[.!?]*\\s*$",
+          "args": [],
+          "original": [],
+          "takes_scope": false
         }
       ],
       "payload": {

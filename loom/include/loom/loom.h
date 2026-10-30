@@ -449,6 +449,11 @@ LOOM_API const char* loom_catalog_import(LoomContext* ctx, const char* options_j
 LOOM_API const char* loom_extract_preview(LoomContext* ctx, const char* path, const char* options_json);
 /* {"snapshot":dir,"repo":dir} -> LineageResult JSON */
 LOOM_API const char* loom_resolve_lineage(LoomContext* ctx, const char* request_json);
+/* Text genesis in the graph (text_genesis.h, R102 G2). */
+/* {"message_id"|"version_group_id"|"conv_id","level"?,"language"?,"pack"?} -> {"chains","summary":{...},"per_chain":[...]} (idempotent) */
+LOOM_API const char* loom_text_genesis_materialize(LoomContext* ctx, const char* request_json);
+/* {"question":"origin|replaced|missing|events","text"?,"fingerprint"?,"message_id"?,"version_group_id"?,"conv_id"?,"from_id"?,"to_id"?} -> answer JSON; writes nothing */
+LOOM_API const char* loom_text_genesis_query(LoomContext* ctx, const char* request_json);
 /* Generalize (generalize.h): {"run"?,"cut"} -> {"predictions":[...]} */
 LOOM_API const char* loom_generalize_predict(LoomContext* ctx, const char* request_json);
 /* Context + materialize (context_engine.h, materialize.h). */

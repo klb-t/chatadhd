@@ -13,6 +13,7 @@
 #include "archive/archive_internal.h"
 #include "util/safety.h"
 #include "loom/resolve.h"
+#include "loom/text_fragments.h"
 #include "loom/util/fs.h"
 #include "loom/util/sha256.h"
 #include "loom/util/utf8.h"
@@ -68,33 +69,9 @@ std::vector<std::string_view> split_lines(std::string_view s) {
 
 std::size_t line_count(std::string_view s) { return split_lines(s).size(); }
 
-// Myers O((N+M)D): length of the shortest edit script over line ids.
-std::size_t myers(const std::vector<int>& a, const std::vector<int>& b) {
-  const long n = static_cast<long>(a.size()), m = static_cast<long>(b.size());
-  const long max = n + m;
-  if (max == 0) return 0;
-  std::vector<long> v(static_cast<std::size_t>(2 * max + 2), 0);
-  const long off = max;
-  for (long d = 0; d <= max; ++d) {
-    for (long k = -d; k <= d; k += 2) {
-      long x;
-      if (k == -d || (k != d && v[static_cast<std::size_t>(k - 1 + off)] < v[static_cast<std::size_t>(k + 1 + off)])) {
-        x = v[static_cast<std::size_t>(k + 1 + off)];
-      } else {
-        x = v[static_cast<std::size_t>(k - 1 + off)] + 1;
-      }
-      long y = x - k;
-      while (x < n && y < m && a[static_cast<std::size_t>(x)] == b[static_cast<std::size_t>(y)]) {
-        ++x;
-        ++y;
-      }
-      v[static_cast<std::size_t>(k + off)] = x;
-      if (x >= n && y >= m) return static_cast<std::size_t>(d);
-    }
-  }
-  return static_cast<std::size_t>(max);
-}
-
+// Myers O((N+M)D): length of the shortest edit script over line ids (the generalised Myers of the text area,
+// R102 G1, also returns the script itself).
+std::size_t myers(const std::vector<int>& a, const std::vector<int>& b) { return text::myers_distance(a, b); }
 
 }  // namespace
 

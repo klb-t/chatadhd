@@ -18755,6 +18755,332 @@
           "en": "The layout is back.",
           "pl": "Układ wrócił."
         }
+      },
+      "genesis.origin": {
+        "id": "genesis.origin",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Where a sentence comes from",
+        "description": "The chain of versions of a message is aligned (locally, no model) and the sentence is followed back to the version it first appeared in, through replacements and moves; the graph adds every recorded occurrence of the same sentence, also in other conversations. Nothing is written.",
+        "why": {
+          "pl": "Mówi, w której wersji i od kogo zdanie się pojawiło, przez jakie zmiany przeszło i gdzie jeszcze występuje."
+        },
+        "labels": {
+          "pl": "Skąd pochodzi to zdanie"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "text",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "The sentence (or a part of it) the question is about.",
+              "pl": "Zdanie (albo jego część), o które pytasz."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "message_id",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The message whose chain of versions is searched (preset: the message the question was asked from, else the last of the conversation).",
+              "pl": "Wiadomość, w której łańcuchu wersji szukać (preset: wiadomość, z której pada pytanie, inaczej ostatnia w rozmowie)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "level",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Fragment level (preset from the text pack: sentence; paragraph, line, word and any level added by data).",
+              "pl": "Poziom fragmentu (preset z paczki tekstu: zdanie; akapit, linia, słowo i każdy poziom dodany danymi)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "examples": {
+          "en": [
+            "where does the sentence Budget of the stage is 12 000 come from"
+          ],
+          "pl": [
+            "skąd pochodzi zdanie Budżet etapu wynosi 12 000 zł"
+          ]
+        },
+        "positional_arg": "text"
+      },
+      "genesis.replaced": {
+        "id": "genesis.replaced",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "What replaced a sentence",
+        "description": "The chain of versions is aligned and every event about the sentence is listed: its successors (replacement, move) with the word diff, or the version it was removed in — where, when, by whom or what. Nothing is written.",
+        "why": {
+          "pl": "Mówi, co zastąpiło zdanie (z różnicą słów) albo w której wersji, kiedy i przez kogo zniknęło."
+        },
+        "labels": {
+          "pl": "Co zastąpiło to zdanie"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "text",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "The sentence (or a part of it) the question is about.",
+              "pl": "Zdanie (albo jego część), o które pytasz."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "message_id",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The message whose chain of versions is searched (preset: the message the question was asked from, else the last of the conversation).",
+              "pl": "Wiadomość, w której łańcuchu wersji szukać (preset: wiadomość, z której pada pytanie, inaczej ostatnia w rozmowie)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "level",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Fragment level (preset from the text pack: sentence; paragraph, line, word and any level added by data).",
+              "pl": "Poziom fragmentu (preset z paczki tekstu: zdanie; akapit, linia, słowo i każdy poziom dodany danymi)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "examples": {
+          "en": [
+            "what replaced the sentence Budget of the stage is 12 000"
+          ],
+          "pl": [
+            "co zastąpiło zdanie Budżet etapu wynosi 12 000 zł"
+          ]
+        },
+        "positional_arg": "text"
+      },
+      "genesis.missing": {
+        "id": "genesis.missing",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "What is missing in this version",
+        "description": "Two versions of a message are aligned (preset: this one and the one before it; or two named versions): the sentences removed, replaced, moved and added, with where/when/who. Nothing is written.",
+        "why": {
+          "pl": "Pokazuje, których zdań brakuje w tej wersji względem poprzedniej (albo między dwiema wskazanymi), co zmieniono i co przeniesiono."
+        },
+        "labels": {
+          "pl": "Czego brakuje w tej wersji"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "message_id",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The message whose chain of versions is searched (preset: the message the question was asked from, else the last of the conversation).",
+              "pl": "Wiadomość, w której łańcuchu wersji szukać (preset: wiadomość, z której pada pytanie, inaczej ostatnia w rozmowie)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "from_id",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Version A (a message id); with to_id, instead of the previous version.",
+              "pl": "Wersja A (identyfikator wiadomości); razem z to_id zamiast poprzedniej wersji."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "to_id",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Version B (a message id).",
+              "pl": "Wersja B (identyfikator wiadomości)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "level",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Fragment level (preset from the text pack: sentence; paragraph, line, word and any level added by data).",
+              "pl": "Poziom fragmentu (preset z paczki tekstu: zdanie; akapit, linia, słowo i każdy poziom dodany danymi)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "examples": {
+          "en": [
+            "what is missing in this version against the previous one"
+          ],
+          "pl": [
+            "czego brakuje w tej wersji względem poprzedniej"
+          ]
+        }
+      },
+      "genesis.materialize": {
+        "id": "genesis.materialize",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Record the genesis of a text in the graph",
+        "description": "Writes the chain of versions into the graph: fragment nodes (shared by fingerprint across versions and conversations), version nodes, one event node per removal / replacement / move / addition and their edges. Idempotent: running it again adds nothing. Preset scope: the conversation the question is asked in.",
+        "why": {
+          "pl": "Zapisuje genezę tekstu w grafie (fragmenty, wersje, zdarzenia usunięcia/zastąpienia/przeniesienia/dodania), żeby inne widoki i rozmowy mogły z niej korzystać; powtórzenie nic nie dubluje."
+        },
+        "labels": {
+          "pl": "Zapisz genezę tekstu w grafie"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "scope",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "conversation (preset) or message: what to record.",
+              "pl": "conversation (preset) albo message: co zapisać."
+            },
+            "has_default": true,
+            "edit": "free_text",
+            "default": "conversation"
+          },
+          {
+            "name": "message_id",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The message whose chain of versions is searched (preset: the message the question was asked from, else the last of the conversation).",
+              "pl": "Wiadomość, w której łańcuchu wersji szukać (preset: wiadomość, z której pada pytanie, inaczej ostatnia w rozmowie)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "level",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Fragment level (preset from the text pack: sentence; paragraph, line, word and any level added by data).",
+              "pl": "Poziom fragmentu (preset z paczki tekstu: zdanie; akapit, linia, słowo i każdy poziom dodany danymi)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "examples": {
+          "en": [
+            "record the text genesis of this conversation"
+          ],
+          "pl": [
+            "zapisz genezę tekstu tej rozmowy"
+          ]
+        }
       }
     }
   },

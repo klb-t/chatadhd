@@ -63,6 +63,7 @@
 #include "loom/media_providers.h"
 #include "loom/re/regex.h"
 #include "loom/util/fs.h"
+#include "loom/text_genesis.h"
 #include "loom/util/ids.h"
 #include "loom/util/time.h"
 #include "loom/util/utf8.h"
@@ -3221,6 +3222,183 @@ StepOutcome trash_empty(Ctx& x) {
   return answer(x.say(done.empty() ? "trash_emptied_none" : "trash_emptied", Json{{"count", done.size()}}), Json{{"emptied", done}, {"count", done.size()}});
 }
 
+// ── R102 G2: text genesis (text_genesis.h) ──────────────────────────────────────────────────────────────────────────
+struct GenesisSetup {
+  text::Segmenter seg;
+  text::genesis::Options opt;
+};
+
+// Presets: the embedded text pack; `level` of the call overrides the pack's level; the text's language is `language`
+// of the call, else the language of the run (pl/en) — the pack's "*" rules cover a language it does not know.
+Result<GenesisSetup> genesis_setup(Ctx& x) {
+  const Json& pack = text::builtin_pack();
+  LOOM_TRY_ASSIGN(auto opt, text::genesis::Options::from_pack(pack));
+  const std::string level = x.str("level");
+  if (!level.empty()) opt.level = level;
+  LOOM_TRY_ASSIGN(auto seg, text::Segmenter::from_pack(pack, x.str("language", x.lang)));
+  return GenesisSetup{std::move(seg), std::move(opt)};
+}
+
+// The message a genesis question is about: named (message_id / id), the element when it is a message, the message the
+// question was asked from (context.message_id), else the last message of the conversation.
+Result<std::string> genesis_message_id(Ctx& x) {
+  std::string id = x.str("message_id");
+  if (id.empty() && x.element_class() == "message") id = x.element_id();
+  if (id.empty()) id = x.str("id");
+  if (id.empty()) id = json::get_string(x.c.context, "message_id");
+  if (id.empty()) {
+    const std::string conv = x.conv_id();
+    if (!conv.empty()) {
+      LOOM_TRY_ASSIGN(auto msgs, x.rt.db().get_msgs(conv, false));
+      if (!msgs.empty()) id = msgs.back().id;
+    }
+  }
+  if (id.empty()) return Error(Errc::InvalidArgument, x.say("genesis_no_message"));
+  return id;
+}
+
+Json genesis_version_vars(const Json& v) {
+  return Json{{"ordinal", v.value("ordinal", 0)}, {"when", v.value("when", std::string())}, {"actor", v.value("actor", std::string())}};
+}
+
+Result<Json> genesis_ask(Ctx& x, const std::string& question, const std::string& text) {
+  LOOM_TRY_ASSIGN(auto su, genesis_setup(x));
+  text::genesis::Query q;
+  q.question = question;
+  q.text = text;
+  q.from_id = x.str("from_id");
+  q.to_id = x.str("to_id");
+  if (q.from_id.empty() || q.to_id.empty()) {
+    LOOM_TRY_ASSIGN(q.message_id, genesis_message_id(x));
+  }
+  return text::genesis::query(x.rt.db(), su.seg, q, su.opt);
+}
+
+StepOutcome genesis_origin(Ctx& x) {
+  const std::string text = trim_quotes(x.str("text"));
+  if (text.empty()) return fail(Errc::InvalidArgument, "text is required");
+  auto r = genesis_ask(x, "origin", text);
+  if (!r) return fail(r.error());
+  const Json& a = *r;
+  if (a.at("matches").empty()) return answer(x.say("genesis_none", Json{{"text", text}}), a);
+  std::vector<std::string> lines;
+  for (const auto& m : a.at("matches")) {
+    const Json origin = m.value("origin", Json::object());
+    const Json fs = m.value("final_state", Json::object());
+    const std::string st = fs.value("state", std::string());
+    std::string state = st;
+    if (st == "present") state = x.say("genesis_state_present");
+    else if (st == "gone") {
+      Json vars = genesis_version_vars(fs.value("version", Json::object()));
+      vars["event"] = fs.value("event", std::string());
+      state = x.say("genesis_state_gone", vars);
+    }
+    std::size_t places = 0;
+    for (const auto& g : a.value("graph", Json::array()))
+      if (g.value("fingerprint", std::string()) == m.value("fingerprint", std::string())) places = g.value("occurrences", Json::array()).size();
+    Json vars = genesis_version_vars(origin.value("version", Json::object()));
+    vars["text"] = m.value("text", std::string());
+    vars["how"] = origin.value("how", std::string()) == "first_version" ? x.say("genesis_origin_first") : x.say("genesis_origin_new");
+    vars["state"] = state;
+    vars["elsewhere"] = places ? x.say("genesis_elsewhere", Json{{"count", places}}) : std::string();
+    lines.push_back("• " + x.say("genesis_origin_line", vars));
+  }
+  std::string out = x.say("genesis_origin_head", Json{{"text", text}, {"count", lines.size()}}) + "\n" + join_lines(lines);
+  for (const auto& ad : a.at("advisories"))
+    if (ad.value("code", std::string()) == "not_materialized") out += "\n" + x.say("genesis_not_materialized");
+  return answer(out, a);
+}
+
+StepOutcome genesis_replaced(Ctx& x) {
+  const std::string text = trim_quotes(x.str("text"));
+  if (text.empty()) return fail(Errc::InvalidArgument, "text is required");
+  auto r = genesis_ask(x, "replaced", text);
+  if (!r) return fail(r.error());
+  const Json& a = *r;
+  if (a.at("matches").empty()) return answer(x.say("genesis_none", Json{{"text", text}}), a);
+  const std::size_t chars = static_cast<std::size_t>(x.limit("snippet_chars", 160));
+  std::vector<std::string> lines;
+  for (const auto& m : a.at("matches")) {
+    lines.push_back(x.say("genesis_replaced_head", Json{{"text", m.value("text", std::string())}}));
+    const Json succ = m.value("successors", Json::array());
+    for (const auto& s : succ) {
+      Json vars = genesis_version_vars(s.value("version", Json::object()));
+      vars["event"] = s.value("event", std::string());
+      vars["after"] = clip(s.value("text", std::string()), chars);
+      lines.push_back("• " + x.say("genesis_replaced_line", vars));
+    }
+    const Json fs = m.value("final_state", Json::object());
+    if (fs.value("state", std::string()) == "gone" && fs.value("successor", std::string()).empty())
+      lines.push_back("• " + x.say("genesis_replaced_removed", genesis_version_vars(fs.value("version", Json::object()))));
+    else if (succ.empty() && fs.value("state", std::string()) == "present") lines.push_back("• " + x.say("genesis_replaced_untouched"));
+  }
+  return answer(join_lines(lines), a);
+}
+
+StepOutcome genesis_missing(Ctx& x) {
+  auto r = genesis_ask(x, "missing", std::string());
+  if (!r) return fail(r.error());
+  const Json& a = *r;
+  if (a.value("from", Json(nullptr)).is_null()) return answer(x.say("genesis_missing_first"), a);
+  const std::size_t chars = static_cast<std::size_t>(x.limit("snippet_chars", 160));
+  const Json removed = a.value("removed", Json::array()), replaced = a.value("replaced", Json::array()), moved = a.value("moved", Json::array()), added = a.value("added", Json::array());
+  std::vector<std::string> lines;
+  lines.push_back(x.say("genesis_missing_head", Json{{"to", a.at("to").value("ordinal", 0)}, {"from", a.at("from").value("ordinal", 0)}, {"removed", removed.size()},
+                                                     {"replaced", replaced.size()}, {"moved", moved.size()}, {"added", added.size()}, {"kept", a.value("kept", 0)}}));
+  for (const auto& e : removed) lines.push_back("• " + x.say("genesis_missing_removed", Json{{"text", clip(e.value("text_before", std::string()), chars)}}));
+  for (const auto& e : replaced)
+    lines.push_back("• " + x.say("genesis_missing_replaced", Json{{"before", clip(e.value("text_before", std::string()), chars)}, {"after", clip(e.value("text_after", std::string()), chars)}}));
+  for (const auto& e : moved) lines.push_back("• " + x.say("genesis_missing_moved", Json{{"text", clip(e.value("text_before", std::string()), chars)}}));
+  for (const auto& e : added) lines.push_back("• " + x.say("genesis_missing_added", Json{{"text", clip(e.value("text_after", std::string()), chars)}}));
+  return answer(join_lines(lines), a);
+}
+
+StepOutcome genesis_materialize(Ctx& x) {
+  auto su = genesis_setup(x);
+  if (!su) return fail(su.error());
+  auto& db = x.rt.db();
+  std::vector<std::vector<text::genesis::VersionText>> sources;
+  const std::string scope = x.str("scope", "conversation");
+  if (scope == "message") {
+    auto mid = genesis_message_id(x);
+    if (!mid) return fail(mid.error());
+    auto v = text::genesis::versions_of_message(db, *mid);
+    if (!v) return fail(v.error());
+    sources.push_back(std::move(*v));
+  } else {
+    std::string conv = x.conv_id();
+    if (conv.empty()) {
+      auto mid = genesis_message_id(x);
+      if (!mid) return fail(mid.error());
+      auto m = db.get_msg(*mid);
+      if (!m) return fail(m.error());
+      if (*m) conv = (*m)->conv_id;
+    }
+    if (conv.empty()) return fail(Errc::InvalidArgument, x.say("genesis_no_message"));
+    auto v = text::genesis::chains_of_conversation(db, conv);
+    if (!v) return fail(v.error());
+    sources = std::move(*v);
+  }
+  text::genesis::MaterializeSummary total;
+  for (const auto& s : sources) {
+    auto chain = text::genesis::compute_chain(su->seg, s, su->opt);
+    if (!chain) return fail(chain.error());
+    auto sum = text::genesis::materialize(db, *chain, su->opt);
+    if (!sum) return fail(sum.error());
+    total.versions += sum->versions;
+    total.fragments += sum->fragments;
+    total.events += sum->events;
+    total.nodes_created += sum->nodes_created;
+    total.nodes_reused += sum->nodes_reused;
+    total.links_written += sum->links_written;
+  }
+  Json data = total.to_json();
+  data["chains"] = sources.size();
+  return answer(x.say("genesis_materialized", Json{{"chains", sources.size()}, {"versions", total.versions}, {"fragments", total.fragments}, {"events", total.events},
+                                                   {"created", total.nodes_created}, {"reused", total.nodes_reused}}),
+                data);
+}
+
 using Op = StepOutcome (*)(Ctx&);
 
 const std::map<std::string, Op>& table() {
@@ -3229,6 +3407,7 @@ const std::map<std::string, Op>& table() {
       {"conversation.delete", conversation_delete}, {"message.edit", message_edit}, {"message.versions", message_versions},
       {"message.restore", message_restore}, {"message.set_status", message_set_status}, {"message.weight", message_weight},
       {"search.find", search_find}, {"graph.related", graph_related}, {"graph.overview", graph_overview}, {"graph.reindex", graph_reindex},
+      {"genesis.origin", genesis_origin}, {"genesis.replaced", genesis_replaced}, {"genesis.missing", genesis_missing}, {"genesis.materialize", genesis_materialize},
       {"memory.recall", memory_recall}, {"memory.remember", memory_remember}, {"memory.update", memory_update}, {"memory.forget", memory_forget}, {"memory.restore", memory_restore},
       {"export.conversation", export_conversation}, {"import.run", import_run}, {"storage.connect", storage_connect},
       {"ports.show", ports_show}, {"ports.set", ports_set}, {"usage.spend", usage_spend}, {"usage.set_limit", usage_set_limit},
