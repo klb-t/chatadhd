@@ -11,6 +11,10 @@ const bundle = await build({
     import React from "react";
     import { createRoot } from "react-dom/client";
     import ImportedMessageContent from "./src/components/ImportedMessageContent";
+    import { ShellText, shellTranslator } from "./src/shell/text";
+    import { resolvePresentation, resolvePresentationFeature } from "./src/onboarding/presentation.mjs";
+    // The isolated component gets the shell's real words (the generated ui_shell catalog), as the app's provider does.
+    const t = shellTranslator(resolvePresentationFeature(resolvePresentation(), "ui_shell"), "en");
     import fixture from "./e2e/fixtures/imported-message-content.json";
     const message = structuredClone(fixture.messages.anthropic[0]);
     message.text = 'Current **edited** message.\\n![remote](https://example.invalid/remote.png)\\n' +
@@ -19,7 +23,7 @@ const bundle = await build({
       '<img src="https://example.invalid/html.png" onerror="window.__sourceScriptRan=true">' +
       '<script>window.__sourceScriptRan=true</script>';
     message.metadata.export.raw.content[4].input.content = '<img src="https://example.invalid/artifact.png"><script>window.__sourceScriptRan=true</script>';
-    createRoot(document.getElementById("root")).render(<ImportedMessageContent message={message} />);
+    createRoot(document.getElementById("root")).render(<ShellText.Provider value={t}><ImportedMessageContent message={message} /></ShellText.Provider>);
   `, resolveDir: root, loader: "tsx" },
   bundle: true, write: false, format: "iife", platform: "browser", outfile: "/tmp/imported-message-component.js",
   jsx: "automatic",
