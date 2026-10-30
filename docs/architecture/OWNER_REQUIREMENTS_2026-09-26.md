@@ -1013,6 +1013,11 @@ Odczyt koordynatora, do projektu: (1) Gość bez konta dostaje tylko źródła b
 
 Odczyt koordynatora: 1 € dziennie dla osób z kontem (R112) to wartość startowa (preset). Koordynator może ją podnieść przy pierwszej potrzebie bez pytania i zgłasza właścicielowi nową kwotę. Ograniczenia z tego nie wynikają, to tylko przypomnienie, że limit jest ustawiony. Reguła, że gość bez konta nie dostaje płatnych źródeł (R112, R111), zostaje bez zmian. Zmiana o rząd wielkości (×10) nadal wymaga potwierdzenia właściciela (zasada z CLAUDE.md), chyba że on to rozszerzy.
 
+## R114 — Telefon z polskim językiem dostaje stronę po angielsku; dodać wersję niderlandzką (nl) dla szerszego grona testerów (owner (przekazał koordynator gcp), 2026-10-30)
+> Właśnie wszedłem z telefonu zostawionym polskim językiem i mam po angielsku a przydałaby się oprócz tego jeszcze holenderska wersja językowa, dla szerszego grona testerów
+
+Odczyt koordynatora, do projektu: (1) Błąd: wybór języka strony nie idzie za językiem urządzenia (navigator.languages / Accept-Language). Ustalić na prawdziwej stronie, skąd bierze się język: przeglądarka, nagłówek, zapis w przeglądarce, ustawienia gościa. Naprawić wybór, także dla tekstów wpisanych na stałe (przykład: półka „Conversations”). (2) Dodać nl jako kolejny język w danych. Lista języków jest otwarta, a nowy język to same dane, bez zmiany kodu. Tłumaczenie maszynowe (Sonnet), w raporcie oznaczone jako nieczytane przez człowieka. Pakiet po poprawce źródła gościa.
+
 ## Decision — rebuild, don't recover
 > "nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane"
 

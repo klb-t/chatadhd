@@ -5,8 +5,8 @@
  "sources": {
   "owner": {
    "path": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
-   "sha256": "5d62a668c364878dc35ba46c2ea6d0307c37161eb168e2da3e8305ce3b590dc1",
-   "lines": 1030
+   "sha256": "1175385ca34a7764941329b9f8e3bde19fa5971d3105fc6d1f280fc8c13ca3ef",
+   "lines": 1035
   },
   "slowa": {
    "path": "docs/architecture/SLOWA_WLASCICIELA_2026-10-16.md",
@@ -6634,12 +6634,12 @@
    ]
   },
   {
-   "id": "s_18ec73967a7b",
+   "id": "s_c103dfdd6e65",
    "aliases": [
-    "owner:decision-rebuild-don-t-recover"
+    "R114"
    ],
-   "kind": "decision",
-   "title": "Decision — rebuild, don't recover",
+   "kind": "requirement",
+   "title": "Telefon z polskim językiem dostaje stronę po angielsku; dodać wersję niderlandzką (nl) dla szerszego grona testerów (owner (przekazał koordynator gcp), 2026-10-30)",
    "date": null,
    "theme": "owner_requirements",
    "theme_inferred": false,
@@ -6648,7 +6648,7 @@
    },
    "quotes": [
     {
-     "text": "\"nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane\"",
+     "text": "Właśnie wszedłem z telefonu zostawionym polskim językiem i mam po angielsku a przydałaby się oprócz tego jeszcze holenderska wersja językowa, dla szerszego grona testerów",
      "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:1017",
      "ref": null,
      "attr": [],
@@ -6660,8 +6660,8 @@
    "summary": null,
    "restatement": [
     {
-     "text": "Recovered versions (`history/chatadhd_v0.8.3`, `history/chatadhd_v0.9.0`) and\nthe historical report are sources of requirements, ideas and data assets\n(e.g. `film_structure.json`), and real ground truth for self-discovery tests —\nnot code to merge. Everything is rebuilt in Loom with tests.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:1019-1022"
+     "text": "Odczyt koordynatora, do projektu: (1) Błąd: wybór języka strony nie idzie za językiem urządzenia (navigator.languages / Accept-Language). Ustalić na prawdziwej stronie, skąd bierze się język: przeglądarka, nagłówek, zapis w przeglądarce, ustawienia gościa. Naprawić wybór, także dla tekstów wpisanych na stałe (przykład: półka „Conversations”). (2) Dodać nl jako kolejny język w danych. Lista języków jest otwarta, a nowy język to same dane, bez zmiany kodu. Tłumaczenie maszynowe (Sonnet), w raporcie oznaczone jako nieczytane przez człowieka. Pakiet po poprawce źródła gościa.",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:1019"
     }
    ],
    "commentary": [],
@@ -6678,7 +6678,59 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:1016-1022"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:1016-1019"
+    }
+   ],
+   "files": [
+    "owner"
+   ]
+  },
+  {
+   "id": "s_18ec73967a7b",
+   "aliases": [
+    "owner:decision-rebuild-don-t-recover"
+   ],
+   "kind": "decision",
+   "title": "Decision — rebuild, don't recover",
+   "date": null,
+   "theme": "owner_requirements",
+   "theme_inferred": false,
+   "understanding": {
+    "state": "none"
+   },
+   "quotes": [
+    {
+     "text": "\"nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane\"",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:1022",
+     "ref": null,
+     "attr": [],
+     "lead": null,
+     "secondary": false
+    }
+   ],
+   "sense": null,
+   "summary": null,
+   "restatement": [
+    {
+     "text": "Recovered versions (`history/chatadhd_v0.8.3`, `history/chatadhd_v0.9.0`) and\nthe historical report are sources of requirements, ideas and data assets\n(e.g. `film_structure.json`), and real ground truth for self-discovery tests —\nnot code to merge. Everything is rebuilt in Loom with tests.",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:1024-1027"
+    }
+   ],
+   "commentary": [],
+   "status": null,
+   "gap_text": null,
+   "evidence": [],
+   "next_step": null,
+   "refs": [],
+   "supersedes": [],
+   "superseded_by": [],
+   "supersession_notes": [],
+   "tags": [],
+   "heading_note": null,
+   "sources": [
+    {
+     "role": "owner",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:1021-1027"
     }
    ],
    "files": [
@@ -6704,7 +6756,7 @@
    "restatement": [
     {
      "text": "`workbench_mockup_2026-09-26.webp`: dockable/floating panels (conversation\nlist, active conversation, knowledge graph with active context window, project\nstructure with dimmed high-confidence auto-completable nodes, artifact views\nfor music/video with timeline + storyboard, video player, execution\nenvironment with agent), multi-format ingestion, Loom SDK at the centre.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:1025-1029"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:1030-1034"
     }
    ],
    "commentary": [],
@@ -6721,7 +6773,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:1024-1029"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:1029-1034"
     }
    ],
    "files": [
