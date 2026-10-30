@@ -374,8 +374,16 @@
    "en": "I do not know how to arrange the icons “{word}”. I can: {known}."
   },
   "arrange_inherited": {
-   "pl": "(przejęte z: {cls})",
-   "en": "(taken from: {cls})"
+   "pl": "(przejęte z ułożenia: {cls})",
+   "en": "(taken from the arrangement: {cls})"
+  },
+  "class_phone": {
+   "pl": "telefon",
+   "en": "phone"
+  },
+  "class_desktop": {
+   "pl": "komputer",
+   "en": "computer"
   }
  },
  "sections_more": [

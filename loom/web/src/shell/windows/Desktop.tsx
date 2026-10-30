@@ -201,6 +201,7 @@ export default function Desktop({ layout, cover, lang, settings, entries, paths:
   const justDragged = useRef(false);
   const dragStart = (e: RPointerEvent<HTMLButtonElement>, key: string) => {
     if (e.button !== 0) return;
+    justDragged.current = false;
     drag.current = { key, id: e.pointerId, x0: e.clientX, y0: e.clientY, moved: false };
   };
   const dragMove = (e: RPointerEvent<HTMLButtonElement>) => {
@@ -213,7 +214,7 @@ export default function Desktop({ layout, cover, lang, settings, entries, paths:
   const dragEnd = (e: RPointerEvent<HTMLButtonElement>) => {
     const d = drag.current; drag.current = null; setDragging(null);
     if (!d || d.id !== e.pointerId || !d.moved) return;
-    justDragged.current = true; window.setTimeout(() => { justDragged.current = false; }, 0);
+    justDragged.current = true;   // the click that follows the drop is eaten (onClick), and the next press clears it
     const el = gridRef.current; if (!el) return;
     const r = el.getBoundingClientRect(); const pl = placeRef.current;
     const me = pl.placed.find((p) => p.address === d.key);
@@ -271,7 +272,7 @@ export default function Desktop({ layout, cover, lang, settings, entries, paths:
             style={{ ...(place.mode === "free" ? { position: "absolute", left: `${Math.round(c.x)}px`, top: `${Math.round(c.y)}px`, width: `${Math.floor(place.cellW)}px` } : { gridColumn: c.col + 1, gridRow: c.row + 1 }),
               ...(dr ? { transform: `translate(${dr.dx}px, ${dr.dy}px)`, zIndex: 5, opacity: 0.85 } : {}), touchAction: "none" }}
             onPointerDown={(e) => dragStart(e, keys[i])} onPointerMove={dragMove} onPointerUp={dragEnd} onPointerCancel={() => { drag.current = null; setDragging(null); }}
-            onClick={() => { if (!justDragged.current) tap(ic); }}
+            onClick={() => { if (justDragged.current) { justDragged.current = false; return; } tap(ic); }}
             onContextMenu={trashable(ic.address) && api?.actions ? (e) => { e.preventDefault(); e.stopPropagation(); setMenuFor(ic); } : undefined}
             data-badge={ic.address.startsWith("trash:") ? trashBadge(trashCount) : undefined}>
             <span className="desktop-icon-glyph" aria-hidden="true">{ic.glyph}</span>
@@ -291,7 +292,7 @@ export default function Desktop({ layout, cover, lang, settings, entries, paths:
         <button type="button" data-testid="desktop-arrange-toggle" aria-expanded={arrMenu} onClick={() => setArrMenu((v) => !v)}>{say(w, "arrange", lang)}</button>
         <button type="button" data-testid="desktop-arrange-undo" disabled={!journal.past.length} onClick={undoArr}>{say(w, "arrange_undo", lang)}</button>
         <button type="button" data-testid="desktop-arrange-redo" disabled={!journal.future.length} onClick={redoArr}>{say(w, "arrange_redo", lang)}</button>
-        <span className="desktop-hint" data-testid="desktop-arrange-from">{say(w, `arrange_from_${arr.from}`, lang)}{arr.inheritedFrom ? ` ${say(w, "arrange_inherited", lang, { cls: arr.inheritedFrom })}` : ""} · {say(w, "arrange_move_hint", lang)}</span>
+        <span className="desktop-hint" data-testid="desktop-arrange-from">{say(w, `arrange_from_${arr.from}`, lang)}{arr.inheritedFrom ? ` ${say(w, "arrange_inherited", lang, { cls: w[`class_${arr.inheritedFrom}`] ? say(w, `class_${arr.inheritedFrom}`, lang) : arr.inheritedFrom })}` : ""} · {say(w, "arrange_move_hint", lang)}</span>
         {arrMenu && <div className="desktop-items" role="menu" data-testid="desktop-arrange-menu">
           {(ARRANGE.arrange_by ?? ["label"]).map((by) => <button key={by} type="button" role="menuitem" data-testid="desktop-arrange-by" data-by={by} onClick={() => arrangeBy(by)}>{say(w, `arrange_by_${by}`, lang)}</button>)}
         </div>}

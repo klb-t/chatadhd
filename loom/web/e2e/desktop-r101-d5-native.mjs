@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // R101 D5 (PULPIT_R101_2026-10-28 §6, §13 P3/P4, §14 row D5; acceptance, the REAL loom-server, no model). Polish, a phone held sideways
-// (844x390) and upright (390x844). (1) drag the trash icon to the last column → it stays there, desktop_arrangement holds it at both levels
+// (844x390) and upright (390x844). (1) drag the first icon („Ty”) to the last column (the trash there takes its cell) → it stays there, desktop_arrangement holds it at both levels
 // (this browser installation and the person); (2) turn the phone (viewport 390x844, another device class by width) → the position is
 // snapped into the narrower grid (the last of 4 columns), read from the other class (class_fallback), nothing lost; (3) reload → it stays;
 // turned back → the last column of the wide grid again; (4) a value at the level `installation` overrides `person`, and without it the
@@ -55,10 +55,13 @@ try {
   const cell = async a => [Number(await icon(a).getAttribute("data-col")), Number(await icon(a).getAttribute("data-row"))];
   const columns = async () => Number(await p.getByTestId("desktop-icons").getAttribute("data-columns"));
   const toDesktop = async () => {
-    await p.getByTestId("chat-input").waitFor();
-    await p.getByTestId("shell-menu-toggle").click();
-    await p.getByTestId("shell-menu-windows").click();
-    await p.locator('[data-testid="windows-entry"][data-window="w_chat"]').getByTestId("windows-entry-close").click();
+    // after a reload the page may come back as it was left (the desktop with no window) or with the chat window open
+    await p.waitForFunction(() => !!document.querySelector('[data-testid="chat-input"]') || document.querySelector('[data-testid="desktop"]')?.getAttribute("data-cover") === "none", null, { timeout: 20000 });
+    if (await p.getByTestId("chat-input").count()) {
+      await p.getByTestId("shell-menu-toggle").click();
+      await p.getByTestId("shell-menu-windows").click();
+      await p.locator('[data-testid="windows-entry"][data-window="w_chat"]').getByTestId("windows-entry-close").click();
+    }
     await desk().waitFor({ state: "visible" });
     await p.waitForFunction(() => document.querySelector('[data-testid="desktop-icons"]')?.getAttribute("data-state") === "ok", null, { timeout: 15000 });
     await icon("trash:").waitFor();
@@ -72,21 +75,23 @@ try {
   };
   const shot = name => p.screenshot({ path: path.join(SHOTS, `d5-${name}.png`) });
   await p.goto(base + "/");
+  await p.getByTestId("chat-input").waitFor();
   const inst = await p.evaluate(() => localStorage.getItem("loom.installation_id"));
   let wideCols = 0;
 
-  await step("sideways (844x390): drag the trash icon to the last column → it stays, written at the installation and the person level", async () => {
+  const M = "party:self";   // the first icon; dragged to the last column (the trash there moves to its cell)
+  await step("sideways (844x390): drag the „Ty” icon (party:self, first)  to the last column → it stays, written at the installation and the person level", async () => {
     assert.ok(inst, "the page has an installation id");
     await toDesktop();
     wideCols = await columns();
     assert.ok(wideCols > 4, `the wide grid has more than 4 columns (${wideCols})`);
     assert.equal(await p.getByTestId("desktop-arrange").getAttribute("data-from"), "preset");
-    await dragTo("trash:", wideCols - 1, 0);
-    await until("the trash in the last column", async () => JSON.stringify(await cell("trash:")) === JSON.stringify([wideCols - 1, 0]));
-    assert.equal(await icon("trash:").getAttribute("data-pinned"), "true");
-    const v = await until("desktop_arrangement written", async () => { const x = parse(await getKey("desktop_arrangement")); return x?.desktop?.positions?.["trash:"] && x?.installations?.[inst]?.desktop?.positions?.["trash:"] ? x : null; });
-    assert.deepEqual([v.desktop.positions["trash:"].col, v.desktop.positions["trash:"].row], [wideCols - 1, 0], "person level");
-    assert.deepEqual([v.installations[inst].desktop.positions["trash:"].col, v.installations[inst].desktop.positions["trash:"].row], [wideCols - 1, 0], "installation level");
+    await dragTo(M, wideCols - 1, 0);
+    await until("the icon in the last column", async () => JSON.stringify(await cell(M)) === JSON.stringify([wideCols - 1, 0]));
+    assert.equal(await icon(M).getAttribute("data-pinned"), "true");
+    const v = await until("desktop_arrangement written", async () => { const x = parse(await getKey("desktop_arrangement")); return x?.desktop?.positions?.[M] && x?.installations?.[inst]?.desktop?.positions?.[M] ? x : null; });
+    assert.deepEqual([v.desktop.positions[M].col, v.desktop.positions[M].row], [wideCols - 1, 0], "person level");
+    assert.deepEqual([v.installations[inst].desktop.positions[M].col, v.installations[inst].desktop.positions[M].row], [wideCols - 1, 0], "installation level");
     assert.equal(await p.getByTestId("desktop-arrange").getAttribute("data-from"), "installation");
     assert.equal(await p.getByTestId("desktop-arrange-undo").isDisabled(), false, "the move is a journal entry");
     await shot("1-wide-moved");
@@ -94,7 +99,7 @@ try {
   await step("turned upright (390x844): the position is snapped to the last of 4 columns, nothing lost", async () => {
     await p.setViewportSize(TALL);
     await until("4 columns", async () => (await columns()) === 4);
-    await until("the trash snapped", async () => JSON.stringify(await cell("trash:")) === JSON.stringify([3, 0]));
+    await until("the icon snapped", async () => JSON.stringify(await cell(M)) === JSON.stringify([3, 0]));
     assert.equal(await p.getByTestId("desktop-arrange").getAttribute("data-inherited"), "desktop", "read from the other class (class_fallback)");
     assert.equal(await p.locator('[data-testid="desktop-icon"]').count(), 7, "every icon is there");
     const cells = await p.locator('[data-testid="desktop-icon"]').evaluateAll(els => els.map(e => `${e.getAttribute("data-col")},${e.getAttribute("data-row")}`));
@@ -104,22 +109,22 @@ try {
   await step("reload upright → still snapped; turned back sideways → the last column of the wide grid again", async () => {
     await p.reload(); await toDesktop();
     assert.equal(await columns(), 4);
-    assert.deepEqual(await cell("trash:"), [3, 0]);
+    assert.deepEqual(await cell(M), [3, 0]);
     await p.setViewportSize(WIDE);
     await until("the wide grid", async () => (await columns()) === wideCols);
-    await until("the trash back in the last column", async () => JSON.stringify(await cell("trash:")) === JSON.stringify([wideCols - 1, 0]));
+    await until("the icon back in the last column", async () => JSON.stringify(await cell(M)) === JSON.stringify([wideCols - 1, 0]));
   });
   await step("the installation level overrides the person level; without it the person value is drawn", async () => {
     const v = parse(await getKey("desktop_arrangement"));
-    v.desktop = { positions: { "trash:": { col: 0, row: 1 } } };   // another device of the person put it elsewhere (a write through the API)
+    v.desktop = { positions: { [M]: { col: 0, row: 1 } } };   // another device of the person put it elsewhere (a write through the API)
     await setKey("desktop_arrangement", v);
     await p.reload(); await toDesktop();
-    assert.deepEqual(await cell("trash:"), [wideCols - 1, 0], "this browser's own place wins");
+    assert.deepEqual(await cell(M), [wideCols - 1, 0], "this browser's own place wins");
     assert.equal(await p.getByTestId("desktop-arrange").getAttribute("data-from"), "installation");
     delete v.installations;
     await setKey("desktop_arrangement", v);
     await p.reload(); await toDesktop();
-    assert.deepEqual(await cell("trash:"), [0, 1], "the person value");
+    assert.deepEqual(await cell(M), [0, 1], "the person value");
     assert.equal(await p.getByTestId("desktop-arrange").getAttribute("data-from"), "person");
   });
   await step("„Uporządkuj ikony” › według nazwy → Polish alphabetical order; undo brings the place before, redo the arrangement", async () => {
@@ -131,7 +136,7 @@ try {
     await until("alphabetical", async () => JSON.stringify(await order()) === JSON.stringify(want));
     await shot("3-arranged");
     await p.getByTestId("desktop-arrange-undo").click();
-    await until("undone", async () => JSON.stringify(await cell("trash:")) === JSON.stringify([0, 1]));
+    await until("undone", async () => JSON.stringify(await cell(M)) === JSON.stringify([0, 1]));
     await until("undo written", async () => { const x = parse(await getKey("desktop_arrangement")); return Object.keys(x?.desktop?.positions ?? {}).length === 1; });
     await p.getByTestId("desktop-arrange-redo").click();
     await until("redone", async () => JSON.stringify(await order()) === JSON.stringify(want));
