@@ -92,11 +92,34 @@ std::vector<EditOp> myers_script(const std::vector<int>& a, const std::vector<in
   return out;
 }
 
+// Distance only: the same forward pass of Myers, one V of 2(N+M)+3 longs and no trace (O(N+M) memory; the script above keeps
+// the trace for its backtrack, ~D^2 longs). The shortest edit script has D = inserts + deletes steps, which is what the loop finds.
 std::size_t myers_distance(const std::vector<int>& a, const std::vector<int>& b) {
-  std::size_t d = 0;
-  for (const auto& o : myers_script(a, b))
-    if (o.kind != "equal") ++d;
-  return d;
+  std::size_t p = 0;
+  while (p < a.size() && p < b.size() && a[p] == b[p]) ++p;
+  std::size_t s = 0;
+  while (s < a.size() - p && s < b.size() - p && a[a.size() - 1 - s] == b[b.size() - 1 - s]) ++s;
+  const long n = static_cast<long>(a.size() - p - s), m = static_cast<long>(b.size() - p - s);
+  const long max = n + m;
+  if (max == 0) return 0;
+  auto A = [&](long i) { return a[p + static_cast<std::size_t>(i)]; };
+  auto B = [&](long j) { return b[p + static_cast<std::size_t>(j)]; };
+  const long off = max + 1;
+  std::vector<long> v(static_cast<std::size_t>(2 * max + 3), 0);
+  for (long d = 0; d <= max; ++d) {
+    for (long k = -d; k <= d; k += 2) {
+      const auto ki = static_cast<std::size_t>(k + off);
+      long x = (k == -d || (k != d && v[ki - 1] < v[ki + 1])) ? v[ki + 1] : v[ki - 1] + 1;
+      long y = x - k;
+      while (x < n && y < m && A(x) == B(y)) {
+        ++x;
+        ++y;
+      }
+      v[ki] = x;
+      if (x >= n && y >= m) return static_cast<std::size_t>(d);
+    }
+  }
+  return static_cast<std::size_t>(max);
 }
 
 namespace {

@@ -29,6 +29,10 @@ std::string event_key(std::string_view kind, std::string_view from, std::string_
   return k;
 }
 
+// What defines the identity of a node besides its own content: the level and the language of the cut it was made at. A graph
+// holding two cuts of one chain (sentence and paragraph, pl and en) keeps their events and versions apart.
+std::string cut_tag(const std::string& level, const std::string& language) { return "@" + level + "/" + language; }
+
 Json strings_json(const std::vector<std::string>& v) {
   Json a = Json::array();
   for (const auto& s : v) a.push_back(s);
@@ -194,7 +198,7 @@ Result<Chain> compute_chain(const Segmenter& seg, const std::vector<VersionText>
         e.b_index = o.index;
         e.fragment = o.fingerprint;
         e.text_after = o.text;
-        e.key = event_key(kind, "", e.to.id, kNone, o.index);
+        e.key = event_key(kind, "", e.to.id, kNone, o.index) + cut_tag(c.level, c.language);
         c.events.push_back(std::move(e));
       }
   }
@@ -227,7 +231,7 @@ Result<Chain> compute_chain(const Segmenter& seg, const std::vector<VersionText>
         for (const auto& x : op.inner) in.push_back(x.to_json());
         e.inner = in;
       }
-      e.key = event_key(kind, e.from.id, e.to.id, op.a, op.b);
+      e.key = event_key(kind, e.from.id, e.to.id, op.a, op.b) + cut_tag(c.level, c.language);
       c.events.push_back(std::move(e));
     }
     c.steps.push_back(std::move(al));
@@ -345,7 +349,7 @@ Result<MaterializeSummary> materialize(Database& db, const Chain& chain, const O
     meta["level"] = chain.level;
     meta["language"] = chain.language;
     meta["fragment_count"] = v.fragments.size();
-    LOOM_TRY_ASSIGN(const std::string vid, node(v.source.id, ver_kind, "", meta));
+    LOOM_TRY_ASSIGN(const std::string vid, node(v.source.id + cut_tag(chain.level, chain.language), ver_kind, "", meta));
     ver_ids[v.source.id] = vid;
     if (i > 0) {
       const SourceRef& prev = chain.versions[i - 1].source;
