@@ -32,6 +32,8 @@ kontem dostaje dodatkowo kilka groszy z płatnych źródeł lub kredytów, wszys
 właściciela. W tym pakiecie: rozdzielić w danych pulę bezkosztową i pulę płatną. Notę przy `vertex_gemini.budget` zastąpić cytatem R112,
 zamiast „datowanego odczytu” z punktu (b). Grosze na osobę to wartość otwarta z presetem. Test: gość nie dostaje puli płatnej
 w żadnym stanie.
+(h) R113 (właściciel, 30.10): ≈ 1 € dziennie dla kont to wartość startowa. Zgoda z góry na podniesienie przy pierwszej potrzebie;
+nową kwotę zgłosić właścicielowi. W nocie presetu napisać, że to wartość startowa. Gość dalej bez płatnych źródeł.
 
 ## Luka do zaprojektowania (właściciel, 30.10; przekazał koordynator): zapytania do modeli z urządzenia osoby
 Słowa właściciela: „apka webowa operuje na urządzeniu klienckim i z niego wysyła zapytania”.
