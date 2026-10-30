@@ -1003,6 +1003,11 @@ Decyzja właściciela do R109 (pakiet z R108). Skutek (odczyt koordynatora, do p
 
 Odczyt koordynatora, do projektu, nie słowa właściciela: pula próbna (R104) tylko dla zalogowanych. To także warunek pakietu poprawki źródła gościa (QUEUE_S1, 30.10): gość bez konta nigdy nie dostaje puli. Zależność: dziś rejestracja jest zamknięta (server_accounts registration: closed), więc do jej otwarcia pula jest dla nowych osób niedostępna. To skutek obecnego ustawienia, nie reguła silnika. Słowa „nawet nie zobaczymy kiedy” rozwiązać jako powiadomienie właściciela o zużyciu i ruchu, z progami w danych (otwarty zbiór, każdy z kanałem i akcją). Projektować razem z R109; podstawą jest istniejący /api/pool/summary i dziennik advisory budżetu w loom-server.
 
+## R112 — Uściślenie R111: gość tylko źródła bezkosztowe; za darmowe konto kilka groszy z płatnych źródeł, razem około 1 € dziennie na testy (owner (przekazał koordynator gcp), 2026-10-30)
+> gość darmowe rutingi ma i z naszej darmowej puli się możemy podzielić z gościem tylko z tego co my mamy za darmo. groszy możemy dopłacić za utworzenie darmowego konta czyli powiedzmy to euro na testy
+
+Odczyt koordynatora, do projektu: (1) Gość bez konta dostaje tylko źródła bezkosztowe, także nasze darmowe klucze; nigdy płatne ani kredyty. (2) Osoba z darmowym kontem dostaje dodatkowo kilka groszy z płatnych źródeł lub kredytów; wszystkie osoby razem do około 1 € dziennie na testy. Kwota 1 € to preset w danych; jej skala to decyzja właściciela z tego cytatu („powiedzmy to euro”). Zastępuje to wcześniejszą notę wpisu vertex_gemini w free_providers.pack. Groszy na osobę to wartość otwarta z presetem. (3) „Pula” znaczy teraz dwie rzeczy: rozdzielić w danych pulę bezkosztową i pulę płatną. Pakiet poprawki źródła gościa: gość bez konta ma tylko pulę bezkosztową. Związek: R104, R108, R109, R111.
+
 ## Decision — rebuild, don't recover
 > "nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane"
 

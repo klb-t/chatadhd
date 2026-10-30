@@ -5,8 +5,8 @@
  "sources": {
   "owner": {
    "path": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
-   "sha256": "d445e096c595495479ca1095c5b20bd95b6cc0538b3fe65f7fde046e61df721c",
-   "lines": 1020
+   "sha256": "faab23173bd8402cfbdd406ebf9687432a4f26ee1eac971a3b180a2d1406cb68",
+   "lines": 1025
   },
   "slowa": {
    "path": "docs/architecture/SLOWA_WLASCICIELA_2026-10-16.md",
@@ -6522,6 +6522,63 @@
    ]
   },
   {
+   "id": "s_ab4d24c0cffe",
+   "aliases": [
+    "R112"
+   ],
+   "kind": "requirement",
+   "title": "Uściślenie R111: gość tylko źródła bezkosztowe; za darmowe konto kilka groszy z płatnych źródeł, razem około 1 € dziennie na testy (owner (przekazał koordynator gcp), 2026-10-30)",
+   "date": null,
+   "theme": "owner_requirements",
+   "theme_inferred": false,
+   "understanding": {
+    "state": "none"
+   },
+   "quotes": [
+    {
+     "text": "gość darmowe rutingi ma i z naszej darmowej puli się możemy podzielić z gościem tylko z tego co my mamy za darmo. groszy możemy dopłacić za utworzenie darmowego konta czyli powiedzmy to euro na testy",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:1007",
+     "ref": null,
+     "attr": [],
+     "lead": null,
+     "secondary": false
+    }
+   ],
+   "sense": null,
+   "summary": null,
+   "restatement": [
+    {
+     "text": "Odczyt koordynatora, do projektu: (1) Gość bez konta dostaje tylko źródła bezkosztowe, także nasze darmowe klucze; nigdy płatne ani kredyty. (2) Osoba z darmowym kontem dostaje dodatkowo kilka groszy z płatnych źródeł lub kredytów; wszystkie osoby razem do około 1 € dziennie na testy. Kwota 1 € to preset w danych; jej skala to decyzja właściciela z tego cytatu („powiedzmy to euro”). Zastępuje to wcześniejszą notę wpisu vertex_gemini w free_providers.pack. Groszy na osobę to wartość otwarta z presetem. (3) „Pula” znaczy teraz dwie rzeczy: rozdzielić w danych pulę bezkosztową i pulę płatną. Pakiet poprawki źródła gościa: gość bez konta ma tylko pulę bezkosztową. Związek: R104, R108, R109, R111.",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:1009"
+    }
+   ],
+   "commentary": [],
+   "status": null,
+   "gap_text": null,
+   "evidence": [],
+   "next_step": null,
+   "refs": [
+    "s_e19a5c52bd50",
+    "s_831a5fde86e9",
+    "s_747ada9e6655",
+    "s_8643d0768093"
+   ],
+   "supersedes": [],
+   "superseded_by": [],
+   "supersession_notes": [],
+   "tags": [],
+   "heading_note": null,
+   "sources": [
+    {
+     "role": "owner",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:1006-1009"
+    }
+   ],
+   "files": [
+    "owner"
+   ]
+  },
+  {
    "id": "s_18ec73967a7b",
    "aliases": [
     "owner:decision-rebuild-don-t-recover"
@@ -6537,7 +6594,7 @@
    "quotes": [
     {
      "text": "\"nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane\"",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:1007",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:1012",
      "ref": null,
      "attr": [],
      "lead": null,
@@ -6549,7 +6606,7 @@
    "restatement": [
     {
      "text": "Recovered versions (`history/chatadhd_v0.8.3`, `history/chatadhd_v0.9.0`) and\nthe historical report are sources of requirements, ideas and data assets\n(e.g. `film_structure.json`), and real ground truth for self-discovery tests —\nnot code to merge. Everything is rebuilt in Loom with tests.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:1009-1012"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:1014-1017"
     }
    ],
    "commentary": [],
@@ -6566,7 +6623,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:1006-1012"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:1011-1017"
     }
    ],
    "files": [
@@ -6592,7 +6649,7 @@
    "restatement": [
     {
      "text": "`workbench_mockup_2026-09-26.webp`: dockable/floating panels (conversation\nlist, active conversation, knowledge graph with active context window, project\nstructure with dimmed high-confidence auto-completable nodes, artifact views\nfor music/video with timeline + storyboard, video player, execution\nenvironment with agent), multi-format ingestion, Loom SDK at the centre.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:1015-1019"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:1020-1024"
     }
    ],
    "commentary": [],
@@ -6609,7 +6666,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:1014-1019"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:1019-1024"
     }
    ],
    "files": [
