@@ -8,6 +8,7 @@ Po poprawce pętli przeładowań gościa (`hotfix-reload`, `e94ba029`) nadal nie
 Do zrobienia: zapis zdarzeń klienta (przeładowanie i jego powód, przywrócenie kopii, błąd zapisu magazynu) do przeglądania
 przy debugowaniu. Rozmiar, zakres, poziom i to, czy zdarzenia trafiają do serwera, to ustawienia z presetami. Wyłączenie zapisu też
 jest ustawieniem. Wysłanie na serwer tylko wtedy, gdy osoba je włączy. Do następnej partii.
+Proces partii (koordynator, 30.10): scalenie → niezależny przegląd poprawności na Fable (sam diff) → poprawki na Sonnecie → pełna bramka → sha do koordynatora.
 
 ## Partia nocna 29/30.10 na `w2b2` — BRAMKA ZIELONA (30.10, `e81c00c1`)
 Higiena testów (`ec84aacd`), wtyczka OPFS (PH29 P1) i wolny start gościa scalone w `w2b2`. Pełna bramka na `e81c00c1` jest zielona:
