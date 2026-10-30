@@ -55,11 +55,11 @@ overlay("server_accounts", {
   guests: { enabled: true, start: "auto", sweep_interval_seconds: 0, keys_file: path.join(tmp, "keys.env"),
             first_answer_notice: { on: false, ask_again: "per_device" },
             workdir: { subdir: "guests", idle_ttl_seconds: TTL, max_bytes: 0, keep_after_session: "ask" },
-            secrets_routes: "write_only_session", model_sources: ["byok", "pool", "free", "local"] },
+            secrets_routes: "write_only_session", model_sources: ["byok", "free", "local"] },
 });
 overlay("free_providers", {
   providers: [{ id: "mock_free", display_name: "Mock darmowy", base_url: `http://127.0.0.1:${mockPort}`, auth_env: "MOCK_FREE_KEY", auth_secret: "api_key",
-                active_when: "key_present", enabled: true,
+                tier: "free", active_when: "key_present", enabled: true,
                 data_terms: { retention: "none", human_review: false, training: "no", observed_at: "2026-10-28", source_url: "test", source_rating: "test",
                               summary: { pl: "Testowy dostawca nic nie zapisuje.", en: "The test provider keeps nothing." } } }],
   free_model_choice: { rank_source: "table", require: { training: "no" }, table: [{ model: "mock/e2e-model", provider: "mock_free", quality: 1 }] },
@@ -68,6 +68,7 @@ const mock = spawn("python3", [path.join(here, "mock_llm_server.py"), String(moc
 const server = spawn(SERVER_BIN, ["--host", "127.0.0.1", "--port", String(port), "--accounts-root", root, "--static-dir", DIST], { stdio: "ignore", cwd: LOOM });
 const base = `http://127.0.0.1:${port}`;
 let browser, failed = false;
+async function openLayer(p) { await p.getByTestId("guest-layer").waitFor(); if ((await p.getByTestId("guest-layer").getAttribute("data-open")) === "false") await p.getByTestId("guest-layer-toggle").click(); }  // the guest layer is folded after the first visit
 const step = async (name, fn) => { if (failed) return; try { await fn(); console.log(`[guest-bundle] PASS ${name}`); } catch (e) { failed = true; console.error(`[guest-bundle] FAIL ${name}\n${e.stack}`); } };
 const guestDirs = () => { try { return readdirSync(path.join(root, "guests")); } catch { return []; } };
 const api = (page, method, p, body) => page.evaluate(async ([m, u, b]) => {
@@ -191,12 +192,14 @@ try {
     await p2.screenshot({ path: path.join(SHOTS, "guest-bundle-restored.png") });
 
     // "Clear everything from this browser": consent first, "No" keeps everything
+    await openLayer(p2);
     await p2.getByTestId("guest-wipe").click();
     await p2.getByTestId("guest-wipe-confirm").waitFor();
     assert.ok((await p2.getByTestId("guest-wipe-confirm").innerText()).includes(say("guest.wipe_confirm").slice(0, 30)));
     await p2.getByTestId("guest-wipe-no").click();
     assert.ok(await storedBundle(p2));
     await p2.evaluate(() => { localStorage.setItem("loom.e2e.marker", "1"); sessionStorage.setItem("loom.e2e.marker", "1"); });
+    await openLayer(p2);
     await p2.getByTestId("guest-wipe").click();
     const gone = p2.waitForEvent("load");
     await p2.getByTestId("guest-wipe-yes").click();

@@ -12,6 +12,11 @@ export function isInterviewMessages(convId: string | null | undefined, messages:
   return !!convId && messages.some(m => (m.conv_id === undefined || m.conv_id === convId) && interviewMeta(m.metadata) !== null);
 }
 
+/** True when part of the conversation went to a model provider: an assistant message with a model that is not a form (interview) message. */
+export function reachedProvider(messages: readonly { role?: string; model?: string | null; metadata?: Meta }[]): boolean {
+  return messages.some(m => m.role === "assistant" && typeof m.model === "string" && m.model !== "" && interviewMeta(m.metadata) === null);
+}
+
 /** The values of the setting onboarding_card. */
 export type CardSetting = "show" | "later" | "never";
 export const cardSettingOf = (value: unknown): CardSetting | null => (value === "show" || value === "later" || value === "never" ? value : null);

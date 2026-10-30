@@ -2,7 +2,7 @@
   "schema": "loom.runtime_profile/1",
   "domain": "free_providers",
   "revision": 2,
-  "description": "Model sources for guests (R103 §4, B1). Every entry is DATA and a preset: providers, models, limits and data terms are dated observations (observed_at, source_url, source_rating) to refresh, never rules. An entry is used only when enabled is true and its condition holds (active_when key_present = its auth_env name is present in the operator's keys file, server_accounts guests.keys_file; the key goes to the guest runtime in memory through credential_overlay and never into the guest directory). disabled_reason says why an entry is out of the guest queue on the operator's key and since when (provider terms are treated like law: a closed choice with a reason and a date). data_terms.summary (pl/en) is shown to the guest before the first send and copied into every receipt (provider_terms). budget on a paid entry is a spending preset (EUR per day/week, share of each credit, advisory threshold). free_model_choice.tier_order (R103 B3) = sources of these tiers are tried first, in this order, then by quality (preset: free keys before the operator's paid credits; empty = quality only); free_model_choice: which model a guest without his own key gets; table = an example ranking with dates (quality 0..1), require = data-terms condition on the operator's key, reevaluate = when the choice is computed again (B1 computes it when the guest runtime opens; per_message comes with the quota counters of B4). active_when service_account (R103 B3) = a short-lived OAuth access token of the machine's service account from the metadata server (auth.metadata_base, refreshed auth.refresh_before_seconds before expiry, memory only; {project} in base_url comes from the metadata server unless project is set). pricing = dated price per million tokens with its source (to_eur = dated conversion), used with the provider's usage for the spend counter (accounts root guest_spend.json, numbers only; GET /api/pool/summary spend). exhaustion_markers = text in a provider error that means exhausted (429, quota); the provider is then skipped for exhausted_cooldown_seconds and the guest is switched by fallback order, told in model_source.switched (R103 §4.4). data_terms_prompt = when the guest is asked before sending (first_use, every_session, every_message; never only for his own key). test_providers: extra entries an operator overlay may add (tests use a mock).",
+  "description": "Model sources for guests (R103 §4, B1). Every entry is DATA and a preset: providers, models, limits and data terms are dated observations (observed_at, source_url, source_rating) to refresh, never rules. An entry is used only when enabled is true and its condition holds (active_when key_present = its auth_env name is present in the operator's keys file, server_accounts guests.keys_file; the key goes to the guest runtime in memory through credential_overlay and never into the guest directory). disabled_reason says why an entry is out of the guest queue on the operator's key and since when (provider terms are treated like law: a closed choice with a reason and a date). data_terms.summary (pl/en) is shown to the guest before the first send and copied into every receipt (provider_terms). budget on a paid entry is a spending preset (EUR per day/week, share of each credit, advisory threshold). free_model_choice.tier_order (R103 B3) = sources of these tiers are tried first, in this order, then by quality (preset: free keys before the operator's paid credits; empty = quality only); free_model_choice: which model a guest without his own key gets; table = an example ranking with dates (quality 0..1), require = data-terms condition on the operator's key, reevaluate = when the choice is computed again (B1 computes it when the guest runtime opens; per_message comes with the quota counters of B4). active_when service_account (R103 B3) = a short-lived OAuth access token of the machine's service account from the metadata server (auth.metadata_base, refreshed auth.refresh_before_seconds before expiry, memory only; {project} in base_url comes from the metadata server unless project is set). pricing = dated price per million tokens with its source (to_eur = dated conversion), used with the provider's usage for the spend counter (accounts root guest_spend.json, numbers only; GET /api/pool/summary spend). exhaustion_markers = text in a provider error that means exhausted (429, quota); the provider is then skipped for exhausted_cooldown_seconds and the guest is switched by fallback order, told in model_source.switched (R103 §4.4). data_terms_prompt = when the guest is asked before sending (first_use, every_session, every_message; never only for his own key). test_providers: extra entries an operator overlay may add (tests use a mock). source_pools (R112, 2026-10-30) split the sources into pools: cost_free (tier free: free providers, the operator's free keys) and paid (tier paid_credits: money or credits). Each pool has model_source (its name in guests.model_sources), tiers and audience (guest = no account; account = an account; account_trial = an account that consciously tries paid features). A person is given only tiers of pools whose model_source is listed in guests.model_sources AND whose audience names him; a tier of no pool is never given. guests.model_sources therefore decides eligibility and the order of pools; free_model_choice.tier_order only orders tiers inside one pool. free_model_choice.none_message (open map of languages) is the plain message when no source is available (R108).",
   "defaults": {
     "providers": [
       {
@@ -128,7 +128,7 @@
             "per_day": 1.0,
             "per_week": 3.0
           },
-          "note": "Presets from the owner's spending rule (R103/R104); the counter is shown in the package card. Change by editing this entry."
+          "note": "Starting value, not a final one. Owner R112 (2026-10-30): „…groszy możemy dopłacić za utworzenie darmowego konta czyli powiedzmy to euro na testy” (a few cents per person with a free account, about 1 EUR/day for all accounts together); R113 (2026-10-30): „podniesiemy przy pierwszej możliwej potrzebie…” (consent in advance to raise it at the first real need; report the new amount). Tier paid_credits is in the paid pool: never for a guest, never chosen automatically. The counter is shown in the package card. Change by editing this entry."
         },
         "data_terms": {
           "retention": "per_vertex_terms",
@@ -300,10 +300,38 @@
       "tier_order": [
         "free",
         "paid_credits"
-      ]
+      ],
+      "none_message": {
+        "pl": "Teraz nie ma dostępnego darmowego źródła modeli. Połącz własne konto lub własny klucz API (Ustawienia), żeby kontynuować.",
+        "en": "No free model source is available right now. Connect your own account or API key (Settings) to continue."
+      }
     },
     "terms": {
       "commercial_use": "ask_owner"
+    },
+    "source_pools": {
+      "cost_free": {
+        "model_source": "free",
+        "tiers": [
+          "free"
+        ],
+        "audience": [
+          "guest",
+          "account"
+        ],
+        "note": "Pool of sources that cost nothing per request: free providers, including the operator's own free keys. The only pool a person without an account is ever given (R112)."
+      },
+      "paid": {
+        "model_source": "paid",
+        "tiers": [
+          "paid_credits"
+        ],
+        "audience": [
+          "account_trial"
+        ],
+        "per_person_eur_per_day": 0.05,
+        "note": "Pool of sources that cost money or spend credits. Never chosen automatically and never for a guest without an account, in any state or after any consent (R104, R111, R112). Meant for a person WITH an account who consciously tries paid features (a setting, preset off); the whole pool is limited by the budget of its providers (vertex_gemini.budget). per_person_eur_per_day is the preset share of one person (open value; stored, not yet enforced: gap, see INDEX M1-GOSC-ZRODLO)."
+      }
     }
   },
   "value_schema": {
@@ -349,6 +377,41 @@
         "type": "object",
         "x-setting": "/terms",
         "x-consumer": "server guests"
+      },
+      "source_pools": {
+        "type": "object",
+        "x-setting": "/source_pools",
+        "x-consumer": "server guests",
+        "additionalProperties": {
+          "type": "object",
+          "properties": {
+            "model_source": {
+              "type": "string",
+              "minLength": 1
+            },
+            "tiers": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "audience": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "per_person_eur_per_day": {
+              "type": "number",
+              "minimum": 0
+            },
+            "note": {
+              "type": "string"
+            }
+          }
+        }
       }
     }
   }

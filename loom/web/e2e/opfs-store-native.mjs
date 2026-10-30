@@ -56,14 +56,14 @@ overlay("server_accounts", {
   guests: { enabled: true, start: "auto", sweep_interval_seconds: 0, keys_file: path.join(tmp, "keys.env"),
             first_answer_notice: { on: false, ask_again: "per_device" },
             workdir: { subdir: "guests", idle_ttl_seconds: TTL, max_bytes: 0, keep_after_session: "ask" },
-            secrets_routes: "write_only_session", model_sources: ["byok", "pool", "free", "local"],
+            secrets_routes: "write_only_session", model_sources: ["byok", "free", "local"],
             // the 50 MB measurement restores a big bundle; the guest body preset (1 MB) would refuse it (finding of this
             // package: a real guest history above 1 MB cannot be restored with the preset - reported as a gap)
             protection: { sizes: { max_body_bytes: 0, max_upload_bytes: 0 } } },
 });
 overlay("free_providers", {
   providers: [{ id: "mock_free", display_name: "Mock darmowy", base_url: `http://127.0.0.1:${mockPort}`, auth_env: "MOCK_FREE_KEY", auth_secret: "api_key",
-                active_when: "key_present", enabled: true,
+                tier: "free", active_when: "key_present", enabled: true,
                 data_terms: { retention: "none", human_review: false, training: "no", observed_at: "2026-10-28", source_url: "test", source_rating: "test",
                               summary: { pl: "Testowy dostawca nic nie zapisuje.", en: "The test provider keeps nothing." } } }],
   free_model_choice: { rank_source: "table", require: { training: "no" }, table: [{ model: "mock/e2e-model", provider: "mock_free", quality: 1 }] },
@@ -73,6 +73,7 @@ const server = spawn(SERVER_BIN, ["--host", "127.0.0.1", "--port", String(port),
   "--max-body-bytes", "0", "--max-upload-bytes", "0"], { stdio: "ignore", cwd: LOOM });
 const base = `http://127.0.0.1:${port}`;
 let browser, failed = false;
+async function openLayer(p) { await p.getByTestId("guest-layer").waitFor(); if ((await p.getByTestId("guest-layer").getAttribute("data-open")) === "false") await p.getByTestId("guest-layer-toggle").click(); }  // the guest layer is folded after the first visit
 const step = async (name, fn) => { if (failed) return; try { await fn(); console.log(`[opfs-store] PASS ${name}`); } catch (e) { failed = true; console.error(`[opfs-store] FAIL ${name}\n${e.stack}`); } };
 const measure = (what, o) => console.log(`[opfs-store] MEASURE ${what} ${JSON.stringify({ ...o, machine: `${hostname()} ${cpus().length} cpu`, date: new Date().toISOString() })}`);
 const guestDirs = () => { try { return readdirSync(path.join(root, "guests")); } catch { return []; } };
@@ -97,6 +98,7 @@ const opfsFiles = (page) => page.evaluate(async () => {
 });
 const lockState = (page) => page.evaluate(async (name) => { const s = await navigator.locks.query(); return { held: s.held.filter((l) => l.name === name).length, pending: s.pending.filter((l) => l.name === name).length }; }, LOCK);
 const storePanel = async (page) => {
+  await openLayer(page);
   const el = page.getByTestId("guest-store");
   await el.waitFor({ timeout: 30000 });
   const attr = async (n) => (await el.getAttribute(n)) ?? "";
@@ -270,6 +272,7 @@ try {
   await step("5. clear everything: the database files leave OPFS, nothing to restore", async () => {
     const old = (await opfsFiles(page)).filter((f) => f.startsWith(".loom-store/"));
     assert.ok(old.length > 0, "files before");
+    await openLayer(page);
     await page.getByTestId("guest-wipe").click();
     const gone = page.waitForEvent("load");
     await page.getByTestId("guest-wipe-yes").click();
@@ -297,6 +300,7 @@ try {
     const panel = await storePanel(p);
     assert.equal(panel.store, "browser_indexeddb", JSON.stringify(panel));
     const adv = p.locator('[data-testid="guest-store-advisory"][data-plugin="browser_opfs_sqlite"]');
+    await openLayer(p);
     await p.getByTestId("guest-store").locator("summary").click();
     assert.ok((await adv.innerText()).includes("opfs"), await adv.innerText());
     const s0 = await p.getByTestId("guest-layer").getAttribute("data-saved-at");

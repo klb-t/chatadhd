@@ -104,7 +104,7 @@ class App {
   nlohmann::json choose_guest_source(std::map<std::string, std::string>& overlay);
   // R103 B3: before a guest's model request: refresh a short-lived token, or switch the guest to the next source when
   // its provider is exhausted, over budget or without a token (§4.4, told in model_source.switched).
-  void prepare_guest_source(const std::string& guest_id);
+  bool prepare_guest_source(const std::string& guest_id);
   // R103 B3: after a guest's answer: spend from usage × price, exhaustion markers → cool-down.
   void settle_guest_answer(const std::string& provider, const nlohmann::json& result);
   // R103 B2: admission of one guest request (sizes, working-folder ceiling, buckets); true = answered (refused).

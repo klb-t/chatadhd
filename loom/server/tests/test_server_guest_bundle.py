@@ -60,10 +60,10 @@ def main() -> int:
                 "guests": {"enabled": True, "start": "auto", "sweep_interval_seconds": 0, "keys_file": str(keys),
                            "protection": {"clock": {"file": str(clock)}},
                            "workdir": {"subdir": "guests", "idle_ttl_seconds": 3600, "max_bytes": 0, "keep_after_session": "ask"},
-                           "secrets_routes": "write_only_session", "model_sources": ["byok", "pool", "free", "local"]}})
+                           "secrets_routes": "write_only_session", "model_sources": ["byok", "free", "local"]}})
             overlay(root, "free_providers", {
                 "providers": [{"id": "mock_free", "display_name": "Mock free", "base_url": f"http://127.0.0.1:{mock_port}",
-                               "auth_env": "MOCK_FREE_KEY", "auth_secret": "api_key", "active_when": "key_present", "enabled": True,
+                               "auth_env": "MOCK_FREE_KEY", "auth_secret": "api_key", "tier": "free", "active_when": "key_present", "enabled": True,
                                "data_terms": {"retention": "none_by_default", "human_review": False, "training": "no",
                                               "summary": {"pl": "Test.", "en": "Test."}, "observed_at": "2026-10-28",
                                               "source_url": "test", "source_rating": "test"}}],

@@ -297,6 +297,7 @@ jobs:
           npm run test:guest-mode
           npm run test:guest-bundle
           npm run test:guest-restore-no-loop
+          npm run test:guest-layer
           npm run test:store-plugins
           npm run test:opfs-store
           npm run test:auth-state

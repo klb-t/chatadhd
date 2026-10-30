@@ -48,14 +48,14 @@ overlay("server_accounts", {
   guests: { enabled: true, start: "auto", sweep_interval_seconds: 0, keys_file: path.join(tmp, "keys.env"),
             first_answer_notice: { on: true, ask_again: "per_device" },
             workdir: { subdir: "guests", idle_ttl_seconds: TTL, max_bytes: 0, keep_after_session: "ask" },
-            secrets_routes: "write_only_session", model_sources: ["byok", "pool", "free", "local"],
+            secrets_routes: "write_only_session", model_sources: ["byok", "free", "local"],
             // R103 B2: the proof of work stays at its preset (solved by the page in a Web Worker); one model request per
             // minute so the second question meets the limit.
             protection: { per_session: { chat_per_minute: 1 } } },
 });
 overlay("free_providers", {
   providers: [{ id: "mock_free", display_name: "Mock darmowy", base_url: `http://127.0.0.1:${mockPort}`, auth_env: "MOCK_FREE_KEY", auth_secret: "api_key",
-                active_when: "key_present", enabled: true,
+                tier: "free", active_when: "key_present", enabled: true,
                 // R103 B3: retention other than "none…" -> the explicit tap before the first send (§4.3) is part of the path.
                 data_terms: { retention: "per_test_terms", human_review: false, training: "no", observed_at: "2026-10-28", source_url: "test", source_rating: "test",
                               summary: { pl: "Testowy dostawca nic nie zapisuje.", en: "The test provider keeps nothing." } } }],

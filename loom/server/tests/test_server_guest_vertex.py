@@ -128,7 +128,7 @@ def main() -> int:
                  "source_url": "test", "source_rating": "test", "summary": {"pl": "Testowy Vertex.", "en": "Test Vertex."}}
         overlay(root, "free_providers", {
             "providers": [
-                {"id": "vertex_gemini", "display_name": "Vertex (fake)", "tier": "paid_credits", "enabled": True,
+                {"id": "vertex_gemini", "display_name": "Vertex (fake)", "tier": "free", "enabled": True,  # TEST ONLY: a service-account source that is cost-free; the real vertex_gemini is tier paid_credits and never reaches a guest (test_server_guest_source.py)
                  "base_url": fb + "/v1/projects/{project}/locations/global/endpoints/openapi",
                  "adapter": "vertex_openai_compatible", "auth_env": "", "auth_kind": "vm_service_account",
                  "auth_secret": "api_key", "active_when": "service_account",

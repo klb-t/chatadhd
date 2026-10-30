@@ -8,6 +8,65 @@ means views of the **same** project, separately from interpretation alternatives
 See [current report](implicit-structures-2026-10-14.md). No new owner requirement.
 
 
+## S1 / M1-GOSC-ZRODLO (2026-10-30): gość bez konta nigdy po cichu nie trafia na płatne źródło
+
+Co zrobiono. (1) W danych (`loom/data/runtime/free_providers.pack`, `source_pools`) pula bezkosztowa `cost_free` (nazwa
+źródła `free`, poziom `free`, odbiorcy gość i konto) i pula płatna `paid` (nazwa `paid`, poziom `paid_credits`, odbiorca
+tylko `account_trial`, `per_person_eur_per_day` 0.05 jako wartość otwarta). (2) `guests.model_sources` ma czytelnika: serwer
+(`loom/server/src/guest_source.h`, funkcja `guest_allowed_tiers`) bierze dla gościa tylko poziomy z pul wymienionych w
+`model_sources` i obsługujących gościa; poziom bez puli albo bez pola `tier` nigdy. Preset `["byok","free","local"]`.
+Kto wygrywa: `model_sources` rozstrzyga o dopuszczeniu i kolejności pul, `tier_order` porządkuje tylko poziomy wewnątrz puli.
+(3) Brak źródła bezkosztowego: od początku sesji `loom_guest_source: "none"`, `model_source.state: "none"` i komunikat pl/en
+(`free_model_choice.none_message`) w `GET /api/auth/me`; prośba o model dostaje 503 `no_guest_source` w kształcie odmowy ochrony,
+więc panel gościa w web pokazuje ją tym samym kanałem; własny klucz gościa dalej działa; stan liczony na nowo przy każdej prośbie
+o model. (4) Nota budżetu `vertex_gemini.budget.note` zastąpiona cytatami właściciela R112/R113 i opisem „wartość startowa”.
+`vertex_gemini.budget.credits.per_day = 1.0` bez zmian. (5) Poprawka §4.1 dokumentu BEZ_LOGOWANIA: osobny plik
+`docs/architecture/BEZ_LOGOWANIA_R103_4_1_PATCH.md` (dokument leży na gałęzi `claude/chataddhd-cpp-loom-core-IRGRN`, nie na `main`).
+
+Decyzje i jak cofnąć. Brak pola `tier` u dostawcy znaczy „nie dla gościa” (ostrożnie; cofnięcie: dopisać w presecie `tier: free`
+albo dopisać pusty poziom do puli `cost_free.tiers`). Płatną pulę przywraca się gościowi tylko jawnie, edytując `source_pools.paid.audience`
+w nakładce (celowo możliwe, bo wszystko jest konfigurowalne; domyślnie nie). Stare `pool` w `model_sources` jest ignorowane. Testy
+istniejące dostały `tier: "free"` w dostawcach testowych, a test Vertexa (`test_server_guest_vertex.py`) opisuje zaznaczony jako
+TYLKO TEST bezkosztowy wpis usługowy, bo prawdziwy Vertex gościa już nie obsługuje.
+
+Testy i źródło danych (wszystkie dane syntetyczne): jednostkowy `loom/tests/test_guest_source.cpp` (tabele dostawców, klucze,
+budżety i listy `model_sources` generowane losowo ze stałym ziarnem, fałszywy plik kluczy, fałszywy resolver; brak sieci) i
+serwerowy `loom/server/tests/test_server_guest_source.py` (mock modelu `loom/web/e2e/mock_llm_server.py`, fałszywy serwer
+metadanych liczący zapytania, fałszywy plik kluczy; prawdziwych kluczy ani metadanych Google nie dotknięto). Wyniki (kompilacja release w `loom/build/rel`, 30.10): `unit.test_guest_source` 5 przypadków (w tym 400 losowych konfiguracji) przeszedł; `server.guest_source`, `server.guests`, `server.guest_vertex`, `server.guest_bundle`, `server.guest_protection*`, `server.accounts`, `server.conversation_view` przeszły; e2e (prawdziwy serwer, mock modelu, syntetyczne dane): `guest-layer-layout`, `guest-mode-native`, `guest-bundle-native`, `opfs-store-native` przeszły; `auth-state.test.mjs` 8/8. Nieuruchomione: `guest-vertex-real.mjs` (prawdziwy Vertex, zabronione), pełna bramka (koordynator).
+
+Luki. (a) Ścieżka wyboru źródła dla osób Z kontem (świadome wypróbowanie płatnych funkcji, ustawienie z presetem, udział na osobę
+`per_person_eur_per_day`) nie jest zrobiona: dziś `choose_guest_source` obsługuje tylko gościa, a rejestracja jest zamknięta;
+dane i `guest_allowed_tiers(..., "account_trial")` są gotowe. (b) `per_person_eur_per_day` jest zapisane, niewymuszane. (c) Web nie ma
+własnego czytelnika `model_sources` (ofertę źródeł ustala serwer; `GET /api/auth/me` nadal zwraca listę). (d) e2e przeglądarkowe
+(`guest-*.mjs`) poprawione tylko w danych (tier, bez `pool`); uruchomienie: patrz wyniki.
+
+Dodatek koordynatora (owner, 30.10, zrzut z telefonu 390 px): (1) Warstwa gościa (`GuestLayer.tsx`) nie leży już nad czatem
+(`position: fixed`), tylko we własnym wierszu pod aplikacją (`.guest-frame`/`.guest-body` w `styles.css`; aplikacja dostaje resztę
+wysokości); wysokość warstwy do 45 % ekranu z przewijaniem. Warstwa jest otwarta przy pierwszym spojrzeniu, potem zwinięta do
+jednej linii z przyciskiem „Szczegóły tej wizyty / Ukryj szczegóły” (stan w `localStorage` `loom.guest.layer`, odwracalny; bez
+localStorage: otwarta). Powiadomienie po pierwszej odpowiedzi, okno zgody, odmowy, potwierdzenie czyszczenia i linia modelu są
+zawsze w warstwie; przycisk czyszczenia i magazyn tylko po rozwinięciu. (2) Test e2e `loom/web/e2e/guest-layer-layout.mjs`
+(`npm run test:guest-layer`, dopisane do `.github/workflows/loom.yml`) przy 390×844: prostokąty warstwy i czatu/pola/„Wyślij” nie
+przecinają się (otwarta, z powiadomieniem, zwinięta, po przeładowaniu, ponownie rozwinięta); przyciski powiadomienia i zwijania
+leżą w polu warstwy i nic ich nie przykrywa. (3) Linia modelu mówi, czym źródło jest naprawdę: `guest.model_line_free` („najlepszy z
+dzisiejszych darmowych modeli”) tylko dla poziomu `free`, `guest.model_line_paid` („źródło płatne”) dla każdego innego poziomu,
+`guest.model_line` (bez twierdzeń o koszcie) gdy poziomu brak; test dokładnych słów po poziomach i językach w
+`web/tests/conversation-view/auth-state.test.mjs`. (4) Linia „Magazyn: …” bierze słowa z katalogu (`guest.store`); sama etykieta
+wtyczki („Przeglądarka — baza SQLite”) pochodzi z wtyczki, nie z katalogu, i zostaje dla pakietu języka. (5) „Nic nie wychodzi poza
+to urządzenie” (`info.why`) NIE było prawdziwe, gdy w rozmowie (wywiadowej) były już wiadomości asystenta z modelem wysłane do
+dostawcy: tekst zależy teraz od stanu (`reachedProvider` w `context/interview.ts`; przy wysłaniu `info.why_sent`: pytania
+formularza zostają na urządzeniu, ale rozmowa zawiera też wiadomości wysłane do dostawcy); test w tym samym pliku. Zastrzeżenie:
+„wysłane do dostawcy” rozpoznaję po wiadomości asystenta z niepustym `model` bez znacznika wywiadu; nie badałem śladu zapytań w jądrze.
+Istniejące e2e (`guest-bundle-native`, `opfs-store-native`) dostały pomocnik rozwijający warstwę przed użyciem „Wyczyść”/magazynu.
+
+Nakładki produkcyjne, które operator MÓGŁBY wstawić (nie zastosowano). Po wdrożeniu kodu nic nie jest konieczne: presety z
+paczki wystarczą, a gość bez kluczy dostaje stan `none`. Aby gość miał darmowe źródło, trzeba pliku kluczy `guests.keys_file`
+(preset `~/.config/chatadhd/keys.env`, dla użytkownika usługi np. `/var/lib/chatadhd/.config/chatadhd/keys.env`, wiersze
+`GROQ_API_KEY=...`, `OPENROUTER_API_KEY=...`; klucze nie są szukane po dysku). Jeśli istniejąca nakładka
+`<accounts_root>/profiles/free_providers.pack` definiuje własne wpisy `providers`, każdy musi mieć `"tier": "free"` (albo
+`paid_credits`), inaczej gość go nie dostanie. Jeśli istniejąca nakładka `<accounts_root>/profiles/server_accounts.pack`
+ustawia `guests.model_sources` ze starym `pool`, zmienić na `["byok","free","local"]`. Doraźna nakładka bez Vertexu z 30.10 staje się zbędna.
+
 **Od 2026-10-05 ~18:00 integrację prowadzi Claude.** Wątki GPT skończyły tokeny;
 właściciel: „GPT już nam nie pomoże, przyjmij jego wyniki”. Poprzednia wersja tego
 indeksu (integrator 9, kolejka i wszystkie dowody) jest w

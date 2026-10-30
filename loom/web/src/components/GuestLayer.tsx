@@ -11,6 +11,7 @@ import {
 import { GUEST_LIMIT_EVENT, type GuestLimitDetail } from "../api/auth";
 import { SETTINGS_PANEL, requestOpenPanel } from "../context/open-settings";
 import { setSendGate, termsNeedConsent } from "../api/send-gate";
+import { LAYER_STATE_KEY, modelLineId } from "../context/guest-line";
 import { selectStore, writePolicy, type StoreSelection } from "../context/store-registry";
 import type { StorePlugin, Traits } from "../context/store-plugin";
 
@@ -27,6 +28,9 @@ function readFlag(storage: () => Storage, key: string): boolean {
 function writeFlag(storage: () => Storage, key: string): void {
   try { storage().setItem(key, "1"); } catch { /* storage refused: the notice may come back, nothing breaks */ }
 }
+
+function readLayer(): string | null { try { return localStorage.getItem(LAYER_STATE_KEY); } catch { return null; } }
+function writeLayer(v: string): void { try { localStorage.setItem(LAYER_STATE_KEY, v); } catch { /* the toggle still works for this visit */ } }
 
 export default function GuestLayer({ guest, guests, text, onSignIn, children }: {
   guest: GuestInfo; guests: GuestsOffer;
@@ -74,6 +78,11 @@ export default function GuestLayer({ guest, guests, text, onSignIn, children }: 
     return () => window.clearInterval(t);
   }, [limit]);
   const waitLeft = limit?.until ? Math.max(0, Math.ceil((limit.until - now) / 1000)) : null;
+  // The layer has its own place in the layout (below the app, never over it). Open on the very first look, then folded
+  // for the next visits; the person's toggle is remembered either way (localStorage; without it: open).
+  const [open, setOpen] = useState<boolean>(() => readLayer() !== "folded");
+  useEffect(() => { if (readLayer() === null) writeLayer("folded"); }, []);
+  const toggle = () => { const next = !open; setOpen(next); writeLayer(next ? "open" : "folded"); };
   const fileInput = useRef<HTMLInputElement>(null);
   const askAgain = guests.notice.askAgain;
   const noticeKey = askAgain === "per_session" ? `${NEVER_KEY}.${guest.id}` : NEVER_KEY;
@@ -214,10 +223,10 @@ export default function GuestLayer({ guest, guests, text, onSignIn, children }: 
   }, [needsTap, termsKey]);
 
   return (
-    <>
-      {children}
-      <div className="guest-layer" data-testid="guest-layer" data-guest-id={guest.id} data-saved-at={saved ?? ""} data-saving={saving}
-        style={{ position: "fixed", left: 8, right: 8, bottom: 112, zIndex: 50, pointerEvents: "none", display: "flex", flexDirection: "column", gap: 6, alignItems: "stretch", maxWidth: 640, margin: "0 auto" }}>
+    <div className="guest-frame" data-testid="guest-frame">
+      <div className="guest-body" data-testid="guest-body" style={{ flex: "1 1 auto", minHeight: 0, position: "relative", overflow: "hidden" }}>{children}</div>
+      <div className="guest-layer" data-testid="guest-layer" data-open={open ? "true" : "false"} data-guest-id={guest.id} data-saved-at={saved ?? ""} data-saving={saving}
+        style={{ flex: "0 0 auto", zIndex: 50, display: "flex", flexDirection: "column", gap: 6, alignItems: "stretch", boxSizing: "border-box", width: "100%", maxHeight: "45dvh", overflowY: "auto", padding: "4px 8px", borderTop: "1px solid var(--border, #555)", background: "var(--surface, #222)" }}>
         {notice && (
           <div role="status" data-testid="guest-notice" data-period={which.period ?? "session"}
             style={{ pointerEvents: "auto", background: "var(--surface, #222)", color: "inherit", border: "1px solid var(--border, #555)", borderRadius: 10, padding: "10px 12px" }}>
@@ -279,16 +288,18 @@ export default function GuestLayer({ guest, guests, text, onSignIn, children }: 
           </div>
         )}
         {restored !== null && <p role="status" data-testid="guest-restored" style={{ pointerEvents: "auto", margin: 0, fontSize: 12, opacity: 0.85 }}>{text("guest.restored", { count: String(restored) })}</p>}
-        <p data-testid="guest-model-line" style={{ pointerEvents: "auto", margin: 0, fontSize: 12, opacity: 0.8 }}
-          title={termsText ? `${text("guest.terms_title")}: ${termsText}` : undefined}>
-          {src && typeof src.model === "string" && src.model
-            ? text("guest.model_line", { model: src.model, provider: providerName, terms: termsText })
-            : text("guest.no_model", { reason: String(src?.why ?? "unknown") })}
-          {" "}
-          <button type="button" data-testid="guest-wipe" onClick={() => setWipeAsk(true)}
-            style={{ fontSize: 11, padding: "0 6px", marginLeft: 4 }}>{text("guest.wipe")}</button>
-        </p>
-        {sel && (
+        <div style={{ display: "flex", alignItems: "center", gap: 6, minWidth: 0 }}>
+          <p data-testid="guest-model-line" style={{ margin: 0, fontSize: 12, opacity: 0.8, flex: "1 1 auto", minWidth: 0, ...(open ? { overflowWrap: "anywhere" } : { overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }) }}
+            title={termsText ? `${text("guest.terms_title")}: ${termsText}` : undefined}>
+            {src && typeof src.model === "string" && src.model
+              ? text(modelLineId(src.tier), { model: src.model, provider: providerName, terms: termsText })
+              : text("guest.no_model", { reason: String(src?.why ?? "unknown") })}
+          </p>
+          <button type="button" data-testid="guest-layer-toggle" aria-expanded={open} onClick={toggle}
+            style={{ flex: "0 0 auto", fontSize: 11, padding: "2px 8px" }}>{text(open ? "guest.layer_hide" : "guest.layer_show")}</button>
+        </div>
+        {open && <div><button type="button" data-testid="guest-wipe" onClick={() => setWipeAsk(true)} style={{ fontSize: 11, padding: "0 6px" }}>{text("guest.wipe")}</button></div>}
+        {open && sel && (
           <details data-testid="guest-store" data-store={sel.plugin?.id ?? ""} data-integrity={String(sel.traits.integrity?.value ?? "")}
             data-fallback={String(sel.traits.bundle_fallback?.value ?? "")} data-leader={String(sel.traits.leader_tab?.value ?? "")}
             style={{ pointerEvents: "auto", margin: 0, fontSize: 12, opacity: 0.85 }}>
@@ -317,6 +328,6 @@ export default function GuestLayer({ guest, guests, text, onSignIn, children }: 
         <input ref={fileInput} type="file" accept="application/json,.json" hidden data-testid="guest-load-input"
           onChange={(e) => { const f = e.target.files?.[0]; if (f) void load(f); e.target.value = ""; }} />
       </div>
-    </>
+    </div>
   );
 }
