@@ -18,6 +18,12 @@ poprzez jedno kliknięcie żeby nie korzystać z naszych limitów, bo jesteśmy 
 (`37fa465f`). Odczyt koordynatora, do projektu: chodzi o darmowe konto u dostawcy modelu, podłączane jednym kliknięciem przez OAuth.
 Zachęta jest wyraźna, ale aplikacja działa dalej bez konta. Moment i siła zachęty to preset w danych, z „nie pytaj więcej”. Komunikat
 uczciwie mówi, że z kontem osoba ma własny limit, a jej zapytania idą wprost do tego dostawcy.
+W tym samym pakiecie R109 (właściciel, 30.10, „na przykład”; spec `9c4b326d`): stopnie zużycia wspólnej puli przez jedną osobę.
+Przykład właściciela: 10 % informacja, 25 % czerwone ostrzeżenie, 50 % odcięcie, a przy większej liczbie użytkowników niższe progi.
+Progi to otwarty zbiór w danych, każdy z własną akcją. Zależność od liczby użytkowników to formuła-preset. Odcięcie dotyczy tylko puli
+i prowadzi do konta jednym kliknięciem (R108). Rozszerzyć istniejące `guests.protection` (`server_accounts.pack`) i
+`server/src/guest_guard.h` oraz `/api/pool/summary`. Dziś są tam tylko twarde odmowy z progami bezwzględnymi, na sesję, adres
+i dzień puli, bez udziału osoby w puli.
 
 ## Luka (koordynator, 30.10): strona nie zapisuje, dlaczego się przeładowuje
 Po poprawce pętli przeładowań gościa (`hotfix-reload`, `e94ba029`) nadal nie widać, co wywołało przeładowanie.
