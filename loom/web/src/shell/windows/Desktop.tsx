@@ -126,7 +126,7 @@ export default function Desktop({ layout, cover, lang, settings, entries, paths:
   const arr = useMemo(() => readArrangement(arrangement, cls, installation), [arrangement, cls, installation]);
   const [arrNote, setArrNote] = useState<{ code: string; vars?: Record<string, string> } | null>(null);
   const writeArr = (value: Arrangement | null) => writeArrangement?.(arrangementPatch(arrangement, cls, value, installation));
-  const commitArr = (op: string, after: Arrangement) => { keepJournal(record(journal, { op, before: arr.value, after, at: new Date().toISOString() })); writeArr(after); };
+  const commitArr = (op: string, after: Arrangement) => { keepJournal(record(journal, { op, before: arr.inheritedFrom ? null : arr.value, after, at: new Date().toISOString() })); writeArr(after); };
   const undoArr = () => { const u = undo(journal); if (!u) return; keepJournal(u.journal); writeArr(u.value); setArrNote(null); };
   const redoArr = () => { const r = redo(journal); if (!r) return; keepJournal(r.journal); writeArr(r.value); setArrNote(null); };
   const toTrash = async (ic: DesktopIcon) => {
@@ -287,11 +287,11 @@ export default function Desktop({ layout, cover, lang, settings, entries, paths:
         {pins.state === "error" && <p className="desktop-hint" role="status" data-testid="desktop-advisory" data-code="desktop_pins_error">{say(w, "icons_error", lang, { error: pins.error ?? "" })}</p>}
       </div>
       {/* R101 D5: arranging the icons - one journal entry per move or arrangement, undone and redone here */}
-      {icons.length > 0 && <div className="desktop-arrange" data-testid="desktop-arrange" data-from={arr.from} data-mode={arr.modeWritten}>
+      {icons.length > 0 && <div className="desktop-arrange" data-testid="desktop-arrange" data-from={arr.from} data-inherited={arr.inheritedFrom ?? ""} data-mode={arr.modeWritten}>
         <button type="button" data-testid="desktop-arrange-toggle" aria-expanded={arrMenu} onClick={() => setArrMenu((v) => !v)}>{say(w, "arrange", lang)}</button>
         <button type="button" data-testid="desktop-arrange-undo" disabled={!journal.past.length} onClick={undoArr}>{say(w, "arrange_undo", lang)}</button>
         <button type="button" data-testid="desktop-arrange-redo" disabled={!journal.future.length} onClick={redoArr}>{say(w, "arrange_redo", lang)}</button>
-        <span className="desktop-hint" data-testid="desktop-arrange-from">{say(w, `arrange_from_${arr.from}`, lang)} · {say(w, "arrange_move_hint", lang)}</span>
+        <span className="desktop-hint" data-testid="desktop-arrange-from">{say(w, `arrange_from_${arr.from}`, lang)}{arr.inheritedFrom ? ` ${say(w, "arrange_inherited", lang, { cls: arr.inheritedFrom })}` : ""} · {say(w, "arrange_move_hint", lang)}</span>
         {arrMenu && <div className="desktop-items" role="menu" data-testid="desktop-arrange-menu">
           {(ARRANGE.arrange_by ?? ["label"]).map((by) => <button key={by} type="button" role="menuitem" data-testid="desktop-arrange-by" data-by={by} onClick={() => arrangeBy(by)}>{say(w, `arrange_by_${by}`, lang)}</button>)}
         </div>}

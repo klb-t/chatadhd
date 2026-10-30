@@ -372,6 +372,10 @@
   "arrange_unknown": {
    "pl": "Nie wiem, jak ułożyć ikony „{word}”. Umiem: {known}.",
    "en": "I do not know how to arrange the icons “{word}”. I can: {known}."
+  },
+  "arrange_inherited": {
+   "pl": "(przejęte z: {cls})",
+   "en": "(taken from: {cls})"
   }
  },
  "sections_more": [
@@ -1012,7 +1016,7 @@
   "retention_short_days": 7
  },
  "arrangement": {
-  "note": "R101 D5 (PULPIT §6): presets of the setting desktop_arrangement. preset = the arrangement when nothing is written (one value for every class or {<class>: value}); modes_known, arrange_by are open lists of what this page draws today (examples of the mechanism); levels = where a hand move is written (installation = this browser, person = every device of the class), installation wins when read; journal_limit null = no limit; free_rows = the height of the free area in cells.",
+  "note": "R101 D5 (PULPIT §6): presets of the setting desktop_arrangement. preset = the arrangement when nothing is written (one value for every class or {<class>: value}); modes_known, arrange_by are open lists of what this page draws today (examples of the mechanism); levels = where a hand move is written (installation = this browser, person = every device of the class), installation wins when read; journal_limit null = no limit; free_rows = the height of the free area in cells. class_fallback: a class with no value of its own reads the value of these classes (snapped to its own grid), so a phone turned sideways - another device class by width - keeps where its icons stood; the first move there writes its own value.",
   "preset": {
    "mode": "grid",
    "snap": true
@@ -1026,6 +1030,14 @@
    "installation",
    "person"
   ],
+  "class_fallback": {
+   "phone": [
+    "desktop"
+   ],
+   "desktop": [
+    "phone"
+   ]
+  },
   "journal_limit": null,
   "arrange_by": [
    "label",

@@ -33,6 +33,11 @@ test('levels: installation wins over person, person over the preset; another ins
   assert.equal(A.readArrangement(JSON.stringify(v), 'phone', 'i1').from, 'installation', 'a JSON text is read too');
   assert.equal(A.readArrangement({ any: { mode: 'computed' } }, 'tablet').mode, 'computed', 'any = every class');
   assert.equal(A.readArrangement(42, 'phone').advisories[0].code, 'arrangement_unreadable');
+  const rot = A.readArrangement({ phone: { positions: { 'trash:': { col: 3, row: 0 } } } }, 'desktop', 'i1');
+  assert.equal(rot.inheritedFrom, 'phone', 'a class with no own value reads class_fallback (preset: the other class)');
+  assert.deepEqual(rot.positions['trash:'], { col: 3, row: 0 });
+  assert.equal(A.readArrangement({ phone: {} }, 'desktop', 'i1', { class_fallback: {} }).from, 'preset', 'class_fallback is data');
+  assert.equal(A.readArrangement({ desktop: { mode: 'free' }, phone: {} }, 'desktop').inheritedFrom, null);
   const odd = A.readArrangement({ phone: { mode: 'spiral' } }, 'phone');
   assert.equal(odd.mode, 'grid'); assert.equal(odd.modeWritten, 'spiral'); assert.equal(odd.advisories[0].code, 'arrangement_mode_unknown');
 });

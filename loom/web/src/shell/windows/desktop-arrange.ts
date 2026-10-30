@@ -23,6 +23,9 @@ export interface ResolvedArrangement {
   positions: Record<string, Pos>;
   /** Which level gave the value: installation (this browser), person, or preset (nothing written). */
   from: "installation" | "person" | "preset";
+  /** The device class whose value is read when this class has none of its own (data.class_fallback, e.g. a rotated phone reads the
+   *  arrangement of the other class, snapped to this width); null = the class's own value or the preset. */
+  inheritedFrom: string | null;
   value: Arrangement | null;
   advisories: Advisory[];
 }
@@ -33,6 +36,8 @@ export interface ArrangeData {
   journal_limit?: number | null;
   arrange_by?: string[];
   free_rows?: number;
+  /** Per device class, the classes read (in order) when it has no value of its own (`any` = for every class) [examples]. */
+  class_fallback?: Record<string, string[]>;
   drag_threshold_px?: number;
 }
 export const ARRANGE: ArrangeData = ((DESKTOP_X as unknown as { arrangement?: ArrangeData }).arrangement) ?? {};
@@ -48,10 +53,18 @@ export function readArrangement(value: unknown, cls: string, installation?: stri
   const advisories: Advisory[] = [];
   const v = parse(value);
   if (value !== undefined && value !== null && value !== "" && !isObj(v)) advisories.push({ code: "arrangement_unreadable" });
-  let from: ResolvedArrangement["from"] = "preset"; let a: unknown;
+  let from: ResolvedArrangement["from"] = "preset"; let a: unknown; let inheritedFrom: string | null = null;
   const mine = installation && isObj(v) && isObj(v.installations) ? (v.installations as Record<string, unknown>)[installation] : undefined;
-  if (isObj(mine)) { const x = parse(mine[cls] ?? mine.any); if (isObj(x)) { a = x; from = "installation"; } }
-  if (a === undefined && isObj(v)) { const x = parse(v[cls] ?? v.any); if (isObj(x)) { a = x; from = "person"; } }
+  const ofClass = (c: string): boolean => {
+    if (isObj(mine)) { const x = parse(mine[c] ?? mine.any); if (isObj(x)) { a = x; from = "installation"; return true; } }
+    if (isObj(v)) { const x = parse(v[c] ?? v.any); if (isObj(x)) { a = x; from = "person"; return true; } }
+    return false;
+  };
+  if (!ofClass(cls)) {
+    const fb = data.class_fallback ?? {};
+    const chain = Array.isArray(fb[cls]) ? fb[cls] : Array.isArray(fb.any) ? fb.any : [];
+    for (const c of chain) if (typeof c === "string" && c !== cls && ofClass(c)) { inheritedFrom = c; break; }
+  }
   const preset = byClass(data.preset, cls);
   const base: Arrangement = isObj(preset) ? preset as Arrangement : {};
   const val = isObj(a) ? a as Arrangement : null;
@@ -65,7 +78,7 @@ export function readArrangement(value: unknown, cls: string, installation?: stri
   // a null member means "absent" (RFC 7386: the merge on the host cannot keep a null), so it is read as absent here too
   if (isObj(m.positions)) for (const [k, p] of Object.entries(m.positions)) if (isObj(p)) positions[k] = Object.fromEntries(Object.entries(p).filter(([, x]) => x !== null)) as Pos;
   return { mode, modeWritten: written, columns: m.columns === "auto" ? "auto" : cn === undefined ? null : Math.max(1, Math.floor(cn)), snap: m.snap !== false,
-    flow: typeof m.flow === "string" && m.flow.trim() ? m.flow.trim() : null, positions, from, value: val, advisories };
+    flow: typeof m.flow === "string" && m.flow.trim() ? m.flow.trim() : null, positions, from, inheritedFrom, value: val, advisories };
 }
 
 /** The RFC 7386 merge patch that turns `from` into `to`: members of `from` missing in `to` become null (so a removed position does not come
