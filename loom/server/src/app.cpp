@@ -2388,13 +2388,9 @@ void App::route_auth() {
       if (!g) { send_error(res, "internal", "cannot create a guest session", 500); return; }
       const auto& cs = accounts_->settings().cookie;
       res.set_header("Set-Cookie", cookie_header(cs, g->token, accounts_->settings().session_lifetime_seconds, wants_secure(cs, req)));
-      LoomContext* gc = context_for_guest(g->guest_id);
-      // The guest's language starts as the browser's (Accept-Language, primary subtag); the guest changes it in settings.
-      if (std::string al = req.get_header_value("Accept-Language"); gc && !al.empty()) {
-        std::string lang;
-        for (char ch : al) { if (!std::isalpha(static_cast<unsigned char>(ch))) break; lang += static_cast<char>(std::tolower(static_cast<unsigned char>(ch))); }
-        if (!lang.empty()) loom_set_config(gc, "ui_language", json(lang).dump().c_str());
-      }
+      // R114: the guest's ui_language is NOT written at start. The preset is "auto" (follow the device's whole language list, which only
+      // the page knows); a first Accept-Language subtag frozen here made a phone set to Polish stay English. The guest's own choice in
+      // settings still wins. Words the server itself sends (limit messages) follow each request's Accept-Language.
       loom::accounts::Guest made{g->guest_id, g->started, g->started};
       res.status = 201;
       res.set_content(json{{"guest", guest_json(made)}, {"token", g->token}}.dump(), "application/json");

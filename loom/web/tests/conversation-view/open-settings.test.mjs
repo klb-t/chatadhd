@@ -16,7 +16,7 @@ const meta = { action_run: { run_id: 'arun_1', status: 'completed', open_setting
 
 test('generated web catalog carries the texts, pl and en, with the same keys', () => {
   assert.deepEqual(generated.entries.find(row => row.key === 'presentation.open_settings').value, pack.entries.find(row => row.key === 'presentation.open_settings').value);
-  assert.deepEqual(Object.keys(locales).sort(), ['en', 'pl']);
+  assert.ok(['en', 'pl'].every((code) => code in locales), 'en and pl are present; further languages are data');
   assert.deepEqual(Object.keys(locales.en).sort(), Object.keys(locales.pl).sort());
   assert.equal(o.OPEN_SETTINGS_FEATURE, 'open_settings');
 });

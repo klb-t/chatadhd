@@ -25,9 +25,9 @@ test('no language has the word: the id (last resort), never a throw', () => {
 });
 test('the available languages are the union of the catalogs; the page language walks the whole device list', () => {
   const available = pack.availableLanguages([feature]);
-  assert.ok(available.includes('xx') && available.includes('en') && available.includes('pl'));
+  assert.deepEqual(available.sort(), ['en', 'xx']);
   assert.equal(lang.shellLanguage('auto', undefined, ['de-DE', 'xx-YY', 'en'], available), 'xx');
-  assert.equal(lang.shellLanguage('', undefined, ['pl-PL', 'en-US'], available), 'pl');
+  assert.equal(lang.shellLanguage('', undefined, ['pl-PL', 'en-US'], available), 'en');
   assert.equal(lang.shellLanguage('xx', undefined, ['pl'], available), 'xx');
   assert.equal(lang.shellLanguage('auto', undefined, ['de'], available), 'en');
 });

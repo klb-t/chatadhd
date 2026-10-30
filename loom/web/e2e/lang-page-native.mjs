@@ -22,6 +22,12 @@ if (!existsSync(SERVER_BIN) || !existsSync(path.join(DIST, "index.html"))) { con
 const pack = JSON.parse(readFileSync(path.join(LOOM, "data/profiles/conversation_view.pack"), "utf8"));
 const shell = pack.entries.find(r => r.key === "presentation.ui_shell").value.locales;
 const available = new Set(Object.keys(shell));
+const accounts = pack.entries.find(r => r.key === "presentation.accounts").value.locales;
+// Static texts (no placeholders) of the guest layer and the store labels, per language: a page in language L must show none of the texts
+// of another language M that differ from L's text for the same key (the owner's screenshot: "Store: Przeglądarka — baza SQLite").
+const foreignTexts = (L) => { const own = new Set(Object.values(accounts[L] ?? {})); const out = [];
+  for (const [M, words] of Object.entries(accounts)) if (M !== L) for (const [k, v] of Object.entries(words)) if ((k.startsWith("guest.") || k.startsWith("store.")) && !v.includes("{{") && v.length > 8 && !own.has(v)) out.push(v);
+  return out; };
 const expectFor = (tags) => { for (const tag of tags) { const code = tag.toLowerCase().split(/[-_]/)[0]; if (available.has(code)) return code; } return "en"; };
 
 const freePort = () => new Promise((res, rej) => { const s = net.createServer(); s.listen(0, "127.0.0.1", () => { const { port } = s.address(); s.close(() => res(port)); }); s.on("error", rej); });
@@ -56,6 +62,14 @@ async function check(label, locale, languages, acceptLanguage, want) {
       let s = await shown(page);
       assert.equal(s.html, want, `first visit html lang (${JSON.stringify(s)})`);
       assert.equal(s.placeholder, shell[want].composer_placeholder, "composer words are the device language's catalog");
+      const store = page.getByTestId("guest-store");
+      if (await store.count()) {
+        await store.locator("summary").click();
+        const seen = await page.locator("body").innerText();
+        assert.ok(seen.includes(accounts[want]["guest.store_choice"] ?? accounts.en["guest.store_choice"]), "the store block is in the page language");
+        const foreign = foreignTexts(want).filter(t => seen.includes(t));
+        assert.deepEqual(foreign, [], `no text of another language on a ${want} page`);
+      }
       await page.reload();
       s = await shown(page);
       assert.equal(s.html, want, `after reload (${JSON.stringify(s)})`);

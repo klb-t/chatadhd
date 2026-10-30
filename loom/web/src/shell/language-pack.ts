@@ -12,9 +12,9 @@ export function deviceLanguages(): readonly string[] {
   return list.filter((tag): tag is string => typeof tag === "string" && tag !== "");
 }
 
-/** The languages the catalogs have (the union of their `locales`) plus those the data file names. */
+/** The languages the catalogs have (the union of their `locales`): a name in languages.json alone does not make a language available. */
 export function availableLanguages(catalogs: ReadonlyArray<{ locales?: Record<string, unknown> } | null | undefined>): string[] {
-  const found = new Set<string>(Object.keys(DATA.names));
+  const found = new Set<string>();
   for (const c of catalogs) for (const code of Object.keys(c?.locales ?? {})) found.add(code);
   return [...found];
 }

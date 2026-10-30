@@ -14,7 +14,7 @@ const pack = JSON.parse(await readFile(new URL('../../../data/profiles/conversat
 const locales = pack.entries.find(r => r.key === 'presentation.ui_shell').value.locales;
 
 test('no label of the shell leads to two different screens, in any language of the catalogue', () => {
-  assert.deepEqual(Object.keys(locales).sort(), ['en', 'pl']);
+  assert.ok(['en', 'pl'].every((code) => code in locales), 'en and pl are present; further languages are data');
   for (const [language, words] of Object.entries(locales)) {
     const controls = guard.shellControls(words);
     assert.ok(controls.length >= menu.CHAT_MENU.length + panels.SHELL_PANELS.length, `${language}: every menu entry and every panel is walked`);
@@ -80,7 +80,7 @@ test('property: the guard agrees with the definition on random controls (seeded,
 test('the Workshop buttons that open an OLD screen say so in their words (pl and en)', () => {
   for (const [language, words] of Object.entries(locales)) {
     for (const id of ['workshop_graph_old', 'workshop_me_old', 'workshop_graph_entry']) {
-      assert.match(words[id], language === 'pl' ? /\(stary widok\)|\(stare\)/ : /\(old view\)|\(old\)/, `${language}: ${id}`);
+      assert.match(words[id], language === 'pl' ? /\(stary widok\)|\(stare\)/ : language === 'nl' ? /\(oude weergave\)|\(oud\)/ : /\(old view\)|\(old\)/, `${language}: ${id}`);
     }
   }
   assert.equal(locales.pl.workshop_graph_old, 'Mapa sił tej rozmowy (stary widok)');
