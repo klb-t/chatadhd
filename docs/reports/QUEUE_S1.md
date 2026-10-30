@@ -35,6 +35,20 @@ w żadnym stanie.
 (h) R113 (właściciel, 30.10): ≈ 1 € dziennie dla kont to wartość startowa. Zgoda z góry na podniesienie przy pierwszej potrzebie;
 nową kwotę zgłosić właścicielowi. W nocie presetu napisać, że to wartość startowa. Gość dalej bez płatnych źródeł.
 
+## Po poprawce źródła gościa (Sonnet): język strony i niderlandzki (R114, właściciel 30.10; spec `62f9f028`)
+Zgłoszenie: telefon ma język polski, a strona pokazuje angielski. Do tego wersja niderlandzka (nl) dla szerszego grona testerów.
+Tropy z kodu (30.10, `2d39b07c`), do sprawdzenia na prawdziwej stronie, bez zgadywania:
+(a) Serwer ustawia gościowi `ui_language` raz, przy starcie sesji, z pierwszego języka `Accept-Language` (`server/src/app.cpp` ≈ 2392).
+Potem `config.ui_language` wygrywa z `navigator.languages` (`web/src/App.tsx:437`, `shell/language.ts`). Jeśli przeglądarka wysyła
+`en` jako pierwszy (Chrome na Androidzie ma własną listę języków), gość zostaje na zawsze po angielsku. Preset pola to „auto”.
+Rozważyć: start gościa zapisuje „auto” albo całą listę z wagami, a wybór idzie przez `shellLanguage` z wszystkimi tagami.
+(b) Kopia gościa przywracana z przeglądarki (B1b) może nieść stare `ui_language`.
+(c) `AuthGate.tsx:22` i `GuestLayer.tsx:194` biorą tylko `navigator.language`, bez listy.
+(d) Teksty wpisane na stałe, na przykład półka „Conversations”: znaleźć wszystkie i przenieść do katalogów.
+Zakres: naprawić wybór, z testem e2e dla Chromium z `locale` pl, en i nl oraz z różnymi `Accept-Language`. nl jako same dane,
+lista języków otwarta: test, że nowy język w danych działa bez zmiany kodu. Tłumaczenie maszynowe na Sonnecie, w karcie oznaczone
+„maszynowe, nieczytane przez człowieka”.
+
 ## Luka do zaprojektowania (właściciel, 30.10; przekazał koordynator): zapytania do modeli z urządzenia osoby
 Słowa właściciela: „apka webowa operuje na urządzeniu klienckim i z niego wysyła zapytania”.
 Obserwacja z 30.10 na `2d39b07c`: w `loom/web/src` nie ma żadnego adresu dostawcy ani `fetch` na adres zewnętrzny, więc
