@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useShellText } from "../shell/text";
 import type { Message, MessageStatus } from "../api/types";
 import "./conversation-branches.css";
 
@@ -90,6 +91,7 @@ export interface ConversationBranchesProps {
 
 /** Read-only navigation. Selecting a descendant never restores versions or changes chat context. */
 export default function ConversationBranches({ messages, selectedId, onSelect, initialStatuses }: ConversationBranchesProps) {
+  const t = useShellText();
   const index = useMemo(() => indexConversationBranches(messages), [messages]);
   const [statuses, setStatuses] = useState(new Set<MessageStatus>(initialStatuses ?? ["active", "excluded", "version", "deleted"]));
   const [query, setQuery] = useState("");
@@ -109,7 +111,7 @@ export default function ConversationBranches({ messages, selectedId, onSelect, i
             const next = new Set(current); if (event.target.checked) next.add(status); else next.delete(status); return next;
           })} />{status}
         </label>)}
-        <label>Find message <input value={query} onChange={event => setQuery(event.target.value)} placeholder="Text, role or ID" /></label>
+        <label>{t("branches_find")} <input value={query} onChange={event => setQuery(event.target.value)} placeholder={t("branches_find_ph")} /></label>
       </div>
       {(index.duplicateIds.length > 0 || index.cycleEdges.length > 0 || index.rows.some(row => row.missingParent)) && <p role="status">Incomplete topology: {index.rows.filter(row => row.missingParent).length} missing parents, {index.cycleEdges.length} cycle edges, {index.duplicateIds.length} duplicate IDs. Source rows remain inspectable.</p>}
       <p>{rows.length} / {index.rows.length} messages shown</p>
@@ -126,11 +128,11 @@ export default function ConversationBranches({ messages, selectedId, onSelect, i
             <span className="conversation-branch-message">{message.text || "(No message text)"}</span>
             <code>{message.id}</code>
             {missingParent && <span>Missing parent: {missingParent}</span>}
-            {disconnected && <span>Rootless component</span>}
+            {disconnected && <span>{t("branches_rootless")}</span>}
           </button>
         </li>)}
       </ol>
-      {!rows.length && <p>No retained messages match these display filters.</p>}
+      {!rows.length && <p>{t("branches_none")}</p>}
     </details>
   </nav>;
 }

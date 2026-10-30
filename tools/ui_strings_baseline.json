@@ -2,15 +2,7 @@
  "_note": "DATA: user-visible literals still in code. The list may only shrink: a new literal fails tools/lint_ui_strings.py.",
  "entries": {
   "loom/web/src/App.tsx": {
-   "Hide chat": {
-    "count": 1,
-    "reason": "existing before 2026-10-30; to be moved to the catalogs"
-   },
    "Pokaż w grafie": {
-    "count": 1,
-    "reason": "existing before 2026-10-30; to be moved to the catalogs"
-   },
-   "Show chat": {
     "count": 1,
     "reason": "existing before 2026-10-30; to be moved to the catalogs"
    }
@@ -159,10 +151,6 @@
    "Promise": {
     "count": 1,
     "reason": "existing before 2026-10-30; to be moved to the catalogs"
-   },
-   "Reasoning": {
-    "count": 1,
-    "reason": "existing before 2026-10-30; to be moved to the catalogs"
    }
   },
   "loom/web/src/components/ClientStepBlock.tsx": {
@@ -211,24 +199,6 @@
   },
   "loom/web/src/components/ContextSlider.tsx": {
    "Probe text": {
-    "count": 1,
-    "reason": "existing before 2026-10-30; to be moved to the catalogs"
-   }
-  },
-  "loom/web/src/components/ConversationBranches.tsx": {
-   "Find message": {
-    "count": 1,
-    "reason": "existing before 2026-10-30; to be moved to the catalogs"
-   },
-   "No retained messages match these display filters.": {
-    "count": 1,
-    "reason": "existing before 2026-10-30; to be moved to the catalogs"
-   },
-   "Rootless component": {
-    "count": 1,
-    "reason": "existing before 2026-10-30; to be moved to the catalogs"
-   },
-   "Text, role or ID": {
     "count": 1,
     "reason": "existing before 2026-10-30; to be moved to the catalogs"
    }
@@ -1075,28 +1045,6 @@
     "reason": "existing before 2026-10-30; to be moved to the catalogs"
    },
    "Key": {
-    "count": 1,
-    "reason": "existing before 2026-10-30; to be moved to the catalogs"
-   }
-  },
-  "loom/web/src/components/SettingsPanel.tsx": {
-   "Anthropic batch key (semantic)": {
-    "count": 1,
-    "reason": "existing before 2026-10-30; to be moved to the catalogs"
-   },
-   "Base URL": {
-    "count": 1,
-    "reason": "existing before 2026-10-30; to be moved to the catalogs"
-   },
-   "Default model": {
-    "count": 1,
-    "reason": "existing before 2026-10-30; to be moved to the catalogs"
-   },
-   "GitHub token (sync)": {
-    "count": 1,
-    "reason": "existing before 2026-10-30; to be moved to the catalogs"
-   },
-   "OpenRouter API key (chat)": {
     "count": 1,
     "reason": "existing before 2026-10-30; to be moved to the catalogs"
    }
