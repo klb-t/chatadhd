@@ -17,7 +17,7 @@ test('generated web catalog carries the queue texts', () => {
 });
 test('unknown counts stay unknown and are never shown as zero', () => {
   const view = q.semanticQueueView({ pending: 0, processed: 0, errors: 0, mode: 'x', rate: '', running: true, paused: false });
-  assert.deepEqual(view, { stalled: null, quarantined: null, retryMode: null });
+  assert.deepEqual(view, { stalled: null, quarantined: null, retryMode: null, llm: null });   // the llm field (audit fix d) is unknown too: null, not 0
   const texts = q.semanticQueueTexts(feature);
   assert.match(texts.stalled(view.stalled), new RegExp(entry.value.locales.en.unknown));
   assert.doesNotMatch(texts.stalled(view.stalled), /\b0\b/);

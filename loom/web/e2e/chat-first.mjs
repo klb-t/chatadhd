@@ -225,7 +225,7 @@ try {
       await page.reload({ waitUntil: "domcontentloaded" });
       await page.getByTestId("shell-menu-toggle").click();
       assert.match(await page.getByTestId("shell-menu-workshop").innerText(), /Warsztat/);
-      assert.deepEqual(await page.getByRole("menuitem").allInnerTexts(), ["Graf", "Ustawienia", "Ty", "Ta rozmowa w grafie", "Okna", "Układ ▾", "Widoki i okna", "Analiza w tle", "Diagnostyka", "Pokaż zapytanie", "O aplikacji", "Warsztat (narzędzia zaawansowane)"]);   // W-gaps: + Pokaż zapytanie; M1-NAZWA-PRODUKTU: + O aplikacji
+      assert.deepEqual(await page.getByRole("menuitem").allInnerTexts(), ["Graf", "Ustawienia", "Ty", "Ta rozmowa w grafie", "Okna", "Układ ▾", "Widoki i okna", "Analiza w tle", "Diagnostyka", "Pokaż zapytanie", "Struktura projektu", "O aplikacji", "Warsztat (narzędzia zaawansowane)"]);   // W-gaps: + Pokaż zapytanie; M1-NAZWA-PRODUKTU: + O aplikacji; W11a: + Struktura projektu (graph.structure)
       // M1-NAZWA-PRODUKTU: the tab and the About sheet say ChatADHD; Loom appears there only as the library the app is built on
       assert.equal(await page.title(), "ChatADHD");
       await page.getByTestId("shell-menu-about").click();

@@ -274,8 +274,12 @@ try {
     assert.ok(old.length > 0, "files before");
     await openLayer(page);
     await page.getByTestId("guest-wipe").click();
-    const gone = page.waitForEvent("load");
     await page.getByTestId("guest-wipe-yes").click();
+    // the wipe reports each step first (audit fix a); the page reloads on "Continue"
+    await page.getByTestId("guest-wipe-report").waitFor();
+    assert.ok((await page.getByTestId("guest-wipe-report").innerText()).length > 0, "the report says what was removed");
+    const gone = page.waitForEvent("load");
+    await page.getByTestId("guest-wipe-continue").click();
     await gone;
     await page.getByTestId("chat-input").waitFor({ timeout: 20000 });
     await storePanel(page);
