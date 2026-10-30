@@ -77,12 +77,21 @@ export function ruleEnabled(rule: DropRule, cls: string): boolean {
   return true;
 }
 
+/** Whether the hit is the dragged thing itself (same window id / same icon key or address). */
+export function isSelfHit(s: DropSource, hit: Hit): boolean {
+  if (hit.kind === "window") return s.kind === "window" && s.id === hit.id;
+  if (hit.kind === "icon") return s.kind === "icon" && (s.key ?? s.address) === (hit.key ?? hit.address);
+  return false;
+}
+
 /** The first rule (in data order) that matches the topmost hit it names. Hits from the top down; the first hit with any matching rule
  *  decides (so a window over the desktop takes the drop, the desktop under it does not). A rule that matches but is off for the class
  *  gives `none` with drop_rule_off; no rule at all gives drop_no_rule (null when nothing was under the pointer but the desktop itself and
  *  the source is a window - the page then does nothing, quietly: that is just the end of a window move). */
 export function resolveDrop(source: DropSource, hits: readonly Hit[], cls: string, rules: readonly DropRule[] | undefined = INTERACTIONS.drop_rules): Resolved {
   const rs = Array.isArray(rules) ? rules.filter((r) => r && typeof r === "object") : [];
+  // a source is never its own target: the dragged window's own frame is the topmost element under the pointer at pointerup
+  hits = hits.filter((h) => !isSelfHit(source, h));
   let off: { rule: DropRule; hit: Hit } | null = null;
   for (const hit of hits) {
     if (hit.kind === "other") continue;
