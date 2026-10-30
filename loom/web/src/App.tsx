@@ -66,6 +66,7 @@ import Desktop, { DesktopEnded } from "./shell/windows/Desktop";
 import { DESKTOP, say, say as sayDesktop, closedLast, desktopCover, desktopPaths, desktopSettings, kindEntries, lastWindowClose, openFromDesktop, restoreFromDesktop, showDesktop, type KindTarget } from "./shell/windows/desktop";
 import { handSentence } from "./shell/desktop-sentence";
 import { DESKTOP_X, declarationOfWord, minimizedMode, resolveDeclaration, type DesktopIcon } from "./shell/windows/desktop-icons";
+import { ARRANGE as DESK_ARRANGE, DESKTOP_ARRANGE, arrangeByOfWord, type ArrangeRequest } from "./shell/windows/desktop-arrange";
 import { oneEntry, comboOf } from "./shell/windows/steps";
 import { apply as applyOp } from "./shell/windows/model";
 
@@ -521,6 +522,22 @@ export default function App() {
         detail.outcome = { state: "ok", parts: [{ kind: "text", text }], data: { schema: "loom.desktop_receipt/1", op: "desktop.declare", declaration: id } };
         return;
       }
+      if (detail.action === "desktop.arrange") {
+        // R101 D5: the client step of desktop.arrange - a sentence („uporządkuj ikony według nazwy”) names the order by a word of
+        // desktop.json (arrangement.arrange_words); the mounted desktop arranges its icons as one journal entry (undo on the desktop)
+        const word = typeof detail.args?.by === "string" ? detail.args.by : "";
+        const lang = uiLanguageRef.current;
+        const by = arrangeByOfWord(word);
+        const known = (DESK_ARRANGE.arrange_by ?? []).map((b) => sayDesktop(DESKTOP.words, `arrange_by_${b}`, lang)).join(", ");
+        if (by === undefined) { detail.outcome = { state: "failed", error: { message: sayDesktop(DESKTOP.words, "arrange_unknown", lang, { word, known }) } }; return; }
+        const req: ArrangeRequest = { by };
+        window.dispatchEvent(new CustomEvent(DESKTOP_ARRANGE, { detail: req }));
+        const r = req.result;
+        if (!r?.ok) { detail.outcome = { state: "failed", error: { message: sayDesktop(DESKTOP.words, r?.code === "arrange_by_unknown" ? "arrange_unknown" : "arrange_no_icons", lang, { word, known }) } }; return; }
+        const text = sayDesktop(DESKTOP.words, "arrange_done", lang, { by: sayDesktop(DESKTOP.words, `arrange_by_${by}`, lang) });
+        detail.outcome = { state: "ok", parts: [{ kind: "text", text }], data: { schema: "loom.desktop_receipt/1", op: "desktop.arrange", by } };
+        return;
+      }
       if (detail.action === "desktop.show") {
         // R101 D1: the client step of the catalogue action desktop.show = Ctrl+Shift+D (every shown window minimized, one journal entry)
         const before = winRef.current; const next = showDesktop(before); moveTo(next);
@@ -747,7 +764,8 @@ export default function App() {
   const desktop = <Desktop layout={win.layout} cover={deskCover} lang={uiLanguage} settings={deskSettings} entries={deskEntries} paths={deskPaths} layouts={deskLayouts}
     title={windowLabel} openKind={deskOpen} restore={(id) => moveTo(restoreFromDesktop(winRef.current, id))} loadLayout={deskLoad}
     sentence={(text) => { deskOpen({ chat: true }); handSentence(text, DESKTOP.sentence.send !== false); }} enableEmergency={() => saveSetting("desktop_emergency_path", true)}
-    api={api} deviceClass={deviceClass} declaration={config.desktop_declaration} openIcon={deskIcon} coupling={coupling.values} minimizedSetting={config.desktop_minimized} dropOnTrash={config.drop_on_trash} />;
+    api={api} deviceClass={deviceClass} declaration={config.desktop_declaration} openIcon={deskIcon} coupling={coupling.values} minimizedSetting={config.desktop_minimized} dropOnTrash={config.drop_on_trash}
+    arrangement={config.desktop_arrangement} installation={journalWho.installation} writeArrangement={(patch) => mergeSetting("desktop_arrangement", patch)} />;
   const advice = useMemo(() => {
     const more = [...styleAdvice, ...mount.advisories];
     return more.length ? [...coupling.advisories, ...more] : coupling.advisories;

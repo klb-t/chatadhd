@@ -273,3 +273,20 @@ export function readJournal(v: unknown): Journal {
   const ok = (a: unknown): JournalEntry[] => (Array.isArray(a) ? a.filter((e): e is JournalEntry => isObj(e) && typeof e.op === "string") : []);
   return { past: ok(x.past), future: ok(x.future) };
 }
+
+/** The order a word of a sentence names („według nazwy”, „by kind”): data.arrange_words (an open list per order and language); an
+ *  empty word = the first order of data.arrange_by (the preset label); a word no list has = undefined (the step says what it knows). */
+export function arrangeByOfWord(word: string, data: ArrangeData & { arrange_words?: Record<string, { pl?: string[]; en?: string[] }> } = ARRANGE as ArrangeData & { arrange_words?: Record<string, { pl?: string[]; en?: string[] }> }): string | undefined {
+  const w = (word ?? "").trim().toLowerCase();
+  const orders = data.arrange_by ?? ["label", "kind", "recent", "count", "declaration"];
+  if (!w) return orders[0];
+  if (orders.includes(w)) return w;
+  for (const by of orders) {
+    const words = [...(data.arrange_words?.[by]?.pl ?? []), ...(data.arrange_words?.[by]?.en ?? [])].map((x) => x.toLowerCase());
+    if (words.some((x) => w === x || w.split(/\s+/).includes(x) || (x.includes(" ") && w.includes(x)))) return by;
+  }
+  return undefined;
+}
+/** The event a client step (desktop.arrange by a sentence) sends to the mounted desktop; the desktop fills `result` synchronously. */
+export const DESKTOP_ARRANGE = "loom:desktop-arrange";
+export interface ArrangeRequest { by: string; result?: { ok: boolean; code?: string; by?: string } }

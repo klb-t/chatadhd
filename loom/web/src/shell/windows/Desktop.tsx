@@ -15,10 +15,11 @@ import { useEffect, useMemo, useRef, useState, type KeyboardEvent, type PointerE
 import type { WLayout } from "./model";
 import type { LoomApi } from "../../api/loom-api";
 import { DESKTOP, minimizedWindows, say, type DesktopPath, type DesktopSettings, type KindEntry, type KindTarget } from "./desktop";
-import { DESKTOP_X, allIcons, backdropLayout, iconGrid, iconOf, liveFocus, minimizedMode, resolveDeclaration, type BackEdge, type BackNode, type DesktopIcon, type PinRow } from "./desktop-icons";
+import { DESKTOP_X, allIcons, backdropLayout, iconOf, liveFocus, minimizedMode, resolveDeclaration, type BackEdge, type BackNode, type DesktopIcon, type PinRow } from "./desktop-icons";
 import type { Values } from "./coupling";
 import { loadAround, loadPins } from "./desktop-load";
 import { TRASH_CHANGED, trashBadge, trashStepOf, trashable } from "./desktop-trash";
+import { ARRANGE, DESKTOP_ARRANGE, arrangeIcons, arrangementPatch, cellAt, moveIcon, placeIcons, readArrangement, readJournal, record, redo, undo, type ArrangeRequest, type Arrangement, type Journal } from "./desktop-arrange";
 
 export interface DesktopProps {
   layout: WLayout;
@@ -46,6 +47,12 @@ export interface DesktopProps {
   minimizedSetting?: unknown;
   /** R101 D4: the setting drop_on_trash (target | pin; unset = the preset target): what „Do kosza” on an icon moves. */
   dropOnTrash?: unknown;
+  /** R101 D5: the setting desktop_arrangement ({<class>: arrangement} per person, installations.<id>.<class> per browser installation). */
+  arrangement?: unknown;
+  /** R101 D5: the id of this browser installation (the level `installation` of desktop_arrangement). */
+  installation?: string;
+  /** R101 D5: writes a merge patch of desktop_arrangement (merged on the host, as window_layout_active). */
+  writeArrangement?(patch: Record<string, unknown>): void;
 }
 
 /** The faint graph behind the icons: one canvas, drawn when its data or its size changes; real nodes and real edges only. */
@@ -75,7 +82,7 @@ function GraphBackdrop({ nodes, edges, alpha, edgeAlpha, lang, focus }: { nodes:
     title={say(DESKTOP.words, "graph_label", lang, { n: String(laid.pos.size), e: String(laid.edges.length) })} />;
 }
 
-export default function Desktop({ layout, cover, lang, settings, entries, paths: sectionPaths, layouts, title, openKind, restore, loadLayout, sentence, enableEmergency, api, deviceClass = "desktop", declaration, openIcon, coupling, minimizedSetting, dropOnTrash }: DesktopProps) {
+export default function Desktop({ layout, cover, lang, settings, entries, paths: sectionPaths, layouts, title, openKind, restore, loadLayout, sentence, enableEmergency, api, deviceClass = "desktop", declaration, openIcon, coupling, minimizedSetting, dropOnTrash, arrangement, installation, writeArrangement }: DesktopProps) {
   const w = DESKTOP.words;
   const [text, setText] = useState("");
   const [kept, setKept] = useState(false);
@@ -110,6 +117,18 @@ export default function Desktop({ layout, cover, lang, settings, entries, paths:
     window.addEventListener(TRASH_CHANGED, on);
     return () => { live = false; window.removeEventListener(TRASH_CHANGED, on); };
   }, [covered, api]);
+  // R101 D5 (PULPIT §6, §13 P3): the journal of the arrangement of this device class, kept for this tab (sessionStorage: it survives a reload)
+  const cls = deviceClass;
+  const jKey = `loom.desktop_arrangement_journal.${cls}`;
+  const [journal, setJournal] = useState<Journal>(() => { try { return readJournal(sessionStorage.getItem(jKey)); } catch { return { past: [], future: [] }; } });
+  useEffect(() => { try { setJournal(readJournal(sessionStorage.getItem(jKey))); } catch { /* storage unavailable: an empty journal */ } }, [jKey]);
+  const keepJournal = (j: Journal) => { setJournal(j); try { sessionStorage.setItem(jKey, JSON.stringify(j)); } catch (e) { console.debug("desktop: the arrangement journal is kept in memory only", e); } };
+  const arr = useMemo(() => readArrangement(arrangement, cls, installation), [arrangement, cls, installation]);
+  const [arrNote, setArrNote] = useState<{ code: string; vars?: Record<string, string> } | null>(null);
+  const writeArr = (value: Arrangement | null) => writeArrangement?.(arrangementPatch(arrangement, cls, value, installation));
+  const commitArr = (op: string, after: Arrangement) => { keepJournal(record(journal, { op, before: arr.value, after, at: new Date().toISOString() })); writeArr(after); };
+  const undoArr = () => { const u = undo(journal); if (!u) return; keepJournal(u.journal); writeArr(u.value); setArrNote(null); };
+  const redoArr = () => { const r = redo(journal); if (!r) return; keepJournal(r.journal); writeArr(r.value); setArrNote(null); };
   const toTrash = async (ic: DesktopIcon) => {
     setMenuFor(null);
     if (!api?.actions) return;
@@ -155,7 +174,62 @@ export default function Desktop({ layout, cover, lang, settings, entries, paths:
     const ro = typeof ResizeObserver !== "undefined" ? new ResizeObserver(on) : null; ro?.observe(el);
     return () => ro?.disconnect();
   }, [showIcons, covered]);
-  const grid = iconGrid(icons.length, gridW || decl.grid.cellPx * 4, decl.grid);
+  // R101 D5: the icons placed by desktop_arrangement (hand positions snapped to the grid of this width; the others in the flow order).
+  // An address shown twice (two sources) gets a key of its own for the second icon.
+  const keys = useMemo(() => { const n = new Map<string, number>(); return icons.map((ic) => { const k = n.get(ic.address) ?? 0; n.set(ic.address, k + 1); return k ? `${ic.address}#${k}` : ic.address; }); }, [icons]);
+  const place = placeIcons(keys, arr, gridW || decl.grid.cellPx * 4, decl.grid);
+  const cellOf = new Map(place.placed.map((p) => [p.address, p]));
+  const placeRef = useRef(place); placeRef.current = place;
+  const arrangeBy = (by: string): { ok: boolean; code?: string; by?: string } => {
+    if (!icons.length) return { ok: false, code: "arrange_no_icons" };
+    const counts: Record<string, number> = { "trash:": trashCount };
+    const r = arrangeIcons(arr, place, icons.map((ic, i) => ({ address: keys[i], label: ic.label, kind: ic.kind, count: counts[ic.address] })), by, lang);
+    if (!r.value) { setArrNote(r.advisory ?? null); return { ok: false, code: r.advisory?.code, by }; }
+    commitArr(`arrange:${by}`, r.value); setArrNote(null); setArrMenu(false);
+    return { ok: true, by };
+  };
+  const arrangeRef = useRef(arrangeBy); arrangeRef.current = arrangeBy;
+  useEffect(() => {
+    const on = (e: Event) => { const d = (e as CustomEvent<ArrangeRequest>).detail; if (d) d.result = arrangeRef.current(d.by); };
+    window.addEventListener(DESKTOP_ARRANGE, on);
+    return () => window.removeEventListener(DESKTOP_ARRANGE, on);
+  }, []);
+  const [arrMenu, setArrMenu] = useState(false);
+  // dragging an icon (pointer: mouse, pen or finger): past drag_threshold_px the icon follows the pointer; the drop cell is the one under it
+  const drag = useRef<{ key: string; id: number; x0: number; y0: number; moved: boolean } | null>(null);
+  const [dragging, setDragging] = useState<{ key: string; dx: number; dy: number } | null>(null);
+  const justDragged = useRef(false);
+  const dragStart = (e: RPointerEvent<HTMLButtonElement>, key: string) => {
+    if (e.button !== 0) return;
+    drag.current = { key, id: e.pointerId, x0: e.clientX, y0: e.clientY, moved: false };
+  };
+  const dragMove = (e: RPointerEvent<HTMLButtonElement>) => {
+    const d = drag.current; if (!d || d.id !== e.pointerId) return;
+    const dx = e.clientX - d.x0, dy = e.clientY - d.y0;
+    if (!d.moved && Math.hypot(dx, dy) < Math.max(0, ARRANGE.drag_threshold_px ?? 8)) return;
+    if (!d.moved) { d.moved = true; try { e.currentTarget.setPointerCapture(e.pointerId); } catch { /* capture is a nicety */ } }
+    setDragging({ key: d.key, dx, dy });
+  };
+  const dragEnd = (e: RPointerEvent<HTMLButtonElement>) => {
+    const d = drag.current; drag.current = null; setDragging(null);
+    if (!d || d.id !== e.pointerId || !d.moved) return;
+    justDragged.current = true; window.setTimeout(() => { justDragged.current = false; }, 0);
+    const el = gridRef.current; if (!el) return;
+    const r = el.getBoundingClientRect(); const pl = placeRef.current;
+    const me = pl.placed.find((p) => p.address === d.key);
+    const lx = e.clientX - r.left, ly = e.clientY - r.top;
+    if (pl.mode === "free") {
+      // the top-left corner of the icon where it was dropped, as a fraction of the area
+      const x = ((me?.x ?? 0) + (e.clientX - d.x0)) / Math.max(1, pl.width), y = ((me?.y ?? 0) + (e.clientY - d.y0)) / Math.max(1, pl.height);
+      commitArr("move", moveIcon(arr, pl, d.key, { x, y }));
+    } else {
+      const rowH = pl.rows ? r.height / pl.rows : pl.cellH;
+      const to = cellAt(lx, ly, { columns: pl.columns, cellW: pl.cellW, cellH: rowH });
+      if (me && me.col === to.col && me.row === to.row) return;
+      if (arr.mode === "computed") setArrNote({ code: "arrange_computed_moved" });
+      commitArr("move", moveIcon(arr, pl, d.key, to));
+    }
+  };
   // the affordance of §12: a long press (or the context menu) on the empty desktop opens "more" (every kind of window, the layouts)
   const press = useRef<number | null>(null);
   const emptyTarget = (t: EventTarget | null) => { const el = t as HTMLElement | null; return !!el && (el === root.current || el.classList.contains("desktop-content") || el.classList.contains("desktop-icons")); };
@@ -186,20 +260,24 @@ export default function Desktop({ layout, cover, lang, settings, entries, paths:
   };
   const moreIds = new Set(DESKTOP_X.sections_more ?? []);
   const section = (id: string) => {
-    if (id === "icons") return showIcons ? (
-      <div key={id} ref={gridRef} className="desktop-icons" role="group" aria-label={say(w, "icons", lang)} data-testid="desktop-icons" data-declaration={decl.id}
-        data-state={pins.state} data-count={icons.length} data-columns={grid.columns}
-        style={{ gridTemplateColumns: `repeat(${grid.columns}, ${Math.floor(grid.cellW)}px)` }}>
-        {icons.map((ic, i) => (
+    if (id === "icons") return showIcons ? (<div key={id} style={{ display: "contents" }}>
+      <div ref={gridRef} className="desktop-icons" role="group" aria-label={say(w, "icons", lang)} data-testid="desktop-icons" data-declaration={decl.id}
+        data-state={pins.state} data-count={icons.length} data-columns={place.columns} data-arrangement-mode={place.mode} data-arrangement-from={arr.from}
+        style={place.mode === "free" ? { position: "relative", display: "block", height: `${Math.ceil(place.height)}px` } : { gridTemplateColumns: `repeat(${place.columns}, ${Math.floor(place.cellW)}px)` }}>
+        {icons.map((ic, i) => { const c = cellOf.get(keys[i])!; const dr = dragging?.key === keys[i] ? dragging : null; return (
           <button key={ic.node} type="button" className="desktop-icon" data-testid="desktop-icon" data-address={ic.address} data-kind={ic.kind ?? ""} data-status={ic.status} data-source={ic.source ?? ""}
             disabled={ic.status !== "available"} title={ic.reason ?? ic.label} aria-label={ic.reason ? `${ic.label}. ${ic.reason}` : ic.label}
-            style={{ gridColumn: grid.cells[i].col + 1, gridRow: grid.cells[i].row + 1 }} onClick={() => tap(ic)}
+            data-col={c.col} data-row={c.row} data-pinned={c.pinned ? "true" : undefined} data-dragging={dr ? "true" : undefined}
+            style={{ ...(place.mode === "free" ? { position: "absolute", left: `${Math.round(c.x)}px`, top: `${Math.round(c.y)}px`, width: `${Math.floor(place.cellW)}px` } : { gridColumn: c.col + 1, gridRow: c.row + 1 }),
+              ...(dr ? { transform: `translate(${dr.dx}px, ${dr.dy}px)`, zIndex: 5, opacity: 0.85 } : {}), touchAction: "none" }}
+            onPointerDown={(e) => dragStart(e, keys[i])} onPointerMove={dragMove} onPointerUp={dragEnd} onPointerCancel={() => { drag.current = null; setDragging(null); }}
+            onClick={() => { if (!justDragged.current) tap(ic); }}
             onContextMenu={trashable(ic.address) && api?.actions ? (e) => { e.preventDefault(); e.stopPropagation(); setMenuFor(ic); } : undefined}
             data-badge={ic.address.startsWith("trash:") ? trashBadge(trashCount) : undefined}>
             <span className="desktop-icon-glyph" aria-hidden="true">{ic.glyph}</span>
             {ic.address.startsWith("trash:") && trashCount > 0 && <span className="desktop-icon-badge" data-testid="desktop-trash-badge" aria-label={say(w, "trash_badge", lang, { count: String(trashCount) })}>{trashBadge(trashCount)}</span>}
             {(decl.icon?.labelLines ?? 2) > 0 && <span className="desktop-icon-label" style={{ WebkitLineClamp: decl.icon?.labelLines ?? 2 }}>{ic.label}</span>}
-          </button>))}
+          </button>); })}
         {menuFor && (
           <div className="desktop-icon-menu" role="menu" data-testid="desktop-icon-menu" data-address={menuFor.address}>
             <button type="button" role="menuitem" data-testid="desktop-icon-trash" onClick={() => toTrash(menuFor)}>{say(w, "icon_menu_trash", lang)}</button>
@@ -207,7 +285,19 @@ export default function Desktop({ layout, cover, lang, settings, entries, paths:
           </div>)}
         {(decl.pins ? pins.state === "ok" : true) && !icons.length && <p className="desktop-hint" data-testid="desktop-advisory" data-code="desktop_empty">{say(w, "desktop_empty", lang)}</p>}
         {pins.state === "error" && <p className="desktop-hint" role="status" data-testid="desktop-advisory" data-code="desktop_pins_error">{say(w, "icons_error", lang, { error: pins.error ?? "" })}</p>}
-      </div>) : null;
+      </div>
+      {/* R101 D5: arranging the icons - one journal entry per move or arrangement, undone and redone here */}
+      {icons.length > 0 && <div className="desktop-arrange" data-testid="desktop-arrange" data-from={arr.from} data-mode={arr.modeWritten}>
+        <button type="button" data-testid="desktop-arrange-toggle" aria-expanded={arrMenu} onClick={() => setArrMenu((v) => !v)}>{say(w, "arrange", lang)}</button>
+        <button type="button" data-testid="desktop-arrange-undo" disabled={!journal.past.length} onClick={undoArr}>{say(w, "arrange_undo", lang)}</button>
+        <button type="button" data-testid="desktop-arrange-redo" disabled={!journal.future.length} onClick={redoArr}>{say(w, "arrange_redo", lang)}</button>
+        <span className="desktop-hint" data-testid="desktop-arrange-from">{say(w, `arrange_from_${arr.from}`, lang)} · {say(w, "arrange_move_hint", lang)}</span>
+        {arrMenu && <div className="desktop-items" role="menu" data-testid="desktop-arrange-menu">
+          {(ARRANGE.arrange_by ?? ["label"]).map((by) => <button key={by} type="button" role="menuitem" data-testid="desktop-arrange-by" data-by={by} onClick={() => arrangeBy(by)}>{say(w, `arrange_by_${by}`, lang)}</button>)}
+        </div>}
+        {[...arr.advisories, ...(arrNote ? [arrNote] : [])].map((a, i) => <div key={a.code + i} className="win-chip" role="status" data-testid="desktop-advisory" data-code={a.code}><span>{say(w, a.code, lang, a.vars ?? {})}</span></div>)}
+      </div>}
+    </div>) : null;
     if (id === "sentence") return (
       <form key={id} className="desktop-section desktop-sentence" data-testid="desktop-sentence" onSubmit={(e) => { e.preventDefault(); const v = text.trim(); if (v) { setText(""); sentence(v); } }}>
         <input aria-label={say(w, "sentence_label", lang)} placeholder={say(w, "sentence_label", lang)} value={text} onChange={(e) => setText(e.target.value)} data-testid="desktop-sentence-input" />

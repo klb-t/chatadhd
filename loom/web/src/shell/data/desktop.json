@@ -364,6 +364,14 @@
   "arrange_move_hint": {
    "pl": "Przytrzymaj i przeciągnij ikonę, żeby ją przestawić.",
    "en": "Hold and drag an icon to move it."
+  },
+  "arrange_no_icons": {
+   "pl": "Na pulpicie nie ma jeszcze ikon do ułożenia (pulpit nie był pokazany albo nie ma ikon).",
+   "en": "The desktop has no icons to arrange yet (it was not shown, or it has no icons)."
+  },
+  "arrange_unknown": {
+   "pl": "Nie wiem, jak ułożyć ikony „{word}”. Umiem: {known}.",
+   "en": "I do not know how to arrange the icons “{word}”. I can: {known}."
   }
  },
  "sections_more": [
