@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // R101 D5 (PULPIT_R101_2026-10-28 §6, §13 P3/P4, §14 row D5; acceptance, the REAL loom-server, no model). Polish, a phone held sideways
-// (844x390) and upright (390x844). (1) drag the first icon („Ty”) to the last column (the trash there takes its cell) → it stays there, desktop_arrangement holds it at both levels
+// (844x390) and upright (390x844). (1) drag the first icon („Ty”) to the last column (second row: a free cell - since R101 D6 a drop on the trash icon means "to the trash", desktop.json interactions.drop_rules) → it stays there, desktop_arrangement holds it at both levels
 // (this browser installation and the person); (2) turn the phone (viewport 390x844, another device class by width) → the position is
 // snapped into the narrower grid (the last of 4 columns), read from the other class (class_fallback), nothing lost; (3) reload → it stays;
 // turned back → the last column of the wide grid again; (4) a value at the level `installation` overrides `person`, and without it the
@@ -79,19 +79,19 @@ try {
   const inst = await p.evaluate(() => localStorage.getItem("loom.installation_id"));
   let wideCols = 0;
 
-  const M = "party:self";   // the first icon; dragged to the last column (the trash there moves to its cell)
-  await step("sideways (844x390): drag the „Ty” icon (party:self, first)  to the last column → it stays, written at the installation and the person level", async () => {
+  const M = "party:self";   // the first icon; dragged to the last column of the second row (free: the trash's cell would trash it, D6)
+  await step("sideways (844x390): drag the „Ty” icon (party:self, first)  to the last column of the second row → it stays, written at the installation and the person level", async () => {
     assert.ok(inst, "the page has an installation id");
     await toDesktop();
     wideCols = await columns();
     assert.ok(wideCols > 4, `the wide grid has more than 4 columns (${wideCols})`);
     assert.equal(await p.getByTestId("desktop-arrange").getAttribute("data-from"), "preset");
-    await dragTo(M, wideCols - 1, 0);
-    await until("the icon in the last column", async () => JSON.stringify(await cell(M)) === JSON.stringify([wideCols - 1, 0]));
+    await dragTo(M, wideCols - 1, 1);
+    await until("the icon in the last column", async () => JSON.stringify(await cell(M)) === JSON.stringify([wideCols - 1, 1]));
     assert.equal(await icon(M).getAttribute("data-pinned"), "true");
     const v = await until("desktop_arrangement written", async () => { const x = parse(await getKey("desktop_arrangement")); return x?.desktop?.positions?.[M] && x?.installations?.[inst]?.desktop?.positions?.[M] ? x : null; });
-    assert.deepEqual([v.desktop.positions[M].col, v.desktop.positions[M].row], [wideCols - 1, 0], "person level");
-    assert.deepEqual([v.installations[inst].desktop.positions[M].col, v.installations[inst].desktop.positions[M].row], [wideCols - 1, 0], "installation level");
+    assert.deepEqual([v.desktop.positions[M].col, v.desktop.positions[M].row], [wideCols - 1, 1], "person level");
+    assert.deepEqual([v.installations[inst].desktop.positions[M].col, v.installations[inst].desktop.positions[M].row], [wideCols - 1, 1], "installation level");
     assert.equal(await p.getByTestId("desktop-arrange").getAttribute("data-from"), "installation");
     assert.equal(await p.getByTestId("desktop-arrange-undo").isDisabled(), false, "the move is a journal entry");
     await shot("1-wide-moved");
@@ -99,7 +99,7 @@ try {
   await step("turned upright (390x844): the position is snapped to the last of 4 columns, nothing lost", async () => {
     await p.setViewportSize(TALL);
     await until("4 columns", async () => (await columns()) === 4);
-    await until("the icon snapped", async () => JSON.stringify(await cell(M)) === JSON.stringify([3, 0]));
+    await until("the icon snapped", async () => JSON.stringify(await cell(M)) === JSON.stringify([3, 1]));
     assert.equal(await p.getByTestId("desktop-arrange").getAttribute("data-inherited"), "desktop", "read from the other class (class_fallback)");
     assert.equal(await p.locator('[data-testid="desktop-icon"]').count(), 7, "every icon is there");
     const cells = await p.locator('[data-testid="desktop-icon"]').evaluateAll(els => els.map(e => `${e.getAttribute("data-col")},${e.getAttribute("data-row")}`));
@@ -109,17 +109,17 @@ try {
   await step("reload upright → still snapped; turned back sideways → the last column of the wide grid again", async () => {
     await p.reload(); await toDesktop();
     assert.equal(await columns(), 4);
-    assert.deepEqual(await cell(M), [3, 0]);
+    assert.deepEqual(await cell(M), [3, 1]);
     await p.setViewportSize(WIDE);
     await until("the wide grid", async () => (await columns()) === wideCols);
-    await until("the icon back in the last column", async () => JSON.stringify(await cell(M)) === JSON.stringify([wideCols - 1, 0]));
+    await until("the icon back in the last column", async () => JSON.stringify(await cell(M)) === JSON.stringify([wideCols - 1, 1]));
   });
   await step("the installation level overrides the person level; without it the person value is drawn", async () => {
     const v = parse(await getKey("desktop_arrangement"));
     v.desktop = { positions: { [M]: { col: 0, row: 1 } } };   // another device of the person put it elsewhere (a write through the API)
     await setKey("desktop_arrangement", v);
     await p.reload(); await toDesktop();
-    assert.deepEqual(await cell(M), [wideCols - 1, 0], "this browser's own place wins");
+    assert.deepEqual(await cell(M), [wideCols - 1, 1], "this browser's own place wins");
     assert.equal(await p.getByTestId("desktop-arrange").getAttribute("data-from"), "installation");
     delete v.installations;
     await setKey("desktop_arrangement", v);
