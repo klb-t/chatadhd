@@ -18,6 +18,7 @@
 #include <nlohmann/json.hpp>
 
 #include "loom/action_table.h"
+#include "loom/phase_timing.h"
 #include "loom/runtime_profile.h"
 #include "sse_stream.h"
 #include "onboarding-ui-routes.h"
@@ -338,6 +339,8 @@ thread_local std::optional<loom::accounts::Guest> t_guest;
 // R103 B2: the guest request admitted on this thread (released by the logger after its answer, a stream included, was written).
 thread_local std::string t_admitted_guest;
 thread_local bool t_admitted_model = false;
+// LOOM_PHASE_TIMING (loom/phase_timing.h): one timer per API request, from pre-routing to the logger.
+thread_local std::optional<loom::PhaseTimer> t_request_timer;
 std::string client_address(const httplib::Request& req, bool trust_forwarded);
 
 // R18 options shared by account and guest runtimes.
@@ -485,6 +488,7 @@ LoomContext* App::context_for_guest(const std::string& guest_id) {
   std::lock_guard lk(pool_mu_);
   auto it = guest_ctx_.find(guest_id);
   if (it != guest_ctx_.end()) return it->second;
+  loom::PhaseTimer pt("context_for_guest");
   json options = isolated_options(accounts_->settings().isolation, accounts_->guest_dir(guest_id).string());
   // R103 B2: a guest runtime reaches only the hosts of the free provider manifests (plus outbound.extra_hosts).
   if (const json out = guard_.presets().value("outbound", json::object()); out.value("only_provider_hosts", false)) {
@@ -506,11 +510,14 @@ LoomContext* App::context_for_guest(const std::string& guest_id) {
     if (hosts.empty()) hosts.push_back("invalid.");  // nothing listed: nothing reachable, never everything
     options["only_hosts"] = hosts;
   }
+  pt.mark("only_hosts");
   std::map<std::string, std::string> overlay;
   json source = choose_guest_source(overlay);
   if (!overlay.empty()) options["credential_overlay"] = overlay;
+  pt.mark("choose_source");
   const char* err = nullptr;
   LoomContext* c = loom_init_ex(options.dump().c_str(), &err);
+  pt.mark("loom_init_ex");
   if (!c) std::cerr << "loom-server: cannot open the working directory of guest " << guest_id << ": " << own_and_free(err) << std::endl;
   else if (err) loom_free_string(err);
   if (!c) return nullptr;
@@ -524,6 +531,7 @@ LoomContext* App::context_for_guest(const std::string& guest_id) {
                   {"loom_guest_source", source["provider"]}};
     (void)loom_set_config_json(c, patch.dump().c_str());
   }
+  pt.mark("config");
   guest_ctx_[guest_id] = c;
   guest_source_[guest_id] = source;
   return c;
@@ -911,6 +919,8 @@ void App::register_middleware() {
     t_user.reset();
     t_guest.reset();
     t_session_token.clear();
+    t_request_timer.reset();
+    if (loom::phase_timing_enabled() && req.path.rfind("/api/", 0) == 0) t_request_timer.emplace("request " + req.method + " " + req.path);
     if (!t_admitted_guest.empty()) {  // a request on this thread ended without reaching the logger
       guard_.finish(t_admitted_guest, t_admitted_model);
       t_admitted_guest.clear();
@@ -946,6 +956,7 @@ void App::register_middleware() {
           t_request_ctx = context_for_guest((*g)->id);
         }
       }
+      if (t_request_timer) t_request_timer->mark("session_and_context");
       const bool is_public =
           (req.method == "GET" && (req.path == "/api/auth/me" || req.path == "/api/healthz" ||
                                    (guests_on && req.path == "/api/auth/guest/challenge"))) ||
@@ -988,6 +999,10 @@ void App::register_middleware() {
 
   // R103 B2: the logger runs after the answer (a stream included) was written - the end of an admitted guest request.
   svr_.set_logger([this](const httplib::Request&, const httplib::Response&) {
+    if (t_request_timer) {
+      t_request_timer->mark("handler_and_write");
+      t_request_timer.reset();
+    }
     if (t_admitted_guest.empty()) return;
     guard_.finish(t_admitted_guest, t_admitted_model);
     t_admitted_guest.clear();
@@ -1220,6 +1235,7 @@ void App::route_chat() {
     auto thread_ptr = std::make_shared<std::thread>([this, ctx, request_json, queue, guest, guest_provider]() {
       // A guest's stream is closed only after its answer was counted (below), so its next request sees the count.
       struct Sink { SseQueue* q; bool hold; } sink{queue.get(), !guest.empty()};
+      loom::PhaseTimer pt(guest.empty() ? "chat_thread" : "chat_thread guest");
       const char* result = loom_chat_ex(
           ctx, request_json.c_str(),
           [](const char* chunk, int done, void* ud) {
@@ -1228,6 +1244,7 @@ void App::route_chat() {
             if (done && !s->hold) s->q->close();
           },
           &sink);
+      pt.mark("loom_chat_ex");
       // R103 B2: a guest's answer counts against its output-token buckets - the provider's usage, else an estimate.
       if (!guest.empty() && result) {
         const json r = json::parse(result, nullptr, false);

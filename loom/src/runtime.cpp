@@ -1,6 +1,7 @@
 // Composition root. See runtime.h for the wiring order.
 #include "util/safety.h"
 #include "loom/runtime.h"
+#include "loom/phase_timing.h"
 #include "loom/cleanup.h"
 #include "loom/path_policy.h"
 #include "loom/net/host_guard.h"
@@ -350,6 +351,7 @@ Runtime::~Runtime() {
 Result<std::unique_ptr<Runtime>> Runtime::open(const RuntimeOptions& opts) {
   if (opts.log_level) log::set_level(*opts.log_level);
   auto impl = std::make_unique<Impl>();
+  PhaseTimer pt("runtime_open");
 
   std::optional<std::string_view> override_dir;
   if (opts.data_dir) override_dir = *opts.data_dir;
@@ -369,6 +371,7 @@ Result<std::unique_ptr<Runtime>> Runtime::open(const RuntimeOptions& opts) {
   impl->config = std::make_unique<Config>(p.config);
   impl->secrets = std::make_unique<Secrets>(p.secrets);
   if (!opts.credential_overlay.empty()) impl->secrets->set_overlay(opts.credential_overlay);
+  pt.mark("config_secrets");
 
   DbOptions dbo;
   dbo.enable_fts = opts.enable_fts;
@@ -378,6 +381,7 @@ Result<std::unique_ptr<Runtime>> Runtime::open(const RuntimeOptions& opts) {
     if (cr.is_number_integer()) dbo.fts_chunk_rows = static_cast<int>(std::max<std::int64_t>(0, cr.get<std::int64_t>()));
   }
   LOOM_TRY_ASSIGN(impl->db, Database::open(p.db, dbo));
+  pt.mark("db_open");
   if (opts.start_workers && opts.enable_fts) {
     Json bg = impl->config->get("loom_fts_background_build");
     if (!bg.is_boolean() || bg.get<bool>()) impl->db->fts_start_background();
@@ -391,6 +395,7 @@ Result<std::unique_ptr<Runtime>> Runtime::open(const RuntimeOptions& opts) {
   impl->tasks = std::make_unique<TaskEngine>(*impl->db, *impl->event_log, impl->bus.get());
   impl->relations = std::make_unique<RelationRegistry>(*impl->db);
   LOOM_TRY(impl->relations->seed_builtin());
+  pt.mark("core_stores");
 
   RuntimeParts parts = opts.parts;
   fill_default_parts(parts, opts.http);
@@ -410,6 +415,7 @@ Result<std::unique_ptr<Runtime>> Runtime::open(const RuntimeOptions& opts) {
   LOOM_TRY_ASSIGN(impl->analyzer, parts.analyzer(ctx));
   if (!impl->analyzer) return Error(Errc::Internal, "runtime part factory returned null: analyzer");
   ctx.analyzer = impl->analyzer.get();
+  pt.mark("analyzer");
   auto forwarding = std::make_shared<ForwardingTransport>(parts.http());
   if (opts.block_private_hosts) forwarding->set_guard(opts.allow_hosts);
   if (!opts.only_hosts.empty()) forwarding->set_only_hosts(opts.only_hosts);
@@ -420,28 +426,40 @@ Result<std::unique_ptr<Runtime>> Runtime::open(const RuntimeOptions& opts) {
   LOOM_TRY_ASSIGN(impl->storage, build_part("storage", parts.storage, ctx));
   ctx.storage = impl->storage.get();
   impl->blobs->set_placement(impl->storage.get());
+  pt.mark("storage");
   LOOM_TRY_ASSIGN(impl->models, build_part("models", parts.models, ctx));
   ctx.models = impl->models.get();
+  pt.mark("models");
   LOOM_TRY_ASSIGN(impl->providers, build_part("providers", parts.providers, ctx));
   ctx.providers = impl->providers.get();
+  pt.mark("providers");
   LOOM_TRY_ASSIGN(impl->semantic_llm, build_part("semantic_llm", parts.semantic_llm, ctx));
   ctx.semantic_llm = impl->semantic_llm.get();
+  pt.mark("semantic_llm");
   LOOM_TRY_ASSIGN(impl->memory, build_part("memory", parts.memory, ctx));
   ctx.memory = impl->memory.get();
+  pt.mark("memory");
   LOOM_TRY_ASSIGN(impl->graph_memory, build_part("graph_memory", parts.graph_memory, ctx));
   ctx.graph_memory = impl->graph_memory.get();
+  pt.mark("graph_memory");
   LOOM_TRY_ASSIGN(impl->context, build_part("context", parts.context, ctx));
   ctx.context = impl->context.get();
+  pt.mark("context");
   LOOM_TRY_ASSIGN(impl->graph, build_part("graph", parts.graph, ctx));
   ctx.graph = impl->graph.get();
+  pt.mark("graph");
   LOOM_TRY_ASSIGN(impl->chat, build_part("chat", parts.chat, ctx));
   ctx.chat = impl->chat.get();
+  pt.mark("chat");
   LOOM_TRY_ASSIGN(impl->batch, build_part("batch", parts.batch, ctx));
   ctx.batch = impl->batch.get();
+  pt.mark("batch");
   LOOM_TRY_ASSIGN(impl->worker, build_part("worker", parts.worker, ctx));
   ctx.worker = impl->worker.get();
+  pt.mark("worker");
   LOOM_TRY_ASSIGN(impl->media, build_part("media", parts.media, ctx));
   ctx.media = impl->media.get();
+  pt.mark("media");
   // ASR/OCR model_use records go to the provenance store (subject = the usage receipt when there is one).
   impl->media->set_provenance_sink([prov = impl->provenance.get(), db = impl->db.get(), cfg = impl->config.get()](const Json& record) {
     ProvenanceRecord rec;
@@ -463,15 +481,18 @@ Result<std::unique_ptr<Runtime>> Runtime::open(const RuntimeOptions& opts) {
   });
   LOOM_TRY_ASSIGN(impl->importer, build_part("importer", parts.importer, ctx));
   ctx.importer = impl->importer.get();
+  pt.mark("importer");
   impl->exporter = std::make_unique<ConversationExporter>(*impl->db);
   LOOM_TRY_ASSIGN(impl->crypto, build_part("crypto", parts.crypto, ctx));
   LOOM_TRY_ASSIGN(impl->github, build_part("github", parts.github, ctx));
   impl->embedder = parts.embedding(ctx);
+  pt.mark("exporter_crypto_github_embedder");
 
   // Python ChatEngine resumed the most recent conversation on construction.
   if (auto st = impl->chat->resume_last(); !st && st.error().code != Errc::NotImplemented) {
     log::warn(kLog, "could not resume last conversation: {}", st.error().message);
   }
+  pt.mark("resume_last");
 
   // Start: graph subscription always (real-time graph is core behaviour);
   // background threads only when requested.
@@ -480,6 +501,7 @@ Result<std::unique_ptr<Runtime>> Runtime::open(const RuntimeOptions& opts) {
   if (auto rec = impl->tasks->recover_interrupted(); !rec) {
     log::warn(kLog, "task recovery failed: {}", rec.error().message);
   }
+  pt.mark("graph_start_task_recovery");
   if (opts.start_workers) {
     // Housekeeping of the usage ledger (preset mode "auto"): never creates it, runs at most once per interval.
     if (auto compacted = auto_compact_usage_ledger(*impl->config, root); !compacted)
@@ -494,16 +516,21 @@ Result<std::unique_ptr<Runtime>> Runtime::open(const RuntimeOptions& opts) {
     impl->tasks->start(workers.is_number_integer() ? workers.get<int>() : 1);
     impl->worker->start();
   }
+  pt.mark("workers");
   log::info(kLog, "Loom {} runtime ready (data: {})", version(), root.string());
   auto rt = std::make_unique<Runtime>(std::move(impl));
   // Registers the archive.* task handlers (resumable by the task workers).
   rt->impl_->archive = parts.archive(*rt);
+  pt.mark("archive");
   rt->impl_->knowledge = parts.knowledge(*rt);
+  pt.mark("knowledge");
   rt->impl_->actions = parts.actions(*rt);
+  pt.mark("actions");
   if (!rt->impl_->archive || !rt->impl_->knowledge || !rt->impl_->actions)
     return Error(Errc::Internal, "runtime part factory returned null: archive/knowledge/actions");
   rt->impl_->guardian = std::make_unique<guardian::Guardian>(*rt);
   rt->impl_->guardian->start();
+  pt.mark("guardian");
   rt->tasks().register_handler("catalog.read_resource", [runtime = rt.get()](TaskContext& task) -> Status {
     const auto& params = task.params();
     if (!params.is_object() || !params.contains("unit_id") ||
@@ -561,6 +588,7 @@ Result<std::unique_ptr<Runtime>> Runtime::open(const RuntimeOptions& opts) {
     (*compiled)["request"] = resolved.to_json();
     return *compiled;
   });
+  pt.mark("handlers");
   return rt;
 }
 

@@ -3,6 +3,7 @@
 // not_implemented until ChatEngine/ModelRegistry/ProviderRegistry/
 // SemanticWorker are implemented.
 #include "context.h"
+#include "loom/phase_timing.h"
 #include "loom/chat_engine.h"
 #include "loom/chat_route.h"
 #include "loom/providers.h"
@@ -60,6 +61,7 @@ Json route_issue_chunk(const std::string& request_id, const Json& issues) {
 // chunk (done=1) and returns the final JSON (result or error).
 Json run_chat(LoomContext* ctx, const std::string& message_in, ChatOptions opts, std::string request_id,
               LoomStreamCallback cb, void* ud, const Json& request = Json::object()) {
+  PhaseTimer pt("run_chat");
   std::string message = message_in;
   if (request_id.empty()) request_id = gen_id("rq_");
   CancelToken token;
@@ -111,6 +113,7 @@ Json run_chat(LoomContext* ctx, const std::string& message_in, ChatOptions opts,
     }
   }
   {
+    pt.mark("secret_gate");
     auto routed = chat_route::handle(*ctx->rt, message, opts, request, [&](const std::string& conv_id, const std::string& user_message_id) {
       emit_chunk(cb, ud, Json{{"type", "start"}, {"request_id", request_id}, {"conv_id", conv_id}, {"user_message_id", user_message_id}}, 0);
     });
@@ -139,8 +142,10 @@ Json run_chat(LoomContext* ctx, const std::string& message_in, ChatOptions opts,
       opts.conv_id = routed->conv_id.empty() ? opts.conv_id : std::optional<std::string>(routed->conv_id);
     }
   }
+  pt.mark("chat_route");
   if (routed_issues.is_array() && !routed_issues.empty()) emit_chunk(cb, ud, route_issue_chunk(request_id, routed_issues), 0);
   auto r = ctx->rt->chat().send(message, opts, cbs, &token);
+  pt.mark("send");
   registration.reset();
   if (!r) {
     emit_chunk(cb, ud,

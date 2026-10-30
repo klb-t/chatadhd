@@ -1887,15 +1887,22 @@ Result<std::shared_ptr<const Pack>> Pack::from_documents(std::map<std::string, J
 }
 
 Result<std::shared_ptr<const Pack>> Pack::load_builtin() {
-  std::map<std::string, Json> docs;
-  for (const auto& f : kEmbeddedPack) {
-    std::string text;
-    for (const char* const* c = f.chunks; *c; ++c) text += *c;
-    auto j = json::parse(text);
-    if (!j) return Error(Errc::Parse, std::string("embedded kb pack file ") + f.path + ": " + j.error().message);
-    docs.emplace(f.path, std::move(*j));
-  }
-  return from_documents(std::move(docs));
+  // The embedded pack is immutable for this binary: parse, validate and hash it once and hand every caller the same
+  // read-only object (a Pack has no mutable state; shared_ptr<const Pack> keeps it read-only). Measured 2026-10-29: every
+  // runtime parsed it twice at start (ArchiveProfile::load: the overlay base and the builtin hash) — about 1 s of CPU per
+  // guest session on a debug build, ~4 s under ASan. Function-local static: initialised once, thread-safe (C++11).
+  static const Result<std::shared_ptr<const Pack>> builtin = []() -> Result<std::shared_ptr<const Pack>> {
+    std::map<std::string, Json> docs;
+    for (const auto& f : kEmbeddedPack) {
+      std::string text;
+      for (const char* const* c = f.chunks; *c; ++c) text += *c;
+      auto j = json::parse(text);
+      if (!j) return Error(Errc::Parse, std::string("embedded kb pack file ") + f.path + ": " + j.error().message);
+      docs.emplace(f.path, std::move(*j));
+    }
+    return from_documents(std::move(docs));
+  }();
+  return builtin;
 }
 
 namespace {

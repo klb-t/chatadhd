@@ -92,9 +92,12 @@ Result<Data> load_data(Runtime& rt, const std::string& client_id = std::string()
   engine.set_user_values(rt.config().all());  // the user's settings are the person level of scoped values
   engine.apply_client(rt.actions().client_patches(client_id));
   LOOM_TRY_ASSIGN(auto resolver, ElementResolver::load(root));
+  // The names of the settings come from the settings_fields profile itself: settings_fields() would build the whole
+  // settings document (every field's rule, defaults, presets, groups: ~0.5 s of CPU on a debug build) on every chat
+  // request only to read these keys back. It emits exactly one field per profile entry under the same "key".
   std::set<std::string> keys;
-  if (auto fields = settings_fields(root))
-    if (const Json* list = json::find(*fields, "fields"); list && list->is_array())
+  if (auto fields = RuntimeProfile::load("settings_fields", root))
+    if (const Json* list = json::find(fields->values(), "fields"); list && list->is_array())
       for (const auto& f : *list) keys.insert(json::get_string(f, "key"));
   Json results = Json::object();
   if (auto p = RuntimeProfile::load("action_results", root)) results = p->values();
