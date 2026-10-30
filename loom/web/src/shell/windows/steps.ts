@@ -21,7 +21,8 @@ export interface KeymapData { keys?: Record<string, string>; text_fields_keep_ke
 export const KEYMAP: KeymapData = keymapFile as KeymapData;
 export interface GestureData {
   long_press_ms?: number; double_tap_ms?: number;
-  targets?: Record<string, Record<string, string>>;
+  /** a target's gestures: a word per gesture; R101 D6 adds non-string entries (icon.drag_start per class), read by desktop-interact.ts */
+  targets?: Record<string, Record<string, unknown>>;
   chain_cycle?: string[]; focus_order?: string[]; touch_target_px?: number;
 }
 export const GESTURES: GestureData = gesturesFile as GestureData;

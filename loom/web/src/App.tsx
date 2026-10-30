@@ -66,6 +66,8 @@ import Desktop, { DesktopEnded } from "./shell/windows/Desktop";
 import { DESKTOP, say, say as sayDesktop, closedLast, desktopCover, desktopPaths, desktopSettings, kindEntries, lastWindowClose, openFromDesktop, restoreFromDesktop, showDesktop, type KindTarget } from "./shell/windows/desktop";
 import { handSentence } from "./shell/desktop-sentence";
 import { DESKTOP_X, declarationOfWord, minimizedMode, resolveDeclaration, type DesktopIcon } from "./shell/windows/desktop-icons";
+import { INTERACTIONS } from "./shell/windows/desktop-interact";
+import type { DropExec } from "./shell/windows/Desktop";
 import { ARRANGE as DESK_ARRANGE, DESKTOP_ARRANGE, arrangeByOfWord, type ArrangeRequest } from "./shell/windows/desktop-arrange";
 import { oneEntry, comboOf } from "./shell/windows/steps";
 import { apply as applyOp } from "./shell/windows/model";
@@ -731,6 +733,63 @@ export default function App() {
     if (icon.open.conversation) setActiveConvId(icon.open.conversation);
     deskOpen(icon.open.target);
   }, [deskOpen]);
+  // R101 D6: the step a drop asks for (desktop.json interactions.drop_rules), carried out here and answered with a receipt chip that offers
+  // the inverse (P3): set_param - the window's parameter through the W6 coupling (conversation also moves the active conversation; a
+  // minimized window is restored and focused first); close - the window; trash - D4's kernel action, undone by the untrash of the same thing.
+  const [deskReceipt, setDeskReceipt] = useState<{ text: string; undo?: () => void; code: string; at: number } | null>(null);
+  const receiptTimer = useRef<number | null>(null);
+  const showReceipt = useCallback((code: string, text: string, undo?: () => void) => {
+    setDeskReceipt({ text, undo, code, at: Date.now() });
+    if (receiptTimer.current) window.clearTimeout(receiptTimer.current);
+    const ms = INTERACTIONS.receipt_ms;
+    if (typeof ms === "number" && ms > 0) receiptTimer.current = window.setTimeout(() => setDeskReceipt(null), ms);
+  }, []);
+  const deskDrop = useCallback((x: DropExec) => {
+    const lang = uiLanguageRef.current; const words = DESKTOP.words;
+    const st = x.step;
+    if (st.op === "set_param") {
+      const l = winRef.current.layout; const win = l.windows.find(w => w.id === st.window);
+      if (!win) { showReceipt("drop_failed", sayDesktop(words, "drop_failed", lang, { error: st.window })); return; }
+      const before = st.param === "conversation" ? activeConvId : couplingRef.current?.read(st.window, st.param);
+      let next = winRef.current;
+      next = win.mode === "minimized" ? restoreFromDesktop(next, win.id) : focusWindow(next, win.id);
+      moveTo(next);
+      if (st.param === "conversation") setActiveConvId(typeof st.value === "string" ? st.value : null);
+      couplingRef.current?.write(st.window, st.param, st.value);
+      const screen = windowLabel(st.window);
+      showReceipt("drop_receipt_set_param", sayDesktop(words, "drop_receipt_set_param", lang, { label: x.label, screen }), () => {
+        if (st.param === "conversation") setActiveConvId(typeof before === "string" ? before : null);
+        couplingRef.current?.write(st.window, st.param, before);
+        showReceipt("drop_receipt_set_param_undo", sayDesktop(words, "drop_receipt_set_param_undo", lang, { screen }));
+      });
+      return;
+    }
+    if (st.op === "close") {
+      const screen = windowLabel(st.window);
+      const r = applyOp(winRef.current, { op: "close", id: st.window }, WINDOW_CTX);
+      if (!r.applied) { showReceipt("drop_failed", sayDesktop(words, "drop_failed", lang, { error: r.advisories.map(a => a.id).join(", ") || st.window })); return; }
+      moveTo(r.state);
+      showReceipt("drop_receipt_close", sayDesktop(words, "drop_receipt_close", lang, { screen }));
+      return;
+    }
+    if (st.op === "trash" && x.trash && api.actions) {
+      const t0 = x.trash;
+      api.actions.run({ action: t0.action, element: { class: "application" }, args: t0.args })
+        .then(() => {
+          window.dispatchEvent(new Event(TRASH_CHANGED));
+          // the inverse: the untrash of the same thing (a pin's trash entry id is not known here, so a pin offers no undo chip - the Trash window restores it)
+          const inv = t0.action === "conversation.trash" ? { action: "conversation.untrash", args: { query: t0.args.query } } : t0.action === "memory.trash" ? { action: "memory.untrash", args: { query: t0.args.query } } : null;
+          showReceipt("drop_receipt_trash", sayDesktop(words, "drop_receipt_trash", lang, { label: x.label }), inv ? () => {
+            api.actions!.run({ action: inv.action, element: { class: "application" }, args: inv.args })
+              .then(() => { window.dispatchEvent(new Event(TRASH_CHANGED)); showReceipt("drop_receipt_trash_undo", sayDesktop(words, "drop_receipt_trash_undo", lang, { label: x.label })); })
+              .catch((e: unknown) => showReceipt("drop_failed", sayDesktop(words, "drop_failed", lang, { error: String((e as Error)?.message ?? e) })));
+          } : undefined);
+        })
+        .catch((e: unknown) => { showReceipt("drop_failed", sayDesktop(words, "drop_failed", lang, { error: String((e as Error)?.message ?? e) })); window.dispatchEvent(new Event(TRASH_CHANGED)); });
+      return;
+    }
+    showReceipt("drop_do_unknown", sayDesktop(words, "drop_do_unknown", lang, { rule: "?", do: st.op }));
+  }, [activeConvId, moveTo, windowLabel, showReceipt]);
   const deskLoad = useCallback((id: string, own: boolean) => {
     if (!own && winRef.current.layout.id === id && ownActive === null) layoutOps.reset(); else layoutOps.apply(own ? (readNamed(configRef.current.window_layouts).find(l => l.id === id)?.label ?? id) : id);
     setLayoutKnown(true);
@@ -765,7 +824,7 @@ export default function App() {
     title={windowLabel} openKind={deskOpen} restore={(id) => moveTo(restoreFromDesktop(winRef.current, id))} loadLayout={deskLoad}
     sentence={(text) => { deskOpen({ chat: true }); handSentence(text, DESKTOP.sentence.send !== false); }} enableEmergency={() => saveSetting("desktop_emergency_path", true)}
     api={api} deviceClass={deviceClass} declaration={config.desktop_declaration} openIcon={deskIcon} coupling={coupling.values} minimizedSetting={config.desktop_minimized} dropOnTrash={config.drop_on_trash}
-    arrangement={config.desktop_arrangement} installation={journalWho.installation} writeArrangement={(patch) => mergeSetting("desktop_arrangement", patch)} />;
+    arrangement={config.desktop_arrangement} installation={journalWho.installation} writeArrangement={(patch) => mergeSetting("desktop_arrangement", patch)} drop={deskDrop} />;
   const advice = useMemo(() => {
     const more = [...styleAdvice, ...mount.advisories];
     return more.length ? [...coupling.advisories, ...more] : coupling.advisories;
@@ -946,6 +1005,13 @@ export default function App() {
     <ShellText.Provider value={t}><ShellLanguage.Provider value={uiLanguage}>
       {host}
       {desktop}
+      {deskReceipt && <div className="win-chip desktop-receipt" role="status" data-testid="desktop-receipt" data-code={deskReceipt.code}>
+        <span>{deskReceipt.text}</span>
+        <span className="win-chip-buttons">
+          {deskReceipt.undo && <button type="button" data-testid="desktop-receipt-undo" onClick={deskReceipt.undo}>{sayDesktop(DESKTOP.words, "drop_undo", uiLanguage)}</button>}
+          <button type="button" data-testid="desktop-receipt-close" aria-label={t("close")} onClick={() => setDeskReceipt(null)}>×</button>
+        </span>
+      </div>}
       {ended && <DesktopEnded lang={uiLanguage} back={() => setEnded(false)} />}
       {announce}
       {fullWindow && knowledgeOpen && <>

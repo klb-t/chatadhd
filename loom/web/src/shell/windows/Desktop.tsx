@@ -7,6 +7,11 @@
 // and the person's graph behind them, faint, drawn on ONE canvas (not one DOM element per mark) and redrawn only when its data or size
 // changes (the buffered background of §13). The P0 sections stay: those of sections_more behind "Więcej…" (and a long press on the
 // empty desktop, the affordance of §12), the others as they were.
+// R101 D6 (PULPIT §13 interactions, §14 row D6): what a drag does comes from data - desktop.json interactions.drop_rules decide what an icon
+// dropped on a window / an icon / the desktop (or a floating window dropped on an icon) means; the page only turns the elements under the
+// pointer into hits and hands the chosen step to the host (set_param through the coupling, close, trash) or does the D5 move itself. How a
+// drag starts is gestures.json targets.icon.drag_start per device class (move / long_press / handle - the phone preset long_press leaves a
+// plain swipe to the scroll); the keys of the icons are keymap.json desktop; the icon menu is interactions.icon_menu.
 // R101 D3 (PULPIT §3.1, §8): the other concepts are further declarations of the same mechanism - icon sources other than the pins
 // (window_kinds, minimized_windows, layouts, recent_conversations), a card of a node (pulpit_karta), the affordance a declaration asks for
 // (pulpit_pusty), a background graph that follows the coupling channel focus (pulpit_graf_zywy); and the setting desktop_minimized puts
@@ -18,7 +23,10 @@ import { DESKTOP, minimizedWindows, say, type DesktopPath, type DesktopSettings,
 import { DESKTOP_X, allIcons, backdropLayout, iconOf, liveFocus, minimizedMode, resolveDeclaration, type BackEdge, type BackNode, type DesktopIcon, type PinRow } from "./desktop-icons";
 import type { Values } from "./coupling";
 import { loadAround, loadPins } from "./desktop-load";
-import { TRASH_CHANGED, trashBadge, trashStepOf, trashable } from "./desktop-trash";
+import { TRASH_CHANGED, trashBadge, trashStepOf, trashable, type TrashStep } from "./desktop-trash";
+import { GESTURES_X, INTERACTIONS, desktopKeyOf, dragStartOf, iconMenuItems, moveIndex, resolveDrop, stepOf, touchActionOf, WINDOW_DRAGGED, type DropSource, type Hit, type IStep, type WindowDragged } from "./desktop-interact";
+import { comboOf } from "./steps";
+import { paramsOfKind } from "./coupling";
 import { ARRANGE, DESKTOP_ARRANGE, arrangeIcons, arrangementPatch, cellAt, moveIcon, placeIcons, readArrangement, readJournal, record, redo, undo, type ArrangeRequest, type Arrangement, type Journal } from "./desktop-arrange";
 
 export interface DesktopProps {
@@ -53,7 +61,12 @@ export interface DesktopProps {
   installation?: string;
   /** R101 D5: writes a merge patch of desktop_arrangement (merged on the host, as window_layout_active). */
   writeArrangement?(patch: Record<string, unknown>): void;
+  /** R101 D6: carries out the step a drop (or the menu / the Delete key) asks for - set_param through the coupling, close, trash - and shows
+   *  the receipt with its undo; absent, the desktop still does the trash itself (D4) and the move (D5). */
+  drop?(exec: DropExec): void;
 }
+/** R101 D6: a step resolved from the drop rules, with what the receipt needs. `trash` is the kernel action D4 chose for the address. */
+export interface DropExec { step: IStep; source: DropSource; hit: Hit; label: string; trash?: TrashStep }
 
 /** The faint graph behind the icons: one canvas, drawn when its data or its size changes; real nodes and real edges only. */
 function GraphBackdrop({ nodes, edges, alpha, edgeAlpha, lang, focus }: { nodes: BackNode[]; edges: BackEdge[]; alpha: number; edgeAlpha: number; lang: string; focus: string }) {
@@ -82,7 +95,7 @@ function GraphBackdrop({ nodes, edges, alpha, edgeAlpha, lang, focus }: { nodes:
     title={say(DESKTOP.words, "graph_label", lang, { n: String(laid.pos.size), e: String(laid.edges.length) })} />;
 }
 
-export default function Desktop({ layout, cover, lang, settings, entries, paths: sectionPaths, layouts, title, openKind, restore, loadLayout, sentence, enableEmergency, api, deviceClass = "desktop", declaration, openIcon, coupling, minimizedSetting, dropOnTrash, arrangement, installation, writeArrangement }: DesktopProps) {
+export default function Desktop({ layout, cover, lang, settings, entries, paths: sectionPaths, layouts, title, openKind, restore, loadLayout, sentence, enableEmergency, api, deviceClass = "desktop", declaration, openIcon, coupling, minimizedSetting, dropOnTrash, arrangement, installation, writeArrangement, drop }: DesktopProps) {
   const w = DESKTOP.words;
   const [text, setText] = useState("");
   const [kept, setKept] = useState(false);
@@ -131,11 +144,51 @@ export default function Desktop({ layout, cover, lang, settings, entries, paths:
   const redoArr = () => { const r = redo(journal); if (!r) return; keepJournal(r.journal); writeArr(r.value); setArrNote(null); };
   const toTrash = async (ic: DesktopIcon) => {
     setMenuFor(null);
-    if (!api?.actions) return;
+    if (!api?.actions || !trashable(ic.address)) return;
     const st = trashStepOf(ic.address, dropOnTrash, decl.pins?.focus);
+    // R101 D6: the host shows the receipt with its undo; without a host the desktop does D4 as before
+    if (drop) { drop({ step: { op: "trash", address: ic.address }, source: { kind: "icon", address: ic.address, label: ic.label }, hit: { kind: "icon", address: "trash:" }, label: ic.label, trash: st }); return; }
     try { await api.actions.run({ action: st.action, element: { class: "application" }, args: st.args }); } catch (e) { console.debug("desktop: to the trash failed", e); }
     window.dispatchEvent(new Event(TRASH_CHANGED));
   };
+  // R101 D6: the things under a point, from the top down (an icon by address, a window by id - frame, minimized icon or shelf entry -, the desktop)
+  const kindOf = (id: string) => { const x = layout.windows.find((y) => y.id === id); return x ? String(x.params?.panel ?? x.kind) : null; };
+  const hitsAt = (x: number, y: number): Hit[] => {
+    const out: Hit[] = []; const seen = new Set<string>();
+    for (const el of document.elementsFromPoint(x, y)) {
+      const h = el as HTMLElement;
+      const ic = h.closest<HTMLElement>("[data-testid=desktop-icon]"); const wn = h.closest<HTMLElement>("[data-window]");
+      let hit: Hit;
+      if (ic && ic.dataset.address !== undefined) hit = { kind: "icon", address: ic.dataset.address, key: ic.dataset.key ?? ic.dataset.address, label: ic.querySelector(".desktop-icon-label")?.textContent ?? ic.dataset.address };
+      else if (wn?.dataset.window) { const k = kindOf(wn.dataset.window); hit = k ? { kind: "window", id: wn.dataset.window, windowKind: k, mode: layout.windows.find((y) => y.id === wn.dataset.window)?.mode, params: paramsOfKind(k), label: title(wn.dataset.window) } : { kind: "other", what: "window?" }; }
+      else if (h.closest(".desktop-layer")) hit = { kind: "desktop" };
+      else hit = { kind: "other", what: h.tagName.toLowerCase() };
+      const key = JSON.stringify(hit); if (seen.has(key)) continue; seen.add(key); out.push(hit);
+    }
+    return out;
+  };
+  const targetName = (hit: Hit | null): string => !hit ? "?" : hit.kind === "window" ? say(w, "drop_target_window", lang, { screen: hit.label ?? hit.id }) : hit.kind === "icon" ? say(w, "drop_target_icon", lang, { label: hit.label ?? hit.address }) : hit.kind === "desktop" ? say(w, "title", lang) : hit.what ?? "?";
+  /** Resolves a drop from the rules; true when the rules took it (a step or an advisory), false when the D5 move should happen. */
+  const resolveAndRun = (source: DropSource, hits: Hit[]): boolean => {
+    const r = resolveDrop(source, hits, cls);
+    const label = source.label ?? (source.kind === "icon" ? source.address : source.id);
+    if (r.kind === "none") { if (r.advisory) setArrNote({ code: r.advisory.code, vars: { ...(r.advisory.vars ?? {}), label, target: targetName(r.hit) } }); return true; }
+    const st = stepOf(r, source);
+    if (st === null) return false;
+    if ("unknown" in st) { setArrNote({ code: "drop_do_unknown", vars: { rule: r.ruleId, do: st.unknown } }); return true; }
+    setMenuFor(null); setArrNote(null);
+    if (st.op === "trash") { const ic = icons.find((i) => i.address === st.address); if (ic) void toTrash(ic); return true; }
+    drop?.({ step: st, source, hit: r.hit, label });
+    return true;
+  };
+  const resolveRef = useRef(resolveAndRun); resolveRef.current = resolveAndRun;
+  const hitsRef = useRef(hitsAt); hitsRef.current = hitsAt;
+  useEffect(() => {
+    // a floating window's title bar dropped somewhere (WindowHost): the rules say what it means (preset: on the trash icon = close)
+    const on = (e: Event) => { const d = (e as CustomEvent<WindowDragged>).detail; if (!d || covered) return; const k = kindOf(d.id); if (!k) return; resolveRef.current({ kind: "window", id: d.id, windowKind: k, label: title(d.id) }, hitsRef.current(d.x, d.y)); };
+    window.addEventListener(WINDOW_DRAGGED, on);
+    return () => window.removeEventListener(WINDOW_DRAGGED, on);
+  }, [covered, layout, title]);   // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (covered || !api) return;
     let live = true;
@@ -195,26 +248,51 @@ export default function Desktop({ layout, cover, lang, settings, entries, paths:
     return () => window.removeEventListener(DESKTOP_ARRANGE, on);
   }, []);
   const [arrMenu, setArrMenu] = useState(false);
-  // dragging an icon (pointer: mouse, pen or finger): past drag_threshold_px the icon follows the pointer; the drop cell is the one under it
-  const drag = useRef<{ key: string; id: number; x0: number; y0: number; moved: boolean } | null>(null);
+  // dragging an icon (pointer: mouse, pen or finger). R101 D6: how it starts is data (gestures.json targets.icon.drag_start per class):
+  // move - past drag_threshold_px the icon follows the pointer (the icon takes the touch: touch-action none); long_press - the icon is
+  // lifted after long_press_ms held still, a move before that is the browser's scroll (touch-action pans; once lifted, touchmove is blocked);
+  // handle - only the grip ⠿ drags. A hold released in place is the long_press gesture (menu). The drop goes through the rules first.
+  const startMode = useMemo(() => dragStartOf(cls), [cls]);
+  const drag = useRef<{ key: string; id: number; x0: number; y0: number; moved: boolean; armed: boolean; el: HTMLElement } | null>(null);
   const [dragging, setDragging] = useState<{ key: string; dx: number; dy: number } | null>(null);
   const justDragged = useRef(false);
-  const dragStart = (e: RPointerEvent<HTMLButtonElement>, key: string) => {
+  const lp = useRef<number | null>(null);
+  const clearLp = () => { if (lp.current) { window.clearTimeout(lp.current); lp.current = null; } };
+  const unblock = useRef<(() => void) | null>(null);
+  const longPressGesture = () => GESTURES_X.targets?.icon?.long_press ?? "menu";
+  const dragStart = (e: RPointerEvent<HTMLButtonElement>, key: string, ic: DesktopIcon) => {
     if (e.button !== 0) return;
+    if (startMode.mode === "handle" && !(e.target as HTMLElement).closest(".desktop-icon-handle")) return;   // the rest of the icon taps and scrolls
     justDragged.current = false;
-    drag.current = { key, id: e.pointerId, x0: e.clientX, y0: e.clientY, moved: false };
+    const el = e.currentTarget;
+    drag.current = { key, id: e.pointerId, x0: e.clientX, y0: e.clientY, moved: false, armed: startMode.mode !== "long_press", el };
+    // once lifted, a finger moving the icon must not scroll the page (touch-action pans let it; this blocks it only then)
+    unblock.current?.();
+    const block = (ev: TouchEvent) => { if (drag.current?.armed) ev.preventDefault(); };
+    el.addEventListener("touchmove", block, { passive: false }); unblock.current = () => el.removeEventListener("touchmove", block);
+    clearLp();
+    lp.current = window.setTimeout(() => {
+      lp.current = null; const d = drag.current; if (!d || d.moved || d.id !== e.pointerId) return;
+      if (startMode.mode === "long_press") { d.armed = true; setDragging({ key, dx: 0, dy: 0 }); try { el.setPointerCapture(e.pointerId); } catch { /* capture is a nicety */ } }
+      else { drag.current = null; justDragged.current = true; if (longPressGesture() === "menu") setMenuFor(ic); }
+    }, Math.max(0, GESTURES_X.long_press_ms ?? 500));
   };
   const dragMove = (e: RPointerEvent<HTMLButtonElement>) => {
     const d = drag.current; if (!d || d.id !== e.pointerId) return;
     const dx = e.clientX - d.x0, dy = e.clientY - d.y0;
     if (!d.moved && Math.hypot(dx, dy) < Math.max(0, ARRANGE.drag_threshold_px ?? 8)) return;
-    if (!d.moved) { d.moved = true; try { e.currentTarget.setPointerCapture(e.pointerId); } catch { /* capture is a nicety */ } }
+    if (!d.armed) { clearLp(); drag.current = null; return; }   // long_press: moved before the hold - a swipe, the browser scrolls
+    if (!d.moved) { d.moved = true; clearLp(); try { e.currentTarget.setPointerCapture(e.pointerId); } catch { /* capture is a nicety */ } }
     setDragging({ key: d.key, dx, dy });
   };
   const dragEnd = (e: RPointerEvent<HTMLButtonElement>) => {
-    const d = drag.current; drag.current = null; setDragging(null);
-    if (!d || d.id !== e.pointerId || !d.moved) return;
+    const d = drag.current; drag.current = null; clearLp(); unblock.current?.(); unblock.current = null; setDragging(null);
+    if (!d || d.id !== e.pointerId) return;
+    const ic = icons[keys.indexOf(d.key)];
+    if (!d.moved) { if (startMode.mode === "long_press" && d.armed) { justDragged.current = true; if (longPressGesture() === "menu" && ic) setMenuFor(ic); } return; }
     justDragged.current = true;   // the click that follows the drop is eaten (onClick), and the next press clears it
+    // R101 D6: the rules first (a window, an icon, the trash); only a drop the rules leave to the grid is the D5 move
+    if (resolveAndRun({ kind: "icon", address: ic?.address ?? d.key, key: d.key, label: ic?.label }, hitsAt(e.clientX, e.clientY))) return;
     const el = gridRef.current; if (!el) return;
     const r = el.getBoundingClientRect(); const pl = placeRef.current;
     const me = pl.placed.find((p) => p.address === d.key);
@@ -250,39 +328,63 @@ export default function Desktop({ layout, cover, lang, settings, entries, paths:
     }
     prev.current = cover;
   }, [cover]);
+  // R101 D6: the keys of the desktop come from keymap.json (desktop): on an icon the operations next/prev/up/down/first/last move the focus in
+  // the grid, open / trash / menu act on it; elsewhere on the desktop next/prev/down/up still walk every control (P0).
+  const [keyNote, setKeyNote] = useState<{ code: string; vars?: Record<string, string> } | null>(null);
   const onKey = (e: KeyboardEvent<HTMLDivElement>) => {
-    if (!["ArrowDown", "ArrowUp", "ArrowLeft", "ArrowRight"].includes(e.key)) return;
     const t = e.target as HTMLElement;
-    if (t.tagName === "INPUT") return;
-    const all = [...(root.current?.querySelectorAll<HTMLElement>("button:not([disabled]), input") ?? [])];
-    const i = all.indexOf(t);
-    const next = all[i + (e.key === "ArrowDown" || e.key === "ArrowRight" ? 1 : -1)];
-    if (next) { e.preventDefault(); next.focus(); }
+    if (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable) return;
+    const combo = comboOf(e);
+    const k = desktopKeyOf(combo);
+    if (!k) return;
+    if ("unknown" in k) { setKeyNote({ code: "desktop_key_unknown", vars: { combo, op: k.unknown } }); return; }
+    if (k.op === "menu_close") { if (menuFor) { e.preventDefault(); setMenuFor(null); } return; }
+    const iconEls = [...(gridRef.current?.querySelectorAll<HTMLElement>("[data-testid=desktop-icon]:not([disabled])") ?? [])];
+    const at = iconEls.indexOf(t);
+    const ic = at >= 0 ? icons[keys.indexOf(t.dataset.key ?? "")] : undefined;
+    if (ic) {
+      if (k.op === "open") { e.preventDefault(); tap(ic); return; }
+      if (k.op === "trash") { e.preventDefault(); if (trashable(ic.address)) void toTrash(ic); return; }
+      if (k.op === "menu") { e.preventDefault(); setMenuFor(ic); return; }
+      const j = moveIndex(at, k.op, place.columns, iconEls.length);
+      if (j >= 0) { e.preventDefault(); iconEls[j]?.focus(); }
+      return;
+    }
+    if (k.op === "next" || k.op === "prev" || k.op === "down" || k.op === "up") {
+      const all = [...(root.current?.querySelectorAll<HTMLElement>("button:not([disabled]), input") ?? [])];
+      const i = all.indexOf(t);
+      const next = all[i + (k.op === "next" || k.op === "down" ? 1 : -1)];
+      if (next) { e.preventDefault(); next.focus(); }
+    }
   };
+  const menuItems = menuFor ? iconMenuItems(INTERACTIONS.icon_menu, trashable(menuFor.address) && !!api?.actions, menuFor.status === "available") : { items: [] as string[], unknown: [] as string[] };
+  const dragHint = startMode.mode === "long_press" ? "drag_hint_long_press" : startMode.mode === "handle" ? "drag_hint_handle" : "arrange_move_hint";
   const moreIds = new Set(DESKTOP_X.sections_more ?? []);
   const section = (id: string) => {
     if (id === "icons") return showIcons ? (<div key={id} style={{ display: "contents" }}>
       <div ref={gridRef} className="desktop-icons" role="group" aria-label={say(w, "icons", lang)} data-testid="desktop-icons" data-declaration={decl.id}
-        data-state={pins.state} data-count={icons.length} data-columns={place.columns} data-arrangement-mode={place.mode} data-arrangement-from={arr.from}
+        data-state={pins.state} data-count={icons.length} data-columns={place.columns} data-arrangement-mode={place.mode} data-arrangement-from={arr.from} data-drag-start={startMode.mode} title={say(w, "keys_hint", lang)}
         style={place.mode === "free" ? { position: "relative", display: "block", height: `${Math.ceil(place.height)}px` } : { gridTemplateColumns: `repeat(${place.columns}, ${Math.floor(place.cellW)}px)` }}>
         {icons.map((ic, i) => { const c = cellOf.get(keys[i])!; const dr = dragging?.key === keys[i] ? dragging : null; return (
           <button key={ic.node} type="button" className="desktop-icon" data-testid="desktop-icon" data-address={ic.address} data-kind={ic.kind ?? ""} data-status={ic.status} data-source={ic.source ?? ""}
             disabled={ic.status !== "available"} title={ic.reason ?? ic.label} aria-label={ic.reason ? `${ic.label}. ${ic.reason}` : ic.label}
-            data-col={c.col} data-row={c.row} data-pinned={c.pinned ? "true" : undefined} data-dragging={dr ? "true" : undefined}
+            data-col={c.col} data-row={c.row} data-pinned={c.pinned ? "true" : undefined} data-dragging={dr ? "true" : undefined} data-key={keys[i]}
             style={{ ...(place.mode === "free" ? { position: "absolute", left: `${Math.round(c.x)}px`, top: `${Math.round(c.y)}px`, width: `${Math.floor(place.cellW)}px` } : { gridColumn: c.col + 1, gridRow: c.row + 1 }),
-              ...(dr ? { transform: `translate(${dr.dx}px, ${dr.dy}px)`, zIndex: 5, opacity: 0.85 } : {}), touchAction: "none" }}
-            onPointerDown={(e) => dragStart(e, keys[i])} onPointerMove={dragMove} onPointerUp={dragEnd} onPointerCancel={() => { drag.current = null; setDragging(null); }}
+              ...(dr ? { transform: `translate(${dr.dx}px, ${dr.dy}px)`, zIndex: 5, opacity: 0.85 } : {}), touchAction: touchActionOf(startMode.mode) }}
+            onPointerDown={(e) => dragStart(e, keys[i], ic)} onPointerMove={dragMove} onPointerUp={dragEnd} onPointerCancel={() => { drag.current = null; clearLp(); unblock.current?.(); unblock.current = null; setDragging(null); }}
             onClick={() => { if (justDragged.current) { justDragged.current = false; return; } tap(ic); }}
-            onContextMenu={trashable(ic.address) && api?.actions ? (e) => { e.preventDefault(); e.stopPropagation(); setMenuFor(ic); } : undefined}
+            onContextMenu={(e) => { e.preventDefault(); e.stopPropagation(); setMenuFor(ic); }}
             data-badge={ic.address.startsWith("trash:") ? trashBadge(trashCount) : undefined}>
+            {startMode.mode === "handle" && <span className="desktop-icon-handle" role="img" aria-label={say(w, "drag_handle", lang)} data-testid="desktop-icon-handle" style={{ touchAction: "none" }}>⠿</span>}
             <span className="desktop-icon-glyph" aria-hidden="true">{ic.glyph}</span>
             {ic.address.startsWith("trash:") && trashCount > 0 && <span className="desktop-icon-badge" data-testid="desktop-trash-badge" aria-label={say(w, "trash_badge", lang, { count: String(trashCount) })}>{trashBadge(trashCount)}</span>}
             {(decl.icon?.labelLines ?? 2) > 0 && <span className="desktop-icon-label" style={{ WebkitLineClamp: decl.icon?.labelLines ?? 2 }}>{ic.label}</span>}
           </button>); })}
         {menuFor && (
-          <div className="desktop-icon-menu" role="menu" data-testid="desktop-icon-menu" data-address={menuFor.address}>
-            <button type="button" role="menuitem" data-testid="desktop-icon-trash" onClick={() => toTrash(menuFor)}>{say(w, "icon_menu_trash", lang)}</button>
-            <button type="button" role="menuitem" data-testid="desktop-icon-menu-close" onClick={() => setMenuFor(null)}>{say(w, "icon_menu_close", lang)}</button>
+          <div className="desktop-icon-menu" role="menu" data-testid="desktop-icon-menu" data-address={menuFor.address} aria-label={menuFor.label}>
+            {menuItems.items.map((it) => <button key={it} type="button" role="menuitem" data-testid={it === "close" ? "desktop-icon-menu-close" : `desktop-icon-${it}`}
+              onClick={() => { if (it === "open") { setMenuFor(null); tap(menuFor); } else if (it === "trash") void toTrash(menuFor); else setMenuFor(null); }}>{say(w, `icon_menu_${it}`, lang)}</button>)}
+            {menuItems.unknown.map((id) => <span key={id} className="desktop-hint" data-testid="desktop-advisory" data-code="icon_menu_unknown">{say(w, "icon_menu_unknown", lang, { id })}</span>)}
           </div>)}
         {(decl.pins ? pins.state === "ok" : true) && !icons.length && <p className="desktop-hint" data-testid="desktop-advisory" data-code="desktop_empty">{say(w, "desktop_empty", lang)}</p>}
         {pins.state === "error" && <p className="desktop-hint" role="status" data-testid="desktop-advisory" data-code="desktop_pins_error">{say(w, "icons_error", lang, { error: pins.error ?? "" })}</p>}
@@ -292,11 +394,11 @@ export default function Desktop({ layout, cover, lang, settings, entries, paths:
         <button type="button" data-testid="desktop-arrange-toggle" aria-expanded={arrMenu} onClick={() => setArrMenu((v) => !v)}>{say(w, "arrange", lang)}</button>
         <button type="button" data-testid="desktop-arrange-undo" disabled={!journal.past.length} onClick={undoArr}>{say(w, "arrange_undo", lang)}</button>
         <button type="button" data-testid="desktop-arrange-redo" disabled={!journal.future.length} onClick={redoArr}>{say(w, "arrange_redo", lang)}</button>
-        <span className="desktop-hint" data-testid="desktop-arrange-from">{say(w, `arrange_from_${arr.from}`, lang)}{arr.inheritedFrom ? ` ${say(w, "arrange_inherited", lang, { cls: w[`class_${arr.inheritedFrom}`] ? say(w, `class_${arr.inheritedFrom}`, lang) : arr.inheritedFrom })}` : ""} · {say(w, "arrange_move_hint", lang)}</span>
+        <span className="desktop-hint" data-testid="desktop-arrange-from">{say(w, `arrange_from_${arr.from}`, lang)}{arr.inheritedFrom ? ` ${say(w, "arrange_inherited", lang, { cls: w[`class_${arr.inheritedFrom}`] ? say(w, `class_${arr.inheritedFrom}`, lang) : arr.inheritedFrom })}` : ""} · {say(w, dragHint, lang)}</span>
         {arrMenu && <div className="desktop-items" role="menu" data-testid="desktop-arrange-menu">
           {(ARRANGE.arrange_by ?? ["label"]).map((by) => <button key={by} type="button" role="menuitem" data-testid="desktop-arrange-by" data-by={by} onClick={() => arrangeBy(by)}>{say(w, `arrange_by_${by}`, lang)}</button>)}
         </div>}
-        {[...arr.advisories, ...(arrNote ? [arrNote] : [])].map((a, i) => <div key={a.code + i} className="win-chip" role="status" data-testid="desktop-advisory" data-code={a.code}><span>{say(w, a.code, lang, a.vars ?? {})}</span></div>)}
+        {[...arr.advisories, ...(startMode.advisory ? [startMode.advisory] : []), ...(arrNote ? [arrNote] : []), ...(keyNote ? [keyNote] : [])].map((a, i) => <div key={a.code + i} className="win-chip" role="status" data-testid="desktop-advisory" data-code={a.code}><span>{say(w, a.code, lang, a.vars ?? {})}</span></div>)}
       </div>}
     </div>) : null;
     if (id === "sentence") return (

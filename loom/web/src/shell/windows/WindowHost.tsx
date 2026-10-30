@@ -9,6 +9,7 @@
 // window dragged moves (near a leaf's edge it docks). Every drag ends in ONE operation of the page (one journal entry); the preview while
 // dragging is computed from the state the drag started from. Everything a drag does is also in the menu ⋯ and on the keys (accessibility).
 import { useEffect, useRef, useState, type CSSProperties, type PointerEvent, type ReactNode } from "react";
+import { WINDOW_DRAGGED, type WindowDragged } from "./desktop-interact";
 import type { Rect, WState, Win } from "./model";
 import { baseWindow, visibleOverlay } from "./session";
 import DockTree from "./DockTree";
@@ -88,7 +89,7 @@ function leafBoxesOnScreen(fallbackLeaf: string | undefined): { leaf: string; bo
 }
 
 // W7 (§5.3, §6.3): gestures as data (gestures.json): a tap and a long press on a target; the press time is a preset.
-const gestureOf = (target: string): Record<string, string> => GESTURES.targets?.[target] ?? {};
+const gestureOf = (target: string): Record<string, string> => Object.fromEntries(Object.entries(GESTURES.targets?.[target] ?? {}).filter((e): e is [string, string] => typeof e[1] === "string"));
 interface Press { timer: ReturnType<typeof setTimeout> | null; long: boolean }
 function pressHandlers(p: Press, tap: () => void, longPress: () => void, g: Record<string, string>) {
   const ms = typeof GESTURES.long_press_ms === "number" ? GESTURES.long_press_ms : 500;
@@ -188,7 +189,11 @@ export default function WindowHost({ state, renderWindow, renderOverlay, grid, r
       off();
       if (!moving) return;
       if (target) a.onArrange(w.id, target.zone === "center" ? "tab" : target.zone, { of: target.leaf });
-      else if (w.mode === "floating") { if (rect) a.onMove(w.id, rect, true); }
+      else if (w.mode === "floating") {
+        if (rect) a.onMove(w.id, rect, true);
+        // R101 D6: the desktop under the windows resolves what the drop of a window means (e.g. on the trash icon: close) from its rules
+        window.dispatchEvent(new CustomEvent<WindowDragged>(WINDOW_DRAGGED, { detail: { id: w.id, x: ev.clientX, y: ev.clientY } }));
+      }
       else {
         const fr = r0 && r0.unit === "fraction" ? r0 : { w: 0.88, h: 0.6 };
         a.onArrange(w.id, "float", { rect: { x: Math.max(0, Math.min(1 - fr.w, ev.clientX / area.w - fr.w / 2)), y: Math.max(0, Math.min(1 - fr.h, ev.clientY / area.h)), w: fr.w, h: fr.h, unit: "fraction" } });

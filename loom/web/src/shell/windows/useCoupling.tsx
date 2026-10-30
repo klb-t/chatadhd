@@ -22,6 +22,10 @@ export interface CouplingHook {
   /** W8 (W6 gap A): the current values (saved with the last layout, never journalled) and their restore after a reload. */
   values: Values;
   restore: (v: Values | null | undefined, layout: WState["layout"]) => void;
+  /** R101 D6: a drop on a window writes one of its parameters (the same path as the window's own set; a restored value waiting is dropped). */
+  write: (id: string, param: string, value: unknown) => void;
+  /** R101 D6: the current value of a window's parameter (own, shared or linked), for the inverse of a drop. */
+  read: (id: string, param: string) => unknown;
 }
 
 /** W8: a restored value waits for the first read - until the component reports the restored value back (it has applied it), its own
@@ -68,6 +72,8 @@ export function useCoupling(win: WState, winRef: { current: WState }, commit: (s
     return a;
   }, [apis, win.layout, values, put, winRef, admit]);
   const provide = useCallback((w: Win, node: ReactNode) => <WindowParams.Provider value={apiOf(w.id)}>{node}</WindowParams.Provider>, [apiOf]);
+  const write = useCallback((id: string, p: string, x: unknown) => { waiting.current.delete(`${id}\u0000${p}`); put(setParam(winRef.current.layout, valuesRef.current, id, p, x, opts()).values); }, [put, winRef]);   // eslint-disable-line react-hooks/exhaustive-deps
+  const read = useCallback((id: string, p: string) => resolveParam(winRef.current.layout, valuesRef.current, id, p), [winRef]);
   const extraMenu = useCallback((w: Win) => couplingMenu(winRef.current.layout, w.id, lang, named).map(({ id, label, icon }) => ({ id, label, icon })), [winRef, lang, named]);
   const onExtra = useCallback((id: string, entry: string) => {
     const s = winRef.current;
@@ -113,5 +119,5 @@ export function useCoupling(win: WState, winRef: { current: WState }, commit: (s
     commit(next);
     put(afterBind(next.layout, valuesRef.current, id, param, opts()).values);
   }, [winRef, commit, put]);
-  return { provide, extraMenu, onExtra, chain, advisories, bindAll, unbindAll, cycleChain, values, restore };
+  return { provide, extraMenu, onExtra, chain, advisories, bindAll, unbindAll, cycleChain, values, restore, write, read };
 }
