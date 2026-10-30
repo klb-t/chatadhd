@@ -277,7 +277,7 @@ TEST_SUITE("chat_engine") {
     auto r = unwrap(engine.send("see the file", opts));
     REQUIRE(r.attachment_notes.size() == 1);
     CHECK(r.attachment_notes[0] == Json{{"file", "big.txt"}, {"status", "cut"}, {"original_chars", 20000}, {"kept_chars", 15000}});
-    const Json msgs = unwrap(env.db->get_msgs(r.conv_id));
+    const auto msgs = unwrap(env.db->get_msgs(r.conv_id));
     bool found = false;
     for (const auto& m : msgs) {
       if (m.metadata.is_object() && m.metadata.contains("context_trace") && m.metadata["context_trace"]["receipt"].contains("attachments")) {
@@ -289,11 +289,12 @@ TEST_SUITE("chat_engine") {
     CHECK(found);
   }
 
-  // Finding "unreadable attachment goes silently": a directory named like a text file exists but cannot be read as a file.
+  // Finding "unreadable attachment goes silently": a text file without read permission exists but cannot be opened.
   TEST_CASE("attachments: an unreadable file refuses the send by default, naming the file; no model call is made") {
     Env env;
     auto bad = env.td.path() / "broken.txt";
-    std::filesystem::create_directory(bad);
+    { std::ofstream f(bad); f << "secret notes"; }
+    std::filesystem::permissions(bad, std::filesystem::perms::none);  // exists, cannot be opened (the test runs as a normal user)
     auto engine = env.engine();
     ChatOptions opts;
     opts.stream = false;
@@ -309,7 +310,8 @@ TEST_SUITE("chat_engine") {
     Env env;
     env.cfg.set("chat_attachment_on_unreadable", "send_with_warning");
     auto bad = env.td.path() / "broken.txt";
-    std::filesystem::create_directory(bad);
+    { std::ofstream f(bad); f << "secret notes"; }
+    std::filesystem::permissions(bad, std::filesystem::perms::none);  // exists, cannot be opened (the test runs as a normal user)
     env.transport.expect("POST", "https://api.test/chat/completions", net::ScriptedTransport::Reply::json(200, openai_reply("ok")));
     auto engine = env.engine();
     ChatOptions opts;

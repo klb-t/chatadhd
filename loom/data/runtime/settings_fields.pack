@@ -230,6 +230,17 @@
               "pl": "Zapis tego, co dokładnie poszło do modelu przy każdej wiadomości.",
               "en": "The record of what exactly went to the model with each message."
             }
+          },
+          {
+            "id": "zalaczniki",
+            "label": {
+              "pl": "Załączniki",
+              "en": "Attachments"
+            },
+            "why": {
+              "pl": "Ile z załączonego pliku idzie do modelu i co robić z plikiem, którego nie da się odczytać.",
+              "en": "How much of an attached file goes to the model, and what to do with a file that cannot be read."
+            }
           }
         ]
       },

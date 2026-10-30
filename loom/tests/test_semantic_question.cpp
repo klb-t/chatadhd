@@ -12,6 +12,7 @@
 #include "loom/event_bus.h"
 #include "loom/net/http.h"
 #include "loom/runtime.h"
+#include "loom/semantic_llm.h"
 #include "loom/semantic_worker.h"
 #include "loom/usage_policy.h"
 #include "loom/util/fs.h"
