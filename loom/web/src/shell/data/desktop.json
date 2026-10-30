@@ -296,6 +296,74 @@
   "layout_untrashed": {
    "pl": "Układ „{name}” wrócił z kosza.",
    "en": "The layout “{name}” is back from the trash."
+  },
+  "arrange": {
+   "pl": "Uporządkuj ikony",
+   "en": "Arrange the icons"
+  },
+  "arrange_by_label": {
+   "pl": "według nazwy",
+   "en": "by name"
+  },
+  "arrange_by_kind": {
+   "pl": "według rodzaju",
+   "en": "by kind"
+  },
+  "arrange_by_recent": {
+   "pl": "ostatnio przesunięte pierwsze",
+   "en": "recently moved first"
+  },
+  "arrange_by_count": {
+   "pl": "według liczby na odznace",
+   "en": "by the number on the badge"
+  },
+  "arrange_by_declaration": {
+   "pl": "jak w ustawieniu pulpitu (bez ręcznych miejsc)",
+   "en": "as the desktop setting has it (no hand places)"
+  },
+  "arrange_undo": {
+   "pl": "Cofnij ułożenie",
+   "en": "Undo the arrangement"
+  },
+  "arrange_redo": {
+   "pl": "Ponów ułożenie",
+   "en": "Redo the arrangement"
+  },
+  "arrange_from_installation": {
+   "pl": "Ułożenie z tej przeglądarki",
+   "en": "Arrangement of this browser"
+  },
+  "arrange_from_person": {
+   "pl": "Ułożenie wspólne dla tego rodzaju urządzenia",
+   "en": "Arrangement shared by this kind of device"
+  },
+  "arrange_from_preset": {
+   "pl": "Ułożenie domyślne",
+   "en": "The default arrangement"
+  },
+  "arrange_computed_moved": {
+   "pl": "Ikony były liczone; przesunięcie ręką przełączyło ułożenie na siatkę. Cofnij, jeśli to niecelowe.",
+   "en": "The icons were computed; a move by hand switched the arrangement to the grid. Undo if that was not intended."
+  },
+  "arrangement_mode_unknown": {
+   "pl": "Tryb ułożenia „{mode}” nie jest znany tej stronie — ikony stoją w siatce.",
+   "en": "The arrangement mode “{mode}” is not known to this page — the icons stand in a grid."
+  },
+  "arrangement_unreadable": {
+   "pl": "Ustawienie desktop_arrangement jest nieczytelne — ikony stoją jak domyślnie.",
+   "en": "The setting desktop_arrangement is unreadable — the icons stand as by default."
+  },
+  "arrange_by_unknown": {
+   "pl": "Nie znam porządku „{by}” — nic nie zmieniłem.",
+   "en": "I do not know the order “{by}” — nothing changed."
+  },
+  "arrange_done": {
+   "pl": "Ułożyłem ikony ({by}). Cofnięcie: „Cofnij ułożenie”.",
+   "en": "Arranged the icons ({by}). To undo: “Undo the arrangement”."
+  },
+  "arrange_move_hint": {
+   "pl": "Przytrzymaj i przeciągnij ikonę, żeby ją przestawić.",
+   "en": "Hold and drag an icon to move it."
   }
  },
  "sections_more": [
@@ -934,5 +1002,100 @@
   "note": "R101 D4 (PULPIT_R101 §5): the trash window and the drop on the trash. drop_on_trash (setting; preset target): target = the thing of the icon (conv: -> conversation.trash, memory: -> memory.trash; another address -> its pin), pin = only the icon [examples]. retention_short_days: the threshold of the advisory trash_retention_short (preset 7).",
   "drop_on_trash_preset": "target",
   "retention_short_days": 7
+ },
+ "arrangement": {
+  "note": "R101 D5 (PULPIT §6): presets of the setting desktop_arrangement. preset = the arrangement when nothing is written (one value for every class or {<class>: value}); modes_known, arrange_by are open lists of what this page draws today (examples of the mechanism); levels = where a hand move is written (installation = this browser, person = every device of the class), installation wins when read; journal_limit null = no limit; free_rows = the height of the free area in cells.",
+  "preset": {
+   "mode": "grid",
+   "snap": true
+  },
+  "modes_known": [
+   "grid",
+   "free",
+   "computed"
+  ],
+  "levels": [
+   "installation",
+   "person"
+  ],
+  "journal_limit": null,
+  "arrange_by": [
+   "label",
+   "kind",
+   "recent",
+   "count",
+   "declaration"
+  ],
+  "arrange_words": {
+   "label": {
+    "pl": [
+     "nazwa",
+     "nazwy",
+     "nazwie",
+     "alfabet",
+     "alfabetycznie"
+    ],
+    "en": [
+     "name",
+     "label",
+     "alphabet",
+     "alphabetically"
+    ]
+   },
+   "kind": {
+    "pl": [
+     "rodzaj",
+     "rodzaju",
+     "typ",
+     "typu"
+    ],
+    "en": [
+     "kind",
+     "type"
+    ]
+   },
+   "recent": {
+    "pl": [
+     "ostatnio",
+     "ostatnie",
+     "ostatnich",
+     "najnowsze"
+    ],
+    "en": [
+     "recent",
+     "recently",
+     "latest"
+    ]
+   },
+   "count": {
+    "pl": [
+     "liczba",
+     "liczby",
+     "licznik",
+     "odznaka"
+    ],
+    "en": [
+     "count",
+     "badge",
+     "number"
+    ]
+   },
+   "declaration": {
+    "pl": [
+     "domyślnie",
+     "domyślne",
+     "domyślny",
+     "od nowa",
+     "jak było"
+    ],
+    "en": [
+     "default",
+     "reset",
+     "as shipped"
+    ]
+   }
+  },
+  "free_rows": 6,
+  "drag_threshold_px": 8
  }
 }
