@@ -726,7 +726,13 @@ bool App::refuse_guest_request(const httplib::Request& req, httplib::Response& r
     if (!msg.is_object() || msg.empty())
       msg = {{"en", "There is no free model source available right now. Connect your own account or API key to continue."},
              {"pl", "Teraz nie ma dostępnego darmowego źródła modeli. Połącz własne konto lub klucz API, żeby kontynuować."}};
-    json out = {{"error", "no_guest_source"}, {"message", msg}, {"model_source", src}};
+    std::string lang = req.get_header_value("Accept-Language");
+    lang = lang.substr(0, lang.find_first_of(",;-_ "));
+    std::transform(lang.begin(), lang.end(), lang.begin(), [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+    const std::string text = msg.value(lang, msg.value("en", std::string()));
+    // Same shape as a guard refusal (limit.mechanism + words.text), so the web layer shows it in the same notice.
+    json out = {{"error", {{"code", "no_guest_source"}, {"message", text}}}, {"limit", {{"mechanism", "no_guest_source"}}},
+                {"words", {{"text", text}}}, {"message", msg}, {"model_source", src}};
     res.status = 503;
     res.set_content(out.dump(), "application/json");
     return true;

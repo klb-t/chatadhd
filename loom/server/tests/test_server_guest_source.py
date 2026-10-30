@@ -119,7 +119,8 @@ def main() -> int:
                 r = say(g, b, conv)
                 assert r.status_code == 503, (r.status_code, r.text[:300])
                 j = r.json()
-                assert j["error"] == "no_guest_source" and j["message"]["pl"] and j["message"]["en"], j
+                assert j["error"]["code"] == "no_guest_source" and j["message"]["pl"] and j["message"]["en"], j
+                assert j["limit"]["mechanism"] == "no_guest_source" and j["words"]["text"] == j["message"]["en"], j  # same shape as a guard refusal
                 # D. a key appears later: the next model request picks it up (the state is re-evaluated)
                 keys.write_text(f"MOCK_FREE_KEY={FAKE_KEY}\n")
                 r = say(g, b, conv)
