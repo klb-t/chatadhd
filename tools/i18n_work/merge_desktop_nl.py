@@ -3,7 +3,7 @@
 import json, pathlib
 here = pathlib.Path(__file__).resolve().parent
 src = json.load(open(here / "desktop_nl.json", encoding="utf8"))
-p = here.parent.parent / "web/src/shell/data/desktop.json"
+p = here.parent.parent / "loom/web/src/shell/data/desktop.json"
 raw = p.read_text(encoding="utf8")
 d = json.loads(raw)
 n = 0

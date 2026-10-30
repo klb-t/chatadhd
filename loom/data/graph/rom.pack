@@ -432,6 +432,9 @@
           "path": "loom/data/runtime/storage_security.pack"
         },
         {
+          "path": "loom/data/runtime/structure_templates.pack"
+        },
+        {
           "path": "loom/data/runtime/tool_loop.pack"
         },
         {

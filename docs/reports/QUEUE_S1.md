@@ -31,6 +31,30 @@ Agent audytu widział też padające testy poza swoim obszarem: `test_emergent_c
 `test_import_stream.cpp:161` (limit pamięci, wrażliwy na obciążenie). Pięć innych wynikało z nieaktualnej sumy sha
 `graph/interfaces.pack` w `data_domains.pack`; poprawione w `90f60bfb`.
 
+**Bramka na `90f60bfb` (≈ 19:1x UTC): CZERWONA.** Wszystkie kroki przed testami są zielone: lint, uistrings, kompilacja,
+clangsyntax, generatory. Padło 5 testów jądra z 281 i 9 skryptów web; `guard` jest czerwony przez te same 5 testów.
+Jądro, poprawione na `handover-1030` (małe poprawki danych, w tym commicie):
+- `unit.test_kb_pack`, prawdopodobnie także `unit.test_emergent_catalogue`: robocze pliki tłumaczeń leżały w `loom/data/i18n_work/`,
+  a każdy plik w `loom/data` musi być w `pack.json`. Przeniesione do `tools/i18n_work/`.
+- `compat.test_rom_catalogue`: nieaktualny `graph/rom.pack`. Wygenerowany ponownie, przypięta suma w `data_domains.pack` odświeżona;
+  w `gate.sh` doszedł krok `rompack` (`gen_rom_catalogue.py --check`).
+- `data.check_action_reads` + `_selftest`: nowe ustawienia z audytu nie były w `reads`. Do `chat.send` doszły
+  `chat_attachment_max_chars`, `chat_attachment_on_unreadable` i `ui_language`, do `semantic.analyse` doszło `semantic_llm_max_failures`.
+  `human.flows` pól poprawione. Teraz 0 problemów, a self-test łapie 21/21 mutacji.
+Web, NIEPOPRAWIONE (za duże na ostatnie 5 % limitu). Przyczyny według logu, do potwierdzenia:
+- `test:guest-layer`: warstwa gościa, w stanie otwartym, wchodzi na `chat-input` (y 733–844 wobec pola wpisu na y 794). Pakiet
+  gościa ustawił warstwę we własnym wierszu; po scaleniu z językami i audytem (raport wymazania) układ się rozjechał.
+- `test:guest-restore-no-loop`: nowa sesja ładuje stronę 1 raz, a test oczekuje 2. Po poprawce z przeglądu (przywracanie tylko
+  przy brakujących danych) albo test, albo warunek nie zgadza się z wycinanym pakietem testowym. Rozstrzygnąć, co jest właściwe.
+- `test:guest-bundle`: przekroczony czas oczekiwania na `load` po przywróceniu. Ta sama zmiana: przywracanie bez przeładowania.
+- `test:opfs-store` (krok „wyczyść wszystko”): wymazanie czeka teraz na przycisk „Continue” w raporcie (audyt a). Test tego nie zna.
+- `test:chat-first` (polskie etykiety według ustawienia) i `test:imported-message-content-browser` (kliknięcie bez celu):
+  teksty przeniesione do katalogów w językach, część 2.
+- `test:graph-help`: „nl: it points to the navigator”; maszynowe nl opisuje starą mapę słowami nawigatora.
+- `test:semantic-queue`: „unknown counts stay unknown”; prawdopodobnie nowe pole `llm` w statusie (audyt d).
+- `test:m1-navigator`: karta z jądra różni się od zapisanego wzorca `tests/shell/fixtures/graph-card-temperature.json`, po nowych
+  akcjach katalogu (G2/W11a/audyt). Odświeżyć wzorzec świadomie, po sprawdzeniu, że różnica to tylko nowe akcje.
+
 **Następny krok:**
 1. Bramka zielona → podać sha `90f60bfb` koordynatorowi. Scalenie do `main` (przewinięcie) robi koordynator. Do ultrareview
    dopiero po decyzji koordynatora.

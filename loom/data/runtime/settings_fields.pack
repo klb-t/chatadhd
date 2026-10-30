@@ -2107,7 +2107,9 @@
           ],
           "group": "interfejs",
           "subgroup": "wyglad",
-          "flows": [],
+          "flows": [
+            "chat.send"
+          ],
           "when_unset": {
             "pl": "jak w przeglądarce",
             "en": "follows the browser"
@@ -5726,7 +5728,7 @@
           "group": "kontekst",
           "subgroup": "analiza",
           "flows": [
-            "chat.send"
+            "semantic.analyse"
           ]
         }
       },

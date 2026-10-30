@@ -8,4 +8,4 @@ for line in open(sys.argv[1], encoding='utf8'):
     elif cur: out[cur].append(line)
 for f, lines in out.items():
     with tempfile.NamedTemporaryFile('w', suffix='.txt', delete=False, encoding='utf8') as t: t.writelines(lines)
-    subprocess.check_call([sys.executable, 'data/i18n_work/merge_nl.py', f, t.name])
+    subprocess.check_call([sys.executable, 'tools/i18n_work/merge_nl.py', f, t.name])

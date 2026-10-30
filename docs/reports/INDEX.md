@@ -109,7 +109,7 @@ ani testów C++ (`ctest`), więc parytet katalogów po stronie C++ nie jest spra
 filtr gałęzi, „Reasoning”); w bazie wyjątków lintu zostaje 335 wystąpień w 30 plikach (największe: KnowledgeWorkbench 87, OperationsPanel 36,
 UsagePolicyPanel 30). Brakujące klucze: `nl` 924 z 1580 (conversation_view, chat_send, chat_usage, action_proposal, client_step, semantic_*,
 graph_entry, roles, graph_screen 410, settings_human, context_receipt 174, interview), `en` 4 (settings_human), `pl` 0.
-**Tłumaczenie `nl`: maszynowe (Claude Sonnet 5.5), nieczytane przez człowieka** (surowe pliki w `loom/data/i18n_work/`); brakujące klucze `nl`
+**Tłumaczenie `nl`: maszynowe (Claude Sonnet 5.5), nieczytane przez człowieka** (surowe pliki w `tools/i18n_work/`); brakujące klucze `nl`
 pokazują tekst angielski z ostrzeżeniem.
 
 **Luki.** Nie zrobione: reszta przenoszenia tekstów z `.tsx` (335), nl dla pozostałych katalogów, kroki 3-4 dla C++, wielojęzyczne nazwy cech
@@ -125,10 +125,10 @@ i przykładowa ścieżka `/data/exports/archive.zip` w `KnowledgeWorkbench.tsx` 
 katalogów: graph_screen, context_receipt, roles, action_proposal, settings_human, interview, conversation_view, client_step, graph_entry, chat_usage, chat_send,
 semantic_question, semantic_queue, accounts; `--missing`: **nl 0, en 0, pl 0** (kategorie liczby mnogiej `few`/`many` są wymagane tylko tam, gdzie język ich używa -
 dane `tools/ui_plural_categories.json`; dawne „en: 4 brakujące” to były polskie `few`/`many`, nie braki). Warstwa pulpitu: `nl` w `web/src/shell/data/desktop.json`
-(słowa, deklaracje, etykiety adresów, listy słów dla zdań) z danych `loom/data/i18n_work/desktop_nl.json` + idempotentny skrypt `merge_desktop_nl.py` (po scaleniu z gałęziami,
+(słowa, deklaracje, etykiety adresów, listy słów dla zdań) z danych `tools/i18n_work/desktop_nl.json` + idempotentny skrypt `merge_desktop_nl.py` (po scaleniu z gałęziami,
 które zmieniają `desktop.json`, uruchom go jeszcze raz). (3) Lint skanuje też `.ts` (pola `label/title/text/message/hint/reason/...: "Zdanie"` oraz `setError("...")`): 9 trafień
 w bazie (`onboarding-host.ts`, `operations.ts`, `imported-message.ts`, `workflow-checkpoint.ts`), baza `ui_strings_baseline.json` 13 wpisów.
-**Tłumaczenie maszynowe (Claude Opus 5.5), nieczytane przez człowieka** - wszystkie nowe wartości `nl` (surowe pliki `loom/data/i18n_work/nl_part2_*.txt`, `literals_pl_nl_1.py`); nowe `pl` też maszynowe (dla literałów, które w kodzie były po angielsku).
+**Tłumaczenie maszynowe (Claude Opus 5.5), nieczytane przez człowieka** - wszystkie nowe wartości `nl` (surowe pliki `tools/i18n_work/nl_part2_*.txt`, `literals_pl_nl_1.py`); nowe `pl` też maszynowe (dla literałów, które w kodzie były po angielsku).
 
 **Testy.** `tsc --noEmit` czysto; `npm run test:language-pack` 4/4 (dane syntetyczne: język `xx`); wszystkie `node tests/*` (bez e2e) zielone na prawdziwych katalogach; generatory
 `--check` (onboarding, runtime profiles, k3 packs, text pack, graph interfaces) kod 0; lint `uistrings` ok. **Nie uruchomione:** e2e (wymagają serwera wbudowanego z packa; budowa release
