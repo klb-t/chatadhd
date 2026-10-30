@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { useShellText } from "../shell/text";
 import { api } from "../api";
 import type { ConfigMap, ModelInfo } from "../api/types";
 import SettingsFields from "./SettingsFields";
@@ -84,6 +85,7 @@ function SecretField({ name, label }: { name: string; label: string }) {
 }
 
 export default function SettingsPanel() {
+  const t = useShellText();
   const [config, setConfig] = useState<ConfigMap | null>(null);
   const [models, setModels] = useState<ModelInfo[]>([]);
   const [saving, setSaving] = useState(false);
@@ -152,7 +154,7 @@ export default function SettingsPanel() {
       <SettingsFields />
       <div className="section-title">Connection</div>
       <div className="form-row">
-        <label htmlFor="cfg-base-url">Base URL</label>
+        <label htmlFor="cfg-base-url">{t("settings_base_url")}</label>
         <input
           id="cfg-base-url"
           key={String(config.base_url ?? "")}
@@ -163,7 +165,7 @@ export default function SettingsPanel() {
         />
       </div>
       <div className="form-row">
-        <label htmlFor="cfg-default-model">Default model</label>
+        <label htmlFor="cfg-default-model">{t("settings_default_model")}</label>
         <input
           id="cfg-default-model"
           key={String(config.default_model ?? "")}
@@ -233,9 +235,9 @@ export default function SettingsPanel() {
       <UsagePolicyPanel onConfigSaved={setConfig} />
 
       <div className="section-title">API keys</div>
-      <SecretField name="api_key" label="OpenRouter API key (chat)" />
-      <SecretField name="anthropic_batch_key" label="Anthropic batch key (semantic)" />
-      <SecretField name="github_token" label="GitHub token (sync)" />
+      <SecretField name="api_key" label={t("settings_key_api")} />
+      <SecretField name="anthropic_batch_key" label={t("settings_key_batch")} />
+      <SecretField name="github_token" label={t("settings_key_github")} />
 
       <div className="section-title">Models</div>
       {modelError && <p role="alert" data-testid="settings-model-error">{modelError}</p>}

@@ -67,6 +67,41 @@ paczki wystarczą, a gość bez kluczy dostaje stan `none`. Aby gość miał dar
 `paid_credits`), inaczej gość go nie dostanie. Jeśli istniejąca nakładka `<accounts_root>/profiles/server_accounts.pack`
 ustawia `guests.model_sources` ze starym `pool`, zmienić na `["byok","free","local"]`. Doraźna nakładka bez Vertexu z 30.10 staje się zbędna.
 
+### S1 / M1-JEZYKI (2026-10-30, gałąź `pkg-lang`) - paczki językowe, język strony, niderlandzki
+
+**Co.** (1) Jedno wspólne pobieranie tekstu: `shellTranslator` (`web/src/shell/text.ts`) nad istniejącymi katalogami (`presentation.*.locales`),
+łańcuch zapasowy jako dane (`web/src/shell/data/languages.json`: domyślny `en`, `fallback`, nazwy, znacznik tłumaczenia maszynowego), brak słowa =
+tekst z języka zapasowego + jedno ostrzeżenie dla programisty (konsola i `window.__loomMissingText`), nigdy klucz na ekranie (klucz tylko gdy żaden
+język go nie ma). Lista języków strony = suma `locales` katalogów (nowy język = same dane). (2) Język strony: błąd odtworzony testem e2e na starym
+serwerze (telefon `pl` z nagłówkiem `Accept-Language: en` dostawał `en`), przyczyna: serwer zapisywał gościowi `ui_language` z pierwszego podtagu
+nagłówka, a `config.ui_language` wygrywa z `navigator.languages`. Poprawka: serwer nie zapisuje już `ui_language` przy starcie gościa (preset „auto”,
+strona czyta całą listę języków urządzenia); `AuthGate` i `GuestLayer` biorą całą listę, nie `navigator.language`. (3) Warstwa gościa: nazwy i powody
+magazynów (`store.<id>`, `guest.reason_*`) idą przez katalog; kod nie ma już polskiej etykiety wtyczki. (4) Lint `tools/lint_ui_strings.py`
+(w `tools/gate.sh`, krok `uistrings`) + baza wyjątków jako dane `tools/ui_strings_baseline.json` (może tylko maleć) + raport brakujących kluczy
+(`--missing`). (5) `nl` jako dane: ui_shell (560), accounts (59), route_issue, app_shell, open_settings, nowe klucze panelu.
+
+**Decyzje i jak cofnąć.** Zmiana semantyki z „brak słowa = id” (brief 6, 2026-10-22) na „brak słowa = język zapasowy + ostrzeżenie” - wymaga tego
+R114; cofnięcie: `fallback`/łańcuch w `languages.json` + `languageChain`. Serwer nie zapisuje języka gościowi: cofnięcie = przywrócić blok w
+`server/src/app.cpp` (POST /api/auth/guest). Gość z już zapisanym w kopii `ui_language` zostaje przy nim (nie da się odróżnić od wyboru osoby; osoba
+ustawia „auto” w ustawieniach) - luka. Lint to heurystyka (tekst JSX, atrybuty widoczne, zdania w cudzysłowie w liniach JSX), nie widzi np. tekstów w
+plikach `.ts` ani w C++.
+
+**Testy.** `npm run test:language-pack` (4 przypadki, dane SYNTETYCZNE: wymyślony język `xx`, który dowodzi, że nowy język to same dane), `npm run
+test:lang-page` (e2e: prawdziwy `loom-server` z gośćmi, prawdziwy Chromium z `locale` pl/en/nl/de/ja i różnymi `Accept-Language`, start gościa i
+przeładowanie, wybór osoby wygrywa, test braku słów innego języka w bloku magazynu warstwy gościa; dane = prawdziwe katalogi, nic syntetycznego;
+7/7 zielone), poprawione testy jednostkowe (label-guard, menu, shell, open-settings, route-issue; wszystkie zielone). Nie uruchamiałem pełnej bramki
+ani testów C++ (`ctest`), więc parytet katalogów po stronie C++ nie jest sprawdzony.
+
+**Liczby.** Przeniesione z kodu do katalogów: 17 tekstów (19 paneli jako klucze `panel_*`, przełącznik czatu, placeholder, etykiety ustawień,
+filtr gałęzi, „Reasoning”); w bazie wyjątków lintu zostaje 335 wystąpień w 30 plikach (największe: KnowledgeWorkbench 87, OperationsPanel 36,
+UsagePolicyPanel 30). Brakujące klucze: `nl` 924 z 1580 (conversation_view, chat_send, chat_usage, action_proposal, client_step, semantic_*,
+graph_entry, roles, graph_screen 410, settings_human, context_receipt 174, interview), `en` 4 (settings_human), `pl` 0.
+**Tłumaczenie `nl`: maszynowe (Claude Sonnet 5.5), nieczytane przez człowieka** (surowe pliki w `loom/data/i18n_work/`); brakujące klucze `nl`
+pokazują tekst angielski z ostrzeżeniem.
+
+**Luki.** Nie zrobione: reszta przenoszenia tekstów z `.tsx` (335), nl dla pozostałych katalogów, kroki 3-4 dla C++, wielojęzyczne nazwy cech
+magazynu w liście „co magazyn zgłasza” (klucze techniczne), pełna bramka.
+
 **Od 2026-10-05 ~18:00 integrację prowadzi Claude.** Wątki GPT skończyły tokeny;
 właściciel: „GPT już nam nie pomoże, przyjmij jego wyniki”. Poprzednia wersja tego
 indeksu (integrator 9, kolejka i wszystkie dowody) jest w

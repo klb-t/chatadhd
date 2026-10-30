@@ -45,6 +45,7 @@ import { WINDOW_DATA, openArtifactWindow, closeWindows, windowDataOf, focusWindo
 import { WINDOW_STEP_EVENT, type WindowStepDetail } from "./context/browser-host";
 import { layerStack } from "./shell/history";
 import { shellLanguage } from "./shell/language";
+import { availableLanguages, deviceLanguages } from "./shell/language-pack";
 import { cssVariables, mergeData } from "./shell/animation";
 import { glyphVariables } from "./shell/disclosure-glyphs";
 import { PANEL_LABELS, PANEL_TEXT_IDS, type PanelId } from "./shell/panels";
@@ -438,7 +439,7 @@ export default function App() {
     try { return featureMessage(shellCatalog.feature, id); } catch { return id; }
   };
   const uiShell = usePresentationFeature(userProfileHost, "ui_shell");
-  const uiLanguage = shellLanguage(config.ui_language, undefined, navigator.languages ?? [navigator.language], ["en", "pl"]);
+  const uiLanguage = shellLanguage(config.ui_language, undefined, deviceLanguages(), availableLanguages([uiShell.feature]));
   const uiLanguageRef = useRef(uiLanguage);
   uiLanguageRef.current = uiLanguage;
   // r2:b4: the document speaks the shell's language (index.html ships lang="en"); a screen reader (TalkBack) then picks the Polish voice.
@@ -462,7 +463,7 @@ export default function App() {
     const panel = w && typeof w.params?.panel === "string" ? w.params.panel as PanelId : null;
     if (!panel && w?.kind === "artifact" && !w.title_override) { const a = artifactOf(w.params?.artifact); return t("artifact_window", { format: a?.lang || a?.format || "" }); }
     if (!panel) return w?.kind === "chat" ? t("window_chat") : (w?.title_override ?? w?.kind ?? id);
-    const name = PANEL_TEXT_IDS[panel] ? t(PANEL_TEXT_IDS[panel]!) : (PANEL_LABELS[panel] ?? panel);
+    const name = PANEL_TEXT_IDS[panel] ? t(PANEL_TEXT_IDS[panel]!) : PANEL_LABELS[panel] ? t(PANEL_LABELS[panel]) : panel;
     // W6: the second window of a panel ("open another one beside") is numbered, so its chain and menu name the right one
     const twins = winRef.current.layout.windows.filter(x => x.params?.panel === panel);
     const n = twins.findIndex(x => x.id === id);
@@ -852,7 +853,7 @@ export default function App() {
   useDialogFocus(activePanel !== null, panelRef, "shell-menu-toggle");
   useDialogFocus(knowledgeOpen && fullWindow, knowledgeRef, "shell-menu-toggle");
 
-  const panelTitle = activePanel ? (PANEL_TEXT_IDS[activePanel] ? t(PANEL_TEXT_IDS[activePanel]!) : PANEL_LABELS[activePanel]) : "";
+  const panelTitle = activePanel ? (PANEL_TEXT_IDS[activePanel] ? t(PANEL_TEXT_IDS[activePanel]!) : t(PANEL_LABELS[activePanel])) : "";
   const topKind = visibleOverlay(win.layout)?.kind ?? null;   // the kind decides the component (settings = SettingsHuman, settings_fields = SettingsPanel)
   // W4: the content of a panel, the same in the drawer (maximized), in a dock leaf and in a floating window
   const panelContent = (p: PanelId, kind: string | null): ReactNode => (<>
@@ -954,7 +955,7 @@ export default function App() {
           <button data-testid="nav-chat" onClick={() => { pickLayout("chat"); setNavOpen(false); }}>{t("workshop_back")}</button>
           <SemanticStatus profileHost={userProfileHost} />
           <button data-testid="nav-knowledge" data-tab="knowledge" aria-pressed={knowledgeOpen} onClick={() => { setKnowledgeOpen((value) => !value); setNavOpen(false); }}>Knowledge</button>
-          {knowledgeOpen && <button aria-pressed={chatVisible} onClick={() => { setChatVisible((value) => !value); setNavOpen(false); }}>{chatVisible ? "Hide chat" : "Show chat"}</button>}
+          {knowledgeOpen && <button aria-pressed={chatVisible} onClick={() => { setChatVisible((value) => !value); setNavOpen(false); }}>{chatVisible ? t("chat_hide") : t("chat_show")}</button>}
           {(Object.keys(PANEL_LABELS) as PanelId[]).map((p) => (
             <button
               key={p}
@@ -964,7 +965,7 @@ export default function App() {
               aria-pressed={activePanel === p}
               onClick={() => openPanel(p)}
             >
-              {PANEL_TEXT_IDS[p] ? t(PANEL_TEXT_IDS[p]!) : PANEL_LABELS[p]}
+              {PANEL_TEXT_IDS[p] ? t(PANEL_TEXT_IDS[p]!) : t(PANEL_LABELS[p])}
             </button>
           ))}
           <button data-testid="toggle-theme" onClick={toggleTheme} title="Toggle theme">

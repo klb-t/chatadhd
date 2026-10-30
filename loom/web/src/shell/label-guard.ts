@@ -41,7 +41,7 @@ export function shellControls(words: Record<string, string>, menu: readonly Menu
   out.push({ where: "workshop", id: "chat", label: say(words, "workshop_back"), opens: "layout:chat" });
   for (const panel of panels) {
     const wordId = PANEL_TEXT_IDS[panel];
-    out.push({ where: "workshop", id: panel, label: wordId ? say(words, wordId) : PANEL_LABELS[panel], opens: opensOfTarget({ kind: "panel", panel }) });
+    out.push({ where: "workshop", id: panel, label: say(words, wordId ?? PANEL_LABELS[panel]), opens: opensOfTarget({ kind: "panel", panel }) });
   }
   return out;
 }

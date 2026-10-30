@@ -64,7 +64,7 @@ test('the old Memory and Knowledge panels stay reachable in the Workshop', () =>
   assert.ok(panels.SHELL_PANELS.includes('memory'));
   assert.match(appSource, /data-testid="nav-knowledge"/);
   assert.match(appSource, /Object\.keys\(PANEL_LABELS\)[\s\S]{0,200}data-testid=\{`nav-\$\{p\}`\}/);   // one nav button per panel, memory included
-  assert.match(panelsSource, /memory: "Memory"/);
+  assert.match(panelsSource, /memory: "panel_memory"/);   // the label is a catalog word, not text in code
 });
 
 test('the drawer of a panel opened from the menu carries the menu\'s word, not an English label', () => {

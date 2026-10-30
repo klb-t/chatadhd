@@ -1482,7 +1482,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
               chat ? <Disclosure testId="shell-reasoning" className="reasoning" labels={{ show: t("show_thinking"), hide: t("hide_thinking") }} defaultOpen>
                 <div className="reasoning-text">{displayedStream.reasoning}</div>
               </Disclosure> : <details className="reasoning" open>
-                <summary>Reasoning</summary>
+                <summary>{t("reasoning")}</summary>
                 <div className="reasoning-text">{displayedStream.reasoning}</div>
               </details>
             )}
@@ -1656,7 +1656,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
         </div>}
         <textarea
           value={input}
-          placeholder={chat ? t("composer_placeholder") : profile?.composer.placeholder ?? `Message ${productName()}…`}
+          placeholder={chat ? t("composer_placeholder") : profile?.composer.placeholder ?? `${t("composer_placeholder")} ${productName()}…`}
           rows={1}
           data-testid="chat-input"
           onChange={(e) => { setInput(e.target.value); recordDraft(e.target.value, convId ?? null); setQueuedNote((note) => (note === "failed" ? null : note)); }}

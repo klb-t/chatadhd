@@ -116,7 +116,7 @@ export type AccountsTextId =
   | "guest.limit_ready" | "guest.limit_alternatives" | "guest.limit_own_key"
   | "guest.terms_consent_title" | "guest.terms_consent_body" | "guest.terms_send" | "guest.terms_other" | "guest.terms_declined"
   | "guest.switched" | "guest.wipe" | "guest.wipe_confirm" | "guest.wipe_yes" | "guest.wipe_no"
-  | "guest.store" | "guest.store_traits" | "guest.store_choice" | "guest.store_auto" | "guest.store_unavailable" | "guest.store_fallback";
+  | "guest.store" | "guest.store_traits" | "guest.store_choice" | "guest.store_auto" | "guest.store_unavailable" | "guest.store_fallback" | "guest.store_none" | "guest.reason_missing" | "guest.reason_not_probed" | `store.${string}`;
 
 /** Text from the catalog, or the id (and reason) when the catalog is unusable. */
 export function accountText(feature: PresentationFeature | null, id: AccountsTextId,

@@ -1,0 +1,9 @@
+{
+  "_note": "Language packs of the interface (data, not code). A language is available when a catalog of some presentation feature has it under `locales`; this file only adds names and the fallback chain. A new language = a new `locales` entry in the catalogs (data/profiles/*.pack) and, optionally, a name here.",
+  "default": "en",
+  "fallback": {},
+  "names": { "en": "English", "pl": "Polski", "nl": "Nederlands" },
+  "machine_translated": {
+    "nl": { "by": "Claude Sonnet 5.5", "date": "2026-10-30", "reviewed": false, "note": "tłumaczenie maszynowe, nieczytane przez człowieka" }
+  }
+}

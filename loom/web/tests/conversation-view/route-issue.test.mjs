@@ -15,7 +15,7 @@ const failed = { code: 'model_route_failed', message: 'API error 500', fallback:
 
 test('generated web catalog carries the route-issue texts, pl and en', () => {
   assert.deepEqual(generated.entries.find(row => row.key === 'presentation.route_issue').value, pack.entries.find(row => row.key === 'presentation.route_issue').value);
-  assert.deepEqual(Object.keys(locales).sort(), ['en', 'pl']);
+  assert.ok(['en', 'pl'].every((code) => code in locales), 'en and pl are present; further languages are data');
   assert.deepEqual(Object.keys(locales.en).sort(), Object.keys(locales.pl).sort());
   assert.equal(r.ROUTE_ISSUE_CHUNK, 'route_issue');
   assert.equal(r.ROUTE_ISSUE_FEATURE, 'route_issue');

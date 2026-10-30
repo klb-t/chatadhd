@@ -1,18 +1,28 @@
 import { createContext, useContext } from "react";
-import { featureInLanguage, featureMessage, setProductName, productName } from "../onboarding/presentation.mjs";
+import { featureMessage, setProductName, productName } from "../onboarding/presentation.mjs";
+import { adviseMissingText, languageChain } from "./language-pack";
 
 type Feature = Parameters<typeof featureMessage>[0];
 export type ShellT = (id: string, params?: Record<string, string>) => string;
 
-/** Words of the shell from a data catalog (presentation.ui_shell, graph_screen, settings_human, roles) in one language; without a catalog
- * the machine name is shown. The language's catalog is taken whole or not (partial): a word it lacks shows its id, never the English word
- * on a Polish screen — the key-parity unit tests keep the catalogs complete, this keeps a gap visible instead of switching the screen. */
+/** Words of the shell from a data catalog (presentation.ui_shell, graph_screen, settings_human, roles) in one language. A word the language
+ * lacks comes from its fallback chain (language-pack.ts: configured fallbacks, then the default language) with one developer advisory per
+ * word; only when no language has it is the id returned. The person sees a text in another language rather than a key. */
 export function shellTranslator(feature: Feature | null | undefined, language: string): ShellT {
-  const f = feature ? featureInLanguage(feature, language, { partial: true }) : null;
-  if (f && typeof f.catalog.product_name === "string") setProductName(f.catalog.product_name);
+  const locales = (feature as { locales?: Record<string, Record<string, unknown>> } | null | undefined)?.locales;
+  const own = locales?.[language];
+  if (feature && typeof (own ?? feature.catalog).product_name === "string") setProductName((own ?? feature.catalog).product_name as string);
+  const chain = languageChain(language);
   return (id, params = {}) => {
-    if (!f) return id;
-    try { return featureMessage(f, id, params); } catch { return id; }
+    if (!feature) return id;
+    for (const code of chain) {
+      const catalog = code === feature.locale ? feature.catalog : locales?.[code];
+      if (!catalog || typeof catalog[id] !== "string") continue;
+      if (code !== language) adviseMissingText(language, id, code);
+      try { return featureMessage({ ...feature, locale: code, catalog: catalog as Record<string, string> }, id, params); } catch { return id; }
+    }
+    adviseMissingText(language, id, null);
+    return id;
   };
 }
 /** The product name on screen (see presentation.mjs): for places outside the catalogs (tab title, placeholders). */

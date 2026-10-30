@@ -135,7 +135,7 @@ try {
     assert.equal(p.leader, "true");
     assert.ok(p.traits.ops.includes("incremental_write") && p.traits.vfs === "opfs-sahpool", JSON.stringify(p.traits));
     measure("sqlite-wasm", { sqlite_version: p.traits.sqlite_version, fts5: p.traits.fts5, persisted: p.traits.persisted, quota_bytes: p.traits.quota_bytes, free_bytes: p.traits.free_bytes });
-    assert.ok(say("guest.store", { label: "Przeglądarka — baza SQLite" }).length > 0);
+    assert.ok(say("guest.store", { label: "browser_opfs_sqlite" }).length > 0);
     assert.deepEqual(await lockState(page), { held: 1, pending: 0 });
     const saved0 = await page.getByTestId("guest-layer").getAttribute("data-saved-at");
     await ask(page, "Napisz do ala@example.com o https://example.org/kot w sprawie umowy z 2026-10-28.", 1);
