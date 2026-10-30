@@ -67,6 +67,18 @@ Web, NIEPOPRAWIONE (za duże na ostatnie 5 % limitu). Przyczyny według logu, do
 - Sprawdzone: `tsc --noEmit` czysty, `tools/lint_ui_strings.py` ok. Nie dotykano C++/pack, nie uruchamiano bramki. Zostało: `interface-2`, `interface-2-native`, `product-integration` (poza listą), pełna bramka na tym drzewie.
 
 
+**Dopisek koordynatora (30.10):** w logu bramki było 12 czerwonych skryptów web, nie 9. Koordynator przyciął listę i pominął
+`interface-2`, `interface-2-native` i `product-integration`.
+- `product-integration`: padał przez ten sam test `semantic-queue`.
+- `interface-2` i `interface-2-native`: ta sama przyczyna co `imported-message-content-browser`, czyli komponent bez dostawcy tekstów
+  pokazywał klucze `lit_*`. Poprawka PRODUKTU w `web/src/shell/text.ts` (`eea3acc7`): domyślna wartość `ShellText` to teraz tłumacz
+  z wbudowanego katalogu `ui_shell` w domyślnym języku z `languages.json`, budowany przy pierwszym użyciu. Żaden ekran bez dostawcy
+  nie pokaże osobie surowego klucza. Oba skrypty `interface-2` i `imported-message-content-browser` przeszły na serwerze z bramki
+  `12992acd`.
+- `tests/shell/structure-state.test.mjs`: test zakładał dokładnie 2 języki. Produkt jest poprawny, bo doszedł nl. Test sprawdza teraz,
+  że słowa okna są w każdym języku, który oferuje katalog, w tym pl i en.
+- `role-card-state` pada lokalnie tylko dlatego, że szuka `build/dev` w tym worktree. W bramce ten katalog jest.
+
 **Następny krok:**
 1. Bramka zielona → podać sha `90f60bfb` koordynatorowi. Scalenie do `main` (przewinięcie) robi koordynator. Do ultrareview
    dopiero po decyzji koordynatora.
