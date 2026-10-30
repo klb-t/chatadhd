@@ -18,6 +18,7 @@ step() { echo "== $1" | tee -a "$LOG"; shift; ( "$@" ) >>"$LOG" 2>&1; rc=$?; ech
 FAIL=""
 cd "$ROOT/loom"
 STEP=lint;      step lint bash -c "cd \"$ROOT\" && python3 \"$TOOLS/lint_asan_range_for.py\" origin/main || { echo '(lint: przejrzyj wypisane linie; to heurystyka, nie błąd kompilacji)'; true; }"
+STEP=uistrings; step uistrings bash -c "cd \"$ROOT\" && python3 \"$TOOLS/lint_ui_strings.py\" && python3 \"$TOOLS/lint_ui_strings.py\" --missing"   # M1-JEZYKI: no new user-visible text in code; missing keys per language (report)
 STEP=configure; step configure cmake --preset dev -DLOOM_BUILD_SERVER=ON -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DPython3_EXECUTABLE="$(which python3)"
 STEP=build;     step build cmake --build --preset dev --parallel 4
 V=build/dev/verification; mkdir -p "$V"

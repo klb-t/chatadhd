@@ -63,7 +63,8 @@ async function check(label, locale, languages, acceptLanguage, want) {
       assert.equal(s.html, want, `first visit html lang (${JSON.stringify(s)})`);
       assert.equal(s.placeholder, shell[want].composer_placeholder, "composer words are the device language's catalog");
       const store = page.getByTestId("guest-store");
-      if (await store.count()) {
+      await store.waitFor({ timeout: 15000 });   // the guest layer's store block must be there: the mixed-language check below is not optional
+      {
         await store.locator("summary").click();
         const seen = await page.locator("body").innerText();
         assert.ok(seen.includes(accounts[want]["guest.store_choice"] ?? accounts.en["guest.store_choice"]), "the store block is in the page language");
