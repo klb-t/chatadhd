@@ -427,7 +427,7 @@ Result<Json> structure(const projection::Env& env, const Json& request) {
     return out;
   } catch (const std::exception& e) {
     // never an exception to the caller: the reason in the answer
-    log::write(log::Level::Warn, "loom.graph.structure", std::string("graph.structure: ") + e.what());
+    log::write(log::Level::Warning, "loom.graph.structure", std::string("graph.structure: ") + e.what());
     base["found"] = false;
     base["reason"] = "internal";
     base["reason_human"] = e.what();
