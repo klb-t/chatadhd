@@ -5,7 +5,7 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import type { AccountsTextId, GuestInfo, GuestsOffer } from "../context/auth-state";
 import {
-  ANSWER_DONE_EVENT, WORKING_COPY_CHANGED_EVENT, browserStore, bundleFromText, bundleSize, bundleText, collectBundle,
+  ANSWER_DONE_EVENT, WORKING_COPY_CHANGED_EVENT, workingConversations, browserStore, bundleFromText, bundleMissing, bundleSize, bundleText, collectBundle,
   humanBytes, humanSeconds, noticePeriod, requestPersistence, restoreBundle, wipeEverything, type GuestBundle,
 } from "../context/guest-store";
 import { GUEST_LIMIT_EVENT, type GuestLimitDetail } from "../api/auth";
@@ -105,14 +105,15 @@ export default function GuestLayer({ guest, guests, text, onSignIn, children }: 
       if (live) void showTraits(s);
       if (!live) return;
       setStore({ ...p, available });
-      // A bundle may hold no conversation at all (only e.g. desktop pins): the list below stays empty after the restore,
-      // so the page that follows a restore never restores again, or it would reload for ever.
+      // The bundle is restored only when it carries something the working copy lacks (rows, memory, config, by id): a bundle of desktop
+      // pins alone then restores once and never again, and a working copy that already holds everything is left as it is. A working copy
+      // with conversations of its own is merged into, never replaced; the replace is for the fresh, conversation-less working copy.
       if (!bundle || bundleSize(bundle) === 0 || justRestored) { ready.current = true; return; }
       try {
-        const have = await (await fetch("/api/conversations?limit=1", { credentials: "same-origin" })).json();
-        if (Array.isArray(have) && have.length > 0) { ready.current = true; return; }
-        const n = await restoreBundle(bundle, fetch, "replace");
-        // The panels already read the empty working copy; a reload shows the restored one everywhere at once.
+        const working = await (await fetch("/api/working-copy/bundle", { credentials: "same-origin", cache: "no-store" })).text();
+        if (bundleMissing(bundle, working) === 0) { ready.current = true; return; }
+        const n = await restoreBundle(bundle, fetch, workingConversations(working) > 0 ? "merge" : "replace");
+        // The panels already read the working copy before the restore; a reload shows the restored one everywhere at once.
         try { sessionStorage.setItem(RESTORED_KEY, String(n)); } catch { ready.current = true; return; }  // no mark, no reload
         if (live) window.location.reload();
       } catch { /* a failed restore leaves the bundle in place for the next try (and nothing overwrites it now) */ }

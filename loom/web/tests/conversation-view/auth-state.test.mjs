@@ -72,6 +72,19 @@ test('R103/R105 guests: auto start skips the gate; a guest session is the full a
 
 test('R103 §3.5: the notice period follows what the browser store reported', async () => {
   const g = await loader.load('src/context/guest-store.ts');
+  // review 1030 finding 3: what the bundle carries that the working copy lacks decides the restore (synthetic bundles)
+  const wc = (tables, memory = [], config = {}) => JSON.stringify({ schema: 'loom.guest_bundle/2', content: { tables, memory, config } });
+  const pins = (...ids) => ({ desktop_pins: { columns: ['id', 'address'], rows: ids.map(i => [i, 'a:' + i]) } });
+  const pinsOnly = g.bundleFromText(wc(pins('p1', 'p2')));
+  assert.equal(g.bundleMissing(pinsOnly, wc({})), 2, 'an empty working copy lacks both pins');
+  assert.equal(g.bundleMissing(pinsOnly, wc(pins('p1', 'p2'))), 0, 'a working copy that has the pins: nothing to restore, no reload');
+  assert.equal(g.bundleMissing(pinsOnly, wc(pins('p2', 'p9'))), 1, 'only p1 is lacking (p9 of the working copy is not touched)');
+  const mixed = g.bundleFromText(wc({ ...pins('p1'), conversations: { columns: ['id'], rows: [['c_1']] } }, [{ id: 'm1' }], { theme: 'dark', x: 1 }));
+  assert.equal(g.bundleMissing(mixed, wc({ ...pins('p1'), conversations: { columns: ['id'], rows: [['c_1']] } }, [{ id: 'm1' }], { theme: 'light' })), 1, 'config key x is lacking, theme (other value) is not');
+  assert.equal(g.bundleMissing(mixed, wc({})), 5);
+  assert.equal(g.bundleMissing({ schema: 'loom.guest_bundle/1', saved_at: 's', conversations: [{ id: 'c_1', title: 't', content: '' }] }, wc({ conversations: { columns: ['id'], rows: [['c_1']] } })), 0);
+  assert.equal(g.workingConversations(wc({ conversations: { columns: ['id'], rows: [['c_1'], ['c_2']] } })), 2);
+  assert.equal(g.workingConversations('garbage'), 0);
   assert.deepEqual(g.noticePeriod({ available: false, persisted: null, freeBytes: null }), { body: 'guest.notice_body_session', period: null });
   assert.equal(g.noticePeriod({ available: true, persisted: true, freeBytes: 1 }).period, 'guest.persisted');
   assert.equal(g.noticePeriod({ available: true, persisted: false, freeBytes: 1 }).period, 'guest.not_persisted');
