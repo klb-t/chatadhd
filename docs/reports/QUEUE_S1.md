@@ -13,6 +13,11 @@ być ogólny. Co dostawca dopuszcza (zapytania z przeglądarki, OAuth, przepływ
 z oceną źródła, nie jako ograniczenia. Wybór trasy dla każdego dostawcy i modelu to ustawienie z presetem.
 Do sprawdzenia w projekcie: gdzie leży klucz w przeglądarce (OPFS/IndexedDB, szyfrowanie, PH29), paragon RI-2 i potwierdzenie ×10
 bez serwera, pierwsze wysłanie do nowego dostawcy. Nie przerywać bieżących agentów; ruszy w następnej partii.
+Wymaganie R108 (właściciel, 30.10, dosłownie): „trzeba na początku użytkownika zachęcać zdecydowanie do utworzenia darmowego konta
+poprzez jedno kliknięcie żeby nie korzystać z naszych limitów, bo jesteśmy na etapie Bootstrap”. Zapisane w spec na gałęzi dokumentów
+(`37fa465f`). Odczyt koordynatora, do projektu: chodzi o darmowe konto u dostawcy modelu, podłączane jednym kliknięciem przez OAuth.
+Zachęta jest wyraźna, ale aplikacja działa dalej bez konta. Moment i siła zachęty to preset w danych, z „nie pytaj więcej”. Komunikat
+uczciwie mówi, że z kontem osoba ma własny limit, a jej zapytania idą wprost do tego dostawcy.
 
 ## Luka (koordynator, 30.10): strona nie zapisuje, dlaczego się przeładowuje
 Po poprawce pętli przeładowań gościa (`hotfix-reload`, `e94ba029`) nadal nie widać, co wywołało przeładowanie.
