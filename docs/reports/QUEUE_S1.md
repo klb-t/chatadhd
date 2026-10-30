@@ -16,7 +16,14 @@ Zakres pakietu:
 4. Test: bez darmowych kluczy jest jawny stan i komunikat z drogą do własnego konta (R108), bez Vertexu.
 5. Aktualizacja `BEZ_LOGOWANIA_R103` §4.1.
 Budżetu 1 €/dzień na testy użytkowników właściciel nie ustalił. Preset `vertex_gemini.budget.credits.per_day = 1.0` już istnieje;
-nie dopisywać nowego, a jego los zostawić koordynatorowi.
+nie dopisywać nowego.
+Decyzje koordynatora (30.10, później):
+(a) Kwota 1 € zostaje na razie jako bezpiecznik. Pakiet ma sprawić, że `paid_credits` nigdy nie wybiera się samo.
+(b) Notę wpisu Vertex „presets from the owner's spending rule (R103/R104)” poprawić na datowany odczyt. Właściciel nie ustalił
+budżetu na gości, więc nie opisywać tego jako jego decyzji.
+(c) Ten pakiet idzie jako następny, przed kolejnym projektowym.
+(d) Nakładka `free_providers` na produkcji na razie nie jest stosowana: właściciel ma wyłącznik gości.
+(e) Kluczy nie szukać po dysku.
 
 ## Luka do zaprojektowania (właściciel, 30.10; przekazał koordynator): zapytania do modeli z urządzenia osoby
 Słowa właściciela: „apka webowa operuje na urządzeniu klienckim i z niego wysyła zapytania”.
