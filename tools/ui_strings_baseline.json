@@ -1,0 +1,1385 @@
+{
+ "_note": "DATA: user-visible literals still in code. The list may only shrink: a new literal fails tools/lint_ui_strings.py.",
+ "entries": {
+  "loom/web/src/App.tsx": {
+   "Hide chat": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Pokaż w grafie": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Show chat": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   }
+  },
+  "loom/web/src/components/AgentProposalBlock.tsx": {
+   "Promise": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   }
+  },
+  "loom/web/src/components/AnalysisPanel.tsx": {
+   "Analysis workbench": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Expected output tokens, response bytes and cost may be numbers or null. Output caps are presets, not forecasts.": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Load effective contract": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Load native method versions": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "New immutable method version prepared. Review the native acceptance request before saving.": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Owner actor": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Promise": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Save a new graph method version": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Saved attempt inspected. No provider call was made.": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Saving requires an available native method profile and an actual immutable version. No local substitute is created.": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "The result packet and its actual run/version edges were accepted. Model content remains unverified.": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "The single attempt is retained with first-response provenance and validation.": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   }
+  },
+  "loom/web/src/components/ApplicationProfiles.tsx": {
+   "Application view": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Application view profile": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Close view": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Conversation selection": {
+    "count": 2,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Conversation selection can be shared or independent. Models and context remain independent.": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Hide view conversations": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Independent selection": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Native profile receipt": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Native profile receipt ID": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Profile JSON and bindings": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Promise": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Recent native profile receipts": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Selected workflow variables": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Shared selection": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Show view conversations": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "The original imported bytes were not saved by the older client. This write uses an explicitly labelled JSON derivative.": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "This saves the profile definition and source to native knowledge storage. Workflow inputs, conversation content and provider settings are separate.": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "This transport has no native profile storage adapter.": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Workflow inputs JSON": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   }
+  },
+  "loom/web/src/components/AuthGate.tsx": {
+   "Promise": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   }
+  },
+  "loom/web/src/components/ChatView.tsx": {
+   "Promise": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Reasoning": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   }
+  },
+  "loom/web/src/components/ClientStepBlock.tsx": {
+   "Promise": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   }
+  },
+  "loom/web/src/components/ContextPlanEditor.tsx": {
+   "Full": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Inherit request claims": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Inherit request detail": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Inherit request targets": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Label": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Optional queries you write for this request. No task or thesis is inferred. Editing the plan makes no requests.": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Raw": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Summary": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Thesis anchors, reach and budget": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   }
+  },
+  "loom/web/src/components/ContextSlider.tsx": {
+   "Probe text": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   }
+  },
+  "loom/web/src/components/ConversationBranches.tsx": {
+   "Find message": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "No retained messages match these display filters.": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Rootless component": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Text, role or ID": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   }
+  },
+  "loom/web/src/components/ConversationSourceView.tsx": {
+   "Promise": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   }
+  },
+  "loom/web/src/components/GraphReplyWorkbench.tsx": {
+   "Apply compiled reply": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Apply policy": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Automatic acceptance policy": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Base GraphPacket JSON": {
+    "count": 2,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Base packet and host metadata": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Candidate / explicit acceptance": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Compile an existing model response, inspect its logical parts, and apply it to a packet. Model content remains unverified.": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Confirm increase and retry exact operation": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Create empty packet": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Decline increase": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Fragment address and provenance": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Fragment prompting is unavailable here. Addresses remain available for inspection.": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Graph reply apply policy": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Graph reply workbench": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Host metadata JSON": {
+    "count": 2,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Model usage receipts": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Raw model response": {
+    "count": 2,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Request ID, turn ID and model identify the actual response. Use a new turn ID for a retry. Parent turns must already exist in the packet.": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Usage estimate": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Usage estimate JSON": {
+    "count": 2,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Validate compilation": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   }
+  },
+  "loom/web/src/components/GuestLayer.tsx": {
+   "new Promise": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   }
+  },
+  "loom/web/src/components/ImportedMessageContent.tsx": {
+   "Artifact fields": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Artifact view": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Close retained media preview": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Complete native export metadata": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Complete preserved source message": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Display derivative parsed from the retained source text.": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Document preview": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "File bytes unresolved": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Imported source · {{provider}} · {{blocks}} blocks · {{references}} references · {{artifacts}} artifacts": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Importer classification is inferred{{guess}}.": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Native artifact descriptor": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Native importer block summary": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Native importer reference summary": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "No standalone text content is recorded.": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Preview retained media": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Raw reference": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Raw source block": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Resolved in source archive": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Retained imported source media": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Retained media preview is unavailable for this payload. Original fields remain in raw source.": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Source": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Source blocks reflect the original import and remain separate from current message text.": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Source version:": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Source visibility: hidden{{reasons}}.": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "The block payload is not independently located. The complete preserved source is available below.": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "The browser could not decode the retained media bytes.": {
+    "count": 3,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "The declared artifact payload is not located in retained source.": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   }
+  },
+  "loom/web/src/components/KnowledgeWorkbench.tsx": {
+   "/data/exports/archive.zip": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "1 · What is claimed?": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "3 · How certain?": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "4 · What does it depend on?": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "5 · What contradicts it?": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "6 · What follows?": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "7 · What is missing?": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Adaptive": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "All kinds": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "All model fields": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Analysis result": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Cancel analysis": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Candidate checks and review status": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Candidate kind": {
+    "count": 2,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Candidate representation": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Candidate source packet": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Catalog import scope": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Catalog retention": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Catalog source paths": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Compact": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Complete proposed bundle": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Complete semantic result": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Context goal": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Copy content": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Counterexamples and exceptions": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Coverage and unsupported spans": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Data run": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Data version and execution status": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Derivation method": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Draft attributes": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Draft claim": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Draft qualifiers and old claim premises": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Draft roots": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Duplicate as an independent reference": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Filter catalog": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Filter graph entities": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Filter graph entities…": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Filter this view…": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Goal / prompt": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Graph background opacity": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Graph focus depth": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Graph minimum confidence": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Import scope": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Knowledge context token budget": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Knowledge run": {
+    "count": 2,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Latest catalog result": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Link parameter": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Link to original source": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Model and prompt provenance": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "No run yet": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Paths on the server": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Promise": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Record limit": {
+    "count": 2,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Records per collection": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Refresh": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Refresh model settings": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Rejected proposals and reasons": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Relation proposals": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Restore perspective": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Run reference; immutable server snapshot not guaranteed": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Save perspective": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Scan sources": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Score and select with catalog profile": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Search titles and sketches…": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Selected goal type": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Selected units": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Selection factors and dependencies": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Semantic candidate representation": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Semantic model budget": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Skipped inputs and reasons": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Source group": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Source retention": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Sources": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Stacked": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Stored semantic candidate IDs": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Structure check report": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Supporting observations / decisions": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Unknowns and premises": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Unknowns in proposed structure": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "View data run": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "View profile": {
+    "count": 2,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "View record limit": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "What should this context help you do?": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   }
+  },
+  "loom/web/src/components/LogPanel.tsx": {
+   "Refresh": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   }
+  },
+  "loom/web/src/components/MemoryPanel.tsx": {
+   "Cancel": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   }
+  },
+  "loom/web/src/components/MethodsPanel.tsx": {
+   "A profile selects exact versions and receipt IDs. Parameter precedence, signed weights and nested members remain editable JSON data.": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Active method-version and run relations": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Caller-defined native kinds and predicates": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Complete acceptance result": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Complete native library catalog": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Complete native snapshot, source captures and receipt hashes": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Complete original native entity": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Complete resolution, repeated paths, parameters and unavailable capabilities": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Filter graph records": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Found-result provenance": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Frozen accepted profile and receipt IDs to save": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Full result entity, exact endpoints and all provenance Claims": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Graph methods": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Incomplete active provenance": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Inspect record": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Native capabilities and availability": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Original profile record and source": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Profile validation previews the complete packet before acceptance. Changing an existing immutable definition requires the new-version editor below.": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Promise": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Read native receipt ID": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Read native result lineage": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Read receipt": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Resolve selection without execution": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Show all results": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "The host computes the new identity and hash. Existing version definitions and executed-result relations keep their original IDs.": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Unmapped kind": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Validate profile for library": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Validated packet, version edges, exact selection and CAS expectations": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   }
+  },
+  "loom/web/src/components/OperationsPanel.tsx": {
+   "Action": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Artifact browser": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Artifact kind": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Artifact metadata": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Artifact page size": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Artifact run": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Artifacts": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Audio file": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Configured default": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Evidence": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "File transcription": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Kind": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Kind / MIME": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Language": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "List artifacts": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Listing reads metadata. Content is loaded only when you choose Read content.": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Operation capabilities": {
+    "count": 2,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Page size": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Promise": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Provider": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Provider default": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Read content": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Run": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Save capability snapshot to graph": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Select an audio file and request transcription through the configured native provider.": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "The snapshot stores individual capability entities linked by their native parent and profile identity. It adds no execution authority.": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "This artifact has no content.": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Title / ID": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Transcribe file": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Transcription audio file": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Transcription language": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Transcription provider": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Transcription result": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Use transcript": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Voice transcription": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   }
+  },
+  "loom/web/src/components/ResourcePresetEditor.tsx": {
+   "Effective resource control preset": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Preset override JSON": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Resource preset override JSON": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Save browser preset override": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   }
+  },
+  "loom/web/src/components/SettingsFields.tsx": {
+   "Default": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Description": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Edit rule": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Key": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   }
+  },
+  "loom/web/src/components/SettingsPanel.tsx": {
+   "Anthropic batch key (semantic)": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Base URL": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Default model": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "GitHub token (sync)": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "OpenRouter API key (chat)": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   }
+  },
+  "loom/web/src/components/UsagePolicyPanel.tsx": {
+   ". Cohort:": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   ". Ledger:": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   ". Persisted:": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   ". Preset application:": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Actual measurement provenance and unknown dimensions are retained in the complete operation record. Completion or cancellation must be recorded by the execution adapter or an explicit recovery action.": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Baseline": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Baselines and reservations": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Confirmation": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Effective policy changed:": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Estimate": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Full inspection, including recorded events": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Growth": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Host capabilities": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Inspected cohort:": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "No resource diagnostics returned.": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Not triggered": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Operation:": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Projected": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Promise": {
+    "count": 3,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Recorded receipt": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Reserved": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Resource / unit": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Saving replaces the complete top-level": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Source / samples": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Source:": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "These controls read and write the usage-policy ledger. They do not dispatch imports, chat, models or other operations. Production adapters must adopt the policy lifecycle separately.": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "This receipt addresses its recorded estimate below. Editing the draft above does not change it. An authorization is not proof of dispatch and cannot authorize another operation.": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "loom_usage_policy": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   }
+  },
+  "loom/web/src/components/UserProfilePanel.tsx": {
+   "Native profile ID": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "This host has no native onboarding bridge.": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   }
+  },
+  "loom/web/src/components/WorkflowRecoveryPanel.tsx": {
+   "Choose a snapshot": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Download retained local snapshot/source": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Inspect source and workflow snapshot JSON": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "No saved workflow sessions.": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Save definitions, source text, views, validated state, variables and trace on this server.": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Save inspected recovery decision": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Saved snapshot": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Saved workflow snapshot": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Snapshot label": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Workflow session snapshots": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Workflow snapshot label": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   }
+  },
+  "loom/web/src/graph/GraphChatSettings.tsx": {
+   "Admission mode": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Answer as graph": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Authorize graph model calls when sending": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Automatic native admission": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Full graph reply settings JSON": {
+    "count": 2,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Global graph reply settings saved. Other views and conversations use this same native setting.": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Graph admission mode": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Graph method library target": {
+    "count": 2,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Graph postprocess provider ID": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Graph reply mode": {
+    "count": 2,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Install method definitions into graph": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Keep as candidate": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Load graph preset into draft": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Postprocess provider ID": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Preset loaded into the draft. Review the data before saving. No native configuration has changed.": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Profile definitions, method/recipe selections, parameter layers, base graph context, provider/model bindings, resource estimates and store admission remain native JSON data. No browser preset replaces omitted fields. Automatic admission requires its explicit native store request.": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Separate model after the answer": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Text plus JSON graph": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Use saved method profile in draft": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   }
+  },
+  "loom/web/src/shell/ChatShell.tsx": {
+   "Ta rozmowa w grafie": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   }
+  },
+  "loom/web/src/shell/windows/WindowHost.tsx": {
+   "void, g: Record": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   }
+  },
+  "loom/web/src/shell/windows/useArrange.tsx": {
+   "Keep it": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Keep it, don't ask again": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   },
+   "Zostaw, nie pytaj więcej": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   }
+  },
+  "loom/web/src/shell/windows/useCoupling.tsx": {
+   "new Map": {
+    "count": 1,
+    "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   }
+  }
+ }
+}

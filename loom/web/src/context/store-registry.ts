@@ -13,7 +13,7 @@ export const PRESET_POLICY: StorePolicy = { targets: "auto", requires: { durable
 
 export function indexedDbStore(): StorePlugin {
   return {
-    id: INDEXEDDB_ID, kind: "indexeddb_bundle", label: "Przeglądarka — paczka (IndexedDB)", status: "implemented",
+    id: INDEXEDDB_ID, kind: "indexeddb_bundle", label: INDEXEDDB_ID, status: "implemented",
     probe: async () => (typeof indexedDB !== "undefined" ? { available: true } : { available: false, reason: "missing: indexeddb" }),
     traits: async (): Promise<Traits> => ({
       durable: observed(true, "plugin: IndexedDB outlives the tab and the session"),

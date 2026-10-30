@@ -40,3 +40,14 @@ export function adviseMissingText(language: string, id: string, usedLanguage: st
     console.warn(`[i18n] missing text "${id}" in "${language}"; ${usedLanguage ? `shown from "${usedLanguage}"` : "no language has it"}`);
   } catch { /* no window (unit tests): the advisory is only for a developer */ }
 }
+
+/** A feature whose catalog answers in `language` and, for a word that language lacks, in its fallback chain (one advisory per missing word).
+ * For the screens that read `feature.catalog` directly (sign-in, guest layer) instead of the shell translator. */
+export function withFallback<F extends { locale: string; catalog: Record<string, string>; locales?: Record<string, Record<string, string>> }>(feature: F, language: string): F {
+  const merged: Record<string, string> = {};
+  const chain = languageChain(language);
+  for (const code of [...chain].reverse()) Object.assign(merged, code === feature.locale ? feature.catalog : feature.locales?.[code] ?? {});
+  const own = feature.locales?.[language] ?? (language === feature.locale ? feature.catalog : {});
+  for (const id of Object.keys(merged)) if (typeof own[id] !== "string") adviseMissingText(language, id, chain.find((c) => typeof feature.locales?.[c]?.[id] === "string") ?? null);
+  return { ...feature, locale: language, catalog: merged };
+}

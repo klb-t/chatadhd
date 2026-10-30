@@ -978,7 +978,12 @@ std::string_view(R"loom_onboard({
                 "guest.terms_other": "Another source or own key",
                 "guest.terms_declined": "Not sent: choose another source or your own key in Settings.",
 )loom_onboard", 59943),
-std::string_view(R"loom_onboard(                "guest.switched": "{{from}} is not available now ({{why}}); answers now come from {{provider}}."
+std::string_view(R"loom_onboard(                "guest.switched": "{{from}} is not available now ({{why}}); answers now come from {{provider}}.",
+                "store.browser_opfs_sqlite": "Browser — SQLite database",
+                "store.browser_indexeddb": "Browser — bundle (IndexedDB)",
+                "guest.reason_missing": "missing: {{what}}",
+                "guest.reason_not_probed": "not checked (an earlier choice is usable)",
+                "guest.store_none": "none"
               },
               "pl": {
                 "title": "Zaloguj się do {{product}}",
@@ -1034,7 +1039,12 @@ std::string_view(R"loom_onboard(                "guest.switched": "{{from}} is n
                 "guest.terms_send": "Wyślij",
                 "guest.terms_other": "Inne źródło albo własny klucz",
                 "guest.terms_declined": "Nie wysłano: wybierz inne źródło albo własny klucz w Ustawieniach.",
-                "guest.switched": "{{from}} jest teraz niedostępny ({{why}}); odpowiada {{provider}}."
+                "guest.switched": "{{from}} jest teraz niedostępny ({{why}}); odpowiada {{provider}}.",
+                "store.browser_opfs_sqlite": "Przeglądarka — baza SQLite",
+                "store.browser_indexeddb": "Przeglądarka — paczka (IndexedDB)",
+                "guest.reason_missing": "brakuje: {{what}}",
+                "guest.reason_not_probed": "niesprawdzany (wcześniejszy wybór działa)",
+                "guest.store_none": "brak"
               }
             }
           }
@@ -1840,7 +1850,8 @@ std::string_view(R"loom_onboard(                "guest.switched": "{{from}} is n
                 "cm_issue_items_not_list": "pozycje w „{{name}}” nie są listą",
                 "cm_issue_no_id": "pozycja w „{{name}}” nie ma identyfikatora",
                 "cm_issue_unknown_kind": "„{{name}}” jest rodzaju, którego ta wersja nie zna ({{kind}})",
-                "cm_issue_toggle_target": "przełącznik „{{name}}” nie mówi, co włącza",
+)loom_onboard", 59961),
+std::string_view(R"loom_onboard(                "cm_issue_toggle_target": "przełącznik „{{name}}” nie mówi, co włącza",
                 "cm_issue_no_panel": "„{{name}}” ma otwierać panel, ale żadnego nie wskazuje",
                 "cm_issue_unknown_panel": "„{{name}}” otwiera panel, którego ta wersja nie zna ({{panel}})",
                 "cm_issue_ops_shape": "Twoje zmiany menu mają zły kształt",
@@ -1848,8 +1859,7 @@ std::string_view(R"loom_onboard(                "guest.switched": "{{from}} is n
                 "cm_issue_hide_missing": "zmiana nr {{n}}: nie ma pozycji „{{name}}” do ukrycia",
                 "cm_issue_no_submenu": "zmiana nr {{n}}: nie ma podmenu „{{name}}”",
                 "cm_issue_exists": "zmiana nr {{n}}: „{{name}}” już jest w menu",
-)loom_onboard", 60000),
-std::string_view(R"loom_onboard(                "cm_issue_move_missing": "zmiana nr {{n}}: nie ma czego przenieść („{{name}}”)",
+                "cm_issue_move_missing": "zmiana nr {{n}}: nie ma czego przenieść („{{name}}”)",
                 "cm_issue_move_into_itself": "zmiana nr {{n}}: nie da się przenieść „{{name}}” do wnętrza tej samej pozycji",
                 "cm_issue_unknown_op": "zmiana nr {{n}}: nieznana zmiana „{{op}}”",
                 "tool_chip_on": "{{name}}: włączone",
@@ -2724,7 +2734,8 @@ std::string_view(R"loom_onboard(                "cm_issue_move_missing": "zmiana
                 "me.provenance.none": "Source: not recorded",
                 "me.state.unanswered": "no answer yet",
                 "me.state.declined": "you chose not to say",
-                "me.state.never": "never asked",
+)loom_onboard", 59959),
+std::string_view(R"loom_onboard(                "me.state.never": "never asked",
                 "me.state.other": "no value",
                 "me.inferred.note": "a conclusion, not your words",
                 "me.chip.set_by": "set by: {{who}}",
@@ -2737,8 +2748,7 @@ std::string_view(R"loom_onboard(                "cm_issue_move_missing": "zmiana
                 "me.details.provenance": "Origin: {{words}}",
                 "me.action.profile.set": "Correct",
                 "me.action.rules.set": "Correct at a level",
-)loom_onboard", 59999),
-std::string_view(R"loom_onboard(                "me.action.memory.forget": "Forget",
+                "me.action.memory.forget": "Forget",
                 "me.action.memory.restore": "Restore",
                 "me.action.planned": "planned",
                 "me.input.profile.set": "value",
@@ -3555,7 +3565,8 @@ std::string_view(R"loom_onboard(                "me.action.memory.forget": "Forg
                 "flow.plain": "zwykły tekst",
                 "flow.graph_out": "rozmowa na wejściu, graf na wyjściu",
                 "flow.graph_in": "graf na wejściu, odpowiedź tekstem",
-                "flow.graph_io": "graf na wejściu i na wyjściu",
+)loom_onboard", 59969),
+std::string_view(R"loom_onboard(                "flow.graph_io": "graf na wejściu i na wyjściu",
                 "tokens": "{{n}} tokenów (szacunek)",
                 "cost.unknown": "koszt nieznany — brak ceny",
                 "prefix.stable.yes": "prefiks stały: tak",
@@ -3566,8 +3577,7 @@ std::string_view(R"loom_onboard(                "me.action.memory.forget": "Forg
                 "ratio.times": "{{n}}× zwykłego zapytania do tego modelu",
                 "ratio.low": "dużo mniej niż zwykłe zapytanie do tego modelu",
                 "ratio.with_base": "{{ratio}} ({{base}})",
-)loom_onboard", 59918),
-std::string_view(R"loom_onboard(                "base.measured": "średnia z ostatnich zapytań do tego modelu (liczba zapytań: {{n}})",
+                "base.measured": "średnia z ostatnich zapytań do tego modelu (liczba zapytań: {{n}})",
                 "base.floor": "wartość startowa; zmierzonych dotąd zapytań do tego modelu: {{n}}",
                 "base.declared": "wartość zadeklarowana w ustawieniach",
                 "for.empty": "dla pustej wiadomości (bez tekstu, załączników i narzędzi tej wiadomości)",
@@ -4806,7 +4816,8 @@ std::string_view(R"loom_onboard(                "base.measured": "średnia z ost
                 },
                 "where": {
                   "evidence.provenance.method": "user_confirmed"
-                }
+)loom_onboard", 59989),
+std::string_view(R"loom_onboard(                }
               }
             ],
             "actions_here": []
@@ -4828,8 +4839,7 @@ std::string_view(R"loom_onboard(                "base.measured": "średnia z ost
                 "source": "memory",
                 "where": {
                   "status": [
-)loom_onboard", 59980),
-std::string_view(R"loom_onboard(                    "active",
+                    "active",
                     "inactive"
                   ]
                 }
@@ -5819,7 +5829,12 @@ std::string_view(R"loom_onboard(                    "active",
             "guest.terms_send": "Send",
             "guest.terms_other": "Another source or own key",
             "guest.terms_declined": "Not sent: choose another source or your own key in Settings.",
-            "guest.switched": "{{from}} is not available now ({{why}}); answers now come from {{provider}}."
+            "guest.switched": "{{from}} is not available now ({{why}}); answers now come from {{provider}}.",
+            "store.browser_opfs_sqlite": "Browser — SQLite database",
+            "store.browser_indexeddb": "Browser — bundle (IndexedDB)",
+            "guest.reason_missing": "missing: {{what}}",
+            "guest.reason_not_probed": "not checked (an earlier choice is usable)",
+            "guest.store_none": "none"
           },
           "pl": {
             "title": "Zaloguj się do {{product}}",
@@ -5860,7 +5875,8 @@ std::string_view(R"loom_onboard(                    "active",
             "guest.store_choice": "Magazyn używany w tej przeglądarce",
             "guest.store_auto": "automatycznie (według cech magazynów)",
             "guest.store_unavailable": "niedostępny tutaj: {{reason}}",
-            "guest.store_fallback": "Używany jest magazyn {{label}}, bo pierwszy wybór nie jest tu dostępny: {{reason}}",
+)loom_onboard", 59985),
+std::string_view(R"loom_onboard(            "guest.store_fallback": "Używany jest magazyn {{label}}, bo pierwszy wybór nie jest tu dostępny: {{reason}}",
             "guest.model_line": "Odpowiada: {{model}} ({{provider}}), najlepszy z dzisiejszych darmowych modeli. {{terms}}",
             "guest.no_model": "Na tym serwerze nie ma teraz darmowego modelu ({{reason}}). Możesz dodać własny klucz w ustawieniach.",
             "guest.terms_title": "Co dostawca robi z tekstem",
@@ -5868,15 +5884,19 @@ std::string_view(R"loom_onboard(                    "active",
             "guest.persisted": "dopiero gdy sam wyczyścisz dane tej strony (przeglądarka dała trwały schowek; wolne {{free}}); kopia na serwerze po {{ttl}} bez ruchu",
             "guest.not_persisted": "gdy przeglądarce zabraknie miejsca (wolne {{free}}, schowek nietrwały), a kopia na serwerze po {{ttl}} bez ruchu",
             "guest.limit_ready": "Możesz już spróbować ponownie.",
-)loom_onboard", 59905),
-std::string_view(R"loom_onboard(            "guest.limit_alternatives": "W tym czasie możesz użyć własnego klucza, innego źródła modelu albo się zalogować.",
+            "guest.limit_alternatives": "W tym czasie możesz użyć własnego klucza, innego źródła modelu albo się zalogować.",
             "guest.limit_own_key": "Własny klucz albo inne źródło",
             "guest.terms_consent_title": "Przed pierwszą wiadomością do {{provider}}",
             "guest.terms_consent_body": "{{terms}} Źródło: {{source}} ({{date}}). Wiadomość idzie przez konto operatora tego serwera.",
             "guest.terms_send": "Wyślij",
             "guest.terms_other": "Inne źródło albo własny klucz",
             "guest.terms_declined": "Nie wysłano: wybierz inne źródło albo własny klucz w Ustawieniach.",
-            "guest.switched": "{{from}} jest teraz niedostępny ({{why}}); odpowiada {{provider}}."
+            "guest.switched": "{{from}} jest teraz niedostępny ({{why}}); odpowiada {{provider}}.",
+            "store.browser_opfs_sqlite": "Przeglądarka — baza SQLite",
+            "store.browser_indexeddb": "Przeglądarka — paczka (IndexedDB)",
+            "guest.reason_missing": "brakuje: {{what}}",
+            "guest.reason_not_probed": "niesprawdzany (wcześniejszy wybór działa)",
+            "guest.store_none": "brak"
           }
         }
       }
@@ -6769,7 +6789,8 @@ std::string_view(R"loom_onboard(            "guest.limit_alternatives": "W tym c
             "wk_detail": "Szczegółowość pozycji",
             "wk_detail_auto": "Według ustawień celu",
             "wk_detail_label": "Etykieta",
-            "wk_detail_summary": "Streszczenie",
+)loom_onboard", 59956),
+std::string_view(R"loom_onboard(            "wk_detail_summary": "Streszczenie",
             "wk_detail_full": "Pełna treść",
             "wk_detail_raw": "Surowa",
             "wk_run": "Identyfikator przebiegu wiedzy",
@@ -6788,8 +6809,7 @@ std::string_view(R"loom_onboard(            "guest.limit_alternatives": "W tym c
             "wk_record_off": "Wyłączony",
             "wk_record_note": "Zapis dołącza do tury dokładnie złożone wiadomości i wybór, do późniejszego wglądu.",
             "wk_expert": "Ekspert · podgląd i zmiana jednego zapytania",
-)loom_onboard", 59965),
-std::string_view(R"loom_onboard(            "wk_expert_note": "To zapytanie klienta wysyłane do {{product}}. Wiadomości złożone dla dostawcy są po wykonaniu w zapisanym kontekście.",
+            "wk_expert_note": "To zapytanie klienta wysyłane do {{product}}. Wiadomości złożone dla dostawcy są po wykonaniu w zapisanym kontekście.",
             "wk_expert_prepare": "Przygotuj zapytanie klienta",
             "wk_expert_aria": "Zapytanie klienta na jedno wywołanie (JSON)",
             "wk_expert_once": "Następne wysłanie użyje dokładnie tego zapytania, raz. Profil, zapisany kontekst i kolejne wywołania zachowują swoje ustawienia.",
@@ -7736,7 +7756,8 @@ std::string_view(R"loom_onboard(            "wk_expert_note": "To zapytanie klie
             "help.title": "Co tu widzę?",
             "help.show": "Co tu widzę?",
             "help.hide": "Ukryj: co tu widzę?",
-            "help_old.1": "To stary widok grafu: ruchoma mapa sił. Każdy punkt to węzeł, każda linia to powiązanie, a kolor mówi, jakiego rodzaju jest węzeł.",
+)loom_onboard", 59914),
+std::string_view(R"loom_onboard(            "help_old.1": "To stary widok grafu: ruchoma mapa sił. Każdy punkt to węzeł, każda linia to powiązanie, a kolor mówi, jakiego rodzaju jest węzeł.",
             "help_old.2": "Pole u góry zawęża mapę do jednej rozmowy (na początek otwartej; puste pole oznacza wszystkie), suwak mówi, ile poziomów rozwija dotknięcie węzła. Mapę można przesuwać i powiększać.",
             "help_old.3": "Ten widok nie mówi, skąd pochodzi wartość, i nie ma kart węzłów. Do tego służy menu ⋮ › Graf (nawigator).",
             "rom.note": "ROM jest montowany pierwszy i tylko do odczytu; wszystko z chipem Preset pochodzi stąd; przesłona to Twoja kopia w nakładce.",
@@ -7750,8 +7771,7 @@ std::string_view(R"loom_onboard(            "wk_expert_note": "To zapytanie klie
             "reason.planned": "planowane",
             "reason.several_profiles_name_one": "kilka profili — wskaż jeden",
             "proposals.planned": "propozycja modelu — planowane ({{reason}})",
-)loom_onboard", 59949),
-std::string_view(R"loom_onboard(            "count.name.rom_items": "elementy ROM",
+            "count.name.rom_items": "elementy ROM",
             "count.name.profile_slots": "pola profilu",
             "count.name.principles": "zasady",
             "count.name.operators": "operatory",
@@ -8568,7 +8588,8 @@ std::string_view(R"loom_onboard(            "count.name.rom_items": "elementy RO
             "card.later": "Later",
             "card.never": "Never ask",
             "card.later_note": "“Later” hides this card until the app is launched next time.",
-            "card.never_note": "“Never ask” hides this card for good. You can bring it back in the settings, in the field “First-steps card”.",
+)loom_onboard", 59907),
+std::string_view(R"loom_onboard(            "card.never_note": "“Never ask” hides this card for good. You can bring it back in the settings, in the field “First-steps card”.",
             "card.starting": "Opening the conversation…",
             "card.failed": "Could not start: {{reason}}",
             "info.line": "A conversation without a model — a form only",
@@ -8592,8 +8613,7 @@ std::string_view(R"loom_onboard(            "count.name.rom_items": "elementy RO
             "chip.review.label": "Summary",
             "chip.review.say": "summary",
             "chip.status.label": "How many left",
-)loom_onboard", 59976),
-std::string_view(R"loom_onboard(            "chip.status.say": "how many left",
+            "chip.status.say": "how many left",
             "chips.idle": "next review status",
             "chip.next.label": "Go on",
             "chip.next.say": "go on",
@@ -8805,7 +8825,7 @@ std::string_view(R"loom_onboard(            "chip.status.say": "how many left",
   },
   "presentation_key": "presentation.onboarding"
 }
-)loom_onboard", 6842)};
+)loom_onboard", 8260)};
 static constexpr std::string_view kOnboardingScenario[] = {
 std::string_view(R"loom_onboard({
   "schema": "loom.onboarding.scenario/1",

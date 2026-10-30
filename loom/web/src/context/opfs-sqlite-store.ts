@@ -70,7 +70,7 @@ export function createOpfsSqliteStore(cfg: OpfsSqliteConfig = OPFS_SQLITE_PRESET
   const withTimeout = <T,>(p: Promise<T>, ms: number) => Promise.race([p, new Promise<never>((_, rej) => setTimeout(() => rej(new Error(`no answer from the store in ${ms} ms`)), ms))]);
 
   return {
-    id: OPFS_SQLITE_ID, kind: "opfs_sqlite", label: "Przeglądarka — baza SQLite", status: "implemented",
+    id: OPFS_SQLITE_ID, kind: "opfs_sqlite", label: OPFS_SQLITE_ID, status: "implemented",
     async probe() {
       const miss = missingPlatform();
       if (miss.length) return { available: false, reason: `missing: ${miss.join(", ")}` };

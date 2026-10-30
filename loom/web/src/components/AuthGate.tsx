@@ -4,9 +4,8 @@ import {
   ACCOUNTS_FEATURE, accountText, authReduce, registrationOffer, startsGuestAutomatically, type AccountsTextId, type AuthState,
 } from "../context/auth-state";
 import GuestLayer from "./GuestLayer";
-import { resolvePresentation, resolvePresentationFeature } from "../onboarding/presentation.mjs";
 import { shellLanguage } from "../shell/language";
-import { availableLanguages, deviceLanguages } from "../shell/language-pack";
+import { availableLanguages, deviceLanguages, withFallback } from "../shell/language-pack";
 import { usePresentationFeature } from "./ConversationSourceView";
 
 /** Present only when the server runs with accounts and someone is signed in. */
@@ -22,7 +21,7 @@ export default function AuthGate({ children }: { children: ReactNode }) {
   const guestFeature = useMemo(() => {
     try {
       const lang = shellLanguage(undefined, undefined, deviceLanguages(), availableLanguages([feature]));
-      return lang ? resolvePresentationFeature(resolvePresentation(undefined, lang), ACCOUNTS_FEATURE) : feature;
+      return feature ? withFallback(feature, lang) : feature;
     } catch { return feature; }
   }, [feature]);
   const guestText = useCallback((id: AccountsTextId, parameters = {}) => accountText(guestFeature, id, parameters), [guestFeature]);

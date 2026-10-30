@@ -811,7 +811,12 @@
             "guest.terms_send": "Send",
             "guest.terms_other": "Another source or own key",
             "guest.terms_declined": "Not sent: choose another source or your own key in Settings.",
-            "guest.switched": "{{from}} is not available now ({{why}}); answers now come from {{provider}}."
+            "guest.switched": "{{from}} is not available now ({{why}}); answers now come from {{provider}}.",
+            "store.browser_opfs_sqlite": "Browser — SQLite database",
+            "store.browser_indexeddb": "Browser — bundle (IndexedDB)",
+            "guest.reason_missing": "missing: {{what}}",
+            "guest.reason_not_probed": "not checked (an earlier choice is usable)",
+            "guest.store_none": "none"
           },
           "pl": {
             "title": "Zaloguj się do {{product}}",
@@ -867,7 +872,12 @@
             "guest.terms_send": "Wyślij",
             "guest.terms_other": "Inne źródło albo własny klucz",
             "guest.terms_declined": "Nie wysłano: wybierz inne źródło albo własny klucz w Ustawieniach.",
-            "guest.switched": "{{from}} jest teraz niedostępny ({{why}}); odpowiada {{provider}}."
+            "guest.switched": "{{from}} jest teraz niedostępny ({{why}}); odpowiada {{provider}}.",
+            "store.browser_opfs_sqlite": "Przeglądarka — baza SQLite",
+            "store.browser_indexeddb": "Przeglądarka — paczka (IndexedDB)",
+            "guest.reason_missing": "brakuje: {{what}}",
+            "guest.reason_not_probed": "niesprawdzany (wcześniejszy wybór działa)",
+            "guest.store_none": "brak"
           }
         }
       }

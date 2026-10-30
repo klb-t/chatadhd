@@ -190,6 +190,19 @@ export default function GuestLayer({ guest, guests, text, onSignIn, children }: 
   const ttl = humanSeconds(guest.idleTtlSeconds);
   const which = noticePeriod(store);
   const period = which.period ? text(which.period, { free: humanBytes(store.freeBytes), ttl }) : text("guest.period_unknown", { ttl });
+  // The store's name and the reasons come from the catalog (store.<id>); a plugin the catalog does not know shows its own label.
+  const storeLabel = (p?: { id: string; label?: string } | null): string => {
+    if (!p) return text("guest.store_none");
+    const key = `store.${p.id}`;
+    const word = text(key as `store.${string}`);
+    return word === key || word === `store.${p.id}` ? (p.label ?? p.id) : word;
+  };
+  const reasonText = (r: string): string => {
+    const missing = /^missing: (.*)$/.exec(r);
+    if (missing) return text("guest.reason_missing", { what: missing[1] });
+    if (r.startsWith("not probed")) return text("guest.reason_not_probed");
+    return r;
+  };
   const dataTerms = src && typeof src.data_terms === "object" && src.data_terms !== null
     ? (src.data_terms as { summary?: Record<string, string>; source_url?: string; observed_at?: string }) : undefined;
   const terms = dataTerms?.summary;
@@ -294,18 +307,18 @@ export default function GuestLayer({ guest, guests, text, onSignIn, children }: 
           <details data-testid="guest-store" data-store={sel.plugin?.id ?? ""} data-integrity={String(sel.traits.integrity?.value ?? "")}
             data-fallback={String(sel.traits.bundle_fallback?.value ?? "")} data-leader={String(sel.traits.leader_tab?.value ?? "")}
             style={{ pointerEvents: "auto", margin: 0, fontSize: 12, opacity: 0.85 }}>
-            <summary>{text("guest.store", { label: sel.plugin?.label ?? "-" })}</summary>
+            <summary>{text("guest.store", { label: storeLabel(sel.plugin) })}</summary>
             {sel.advisories.filter((a) => a.kind === "store_unavailable" || a.kind === "store_fallback" || a.kind === "store_requirements_unmet").map((a, i) => (
               <p key={i} role="status" data-testid="guest-store-advisory" data-kind={a.kind} data-plugin={a.plugin ?? ""} style={{ margin: "2px 0" }}>
-                {a.plugin === sel.plugin?.id ? text("guest.store_fallback", { label: sel.plugin?.label ?? "", reason: a.reason ?? (a.missing ?? []).join(", ") })
-                  : `${a.plugin ?? ""}: ${text("guest.store_unavailable", { reason: a.reason ?? (a.missing ?? []).join(", ") })}`}
+                {a.plugin === sel.plugin?.id ? text("guest.store_fallback", { label: storeLabel(sel.plugin), reason: reasonText(a.reason ?? (a.missing ?? []).join(", ")) })
+                  : `${storeLabel({ id: a.plugin ?? "" })}: ${text("guest.store_unavailable", { reason: reasonText(a.reason ?? (a.missing ?? []).join(", ")) })}`}
               </p>
             ))}
             <label style={{ display: "block", margin: "4px 0" }}>{text("guest.store_choice")}{" "}
               <select data-testid="guest-store-choice" value={Array.isArray(sel.policy.targets) ? sel.policy.targets[0] : "auto"}
                 onChange={(e) => { writePolicy(e.target.value === "auto" ? null : { targets: [e.target.value] }); window.location.reload(); }}>
                 <option value="auto">{text("guest.store_auto")}</option>
-                {sel.candidates.map((c) => <option key={c.id} value={c.id}>{c.id}{c.available ? "" : ` (${text("guest.store_unavailable", { reason: c.reason ?? "" })})`}</option>)}
+                {sel.candidates.map((c) => <option key={c.id} value={c.id}>{storeLabel(c)}{c.available ? "" : ` (${text("guest.store_unavailable", { reason: reasonText(c.reason ?? "") })})`}</option>)}
               </select>
             </label>
             <p style={{ margin: "2px 0" }}>{text("guest.store_traits")}</p>
