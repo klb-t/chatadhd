@@ -51,359 +51,523 @@
  "words": {
   "title": {
    "pl": "Pulpit",
-   "en": "Desktop"
+   "en": "Desktop",
+   "nl": "Bureaublad"
   },
   "hint": {
    "pl": "Tu zawsze możesz otworzyć nowe okno.",
-   "en": "From here you can always open a new window."
+   "en": "From here you can always open a new window.",
+   "nl": "Vanaf hier kunt u altijd een nieuw venster openen."
   },
   "sentence_label": {
    "pl": "Napisz, co chcesz zrobić",
-   "en": "Write what you want to do"
+   "en": "Write what you want to do",
+   "nl": "Schrijf wat u wilt doen"
   },
   "sentence_send": {
    "pl": "Wyślij",
-   "en": "Send"
+   "en": "Send",
+   "nl": "Verstuur"
   },
   "restore": {
    "pl": "Zminimalizowane okna",
-   "en": "Minimized windows"
+   "en": "Minimized windows",
+   "nl": "Geminimaliseerde vensters"
   },
   "open": {
    "pl": "Otwórz nowe okno",
-   "en": "Open a new window"
+   "en": "Open a new window",
+   "nl": "Open een nieuw venster"
   },
   "layouts": {
    "pl": "Układy",
-   "en": "Layouts"
+   "en": "Layouts",
+   "nl": "Indelingen"
   },
   "layouts_own": {
    "pl": "Twoje",
-   "en": "Yours"
+   "en": "Yours",
+   "nl": "Van u"
   },
   "unavailable_cannot_open": {
    "pl": "Ten rodzaj okna otwiera się dziś tylko z innego okna; strona nie umie go jeszcze otworzyć sama.",
-   "en": "This kind of window opens today only from another window; the page cannot open it by itself yet."
+   "en": "This kind of window opens today only from another window; the page cannot open it by itself yet.",
+   "nl": "Dit soort venster opent vandaag alleen vanuit een ander venster; de pagina kan het nog niet zelf openen."
   },
   "show_receipt": {
    "pl": "Widać pulpit; okna są zwinięte, „cofnij układ” je przywróci.",
-   "en": "The desktop is shown; the windows are minimized, “undo layout” brings them back."
+   "en": "The desktop is shown; the windows are minimized, “undo layout” brings them back.",
+   "nl": "Het bureaublad wordt getoond; de vensters zijn geminimaliseerd, “indeling ongedaan maken” brengt ze terug."
   },
   "show_receipt_noop": {
    "pl": "Pulpit już jest widoczny; nic nie zwinięto.",
-   "en": "The desktop is already shown; nothing was minimized."
+   "en": "The desktop is already shown; nothing was minimized.",
+   "nl": "Het bureaublad is al zichtbaar; er is niets geminimaliseerd."
   },
   "background_kind": {
    "pl": "To jest ten pulpit: jest zawsze pod oknami, jeden na układ; pokazuje go „pokaż pulpit” (Ctrl+Shift+D).",
-   "en": "This is the desktop itself: always under the windows, one per layout; “show the desktop” (Ctrl+Shift+D) shows it."
+   "en": "This is the desktop itself: always under the windows, one per layout; “show the desktop” (Ctrl+Shift+D) shows it.",
+   "nl": "Dit is het bureaublad zelf: altijd onder de vensters, één per indeling; “toon het bureaublad” (Ctrl+Shift+D) toont het."
   },
   "emergency": {
    "pl": "Otwórz okno czatu",
-   "en": "Open a chat window"
+   "en": "Open a chat window",
+   "nl": "Open een chatvenster"
   },
   "no_path": {
    "pl": "Na pulpicie nie ma teraz żadnej drogi do otwarcia okna, bo wyłączono sekcje i drogę awaryjną. Czy to celowe?",
-   "en": "The desktop has no way to open a window now: the sections and the emergency path are switched off. Is that intended?"
+   "en": "The desktop has no way to open a window now: the sections and the emergency path are switched off. Is that intended?",
+   "nl": "Het bureaublad heeft nu geen manier om een venster te openen: de secties en de noodroute staan uit. Is dat de bedoeling?"
   },
   "no_path_fix": {
    "pl": "Przywróć drogę awaryjną",
-   "en": "Bring back the emergency path"
+   "en": "Bring back the emergency path",
+   "nl": "Herstel de noodroute"
   },
   "section_unknown": {
    "pl": "Nieznana sekcja pulpitu, pominięta: {id}.",
-   "en": "Unknown desktop section, skipped: {id}."
+   "en": "Unknown desktop section, skipped: {id}.",
+   "nl": "Onbekende bureaubladsectie, overgeslagen: {id}."
   },
   "last_close_unknown": {
    "pl": "Nieznana wartość „po zamknięciu ostatniego okna”: {value}; zostaje pulpit.",
-   "en": "Unknown value of “after the last window closes”: {value}; the desktop stays."
+   "en": "Unknown value of “after the last window closes”: {value}; the desktop stays.",
+   "nl": "Onbekende waarde van “na het sluiten van het laatste venster”: {value}; het bureaublad blijft."
   },
   "ended_title": {
    "pl": "ChatADHD zamknięty",
-   "en": "ChatADHD closed"
+   "en": "ChatADHD closed",
+   "nl": "ChatADHD gesloten"
   },
   "ended_text": {
    "pl": "Zamknięto ostatnie okno, a ustawienie mówi: zamknij program. Przeglądarka może odmówić zamknięcia karty, której nie otworzył skrypt - wtedy zamknij ją sam.",
-   "en": "The last window was closed and the setting says: close the program. The browser may refuse to close a tab no script opened - then close it yourself."
+   "en": "The last window was closed and the setting says: close the program. The browser may refuse to close a tab no script opened - then close it yourself.",
+   "nl": "Het laatste venster is gesloten en de instelling zegt: sluit het programma. De browser weigert mogelijk een tabblad te sluiten dat geen script heeft geopend - sluit het dan zelf."
   },
   "ended_back": {
    "pl": "Wróć na pulpit",
-   "en": "Back to the desktop"
+   "en": "Back to the desktop",
+   "nl": "Terug naar het bureaublad"
   },
   "keep": {
    "pl": "Zostaw",
-   "en": "Keep it"
+   "en": "Keep it",
+   "nl": "Bewaar"
   },
   "more": {
    "pl": "Więcej…",
-   "en": "More…"
+   "en": "More…",
+   "nl": "Meer…"
   },
   "less": {
    "pl": "Mniej",
-   "en": "Less"
+   "en": "Less",
+   "nl": "Minder"
   },
   "icons": {
    "pl": "Ikony pulpitu",
-   "en": "Desktop icons"
+   "en": "Desktop icons",
+   "nl": "Bureaubladpictogrammen"
   },
   "icons_count": {
    "pl": "Pulpit, ikon: {n}",
-   "en": "Desktop, {n} icons"
+   "en": "Desktop, {n} icons",
+   "nl": "Bureaublad, {n} pictogrammen"
   },
   "icons_loading": {
    "pl": "Wczytuję ikony…",
-   "en": "Loading the icons…"
+   "en": "Loading the icons…",
+   "nl": "De pictogrammen worden geladen…"
   },
   "icons_error": {
    "pl": "Nie udało się wczytać ikon pulpitu: {error}",
-   "en": "Could not load the desktop icons: {error}"
+   "en": "Could not load the desktop icons: {error}",
+   "nl": "De bureaubladpictogrammen konden niet worden geladen: {error}"
   },
   "desktop_empty": {
    "pl": "Na pulpicie nie ma ikon. Przypnij coś zdaniem, np. „przypnij rozmowy do pulpitu”.",
-   "en": "The desktop has no icons. Pin something with a sentence, e.g. “pin conversations on the desktop”."
+   "en": "The desktop has no icons. Pin something with a sentence, e.g. “pin conversations on the desktop”.",
+   "nl": "Het bureaublad heeft geen pictogrammen. Maak iets vast met een zin, bijvoorbeeld “zet gesprekken vast op het bureaublad”."
   },
   "declaration_unknown": {
    "pl": "Nieznana deklaracja pulpitu „{id}”; użyto domyślnej ({preset}).",
-   "en": "Unknown desktop declaration “{id}”; the default ({preset}) is used."
+   "en": "Unknown desktop declaration “{id}”; the default ({preset}) is used.",
+   "nl": "Onbekende bureaubladdeclaratie “{id}”; de standaard ({preset}) wordt gebruikt."
   },
   "element_unsupported": {
    "pl": "Element deklaracji pulpitu, którego ta strona nie rysuje, pominięty: {id} ({kind}).",
-   "en": "A desktop declaration element this page does not draw, skipped: {id} ({kind})."
+   "en": "A desktop declaration element this page does not draw, skipped: {id} ({kind}).",
+   "nl": "Een element van de bureaubladdeclaratie dat deze pagina niet tekent, overgeslagen: {id} ({kind})."
   },
   "graph_label": {
    "pl": "Twój graf w tle: węzłów {n}, krawędzi {e}",
-   "en": "Your graph behind: {n} nodes, {e} edges"
+   "en": "Your graph behind: {n} nodes, {e} edges",
+   "nl": "Uw graaf op de achtergrond: {n} knopen, {e} bogen"
   },
   "nothing_visible": {
    "pl": "Graf w tle jest niewidoczny (krycie 0). Czy to celowe?",
-   "en": "The graph behind is invisible (opacity 0). Is that intended?"
+   "en": "The graph behind is invisible (opacity 0). Is that intended?",
+   "nl": "De graaf op de achtergrond is onzichtbaar (dekking 0). Is dat de bedoeling?"
   },
   "minimized_icons": {
    "pl": "Zminimalizowane okna (pasek)",
-   "en": "Minimized windows (bar)"
+   "en": "Minimized windows (bar)",
+   "nl": "Geminimaliseerde vensters (balk)"
   },
   "minimized_unknown": {
    "pl": "Nieznana wartość „zminimalizowane okna na pulpicie”: {value}; użyto {preset}.",
-   "en": "Unknown value of “minimized windows on the desktop”: {value}; {preset} is used."
+   "en": "Unknown value of “minimized windows on the desktop”: {value}; {preset} is used.",
+   "nl": "Onbekende waarde van “geminimaliseerde vensters op het bureaublad”: {value}; {preset} wordt gebruikt."
   },
   "card_label": {
    "pl": "Karta: {label}",
-   "en": "Card: {label}"
+   "en": "Card: {label}",
+   "nl": "Kaart: {label}"
   },
   "card_empty": {
    "pl": "Wokół tego węzła nie ma jeszcze nic w grafie.",
-   "en": "Nothing is around this node in the graph yet."
+   "en": "Nothing is around this node in the graph yet.",
+   "nl": "Rond deze knoop staat nog niets in de graaf."
   },
   "declare_receipt": {
    "pl": "Pulpit ma teraz wygląd „{label}”. Zdanie „pulpit jako graf” wraca do domyślnego.",
-   "en": "The desktop is now “{label}”. The sentence “desktop as graph” brings the default back."
+   "en": "The desktop is now “{label}”. The sentence “desktop as graph” brings the default back.",
+   "nl": "Het bureaublad is nu “{label}”. De zin “bureaublad als graaf” brengt de standaard terug."
   },
   "declare_receipt_preset": {
    "pl": "Pulpit wraca do domyślnego wyglądu ({label}).",
-   "en": "The desktop is back to its default ({label})."
+   "en": "The desktop is back to its default ({label}).",
+   "nl": "Het bureaublad is terug bij de standaard ({label})."
   },
   "declare_unknown": {
    "pl": "Nie znam takiego wyglądu pulpitu: „{word}”. Znane: {known}.",
-   "en": "I do not know such a desktop: “{word}”. Known: {known}."
+   "en": "I do not know such a desktop: “{word}”. Known: {known}.",
+   "nl": "Ik ken zo'n bureaublad niet: “{word}”. Bekend: {known}."
   },
   "trash_title": {
    "pl": "Kosz",
-   "en": "Trash"
+   "en": "Trash",
+   "nl": "Prullenbak"
   },
   "trash_empty_now": {
    "pl": "Kosz jest pusty.",
-   "en": "The trash is empty."
+   "en": "The trash is empty.",
+   "nl": "De prullenbak is leeg."
   },
   "trash_restore": {
    "pl": "Przywróć",
-   "en": "Restore"
+   "en": "Restore",
+   "nl": "Herstel"
   },
   "trash_delete": {
    "pl": "Usuń na zawsze",
-   "en": "Delete for good"
+   "en": "Delete for good",
+   "nl": "Definitief verwijderen"
   },
   "trash_empty": {
    "pl": "Opróżnij kosz",
-   "en": "Empty the trash"
+   "en": "Empty the trash",
+   "nl": "Leeg de prullenbak"
   },
   "trash_confirm_one": {
    "pl": "Usunąć na zawsze „{title}”? Tego nie da się cofnąć.",
-   "en": "Delete “{title}” for good? This cannot be undone."
+   "en": "Delete “{title}” for good? This cannot be undone.",
+   "nl": "“{title}” definitief verwijderen? Dit kan niet ongedaan worden gemaakt."
   },
   "trash_confirm_all": {
    "pl": "Opróżnić kosz ({count})? Rozmowy znikną razem z wiadomościami, wpisy pamięci zostaną zapomniane, przypięcia i układy usunięte. Tego nie da się cofnąć.",
-   "en": "Empty the trash ({count})? Conversations go with their messages, memory entries are forgotten, pins and layouts removed. This cannot be undone."
+   "en": "Empty the trash ({count})? Conversations go with their messages, memory entries are forgotten, pins and layouts removed. This cannot be undone.",
+   "nl": "De prullenbak legen ({count})? Gesprekken verdwijnen met hun berichten, geheugenitems worden vergeten, vastgezette items en indelingen worden verwijderd. Dit kan niet ongedaan worden gemaakt."
   },
   "trash_yes": {
    "pl": "Tak, usuń",
-   "en": "Yes, delete"
+   "en": "Yes, delete",
+   "nl": "Ja, verwijder"
   },
   "trash_no": {
    "pl": "Nie",
-   "en": "No"
+   "en": "No",
+   "nl": "Nee"
   },
   "trash_from": {
    "pl": "z: {from}",
-   "en": "from: {from}"
+   "en": "from: {from}",
+   "nl": "uit: {from}"
   },
   "trash_kind_conversation": {
    "pl": "Rozmowy",
-   "en": "Conversations"
+   "en": "Conversations",
+   "nl": "Gesprekken"
   },
   "trash_kind_memory": {
    "pl": "Wpisy pamięci",
-   "en": "Memory entries"
+   "en": "Memory entries",
+   "nl": "Geheugenitems"
   },
   "trash_kind_pin": {
    "pl": "Przypięcia",
-   "en": "Pins"
+   "en": "Pins",
+   "nl": "Vastgezette items"
   },
   "trash_kind_layout": {
    "pl": "Układy",
-   "en": "Layouts"
+   "en": "Layouts",
+   "nl": "Indelingen"
   },
   "trash_error": {
    "pl": "Nie udało się: {error}",
-   "en": "It failed: {error}"
+   "en": "It failed: {error}",
+   "nl": "Het is mislukt: {error}"
   },
   "trash_retention_due": {
    "pl": "{count} rzeczy leży w koszu dłużej niż {days} dni (ustawienie trash_retention_days). Usunąć je teraz na zawsze — czy celowo?",
-   "en": "{count} things have been in the trash longer than {days} days (setting trash_retention_days). Delete them for good now — is that intended?"
+   "en": "{count} things have been in the trash longer than {days} days (setting trash_retention_days). Delete them for good now — is that intended?",
+   "nl": "{count} dingen staan al langer dan {days} dagen in de prullenbak (instelling trash_retention_days). Nu definitief verwijderen - is dat de bedoeling?"
   },
   "trash_retention_run": {
    "pl": "Usuń starsze",
-   "en": "Delete the older ones"
+   "en": "Delete the older ones",
+   "nl": "Verwijder de oudere"
   },
   "trash_retention_short": {
    "pl": "Ustawienie trash_retention_days jest krótsze niż 7 dni — rzeczy mogą zniknąć z kosza, zanim się zorientujesz. Czy celowo?",
-   "en": "The setting trash_retention_days is under 7 days — things may leave the trash before you notice. Is that intended?"
+   "en": "The setting trash_retention_days is under 7 days — things may leave the trash before you notice. Is that intended?",
+   "nl": "De instelling trash_retention_days is korter dan 7 dagen - dingen kunnen de prullenbak verlaten voordat u het merkt. Is dat de bedoeling?"
   },
   "icon_menu_trash": {
    "pl": "Do kosza",
-   "en": "To the trash"
+   "en": "To the trash",
+   "nl": "Naar de prullenbak"
   },
   "icon_menu_close": {
    "pl": "Zamknij menu",
-   "en": "Close the menu"
+   "en": "Close the menu",
+   "nl": "Sluit het menu"
   },
   "trash_badge": {
    "pl": "w koszu: {count}",
-   "en": "in the trash: {count}"
+   "en": "in the trash: {count}",
+   "nl": "in de prullenbak: {count}"
   },
   "layout_trashed": {
    "pl": "Układ „{name}” jest w koszu; „przywróć układ {name} z kosza” go odda.",
-   "en": "The layout “{name}” is in the trash; “restore the layout {name} from the trash” brings it back."
+   "en": "The layout “{name}” is in the trash; “restore the layout {name} from the trash” brings it back.",
+   "nl": "De indeling “{name}” staat in de prullenbak; “herstel de indeling {name} uit de prullenbak” brengt haar terug."
   },
   "layout_untrashed": {
    "pl": "Układ „{name}” wrócił z kosza.",
-   "en": "The layout “{name}” is back from the trash."
+   "en": "The layout “{name}” is back from the trash.",
+   "nl": "De indeling “{name}” is terug uit de prullenbak."
   },
   "arrange": {
    "pl": "Uporządkuj ikony",
-   "en": "Arrange the icons"
+   "en": "Arrange the icons",
+   "nl": "Orden de pictogrammen"
   },
   "arrange_by_label": {
    "pl": "według nazwy",
-   "en": "by name"
+   "en": "by name",
+   "nl": "op naam"
   },
   "arrange_by_kind": {
    "pl": "według rodzaju",
-   "en": "by kind"
+   "en": "by kind",
+   "nl": "op soort"
   },
   "arrange_by_recent": {
    "pl": "ostatnio przesunięte pierwsze",
-   "en": "recently moved first"
+   "en": "recently moved first",
+   "nl": "onlangs verplaatst eerst"
   },
   "arrange_by_count": {
    "pl": "według liczby na odznace",
-   "en": "by the number on the badge"
+   "en": "by the number on the badge",
+   "nl": "op het getal op de badge"
   },
   "arrange_by_declaration": {
    "pl": "jak w ustawieniu pulpitu (bez ręcznych miejsc)",
-   "en": "as the desktop setting has it (no hand places)"
+   "en": "as the desktop setting has it (no hand places)",
+   "nl": "zoals de bureaubladinstelling het heeft (zonder handmatige plekken)"
   },
   "arrange_undo": {
    "pl": "Cofnij ułożenie",
-   "en": "Undo the arrangement"
+   "en": "Undo the arrangement",
+   "nl": "Maak de ordening ongedaan"
   },
   "arrange_redo": {
    "pl": "Ponów ułożenie",
-   "en": "Redo the arrangement"
+   "en": "Redo the arrangement",
+   "nl": "Herhaal de ordening"
   },
   "arrange_from_installation": {
    "pl": "Ułożenie z tej przeglądarki",
-   "en": "Arrangement of this browser"
+   "en": "Arrangement of this browser",
+   "nl": "Ordening van deze browser"
   },
   "arrange_from_person": {
    "pl": "Ułożenie wspólne dla tego rodzaju urządzenia",
-   "en": "Arrangement shared by this kind of device"
+   "en": "Arrangement shared by this kind of device",
+   "nl": "Ordening gedeeld door dit soort apparaat"
   },
   "arrange_from_preset": {
    "pl": "Ułożenie domyślne",
-   "en": "The default arrangement"
+   "en": "The default arrangement",
+   "nl": "De standaardordening"
   },
   "arrange_computed_moved": {
    "pl": "Ikony były liczone; przesunięcie ręką przełączyło ułożenie na siatkę. Cofnij, jeśli to niecelowe.",
-   "en": "The icons were computed; a move by hand switched the arrangement to the grid. Undo if that was not intended."
+   "en": "The icons were computed; a move by hand switched the arrangement to the grid. Undo if that was not intended.",
+   "nl": "De pictogrammen waren berekend; een handmatige verplaatsing zette de ordening om naar het raster. Maak ongedaan als dat niet de bedoeling was."
   },
   "arrangement_mode_unknown": {
    "pl": "Tryb ułożenia „{mode}” nie jest znany tej stronie — ikony stoją w siatce.",
-   "en": "The arrangement mode “{mode}” is not known to this page — the icons stand in a grid."
+   "en": "The arrangement mode “{mode}” is not known to this page — the icons stand in a grid.",
+   "nl": "De ordeningsmodus “{mode}” is onbekend voor deze pagina — de pictogrammen staan in een raster."
   },
   "arrangement_unreadable": {
    "pl": "Ustawienie desktop_arrangement jest nieczytelne — ikony stoją jak domyślnie.",
-   "en": "The setting desktop_arrangement is unreadable — the icons stand as by default."
+   "en": "The setting desktop_arrangement is unreadable — the icons stand as by default.",
+   "nl": "De instelling desktop_arrangement is onleesbaar — de pictogrammen staan zoals standaard."
   },
   "arrange_by_unknown": {
    "pl": "Nie znam porządku „{by}” — nic nie zmieniłem.",
-   "en": "I do not know the order “{by}” — nothing changed."
+   "en": "I do not know the order “{by}” — nothing changed.",
+   "nl": "Ik ken de volgorde “{by}” niet — er is niets veranderd."
   },
   "arrange_done": {
    "pl": "Ułożyłem ikony ({by}). Cofnięcie: „Cofnij ułożenie”.",
-   "en": "Arranged the icons ({by}). To undo: “Undo the arrangement”."
+   "en": "Arranged the icons ({by}). To undo: “Undo the arrangement”.",
+   "nl": "Ik heb de pictogrammen geordend ({by}). Ongedaan maken: “Maak de ordening ongedaan”."
   },
-  "drop_receipt_set_param": {"pl": "Pokazałem «{label}» w oknie „{screen}”.", "en": "Showed “{label}” in the window “{screen}”."},
-  "drop_receipt_set_param_undo": {"pl": "Przywróciłem poprzednią wartość w oknie „{screen}”.", "en": "Restored the previous value in the window “{screen}”."},
-  "drop_receipt_trash": {"pl": "Przeniosłem «{label}» do kosza.", "en": "Moved “{label}” to the trash."},
-  "drop_receipt_trash_undo": {"pl": "Przywróciłem «{label}» z kosza.", "en": "Restored “{label}” from the trash."},
-  "drop_receipt_close": {"pl": "Zamknąłem okno „{screen}”.", "en": "Closed the window “{screen}”."},
-  "drop_undo": {"pl": "Cofnij", "en": "Undo"},
-  "drop_no_rule": {"pl": "Nie wiem, co zrobić z «{label}» upuszczonym na {target} - ikona wróciła na miejsce. Reguły upuszczania są w danych pulpitu (interactions.drop_rules).", "en": "I do not know what to do with “{label}” dropped on {target} - the icon went back. The drop rules are desktop data (interactions.drop_rules)."},
-  "drop_rule_off": {"pl": "Ta reguła upuszczania ({rule}) jest wyłączona dla tego rodzaju urządzenia.", "en": "This drop rule ({rule}) is off for this kind of device."},
-  "drop_do_unknown": {"pl": "Reguła upuszczania {rule} każe zrobić coś, czego ta strona nie umie ({do}); nic nie zrobiłem.", "en": "The drop rule {rule} asks for something this page cannot do ({do}); nothing was done."},
-  "drop_failed": {"pl": "Nie udało się: {error}", "en": "It failed: {error}"},
-  "drop_target_window": {"pl": "okno „{screen}”", "en": "the window “{screen}”"},
-  "drop_target_icon": {"pl": "ikonę „{label}”", "en": "the icon “{label}”"},
-  "drag_start_unknown": {"pl": "Nieznany sposób rozpoczęcia przeciągania „{mode}” (znane: {known}); działa „move”.", "en": "Unknown drag start “{mode}” (known: {known}); “move” is used."},
-  "drag_handle": {"pl": "Uchwyt do przeciągania", "en": "Drag handle"},
-  "drag_hint_long_press": {"pl": "Przytrzymaj ikonę chwilę, potem przeciągnij; samo przesunięcie palcem przewija pulpit.", "en": "Hold an icon a moment, then drag; a plain swipe scrolls the desktop."},
-  "drag_hint_handle": {"pl": "Przeciągaj ikonę za uchwyt ⠿; reszta ikony przewija pulpit.", "en": "Drag an icon by its handle ⠿; the rest of the icon scrolls the desktop."},
-  "icon_menu_open": {"pl": "Otwórz", "en": "Open"},
-  "icon_menu_unknown": {"pl": "Pozycja menu ikony „{id}” nie jest znana tej stronie.", "en": "The icon menu item “{id}” is unknown to this page."},
-  "desktop_key_unknown": {"pl": "Klawisz {combo} wskazuje działanie „{op}”, którego pulpit nie zna.", "en": "The key {combo} names an operation “{op}” the desktop does not know."},
-  "keys_hint": {"pl": "Klawiatura: strzałki przechodzą między ikonami, Enter otwiera, Delete przenosi do kosza, Shift+F10 otwiera menu.", "en": "Keyboard: the arrows move between icons, Enter opens, Delete moves to the trash, Shift+F10 opens the menu."},
+  "drop_receipt_set_param": {
+   "pl": "Pokazałem «{label}» w oknie „{screen}”.",
+   "en": "Showed “{label}” in the window “{screen}”.",
+   "nl": "Ik heb «{label}» getoond in het venster “{screen}”."
+  },
+  "drop_receipt_set_param_undo": {
+   "pl": "Przywróciłem poprzednią wartość w oknie „{screen}”.",
+   "en": "Restored the previous value in the window “{screen}”.",
+   "nl": "Ik heb de vorige waarde hersteld in het venster “{screen}”."
+  },
+  "drop_receipt_trash": {
+   "pl": "Przeniosłem «{label}» do kosza.",
+   "en": "Moved “{label}” to the trash.",
+   "nl": "Ik heb «{label}» naar de prullenbak verplaatst."
+  },
+  "drop_receipt_trash_undo": {
+   "pl": "Przywróciłem «{label}» z kosza.",
+   "en": "Restored “{label}” from the trash.",
+   "nl": "Ik heb «{label}» uit de prullenbak teruggezet."
+  },
+  "drop_receipt_close": {
+   "pl": "Zamknąłem okno „{screen}”.",
+   "en": "Closed the window “{screen}”.",
+   "nl": "Ik heb het venster “{screen}” gesloten."
+  },
+  "drop_undo": {
+   "pl": "Cofnij",
+   "en": "Undo",
+   "nl": "Ongedaan maken"
+  },
+  "drop_no_rule": {
+   "pl": "Nie wiem, co zrobić z «{label}» upuszczonym na {target} - ikona wróciła na miejsce. Reguły upuszczania są w danych pulpitu (interactions.drop_rules).",
+   "en": "I do not know what to do with “{label}” dropped on {target} - the icon went back. The drop rules are desktop data (interactions.drop_rules).",
+   "nl": "Ik weet niet wat ik moet doen met “{label}” neergezet op {target} - het pictogram is teruggegaan. De neerzetregels zijn bureaubladgegevens (interactions.drop_rules)."
+  },
+  "drop_rule_off": {
+   "pl": "Ta reguła upuszczania ({rule}) jest wyłączona dla tego rodzaju urządzenia.",
+   "en": "This drop rule ({rule}) is off for this kind of device.",
+   "nl": "Deze neerzetregel ({rule}) staat uit voor dit soort apparaat."
+  },
+  "drop_do_unknown": {
+   "pl": "Reguła upuszczania {rule} każe zrobić coś, czego ta strona nie umie ({do}); nic nie zrobiłem.",
+   "en": "The drop rule {rule} asks for something this page cannot do ({do}); nothing was done.",
+   "nl": "De neerzetregel {rule} vraagt iets wat deze pagina niet kan ({do}); er is niets gedaan."
+  },
+  "drop_failed": {
+   "pl": "Nie udało się: {error}",
+   "en": "It failed: {error}",
+   "nl": "Het is mislukt: {error}"
+  },
+  "drop_target_window": {
+   "pl": "okno „{screen}”",
+   "en": "the window “{screen}”",
+   "nl": "het venster “{screen}”"
+  },
+  "drop_target_icon": {
+   "pl": "ikonę „{label}”",
+   "en": "the icon “{label}”",
+   "nl": "het pictogram “{label}”"
+  },
+  "drag_start_unknown": {
+   "pl": "Nieznany sposób rozpoczęcia przeciągania „{mode}” (znane: {known}); działa „move”.",
+   "en": "Unknown drag start “{mode}” (known: {known}); “move” is used.",
+   "nl": "Onbekende sleepstart “{mode}” (bekend: {known}); “move” wordt gebruikt."
+  },
+  "drag_handle": {
+   "pl": "Uchwyt do przeciągania",
+   "en": "Drag handle",
+   "nl": "Sleephandvat"
+  },
+  "drag_hint_long_press": {
+   "pl": "Przytrzymaj ikonę chwilę, potem przeciągnij; samo przesunięcie palcem przewija pulpit.",
+   "en": "Hold an icon a moment, then drag; a plain swipe scrolls the desktop.",
+   "nl": "Houd een pictogram even vast en sleep dan; een gewone veegbeweging scrolt het bureaublad."
+  },
+  "drag_hint_handle": {
+   "pl": "Przeciągaj ikonę za uchwyt ⠿; reszta ikony przewija pulpit.",
+   "en": "Drag an icon by its handle ⠿; the rest of the icon scrolls the desktop.",
+   "nl": "Sleep een pictogram aan zijn handvat ⠿; de rest van het pictogram scrolt het bureaublad."
+  },
+  "icon_menu_open": {
+   "pl": "Otwórz",
+   "en": "Open",
+   "nl": "Open"
+  },
+  "icon_menu_unknown": {
+   "pl": "Pozycja menu ikony „{id}” nie jest znana tej stronie.",
+   "en": "The icon menu item “{id}” is unknown to this page.",
+   "nl": "Het pictogrammenu-item “{id}” is onbekend voor deze pagina."
+  },
+  "desktop_key_unknown": {
+   "pl": "Klawisz {combo} wskazuje działanie „{op}”, którego pulpit nie zna.",
+   "en": "The key {combo} names an operation “{op}” the desktop does not know.",
+   "nl": "De toets {combo} noemt een bewerking “{op}” die het bureaublad niet kent."
+  },
+  "keys_hint": {
+   "pl": "Klawiatura: strzałki przechodzą między ikonami, Enter otwiera, Delete przenosi do kosza, Shift+F10 otwiera menu.",
+   "en": "Keyboard: the arrows move between icons, Enter opens, Delete moves to the trash, Shift+F10 opens the menu.",
+   "nl": "Toetsenbord: de pijlen bewegen tussen pictogrammen, Enter opent, Delete verplaatst naar de prullenbak, Shift+F10 opent het menu."
+  },
   "arrange_move_hint": {
    "pl": "Przytrzymaj i przeciągnij ikonę, żeby ją przestawić.",
-   "en": "Hold and drag an icon to move it."
+   "en": "Hold and drag an icon to move it.",
+   "nl": "Houd een pictogram vast en sleep het om het te verplaatsen."
   },
   "arrange_no_icons": {
    "pl": "Na pulpicie nie ma jeszcze ikon do ułożenia (pulpit nie był pokazany albo nie ma ikon).",
-   "en": "The desktop has no icons to arrange yet (it was not shown, or it has no icons)."
+   "en": "The desktop has no icons to arrange yet (it was not shown, or it has no icons).",
+   "nl": "Het bureaublad heeft nog geen pictogrammen om te ordenen (het was niet getoond, of het heeft geen pictogrammen)."
   },
   "arrange_unknown": {
    "pl": "Nie wiem, jak ułożyć ikony „{word}”. Umiem: {known}.",
-   "en": "I do not know how to arrange the icons “{word}”. I can: {known}."
+   "en": "I do not know how to arrange the icons “{word}”. I can: {known}.",
+   "nl": "Ik weet niet hoe ik de pictogrammen moet ordenen “{word}”. Ik kan: {known}."
   },
   "arrange_inherited": {
    "pl": "(przejęte z ułożenia: {cls})",
-   "en": "(taken from the arrangement: {cls})"
+   "en": "(taken from the arrangement: {cls})",
+   "nl": "(overgenomen van de ordening: {cls})"
   },
   "class_phone": {
    "pl": "telefon",
-   "en": "phone"
+   "en": "phone",
+   "nl": "telefoon"
   },
   "class_desktop": {
    "pl": "komputer",
-   "en": "computer"
+   "en": "computer",
+   "nl": "computer"
   }
  },
  "sections_more": [
@@ -417,7 +581,8 @@
    "id": "pulpit_graf",
    "label": {
     "pl": "Pulpit: graf",
-    "en": "Desktop: graph"
+    "en": "Desktop: graph",
+    "nl": "Bureaublad: graaf"
    },
    "note": "PULPIT_R101 §3.2 [preset, the default chosen by the owner 2026-10-28]: the pinned nodes as icons, the rest of the person's graph faint, only that it exists. Every number is a preset.",
    "elements": [
@@ -506,7 +671,8 @@
    "id": "pulpit_ikony",
    "label": {
     "pl": "Pulpit: ikony",
-    "en": "Desktop: icons"
+    "en": "Desktop: icons",
+    "nl": "Bureaublad: pictogrammen"
    },
    "note": "PULPIT_R101 §3.1 [preset]: only the pins, no graph behind them (pulpit_graf with the rest at opacity 0).",
    "elements": [
@@ -555,7 +721,8 @@
    "id": "pulpit_start",
    "label": {
     "pl": "Pulpit: start",
-    "en": "Desktop: start"
+    "en": "Desktop: start",
+    "nl": "Bureaublad: start"
    },
    "note": "PULPIT_R101 §3.1 [preset]: a launcher - a tile for every kind of window (planned ones greyed with their reason), the latest conversations and the layouts; the sentence field stays. Limits are presets.",
    "elements": [
@@ -618,7 +785,8 @@
    "id": "pulpit_polka",
    "label": {
     "pl": "Pulpit: półka",
-    "en": "Desktop: shelf"
+    "en": "Desktop: shelf",
+    "nl": "Bureaublad: plank"
    },
    "note": "PULPIT_R101 §3.1 [preset]: only the shelf - the minimized windows as icons over the whole background (a taskbar as the desktop); a tap restores one. The sentence field and \"More…\" stay as the ways to a new window (§12 P1).",
    "elements": [
@@ -667,7 +835,8 @@
    "id": "pulpit_pusty",
    "label": {
     "pl": "Pulpit: pusty",
-    "en": "Desktop: empty"
+    "en": "Desktop: empty",
+    "nl": "Bureaublad: leeg"
    },
    "note": "PULPIT_R101 §3.1 [preset]: almost nothing - the background and one way in: the sentence field, and a long press (or \"More…\") for every kind of window (§12 P1).",
    "elements": [
@@ -685,7 +854,8 @@
    "id": "pulpit_karta",
    "label": {
     "pl": "Pulpit: karta „Ty”",
-    "en": "Desktop: “You” card"
+    "en": "Desktop: “You” card",
+    "nl": "Bureaublad: kaart “U”"
    },
    "note": "PULPIT_R101 §3.1 [preset]: the desktop is the card of the node party:self (its name and what is around it in the graph, a tap opens the navigator there) with the pinned icons under it.",
    "elements": [
@@ -744,7 +914,8 @@
    "id": "pulpit_graf_zywy",
    "label": {
     "pl": "Pulpit: żywy graf",
-    "en": "Desktop: live graph"
+    "en": "Desktop: live graph",
+    "nl": "Bureaublad: levende graaf"
    },
    "note": "PULPIT_R101 §3.1/§3.2 [preset]: as pulpit_graf, but the graph behind follows the coupling channel focus (W6): the focus of the navigator window (its own value, or the shared channel focus when bound); with no such window it falls back to party:self.",
    "elements": [
@@ -881,31 +1052,38 @@
   "note": "the label of an icon when the pin carries no label_override (a representative node is labelled with its address): longest prefix wins, else the node's own label. Examples.",
   "party:self": {
    "pl": "Ty",
-   "en": "You"
+   "en": "You",
+   "nl": "U"
   },
   "area:context_projects": {
    "pl": "Moje projekty",
-   "en": "My projects"
+   "en": "My projects",
+   "nl": "Mijn projecten"
   },
   "conversations:": {
    "pl": "Rozmowy",
-   "en": "Conversations"
+   "en": "Conversations",
+   "nl": "Gesprekken"
   },
   "kind:chat": {
    "pl": "Nowy czat",
-   "en": "New chat"
+   "en": "New chat",
+   "nl": "Nieuwe chat"
   },
   "area:knowledge": {
    "pl": "Mój graf",
-   "en": "My graph"
+   "en": "My graph",
+   "nl": "Mijn graaf"
   },
   "kind:settings": {
    "pl": "Ustawienia",
-   "en": "Settings"
+   "en": "Settings",
+   "nl": "Instellingen"
   },
   "trash:": {
    "pl": "Kosz",
-   "en": "Trash"
+   "en": "Trash",
+   "nl": "Prullenbak"
   }
  },
  "glyphs": {
@@ -936,6 +1114,11 @@
    "en": [
     "graph",
     "a graph"
+   ],
+   "nl": [
+    "graaf",
+    "een graaf",
+    "graaf met pictogrammen"
    ]
   },
   "pulpit_ikony": {
@@ -948,6 +1131,11 @@
    "en": [
     "icons",
     "icons only"
+   ],
+   "nl": [
+    "pictogrammen",
+    "alleen pictogrammen",
+    "iconen"
    ]
   },
   "pulpit_start": {
@@ -963,6 +1151,12 @@
     "launcher",
     "tiles",
     "a launcher"
+   ],
+   "nl": [
+    "start",
+    "launcher",
+    "tegels",
+    "een launcher"
    ]
   },
   "pulpit_polka": {
@@ -976,6 +1170,11 @@
     "shelf",
     "a shelf",
     "taskbar"
+   ],
+   "nl": [
+    "plank",
+    "een plank",
+    "taakbalk"
    ]
   },
   "pulpit_pusty": {
@@ -987,6 +1186,10 @@
    "en": [
     "empty",
     "nothing"
+   ],
+   "nl": [
+    "leeg",
+    "niets"
    ]
   },
   "pulpit_karta": {
@@ -1002,6 +1205,12 @@
     "a card",
     "you",
     "you card"
+   ],
+   "nl": [
+    "kaart",
+    "een kaart",
+    "u",
+    "u-kaart"
    ]
   },
   "pulpit_graf_zywy": {
@@ -1015,6 +1224,11 @@
     "live graph",
     "a live graph",
     "live"
+   ],
+   "nl": [
+    "levende graaf",
+    "een levende graaf",
+    "levend"
    ]
   }
  },
@@ -1088,6 +1302,12 @@
      "label",
      "alphabet",
      "alphabetically"
+    ],
+    "nl": [
+     "naam",
+     "namen",
+     "alfabet",
+     "alfabetisch"
     ]
    },
    "kind": {
@@ -1099,6 +1319,10 @@
     ],
     "en": [
      "kind",
+     "type"
+    ],
+    "nl": [
+     "soort",
      "type"
     ]
    },
@@ -1113,6 +1337,12 @@
      "recent",
      "recently",
      "latest"
+    ],
+    "nl": [
+     "onlangs",
+     "recent",
+     "laatste",
+     "nieuwste"
     ]
    },
    "count": {
@@ -1126,6 +1356,12 @@
      "count",
      "badge",
      "number"
+    ],
+    "nl": [
+     "aantal",
+     "getal",
+     "teller",
+     "badge"
     ]
    },
    "declaration": {
@@ -1140,6 +1376,12 @@
      "default",
      "reset",
      "as shipped"
+    ],
+    "nl": [
+     "standaard",
+     "terugzetten",
+     "opnieuw",
+     "zoals geleverd"
     ]
    }
   },
@@ -1149,14 +1391,76 @@
  "interactions": {
   "note": "R101 D6 (PULPIT §13 interactions, §14 row D6): what a drop does, as data. A drag of a desktop icon (or of a floating window's title bar) ends over a stack of things under the pointer (hits: another icon by address, a window by id and kind - floating frame or its minimized icon/shelf entry -, the empty desktop). drop_rules are walked in order for every hit from the top down; the first rule whose source and target match wins. source: an address prefix (\"\" = any icon), a list of prefixes, or {window: true | <kind> | [kinds]} for a dragged window. target: {icon: <prefix | [prefixes]>}, {window_kind: <kind | [kinds] | \"*\">}, {window_param: <param>} (any window whose kind reads that coupling parameter, coupling.json kind_params - dated observation 2026-10-30: the chat and the navigator list no conversation / focus there yet, so the presets name the kind), {desktop: true}. do: set_param {param, value} with $address / $rest (what follows the matched source prefix) - the value goes to that window's parameter through the W6 coupling and to what the page follows today (conversation: the active conversation of the chat; focus: the navigator's focus); a minimized window is restored and focused first; trash (what drop_on_trash says, as the menu item „Do kosza”); close (the dragged window); move (the D5 move within the grid). An icon dropped on the empty desktop with no matching rule is the D5 move; a drop on something no rule names returns the icon and raises the non-blocking advisory drop_no_rule. enabled: true/false or {<device class>: bool} (a rule off for a class says so when tried: drop_rule_off). Not in this package (named by the design, not done - no rule here, so nothing pretends): a window dropped on the empty desktop (minimize into a zone), a navigator node dropped on the desktop (pin), an icon dropped on an icon (a group). receipt_ms: how long the receipt chip stays (null = until the next one).",
   "drop_rules": [
-   {"id": "conversation_to_chat", "source": "conv:", "target": {"window_kind": "chat"}, "do": {"set_param": {"param": "conversation", "value": "$rest"}}},
-   {"id": "node_to_navigator", "source": ["party:", "area:", "memory:", "conv:"], "target": {"window_kind": "navigator"}, "do": {"set_param": {"param": "focus", "value": "$address"}}},
-   {"id": "icon_to_trash", "source": "", "target": {"icon": "trash:"}, "do": {"trash": true}},
-   {"id": "window_to_trash", "source": {"window": true}, "target": {"icon": "trash:"}, "do": {"close": true}},
-   {"id": "icon_to_desktop", "source": "", "target": {"desktop": true}, "do": {"move": true}}
+   {
+    "id": "conversation_to_chat",
+    "source": "conv:",
+    "target": {
+     "window_kind": "chat"
+    },
+    "do": {
+     "set_param": {
+      "param": "conversation",
+      "value": "$rest"
+     }
+    }
+   },
+   {
+    "id": "node_to_navigator",
+    "source": [
+     "party:",
+     "area:",
+     "memory:",
+     "conv:"
+    ],
+    "target": {
+     "window_kind": "navigator"
+    },
+    "do": {
+     "set_param": {
+      "param": "focus",
+      "value": "$address"
+     }
+    }
+   },
+   {
+    "id": "icon_to_trash",
+    "source": "",
+    "target": {
+     "icon": "trash:"
+    },
+    "do": {
+     "trash": true
+    }
+   },
+   {
+    "id": "window_to_trash",
+    "source": {
+     "window": true
+    },
+    "target": {
+     "icon": "trash:"
+    },
+    "do": {
+     "close": true
+    }
+   },
+   {
+    "id": "icon_to_desktop",
+    "source": "",
+    "target": {
+     "desktop": true
+    },
+    "do": {
+     "move": true
+    }
+   }
   ],
   "receipt_ms": 8000,
-  "icon_menu": ["open", "trash", "close"],
+  "icon_menu": [
+   "open",
+   "trash",
+   "close"
+  ],
   "icon_menu_note": "The items of the icon menu (a long press, the context-menu key or a right click on an icon), in this order; known today: open (as a tap), trash (as D4; only for a trashable address), close (closes the menu). An unknown item is skipped with the advisory icon_menu_unknown."
  }
 }
