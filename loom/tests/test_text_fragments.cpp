@@ -8,7 +8,8 @@
 #include <set>
 
 #include "loom/text_fragments.h"
-#include "loom/util/fs.h"
+#include <fstream>
+#include <sstream>
 #include "test_helpers.h"
 
 using namespace loom;
@@ -81,7 +82,11 @@ std::string join(const std::vector<std::string>& v, std::string_view sep) {
 
 TEST_CASE("text pack: the embedded copy equals loom/data/text/segmentation.pack") {
   const auto path = std::filesystem::path(LOOM_TEST_FIXTURES) / ".." / ".." / "data" / "text" / "segmentation.pack";
-  const std::string disk = unwrap(fsutil::read_file(path));
+  std::ifstream in(path, std::ios::binary);
+  REQUIRE(in.good());
+  std::stringstream buf;
+  buf << in.rdbuf();
+  const std::string disk = buf.str();
   CHECK(Json::parse(disk) == builtin_pack());
   CHECK(builtin_pack_source() == "loom/data/text/segmentation.pack");
 }
@@ -222,7 +227,7 @@ TEST_CASE("myers_script: minimal, reconstructs, symmetric length (random sequenc
   }
 }
 
-TEST_CASE("property: apply(align(a, b), a) == b for random texts, both directions") {
+TEST_CASE("property: text::apply(align(a, b), a) == b for random texts, both directions") {
   std::mt19937 rng(99);
   const Segmenter pl = unwrap(Segmenter::builtin("pl"));
   AlignOptions approx = unwrap(AlignOptions::from_pack(builtin_pack()));
@@ -236,9 +241,9 @@ TEST_CASE("property: apply(align(a, b), a) == b for random texts, both direction
         const auto ua = fragment_texts(a, unwrap(pl.segment(a, level)));
         const auto ub = fragment_texts(b, unwrap(pl.segment(b, level)));
         const Alignment ab = unwrap(align_units(pl, ua, ub, *opt));
-        REQUIRE(concat(unwrap(apply(ab, ua))) == b);
+        REQUIRE(concat(unwrap(text::apply(ab, ua))) == b);
         const Alignment ba = unwrap(align_units(pl, ub, ua, *opt));
-        REQUIRE(concat(unwrap(apply(ba, ub))) == a);
+        REQUIRE(concat(unwrap(text::apply(ba, ub))) == a);
         // the kept part is symmetric (both directions are optimal)
         REQUIRE(ab.count("equal") == ba.count("equal"));
         for (const auto& o : ab.ops) {
@@ -247,7 +252,7 @@ TEST_CASE("property: apply(align(a, b), a) == b for random texts, both direction
             const auto ia = fragment_texts(ua[o.a], unwrap(pl.segment(ua[o.a], opt->inner_level)));
             Alignment inner;
             inner.ops = o.inner;
-            REQUIRE(concat(unwrap(apply(inner, ia))) == ub[o.b]);
+            REQUIRE(concat(unwrap(text::apply(inner, ia))) == ub[o.b]);
           }
         }
         if (a == b) REQUIRE(ab.count("equal") == ua.size());
@@ -381,18 +386,25 @@ TEST_CASE("property: alignment recovers an injected script (delete, insert, chan
     CHECK(got_ins == inserted);
     CHECK(got_move == (moved == kNone ? std::set<std::size_t>{} : std::set<std::size_t>{moved}));
     const auto ua = fragment_texts(ta, unwrap(pl.segment(ta, "sentence")));
-    CHECK(concat(unwrap(apply(al, ua))) == tb);
+    CHECK(concat(unwrap(text::apply(al, ua))) == tb);
   }
   CHECK(with_move > 30);
 }
 
 TEST_CASE("apply refuses a script that does not cover both sides") {
+  auto mk = [](const char* kind, std::size_t a, std::size_t b) {
+    EditOp o;
+    o.kind = kind;
+    o.a = a;
+    o.b = b;
+    return o;
+  };
   Alignment al;
-  al.ops.push_back(EditOp{"equal", 0, 0});
-  CHECK_FALSE(apply(al, {"x", "y"}));  // a[1] unaccounted for
-  al.ops.push_back(EditOp{"equal", 0, 1});
-  CHECK_FALSE(apply(al, {"x"}));  // a[0] twice
+  al.ops.push_back(mk("equal", 0, 0));
+  CHECK_FALSE(text::apply(al, {"x", "y"}));  // a[1] unaccounted for
+  al.ops.push_back(mk("equal", 0, 1));
+  CHECK_FALSE(text::apply(al, {"x"}));  // a[0] twice
   Alignment noside;
-  noside.ops.push_back(EditOp{"insert", kNone, 0});
-  CHECK_FALSE(apply(noside, {}));
+  noside.ops.push_back(mk("insert", kNone, 0));
+  CHECK_FALSE(text::apply(noside, {}));
 }
