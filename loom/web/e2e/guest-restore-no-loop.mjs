@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 // A browser store whose bundle holds rows but no conversation (only desktop pins, say) left /api/conversations empty after
 // the restore, so every page restored and reloaded again, for ever (production, 2d39b07c). On the real loom-server with
-// guests on (test overlay), real web build: such a bundle gives at most one reload. Bundle contents are synthetic.
+// guests on (test overlay), real web build: such a bundle gives exactly one reload, then none. The pin row is synthetic; the rest is the server's own export.
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
+import { createHash } from "node:crypto";
 import { mkdirSync, writeFileSync } from "node:fs";
 import net from "node:net";
 import path from "node:path";
@@ -31,23 +32,41 @@ try {
   page.on("framenavigated", (f) => { if (f === page.mainFrame()) loads += 1; });
   await page.goto(base);
   await page.waitForTimeout(3000);
-  // Whatever save the page made is rewritten so the bundle has rows and no conversation.
-  await page.evaluate(() => new Promise((res, rej) => {
+  // A pins-only bundle: the server's own export (so its integrity hash is genuine) with the tables cut down to one row of `nodes` (synthetic,
+  // id n_revfixpin1) and no conversation. The hash is recomputed here over the same compact JSON the server writes (checked below).
+  const real = await page.evaluate(async () => await (await fetch("/api/working-copy/bundle", { credentials: "same-origin" })).text());
+  const head = JSON.parse(real);
+  const ctext = JSON.stringify(head.content);
+  assert.ok(real.includes(`"content":${ctext}`), "the compact JSON of the content is what the server hashed");
+  const cols = head.content.tables.nodes.columns;
+  const row = cols.map((c) => ({ id: "n_revfixpin1", kind: "pin", label: "revfix pin", created: "2026-10-30T00:00:00Z" })[c] ?? "");
+  const content = { ...head.content, tables: { nodes: { columns: cols, rows: [row] } }, memory: [], config: {} };
+  const bundle = { ...head, content, integrity: { algorithm: "sha256", content_sha256: createHash("sha256").update(JSON.stringify(content)).digest("hex") } };
+  const text = JSON.stringify(bundle);
+  await page.evaluate((t) => new Promise((res, rej) => {
     const r = indexedDB.open("loom-guest-store", 1);
     r.onerror = () => rej(r.error);
     r.onsuccess = () => {
       const db = r.result, name = db.objectStoreNames[0], tx = db.transaction(name, "readwrite"), st = tx.objectStore(name);
-      const text = JSON.stringify({ content: { tables: {}, memory: [{ id: "x", content: "test" }] } });
-      st.getAllKeys().onsuccess = (e) => { const key = e.target.result[0] ?? "bundle"; st.put({ schema: "loom.guest_bundle/2", text, saved_at: new Date().toISOString() }, key); };
+      st.getAllKeys().onsuccess = (e) => { const key = e.target.result[0] ?? "bundle"; st.put({ schema: "loom.guest_bundle/2", text: t, saved_at: new Date().toISOString() }, key); };
       tx.oncomplete = () => res(); tx.onerror = () => rej(tx.error);
     };
-  }));
-  const before = loads;
-  await page.context().clearCookies();
-  await page.reload();
-  await page.waitForTimeout(12000);
-  const n = loads - before;
-  console.log(`[guest-noloop] page loads after the visit: ${n}`);
-  assert.ok(n <= 2, `at most the visit and one reload, saw ${n}`);
+  }), text);
+  const visit = async (what, expect) => {
+    const before = loads;
+    if (what === "new session") await page.context().clearCookies();
+    await page.reload();
+    await page.waitForTimeout(9000);
+    const n = loads - before;
+    console.log(`[guest-noloop] ${what}: page loads ${n} (expected ${expect})`);
+    assert.equal(n, expect, `${what}: exactly ${expect} page loads, saw ${n}`);
+  };
+  // 1. a new session, the bundle lacks one row: restored once = the visit and one reload
+  await visit("new session", 2);
+  const has = await page.evaluate(async () => (await (await fetch("/api/working-copy/bundle", { credentials: "same-origin" })).text()).includes("n_revfixpin1"));
+  assert.ok(has, "the pin row came back into the working copy");
+  // 2. later visits: the working copy has everything the stored bundle carries -> no restore, no reload, at any number of visits
+  await visit("next visit", 1);
+  await visit("and the one after", 1);
   console.log("[guest-noloop] PASSED");
 } finally { await browser?.close(); srv.kill(); }

@@ -51,6 +51,14 @@ test('presets: an icon on the trash → trash; the trash on itself → nothing (
   const c = I.resolveDrop(w, [trash, desk], 'desktop'); assert.equal(c.ruleId, 'window_to_trash'); assert.deepEqual(I.stepOf(c, w), { op: 'close', window: 'w_x' });
   const quiet = I.resolveDrop(w, [desk], 'desktop'); assert.equal(quiet.kind, 'none'); assert.equal(quiet.advisory, null, 'a window ending its move on the desktop says nothing');
 });
+test('a source is never its own target: a window dropped over the desktop with its OWN frame on top ends quietly, no drop_no_rule', () => {
+  const w = { kind: 'window', id: 'w_x', windowKind: 'chat' };
+  const q = I.resolveDrop(w, [{ kind: 'window', id: 'w_x', windowKind: 'chat' }, desk], 'desktop');
+  assert.equal(q.kind, 'none'); assert.equal(q.advisory, null);
+  const t = I.resolveDrop(w, [{ kind: 'window', id: 'w_x', windowKind: 'chat' }, trash, desk], 'desktop'); assert.equal(t.ruleId, 'window_to_trash', 'the trash under the own frame still takes it');
+  const other = I.resolveDrop(w, [{ kind: 'window', id: 'w_y', windowKind: 'chat' }, desk], 'desktop'); assert.equal(other.advisory.code, 'drop_no_rule', 'another window is a real hit');
+  assert.equal(I.isSelfHit(w, { kind: 'window', id: 'w_x' }), true); assert.equal(I.isSelfHit(w, { kind: 'window', id: 'w_y' }), false);
+});
 test('presets: an icon on the empty desktop is the D5 move (stepOf null); the topmost hit decides', () => {
   const r = I.resolveDrop(conv, [desk], 'phone'); assert.equal(r.ruleId, 'icon_to_desktop'); assert.equal(I.stepOf(r, conv), null);
   const over = I.resolveDrop(conv, [{ kind: 'other', what: 'button' }, chat, desk], 'phone'); assert.equal(over.ruleId, 'conversation_to_chat', 'unknown things are skipped, not a stop');
@@ -101,8 +109,8 @@ const randRule = (i) => {
 test(`generative: the resolution picks the first matching rule of the topmost matching hit, never an off rule, never the source itself (${RUNS} runs)`, () => {
   for (let k = 0; k < RUNS; k++) {
     const rules = Array.from({ length: int(0, 6) }, (_, i) => randRule(i));
-    const source = randSource(); const hits = Array.from({ length: int(0, 5) }, randHit); const cls = pick(CLASSES);
-    const r = I.resolveDrop(source, hits, cls, rules);
+    const source = randSource(); const allHits = Array.from({ length: int(0, 5) }, randHit); const cls = pick(CLASSES);
+    const r = I.resolveDrop(source, allHits, cls, rules); const hits = allHits.filter((h) => !I.isSelfHit(source, h));
     // the oracle: walk hits, then rules
     let expect = null, off = null;
     outer: for (const hit of hits) { if (hit.kind === 'other') continue; for (const rule of rules) { if (I.matchSource(rule.source, source) === null || !I.matchTarget(rule.target, hit, source)) continue; if (!I.ruleEnabled(rule, cls)) { off = off ?? rule; continue; } expect = { rule, hit }; break outer; } }

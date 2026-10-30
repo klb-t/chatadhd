@@ -141,8 +141,8 @@ test(`P4 (${RUNS} runs): every icon placed once, on its own cell inside the grid
         assert.ok(Number.isInteger(p.col) && p.col >= 0 && p.col < pl.columns && Number.isInteger(p.row) && p.row >= 0, `inside the grid (run ${k})`);
         assert.ok(Number.isFinite(p.x) && Number.isFinite(p.y) && p.x >= 0 && p.y >= 0, `finite (run ${k})`);
       }
-      if (pl.mode !== 'free') assert.equal(new Set(pl.placed.map(p => `${p.col},${p.row}`)).size, uniq.length, `no two icons on one cell (run ${k})`);
-      else for (const p of pl.placed) assert.ok(p.x <= Math.max(0, pl.width - pl.cellW) + 1e-6 && p.y <= pl.height - pl.cellH + 1e-6, `free: inside the area (run ${k})`);
+      assert.equal(new Set(pl.placed.map(p => `${p.col},${p.row}`)).size, uniq.length, `no two icons on one cell (run ${k}, mode ${pl.mode})`);
+      if (pl.mode === 'free') for (const p of pl.placed) assert.ok(p.x <= Math.max(0, pl.width - pl.cellW) + 1e-6 && p.y <= pl.height - pl.cellH + 1e-6, `free: inside the area (run ${k})`);
       // idempotent: the placement written back as the positions places to the same cells
       const again = A.readArrangement({ c: { ...(arr.value ?? {}), mode: arr.mode, positions: Object.fromEntries(pl.placed.map(p => [p.address, pl.mode === 'free' ? { x: p.x, y: p.y, unit: 'px' } : { col: p.col, row: p.row }])) } }, 'c');
       const pl2 = A.placeIcons(addrs, again, w, grid);
@@ -183,4 +183,19 @@ test(`P3 (${Math.ceil(RUNS / 4)} runs): any sequence of moves and arrangements w
     assert.equal(view(), first, `undone to the first value (run ${k})`);
     for (let i = 1; i < views.length; i++) { const r = A.redo(j); j = r.journal; write(r.value); assert.equal(view(), views[i], `redo to view ${i} (run ${k})`); }
   }
+});
+
+test('free mode: a flowing icon never lands under a hand-placed one (review 1030 finding 4); two hand icons on one cell are separated', () => {
+  for (const snap of [true, false]) {
+    const arr = A.readArrangement({ c: { mode: 'free', snap, positions: { 'b:1': { x: 0, y: 0 } } } }, 'c');
+    const pl = A.placeIcons(['a:0', 'b:1', 'c:2'], arr, 390, GRID);
+    const at = Object.fromEntries(pl.placed.map(p => [p.address, [p.col, p.row]]));
+    assert.deepEqual(at['b:1'], [0, 0], 'the hand-placed icon keeps its cell');
+    assert.deepEqual(at['a:0'], [1, 0], 'the first flowing icon skips the pinned cell');
+    assert.deepEqual(at['c:2'], [2, 0]);
+  }
+  const two = A.readArrangement({ c: { mode: 'free', snap: true, positions: { 'a:0': { x: 0, y: 0 }, 'b:1': { x: 0, y: 0 } } } }, 'c');
+  const p2 = A.placeIcons(['a:0', 'b:1'], two, 390, GRID);
+  assert.deepEqual(p2.placed.map(p => [p.col, p.row]), [[0, 0], [1, 0]]);
+  assert.deepEqual(p2.advisories, [{ code: 'arrangement_cell_taken', vars: { address: 'b:1' } }]);
 });

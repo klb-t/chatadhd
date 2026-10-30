@@ -108,7 +108,7 @@ TEST_SUITE("text_genesis") {
         CHECK(e.to.actor == "model-y");
         CHECK(e.to.conv_id == conv);
         CHECK(e.text_before == kD0[4]);
-        CHECK(e.key == "removal|" + ids[1] + "|" + ids[2] + "|4|-");
+        CHECK(e.key == "removal|" + ids[1] + "|" + ids[2] + "|4|-@" + c.level + "/" + c.language);
       } else if (e.kind == "replacement") {
         CHECK(e.a_index == 1);
         CHECK(e.b_index == 1);
@@ -210,14 +210,14 @@ TEST_SUITE("text_genesis") {
       std::size_t removals = 0;
       for (const auto& n : removal_nodes) removals += n.metadata.value("kind", "") == "removal";
       CHECK(removals == 1);
-      const auto frag = unwrap(d.db->find_node(seg.fingerprint(kD0[4]), "text_fragment"));
+      const auto frag = unwrap(d.db->find_node(seg.fingerprint(kD0[4]) + "@sentence/pl", "text_fragment"));
       REQUIRE(frag.has_value());
       const auto deleted_in = unwrap(d.db->get_links(frag->id, "deleted_in"));
       REQUIRE(deleted_in.size() == 1);
-      CHECK(unwrap(d.db->get_node(deleted_in[0].dst))->label == ids[2]);
+      CHECK(unwrap(d.db->get_node(deleted_in[0].dst))->label == ids[2] + "@sentence/pl");
       // replaced_by / derived_from between the two sentence-2 fragments
-      const auto old2 = unwrap(d.db->find_node(seg.fingerprint(kD0[1]), "text_fragment"));
-      const auto new2 = unwrap(d.db->find_node(seg.fingerprint(d1[1]), "text_fragment"));
+      const auto old2 = unwrap(d.db->find_node(seg.fingerprint(kD0[1]) + "@sentence/pl", "text_fragment"));
+      const auto new2 = unwrap(d.db->find_node(seg.fingerprint(d1[1]) + "@sentence/pl", "text_fragment"));
       REQUIRE((old2 && new2));
       const auto rb = unwrap(d.db->get_links(old2->id, "replaced_by"));
       REQUIRE(rb.size() == 1);
@@ -245,10 +245,10 @@ TEST_SUITE("text_genesis") {
       CHECK(occ[2].at("conv_id") == conv2);
       CHECK(occ[0].at("when") <= occ[2].at("when"));
       // the chain of versions in the graph
-      const auto v3 = unwrap(d.db->find_node(ids[2], "text_version"));
+      const auto v3 = unwrap(d.db->find_node(ids[2] + "@sentence/pl", "text_version"));
       REQUIRE(v3.has_value());
       const auto chain_links = unwrap(d.db->get_links(v3->id, "derived_from"));
-      CHECK(std::any_of(chain_links.begin(), chain_links.end(), [&](const Link& l) { return l.src == v3->id && unwrap(d.db->get_node(l.dst))->label == ids[1]; }));
+      CHECK(std::any_of(chain_links.begin(), chain_links.end(), [&](const Link& l) { return l.src == v3->id && unwrap(d.db->get_node(l.dst))->label == ids[1] + "@sentence/pl"; }));
     }
 
     SUBCASE("a conversation is a source: every version group is a chain") {
@@ -289,7 +289,7 @@ TEST_SUITE("text_genesis") {
     Db d;
     const MaterializeSummary s = unwrap(materialize(*d.db, c, opt));
     CHECK(s.events == 3);
-    const auto frag = unwrap(d.db->find_node(seg.fingerprint("Drugie zdanie."), "text_fragment"));
+    const auto frag = unwrap(d.db->find_node(seg.fingerprint("Drugie zdanie.") + "@sentence/pl", "text_fragment"));
     REQUIRE(frag.has_value());
     CHECK(unwrap(d.db->get_links(frag->id, "znikło_w")).size() == 1);
     CHECK(unwrap(d.db->get_links(frag->id, "deleted_in")).empty());
@@ -302,6 +302,90 @@ TEST_SUITE("text_genesis") {
     const Json known = known_questions(opt);
     CHECK(known.contains("origin"));
     CHECK(known.at("origin").at("pl") == "Skąd pochodzi to zdanie");
+  }
+
+  TEST_CASE("review 1030 finding 5 (synthetic, fixed seed): materialising one chain at two levels keeps events and versions apart, A then B then A = A + B") {
+    std::mt19937 rng(20261031);
+    const std::vector<std::string> words{"zespół", "etap", "moduł", "test", "budżet", "spotkanie", "wynik", "plan", "ryzyko", "termin"};
+    auto sentence = [&]() {
+      std::uniform_int_distribution<int> n(2, 4), w(0, static_cast<int>(words.size()) - 1);
+      std::string s;
+      for (int i = 0, k = n(rng); i < k; ++i) s += (i ? " " : "") + words[static_cast<std::size_t>(w(rng))];
+      s[0] = static_cast<char>(std::toupper(static_cast<unsigned char>(s[0])));
+      return s + ".";
+    };
+    const Segmenter seg = unwrap(Segmenter::builtin("pl"));
+    Options sent = unwrap(Options::from_pack(builtin_pack()));
+    sent.level = "sentence";
+    Options para = sent;
+    para.level = "paragraph";
+    auto slice = [](const Json& dump, bool events_and_versions) {  // canonical lines of the event/version nodes, or of all links
+      std::set<std::string> out;
+      if (events_and_versions) {
+        for (const auto& n : dump.at("nodes")) {  // graph_dump lists its entries as dumped strings
+          const Json j = Json::parse(n.get<std::string>());
+          if (j.at("kind") == "text_event" || j.at("kind") == "text_version") out.insert(n.get<std::string>());
+        }
+      } else {
+        for (const auto& l : dump.at("links")) out.insert(l.get<std::string>());
+      }
+      return out;
+    };
+    std::size_t nontrivial = 0;
+    for (int trial = 0; trial < 40; ++trial) {
+      // a document of 3 paragraphs of 1-3 sentences, edited over 3 versions (paragraph and sentence indexes coincide by chance)
+      std::vector<std::vector<std::string>> doc(3);
+      for (auto& p : doc)
+        for (int i = 0, k = std::uniform_int_distribution<int>(1, 3)(rng); i < k; ++i) p.push_back(sentence());
+      std::vector<VersionText> versions;
+      for (int v = 0; v < 3; ++v) {
+        if (v > 0) {
+          auto& p = doc[std::uniform_int_distribution<std::size_t>(0, 2)(rng)];
+          if (std::uniform_int_distribution<int>(0, 1)(rng)) p.push_back(sentence());
+          else p.front() = sentence();
+        }
+        std::string text;
+        for (std::size_t i = 0; i < doc.size(); ++i) text += (i ? "\n\n" : "") + join(doc[i]);
+        VersionText vt;
+        vt.source.id = "m" + std::to_string(trial) + "_" + std::to_string(v);
+        vt.source.group = "g" + std::to_string(trial);
+        vt.source.ordinal = v + 1;
+        vt.source.when = "2026-10-30T00:00:0" + std::to_string(v) + "Z";
+        vt.text = text;
+        versions.push_back(vt);
+      }
+      const Chain ca = unwrap(compute_chain(seg, versions, sent)), cb = unwrap(compute_chain(seg, versions, para));
+      Db only_a, only_b, mixed;
+      unwrap(materialize(*only_a.db, ca, sent));
+      unwrap(materialize(*only_b.db, cb, para));
+      unwrap(materialize(*mixed.db, ca, sent));
+      unwrap(materialize(*mixed.db, cb, para));
+      const Json ab = graph_dump(*mixed.db);
+      unwrap(materialize(*mixed.db, ca, sent));
+      const Json aba = graph_dump(*mixed.db);
+      const Json da = graph_dump(*only_a.db), dbb = graph_dump(*only_b.db);
+      // no event or version node is shared between the two levels
+      const auto ea = slice(da, true), eb = slice(dbb, true);
+      for (const auto& x : ea) CHECK(eb.count(x) == 0);
+      // the mixed graph holds exactly the nodes/links of the two single-level graphs, and a third run (A again) changes nothing
+      std::set<std::string> want = ea;
+      want.insert(eb.begin(), eb.end());
+      CHECK(slice(ab, true) == want);
+      std::set<std::string> wl = slice(da, false);
+      for (const auto& x : slice(dbb, false)) wl.insert(x);
+      {
+        const auto got = slice(ab, false);
+        std::vector<std::string> extra, lacking;
+        std::set_difference(got.begin(), got.end(), wl.begin(), wl.end(), std::back_inserter(extra));
+        std::set_difference(wl.begin(), wl.end(), got.begin(), got.end(), std::back_inserter(lacking));
+        INFO("extra: " << (extra.empty() ? "" : extra[0]) << " lacking: " << (lacking.empty() ? "" : lacking[0]));
+        CHECK(extra.empty());
+        CHECK(lacking.empty());
+      }
+      CHECK(aba == ab);
+      nontrivial += !ca.events.empty() && !cb.events.empty();
+    }
+    CHECK(nontrivial > 10);  // the generator does produce events at both levels
   }
 
   TEST_CASE("properties on random version chains (synthetic, fixed seed): lineage total, removals one-to-one, keys unique, materialise idempotent") {

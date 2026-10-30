@@ -5,7 +5,13 @@
 #include <algorithm>
 #include <filesystem>
 #include <random>
+#include <cstdio>
+#include <new>
 #include <set>
+
+#include <sys/resource.h>
+#include <sys/wait.h>
+#include <unistd.h>
 
 #include "loom/text_fragments.h"
 #include <fstream>
@@ -226,6 +232,46 @@ TEST_CASE("myers_script: minimal, reconstructs, symmetric length (random sequenc
     REQUIRE(myers_distance(a, b) == myers_distance(b, a));
   }
 }
+
+TEST_CASE("myers_distance: equals the number of non-equal ops of myers_script (random, duplicates, larger sizes)") {
+  std::mt19937 rng(31);
+  for (int t = 0; t < 400; ++t) {
+    std::uniform_int_distribution<int> len(0, 120), sym(0, t % 3 == 0 ? 2 : (t % 3 == 1 ? 9 : 400));
+    std::vector<int> a(static_cast<std::size_t>(len(rng))), b(static_cast<std::size_t>(len(rng)));
+    for (auto& x : a) x = sym(rng);
+    for (auto& x : b) x = sym(rng);
+    std::size_t d = 0;
+    for (const auto& o : myers_script(a, b)) d += o.kind != "equal";
+    REQUIRE(myers_distance(a, b) == d);
+  }
+}
+
+#if !defined(__SANITIZE_ADDRESS__) && !defined(__SANITIZE_THREAD__)
+// Review 1030 finding 2: the distance needs O(N+M) memory, not the trace (~D^2 longs, ~290 MB here). A child process gets an address
+// space limit of its current size + 100 MB; the work must finish inside it. Synthetic sequences: 60000 units, 3000 replaced by fresh ids.
+TEST_CASE("myers_distance: linear memory - D = 6000 on 60000 units finishes within +100 MB of address space") {
+  std::vector<int> a(60000), b;
+  for (std::size_t i = 0; i < a.size(); ++i) a[i] = static_cast<int>(i);
+  b = a;
+  for (std::size_t i = 0; i < 3000; ++i) b[10 + i * 19] = 1000000 + static_cast<int>(i);
+  const pid_t pid = fork();
+  REQUIRE(pid >= 0);
+  if (pid == 0) {
+    long pages = 0;
+    if (FILE* f = std::fopen("/proc/self/statm", "r")) { if (std::fscanf(f, "%ld", &pages) != 1) pages = 0; std::fclose(f); }
+    struct rlimit rl;
+    rl.rlim_cur = rl.rlim_max = static_cast<rlim_t>(pages) * static_cast<rlim_t>(sysconf(_SC_PAGESIZE)) + (100u << 20);
+    setrlimit(RLIMIT_AS, &rl);
+    int code = 2;
+    try { code = myers_distance(a, b) == 6000 ? 0 : 3; } catch (const std::bad_alloc&) { code = 4; }
+    _exit(code);
+  }
+  int status = 0;
+  REQUIRE(waitpid(pid, &status, 0) == pid);
+  REQUIRE(WIFEXITED(status));
+  CHECK(WEXITSTATUS(status) == 0);
+}
+#endif
 
 TEST_CASE("property: text::apply(align(a, b), a) == b for random texts, both directions") {
   std::mt19937 rng(99);

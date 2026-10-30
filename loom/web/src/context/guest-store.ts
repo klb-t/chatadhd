@@ -90,6 +90,37 @@ export function bundleSize(b: GuestBundle): number {
   } catch { return 0; }
 }
 
+type BundleContent = { tables?: Record<string, { columns?: unknown[]; rows?: unknown[] }>; memory?: unknown[]; config?: Record<string, unknown> };
+const contentOf = (text: string): BundleContent => { try { return (JSON.parse(text) as { content?: BundleContent }).content ?? {}; } catch { return {}; } };
+const rowKey = (cols: unknown[] | undefined, row: unknown): string => {
+  const i = Array.isArray(cols) ? cols.indexOf("id") : -1;
+  return i >= 0 && Array.isArray(row) ? `id:${JSON.stringify(row[i])}` : JSON.stringify(row);
+};
+const memKey = (m: unknown): string => (m && typeof m === "object" && "id" in m ? `id:${JSON.stringify((m as { id: unknown }).id)}` : JSON.stringify(m));
+
+/** How many things the bundle carries that the working copy (its own export text, v2) lacks: rows of every table by id (whole row when a
+ *  table has no id column), memory entries by id, config keys. Nothing missing = a restore would change nothing, so it is not made. */
+export function bundleMissing(b: GuestBundle, workingText: string): number {
+  const w = contentOf(workingText);
+  if (b.schema === BUNDLE_SCHEMA_V1) {
+    const t = w.tables?.conversations; const have = new Set((t?.rows ?? []).map((r) => rowKey(t?.columns, r)));
+    return b.conversations.filter((c) => !have.has(`id:${JSON.stringify(c.id)}`)).length;
+  }
+  const c = contentOf(b.text);
+  let n = 0;
+  for (const [name, t] of Object.entries(c.tables ?? {})) {
+    const have = new Set((w.tables?.[name]?.rows ?? []).map((r) => rowKey(w.tables?.[name]?.columns, r)));
+    for (const r of Array.isArray(t?.rows) ? t.rows : []) if (!have.has(rowKey(t?.columns, r))) n += 1;
+  }
+  const mem = new Set((w.memory ?? []).map(memKey));
+  for (const m of Array.isArray(c.memory) ? c.memory : []) if (!mem.has(memKey(m))) n += 1;
+  for (const k of Object.keys(c.config ?? {})) if (!(k in (w.config ?? {}))) n += 1;
+  return n;
+}
+
+/** How many conversations the working copy holds (from its own export text). */
+export function workingConversations(workingText: string): number { return contentOf(workingText).tables?.conversations?.rows?.length ?? 0; }
+
 /** The text a download writes: v2 exactly as the server produced it, v1 as JSON. */
 export function bundleText(b: GuestBundle): string { return b.schema === BUNDLE_SCHEMA ? b.text : JSON.stringify(b); }
 
