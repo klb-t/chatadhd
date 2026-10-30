@@ -38,7 +38,12 @@ test('the window kind is present with its parameters, and its words exist in bot
   const blocks = [];
   const walk = o => { if (o && typeof o === 'object') { if ('ps_title' in o) blocks.push(o); Object.values(o).forEach(walk); } };
   walk(pack);
-  assert.equal(blocks.length, 2);
+  // Every language the catalog offers carries the window's words (not a fixed count: a new language is data only).
+  const offered = [];
+  const walkL = o => { if (o && typeof o === 'object') { if (o.locales && Object.values(o.locales).some(l => l && 'ps_title' in l)) offered.push(...Object.keys(o.locales)); Object.values(o).forEach(walkL); } };
+  walkL(pack);
+  assert.ok(offered.includes('pl') && offered.includes('en'), `languages offered: ${offered}`);
+  assert.equal(blocks.length, new Set(offered).size);
   const src = new Set((SRC).match(/t\("ps_[a-z_]+"/g).map(x => x.slice(3, -1)));
   for (const b of blocks) for (const id of src) assert.ok(b[id], `${id} missing in a language`);
 });

@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import { featureMessage, setProductName, productName } from "../onboarding/presentation.mjs";
+import { featureMessage, setProductName, productName, resolvePresentation, resolvePresentationFeature } from "../onboarding/presentation.mjs";
 import { adviseMissingText, languageChain } from "./language-pack";
 
 type Feature = Parameters<typeof featureMessage>[0];
@@ -27,7 +27,14 @@ export function shellTranslator(feature: Feature | null | undefined, language: s
 }
 /** The product name on screen (see presentation.mjs): for places outside the catalogs (tab title, placeholders). */
 export { productName };
-export const ShellText = createContext<ShellT>((id) => id);
+/** Without a provider (a screen or a test rendered on its own) the words come from the built-in ui_shell catalog in the default language of
+ * languages.json, built on first use, so the person never sees a raw key; the app's provider still sets the language and its catalog. */
+let builtin: ShellT | null = null;
+const builtinWords: ShellT = (id, params) => {
+  builtin ??= shellTranslator(resolvePresentationFeature(resolvePresentation(), "ui_shell") as Feature, languageChain("")[0]);
+  return builtin(id, params);
+};
+export const ShellText = createContext<ShellT>(builtinWords);
 export const useShellText = (): ShellT => useContext(ShellText);
 /** The language of the shell words (ui_language or the browser's): for labels that come from data as {en, pl}. */
 export const ShellLanguage = createContext<string>("en");
