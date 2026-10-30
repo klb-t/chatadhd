@@ -105,6 +105,7 @@
         "window.style",
         "layout.style",
         "desktop.declare",
+        "desktop.arrange",
         "artifact.open",
         "artifact.copy",
         "artifact.save",
@@ -3160,6 +3161,76 @@
           "original": [
             "target"
           ],
+          "takes_scope": false
+        },
+        {
+          "id": "desktop.arrange.by.pl",
+          "action": "desktop.arrange",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:uporzadkuj|uloz|posortuj|poukladaj)\\s+(?:ikony|ikonki)(?:\\s+na\\s+pulpicie|\\s+pulpitu)?\\s+(?:wedlug|wg\\.?|po|by)\\s+(.+?)\\s*[.!?]*\\s*$",
+          "args": [
+            "by"
+          ],
+          "original": [
+            "by"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "desktop.arrange.word.pl",
+          "action": "desktop.arrange",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:uporzadkuj|uloz|posortuj|poukladaj)\\s+(?:ikony|ikonki)(?:\\s+na\\s+pulpicie|\\s+pulpitu)?\\s+(alfabetycznie|domyslnie|od\\s+nowa|jak\\s+bylo)\\s*[.!?]*\\s*$",
+          "args": [
+            "by"
+          ],
+          "original": [
+            "by"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "desktop.arrange.pl",
+          "action": "desktop.arrange",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:uporzadkuj|uloz|posortuj|poukladaj)\\s+(?:ikony|ikonki)(?:\\s+na\\s+pulpicie|\\s+pulpitu)?\\s*[.!?]*\\s*$",
+          "args": [],
+          "original": [],
+          "takes_scope": false
+        },
+        {
+          "id": "desktop.arrange.by.en",
+          "action": "desktop.arrange",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:arrange|sort|tidy\\s+up|order)\\s+(?:the\\s+)?(?:desktop\\s+)?icons(?:\\s+on\\s+the\\s+desktop)?\\s+by\\s+(.+?)\\s*[.!?]*\\s*$",
+          "args": [
+            "by"
+          ],
+          "original": [
+            "by"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "desktop.arrange.word.en",
+          "action": "desktop.arrange",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:arrange|sort|tidy\\s+up|order)\\s+(?:the\\s+)?(?:desktop\\s+)?icons(?:\\s+on\\s+the\\s+desktop)?\\s+(alphabetically)\\s*[.!?]*\\s*$",
+          "args": [
+            "by"
+          ],
+          "original": [
+            "by"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "desktop.arrange.en",
+          "action": "desktop.arrange",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:arrange|sort|tidy\\s+up|order)\\s+(?:the\\s+)?(?:desktop\\s+)?icons(?:\\s+on\\s+the\\s+desktop)?\\s*[.!?]*\\s*$",
+          "args": [],
+          "original": [],
           "takes_scope": false
         },
         {

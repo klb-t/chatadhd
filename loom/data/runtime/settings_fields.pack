@@ -1778,6 +1778,51 @@
         }
       },
       {
+        "key": "desktop_arrangement",
+        "scope": "config",
+        "group": "ui",
+        "type": "object",
+        "has_default": false,
+        "description": "Where the desktop icons stand (R101 D5, PULPIT_R101 §6, §13 P3/P4): {<device class>: <arrangement>} per person and installations.<installation id>.<device class> per browser installation, which wins (the shape of window_layout_active, D19; the installation id is the page's local-storage id loom.installation_id, not a level of the kernel scope chain). An arrangement is an object such as {\"mode\": \"grid\", \"snap\": true, \"columns\": \"auto\", \"flow\": \"row_major\", \"positions\": {\"trash:\": {\"col\": \"last\", \"row\": 0}}} [example]: mode grid | free | computed [examples; an unknown mode is drawn as grid with the advisory arrangement_mode_unknown], columns a number or auto (unset = the desktop declaration's), positions only for the icons moved by hand ({col,row} in grid, {x,y,unit: fraction|px} in free; computed ignores them). A change of width (rotation, keyboard) never rewrites the value: the positions are snapped into the grid of the moment (a column past the last = the last; a taken cell = the next free one), no icon is lost. Dragging an icon, „Uporządkuj ikony” and the sentence desktop.arrange write it (both levels, preset levels in the page's shell/data/desktop.json arrangement.levels) as a merge on the host (PATCH /api/config/desktop_arrangement); each write is one entry of the page's arrangement journal (kept per tab, undo/redo on the desktop). Unset = the preset of desktop.json (grid, the declaration's order).",
+        "status": {
+          "state": "implemented",
+          "by": "M1-R101-D5",
+          "reader": "web shell/windows/Desktop.tsx (readArrangement, placeIcons, shell/windows/desktop-arrange.ts)",
+          "reason": {
+            "pl": "Strona czyta to pole przy każdym rysowaniu ikon pulpitu i zapisuje je po przesunięciu albo uporządkowaniu ikon.",
+            "en": "The page reads this field whenever it draws the desktop icons and writes it after a move or an arrangement."
+          },
+          "today": {
+            "pl": "Przeciągnięta ikona zostaje tam, gdzie ją upuścisz, także po przeładowaniu; po obróceniu telefonu wraca do najbliższego miejsca w siatce.",
+            "en": "A dragged icon stays where you drop it, also after a reload; after the phone is rotated it goes to the nearest place of the grid."
+          }
+        },
+        "human": {
+          "label": {
+            "pl": "Ułożenie ikon na pulpicie",
+            "en": "Arrangement of the desktop icons"
+          },
+          "why": {
+            "pl": "Ikony stoją tam, gdzie je postawisz — osobno na telefonie i na komputerze, a ta przeglądarka może mieć własne.",
+            "en": "The icons stand where you put them — separately on a phone and a computer, and this browser may have its own."
+          },
+          "effect": {
+            "pl": "Zmienia miejsca ikon przy następnym rysowaniu pulpitu.",
+            "en": "Changes where the icons stand the next time the desktop is drawn."
+          },
+          "levels": [
+            "person"
+          ],
+          "group": "interfejs",
+          "subgroup": "nawigator",
+          "flows": [],
+          "when_unset": {
+            "pl": "siatka w kolejności ustawienia pulpitu",
+            "en": "a grid in the order of the desktop setting"
+          }
+        }
+      },
+      {
         "key": "desktop_minimized",
         "scope": "config",
         "group": "ui",
