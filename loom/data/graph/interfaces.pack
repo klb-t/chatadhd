@@ -121,6 +121,8 @@
         "loom_settings_fields",
         "loom_shutdown",
         "loom_subscribe",
+        "loom_text_genesis_materialize",
+        "loom_text_genesis_query",
         "loom_transcribe",
         "loom_unsubscribe",
         "loom_update_conversation",

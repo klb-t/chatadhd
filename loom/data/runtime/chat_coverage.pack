@@ -3248,6 +3248,46 @@
           "en": "R101 D4 (PULPIT_R101 §5): to the trash is reversible (metadata.trash on a conversation, read-merge-write; memory.trash is a new step before forgetting; a pin link keeps metadata.trash); emptying is today's irreversible step with its consent.",
           "pl": "R101 D4 (PULPIT_R101 §5): do kosza jest odwracalne (metadata.trash rozmowy przez odczyt–scalenie–zapis; memory.trash to nowy krok przed zapomnieniem; link przypięcia dostaje metadata.trash); opróżnienie to dzisiejszy krok nieodwracalny z potwierdzeniem."
         }
+      },
+      {
+        "id": "text_genesis",
+        "title": {
+          "en": "Where a sentence comes from, what replaced it, what is missing",
+          "pl": "Skąd pochodzi zdanie, co je zastąpiło, czego brakuje"
+        },
+        "via": "action",
+        "action": "genesis.origin",
+        "also": [
+          "genesis.replaced",
+          "genesis.missing",
+          "genesis.materialize"
+        ],
+        "surfaces": {
+          "c_abi": [
+            "loom_text_genesis_materialize",
+            "loom_text_genesis_query"
+          ]
+        },
+        "examples": {
+          "pl": "skąd pochodzi zdanie Budżet etapu wynosi 12 000 zł",
+          "en": "where does the sentence Budget of the stage is 12 000 come from"
+        },
+        "examples_more": {
+          "pl": [
+            "co zastąpiło zdanie Budżet etapu wynosi 12 000 zł",
+            "czego brakuje w tej wersji względem poprzedniej",
+            "zapisz genezę tekstu tej rozmowy",
+            "skąd się wzięło zdanie „Spotkania odbywają się co tydzień”",
+            "co zniknęło z tej wersji"
+          ],
+          "en": [
+            "what replaced the sentence Budget of the stage is 12 000",
+            "what is missing in this version against the previous one",
+            "record the text genesis of this conversation",
+            "where is the sentence \"Meetings happen every week\" from",
+            "what disappeared from this version"
+          ]
+        }
       }
     ],
     "not_from_chat": [

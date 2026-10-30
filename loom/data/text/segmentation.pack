@@ -40,5 +40,26 @@
   },
   "normalization": {"case": "lower", "whitespace": "collapse", "punctuation": "keep", "strip": true},
   "fingerprint": {"hash": "sha256", "hex_chars": 0},
-  "alignment": {"similarity": "words", "replace_threshold": 0.5, "move_threshold": 1.0, "inner_level": "word"}
+  "alignment": {"similarity": "words", "replace_threshold": 0.5, "move_threshold": 1.0, "inner_level": "word"},
+  "genesis": {
+    "note": "R102 G2: the chain of versions in the graph. Every value is a preset; kinds are strings and the lists are open (a new op kind becomes an event of its own name, a new edge kind is used by naming it).",
+    "level": "sentence",
+    "record_initial_additions": false,
+    "nodes": {"fragment": "text_fragment", "version": "text_version", "event": "text_event"},
+    "edges": {
+      "occurrence": "part_of", "version_chain": "derived_from",
+      "about": "about", "in": "occurred_in", "from": "from_version", "successor": "successor",
+      "removal": "deleted_in", "addition": "added_in", "replacement": "replaced_by", "move": "moved_to",
+      "replacement_back": "derived_from"
+    },
+    "events": {"delete": "removal", "insert": "addition", "replace": "replacement", "move": "move"},
+    "silent_ops": ["equal"],
+    "questions": {
+      "origin": {"pl": "Skąd pochodzi to zdanie", "en": "Where this sentence comes from"},
+      "replaced": {"pl": "Co zastąpiło to zdanie", "en": "What replaced this sentence"},
+      "missing": {"pl": "Czego brakuje w tej wersji względem poprzedniej", "en": "What is missing in this version against the previous one"},
+      "events": {"pl": "Co się stało z tym zdaniem", "en": "What happened to this sentence"}
+    },
+    "match": {"contains": true, "max_candidates": 5}
+  }
 }
