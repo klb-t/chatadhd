@@ -1534,7 +1534,6 @@ std::string_view(R"loom_onboard(                "guest.switched": "{{from}} is n
                 "ps_ghost": "missing",
                 "ps_ghost_title": "Expected, not in the graph: {{label}}",
                 "ps_card": "expected: {{min}} to {{max}}",
-                "ps_unbounded": "no upper bound",
                 "ps_confidence": "confidence {{value}}",
                 "ps_source": "source of the expectation: {{source}}",
                 "ps_templates": "Templates",
@@ -1607,7 +1606,10 @@ std::string_view(R"loom_onboard(                "guest.switched": "{{from}} is n
                 "artifact_preview": "Preview",
                 "artifact_empty": "This window shows no artifact (its content is not in the layout any more).",
                 "ps_hidden_rows": "Hidden by the chosen look: {{count}}",
-                "ps_enter": "Go in"
+                "ps_enter": "Go in",
+                "ps_card_min": "expected: at least {{min}}",
+                "ps_source_template": "template",
+                "ps_source_inference": "inference"
               },
               "pl": {
                 "menu_open": "Menu",
@@ -1846,9 +1848,9 @@ std::string_view(R"loom_onboard(                "guest.switched": "{{from}} is n
                 "cm_issue_hide_missing": "zmiana nr {{n}}: nie ma pozycji „{{name}}” do ukrycia",
                 "cm_issue_no_submenu": "zmiana nr {{n}}: nie ma podmenu „{{name}}”",
                 "cm_issue_exists": "zmiana nr {{n}}: „{{name}}” już jest w menu",
-                "cm_issue_move_missing": "zmiana nr {{n}}: nie ma czego przenieść („{{name}}”)",
-)loom_onboard", 59990),
-std::string_view(R"loom_onboard(                "cm_issue_move_into_itself": "zmiana nr {{n}}: nie da się przenieść „{{name}}” do wnętrza tej samej pozycji",
+)loom_onboard", 60000),
+std::string_view(R"loom_onboard(                "cm_issue_move_missing": "zmiana nr {{n}}: nie ma czego przenieść („{{name}}”)",
+                "cm_issue_move_into_itself": "zmiana nr {{n}}: nie da się przenieść „{{name}}” do wnętrza tej samej pozycji",
                 "cm_issue_unknown_op": "zmiana nr {{n}}: nieznana zmiana „{{op}}”",
                 "tool_chip_on": "{{name}}: włączone",
                 "att_unreadable": "nie da się wysłać tego rodzaju pliku (da się wysłać obrazy i pliki tekstowe)",
@@ -2095,7 +2097,6 @@ std::string_view(R"loom_onboard(                "cm_issue_move_into_itself": "zm
                 "ps_ghost": "brakuje",
                 "ps_ghost_title": "Oczekiwane, nie ma w grafie: {{label}}",
                 "ps_card": "oczekiwane: od {{min}} do {{max}}",
-                "ps_unbounded": "bez górnej granicy",
                 "ps_confidence": "pewność {{value}}",
                 "ps_source": "źródło oczekiwania: {{source}}",
                 "ps_templates": "Wzorce",
@@ -2168,7 +2169,10 @@ std::string_view(R"loom_onboard(                "cm_issue_move_into_itself": "zm
                 "artifact_preview": "Podgląd",
                 "artifact_empty": "To okno nie pokazuje artefaktu (jego treści nie ma już w układzie).",
                 "ps_hidden_rows": "Ukryte przez wybrany wygląd: {{count}}",
-                "ps_enter": "Wejdź"
+                "ps_enter": "Wejdź",
+                "ps_card_min": "oczekiwane: co najmniej {{min}}",
+                "ps_source_template": "wzorzec",
+                "ps_source_inference": "wnioskowanie"
               }
             }
           }
@@ -2733,12 +2737,12 @@ std::string_view(R"loom_onboard(                "cm_issue_move_into_itself": "zm
                 "me.details.provenance": "Origin: {{words}}",
                 "me.action.profile.set": "Correct",
                 "me.action.rules.set": "Correct at a level",
-                "me.action.memory.forget": "Forget",
+)loom_onboard", 59999),
+std::string_view(R"loom_onboard(                "me.action.memory.forget": "Forget",
                 "me.action.memory.restore": "Restore",
                 "me.action.planned": "planned",
                 "me.input.profile.set": "value",
-)loom_onboard", 59986),
-std::string_view(R"loom_onboard(                "me.input.profile.set.value": "New value",
+                "me.input.profile.set.value": "New value",
                 "me.input.memory.remember": "content",
                 "me.input.memory.remember.content": "What should I remember?",
                 "me.input.units.define": "kind id label",
@@ -3562,11 +3566,11 @@ std::string_view(R"loom_onboard(                "me.input.profile.set.value": "N
                 "ratio.times": "{{n}}× zwykłego zapytania do tego modelu",
                 "ratio.low": "dużo mniej niż zwykłe zapytanie do tego modelu",
                 "ratio.with_base": "{{ratio}} ({{base}})",
-                "base.measured": "średnia z ostatnich zapytań do tego modelu (liczba zapytań: {{n}})",
+)loom_onboard", 59918),
+std::string_view(R"loom_onboard(                "base.measured": "średnia z ostatnich zapytań do tego modelu (liczba zapytań: {{n}})",
                 "base.floor": "wartość startowa; zmierzonych dotąd zapytań do tego modelu: {{n}}",
                 "base.declared": "wartość zadeklarowana w ustawieniach",
-)loom_onboard", 59997),
-std::string_view(R"loom_onboard(                "for.empty": "dla pustej wiadomości (bez tekstu, załączników i narzędzi tej wiadomości)",
+                "for.empty": "dla pustej wiadomości (bez tekstu, załączników i narzędzi tej wiadomości)",
                 "for.text": "z wpisanym tekstem, bez załączników",
                 "ratio.unknown": "nieznane — brak bazy",
                 "disclaimer": "Skompilowane żądanie, nie dowód odbioru przez dostawcę.",
@@ -4824,7 +4828,8 @@ std::string_view(R"loom_onboard(                "for.empty": "dla pustej wiadomo
                 "source": "memory",
                 "where": {
                   "status": [
-                    "active",
+)loom_onboard", 59980),
+std::string_view(R"loom_onboard(                    "active",
                     "inactive"
                   ]
                 }
@@ -4836,8 +4841,7 @@ std::string_view(R"loom_onboard(                "for.empty": "dla pustej wiadomo
                 "args": {
                   "query": "attrs.note_id"
                 }
-)loom_onboard", 59997),
-std::string_view(R"loom_onboard(              }
+              }
             ],
             "actions_here": [
               {
@@ -5864,11 +5868,11 @@ std::string_view(R"loom_onboard(              }
             "guest.persisted": "dopiero gdy sam wyczyścisz dane tej strony (przeglądarka dała trwały schowek; wolne {{free}}); kopia na serwerze po {{ttl}} bez ruchu",
             "guest.not_persisted": "gdy przeglądarce zabraknie miejsca (wolne {{free}}, schowek nietrwały), a kopia na serwerze po {{ttl}} bez ruchu",
             "guest.limit_ready": "Możesz już spróbować ponownie.",
-            "guest.limit_alternatives": "W tym czasie możesz użyć własnego klucza, innego źródła modelu albo się zalogować.",
+)loom_onboard", 59905),
+std::string_view(R"loom_onboard(            "guest.limit_alternatives": "W tym czasie możesz użyć własnego klucza, innego źródła modelu albo się zalogować.",
             "guest.limit_own_key": "Własny klucz albo inne źródło",
             "guest.terms_consent_title": "Przed pierwszą wiadomością do {{provider}}",
-)loom_onboard", 59901),
-std::string_view(R"loom_onboard(            "guest.terms_consent_body": "{{terms}} Źródło: {{source}} ({{date}}). Wiadomość idzie przez konto operatora tego serwera.",
+            "guest.terms_consent_body": "{{terms}} Źródło: {{source}} ({{date}}). Wiadomość idzie przez konto operatora tego serwera.",
             "guest.terms_send": "Wyślij",
             "guest.terms_other": "Inne źródło albo własny klucz",
             "guest.terms_declined": "Nie wysłano: wybierz inne źródło albo własny klucz w Ustawieniach.",
@@ -6372,7 +6376,6 @@ std::string_view(R"loom_onboard(            "guest.terms_consent_body": "{{terms
             "ps_ghost": "missing",
             "ps_ghost_title": "Expected, not in the graph: {{label}}",
             "ps_card": "expected: {{min}} to {{max}}",
-            "ps_unbounded": "no upper bound",
             "ps_confidence": "confidence {{value}}",
             "ps_source": "source of the expectation: {{source}}",
             "ps_templates": "Templates",
@@ -6445,7 +6448,10 @@ std::string_view(R"loom_onboard(            "guest.terms_consent_body": "{{terms
             "artifact_preview": "Preview",
             "artifact_empty": "This window shows no artifact (its content is not in the layout any more).",
             "ps_hidden_rows": "Hidden by the chosen look: {{count}}",
-            "ps_enter": "Go in"
+            "ps_enter": "Go in",
+            "ps_card_min": "expected: at least {{min}}",
+            "ps_source_template": "template",
+            "ps_source_inference": "inference"
           },
           "pl": {
             "menu_open": "Menu",
@@ -6782,11 +6788,11 @@ std::string_view(R"loom_onboard(            "guest.terms_consent_body": "{{terms
             "wk_record_off": "Wyłączony",
             "wk_record_note": "Zapis dołącza do tury dokładnie złożone wiadomości i wybór, do późniejszego wglądu.",
             "wk_expert": "Ekspert · podgląd i zmiana jednego zapytania",
-            "wk_expert_note": "To zapytanie klienta wysyłane do {{product}}. Wiadomości złożone dla dostawcy są po wykonaniu w zapisanym kontekście.",
+)loom_onboard", 59965),
+std::string_view(R"loom_onboard(            "wk_expert_note": "To zapytanie klienta wysyłane do {{product}}. Wiadomości złożone dla dostawcy są po wykonaniu w zapisanym kontekście.",
             "wk_expert_prepare": "Przygotuj zapytanie klienta",
             "wk_expert_aria": "Zapytanie klienta na jedno wywołanie (JSON)",
-)loom_onboard", 59862),
-std::string_view(R"loom_onboard(            "wk_expert_once": "Następne wysłanie użyje dokładnie tego zapytania, raz. Profil, zapisany kontekst i kolejne wywołania zachowują swoje ustawienia.",
+            "wk_expert_once": "Następne wysłanie użyje dokładnie tego zapytania, raz. Profil, zapisany kontekst i kolejne wywołania zachowują swoje ustawienia.",
             "wk_expert_discard": "Odrzuć zmianę",
             "pv_note": "To żądanie pójdzie z następnym Wyślij, jednorazowo. Zmiany w tekście zmieniają to, co wyślesz; „Odrzuć podgląd” wraca do zwykłego wysyłania.",
             "pv_aria": "Żądanie do wysłania (JSON)",
@@ -6933,7 +6939,6 @@ std::string_view(R"loom_onboard(            "wk_expert_once": "Następne wysłan
             "ps_ghost": "brakuje",
             "ps_ghost_title": "Oczekiwane, nie ma w grafie: {{label}}",
             "ps_card": "oczekiwane: od {{min}} do {{max}}",
-            "ps_unbounded": "bez górnej granicy",
             "ps_confidence": "pewność {{value}}",
             "ps_source": "źródło oczekiwania: {{source}}",
             "ps_templates": "Wzorce",
@@ -7006,7 +7011,10 @@ std::string_view(R"loom_onboard(            "wk_expert_once": "Następne wysłan
             "artifact_preview": "Podgląd",
             "artifact_empty": "To okno nie pokazuje artefaktu (jego treści nie ma już w układzie).",
             "ps_hidden_rows": "Ukryte przez wybrany wygląd: {{count}}",
-            "ps_enter": "Wejdź"
+            "ps_enter": "Wejdź",
+            "ps_card_min": "oczekiwane: co najmniej {{min}}",
+            "ps_source_template": "wzorzec",
+            "ps_source_inference": "wnioskowanie"
           }
         }
       }
@@ -7742,7 +7750,8 @@ std::string_view(R"loom_onboard(            "wk_expert_once": "Następne wysłan
             "reason.planned": "planowane",
             "reason.several_profiles_name_one": "kilka profili — wskaż jeden",
             "proposals.planned": "propozycja modelu — planowane ({{reason}})",
-            "count.name.rom_items": "elementy ROM",
+)loom_onboard", 59949),
+std::string_view(R"loom_onboard(            "count.name.rom_items": "elementy ROM",
             "count.name.profile_slots": "pola profilu",
             "count.name.principles": "zasady",
             "count.name.operators": "operatory",
@@ -7750,8 +7759,7 @@ std::string_view(R"loom_onboard(            "wk_expert_once": "Następne wysłan
             "count.name.authority_ranks": "rangi autorytetu",
             "count.name.import_formats": "formaty importu",
             "count.name.interfaces": "interfejsy",
-)loom_onboard", 59976),
-std::string_view(R"loom_onboard(            "count.name.profile_domains": "profile działania",
+            "count.name.profile_domains": "profile działania",
             "count.name.scopes": "poziomy zakresów",
             "count.name.conflict_rules": "reguły konfliktów",
             "count.name.party_templates": "szablony podmiotów",
@@ -8584,7 +8592,8 @@ std::string_view(R"loom_onboard(            "count.name.profile_domains": "profi
             "chip.review.label": "Summary",
             "chip.review.say": "summary",
             "chip.status.label": "How many left",
-            "chip.status.say": "how many left",
+)loom_onboard", 59976),
+std::string_view(R"loom_onboard(            "chip.status.say": "how many left",
             "chips.idle": "next review status",
             "chip.next.label": "Go on",
             "chip.next.say": "go on",
@@ -8594,8 +8603,7 @@ std::string_view(R"loom_onboard(            "count.name.profile_domains": "profi
           "pl": {
             "card.title": "Poznajmy się",
             "card.body": "Zbuduję Twój profil w rozmowie. Pierwsze pytanie: jak dokładnie mam Cię znać.",
-)loom_onboard", 59969),
-std::string_view(R"loom_onboard(            "card.privacy": "To rozmowa bez modelu, tylko formularz: nic nie wychodzi poza to urządzenie.",
+            "card.privacy": "To rozmowa bez modelu, tylko formularz: nic nie wychodzi poza to urządzenie.",
             "card.start": "Zacznij",
             "card.later": "Później",
             "card.never": "Nigdy nie pytaj",
@@ -8797,7 +8805,7 @@ std::string_view(R"loom_onboard(            "card.privacy": "To rozmowa bez mode
   },
   "presentation_key": "presentation.onboarding"
 }
-)loom_onboard", 6416)};
+)loom_onboard", 6842)};
 static constexpr std::string_view kOnboardingScenario[] = {
 std::string_view(R"loom_onboard({
   "schema": "loom.onboarding.scenario/1",

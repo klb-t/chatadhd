@@ -94,12 +94,12 @@ export default function ProjectStructure({ api = defaultApi, profileHost, convId
   const goRoot = (address: string) => { setCard(null); set("root", address); };
 
   return (
-    <section className="ps-window" data-testid="project-structure" data-root={params.root} data-mapping={mapping.id} aria-label={t("ps_title")}>
-      <form className="ps-root" onSubmit={e => { e.preventDefault(); set("root", draft.trim()); }}>
+    <section className="ps-window" style={{ padding: "8px 12px", overflowWrap: "anywhere" }} data-testid="project-structure" data-root={params.root} data-mapping={mapping.id} aria-label={t("ps_title")}>
+      <form className="ps-root" style={{ display: "flex", flexWrap: "wrap", gap: 6, alignItems: "end" }} onSubmit={e => { e.preventDefault(); set("root", draft.trim()); }}>
         <label>{t("ps_root_field")} <input data-testid="ps-root-input" value={draft} onChange={e => setDraft(e.target.value)} /></label>
         <button type="submit" data-testid="ps-root-go">{t("ps_show")}</button>
       </form>
-      <div className="ps-controls">
+      <div className="ps-controls" style={{ display: "flex", flexDirection: "column", gap: 6 }}>
         <label><input type="checkbox" data-testid="ps-show-expected" checked={params.show_expected} onChange={e => set("show_expected", e.target.checked)} /> {t("ps_show_expected")}</label>
         <label>{t("ps_mapping")}{" "}
           <select data-testid="ps-mapping" value={typeof params.mapping === "string" && MAPPING_DATA.presets[params.mapping] ? params.mapping : mapping.id === "own" ? "" : MAPPING_DATA.default}

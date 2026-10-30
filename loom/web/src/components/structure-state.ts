@@ -98,10 +98,10 @@ export function rowsOf(r: GraphStructureResult, mapping: ResolvedMapping, t: (id
     }
     const g = e.ghost ? ghosts.get(e.ghost) : undefined;
     if (g) {
-      const max = e.card.max === null ? t("ps_unbounded") : String(e.card.max);
-      const parts = [t("ps_card", { min: String(e.card.min), max })];
+      const parts = [e.card.max === null ? t("ps_card_min", { min: String(e.card.min) }) : t("ps_card", { min: String(e.card.min), max: String(e.card.max) })];
       if (typeof e.confidence === "number") parts.push(t("ps_confidence", { value: String(Math.round(e.confidence * 100)) + "%" }));
-      parts.push(t("ps_source", { source: e.source }));
+      const sourceWord = t(`ps_source_${e.source}`);   // the words of a source of an expectation (open list); an unknown one is said as it is
+      parts.push(t("ps_source", { source: sourceWord === `ps_source_${e.source}` ? e.source : sourceWord }));
       rows.push({ key: g.address, address: g.address, label: g.label, ghost: true, state: e.state, stateLabel: e.state_label, hidden: sign?.hidden === true,
         order: typeof sign?.order === "number" ? sign.order : 0, icon: typeof sign?.icon === "string" ? sign.icon : undefined, style: styleOf(sign), detail: parts.join(" · ") });
     }

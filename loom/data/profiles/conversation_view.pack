@@ -1367,7 +1367,6 @@
             "ps_ghost": "missing",
             "ps_ghost_title": "Expected, not in the graph: {{label}}",
             "ps_card": "expected: {{min}} to {{max}}",
-            "ps_unbounded": "no upper bound",
             "ps_confidence": "confidence {{value}}",
             "ps_source": "source of the expectation: {{source}}",
             "ps_templates": "Templates",
@@ -1440,7 +1439,10 @@
             "artifact_preview": "Preview",
             "artifact_empty": "This window shows no artifact (its content is not in the layout any more).",
             "ps_hidden_rows": "Hidden by the chosen look: {{count}}",
-            "ps_enter": "Go in"
+            "ps_enter": "Go in",
+            "ps_card_min": "expected: at least {{min}}",
+            "ps_source_template": "template",
+            "ps_source_inference": "inference"
           },
           "pl": {
             "menu_open": "Menu",
@@ -1927,7 +1929,6 @@
             "ps_ghost": "brakuje",
             "ps_ghost_title": "Oczekiwane, nie ma w grafie: {{label}}",
             "ps_card": "oczekiwane: od {{min}} do {{max}}",
-            "ps_unbounded": "bez górnej granicy",
             "ps_confidence": "pewność {{value}}",
             "ps_source": "źródło oczekiwania: {{source}}",
             "ps_templates": "Wzorce",
@@ -2000,7 +2001,10 @@
             "artifact_preview": "Podgląd",
             "artifact_empty": "To okno nie pokazuje artefaktu (jego treści nie ma już w układzie).",
             "ps_hidden_rows": "Ukryte przez wybrany wygląd: {{count}}",
-            "ps_enter": "Wejdź"
+            "ps_enter": "Wejdź",
+            "ps_card_min": "oczekiwane: co najmniej {{min}}",
+            "ps_source_template": "wzorzec",
+            "ps_source_inference": "wnioskowanie"
           }
         }
       }
