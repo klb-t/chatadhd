@@ -5,8 +5,8 @@
  "sources": {
   "owner": {
    "path": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
-   "sha256": "ca69808c9c9f8ff9d9ddc56a05b1009a72f1e7cac40b97edae1ad812dc05088e",
-   "lines": 1010
+   "sha256": "9225c17404debc4286c8e0261260bfcba41694a8da76f1111ac98d996329ea90",
+   "lines": 1015
   },
   "slowa": {
    "path": "docs/architecture/SLOWA_WLASCICIELA_2026-10-16.md",
@@ -6412,6 +6412,61 @@
    ]
   },
   {
+   "id": "s_f411e6e71221",
+   "aliases": [
+    "R110"
+   ],
+   "kind": "requirement",
+   "title": "Do R109: bez osobnej ochrony przed obejściem przez czyszczenie przeglądarki; twardy limit wydatków na klucz w pojedynczych dolarach (owner (przekazał koordynator gcp), 2026-10-30)",
+   "date": null,
+   "theme": "owner_requirements",
+   "theme_inferred": false,
+   "understanding": {
+    "state": "none"
+   },
+   "quotes": [
+    {
+     "text": "jeśli ktoś sobie będzie resetował pamięć przeglądarki podręczną żeby nas naciągnąć to wtedy dopiero zareagujemy. limity na klucz będą w pojedynczych dolarach",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:997",
+     "ref": null,
+     "attr": [],
+     "lead": null,
+     "secondary": false
+    }
+   ],
+   "sense": null,
+   "summary": null,
+   "restatement": [
+    {
+     "text": "Decyzja właściciela do R109 (pakiet z R108). Skutek (odczyt koordynatora, do projektu): nie budujemy teraz ochrony przed obejściem progów przez czyszczenie pamięci przeglądarki. Reagujemy dopiero, gdy ktoś zacznie tak robić. To datowana decyzja z odwrotem, nie ograniczenie silnika. Progi R109 liczone prosto na sesję gościa. Nad nimi twardy limit wydatków na klucz dostawcy puli, w pojedynczych dolarach, jako ustawienie w danych (preset). Kwota to przykład skali, nie stała. Obserwacja do sprawdzenia w projekcie: spend_.snapshot() w /api/pool/summary już liczy pieniądze płatnych źródeł gości na dziś. Limit na klucz rozszerza to, a nie buduje obok.",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:999"
+    }
+   ],
+   "commentary": [],
+   "status": null,
+   "gap_text": null,
+   "evidence": [],
+   "next_step": null,
+   "refs": [
+    "s_8643d0768093",
+    "s_747ada9e6655"
+   ],
+   "supersedes": [],
+   "superseded_by": [],
+   "supersession_notes": [],
+   "tags": [],
+   "heading_note": null,
+   "sources": [
+    {
+     "role": "owner",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:996-999"
+    }
+   ],
+   "files": [
+    "owner"
+   ]
+  },
+  {
    "id": "s_18ec73967a7b",
    "aliases": [
     "owner:decision-rebuild-don-t-recover"
@@ -6427,7 +6482,7 @@
    "quotes": [
     {
      "text": "\"nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane\"",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:997",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:1002",
      "ref": null,
      "attr": [],
      "lead": null,
@@ -6439,7 +6494,7 @@
    "restatement": [
     {
      "text": "Recovered versions (`history/chatadhd_v0.8.3`, `history/chatadhd_v0.9.0`) and\nthe historical report are sources of requirements, ideas and data assets\n(e.g. `film_structure.json`), and real ground truth for self-discovery tests —\nnot code to merge. Everything is rebuilt in Loom with tests.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:999-1002"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:1004-1007"
     }
    ],
    "commentary": [],
@@ -6456,7 +6511,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:996-1002"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:1001-1007"
     }
    ],
    "files": [
@@ -6482,7 +6537,7 @@
    "restatement": [
     {
      "text": "`workbench_mockup_2026-09-26.webp`: dockable/floating panels (conversation\nlist, active conversation, knowledge graph with active context window, project\nstructure with dimmed high-confidence auto-completable nodes, artifact views\nfor music/video with timeline + storyboard, video player, execution\nenvironment with agent), multi-format ingestion, Loom SDK at the centre.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:1005-1009"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:1010-1014"
     }
    ],
    "commentary": [],
@@ -6499,7 +6554,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:1004-1009"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:1009-1014"
     }
    ],
    "files": [

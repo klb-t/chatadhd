@@ -993,6 +993,11 @@ Odczyt koordynatora (do projektu, nie słowa właściciela): darmowe konto u dos
 
 Liczby właściciela to przykład (sam mówi „na przykład”). Odczyt koordynatora, do projektu, nie słowa właściciela: silnik ogólny. Progi to otwarty zbiór wartości w danych, każdy z własną akcją (informacja, czerwone ostrzeżenie, odcięcie, inne). Zależność progów od liczby użytkowników to formuła-preset, nie stała. Odcięcie dotyczy tylko wspólnej puli: aplikacja oraz własny klucz lub konto dostawcy działają dalej, a komunikat prowadzi do podłączenia konta jednym kliknięciem (R108). Obserwacja z 30.10 na 2d39b07c, do rozszerzenia zamiast budowy obok: guests.protection w loom/data/runtime/server_accounts.pack z licznikiem w loom/server/src/guest_guard.h ma tylko twarde odmowy z progami bezwzględnymi. Na sesję: chat_per_minute, chat_per_day, output_tokens_per_day, parallel_streams. Na adres: chat_per_minute. Globalnie: live_sessions, pool_chat_per_day, pool_output_tokens_per_day. Nie ma: udziału jednej osoby w puli, stopni z akcjami innymi niż odmowa, zależności od liczby użytkowników, śledzenia osoby ponad sesję. /api/pool/summary pokazuje odmowy, przyjęcia i resztę puli na dziś.
 
+## R110 — Do R109: bez osobnej ochrony przed obejściem przez czyszczenie przeglądarki; twardy limit wydatków na klucz w pojedynczych dolarach (owner (przekazał koordynator gcp), 2026-10-30)
+> jeśli ktoś sobie będzie resetował pamięć przeglądarki podręczną żeby nas naciągnąć to wtedy dopiero zareagujemy. limity na klucz będą w pojedynczych dolarach
+
+Decyzja właściciela do R109 (pakiet z R108). Skutek (odczyt koordynatora, do projektu): nie budujemy teraz ochrony przed obejściem progów przez czyszczenie pamięci przeglądarki. Reagujemy dopiero, gdy ktoś zacznie tak robić. To datowana decyzja z odwrotem, nie ograniczenie silnika. Progi R109 liczone prosto na sesję gościa. Nad nimi twardy limit wydatków na klucz dostawcy puli, w pojedynczych dolarach, jako ustawienie w danych (preset). Kwota to przykład skali, nie stała. Obserwacja do sprawdzenia w projekcie: spend_.snapshot() w /api/pool/summary już liczy pieniądze płatnych źródeł gości na dziś. Limit na klucz rozszerza to, a nie buduje obok.
+
 ## Decision — rebuild, don't recover
 > "nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane"
 
