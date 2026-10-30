@@ -980,9 +980,9 @@ export default function App() {
       <aside className={`sidebar${sidebarOpen ? "" : " collapsed"}`} data-testid="sidebar" {...inertAttr(activePanel !== null)}>
         <ConversationList key={convRefreshKey} activeConvId={activeConvId} onSelect={onSelectConversation} onCreated={onConversationCreated} onActivity={sidebarActivity} />
       </aside>);
-    if (w.kind === "chat" && w.id === presetFront) return <div className="chat-host dock-chat" data-window={w.id}>{renderMain(w)}</div>;
+    if (w.kind === "chat" && w.id === presetFront) return <div className="chat-host dock-chat" data-window={w.id} data-conversation={activeConvId ?? ""}>{renderMain(w)}</div>;
     if (w.kind === "chat") return (
-      <div className="chat-host main-panel" data-window={w.id} hidden={knowledgeOpen && !chatVisible} {...inertAttr(activePanel !== null)}>
+      <div className="chat-host main-panel" data-window={w.id} data-conversation={activeConvId ?? ""} hidden={knowledgeOpen && !chatVisible} {...inertAttr(activePanel !== null)}>
         <ApplicationProfiles profileHost={userProfileHost} convId={activeConvId} onConversationCreated={onConversationCreated}
           refreshKey={convRefreshKey} onMessagesChanged={onMessagesChanged} ui={profileUi}
           onPrimaryProfile={setPrimaryProfile} onSharedConversationRestored={setActiveConvId}
