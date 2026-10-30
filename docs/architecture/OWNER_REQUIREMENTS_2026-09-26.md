@@ -983,6 +983,11 @@ Osobna, tania sesja: pilnuje ekosystemu wszystkich projektów i zapisuje pomysł
 
 Wejście na adres usługi (WatchDog, czat, AGEDS — lista otwarta) uruchamia zatrzymaną maszynę bez telefonu do właściciela (przykład: prof. Hoffmann otwiera WatchDoga); gdy nikt nie korzysta i nie ma pracy, maszyna się wyłącza, żeby nie płacić. Wcześniejsza ustna umowa nie była zapisana ani zrobiona (koordynator, 2026-10-30). Technika: budzik poza maszyną (np. Cloud Run, darmowy próg) jako stały adres wejściowy + wyłączanie po bezczynności na maszynie; progi jako presety.
 
+## R108 — Na starcie wyraźna zachęta do darmowego konta jednym kliknięciem, żeby nie zużywać naszych limitów (etap Bootstrap) (owner (przekazał koordynator gcp), 2026-10-30)
+> trzeba na początku użytkownika zachęcać zdecydowanie do utworzenia darmowego konta poprzez jedno kliknięcie żeby nie korzystać z naszych limitów, bo jesteśmy na etapie Bootstrap
+
+Odczyt koordynatora (do projektu, nie słowa właściciela): darmowe konto u dostawcy modelu, podłączane jednym kliknięciem przez OAuth (przykład: OpenRouter; dostawcy to przykłady). Zachęta wyraźna, ale aplikacja działa dalej bez konta (pula serwera zostaje jako start). Moment i siła zachęty to preset w danych, z „nie pytaj więcej”. Komunikat mówi uczciwie, że z takim kontem osoba ma własny limit, a jej zapytania idą wprost do tego dostawcy. Związek: luka „zapytania do modeli z urządzenia osoby” w QUEUE_S1 (30.10).
+
 ## Decision — rebuild, don't recover
 > "nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane"
 

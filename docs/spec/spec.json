@@ -5,8 +5,8 @@
  "sources": {
   "owner": {
    "path": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
-   "sha256": "93ed66cbc6ce361ddda60138a855402c863e404aff9334575361be900530c1c2",
-   "lines": 1000
+   "sha256": "bf877a8a5c6940e1e467b942aec0073986208d24bb5ad4eed7b85b22dccac633",
+   "lines": 1005
   },
   "slowa": {
    "path": "docs/architecture/SLOWA_WLASCICIELA_2026-10-16.md",
@@ -6306,12 +6306,12 @@
    ]
   },
   {
-   "id": "s_18ec73967a7b",
+   "id": "s_747ada9e6655",
    "aliases": [
-    "owner:decision-rebuild-don-t-recover"
+    "R108"
    ],
-   "kind": "decision",
-   "title": "Decision — rebuild, don't recover",
+   "kind": "requirement",
+   "title": "Na starcie wyraźna zachęta do darmowego konta jednym kliknięciem, żeby nie zużywać naszych limitów (etap Bootstrap) (owner (przekazał koordynator gcp), 2026-10-30)",
    "date": null,
    "theme": "owner_requirements",
    "theme_inferred": false,
@@ -6320,7 +6320,7 @@
    },
    "quotes": [
     {
-     "text": "\"nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane\"",
+     "text": "trzeba na początku użytkownika zachęcać zdecydowanie do utworzenia darmowego konta poprzez jedno kliknięcie żeby nie korzystać z naszych limitów, bo jesteśmy na etapie Bootstrap",
      "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:987",
      "ref": null,
      "attr": [],
@@ -6332,8 +6332,8 @@
    "summary": null,
    "restatement": [
     {
-     "text": "Recovered versions (`history/chatadhd_v0.8.3`, `history/chatadhd_v0.9.0`) and\nthe historical report are sources of requirements, ideas and data assets\n(e.g. `film_structure.json`), and real ground truth for self-discovery tests —\nnot code to merge. Everything is rebuilt in Loom with tests.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:989-992"
+     "text": "Odczyt koordynatora (do projektu, nie słowa właściciela): darmowe konto u dostawcy modelu, podłączane jednym kliknięciem przez OAuth (przykład: OpenRouter; dostawcy to przykłady). Zachęta wyraźna, ale aplikacja działa dalej bez konta (pula serwera zostaje jako start). Moment i siła zachęty to preset w danych, z „nie pytaj więcej”. Komunikat mówi uczciwie, że z takim kontem osoba ma własny limit, a jej zapytania idą wprost do tego dostawcy. Związek: luka „zapytania do modeli z urządzenia osoby” w QUEUE_S1 (30.10).",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:989"
     }
    ],
    "commentary": [],
@@ -6350,7 +6350,59 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:986-992"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:986-989"
+    }
+   ],
+   "files": [
+    "owner"
+   ]
+  },
+  {
+   "id": "s_18ec73967a7b",
+   "aliases": [
+    "owner:decision-rebuild-don-t-recover"
+   ],
+   "kind": "decision",
+   "title": "Decision — rebuild, don't recover",
+   "date": null,
+   "theme": "owner_requirements",
+   "theme_inferred": false,
+   "understanding": {
+    "state": "none"
+   },
+   "quotes": [
+    {
+     "text": "\"nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane\"",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:992",
+     "ref": null,
+     "attr": [],
+     "lead": null,
+     "secondary": false
+    }
+   ],
+   "sense": null,
+   "summary": null,
+   "restatement": [
+    {
+     "text": "Recovered versions (`history/chatadhd_v0.8.3`, `history/chatadhd_v0.9.0`) and\nthe historical report are sources of requirements, ideas and data assets\n(e.g. `film_structure.json`), and real ground truth for self-discovery tests —\nnot code to merge. Everything is rebuilt in Loom with tests.",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:994-997"
+    }
+   ],
+   "commentary": [],
+   "status": null,
+   "gap_text": null,
+   "evidence": [],
+   "next_step": null,
+   "refs": [],
+   "supersedes": [],
+   "superseded_by": [],
+   "supersession_notes": [],
+   "tags": [],
+   "heading_note": null,
+   "sources": [
+    {
+     "role": "owner",
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:991-997"
     }
    ],
    "files": [
@@ -6376,7 +6428,7 @@
    "restatement": [
     {
      "text": "`workbench_mockup_2026-09-26.webp`: dockable/floating panels (conversation\nlist, active conversation, knowledge graph with active context window, project\nstructure with dimmed high-confidence auto-completable nodes, artifact views\nfor music/video with timeline + storyboard, video player, execution\nenvironment with agent), multi-format ingestion, Loom SDK at the centre.",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:995-999"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:1000-1004"
     }
    ],
    "commentary": [],
@@ -6393,7 +6445,7 @@
    "sources": [
     {
      "role": "owner",
-     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:994-999"
+     "src": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:999-1004"
     }
    ],
    "files": [
