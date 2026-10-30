@@ -3,6 +3,14 @@
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
 
+## Partia nocna 29/30.10 na `w2b2` — BRAMKA ZIELONA (30.10, `e81c00c1`)
+Higiena testów (`ec84aacd`), wtyczka OPFS (PH29 P1) i wolny start gościa scalone w `w2b2`. Pełna bramka na `e81c00c1` jest zielona:
+ctest 276/276, web 121/121. Po bramce doszedł tylko dopisek w dokumentacji (`48b581df`); gałąź jest wypchnięta na `origin/w2b2`.
+Pierwsze podejście bramki było czerwone tylko przez środowisko: po restarcie maszyny zabrakło venv w PATH. Bramkę uruchamiaj z
+`PATH=$HOME/.venvs/loom311/bin:$PATH`. Następny krok, decyzja koordynatora: scalić `w2b2` dalej (`claude/m1-w1` jest 16 commitów w tyle).
+Czeka na koordynatora: wiadomość od sesji „ekosystem” — karta PRZEKAZANIE_ASTRA odświeżona (`bee0131`); R107 (budzik i usypianie
+maszyny) niewdrożony; E4.8d — tłumaczenia stron WatchDoga; PY312-1 w AGEDS przyjęte.
+
 ## WYDANIE M1-W0 GOTOWE (12:15 UTC): `package.yml` przebieg 39593331749 = success (Android + serwer + first_steps)
 APK (klucz testowy): artefakt `chatadhd-android-apk-TEST-KEY` 12342808211; pełny zip `chatadhd-0.10.00-ci.22.7ff9231` 12342868186;
 serwer linux x64/arm64; zrzuty z przejścia kroków pierwszych. Właściciel dostaje link i raport `M1_CHECKPOINT_0.md`.
