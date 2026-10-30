@@ -3,6 +3,12 @@
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
 
+## Luka (koordynator, 30.10): strona nie zapisuje, dlaczego się przeładowuje
+Po poprawce pętli przeładowań gościa (`hotfix-reload`, `e94ba029`) nadal nie widać, co wywołało przeładowanie.
+Do zrobienia: zapis zdarzeń klienta (przeładowanie i jego powód, przywrócenie kopii, błąd zapisu magazynu) do przeglądania
+przy debugowaniu. Rozmiar, zakres, poziom i to, czy zdarzenia trafiają do serwera, to ustawienia z presetami. Wyłączenie zapisu też
+jest ustawieniem. Wysłanie na serwer tylko wtedy, gdy osoba je włączy. Do następnej partii.
+
 ## Partia nocna 29/30.10 na `w2b2` — BRAMKA ZIELONA (30.10, `e81c00c1`)
 Higiena testów (`ec84aacd`), wtyczka OPFS (PH29 P1) i wolny start gościa scalone w `w2b2`. Pełna bramka na `e81c00c1` jest zielona:
 ctest 276/276, web 121/121. Po bramce doszedł tylko dopisek w dokumentacji (`48b581df`); gałąź jest wypchnięta na `origin/w2b2`.
