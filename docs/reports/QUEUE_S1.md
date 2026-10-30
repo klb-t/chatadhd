@@ -3,6 +3,21 @@
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
 
+## PILNE, następny wolny agent (Sonnet): gość nie może po cichu trafiać na Vertex (właściciel potwierdził, 30.10)
+Stan z 30.10: na produkcji nie ma `/var/lib/chatadhd/.config/chatadhd/keys.env`, więc gość dostaje `vertex_gemini`
+(`best_in_table`). `guests.model_sources` w `server_accounts.pack` (`[byok,pool,free,local]`) nie ma czytelnika: serwer tylko
+wysyła go w `/api/auth/me`. Wyborem steruje `free_model_choice` w `free_providers.pack` (`tier_order [free, paid_credits]`).
+Doraźna nakładka dla koordynatora: `free_providers.pack` z tabelą bez Vertexu.
+Zakres pakietu:
+1. Preset `model_sources` → `[byok, free, local]`. Pula tylko przy świadomym wypróbowaniu płatnych funkcji (R104), z czytelnikiem
+   w kodzie: kolejność ma sterować wyborem.
+2. Poziom `paid_credits` nie wybiera się automatycznie, tylko po zgodzie gościa (ustawienie z presetem).
+3. Test: gość bez własnego klucza nie trafia na pulę, gdy działa darmowy dostawca.
+4. Test: bez darmowych kluczy jest jawny stan i komunikat z drogą do własnego konta (R108), bez Vertexu.
+5. Aktualizacja `BEZ_LOGOWANIA_R103` §4.1.
+Budżetu 1 €/dzień na testy użytkowników właściciel nie ustalił. Preset `vertex_gemini.budget.credits.per_day = 1.0` już istnieje;
+nie dopisywać nowego, a jego los zostawić koordynatorowi.
+
 ## Luka do zaprojektowania (właściciel, 30.10; przekazał koordynator): zapytania do modeli z urządzenia osoby
 Słowa właściciela: „apka webowa operuje na urządzeniu klienckim i z niego wysyła zapytania”.
 Obserwacja z 30.10 na `2d39b07c`: w `loom/web/src` nie ma żadnego adresu dostawcy ani `fetch` na adres zewnętrzny, więc
