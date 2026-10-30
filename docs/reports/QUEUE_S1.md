@@ -78,6 +78,7 @@ Web, NIEPOPRAWIONE (za duże na ostatnie 5 % limitu). Przyczyny według logu, do
 - `tests/shell/structure-state.test.mjs`: test zakładał dokładnie 2 języki. Produkt jest poprawny, bo doszedł nl. Test sprawdza teraz,
   że słowa okna są w każdym języku, który oferuje katalog, w tym pl i en.
 - `role-card-state` pada lokalnie tylko dlatego, że szuka `build/dev` w tym worktree. W bramce ten katalog jest.
+**Bramka `12992acd` (jądro, przed webfix):** ctest 279/281; poprawki kb_pack, rom i check_action_reads potwierdzone. Zostają: `unit.test_action_rules` (wzorzec `settings_fields.json` do świadomego odświeżenia po zmianie `human.flows` dwóch pól, czyli `LOOM_UPDATE_GOLDEN`) i `unit.test_emergent_catalogue:174,283` (zdanie trasowane jako `message` zamiast `command`; przyczyna nieznana, padało już w teście agenta audytu). Web na `12992acd` jeszcze bez webfix, więc 12 czerwonych; na `pkg-webfix` przechodzą lokalnie.
 
 **Następny krok:**
 1. Bramka zielona → podać sha `90f60bfb` koordynatorowi. Scalenie do `main` (przewinięcie) robi koordynator. Do ultrareview
