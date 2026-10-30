@@ -317,6 +317,33 @@ TEST_SUITE("chat_coverage") {
     }
     CHECK(checked == static_cast<int>(cases.size()));
   }
+  TEST_CASE("R101 D5 (PULPIT §6, §13 P3): an arranging sentence reaches desktop.arrange with the word of the order (none = the preset)") {
+    Fixture f;
+    struct Case { const char* text; const char* by; };
+    const std::vector<Case> cases = {
+        {"uporządkuj ikony według nazwy", "nazwy"},
+        {"uporządkuj ikony", ""},
+        {"ułóż ikony na pulpicie wg rodzaju", "rodzaju"},
+        {"posortuj ikony po liczbie", "liczbie"},
+        {"uporządkuj ikony alfabetycznie", "alfabetycznie"},
+        {"proszę uporządkuj ikony domyślnie", "domyślnie"},
+        {"arrange the icons by name", "name"},
+        {"sort the desktop icons by kind", "kind"},
+        {"tidy up the icons", ""},
+        {"arrange the icons alphabetically", "alphabetically"},
+    };
+    int checked = 0;
+    for (const auto& c : cases) {
+      const Json routed = unwrap(chat_route::route(*f.rt, Json{{"text", c.text}, {"conv_id", f.conv_id}}));
+      const std::string reached = routed.value("kind", "") == "command" ? routed.at("command").value("action", "") : "";
+      CHECK_MESSAGE(reached == "desktop.arrange", "\"" << c.text << "\" reached " << (reached.empty() ? "[a message]" : reached));
+      if (reached != "desktop.arrange") continue;
+      const Json args = routed.at("command").value("args", Json::object());
+      CHECK_MESSAGE(args.value("by", "") == std::string(c.by), "\"" << c.text << "\": by = " << args.value("by", ""));
+      ++checked;
+    }
+    CHECK(checked == static_cast<int>(cases.size()));
+  }
   TEST_CASE("R101 D3 (PULPIT §3.1, §13): a desktop sentence reaches desktop.declare with the word of the declaration") {
     Fixture f;
     struct Case { const char* text; const char* action; const char* word; };

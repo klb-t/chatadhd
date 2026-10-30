@@ -18036,6 +18036,82 @@
         },
         "positional_arg": "declaration"
       },
+      "desktop.arrange": {
+        "id": "desktop.arrange",
+        "kind": "atomic",
+        "status": "planned",
+        "planned_reason": {
+          "en": "The desktop belongs to the client that draws it (the web page or the Android shell); this runtime arranges no icons itself. Runnable for a client that declares arranges_windows (R101 D5); only the client that asked carries it out.",
+          "pl": "Pulpit należy do klienta, który go rysuje (strony albo powłoki Androida); ten runtime sam nie układa ikon. Wykonywalna dla klienta, który deklaruje arranges_windows (R101 D5); wykonuje ją tylko klient, który pytał."
+        },
+        "title": "Arrange the desktop icons",
+        "description": "Arranges the icons of the desktop in one order (setting desktop_arrangement, R101 D5, PULPIT_R101 §6): a word names an order the client knows such as nazwa / rodzaj / ostatnio / liczba / domyślnie (label, kind, recently moved, the number on the badge, back to the declaration's order) [examples, an open list of the client's data]; no word = the client's first order (preset: by name). One entry of the client's arrangement journal: „Cofnij ułożenie” on the desktop undoes it.",
+        "why": {
+          "pl": "Ustawia ikony na pulpicie po kolei: według nazwy, rodzaju, ostatnio przesuniętych albo liczby na odznace.",
+          "en": "Puts the desktop icons in order: by name, kind, recently moved or the number on the badge."
+        },
+        "labels": {
+          "pl": "Uporządkuj ikony",
+          "en": "Arrange the icons"
+        },
+        "inputs": [],
+        "outputs": [],
+        "requires": [],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.1,
+        "confidence": 0.9,
+        "effects": {
+          "reads_only": false,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "client",
+        "client": {
+          "capability": "arranges_windows",
+          "prompt": {
+            "en": "Arrange the desktop icons on this device.",
+            "pl": "Uporządkuj ikony pulpitu na tym urządzeniu."
+          },
+          "expects": []
+        },
+        "params": [
+          {
+            "name": "by",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "A word naming the order (its id or one of its words, e.g. name, kind, recent, count, default); empty = the client's preset order.",
+              "pl": "Słowo nazywające porządek (jego id albo jedno z jego słów, np. nazwa, rodzaj, ostatnio, liczba, domyślnie); puste = porządek domyślny klienta."
+            }
+          }
+        ],
+        "result_text": {
+          "en": "The icons are arranged; „Undo the arrangement” on the desktop takes it back.",
+          "pl": "Ikony są ułożone; „Cofnij ułożenie” na pulpicie to cofa."
+        },
+        "phrases": {
+          "en": [
+            "arrange the icons"
+          ],
+          "pl": [
+            "uporządkuj ikony"
+          ]
+        },
+        "examples": {
+          "en": [
+            "arrange the icons by name"
+          ],
+          "pl": [
+            "uporządkuj ikony według nazwy"
+          ]
+        },
+        "positional_arg": "by"
+      },
       "conversation.trash": {
         "id": "conversation.trash",
         "kind": "atomic",

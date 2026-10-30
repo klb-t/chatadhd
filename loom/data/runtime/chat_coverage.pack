@@ -3040,6 +3040,37 @@
         }
       },
       {
+        "id": "desktop_arrange",
+        "title": {
+          "en": "Arrange the desktop icons by a sentence",
+          "pl": "Uporządkuj zdaniem ikony pulpitu"
+        },
+        "via": "client",
+        "action": "desktop.arrange",
+        "surfaces": {},
+        "examples": {
+          "pl": "uporządkuj ikony według nazwy",
+          "en": "arrange the icons by name"
+        },
+        "examples_more": {
+          "pl": [
+            "uporządkuj ikony",
+            "ułóż ikony według rodzaju",
+            "posortuj ikony na pulpicie po liczbie",
+            "uporządkuj ikony domyślnie"
+          ],
+          "en": [
+            "arrange the icons",
+            "sort the desktop icons by kind",
+            "tidy up the icons by recent"
+          ]
+        },
+        "note": {
+          "en": "R101 D5 (PULPIT_R101 §6, §13 P3): the word is matched by the page against its orders (shell/data/desktop.json arrangement.arrange_words); the mounted desktop writes desktop_arrangement as one journal entry (undo on the desktop). An unknown word is a failed receipt that lists the known orders; a desktop never shown has no icons to arrange and says so.",
+          "pl": "R101 D5 (PULPIT_R101 §6, §13 P3): słowo strona dopasowuje do swoich porządków (shell/data/desktop.json arrangement.arrange_words); pokazany pulpit zapisuje desktop_arrangement jako jeden wpis dziennika (cofnięcie na pulpicie). Nieznane słowo to nieudany paragon z listą znanych porządków; pulpit nigdy niepokazany nie ma ikon do ułożenia i to mówi."
+        }
+      },
+      {
         "id": "artifact_actions",
         "title": {
           "en": "Open, copy or save a block of an answer by a sentence",
