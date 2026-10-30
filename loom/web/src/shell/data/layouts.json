@@ -64,6 +64,11 @@
           "action": "panel:request"
         },
         {
+          "id": "structure",
+          "label": "ps_title",
+          "action": "panel:structure"
+        },
+        {
           "id": "about",
           "label": "menu_about",
           "action": "sheet:about"
