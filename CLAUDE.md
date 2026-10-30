@@ -184,6 +184,13 @@ philosophy implies, and say what was added. Unless he says a list is closed, it 
   Precedent to extend: `loom/data/policy/calibration.json` (Beta reliabilities of extractors and rules,
   used in `loom/src/resolve/assess.cpp`).
 
+## No user-visible text in code (owner, 2026-10-30)
+
+> „Boziu stringi w kodzie to największy grzech! od razu niech wstawi obsługę pakietów językowych”
+
+Every text a person sees lives in data (language packs), never in code. A new language is data only, with no code change;
+the set of languages is open. `tools/gate.sh` rejects new hard-coded text; exceptions are data with a stated reason.
+
 ## Working with subagents (owner, 2026-10-10)
 
 Run subagents **one at a time**, as a queue — no parallel agents and no workflow
