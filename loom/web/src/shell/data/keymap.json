@@ -16,5 +16,20 @@
     "ctrl+shift+h": "minimize",
     "ctrl+shift+e": "restore"
   },
-  "text_fields_keep_keys": true
+  "text_fields_keep_keys": true,
+  "desktop": {
+    "arrowright": "next",
+    "arrowleft": "prev",
+    "arrowdown": "down",
+    "arrowup": "up",
+    "home": "first",
+    "end": "last",
+    "enter": "open",
+    " ": "open",
+    "delete": "trash",
+    "shift+f10": "menu",
+    "contextmenu": "menu",
+    "escape": "menu_close"
+  },
+  "desktop_note": "R101 D6: the keys of the desktop icons (the focus is on an icon), the same form as `keys`. Operations known today: next / prev (the reading order), up / down (one row of the grid), first / last, open (as a tap), trash (as the menu item „Do kosza”), menu (the icon menu), menu_close. Any combination, any of these operations; an unknown operation does nothing and says so once (desktop_key_unknown)."
 }

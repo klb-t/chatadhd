@@ -11,6 +11,12 @@
     "title": {
       "double_tap": "maximize_toggle",
       "long_press": "menu"
+    },
+    "icon": {
+      "tap": "open",
+      "long_press": "menu",
+      "drag_start": {"phone": "long_press", "desktop": "move"},
+      "drag_start_note": "R101 D6: how a drag of a desktop icon begins - a word, or {<device class>: word}; known: move (the pointer moves past drag_threshold_px; the icon takes the touch, so a finger on it cannot scroll the desktop), long_press (hold long_press_ms still, then move; a plain swipe scrolls - the phone preset, so a desktop with many icons still scrolls), handle (only a grip ⠿ on the icon drags; the rest scrolls). An unknown word works as move and says so (drag_start_unknown). With long_press, a hold released in place is the long_press gesture (the menu)."
     }
   },
   "chain_cycle": [

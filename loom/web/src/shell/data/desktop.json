@@ -361,6 +361,26 @@
    "pl": "Ułożyłem ikony ({by}). Cofnięcie: „Cofnij ułożenie”.",
    "en": "Arranged the icons ({by}). To undo: “Undo the arrangement”."
   },
+  "drop_receipt_set_param": {"pl": "Pokazałem «{label}» w oknie „{screen}”.", "en": "Showed “{label}” in the window “{screen}”."},
+  "drop_receipt_set_param_undo": {"pl": "Przywróciłem poprzednią wartość w oknie „{screen}”.", "en": "Restored the previous value in the window “{screen}”."},
+  "drop_receipt_trash": {"pl": "Przeniosłem «{label}» do kosza.", "en": "Moved “{label}” to the trash."},
+  "drop_receipt_trash_undo": {"pl": "Przywróciłem «{label}» z kosza.", "en": "Restored “{label}” from the trash."},
+  "drop_receipt_close": {"pl": "Zamknąłem okno „{screen}”.", "en": "Closed the window “{screen}”."},
+  "drop_undo": {"pl": "Cofnij", "en": "Undo"},
+  "drop_no_rule": {"pl": "Nie wiem, co zrobić z «{label}» upuszczonym na {target} - ikona wróciła na miejsce. Reguły upuszczania są w danych pulpitu (interactions.drop_rules).", "en": "I do not know what to do with “{label}” dropped on {target} - the icon went back. The drop rules are desktop data (interactions.drop_rules)."},
+  "drop_rule_off": {"pl": "Ta reguła upuszczania ({rule}) jest wyłączona dla tego rodzaju urządzenia.", "en": "This drop rule ({rule}) is off for this kind of device."},
+  "drop_do_unknown": {"pl": "Reguła upuszczania {rule} każe zrobić coś, czego ta strona nie umie ({do}); nic nie zrobiłem.", "en": "The drop rule {rule} asks for something this page cannot do ({do}); nothing was done."},
+  "drop_failed": {"pl": "Nie udało się: {error}", "en": "It failed: {error}"},
+  "drop_target_window": {"pl": "okno „{screen}”", "en": "the window “{screen}”"},
+  "drop_target_icon": {"pl": "ikonę „{label}”", "en": "the icon “{label}”"},
+  "drag_start_unknown": {"pl": "Nieznany sposób rozpoczęcia przeciągania „{mode}” (znane: {known}); działa „move”.", "en": "Unknown drag start “{mode}” (known: {known}); “move” is used."},
+  "drag_handle": {"pl": "Uchwyt do przeciągania", "en": "Drag handle"},
+  "drag_hint_long_press": {"pl": "Przytrzymaj ikonę chwilę, potem przeciągnij; samo przesunięcie palcem przewija pulpit.", "en": "Hold an icon a moment, then drag; a plain swipe scrolls the desktop."},
+  "drag_hint_handle": {"pl": "Przeciągaj ikonę za uchwyt ⠿; reszta ikony przewija pulpit.", "en": "Drag an icon by its handle ⠿; the rest of the icon scrolls the desktop."},
+  "icon_menu_open": {"pl": "Otwórz", "en": "Open"},
+  "icon_menu_unknown": {"pl": "Pozycja menu ikony „{id}” nie jest znana tej stronie.", "en": "The icon menu item “{id}” is unknown to this page."},
+  "desktop_key_unknown": {"pl": "Klawisz {combo} wskazuje działanie „{op}”, którego pulpit nie zna.", "en": "The key {combo} names an operation “{op}” the desktop does not know."},
+  "keys_hint": {"pl": "Klawiatura: strzałki przechodzą między ikonami, Enter otwiera, Delete przenosi do kosza, Shift+F10 otwiera menu.", "en": "Keyboard: the arrows move between icons, Enter opens, Delete moves to the trash, Shift+F10 opens the menu."},
   "arrange_move_hint": {
    "pl": "Przytrzymaj i przeciągnij ikonę, żeby ją przestawić.",
    "en": "Hold and drag an icon to move it."
@@ -1125,5 +1145,18 @@
   },
   "free_rows": 6,
   "drag_threshold_px": 8
+ },
+ "interactions": {
+  "note": "R101 D6 (PULPIT §13 interactions, §14 row D6): what a drop does, as data. A drag of a desktop icon (or of a floating window's title bar) ends over a stack of things under the pointer (hits: another icon by address, a window by id and kind - floating frame or its minimized icon/shelf entry -, the empty desktop). drop_rules are walked in order for every hit from the top down; the first rule whose source and target match wins. source: an address prefix (\"\" = any icon), a list of prefixes, or {window: true | <kind> | [kinds]} for a dragged window. target: {icon: <prefix | [prefixes]>}, {window_kind: <kind | [kinds] | \"*\">}, {window_param: <param>} (any window whose kind reads that coupling parameter, coupling.json kind_params), {desktop: true}. do: set_param {param, value} with $address / $rest (what follows the matched source prefix) - the value goes to that window's parameter through the W6 coupling (a minimized window is restored and focused first); trash (what drop_on_trash says, as the menu item „Do kosza”); close (the dragged window); move (the D5 move within the grid). An icon dropped on the empty desktop with no matching rule is the D5 move; a drop on something no rule names returns the icon and raises the non-blocking advisory drop_no_rule. enabled: true/false or {<device class>: bool} (a rule off for a class says so when tried: drop_rule_off). Not in this package (named by the design, not done - no rule here, so nothing pretends): a window dropped on the empty desktop (minimize into a zone), a navigator node dropped on the desktop (pin), an icon dropped on an icon (a group). receipt_ms: how long the receipt chip stays (null = until the next one).",
+  "drop_rules": [
+   {"id": "conversation_to_chat", "source": "conv:", "target": {"window_param": "conversation"}, "do": {"set_param": {"param": "conversation", "value": "$rest"}}},
+   {"id": "node_to_navigator", "source": ["party:", "area:", "memory:", "conv:"], "target": {"window_param": "focus"}, "do": {"set_param": {"param": "focus", "value": "$address"}}},
+   {"id": "icon_to_trash", "source": "", "target": {"icon": "trash:"}, "do": {"trash": true}},
+   {"id": "window_to_trash", "source": {"window": true}, "target": {"icon": "trash:"}, "do": {"close": true}},
+   {"id": "icon_to_desktop", "source": "", "target": {"desktop": true}, "do": {"move": true}}
+  ],
+  "receipt_ms": 8000,
+  "icon_menu": ["open", "trash", "close"],
+  "icon_menu_note": "The items of the icon menu (a long press, the context-menu key or a right click on an icon), in this order; known today: open (as a tap), trash (as D4; only for a trashable address), close (closes the menu). An unknown item is skipped with the advisory icon_menu_unknown."
  }
 }
