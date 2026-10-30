@@ -24,6 +24,9 @@ budżetu na gości, więc nie opisywać tego jako jego decyzji.
 (c) Ten pakiet idzie jako następny, przed kolejnym projektowym.
 (d) Nakładka `free_providers` na produkcji na razie nie jest stosowana: właściciel ma wyłącznik gości.
 (e) Kluczy nie szukać po dysku.
+(f) R111 (właściciel, 30.10; spec `a815fafc`): pula próbna tylko dla osób z kontem. Warunek tego pakietu: gość bez konta nigdy
+nie dostaje puli, także po zgodzie (test). Zależność: dziś `registration: closed`, więc do otwarcia rejestracji pula jest dla nowych
+osób niedostępna. Powiadomienie właściciela o zużyciu i ruchu (progi w danych) zaprojektować razem z R109, nie w tym pakiecie.
 
 ## Luka do zaprojektowania (właściciel, 30.10; przekazał koordynator): zapytania do modeli z urządzenia osoby
 Słowa właściciela: „apka webowa operuje na urządzeniu klienckim i z niego wysyła zapytania”.
