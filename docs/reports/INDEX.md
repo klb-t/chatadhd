@@ -102,6 +102,29 @@ pokazują tekst angielski z ostrzeżeniem.
 **Luki.** Nie zrobione: reszta przenoszenia tekstów z `.tsx` (335), nl dla pozostałych katalogów, kroki 3-4 dla C++, wielojęzyczne nazwy cech
 magazynu w liście „co magazyn zgłasza” (klucze techniczne), pełna bramka.
 
+### S1 / M1-JEZYKI - część 2 (2026-10-30, gałąź `pkg-lang2`) - reszta literałów z `.tsx`, nl dla wszystkich katalogów
+
+**Co.** (1) 296 tekstów z kodu `.tsx` przeniesione do katalogu `ui_shell` w `en`, `pl`, `nl` (klucze `lit_*`, generowane z treści; skrypt przenoszący
+był jednorazowy, zmiany w komponentach to `t("lit_...")` + `useShellText()`); wording `en` bez zmian (poza trzema dawnymi polskimi literałami w `en`).
+Baza wyjątków lintu: 335 -> 4 (po drodze lint przestał brać za tekst komentarzy po kodzie, `Promise`, `new X` - to było ok. 20 fałszywych trafień; nowa
+liczba prawdziwie przeniesionych wystąpień ≈ 310). Zostały 4: trzy domyślne teksty-zapasowe przy kluczach katalogu w `ImportedMessageContent.tsx` (`s("src_...", "...")`)
+i przykładowa ścieżka `/data/exports/archive.zip` w `KnowledgeWorkbench.tsx` (przykład wartości pola, nie tekst do tłumaczenia). (2) `nl` uzupełnione dla wszystkich
+katalogów: graph_screen, context_receipt, roles, action_proposal, settings_human, interview, conversation_view, client_step, graph_entry, chat_usage, chat_send,
+semantic_question, semantic_queue, accounts; `--missing`: **nl 0, en 0, pl 0** (kategorie liczby mnogiej `few`/`many` są wymagane tylko tam, gdzie język ich używa -
+dane `tools/ui_plural_categories.json`; dawne „en: 4 brakujące” to były polskie `few`/`many`, nie braki). Warstwa pulpitu: `nl` w `web/src/shell/data/desktop.json`
+(słowa, deklaracje, etykiety adresów, listy słów dla zdań) z danych `loom/data/i18n_work/desktop_nl.json` + idempotentny skrypt `merge_desktop_nl.py` (po scaleniu z gałęziami,
+które zmieniają `desktop.json`, uruchom go jeszcze raz). (3) Lint skanuje też `.ts` (pola `label/title/text/message/hint/reason/...: "Zdanie"` oraz `setError("...")`): 9 trafień
+w bazie (`onboarding-host.ts`, `operations.ts`, `imported-message.ts`, `workflow-checkpoint.ts`), baza `ui_strings_baseline.json` 13 wpisów.
+**Tłumaczenie maszynowe (Claude Opus 5.5), nieczytane przez człowieka** - wszystkie nowe wartości `nl` (surowe pliki `loom/data/i18n_work/nl_part2_*.txt`, `literals_pl_nl_1.py`); nowe `pl` też maszynowe (dla literałów, które w kodzie były po angielsku).
+
+**Testy.** `tsc --noEmit` czysto; `npm run test:language-pack` 4/4 (dane syntetyczne: język `xx`); wszystkie `node tests/*` (bez e2e) zielone na prawdziwych katalogach; generatory
+`--check` (onboarding, runtime profiles, k3 packs, text pack, graph interfaces) kod 0; lint `uistrings` ok. **Nie uruchomione:** e2e (wymagają serwera wbudowanego z packa; budowa release
+w tym środowisku szła ok. 1 plik/min - przerwana po 43/534 plikach, proces zabity), `ctest` (parytet katalogów po stronie C++), pełna bramka. Ryzyko e2e: skrypty szukające angielskiego tekstu; wording `en` jest bez zmian, ale to niesprawdzone.
+
+**Luki.** (a) Tekst `nl` dla odpowiedzi rozmowy-wywiadu: frazy `chip.*.say` zostały przetłumaczone, ale czy jądro rozpoznaje niderlandzkie frazy (dane rozpoznawania w C++/pack), nie sprawdzono; `chips.order` zostawione jako identyfikatory.
+(b) Pliki których nie wolno było ruszać (`GuestLayer.tsx`, `WindowHost.tsx`, `desktop-*.ts`, `Desktop.tsx`, `guest-store.ts`, C++): lint nie pokazuje w nich dziś literałów poza fałszywymi, ale `.ts` desktopu nie przeszły przez skan jako osobna kontrola - do przejrzenia po scaleniu.
+(c) Lint to heurystyka: nie widzi tekstów składanych z kawałków (np. `"... " + x`), szablonów `${}` ani C++. (d) Domyślny teksty-zapasowe w `s("src_...", "...")` (3) zostały.
+
 **Od 2026-10-05 ~18:00 integrację prowadzi Claude.** Wątki GPT skończyły tokeny;
 właściciel: „GPT już nam nie pomoże, przyjmij jego wyniki”. Poprzednia wersja tego
 indeksu (integrator 9, kolejka i wszystkie dowody) jest w
