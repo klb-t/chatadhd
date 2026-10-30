@@ -8,6 +8,7 @@ test.after(() => loader.close());
 const help = await loader.load('src/components/graph-help-state.ts');
 const pack = JSON.parse(await readFile(new URL('../../../data/profiles/conversation_view.pack', import.meta.url), 'utf8'));
 const locales = pack.entries.find(r => r.key === 'presentation.graph_screen').value.locales;
+const shellLocales = pack.entries.find(r => r.key === 'presentation.ui_shell').value.locales;
 const translator = language => id => locales[language][id] ?? id;
 const appSource = await readFile(new URL('../../src/App.tsx', import.meta.url), 'utf8');
 const navigatorSource = await readFile(new URL('../../src/components/GraphNavigator.tsx', import.meta.url), 'utf8');
@@ -52,7 +53,7 @@ test('the old map has its own help: it does not describe rows and cards it does 
   for (const language of Object.keys(locales)) {
     const old = help.helpLines(translator(language), 'help_old').join(' ');
     assert.ok(!/wiersz|\brows?\b/i.test(old), `${language}: the old view has no rows`);
-    assert.ok(/⋮ › Graf|⋮ › Graph/.test(old), `${language}: it points to the navigator`);
+    assert.ok(old.includes(`⋮ › ${shellLocales[language].menu_graph}`), `${language}: it points to the navigator by the word of that language's menu (menu_graph)`);   // nl says Graaf, as its menu does
   }
 });
 
