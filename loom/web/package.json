@@ -44,6 +44,7 @@
     "test:client-devices-native": "node e2e/client-devices-native.mjs",
     "test:semantic-queue": "node tests/conversation-view/semantic-queue.test.mjs",
     "test:semantic-question": "node tests/conversation-view/semantic-question.test.mjs",
+    "test:language-pack": "node tests/shell/language-pack.test.mjs",
     "test:shell": "node tests/shell/shell.test.mjs",
     "test:shell-history": "node tests/shell/history.test.mjs",
     "test:product-name": "node tests/shell/product-name.test.mjs",

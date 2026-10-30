@@ -2,6 +2,8 @@
 // free model answers and what its provider does with the text (before the first send), the browser store of the
 // history (saved after each answer, restored into a new session) with "Download archive" / "Load archive", and one
 // non-blocking notice after the first answer with the period computed from the store the browser actually gave.
+import { shellLanguage } from "../shell/language";
+import { deviceLanguages } from "../shell/language-pack";
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import type { AccountsTextId, GuestInfo, GuestsOffer } from "../context/auth-state";
 import {
@@ -191,7 +193,7 @@ export default function GuestLayer({ guest, guests, text, onSignIn, children }: 
   const dataTerms = src && typeof src.data_terms === "object" && src.data_terms !== null
     ? (src.data_terms as { summary?: Record<string, string>; source_url?: string; observed_at?: string }) : undefined;
   const terms = dataTerms?.summary;
-  const lang = typeof navigator !== "undefined" ? (navigator.language ?? "").split("-")[0] : "";
+  const lang = shellLanguage(undefined, undefined, deviceLanguages(), Object.keys(terms ?? {}));
   const termsText = terms ? (terms[lang] ?? Object.values(terms)[0] ?? "") : "";
   const providerName = String(src?.display_name ?? src?.provider ?? "");
   const termsKey = `${TERMS_KEY}.${String(src?.provider ?? "")}.${String(dataTerms?.observed_at ?? "")}`;

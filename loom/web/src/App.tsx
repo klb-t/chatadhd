@@ -45,6 +45,7 @@ import { WINDOW_DATA, openArtifactWindow, closeWindows, windowDataOf, focusWindo
 import { WINDOW_STEP_EVENT, type WindowStepDetail } from "./context/browser-host";
 import { layerStack } from "./shell/history";
 import { shellLanguage } from "./shell/language";
+import { availableLanguages, deviceLanguages } from "./shell/language-pack";
 import { cssVariables, mergeData } from "./shell/animation";
 import { glyphVariables } from "./shell/disclosure-glyphs";
 import { PANEL_LABELS, PANEL_TEXT_IDS, type PanelId } from "./shell/panels";
@@ -438,7 +439,7 @@ export default function App() {
     try { return featureMessage(shellCatalog.feature, id); } catch { return id; }
   };
   const uiShell = usePresentationFeature(userProfileHost, "ui_shell");
-  const uiLanguage = shellLanguage(config.ui_language, undefined, navigator.languages ?? [navigator.language], ["en", "pl"]);
+  const uiLanguage = shellLanguage(config.ui_language, undefined, deviceLanguages(), availableLanguages([uiShell.feature]));
   const uiLanguageRef = useRef(uiLanguage);
   uiLanguageRef.current = uiLanguage;
   // r2:b4: the document speaks the shell's language (index.html ships lang="en"); a screen reader (TalkBack) then picks the Polish voice.

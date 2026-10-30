@@ -5,6 +5,8 @@ import {
 } from "../context/auth-state";
 import GuestLayer from "./GuestLayer";
 import { resolvePresentation, resolvePresentationFeature } from "../onboarding/presentation.mjs";
+import { shellLanguage } from "../shell/language";
+import { availableLanguages, deviceLanguages } from "../shell/language-pack";
 import { usePresentationFeature } from "./ConversationSourceView";
 
 /** Present only when the server runs with accounts and someone is signed in. */
@@ -19,7 +21,7 @@ export default function AuthGate({ children }: { children: ReactNode }) {
   // A guest has no profile yet: his words follow the browser's language when the pack has it, else the default.
   const guestFeature = useMemo(() => {
     try {
-      const lang = typeof navigator !== "undefined" ? (navigator.language ?? "").split("-")[0] : "";
+      const lang = shellLanguage(undefined, undefined, deviceLanguages(), availableLanguages([feature]));
       return lang ? resolvePresentationFeature(resolvePresentation(undefined, lang), ACCOUNTS_FEATURE) : feature;
     } catch { return feature; }
   }, [feature]);
