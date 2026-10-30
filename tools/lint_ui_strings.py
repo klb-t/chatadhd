@@ -7,6 +7,7 @@ only shrink (--update-baseline refuses to add). Heuristic, like lint_asan_range_
   lint_ui_strings.py                  check (exit 1 on a new literal)
   lint_ui_strings.py --report         per-file counts of what the baseline still holds
   lint_ui_strings.py --update-baseline  drop baseline entries that no longer occur (never adds)
+  lint_ui_strings.py --init-baseline-ts  (once) add what the .ts scan finds to the baseline
   lint_ui_strings.py --missing        keys missing per language, from one collected list of all catalog texts
   lint_ui_strings.py --init-baseline  (once) write a baseline from the current tree
 """
@@ -50,10 +51,31 @@ def scan(path):
         del found[v]   # type names, constructors and identifiers that look like words
     return found
 
+# .ts files: a literal is a candidate when it is a sentence-like string (starts with a capital, holds a space) handed to a field or call that
+# shows text: label/title/text/message/hint/reason/detail/description/placeholder/note/summary/error: "..." , setError("..."), toast("...").
+TS_FIELD = re.compile(r'\b(?:label|title|text|message|hint|reason|detail|description|placeholder|note|summary|error|warning|advisory)\s*:\s*(?:"([A-Z][^"\n]* [^"\n]*)"|\'([A-Z][^\'\n]* [^\'\n]*)\')')
+TS_CALL = re.compile(r'\b(?:setError|setNotice|setStatus|toast|alert|confirm|announce)\(\s*(?:"([A-Z][^"\n]* [^"\n]*)"|\'([A-Z][^\'\n]* [^\'\n]*)\')')
+TS_SKIP = re.compile(r'^\s*(?://|\*|/\*|import |export type|type |interface )|console\.|throw |new Error|log\.|\.test\(|data-testid')
+
+def scan_ts(path):
+    found = collections.Counter()
+    for line in path.read_text(encoding="utf8").splitlines():
+        if TS_SKIP.search(line): continue
+        line = re.sub(r'(?<![:"\'])\s//\s.*$', '', line)
+        for rx in (TS_FIELD, TS_CALL):
+            for m in rx.finditer(line):
+                v = next(g for g in m.groups() if g is not None)
+                if LETTERS.search(v): found[v.strip()] += 1
+    return found
+
 def current():
     out = {}
     for p in sorted(SRC.rglob("*.tsx")):
         f = scan(p)
+        if f: out[str(p.relative_to(ROOT))] = f
+    for p in sorted(SRC.rglob("*.ts")):
+        if p.name.endswith((".d.ts",)) or "generated" in p.parts: continue
+        f = scan_ts(p)
         if f: out[str(p.relative_to(ROOT))] = f
     return out
 
@@ -113,6 +135,14 @@ def missing():
 if __name__ == "__main__":
     a = sys.argv[1:]
     if "--missing" in a: sys.exit(missing())
+    if "--init-baseline-ts" in a:   # once: record what the .ts scan found when it was added (the baseline may only shrink afterwards)
+        base = load_base()["entries"]; cur = {f: it for f, it in current().items() if f.endswith(".ts")}
+        reasons = {f: {t: v.get("reason") for t, v in it.items()} for f, it in base.items()}
+        merged = {f: {t: v["count"] for t, v in it.items()} for f, it in base.items()}
+        for f, it in cur.items():
+            for t, n in it.items():
+                merged.setdefault(f, {})[t] = n; reasons.setdefault(f, {})[t] = "found when the .ts scan was added (2026-10-30); to be moved to the catalogs"
+        write_base(merged, reasons); sys.exit(0)
     if "--init-baseline" in a: write_base(current()); sys.exit(0)
     if "--update-baseline" in a: sys.exit(update())
     if "--report" in a:

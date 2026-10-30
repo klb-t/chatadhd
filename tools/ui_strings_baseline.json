@@ -1,6 +1,30 @@
 {
  "_note": "DATA: user-visible literals still in code. The list may only shrink: a new literal fails tools/lint_ui_strings.py.",
  "entries": {
+  "loom/web/src/api/onboarding-host.ts": {
+   "Native profile revision changed. Reload and inspect; the outcome of this edit is unverified.": {
+    "count": 1,
+    "reason": "found when the .ts scan was added (2026-10-30); to be moved to the catalogs"
+   },
+   "The profile changed while this edit was waiting. Reload before editing.": {
+    "count": 1,
+    "reason": "found when the .ts scan was added (2026-10-30); to be moved to the catalogs"
+   }
+  },
+  "loom/web/src/api/operations.ts": {
+   "Read native artifact metadata; original-service workflow equivalence is unverified.": {
+    "count": 1,
+    "reason": "found when the .ts scan was added (2026-10-30); to be moved to the catalogs"
+   },
+   "Read retained native content on explicit request.": {
+    "count": 1,
+    "reason": "found when the .ts scan was added (2026-10-30); to be moved to the catalogs"
+   },
+   "This registry snapshot has no execution adapter evidence for this operation. Other adapter registries are not inferred.": {
+    "count": 1,
+    "reason": "found when the .ts scan was added (2026-10-30); to be moved to the catalogs"
+   }
+  },
   "loom/web/src/components/ImportedMessageContent.tsx": {
    "Imported source · {{provider}} · {{blocks}} blocks · {{references}} references · {{artifacts}} artifacts": {
     "count": 1,
@@ -19,6 +43,26 @@
    "/data/exports/archive.zip": {
     "count": 1,
     "reason": "existing before 2026-10-30; to be moved to the catalogs"
+   }
+  },
+  "loom/web/src/content/imported-message.ts": {
+   "Source text": {
+    "count": 1,
+    "reason": "found when the .ts scan was added (2026-10-30); to be moved to the catalogs"
+   },
+   "Tool input": {
+    "count": 1,
+    "reason": "found when the .ts scan was added (2026-10-30); to be moved to the catalogs"
+   },
+   "Tool result": {
+    "count": 1,
+    "reason": "found when the .ts scan was added (2026-10-30); to be moved to the catalogs"
+   }
+  },
+  "loom/web/src/profiles/workflow-checkpoint.ts": {
+   "Checkpoint validation": {
+    "count": 1,
+    "reason": "found when the .ts scan was added (2026-10-30); to be moved to the catalogs"
    }
   }
  }
