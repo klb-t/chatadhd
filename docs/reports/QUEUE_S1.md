@@ -3,6 +3,21 @@
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
 
+## Następny wolny agent (Sonnet): poprawki z audytu filozofii przed ultrareview (decyzja koordynatora, 30.10)
+Raport: `docs/reports/PHILOSOPHY_AUDIT_2026-10-30.md`. Baza: tip `batch-1030`. Każda poprawka z testem sprawdzającym konkretną wartość,
+a nie „coś jest”.
+(a) „Wyczyść wszystko z tej przeglądarki” (`web/src/context/guest-store.ts` ≈ 158–167): dokładny wynik każdego kroku. Osoba widzi,
+co zostało i dlaczego.
+(b) Ucinanie załącznika (`kMaxFileChars`, `src/chat/chat_engine.cpp` ≈ 169, 1278): limit jako preset w danych (0 = bez limitu).
+Osoba widzi, ile i czego ucięto (znacznik w treści i w paragonie kontekstu).
+(c) Nieczytelny załącznik (`chat_engine.cpp` ≈ 1272–1275): widoczny stan. Wiadomość nie idzie po cichu bez pliku: błąd albo jawne
+ostrzeżenie z wyborem.
+(d) Samowyłączanie analizy semantycznej (`src/semantic/semantic_llm.cpp` ≈ 83–87, `kMaxConsecutiveFailures`): próg jako preset,
+stan wyłączenia widoczny (status semantyczny), droga ponownego włączenia.
+(e) Po scaleniu pakietów, gdy pominięte pliki znikną: drugie przejście audytu (tylko odczyt) po 86 ścieżkach z
+`~/wt/philo_skip.txt`.
+Reszta audytu po ultrareview, oprócz tego, co pakiet językowy załatwi sam.
+
 ## PILNE, następny wolny agent (Sonnet): gość nie może po cichu trafiać na Vertex (właściciel potwierdził, 30.10)
 Stan z 30.10: na produkcji nie ma `/var/lib/chatadhd/.config/chatadhd/keys.env`, więc gość dostaje `vertex_gemini`
 (`best_in_table`). `guests.model_sources` w `server_accounts.pack` (`[byok,pool,free,local]`) nie ma czytelnika: serwer tylko
