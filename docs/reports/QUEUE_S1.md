@@ -48,6 +48,17 @@ Rozważyć: start gościa zapisuje „auto” albo całą listę z wagami, a wyb
 Zakres: naprawić wybór, z testem e2e dla Chromium z `locale` pl, en i nl oraz z różnymi `Accept-Language`. nl jako same dane,
 lista języków otwarta: test, że nowy język w danych działa bez zmiany kodu. Tłumaczenie maszynowe na Sonnecie, w karcie oznaczone
 „maszynowe, nieczytane przez człowieka”.
+Rozszerzenie (koordynator, 30.10; pytanie właściciela: „czy wszystkie Stringi są w skupionych kilku plikach maksymalnie?”).
+Grep koordynatora po `main` był zgrubny i może mieć fałszywe trafienia: teksty pl/en w 71 plikach danych, ≈ 189 tekstów wpisanych
+na stałe w 22 plikach `.tsx`.
+Zakres:
+(1) inwentarz wszystkich tekstów;
+(2) przeniesienie stałych z interfejsu do paczek danych;
+(3) lint w `tools/gate.sh`, który odrzuca nowy tekst wpisany na stałe; wyjątki jako dane, z powodem;
+(4) raport brakujących kluczy dla każdego języka.
+Plików danych NIE łączyć na siłę: tekst zostaje przy swoim typie, byle każdy był w danych. Jedno narzędzie zbiera je w jedną listę
+do tłumaczenia, i z tej listy idzie nl. Pakiet może się rozbić na dwa: najpierw wybór języka, inwentarz i lint, potem przeniesienie
+stałych i nl.
 
 ## Luka do zaprojektowania (właściciel, 30.10; przekazał koordynator): zapytania do modeli z urządzenia osoby
 Słowa właściciela: „apka webowa operuje na urządzeniu klienckim i z niego wysyła zapytania”.
