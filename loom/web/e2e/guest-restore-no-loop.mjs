@@ -27,7 +27,11 @@ let browser;
 try {
   for (const end = Date.now() + 20000; Date.now() < end;) { try { if ((await fetch(`${base}/api/healthz`)).ok) break; } catch {} await new Promise(r => setTimeout(r, 200)); }
   browser = await (await chromium()).launch();
-  const page = await (await browser.newContext()).newPage();
+  const ctx = await browser.newContext();
+  // The test writes its bundle into IndexedDB, so IndexedDB is the store this visit uses (the preset prefers OPFS + SQLite, whose own
+  // copy of the first, empty visit would then be the non-empty bundle that is loaded).
+  await ctx.addInitScript(() => { try { localStorage.setItem("loom.store.policy", JSON.stringify({ targets: ["browser_indexeddb"] })); } catch {} });
+  const page = await ctx.newPage();
   let loads = 0;
   page.on("framenavigated", (f) => { if (f === page.mainFrame()) loads += 1; });
   await page.goto(base);
