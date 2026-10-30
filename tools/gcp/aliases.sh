@@ -13,7 +13,7 @@
 set -euo pipefail
 ALIASES=(
   "chat|127.0.0.1:8787|none||/etc/caddy/chatadhd-guests.caddy"
-  "watchdog|127.0.0.1:8080|basic"
+  "watchdog|127.0.0.1:8080|none"
   "desktop|127.0.0.1:6080|basic|/vnc.html?autoconnect=true&resize=remote"
   "ageds|127.0.0.1:8090|basic||/etc/caddy/ageds-public.caddy"
 )
