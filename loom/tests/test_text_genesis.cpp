@@ -210,14 +210,14 @@ TEST_SUITE("text_genesis") {
       std::size_t removals = 0;
       for (const auto& n : removal_nodes) removals += n.metadata.value("kind", "") == "removal";
       CHECK(removals == 1);
-      const auto frag = unwrap(d.db->find_node(seg.fingerprint(kD0[4]), "text_fragment"));
+      const auto frag = unwrap(d.db->find_node(seg.fingerprint(kD0[4]) + "@sentence/pl", "text_fragment"));
       REQUIRE(frag.has_value());
       const auto deleted_in = unwrap(d.db->get_links(frag->id, "deleted_in"));
       REQUIRE(deleted_in.size() == 1);
-      CHECK(unwrap(d.db->get_node(deleted_in[0].dst))->label == ids[2]);
+      CHECK(unwrap(d.db->get_node(deleted_in[0].dst))->label == ids[2] + "@sentence/pl");
       // replaced_by / derived_from between the two sentence-2 fragments
-      const auto old2 = unwrap(d.db->find_node(seg.fingerprint(kD0[1]), "text_fragment"));
-      const auto new2 = unwrap(d.db->find_node(seg.fingerprint(d1[1]), "text_fragment"));
+      const auto old2 = unwrap(d.db->find_node(seg.fingerprint(kD0[1]) + "@sentence/pl", "text_fragment"));
+      const auto new2 = unwrap(d.db->find_node(seg.fingerprint(d1[1]) + "@sentence/pl", "text_fragment"));
       REQUIRE((old2 && new2));
       const auto rb = unwrap(d.db->get_links(old2->id, "replaced_by"));
       REQUIRE(rb.size() == 1);
@@ -245,10 +245,10 @@ TEST_SUITE("text_genesis") {
       CHECK(occ[2].at("conv_id") == conv2);
       CHECK(occ[0].at("when") <= occ[2].at("when"));
       // the chain of versions in the graph
-      const auto v3 = unwrap(d.db->find_node(ids[2], "text_version"));
+      const auto v3 = unwrap(d.db->find_node(ids[2] + "@sentence/pl", "text_version"));
       REQUIRE(v3.has_value());
       const auto chain_links = unwrap(d.db->get_links(v3->id, "derived_from"));
-      CHECK(std::any_of(chain_links.begin(), chain_links.end(), [&](const Link& l) { return l.src == v3->id && unwrap(d.db->get_node(l.dst))->label == ids[1]; }));
+      CHECK(std::any_of(chain_links.begin(), chain_links.end(), [&](const Link& l) { return l.src == v3->id && unwrap(d.db->get_node(l.dst))->label == ids[1] + "@sentence/pl"; }));
     }
 
     SUBCASE("a conversation is a source: every version group is a chain") {
@@ -289,7 +289,7 @@ TEST_SUITE("text_genesis") {
     Db d;
     const MaterializeSummary s = unwrap(materialize(*d.db, c, opt));
     CHECK(s.events == 3);
-    const auto frag = unwrap(d.db->find_node(seg.fingerprint("Drugie zdanie."), "text_fragment"));
+    const auto frag = unwrap(d.db->find_node(seg.fingerprint("Drugie zdanie.") + "@sentence/pl", "text_fragment"));
     REQUIRE(frag.has_value());
     CHECK(unwrap(d.db->get_links(frag->id, "znikło_w")).size() == 1);
     CHECK(unwrap(d.db->get_links(frag->id, "deleted_in")).empty());
@@ -322,10 +322,12 @@ TEST_SUITE("text_genesis") {
     auto slice = [](const Json& dump, bool events_and_versions) {  // canonical lines of the event/version nodes, or of all links
       std::set<std::string> out;
       if (events_and_versions) {
-        for (const auto& n : dump.at("nodes"))
-          if (n.at("kind") == "event" || n.at("kind") == "version") out.insert(n.dump());
+        for (const auto& n : dump.at("nodes")) {  // graph_dump lists its entries as dumped strings
+          const Json j = Json::parse(n.get<std::string>());
+          if (j.at("kind") == "text_event" || j.at("kind") == "text_version") out.insert(n.get<std::string>());
+        }
       } else {
-        for (const auto& l : dump.at("links")) out.insert(l.dump());
+        for (const auto& l : dump.at("links")) out.insert(l.get<std::string>());
       }
       return out;
     };
@@ -371,7 +373,15 @@ TEST_SUITE("text_genesis") {
       CHECK(slice(ab, true) == want);
       std::set<std::string> wl = slice(da, false);
       for (const auto& x : slice(dbb, false)) wl.insert(x);
-      CHECK(slice(ab, false) == wl);
+      {
+        const auto got = slice(ab, false);
+        std::vector<std::string> extra, lacking;
+        std::set_difference(got.begin(), got.end(), wl.begin(), wl.end(), std::back_inserter(extra));
+        std::set_difference(wl.begin(), wl.end(), got.begin(), got.end(), std::back_inserter(lacking));
+        INFO("extra: " << (extra.empty() ? "" : extra[0]) << " lacking: " << (lacking.empty() ? "" : lacking[0]));
+        CHECK(extra.empty());
+        CHECK(lacking.empty());
+      }
       CHECK(aba == ab);
       nontrivial += !ca.events.empty() && !cb.events.empty();
     }

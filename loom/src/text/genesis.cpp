@@ -362,7 +362,7 @@ Result<MaterializeSummary> materialize(Database& db, const Chain& chain, const O
       if (!frag_ids.count(o.fingerprint)) {
         Json fm{{"fingerprint", o.fingerprint}, {"level", chain.level}, {"language", chain.language},
                 {"first_seen", Json{{"id", v.source.id}, {"conv_id", v.source.conv_id}, {"when", v.source.when}, {"index", o.index}}}};
-        LOOM_TRY_ASSIGN(const std::string fid, node(o.fingerprint, frag_kind, o.text, fm));
+        LOOM_TRY_ASSIGN(const std::string fid, node(o.fingerprint + cut_tag(chain.level, chain.language), frag_kind, o.text, fm));
         frag_ids[o.fingerprint] = fid;
       }
       Json& m = per_fp[o.fingerprint];
@@ -448,9 +448,9 @@ Json version_brief(const SourceRef& s) {
 }
 
 // Occurrences already in the graph (other chains, other conversations), newest last.
-Result<Json> graph_occurrences(Database& db, const std::string& fp, const Options& opt) {
+Result<Json> graph_occurrences(Database& db, const std::string& fp, const std::string& language, const Options& opt) {
   Json out = Json::array();
-  LOOM_TRY_ASSIGN(auto node, db.find_node(fp, opt.node_kind("fragment")));
+  LOOM_TRY_ASSIGN(auto node, db.find_node(fp + cut_tag(opt.level, language), opt.node_kind("fragment")));
   if (!node) return out;
   LOOM_TRY_ASSIGN(auto links, db.get_links(node->id, opt.edge_kind("occurrence")));
   std::vector<Json> rows;
@@ -644,7 +644,7 @@ Result<Json> query(Database& db, const Segmenter& seg, const Query& q, const Opt
   Json graph = Json::array();
   bool any_graph = false;
   for (const auto& f : ask) {
-    LOOM_TRY_ASSIGN(Json occ, graph_occurrences(db, f, opt));
+    LOOM_TRY_ASSIGN(Json occ, graph_occurrences(db, f, seg.language(), opt));
     if (!occ.empty()) {
       any_graph = true;
       graph.push_back(Json{{"fingerprint", f}, {"occurrences", occ}});
