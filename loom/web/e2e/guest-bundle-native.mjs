@@ -201,8 +201,12 @@ try {
     await p2.evaluate(() => { localStorage.setItem("loom.e2e.marker", "1"); sessionStorage.setItem("loom.e2e.marker", "1"); });
     await openLayer(p2);
     await p2.getByTestId("guest-wipe").click();
-    const gone = p2.waitForEvent("load");
+    // the wipe shows what it did first (one line per step, pack words) and reloads only on "Continue"
     await p2.getByTestId("guest-wipe-yes").click();
+    await p2.getByTestId("guest-wipe-report").waitFor();
+    assert.ok((await p2.getByTestId("guest-wipe-report").innerText()).length > 0, "the report says what was removed");
+    const gone = p2.waitForEvent("load");
+    await p2.getByTestId("guest-wipe-continue").click();
     await gone;
     await p2.getByTestId("chat-input").waitFor({ timeout: 20000 });
     const me3 = (await api(p2, "GET", "/api/auth/me")).json;
