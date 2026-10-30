@@ -35,6 +35,20 @@ w żadnym stanie.
 (h) R113 (właściciel, 30.10): ≈ 1 € dziennie dla kont to wartość startowa. Zgoda z góry na podniesienie przy pierwszej potrzebie;
 nową kwotę zgłosić właścicielowi. W nocie presetu napisać, że to wartość startowa. Gość dalej bez płatnych źródeł.
 
+## Po pakietach gościa i języka, przed ultrareview: agent filozofii (Sonnet, tylko odczyt, wynik do pliku)
+Właściciel (30.10, przekazał koordynator): „przed Ultra review trzeba będzie agenta filozofii odpalić bo dużo baboli sam wyłapałeś”.
+Jeden agent na CAŁYM kodzie produktu, nie tylko na diffie: `loom/src`, `loom/server`, `loom/web/src`, `loom/data`.
+Wzorce z dzisiaj, jako przykład (reguły są w CLAUDE.md):
+- tekst dla użytkownika w kodzie;
+- cichy przeskok na płatne źródło;
+- ustawienie zapisane, którego nic nie czyta (jak `model_sources`);
+- wybór zapisany na stałe zamiast presetu w danych;
+- zamknięta lista bez powodu;
+- stan bez wyjścia;
+- test sprawdzający „coś jest” zamiast „jest właściwe”.
+Wynik do pliku: `docs/reports/PHILOSOPHY_AUDIT_<data>.md`. Każde znalezisko z plikiem i linią. Bez poprawek: o naprawach przed
+ultrareview decyduje koordynator.
+
 ## NASTĘPNY po poprawce źródła gościa, przed projektowymi: paczki językowe i język strony (R114, spec `62f9f028`)
 Priorytet podniesiony przez właściciela (30.10, przekazał koordynator): „Boziu stringi w kodzie to największy grzech! od razu niech
 wstawi obsługę pakietów językowych”.
