@@ -961,7 +961,7 @@ Result<Json> ActionRunner::invoke(std::string_view action, const Json& request) 
   // The units a conversation belongs to (M1-K2c-1): defining, forgetting, assigning and clearing wait for the person (confirm:<action>); listing only reads.
   if (action == "units.define" || action == "units.list" || action == "units.forget" || action == "conversation.set_unit" || action == "conversation.clear_unit")
     return run_gated(action, request);
-  if (action == "graph.navigate" || action == "graph.card" || action == "settings.resolved" || action == "roles.resolved")
+  if (action == "graph.navigate" || action == "graph.structure" || action == "graph.card" || action == "settings.resolved" || action == "roles.resolved")
     return projection::invoke(rt_, action, request);
   // The context guardian (guardian.h). What changes the user's rules or the representation is a run like rules.set (the rules of the
   // scope and the receipt apply); reading, observing and annotating are the guardian's own work.

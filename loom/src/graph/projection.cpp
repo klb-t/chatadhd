@@ -1,5 +1,6 @@
 // The graph projection. See src/graph/projection.h.
 #include "graph/projection.h"
+#include "graph/structure.h"
 
 #include <algorithm>
 #include <deque>
@@ -3899,7 +3900,7 @@ Result<Json> render_catalogue(const Env& env, const std::set<std::string>& kinds
 }
 
 bool is_projection_action(std::string_view action) {
-  return action == "graph.navigate" || action == "graph.card" || action == "settings.resolved" || action == "roles.resolved" || action == "rom.override";
+  return action == "graph.navigate" || action == "graph.structure" || action == "graph.card" || action == "settings.resolved" || action == "roles.resolved" || action == "rom.override";
 }
 
 Env env_of(Runtime& rt, const Json& request) {
@@ -3919,6 +3920,7 @@ Env env_of(Runtime& rt, const Json& request) {
 Result<Json> invoke(Runtime& rt, std::string_view action, const Json& request) {
   const Env e = env_of(rt, request);
   if (action == "graph.navigate") return navigate(e, request);
+  if (action == "graph.structure") return structure::structure(e, request);
   if (action == "graph.card") return card(e, request);
   if (action == "settings.resolved") return settings_resolved(e, request);
   if (action == "roles.resolved") return roles_resolved(e, request);

@@ -189,7 +189,7 @@ std::string receipt_words(const Env& env, const std::string& id);
 // schema, tokens_est, truncated, ...}, counts, sections, dropped, note} and, with no record, {missing_reason, also_when, text}.
 Json receipt_summary(const Json& render);
 
-// The actions of the catalogue this module carries out ("graph.navigate", "graph.card", "settings.resolved", "roles.resolved", "rom.override").
+// The actions of the catalogue this module carries out ("graph.navigate", "graph.structure" (structure.h), "graph.card", "settings.resolved", "roles.resolved", "rom.override").
 bool is_projection_action(std::string_view action);
 Result<Json> invoke(Runtime& rt, std::string_view action, const Json& request);
 
