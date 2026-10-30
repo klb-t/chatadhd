@@ -3,6 +3,52 @@
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
 
+## KARTA WZNOWIENIA — przekazanie do GPT (30.10 ≈ 18:00 UTC; zostało ostatnie 5 % tygodniowego limitu Claude)
+Polecenie właściciela, przekazane przez koordynatora: nie zaczynać nowych zadań, nie uruchamiać nowych agentów, bramki nie zatrzymywać.
+Stan jest w git; nic nie zostało tylko w kontekście rozmowy.
+
+**Partia 30.10 = gałąź `batch-1030`, sha `90f60bfb`, wypchnięta.** Baza: `main` = `2d39b07c`. W partii:
+- R102 G1 (fragmenty i porównanie wersji) + G2 (geneza tekstu w grafie, C ABI, akcje katalogu);
+- R101 D5 (układ ikon) + D6 (interakcje pulpitu);
+- W11a-1 (okno „Struktura projektu”, tylko odczyt);
+- `hotfix-reload` (pętla przywracania gościa);
+- poprawka źródła gościa: tylko pula bezkosztowa, `model_sources` z czytelnikiem, jawny stan „none”, warstwa gościa we własnym wierszu;
+- paczki językowe część 1 i 2: wspólne pobieranie tekstów, język strony z urządzenia, nl, lint `uistrings` w `gate.sh`;
+- poprawki 5 ustaleń z przeglądu (`docs/reports/REVIEW_batch-1030_2026-10-30.md`);
+- poprawki z audytu (a)–(d) (`docs/reports/PHILOSOPHY_AUDIT_2026-10-30.md`).
+Karty wszystkich pakietów są w `docs/reports/INDEX.md`. Gałęzie pakietów (`pkg-*`) też są wypchnięte, do wglądu.
+
+**Bramka:** pełna bramka na `90f60bfb` ruszyła ≈ 17:55 UTC; log: `~/wt/gate-90f60bfb/gate.log`. Wynik: dopisek poniżej
+albo wiadomość do koordynatora. Uruchamiać ją tak:
+`export PATH=$HOME/.venvs/loom311/bin:$PATH CCACHE_BASEDIR=$HOME/wt CCACHE_NOHASHDIR=1; GATE_OUT=... bash tools/gate.sh <worktree> <label>`.
+Bez venv padają testy Pythona compat i research. Bez zmiennych ccache trafia w ≈ 5 % i build trwa godzinami.
+
+**Czego jeszcze nikt nie uruchomił (pierwszym sprawdzeniem jest ta bramka):**
+- poprawki z przeglądu: kompilacja z `-Werror`, ctest, e2e `guest-restore-no-loop`;
+- języki część 2: e2e komponentów, w których zmieniły się teksty;
+- audyt: testy compat i e2e wymazywania oraz ponownego włączenia analizy.
+Agent audytu widział też padające testy poza swoim obszarem: `test_emergent_catalogue.cpp:174,283`, `test_kb_pack.cpp:43`,
+`test_import_stream.cpp:161` (limit pamięci, wrażliwy na obciążenie). Pięć innych wynikało z nieaktualnej sumy sha
+`graph/interfaces.pack` w `data_domains.pack`; poprawione w `90f60bfb`.
+
+**Następny krok:**
+1. Bramka zielona → podać sha `90f60bfb` koordynatorowi. Scalenie do `main` (przewinięcie) robi koordynator. Do ultrareview
+   dopiero po decyzji koordynatora.
+2. Bramka czerwona → tylko mała poprawka, w osobnym worktree z `batch-1030`. Potem ta sama bramka.
+3. Po scaleniu: drugie przejście audytu filozofii po 86 ścieżkach z `~/wt/philo_skip.txt` (tylko odczyt).
+4. Dalej według wpisów poniżej: §4.1 `BEZ_LOGOWANIA_R103` z pliku `docs/architecture/BEZ_LOGOWANIA_R103_4_1_PATCH.md` na gałąź
+   dokumentów; projekt zapytań z urządzenia + R108–R113 (Fable); zapis zdarzeń klienta; drobne ustalenia przeglądu 6–12; reszta
+   audytu; W11a-2; D7–D10; R102 G3–G4.
+
+**Produkcja (decyzje koordynatora, nic nie wdrożone):**
+- Gotowy pakiet serwera z `2d39b07c`: `~/wt/pkg_2d39b07c/…tar.gz`, sha256 `06a277e3…e871`.
+- Po partii trzeba zbudować nowy pakiet z sha po bramce (`deploy/install.sh --package`) i przejść `tools/gcp/deploy_guests.sh --dry-run`.
+- Gościom potrzebny jest plik kluczy `/var/lib/chatadhd/.config/chatadhd/keys.env` z `GROQ_API_KEY` i/lub `OPENROUTER_API_KEY`.
+  Bez niego gość widzi stan „none”. Kluczy nie szukać po dysku.
+
+**Na tej maszynie:** jeden natywny katalog kompilacji naraz; wszystkie katalogi kompilacji w `~/wt/*` poza `~/wt/w2b2` (bramka)
+są już usunięte. Serwerów testowych nie zatrzymywać po nazwie, tylko po pid. Port 8787 to produkcja.
+
 ## Następny wolny agent (Sonnet): poprawki z audytu filozofii przed ultrareview (decyzja koordynatora, 30.10)
 Raport: `docs/reports/PHILOSOPHY_AUDIT_2026-10-30.md`. Baza: tip `batch-1030`. Każda poprawka z testem sprawdzającym konkretną wartość,
 a nie „coś jest”.
