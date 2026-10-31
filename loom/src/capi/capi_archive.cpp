@@ -5,6 +5,7 @@
 #include "import/import_truth.h"
 #include "loom/archive.h"
 #include "loom/importer.h"
+#include "loom/url_share_import.h"
 #include "loom/provenance.h"
 
 using namespace loom;
@@ -51,6 +52,16 @@ LOOM_API const char* loom_import_file_ex(LoomContext* ctx, const char* path, con
         std::string s(status);
         cb(clamp_int(cur), total < 0 ? -1 : clamp_int(total), s.c_str(), ud);
       };
+    }
+    // M2: explicit URL descriptor, before the immutable file-import cache.
+    // Only this caller branch performs a fetch; archives/ordinary JSON keep existing semantics.
+    if (std::filesystem::path(path).extension() == ".loomurl") {
+      for (auto it = opts_j->begin(); it != opts_j->end(); ++it)
+        if (it.key() != "title" && it.key() != "display_name")
+          return out_error(Errc::Unsupported, "unsupported URL import option");
+      auto imported = url_share::import_request_file(*ctx->rt, path, opts.title.value_or(""));
+      if (!imported) return out_error(imported.error());
+      return out(*imported);
     }
     auto r = ctx->rt->importer().import_file(path, opts);
     if (!r) return out_error(r.error());

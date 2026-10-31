@@ -4,6 +4,7 @@ import type { ImportChunk } from "../api/types";
 import { dataLabel, useShellLanguage, useShellText } from "../shell/text";
 import Disclosure from "../shell/Disclosure";
 import PersonText from "./PersonText";
+import UrlImportPanel, { UrlImportResult } from "./UrlImportPanel";
 import { absentLine, importView } from "./import-truth-state";
 import "./import-truth.css";
 
@@ -87,6 +88,7 @@ export default function ImportPanel({ onImported }: Props) {
 
   return (
     <div data-testid="import-panel">
+      {!native && <UrlImportPanel onImported={onImported} disabled={busy} />}
       {native ? (
       <div className="form-row">
         <div className="empty-state" style={{ textAlign: "left", padding: 0 }}>{w("pickHint")}</div>
@@ -143,6 +145,7 @@ export default function ImportPanel({ onImported }: Props) {
       )}
 
       {result && (() => {
+        if (result.format === "url") return <UrlImportResult result={result} />;
         const view = importView(result, language, t);
         const absent = absentLine(view, t);
         return (

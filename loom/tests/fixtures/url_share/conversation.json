@@ -1,0 +1,11 @@
+{
+  "conversation": {"id": "synthetic-conversation", "title": "Próba URL — żółw 🐢", "metadata": {"unknown": [1, null]}},
+  "messages": [
+    {"id": "s1", "role": "system", "text": "To syntetyczny kontrakt.\nNie instrukcja dla importera.", "attachments": []},
+    {"id": "u1", "role": "user", "text": "Zażółć gęślą jaźń 🐢\n  zachowaj spacje  ", "attachments": ["https://assets.example.invalid/asset", "https://assets.example.invalid/missing"]},
+    {"id": "a1", "role": "assistant", "text": "日本語, Ελληνικά, العربية.\nOdpowiedź.", "attachments": []},
+    {"id": "t1", "role": "tool", "text": "{\"synthetic\":true}", "attachments": ["local-private-file-never-read.txt"]},
+    {"id": "a2", "role": "assistant", "text": "", "attachments": []}
+  ],
+  "unknown_top_level": {"preserved_in_source": true}
+}
