@@ -1,3 +1,26 @@
+## 2026-10-31 — Flow przyjęty po własnym buildzie i testach
+
+Przyjęty kod: **`885e493945b125ee72e2fa293682be7d83ae76c5`** na publicznej bazie
+`9533d68e6cf6e133e0fdcd5d5fcf7ee85654da08`. B1/B2/B3 rozwiązane w zakresie
+odbioru. Własny WERROR build serwera/biblioteki `-j2` PASS; HTTP **9/9**,
+C API **2/2**, native **23/23** (6567/6567 asercji), ABI **3/3 PASS**.
+Dodatkowy test wykrył utratę klucza przy A → B → A; mała korekta integratora
+przeszła ten sam test **1/1** oraz rozszerzone scenariusze. BYOK, również pusty,
+zachowuje pierwszeństwo. Oryginalny negatyw i dowody autora zachowano oddzielnie.
+
+Osobno przyjęto badania: Android `f7c5a922450be294c8c48c3c7d636dce42d876a0`
+(**2/2** kontrole statyczne, bez implementacji HOME); Linux
+`c75241edb176ef6f21104736ebcbd59c2bb485cf` (**8/8** kontraktów, 0 skip,
+bez adaptera/D-Bus/GUI). Późniejsze raporty nie zmieniają przetestowanych bajtów Flow.
+
+Stan: implemented/tested zakresowo; **bez deployed i GUI accepted**.
+Nie wykonano pełnej bramki, webu, HTTP/PDF ani testów urządzeń. Otwarte:
+równoległość i pozostałe nadpisania tras, wspólny wyłącznik oraz hierarchia
+logów według §0 rew. 1 z 2026-10-31. Następny priorytet właściciela: polski
+interfejs z wyborem języka, dalej rzeczywisty HTTP/PDF, szersze pliki i własne
+grafy. Świeże taski/worktree uruchamia administrator; niczego nie publikowano.
+[Pełny odbiór, hashe, testy i ograniczenia](reports/TEAM_INTEGRATION_2026-10-31.md).
+
 ## 2026-10-31 — wznowienie odbioru po korekcie kontraktu
 
 Baza kodu `9533d68e6cf6e133e0fdcd5d5fcf7ee85654da08`. B1 rozwiązany:

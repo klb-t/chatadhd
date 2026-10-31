@@ -1,4 +1,155 @@
-# Odbiór zespołu ChatADHD — 2026-10-31, przyrost audytowy 1
+# Odbiór zespołu ChatADHD — 2026-10-31, audyt i integracja
+
+## Wynik odbioru 18:38 UTC
+
+**Flow przyjęty lokalnie:** `885e493945b125ee72e2fa293682be7d83ae76c5`.
+Baza publiczna pozostaje `9533d68e6cf6e133e0fdcd5d5fcf7ee85654da08`;
+pierwszy własny commit audytu to `8b255ac9bfc9ff30ba9af0bc24d20e7dc516e8cb`.
+B1, B2 i B3 rozwiązano w zakresie tego odbioru. Nie jest to pełna bramka wydania.
+
+| Pakiet | Własny lokalny commit `[skip ci]` | Przyjęty zakres |
+|---|---|---|
+| Flow, `chatadhd-flows-20261031` | `885e493945b125ee72e2fa293682be7d83ae76c5` | Granica poświadczeń, testy i raport autora; dodatkowa korekta integratora opisana poniżej. |
+| Android, `chatadhd-android-20261031` | `f7c5a922450be294c8c48c3c7d636dce42d876a0` | Sam [raport badawczy](ANDROID_LAUNCHER_RESEARCH_2026-10-31.md), bez implementacji HOME. |
+| Linux, `chatadhd-linux-20261031` | `c75241edb176ef6f21104736ebcbd59c2bb485cf` | [Raport](LINUX_DESKTOP_RESEARCH_2026-10-31.md) i trzy pliki próby kontraktu, bez adaptera pulpitu. |
+
+Stan źródeł ponownie sprawdzono przed i po odbiorze: końcowy odczyt
+18:37:11 UTC, **3/3 PASS** (task/locator/archive SHA, HEAD, status `-z`,
+patch, wszystkie pliki i lista nieśledzonych). Trzy taski nadal `completed`;
+lokatory z 17:46 UTC i sumy z tabeli korekty B1 poniżej pozostają aktualne.
+Archiwów root-only nie odczytywano. Zastosowano jawne patche po
+`git apply --check`; nowe pliki porównano bajt w bajt z przejrzanymi kopiami.
+Cudzego STATE i artefaktów administracyjnych nie importowano.
+
+### Flow: niezależna weryfikacja i własna korekta
+
+Odebrany patch kodu (bez cudzej zmiany STATE) ma SHA-256
+`25d1b40651791d9ee15ceb37fc6d4abe28181fac2ca9aa5f678c1be28709c790`.
+Pełny patch autora, nowe pliki i checkpoint są zidentyfikowane w historycznej
+tabeli poniżej. Przed buildem wszystkie **9/9** przyjętych plików odpowiadały
+snapshotowi wykonawcy. [Raport autora](CHAT_CREDENTIAL_BOUNDARY_2026-10-31.md)
+zachowano bez zmian: opisuje jego wcześniejsze binaria i wyniki, nie nową bramkę.
+
+Własny build serwera i biblioteki zakończył się **PASS**, GCC 15.2,
+`LOOM_WERROR=ON`, Debug `-O0 -g0`, wyłącznie `-j2`. Nowy katalog integratora:
+`.integration-flow-20261031-r3/build`; nie używano cudzych binariów ani
+wspólnych build/dev. Przed buildem było 26 GB wolnego miejsca. Zewnętrzny
+STOP VM przerwał pierwszą kompilację po 104 krokach; zachowane źródła i build
+wznowiono inkrementalnie. Przerwanie nie zostało zaliczone jako błąd kodu ani PASS.
+
+Pierwszy własny przebieg oryginalnej delty: HTTP **5/5**, C API **2/2**,
+native **23/23** (6567/6567 asercji) i ABI **3/3 PASS**. Dodatkowy test
+integratora wykazał jednak **FAIL**: po A → B bez BYOK → A następna odpowiedź
+zwracała `No API key configured`. Odłączenie operatora od B działało, ale
+powrót do A nie przywracał klucza w działającym kontekście. Ten negatyw zachowano.
+
+Mała korekta w `App::context_for_guest` ponownie sprawdza aktualną pulę tylko
+przy brakującym poświadczeniu i przywraca overlay wyłącznie dla zgodnego
+identyfikatora dostawcy, dokładnego adresu i slotu klucza. Jawny BYOK, również
+pusta wartość, nadal wyklucza operatora. Dodano cztery scenariusze: powrót do
+adresu dla czatu, powrót dla katalogu modeli, powrót znacznika źródła oraz
+pusty BYOK przed/po restarcie. Istniejących asercji nie osłabiono.
+
+SHA-256 delty własnej względem snapshotu wykonawcy:
+`981ee13cd555c8f3b8a4a1de067d97e1ab92283942d63678be62bbdecd5c1bd0`.
+Zmienione dodatkowo pliki i końcowe sumy:
+
+| Plik | SHA-256 po korekcie integratora |
+|---|---|
+| `loom/server/src/app.cpp` | `c68015749b038f813b77440a3b4355474df85e794c2b767270151859ae4fae0a` |
+| `loom/server/tests/test_server_guest_credentials.py` | `5cd57e93c5b5bd24abc75c8bdbf22b94b2333017fbceea75e74dc17dfa4bb508` |
+
+Pozostałe siedem plików Flow zachowuje sumy snapshotu. Po korekcie zbudowano
+ponownie serwer; biblioteka ma identyczną sumę jak podczas native/ABI.
+Testowane źródła są bajtami commita Flow wskazanego wyżej; późniejsze commity
+badawcze i raportowe nie zmieniają tego kodu ani jego testów.
+
+| Własna kontrola | Rzeczywisty wynik | Zakres |
+|---|---|---|
+| HTTP po korekcie | **9/9 PASS**, 51,351 s | Dwie atrapy loopback, dokładne nagłówki; zmiana adresu, BYOK, restart, katalog modeli i powroty. |
+| C API po korekcie | **2/2 PASS**, 4,596 s | Własna biblioteka, lokalny HTTP, jawny zapis i pusta wartość, niezależny slot overlay. |
+| Wpisy CTest | **2/2 PASS**, 56,96 s łącznie | `server.guest_credentials`, `capi.credential_override`; nie cały CTest. |
+| Native config/C API | **23/23 PASS**, **6567/6567** asercji, 0 skip | Osobny runner z istniejących `main.cpp`, `test_config.cpp`, `test_capi.cpp`, połączony z własnym `libloom_core.a`. |
+| ABI | **3/3 PASS** | Deklaracje sygnatur, eksportowane symbole, FFI smoke; brak nowych symboli ABI. |
+| Dokładny dodatkowy scenariusz A → B → A | Przed korektą **1 FAIL**, po niej **1/1 PASS**, 5,759 s | Ten sam niezależny harness; negatyw nie został nadpisany. |
+| Własny diff/staging | PASS | Jawne 9 plików Flow, bez checkpointu, logów i buildu. |
+
+Sumy własnych artefaktów końcowych:
+
+- serwer: `eaa4fc5d26d405fd82d40b610bf003cbc3d5858194a976984e03b2fe50e2b717`;
+- `libloom.so`: `522c209fd2fc5eb2c9906abb9bd946aef3b7bbccc6386c732261bfd831922f91`;
+- runner native: `f9be3e737498f20cb669c40be0e8861bd79016617bae82f5ff1917fac7417300`.
+
+Odtworzenie podstawowej kompilacji i zakresu CTest we własnym nowym katalogu:
+
+```sh
+cmake -S loom -B .integration-flow-20261031-r3/build -G Ninja \
+  -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS_DEBUG='-O0 -g0' \
+  -DCMAKE_C_FLAGS_DEBUG='-O0 -g0' -DLOOM_BUILD_SERVER=ON \
+  -DLOOM_SHARED=ON -DLOOM_BUILD_TESTS=ON -DLOOM_WERROR=ON \
+  -DCMAKE_CXX_COMPILER_LAUNCHER=/usr/bin/env \
+  -DCMAKE_C_COMPILER_LAUNCHER=/usr/bin/env
+cmake --build .integration-flow-20261031-r3/build --target loom-server loom -j2
+ctest --test-dir .integration-flow-20261031-r3/build \
+  -R '^(server.guest_credentials|capi.credential_override)$' --output-on-failure -V
+```
+
+Testy uruchamiano z oczyszczonym środowiskiem, lokalnymi atrapami i własnymi
+ścieżkami binariów. Szczegółowe komendy runnera, logi obu przebiegów, negatyw,
+sumy i checkpoint pozostają prywatnie w katalogu integratora; nie są częścią
+produktu. Nie wywoływano prawdziwych modeli/API.
+
+### Osobne odbiory badawcze
+
+Android: własne **2/2 kontrole statyczne PASS** — manifest aplikacji ma
+3 aktywności i 1 filtr MAIN+LAUNCHER; słownik 13 nazw w 41 plikach daje 0
+trafień. Pierwszy pomocniczy odczyt wskazał pusty, błędny katalog `android`;
+nie był testem. Właściwa kontrola używa `loom/android` i wymaga dokładnie
+41 plików. Bez APK, JNI, emulatora, urządzenia i akceptacji HOME.
+Patch nowego raportu: SHA-256
+`b84d06bc8fc0fff0c0ac61dfcf657db8b6af2c39719c0e747db7657117eb2018`.
+
+Linux: po zastosowaniu czterech plików we własnym CWD ponownie wykonano
+`PYTHONDONTWRITEBYTECODE=1 python3 tools/research/linux_desktop/test_contract.py`:
+**8/8 PASS**, 0 skip, 0,051 s. To walidator Desktop Entry, GIO i marshalling
+GLib; bez połączenia D-Bus, wykonania Exec, adaptera produktu i GUI.
+Patch nowych plików: SHA-256
+`6bf9104a32093133128805ff012f32bc24e4fe140584c8e9832789ac6b3a165d`.
+
+Punktowo sprawdzono źródła oficjalne: świadomy wybór roli w
+[RoleManager](https://developer.android.com/reference/android/app/role/RoleManager),
+filtr [HOME](https://developer.android.com/reference/androidx/core/role/RoleManagerCompat#ROLE_HOME),
+granice profili w [LauncherApps](https://developer.android.com/reference/android/content/pm/LauncherApps#getProfiles()),
+kontrakt [OpenURI](https://flatpak.github.io/xdg-desktop-portal/docs/doc-org.freedesktop.portal.OpenURI.html),
+cykl [Request](https://flatpak.github.io/xdg-desktop-portal/docs/doc-org.freedesktop.portal.Request.html)
+i [Exec](https://specifications.freedesktop.org/desktop-entry/latest/exec-variables.html).
+To ograniczona próbka zgodności raportów, nie pełna certyfikacja platform.
+
+### Granice przyjęcia i następny krok
+
+**Implemented:** poprawka granicy poświadczeń wraz z korektą powrotu.
+**Tested:** wyłącznie zakresy i bajty wskazane wyżej.
+**Deployed:** nie. **GUI accepted:** nie.
+Nie wykonano pełnej bramki repozytorium, nowego buildu/testów webu, sanitizerów,
+HTTP/PDF, OCR/DOCX, eksportu bajtów, graph_packet ani testów urządzeń.
+Nie zamknięto audytu równoległych żądań i wszystkich nadpisań tras modeli.
+
+Zasady §0 rewizja 1 z 2026-10-31 przyjęto z polecenia właściciela, bez dostępu
+do jego prywatnego źródła. W sprawdzanym zakresie polityka puli pozostaje
+w danych, kod egzekwuje granicę poświadczeń; brak migracji lub zmian bajtów
+źródłowych. Nowe literały są kluczami kontraktu zgodnie z R42. Nie dodano
+logowania wartości kluczy. Luka istniejącego logowania: cztery poziomy i nazwy
+modułów mają globalny próg; `set_stderr` nie wyłącza ring/sinków, PhaseTimer
+ma osobny przełącznik, a serwer używa też `cerr`. Brak potwierdzonego jednego
+wyłącznika wszystkich logów deweloperskich przy deploy i hierarchicznych
+progów. Nie wykonywano niezwiązanego refaktoru.
+
+Dalsze P0: polski interfejs z jawnym wyborem języka, rzeczywisty HTTP/PDF,
+szersze pliki i własne grafy. Macierz darmowych dostawców oraz przegląd
+architektury pozostają osobnymi lekkimi zadaniami. Administrator może tworzyć
+świeże worktree od przekazanego końcowego SHA; integrator nie uruchamiał tych
+zadań ani następnego cyklu. Raporty Android/Linux nie blokują przyjętego Flow.
+Wszystkie commity pozostają lokalne; bez push, PR, merge do main i wdrożenia.
 
 ## Wznowienie 17:59 UTC — korekta B1 i zapis audytu
 
