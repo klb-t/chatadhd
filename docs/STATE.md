@@ -1,3 +1,26 @@
+## 2026-10-31 — lekki odbiór macierzy dostawców
+
+Na bazie `1d53bd0fcdd902cbac1809ab7cdfa96fd0c1fe19` odebrano dokumentację
+z taska `chatadhd-free-providers-20261101`: [raport](reports/FREE_PROVIDER_FEATURE_MATRIX_2026-10-31.md)
+i [macierz JSON](reports/FREE_PROVIDER_FEATURE_MATRIX_2026-10-31.json).
+**238 = 17×14** wierszy; według klasyfikacji autora **17 potwierdzonych,
+43 częściowe, 178 pozostałych**. Własny walidator dokumentacji: **627/627 PASS**,
+42 lokalizatory kodu/testów, 130 lokalnych linków, 8 tabel; to nie test produktu
+ani potwierdzenie wszystkich 65 źródeł. Próbka administratora obejmuje tylko
+trzy warunki T4/G10/R1. Nie rozszerzono jej na pozostałe twierdzenia.
+
+Minimalna korekta integratora: backlog i propozycje testów nie rozszerzają
+celu 2026-11-01 09:00 PL (locale z wyborem języka, BYOK, HTTP z dwustronicowym
+PDF/dalszą turą/reopen/ostrzeżeniami, dialog), nie przesuwają ograniczonego G1
+ustalonego przez właściciela i nie nadają zgody kosztowej. Usunięto odsyłacz
+Gemini API jako dowód warunków Vertex w JSON. Zachowano wszystkie 238 obserwacji,
+liczniki i historyczne base_head/result_head badania. Kanon §0 rewizja 2.
+
+Wyłącznie dokumentacja: **0 nowych buildów/testów produktu/API/wydatków**,
+bez browsera/serwera i bez powtarzania odbioru BYOK. Status przyjętego kodu,
+GUI i wdrożenia pozostaje jak poniżej. Kolejny odbiór P0 uruchamia administrator
+w tej samej sesji po rzeczywistych deltach locale/PDF i świeżym audycie receipts.
+
 ## 2026-10-31 — Flow przyjęty po własnym buildzie i testach
 
 Przyjęty kod: **`885e493945b125ee72e2fa293682be7d83ae76c5`** na publicznej bazie
