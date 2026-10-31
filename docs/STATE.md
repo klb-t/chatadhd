@@ -1,3 +1,34 @@
+## 2026-10-31 — P0 GUI potwierdzone, M2 przyjęte, core M1 odłożone
+
+Przyjęty kod **`5972828c46ac8c8675d132ee8ad557382c5726b6`**: M2 URL `c756c9dd1c1cd33b948b5e95351173d34c459fae`
+i własne przekazywanie `image_payload_sha256` przy potwierdzaniu w GUI.
+P0 `cab9ca88` i wszystkie wcześniejsze commity pozostają przodkami.
+26/26 commitowanych plików zgodnych ze sprawdzonymi scalonymi bajtami.
+
+Własny przyrostowy build `-j2` PASS; M2 native **8/8 (107 asercji)**,
+artefakt bez dostępu do checkoutu **1/1 (18 asercji)**, Python **33/33**,
+pakietowanie **4/4**, żądania web **4/4**, HTTP odmowa oraz dodatni
+import/restart **PASS**. Regresje CTest `-j1` **6/6 zestawów, 23/23 przypadki,
+0 skip** (P0 12 + BYOK 9 + C API 2), ABI **3/3**. Nowy web build PASS;
+GUI języka **9/9**, osoba PL **8/8**, potwierdzenie sekretu **4/4 grupy**.
+Wcześniejsze GUI P0 odebrano z zachowanych logów; nowych przebiegów nie sumowano.
+
+M2 używa osadzonego helpera, zachowuje źródłowe bajty i pochodzenie,
+nie wywołuje modelu. Dodatni HTTP ma jawny testowy DNS/connect do loopback,
+nie dowodzi publicznego TLS ani adaptera share zewnętrznego dostawcy.
+Core M1 **nienałożone**: odczyt `synthetic-pl.png` autora zwraca EACCES(13).
+Bez obchodzenia praw/archiwów; M1 native 11 + ABI/HTTP 7 i runtime generator
+czekają na udostępnienie fixture i świeży odbiór. UI hash sprawdzony z atrapą
+backendu nie stanowi native acceptance OCR/vision.
+
+Implemented/tested: zakres powyżej. GUI accepted: scenariusze syntetyczne,
+bez fizycznego mobile; raw503/role labels nadal luki produktu.
+Deployed **NIE**, pełny repo gate / real model / zewnętrzny share **NIE**.
+§0 rewizja 2: ochrona URL i integralność w kodzie, presety jako dane;
+globalna hierarchia logów/jeden wyłącznik deploy i pełne części/graf poza dowodem.
+[Raport, SHA, źródła i kontynuacja](reports/M1_M2_INTEGRATION_2026-10-31.md).
+Następny przyrost uruchamia administrator; bez push/PR/publikacji/deploy.
+
 ## 2026-10-31 — własne P0 web/GUI odebrane po korekcie preflight
 
 Na `cab9ca88d725c9d78cd8bceb8993443c2969624f`: web build **PASS**, rzeczywisty
