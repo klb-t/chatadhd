@@ -939,11 +939,11 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
 
   const confirmSecret = useCallback(() => {
     if (!secretPending) return;
-    const { request } = secretPending;
+    const { request, doc } = secretPending;
     setSecretPending(null);
     const carried = request.attachments ?? [];
     if (carried.length) setAttachments((list) => list.filter(a => !(a.ref && carried.includes(a.ref))));
-    send("send", { ...request, secret_confirmation: { approved: true } } as ChatRequest);
+    send("send", { ...request, secret_confirmation: { approved: true, image_payload_sha256: doc.image_payload_sha256 } } as ChatRequest);
   }, [secretPending, send]);
   const confirmUsage = useCallback(() => {
     if (!usagePending) return;
