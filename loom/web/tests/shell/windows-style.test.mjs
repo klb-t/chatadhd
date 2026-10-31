@@ -192,3 +192,17 @@ test('W-gaps: withSidebarWidth sets the list share from the profile width once, 
   const hat = St.leafSide(huge.layout.tree, huge.layout.windows.find(w => w.kind === 'conversation_list').dock.leaf);
   assert.ok(hat.share <= 1 && hat.share >= 0, 'a degenerate width is clamped into 0..1 (dock_narrow then says it)');
 });
+
+test('advisories retain added catalogs, with the side words in that same language', () => {
+  const original = St.STYLES.words;
+  St.STYLES.words = { ...original, unknown_mode: { ...original.unknown_mode, xx: 'X{value}' },
+    moves_dock: { ...original.moves_dock, xx: 'X{label}:{want}/{now}' },
+    side_left: { ...original.side_left, xx: 'XL' }, side_right: { ...original.side_right, xx: 'XR' } };
+  try {
+    assert.equal(St.styleAdvisories(grid().layout, null, DOCS, '$&')[0].text.xx, 'X$&');
+    const styled = St.setLayoutProfile(grid(), ref('righty'));
+    const advice = St.styleAdvisories(styled.layout, null, DOCS, 'layout').find(x => x.code === 'profile_moves_dock');
+    assert.ok(advice);
+    assert.equal(advice.text.xx, 'XRighty:XR/XL');
+  } finally { St.STYLES.words = original; }
+});

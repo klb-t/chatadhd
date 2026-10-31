@@ -56,3 +56,17 @@ test('generative: any address and mode give one known step; the merge never lose
     for (let i = 1; i < m.length; i++) assert.ok((m[i - 1].at || '') >= (m[i].at || ''));
   }
 });
+
+test('trash and undo require interpreter completion, not merely a successful HTTP response', async () => {
+  // Synthetic transport results; no server, model or user data.
+  const step = T.trashStepOf('conv:c_example', 'target');
+  const requests = [];
+  const success = { id: 'run_example', status: 'completed', result: { data: { changed: true } } };
+  assert.equal(await T.runTrashAction({ run: async request => { requests.push(request); return success; } }, step), success);
+  assert.deepEqual(requests, [{ action: 'conversation.trash', element: { class: 'application' }, args: { query: 'c_example', from: 'desktop' } }]);
+  for (const status of ['failed', 'awaiting_confirmation', 'cancelled', 'future_state']) {
+    await assert.rejects(T.runTrashAction({ run: async () => ({ id: 'run_example', status }) }, step), { message: status });
+  }
+  await assert.rejects(T.runTrashAction({ run: async () => ({ id: 'run_example', status: 'failed', error: { message: 'Permission denied' } }) }, step), { message: 'Permission denied' });
+  await assert.rejects(T.runTrashAction({ run: async () => { throw new Error('Transport failed'); } }, step), { message: 'Transport failed' });
+});

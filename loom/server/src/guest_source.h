@@ -4,6 +4,7 @@
 #include <fstream>
 #include <functional>
 #include <map>
+#include <set>
 #include <string>
 #include <vector>
 #include <nlohmann/json.hpp>
@@ -94,11 +95,42 @@ std::map<std::string, std::string> read_keys_file(std::string path, const std::v
 // rewrite base_url ({project}); it returns "" when the entry is usable, else the reason it is skipped. `blocked` gives
 // the reason a provider is out right now (exhausted, over budget), "" when it is not.
 using SourceResolver = std::function<std::string(const json& prov, std::string& key, std::string& base_url)>;
+
+// Use the same unambiguous identity for selection, later token refreshes and usage settlement.
+// The returned pointer borrows the caller's provider array.
+inline const json* unique_provider(const json& providers, const std::string& id) {
+  if (!providers.is_array()) return nullptr;
+  const json* found = nullptr;
+  for (const auto& p : providers) {
+    if (!p.is_object()) continue;
+    const auto name = p.find("id");
+    if (name == p.end() || !name->is_string() || name->get<std::string>() != id) continue;
+    if (found) return nullptr;
+    found = &p;
+  }
+  return found;
+}
+
 json choose_free_model(const json& fp, const std::string& keys_file, const std::vector<std::string>& allowed_tiers,
                        std::map<std::string, std::string>& overlay, const SourceResolver& resolve = {},
                        const std::function<std::string(const json&)>& blocked = {}) {
   const json providers = fp.value("providers", json::array());
   const json choice = fp.value("free_model_choice", json::object());
+  // A provider id is one identity. An ambiguous id must not pass the tier check using one entry and
+  // then resolve credentials/terms using a different entry (e.g. first free, last paid).
+  std::set<std::string> seen_ids;
+  std::set<std::string> ambiguous;
+  for (const auto& p : providers) {
+    if (!p.is_object()) continue;
+    const auto name = p.find("id");
+    if (name == p.end() || !name->is_string()) continue;
+    const std::string id = name->get<std::string>();
+    if (!seen_ids.insert(id).second) ambiguous.insert(id);
+  }
+  auto provider_for = [&](const json& row) -> const json* {
+    const std::string id = row.value("provider", std::string());
+    return unique_provider(providers, id);
+  };
   std::vector<std::string> wanted;
   for (const auto& p : providers)
     if (p.is_object() && !p.value("auth_env", std::string()).empty()) wanted.push_back(p.value("auth_env", std::string()));
@@ -109,8 +141,7 @@ json choose_free_model(const json& fp, const std::string& keys_file, const std::
   // Which tiers may be chosen at all, and in which order, is decided by the caller (guest_allowed_tiers): a provider
   // whose tier is not in `allowed_tiers` is never chosen, whatever the table says (R104/R111/R112).
   auto tier_of = [&](const json& row) -> std::string {
-    for (const auto& p : providers)
-      if (p.is_object() && p.value("id", std::string()) == row.value("provider", std::string())) return p.value("tier", std::string());
+    if (const json* p = provider_for(row)) return p->value("tier", std::string());
     return {};
   };
   auto tier_rank = [&](const json& row) -> std::size_t {
@@ -128,18 +159,18 @@ json choose_free_model(const json& fp, const std::string& keys_file, const std::
   {  // rows of tiers that may not be given are reported up front (they sort last and would never be reached)
     json kept = json::array();
     for (const auto& row : table) {
-      if (tier_rank(row) < allowed_tiers.size()) { kept.push_back(row); continue; }
+      if (!ambiguous.count(row.value("provider", std::string())) && tier_rank(row) < allowed_tiers.size()) { kept.push_back(row); continue; }
       bool seen = false;
       for (const auto& k : skipped) if (k["provider"] == row.value("provider", std::string())) seen = true;
-      if (!seen) skipped.push_back({{"provider", row.value("provider", std::string())}, {"why", "tier_not_allowed"}, {"tier", tier_of(row)}});
+      if (!seen) skipped.push_back({{"provider", row.value("provider", std::string())},
+                                   {"why", ambiguous.count(row.value("provider", std::string())) ? "ambiguous_provider_entry" : "tier_not_allowed"},
+                                   {"tier", tier_of(row)}});
     }
     table = kept;
   }
   for (const auto& row : table) {
     const std::string pid = row.value("provider", std::string());
-    const json* prov = nullptr;
-    for (const auto& p : providers)
-      if (p.is_object() && p.value("id", std::string()) == pid) prov = &p;
+    const json* prov = provider_for(row);
     if (!prov) { skipped.push_back({{"provider", pid}, {"why", "no_provider_entry"}}); continue; }
     if (tier_rank(row) >= allowed_tiers.size()) { skipped.push_back({{"provider", pid}, {"why", "tier_not_allowed"}, {"tier", prov->value("tier", std::string())}}); continue; }
     if (!prov->value("enabled", false)) { skipped.push_back({{"provider", pid}, {"why", "disabled"}}); continue; }

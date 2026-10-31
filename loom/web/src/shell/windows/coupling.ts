@@ -1,3 +1,4 @@
+import { localizedText, mapLocalizedText, type LocalizedText } from "../language-pack";
 // W6 of the window system (OKNA §5): coupling of parameters between windows. Pure: no React, no DOM, no kernel.
 // - A binding per parameter lives in the window's params (`params.bind.<param>`, binding.ts), so it travels with the layout: the saved
 //   last layout, the named layouts of W5 (written by the W5b merge patch) and the journal (bind/unbind are one undoable entry each).
@@ -17,7 +18,7 @@ import { readBinding, INDEPENDENT, type Binding } from "./binding";
 import type { WLayout, WState, Win } from "./model";
 import type { WinAdvisory } from "./arrange";
 
-type Words = { pl?: string; en?: string };
+type Words = LocalizedText;
 export interface CouplingData {
   max_iterations?: number; modes?: string[]; channels?: string[]; kind_params?: Record<string, string[]>;
   params?: Record<string, Words>; dependencies?: Record<string, Words>;
@@ -225,9 +226,9 @@ export function beforeUnbind(l: WLayout, values: Values, id: string, param: stri
 }
 
 // ---------- words, menu, chain, advisories ----------
-const say = (w: Words | undefined, lang: string) => (lang === "pl" ? w?.pl ?? w?.en : w?.en ?? w?.pl) ?? "";
+const say = (w: Words | undefined, lang: string) => localizedText(w, lang) ?? "";
 const fill = (s: string, vars: Record<string, string>) => s.replace(/\{(\w+)\}/g, (_, k) => vars[k] ?? "");
-const fillW = (t: Words | undefined, vars: Record<string, string>): Words => ({ pl: fill(t?.pl ?? "", vars), en: fill(t?.en ?? "", vars) });
+const fillW = (t: Words | undefined, vars: Record<string, string>): Words => mapLocalizedText(t, s => fill(s, vars));
 export function paramWord(param: string, lang: string, data: CouplingData = COUPLING): string { return say(data.params?.[param], lang) || param; }
 export function depWord(dep: Binding["dependency"], lang: string, data: CouplingData = COUPLING): string {
   const kind = dep?.kind ?? "same";

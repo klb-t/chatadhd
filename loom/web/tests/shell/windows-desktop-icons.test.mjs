@@ -141,3 +141,13 @@ test('generative: the graph behind keeps only real edges between drawn nodes, po
   }
   console.log(`[desktop-icons] graph behind: ${kept} real edges kept, ${dropped} with an end outside the budget or a loop not drawn`);
 });
+
+test('declaration names and aliases from arbitrary languages retain non-Latin text', () => {
+  const data = { declarations: { custom: { label: { nl: 'Eigen bureaublad', zh: '测试桌面' } } },
+    declaration_words: { custom: { xx: ['a new desktop word'], zh: ['中文别名'] } }, declaration_clear_words: [] };
+  assert.equal(I.declarationOfWord('测试桌面', data), 'custom');
+  assert.equal(I.declarationOfWord('中文别名', data), 'custom');
+  assert.equal(I.declarationOfWord('a new desktop word', data), 'custom');
+  assert.equal(I.declarationOfWord('Eigen bureaublad', data), 'custom');
+  assert.equal(I.declarationOfWord('別の言葉', data), undefined);
+});

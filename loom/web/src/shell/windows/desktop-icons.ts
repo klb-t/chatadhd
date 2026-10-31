@@ -1,3 +1,4 @@
+import { localizedText, localizedPhrases, type LocalizedText } from "../language-pack";
 // R101 D2 (PULPIT_R101_2026-10-28 §3.2, §4, §6, §9, §13): the content of the desktop window as pure data + total functions - the view
 // declaration chosen by the setting desktop_declaration (preset pulpit_graf), the icons of the pins (perspective pinned_on), their grid
 // (coordinates icon_grid), the window an icon opens (open_targets: address -> window kind), and the layout of the faint graph behind them.
@@ -5,7 +6,7 @@
 // advisory or a skipped element with its reason, never an error (CLAUDE.md: the engine takes every configuration, also a useless one).
 import { DESKTOP, type DesktopData, type KindEntry, type KindTarget } from "./desktop";
 
-type Text = { pl?: string; en?: string };
+type Text = LocalizedText;
 export interface DeclElement { id?: string; kind?: string; [key: string]: unknown }
 export interface Declaration { id?: string; label?: Text | string; elements?: DeclElement[] }
 export interface Advisory { code: string; vars?: Record<string, string> }
@@ -115,7 +116,7 @@ export interface DesktopExtra {
   address_labels?: Record<string, Text | string>;
   glyphs?: Record<string, string>;
   minimized?: { preset?: unknown; known?: string[] };
-  declaration_words?: Record<string, { pl?: string[]; en?: string[] }>;
+  declaration_words?: Record<string, Record<string, string[] | undefined>>;
   declaration_clear_words?: string[];
 }
 export interface OpenRule { kind?: string; focus?: string; conversation?: string }
@@ -153,7 +154,7 @@ export interface DesktopIcon {
   act?: { restore: string } | { layout: string; own: boolean };
 }
 
-const pickText = (t: Text | string | undefined, lang: string): string | undefined => (typeof t === "string" ? t : t ? (lang === "pl" ? t.pl ?? t.en : t.en ?? t.pl) : undefined);
+const pickText = (t: Text | string | undefined, lang: string): string | undefined => localizedText(t, lang);
 
 /** The rows of the perspective pinned_on (nodes) joined with the metadata of the links (order, label_override, glyph, address). */
 export function pinsFrom(desktopNode: string, nodes: { id: string; kind?: string; label?: string; metadata?: Record<string, unknown> }[], links: { src: string; dst: string; metadata?: Record<string, unknown> }[]): PinRow[] {
@@ -303,7 +304,7 @@ export function minimizedMode(setting: unknown, deviceClass: string, data: Deskt
   return known.includes(v) ? { mode: v } : { mode: preset, advisory: { code: "desktop_minimized_unknown", vars: { value: v.slice(0, 40), preset } } };
 }
 
-const fold = (s: string) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ł/g, "l").replace(/Ł/g, "L").toLowerCase().replace(/[^a-z0-9_:]+/g, " ").trim();
+const fold = (s: string) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ł/g, "l").replace(/Ł/g, "L").toLowerCase().replace(/[^\p{L}\p{N}_:]+/gu, " ").trim();
 /** The declaration a word names (the sentence „pulpit jako ikony”): an id of `declarations` (with or without pulpit_), its label, or a
  *  word of declaration_words; a clear word (default, domyślny) = null (the preset). Unknown: undefined (the page says which it knows). */
 export function declarationOfWord(word: string, data: DesktopExtra = DESKTOP_X): string | null | undefined {
@@ -313,7 +314,7 @@ export function declarationOfWord(word: string, data: DesktopExtra = DESKTOP_X):
   for (const id of ids) if (fold(id) === w || fold(id.replace(/^pulpit_/, "")) === w || fold(id.replace(/^pulpit_/, "").replace(/_/g, " ")) === w) return id;
   for (const id of ids) {
     const words = data.declaration_words?.[id]; const label = data.declarations![id].label;
-    const all = [...(words?.pl ?? []), ...(words?.en ?? []), ...(typeof label === "string" ? [label] : [label?.pl ?? "", label?.en ?? ""])];
+    const all = [...localizedPhrases(words), ...(typeof label === "string" ? [label] : Object.values(label ?? {}).filter((text): text is string => typeof text === "string"))];
     if (all.some((x) => x && fold(x) === w)) return id;
   }
   return undefined;

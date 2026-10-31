@@ -2024,12 +2024,17 @@ Result<Read> read_messages(Impl& c, const Json& src, const std::string& parent, 
 Result<Read> read_units(Impl& c, const Json& src, const std::string&, const Json&) {
   if (!c.env.db) return Error(Errc::Unavailable, "database_unavailable");
   std::map<std::string, std::int64_t> members;
+  std::int64_t unreadable = 0;
   {
     auto lock = c.env.db->lock();
-    LOOM_TRY_ASSIGN(auto st, c.env.db->conn().prepare("SELECT metadata FROM conversations WHERE json_extract(metadata, '$.units') IS NOT NULL"));
+    LOOM_TRY_ASSIGN(auto st, c.env.db->conn().prepare("SELECT metadata, json_valid(metadata) FROM conversations WHERE CASE WHEN metadata IS NULL THEN 0 WHEN json_valid(metadata) THEN json_extract(metadata, '$.units') IS NOT NULL ELSE 1 END"));
     while (true) {
       LOOM_TRY_ASSIGN(bool more, st.step());
       if (!more) break;
+      if (!st.get_int(1)) {
+        ++unreadable;
+        continue;
+      }
       const Json meta = json::parse_or(st.get_text(0), Json::object());
       const Json units = meta.is_object() ? meta.value("units", Json::object()) : Json::object();
       if (units.is_object())
@@ -2038,10 +2043,15 @@ Result<Read> read_units(Impl& c, const Json& src, const std::string&, const Json
     }
   }
   Read r;
+  if (unreadable > 0) {
+    log::write(log::Level::Warning, kLog, "unit membership: unreadable conversation metadata rows: " + std::to_string(unreadable));
+    if (members.empty()) r.unknown = "conversation_metadata_unreadable";
+  }
   for (const auto& [id, n_members] : members) {
     Json n = c.make(src, "unit:" + id, id.substr(id.find('/') + 1), c.parent_of(src), "db", "conversations.metadata.units", "conversation");
     n["count"] = n_members;
     n["attrs"] = Json{{"unit_kind", id.substr(0, id.find('/'))}, {"unit_id", id.substr(id.find('/') + 1)}, {"conversations", n_members}};
+    if (unreadable > 0) n["count_partial"] = Json::array({Json{{"source", "db.units"}, {"reason", "conversation_metadata_unreadable"}, {"rows", unreadable}}});
     r.nodes.push_back(std::move(n));
   }
   return r;

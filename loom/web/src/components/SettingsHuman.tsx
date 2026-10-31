@@ -40,6 +40,7 @@ export default function SettingsHuman({ profileHost, convId, language, onNavigat
   const [doc, setDoc] = useState<SettingsResolved | null>(null);
   const [fieldsDoc, setFieldsDoc] = useState<unknown>(null);
   const [error, setError] = useState<string | null>(null);
+  const [fieldsError, setFieldsError] = useState<string | null>(null);
   const [generation, setGeneration] = useState(0);
   const [openGroup, setOpenGroup] = useState<string | null>(null);
   const [onlyChanged, setOnlyChanged] = useState(false);
@@ -54,7 +55,13 @@ export default function SettingsHuman({ profileHost, convId, language, onNavigat
     if (!actions) { setError(t("error.no_actions")); return; }   // a catalogue sentence, never a developer id
     Promise.all([
       actions.settingsResolved({ lang: language, ...(convId ? { conv_id: convId } : {}) }),
-      api.getSettingsFields().catch(() => null),   // only the labels of the subgroups come from here; without them the ids show
+      api.getSettingsFields().then(fields => {
+        if (alive) setFieldsError(null);
+        return fields;
+      }).catch(failure => {
+        if (alive) setFieldsError(failure instanceof Error ? failure.message : String(failure));
+        return null;   // keep the resolved values available, with an explicit warning about missing labels
+      }),
     ]).then(([resolved, fields]) => { if (alive) { setDoc(resolved); setFieldsDoc(fields); setError(null); } })
       .catch(failure => { if (alive) setError(failure instanceof Error ? failure.message : String(failure)); });
     return () => { alive = false; };
@@ -170,6 +177,10 @@ export default function SettingsHuman({ profileHost, convId, language, onNavigat
 
   return (
     <div className="shum" data-testid="settings-human">
+      {fieldsError !== null && <div className="gnav-note gnav-error" role="alert" data-testid="shum-fields-error">
+        <p>{t("error.fields", { reason: fieldsError })}</p>
+        <button type="button" className="gnav-bar-btn" onClick={reload}>{t("retry")}</button>
+      </div>}
       {!doc && !error && <p className="gnav-note" data-testid="shum-loading">{t("loading")}</p>}
       {error && (
         <div className="gnav-note gnav-error" role="alert" data-testid="shum-error">

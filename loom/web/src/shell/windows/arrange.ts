@@ -1,3 +1,4 @@
+import { localizedText, mapLocalizedText, type LocalizedText } from "../language-pack";
 // W4 (OKNA §2.2, §4.4, §6.3): docking and floating as actions of a person - one journal entry each - and the advisories of an
 // arrangement (dock_narrow, float_offscreen, float_under_keyboard). Pure: no React, no DOM, no kernel. The page draws the chips and
 // answers them through the catalogue action advisory.answer (the store of G3b, `loom.advisory/1` code + fingerprint), not here.
@@ -8,8 +9,9 @@ import { apply, fitToArea, type Ctx, type Op, type Rect, type WLayout, type WSta
 import { WINDOW_CTX } from "./session";
 import { dockView, leafBoxes, type Box, type Zone } from "./dock";
 
-type Words = { pl?: string; en?: string };
+type Words = LocalizedText;
 export interface ArrangeData {
+  labels?: Record<string, Words>;
   min_useful_width?: number; offscreen_fraction?: number; keyboard_min_px?: number; drop_edge?: number; float_drop_edge?: number; drag_threshold_px?: number; split_grip_px?: number;
   float_rect?: Partial<Rect>; advisory_button_order?: string[];
   advisories?: Record<string, { text?: Words; fix?: { id: string; label: Words } }>;
@@ -17,6 +19,10 @@ export interface ArrangeData {
   menu?: { id: string; label: Words; icon?: string }[]; keymap?: Record<string, string>;
 }
 export const ARRANGE: ArrangeData = ((layoutsFile as { window_arrange?: ArrangeData }).window_arrange) ?? {};
+/** Accessible window controls use language templates in data, independently of the window's title. */
+export function arrangementLabel(id: string, title: string, language: string, data: ArrangeData = ARRANGE): string {
+  return (localizedText(data.labels?.[id], language) ?? id).replace(/\{title\}/g, () => title);
+}
 export const num = (v: unknown, d: number) => (typeof v === "number" && Number.isFinite(v) ? v : d);
 
 /** An arrangement asked by a person: an open string; the known ones are docking to a side, a tab, floating, maximizing. */
@@ -94,8 +100,7 @@ export interface Env {
   title?: (w: Win) => string;
 }
 const fill = (t: Words | undefined, vars: Record<string, string>): Words => {
-  const f = (s?: string) => s?.replace(/\{(\w+)\}/g, (_, k) => vars[k] ?? "");
-  return { pl: f(t?.pl), en: f(t?.en) };
+  return mapLocalizedText(t, s => s.replace(/\{(\w+)\}/g, (_, k) => vars[k] ?? ""));
 };
 /** The rect of a floating window in pixels of an area (a fraction rect is relative to it). */
 export function rectBox(r: Rect, area: Box): Box {

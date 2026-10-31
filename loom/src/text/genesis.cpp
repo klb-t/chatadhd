@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <map>
 #include <set>
+#include <tuple>
 
 namespace loom::text::genesis {
 namespace {
@@ -343,6 +344,12 @@ Result<MaterializeSummary> materialize(Database& db, const Chain& chain, const O
   };
   const std::string frag_kind = opt.node_kind("fragment"), ver_kind = opt.node_kind("version"), ev_kind = opt.node_kind("event");
   std::map<std::string, std::string> frag_ids, ver_ids;  // fingerprint / source id -> node id
+  using Edge = std::tuple<std::string, std::string, std::string>;  // src, dst, kind
+  std::map<Edge, std::map<std::string, Json>> event_links;
+  auto event_link = [&](const std::string& src, const std::string& dst, const std::string& type, Json metadata) {
+    const std::string key = metadata.at("event").get<std::string>();
+    event_links[{src, dst, type}][key] = std::move(metadata);
+  };
   for (std::size_t i = 0; i < chain.versions.size(); ++i) {
     const VersionFragments& v = chain.versions[i];
     Json meta = v.source.to_json();
@@ -391,12 +398,42 @@ Result<MaterializeSummary> materialize(Database& db, const Chain& chain, const O
       LOOM_TRY(link(eid, succ->second, opt.edge_kind("successor"), Json{{"similarity", e.similarity}}));
       // Preset: the edge named after the event kind goes to the successor fragment when there is one (replaced_by),
       // and back (derived_from); otherwise it goes to the version the event happened in (deleted_in, added_in, moved_to).
-      LOOM_TRY(link(frag->second, succ->second, opt.edge_kind(e.kind), Json{{"event", e.key}, {"similarity", e.similarity}, {"in", e.to.id}}));
-      LOOM_TRY(link(succ->second, frag->second, opt.edge_kind("replacement_back"), Json{{"event", e.key}, {"in", e.to.id}}));
+      event_link(frag->second, succ->second, opt.edge_kind(e.kind),
+                 Json{{"event", e.key}, {"similarity", e.similarity}, {"in", e.to.id}, {"a_index", opt_idx(e.a_index)}, {"b_index", opt_idx(e.b_index)}});
+      event_link(succ->second, frag->second, opt.edge_kind("replacement_back"),
+                 Json{{"event", e.key}, {"in", e.to.id}, {"a_index", opt_idx(e.a_index)}, {"b_index", opt_idx(e.b_index)}});
     } else {
-      LOOM_TRY(link(frag->second, to->second, opt.edge_kind(e.kind),
-                    Json{{"event", e.key}, {"a_index", opt_idx(e.a_index)}, {"b_index", opt_idx(e.b_index)}}));
+      event_link(frag->second, to->second, opt.edge_kind(e.kind),
+                 Json{{"event", e.key}, {"a_index", opt_idx(e.a_index)}, {"b_index", opt_idx(e.b_index)}});
     }
+  }
+  // Links have one row per (src, dst, kind), while repeated occurrences can have several events on that row.
+  // Keep every event, including those already materialised by another chain sharing these fragment nodes.
+  for (const auto& [edge, current] : event_links) {
+    const auto& [src, dst, type] = edge;
+    std::map<std::string, Json> records;
+    LOOM_TRY_ASSIGN(const auto previous, db.get_links(src, type));
+    for (const auto& old : previous) {
+      if (old.src != src || old.dst != dst) continue;
+      const Json& metadata = old.metadata;
+      auto keep = [&](const Json& record) {
+        if (record.is_object() && record.contains("event") && record.at("event").is_string())
+          records[record.at("event").get<std::string>()] = record;
+      };
+      if (metadata.contains("events") && metadata.at("events").is_array()) {
+        for (const auto& record : metadata.at("events")) keep(record);
+      } else {
+        keep(metadata);  // a link materialised before the occurrence list was introduced
+      }
+    }
+    for (const auto& [key, metadata] : current) records[key] = metadata;
+    Json metadata = records.rbegin()->second;  // retain the legacy singular fields as a deterministic representative
+    metadata["events"] = Json::array();
+    for (const auto& [key, record] : records) {
+      (void)key;
+      metadata["events"].push_back(record);
+    }
+    LOOM_TRY(link(src, dst, type, std::move(metadata)));
   }
   return s;
 }
@@ -534,7 +571,7 @@ Result<Json> query(Database& db, const Segmenter& seg, const Query& q, const Opt
       if (chains.empty()) return Error(Errc::InvalidArgument, "missing: name a message (message_id), a version group or two versions");
       // the version asked about (the named message, else the last) and the one before it
       const std::vector<VersionText>* src = nullptr;
-      LOOM_TRY_ASSIGN(auto versions, !q.message_id.empty() ? versions_of_message(db, q.message_id) : versions_of_group(db, chains[0].versions.front().source.group));
+      LOOM_TRY_ASSIGN(auto versions, versions_of_message(db, !q.message_id.empty() ? q.message_id : chains[0].versions.front().source.id));
       src = &versions;
       std::size_t to = src->size() - 1;
       if (!q.message_id.empty())

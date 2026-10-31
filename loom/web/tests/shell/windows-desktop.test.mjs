@@ -143,3 +143,10 @@ test('P1 generative: with only the desktop seen, a way to a window exists unless
   assert.ok(checked > 20, `too few desktop-only states reached: ${checked}`);
   console.log(`[windows-desktop] P1: ${checked} desktop-only states, ${followed} paths followed, ${waived} waived (emergency off, no section path)`);
 });
+
+test('desktop words honor arbitrary language catalogs and substitute parameters after selecting the language', () => {
+  const words = { open: { en: 'Open {name}', nl: 'Openen {name}', xx: 'X {name}' } };
+  assert.equal(D.say(words, 'open', 'nl', { name: 'A' }), 'Openen A');
+  assert.equal(D.say(words, 'open', 'xx', { name: 'B' }), 'X B');
+  assert.equal(D.say(words, 'open', 'missing', { name: 'C' }), 'Open C');
+});

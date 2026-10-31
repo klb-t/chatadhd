@@ -1,3 +1,4 @@
+import { localizedText, mapLocalizedText, type LocalizedText } from "../language-pack";
 // W9 (OKNA §7.2, D14): the style of a window = an application profile (loom.application_profile/1) applied to one window or to a whole
 // layout, as data. `window.profile` → `layout.profile` → the person's profile → the fallback (preset `loom-default`, data/styles.json).
 // A reference is `{id, revision}` (revision null = the newest revision of that id known here); a reference to a profile not known on this
@@ -11,7 +12,7 @@ import stylesFile from "../data/styles.json";
 import type { Tree, WLayout, WState, Win } from "./model";
 import type { WinAdvisory } from "./arrange";
 
-type Words = { pl?: string; en?: string };
+type Words = LocalizedText;
 export const STYLES = stylesFile as unknown as {
   fallback_profile?: string; layout_fields_default?: string; layout_fields_known?: string[]; words: Record<string, Words>;
   clear_words?: string[]; apply_sidebar_width?: boolean;
@@ -107,12 +108,13 @@ function mirrorAt(t: Tree, path: string): Tree {
   return path[0] === "a" ? { ...t, a: mirrorAt(t.a, path.slice(1)) } : { ...t, b: mirrorAt(t.b, path.slice(1)) };
 }
 
-const say = (w: Words | undefined, lang: string) => (lang === "pl" ? w?.pl ?? w?.en : w?.en ?? w?.pl) ?? "";
-const fill = (w: Words | undefined, vars: Record<string, string>): Words => {
-  const f = (s?: string) => (s === undefined ? undefined : s.replace(/\{(\w+)\}/g, (_, k) => vars[k] ?? `{${k}}`));
-  return { pl: f(w?.pl), en: f(w?.en) };
+const say = (w: Words | undefined, lang: string) => localizedText(w, lang) ?? "";
+const fill = (w: Words | undefined, vars: Record<string, string> | ((language: string) => Record<string, string>)): Words => {
+  return mapLocalizedText(w, (s, language) => {
+    const parameters = typeof vars === "function" ? vars(language) : vars;
+    return s.replace(/\{(\w+)\}/g, (_, k) => parameters[k] ?? `{${k}}`);
+  });
 };
-const sideWords = (side: string): { pl: string; en: string } => ({ pl: say(STYLES.words[`side_${side}`], "pl") || side, en: say(STYLES.words[`side_${side}`], "en") || side });
 
 /** The windows whose side the profile suggests (preset: the conversation list), docked in a leaf and drawn (a list collapsed to a handle,
  * the drawer of the layout `czat`, has no side on the screen to move - offering „Przestaw” there would be a control that does nothing). */
@@ -146,11 +148,10 @@ export function styleAdvisories<D extends StyleDoc>(l: WLayout, person: ProfileR
     const at = leafSide(l.tree, w.dock!.leaf);
     if ((want !== "left" && want !== "right") || !at || at.side === want) continue;
     const label = r.profile.label ?? r.profile.id;
-    const sw = sideWords(want), sn = sideWords(at.side);
     out.push({
       code: "profile_moves_dock", fingerprint: `${refKey(refOfDoc(r.profile))}|${want}|${at.path}`, window: w.id,
       evidence: { profile: refOfDoc(r.profile), source: r.source, mode, want, now: at.side, split: at.path, share: at.share, width_px: r.profile.presentation?.sidebar?.width ?? null },
-      text: { pl: fill(STYLES.words.moves_dock, { label, want: sw.pl, now: sn.pl }).pl, en: fill(STYLES.words.moves_dock, { label, want: sw.en, now: sn.en }).en },
+      text: fill(STYLES.words.moves_dock, language => ({ label, want: say(STYLES.words[`side_${want}`], language) || want, now: say(STYLES.words[`side_${at.side}`], language) || at.side })),
       question: STYLES.words.moves_dock_question ?? {}, fix: { id: "profile_side", label: STYLES.words.moves_dock_fix ?? { pl: "Przestaw", en: "Move it" } },
     });
   }

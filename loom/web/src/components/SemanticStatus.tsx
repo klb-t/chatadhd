@@ -5,7 +5,7 @@ import type { SemanticRequeueResult, SemanticStatusInfo } from "../api/types";
 import { PresentationFailure } from "../onboarding/presentation-context";
 import UsagePendingBlock from "./UsagePendingBlock";
 import { USAGE_PENDING_FEATURE } from "../context/usage-pending";
-import { RETRY_MODES, SEMANTIC_QUEUE_FEATURE, semanticQueueTexts, semanticQueueView } from "../context/semantic-queue";
+import { retryModeChoices, SEMANTIC_QUEUE_FEATURE, semanticQueueTexts, semanticQueueView } from "../context/semantic-queue";
 import { message, resolvePresentationFeature, PresentationError, resolvePresentation } from "../onboarding/presentation.mjs";
 
 const POLL_MS = 4000;
@@ -164,7 +164,7 @@ export default function SemanticStatus({ profileHost }: { profileHost: UserProfi
             <select value={view.retryMode ?? ""} disabled={busy} data-testid="semantic-retry-mode"
               onChange={(event) => void chooseRetryMode(event.target.value, texts.failed)}>
               {view.retryMode === null && <option value="" />}
-              {RETRY_MODES.map(mode => <option key={mode} value={mode}>{texts.mode(mode)}</option>)}
+              {retryModeChoices(view.retryMode).map(mode => <option key={mode} value={mode}>{texts.mode(mode)}</option>)}
             </select></label>}
           {note && <p data-testid="semantic-queue-note">{note}</p>}
         </div>;

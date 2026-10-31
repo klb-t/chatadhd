@@ -10,22 +10,22 @@
   "kind_params": { "navigator": ["zoom", "pan"], "graph": [], "chat": [], "structure": ["root", "templates", "show_expected", "mapping", "depth", "budget"] },
   "kind_params_note": "Which parameters a window of a kind actually reads and writes today (no fake controls: a parameter appears in the menu ⋯ only where a component follows it). Open: a kind not listed offers nothing yet. W7 gap: focus node, perspective, time position and mapping of the navigator.",
   "params": {
-    "zoom": { "pl": "przybliżenie", "en": "zoom" },
-    "pan": { "pl": "przesunięcie", "en": "pan" },
-    "focus": { "pl": "węzeł w centrum", "en": "focus node" },
-    "perspective": { "pl": "perspektywa", "en": "perspective" },
-    "time_range": { "pl": "zakres czasu", "en": "time range" },
-    "mapping": { "pl": "odwzorowanie", "en": "mapping" },
-    "conversation": { "pl": "rozmowa", "en": "conversation" }
+    "zoom": { "pl": "przybliżenie", "en": "zoom", "nl": "zoom" },
+    "pan": { "pl": "przesunięcie", "en": "pan", "nl": "verschuiving" },
+    "focus": { "pl": "węzeł w centrum", "en": "focus node", "nl": "focusknooppunt" },
+    "perspective": { "pl": "perspektywa", "en": "perspective", "nl": "perspectief" },
+    "time_range": { "pl": "zakres czasu", "en": "time range", "nl": "tijdsbereik" },
+    "mapping": { "pl": "odwzorowanie", "en": "mapping", "nl": "koppeling" },
+    "conversation": { "pl": "rozmowa", "en": "conversation", "nl": "gesprek" }
   },
   "dependencies": {
-    "same": { "pl": "równe", "en": "equal" },
-    "offset": { "pl": "przesunięte o {by}", "en": "offset by {by}" },
-    "scale": { "pl": "×{factor}", "en": "×{factor}" },
-    "parent_of": { "pl": "rodzic", "en": "parent of" },
-    "children_of": { "pl": "dzieci", "en": "children of" },
-    "perspective_of_node": { "pl": "perspektywa węzła", "en": "perspective of the node" },
-    "expression": { "pl": "wyrażenie {expr}", "en": "expression {expr}" }
+    "same": { "pl": "równe", "en": "equal", "nl": "gelijk" },
+    "offset": { "pl": "przesunięte o {by}", "en": "offset by {by}", "nl": "verschoven met {by}" },
+    "scale": { "pl": "×{factor}", "en": "×{factor}", "nl": "×{factor}" },
+    "parent_of": { "pl": "rodzic", "en": "parent of", "nl": "ouder van" },
+    "children_of": { "pl": "dzieci", "en": "children of", "nl": "kinderen van" },
+    "perspective_of_node": { "pl": "perspektywa węzła", "en": "perspective of the node", "nl": "perspectief van het knooppunt" },
+    "expression": { "pl": "wyrażenie {expr}", "en": "expression {expr}", "nl": "expressie {expr}" }
   },
   "menu_templates": [
     { "mode": "linked", "dependency": { "kind": "same" } },
@@ -36,19 +36,19 @@
   "menu_templates_note": "Examples of what the menu ⋯ of a window offers per parameter and per other window; any dependency (offset, expression…) is a binding in data and also comes from the layout file or a sentence later (W7).",
   "icons": { "shared": "🔗", "independent": "⛓", "linked": "↔" },
   "words": {
-    "bind_linked": { "pl": "Powiąż {param}: {dep} okna «{source}»", "en": "Bind {param}: {dep} of «{source}»" },
-    "bind_shared": { "pl": "Wspólne {param} w kanale «{channel}»", "en": "Share {param} in channel «{channel}»" },
-    "unbind": { "pl": "Rozwiąż {param}", "en": "Unbind {param}" },
-    "chain_linked": { "pl": "{param}: {dep} okna «{source}»", "en": "{param}: {dep} of «{source}»" },
-    "chain_shared": { "pl": "{param}: wspólne w kanale «{channel}»", "en": "{param}: shared in channel «{channel}»" },
-    "chain_title": { "pl": "Powiązane parametry", "en": "Bound parameters" }
+    "bind_linked": { "pl": "Powiąż {param}: {dep} okna «{source}»", "en": "Bind {param}: {dep} of «{source}»", "nl": "Koppel {param}: {dep} van «{source}»" },
+    "bind_shared": { "pl": "Wspólne {param} w kanale «{channel}»", "en": "Share {param} in channel «{channel}»", "nl": "Deel {param} in kanaal «{channel}»" },
+    "unbind": { "pl": "Rozwiąż {param}", "en": "Unbind {param}", "nl": "Ontkoppel {param}" },
+    "chain_linked": { "pl": "{param}: {dep} okna «{source}»", "en": "{param}: {dep} of «{source}»", "nl": "{param}: {dep} van «{source}»" },
+    "chain_shared": { "pl": "{param}: wspólne w kanale «{channel}»", "en": "{param}: shared in channel «{channel}»", "nl": "{param}: gedeeld in kanaal «{channel}»" },
+    "chain_title": { "pl": "Powiązane parametry", "en": "Bound parameters", "nl": "Gekoppelde parameters" }
   },
   "advisories": {
-    "coupling_cycle": { "text": { "pl": "Parametry są powiązane w kółko: {path}. Wartości mogą się nie uzgodnić; przeliczanie staje po {max} krokach.", "en": "The parameters are bound in a loop: {path}. The values may not settle; recalculation stops after {max} rounds." } },
-    "coupling_cycle_consistent": { "text": { "pl": "Parametry są powiązane w kółko równościami: {path}. Wartości się zgadzają.", "en": "The parameters are bound in a loop of equalities: {path}. The values agree." } },
-    "coupling_dangling": { "text": { "pl": "Okno «{title}» ma {param} powiązane z oknem, którego już nie ma; trzyma ostatnią wartość.", "en": "The window «{title}» has {param} bound to a window that is gone; it keeps the last value." }, "fix": { "id": "unbind", "label": { "pl": "Rozwiąż", "en": "Unbind" } } },
-    "unknown_dependency": { "text": { "pl": "Okno «{title}»: zależność «{kind}» nieznana; {param} trzyma ostatnią wartość.", "en": "Window «{title}»: dependency «{kind}» is unknown; {param} keeps the last value." }, "fix": { "id": "unbind", "label": { "pl": "Rozwiąż", "en": "Unbind" } } },
-    "expression_invalid": { "text": { "pl": "Okno «{title}»: wyrażenie {param} jest błędne ({error}); trzyma ostatnią wartość.", "en": "Window «{title}»: the expression of {param} is invalid ({error}); it keeps the last value." }, "fix": { "id": "unbind", "label": { "pl": "Rozwiąż", "en": "Unbind" } } },
-    "unknown_binding": { "text": { "pl": "Okno «{title}»: tryb wiązania «{mode}» nieznany; {param} działa jak niezależne.", "en": "Window «{title}»: binding mode «{mode}» is unknown; {param} acts as independent." } }
+    "coupling_cycle": { "text": { "pl": "Parametry są powiązane w kółko: {path}. Wartości mogą się nie uzgodnić; przeliczanie staje po {max} krokach.", "en": "The parameters are bound in a loop: {path}. The values may not settle; recalculation stops after {max} rounds.", "nl": "De parameters zijn in een lus gekoppeld: {path}. De waarden worden mogelijk niet stabiel; de herberekening stopt na {max} rondes." } },
+    "coupling_cycle_consistent": { "text": { "pl": "Parametry są powiązane w kółko równościami: {path}. Wartości się zgadzają.", "en": "The parameters are bound in a loop of equalities: {path}. The values agree.", "nl": "De parameters zijn in een lus van gelijkheden gekoppeld: {path}. De waarden komen overeen." } },
+    "coupling_dangling": { "text": { "pl": "Okno «{title}» ma {param} powiązane z oknem, którego już nie ma; trzyma ostatnią wartość.", "en": "The window «{title}» has {param} bound to a window that is gone; it keeps the last value.", "nl": "In het venster «{title}» is {param} gekoppeld aan een verdwenen venster; de laatste waarde blijft behouden." }, "fix": { "id": "unbind", "label": { "pl": "Rozwiąż", "en": "Unbind", "nl": "Ontkoppelen" } } },
+    "unknown_dependency": { "text": { "pl": "Okno «{title}»: zależność «{kind}» nieznana; {param} trzyma ostatnią wartość.", "en": "Window «{title}»: dependency «{kind}» is unknown; {param} keeps the last value.", "nl": "Venster «{title}»: afhankelijkheid «{kind}» is onbekend; {param} behoudt de laatste waarde." }, "fix": { "id": "unbind", "label": { "pl": "Rozwiąż", "en": "Unbind", "nl": "Ontkoppelen" } } },
+    "expression_invalid": { "text": { "pl": "Okno «{title}»: wyrażenie {param} jest błędne ({error}); trzyma ostatnią wartość.", "en": "Window «{title}»: the expression of {param} is invalid ({error}); it keeps the last value.", "nl": "Venster «{title}»: de expressie van {param} is ongeldig ({error}); de laatste waarde blijft behouden." }, "fix": { "id": "unbind", "label": { "pl": "Rozwiąż", "en": "Unbind", "nl": "Ontkoppelen" } } },
+    "unknown_binding": { "text": { "pl": "Okno «{title}»: tryb wiązania «{mode}» nieznany; {param} działa jak niezależne.", "en": "Window «{title}»: binding mode «{mode}» is unknown; {param} acts as independent.", "nl": "Venster «{title}»: koppelingsmodus «{mode}» is onbekend; {param} werkt onafhankelijk." } }
   }
 }

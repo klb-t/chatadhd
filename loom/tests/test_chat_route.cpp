@@ -1070,7 +1070,9 @@ TEST_SUITE("chat_route") {
 
   TEST_CASE("P32: the nearest action at full confidence is not accepted for a verb it does not answer to; the trace shows the verb guard") {
     const char* nearest = "{\"kind\":\"command\",\"action\":\"explain_simply\",\"reference\":\"message\",\"args\":{},\"confidence\":1.0}";
-    for (const char* sentence : {"Rozpisz tę wiadomość na kroki", "rozpisz tę rozmowę na punkty"}) {
+    for (const auto& [sentence, verb] : std::vector<std::pair<std::string, std::string>>{
+             {"Rozpisz tę wiadomość na kroki", "rozpisz"}, {"rozpisz tę rozmowę na punkty", "rozpisz"},
+             {"Uporządkuj tę wiadomość", "uporzadkuj"}}) {
       Fixture f;
       f.rt->config().set("intent_routing_method", "model");
       f.transport->expect("POST", "https://api.test/chat/completions", net::ScriptedTransport::Reply::json(200, reply(nearest)));
@@ -1081,7 +1083,7 @@ TEST_SUITE("chat_route") {
       CHECK(r.at("trace").at("decided_by") == "emergent");
       const Json stages = r.at("trace").at("stages");
       CHECK(stages.at(0).at("stage") == "model");
-      CHECK(stages.at(0).at("verdict").at("guard").at("verb") == "rozpisz");
+      CHECK(stages.at(0).at("verdict").at("guard").at("verb") == verb);
       CHECK(stages.at(0).at("verdict").at("guard").at("action") == "explain_simply");
       CHECK(stages.back().at("stage") == "emergent");
       CHECK(stages.back().at("why") == "verb_guard");

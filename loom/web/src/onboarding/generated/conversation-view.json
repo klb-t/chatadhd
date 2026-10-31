@@ -630,6 +630,8 @@
             "action_failed": "Nie udało się wykonać żądania ({{reason}})."
           },
           "nl": {
+            "llm_disabled": "Het analysemodel is uitgeschakeld na {{count}} mislukte aanroepen achter elkaar (limiet {{limit}}). De lokale regels blijven werken.",
+            "llm_reenable": "Het analysemodel opnieuw inschakelen",
             "stalled": "Vastgelopen: {{count}}",
             "quarantined": "Overgeslagen: {{count}}",
             "unknown": "onbekend",
@@ -2176,7 +2178,16 @@
             "lit_cohort": "Cohort:",
             "lit_saving_replaces_the_complete_top_level": "Saving replaces the complete top-level",
             "lit_usage_policy_value_rest": "value. Nested objects are not merge-patched; null is a stored value. An empty override restores preset values and remains a stored override. Outstanding receipts keep their own snapshots.",
-            "lit_workflow_recovery_note": "Save definitions, source text, views, validated state, variables and trace on this server. Remote execution checkpoints and exactly-once delivery are unavailable. Restoration never dispatches an action."
+            "lit_workflow_recovery_note": "Save definitions, source text, views, validated state, variables and trace on this server. Remote execution checkpoints and exactly-once delivery are unavailable. Restoration never dispatches an action.",
+            "log_filter": "Filter logs…",
+            "log_auto": "Refresh automatically",
+            "log_loading": "Loading logs…",
+            "log_read_failed": "Could not load logs: {{error}}",
+            "log_previous_lines": "These are the last lines loaded successfully; they may be out of date.",
+            "log_no_matches": "No log lines match this filter.",
+            "log_empty": "No log lines.",
+            "ri_settings_read_failed": "Could not read the display setting: {{error}}",
+            "ri_settings_write_failed": "Could not save the display setting: {{error}}"
           },
           "pl": {
             "menu_open": "Menu",
@@ -3066,7 +3077,16 @@
             "lit_cohort": "Kohorta:",
             "lit_saving_replaces_the_complete_top_level": "Zapis zastępuje całą wartość najwyższego poziomu",
             "lit_usage_policy_value_rest": "Zagnieżdżone obiekty nie są łączone przez łatanie; null jest zapisaną wartością. Puste nadpisanie przywraca wartości presetu i pozostaje zapisanym nadpisaniem. Otwarte rachunki zachowują własne migawki.",
-            "lit_workflow_recovery_note": "Zapisz na tym serwerze definicje, tekst źródłowy, widoki, zwalidowany stan, zmienne i ślad. Zdalne punkty kontrolne wykonania i dostarczenie dokładnie raz są niedostępne. Odtworzenie nigdy nie wysyła żadnej akcji."
+            "lit_workflow_recovery_note": "Zapisz na tym serwerze definicje, tekst źródłowy, widoki, zwalidowany stan, zmienne i ślad. Zdalne punkty kontrolne wykonania i dostarczenie dokładnie raz są niedostępne. Odtworzenie nigdy nie wysyła żadnej akcji.",
+            "log_filter": "Filtruj dziennik…",
+            "log_auto": "Odświeżaj automatycznie",
+            "log_loading": "Wczytywanie dziennika…",
+            "log_read_failed": "Nie udało się wczytać dziennika: {{error}}",
+            "log_previous_lines": "To ostatnie poprawnie wczytane wpisy; mogą być nieaktualne.",
+            "log_no_matches": "Żaden wpis nie pasuje do tego filtra.",
+            "log_empty": "Brak wpisów w dzienniku.",
+            "ri_settings_read_failed": "Nie udało się odczytać ustawienia widoku: {{error}}",
+            "ri_settings_write_failed": "Nie udało się zapisać ustawienia widoku: {{error}}"
           },
           "nl": {
             "menu_open": "Menu",
@@ -3956,7 +3976,16 @@
             "lit_cohort": "Cohort:",
             "lit_saving_replaces_the_complete_top_level": "Opslaan vervangt de volledige waarde op het hoogste niveau",
             "lit_usage_policy_value_rest": "Geneste objecten worden niet samengevoegd; null is een opgeslagen waarde. Een lege overschrijving herstelt de presetwaarden en blijft een opgeslagen overschrijving. Openstaande bewijzen behouden hun eigen snapshots.",
-            "lit_workflow_recovery_note": "Sla op deze server definities, brontekst, weergaven, gevalideerde status, variabelen en trace op. Controlepunten voor uitvoering op afstand en exactly-once-aflevering zijn niet beschikbaar. Herstel verstuurt nooit een actie."
+            "lit_workflow_recovery_note": "Sla op deze server definities, brontekst, weergaven, gevalideerde status, variabelen en trace op. Controlepunten voor uitvoering op afstand en exactly-once-aflevering zijn niet beschikbaar. Herstel verstuurt nooit een actie.",
+            "log_filter": "Filter het logboek…",
+            "log_auto": "Automatisch vernieuwen",
+            "log_loading": "Logboek laden…",
+            "log_read_failed": "Het logboek kon niet worden geladen: {{error}}",
+            "log_previous_lines": "Dit zijn de laatst geladen regels; ze kunnen verouderd zijn.",
+            "log_no_matches": "Geen logboekregels komen overeen met dit filter.",
+            "log_empty": "Geen logboekregels.",
+            "ri_settings_read_failed": "De weergave-instelling kon niet worden gelezen: {{error}}",
+            "ri_settings_write_failed": "De weergave-instelling kon niet worden opgeslagen: {{error}}"
           }
         }
       }
@@ -5453,7 +5482,8 @@
             "proposals.title": "Model proposals on fields",
             "all_fields.show": "Show All fields",
             "all_fields.hide": "Hide All fields",
-            "all_fields.why": "This is the former settings screen in full: connection, models, keys, the table of every key with its edit rule and the JSON editor (expert configuration). Nothing of it is gone; it is in English because its words are not in the catalogue yet."
+            "all_fields.why": "This is the former settings screen in full: connection, models, keys, the table of every key with its edit rule and the JSON editor (expert configuration). Nothing of it is gone; it is in English because its words are not in the catalogue yet.",
+            "error.fields": "Some setting labels could not be loaded. Available values are still shown: {{reason}}"
           },
           "pl": {
             "title": "Ustawienia",
@@ -5505,7 +5535,8 @@
             "proposals.title": "Propozycje modelu przy polach",
             "all_fields.show": "Pokaż Wszystkie pola",
             "all_fields.hide": "Ukryj Wszystkie pola",
-            "all_fields.why": "To dawny ekran ustawień w całości: połączenie, modele, klucze, tabela wszystkich kluczy z regułami edycji i edytor JSON (konfiguracja ekspercka). Nic z niego nie zniknęło; jest po angielsku, bo jego słów nie ma jeszcze w katalogu."
+            "all_fields.why": "To dawny ekran ustawień w całości: połączenie, modele, klucze, tabela wszystkich kluczy z regułami edycji i edytor JSON (konfiguracja ekspercka). Nic z niego nie zniknęło; jest po angielsku, bo jego słów nie ma jeszcze w katalogu.",
+            "error.fields": "Nie udało się wczytać części nazw ustawień. Dostępne wartości są nadal widoczne: {{reason}}"
           },
           "nl": {
             "title": "Instellingen",
@@ -5553,7 +5584,8 @@
             "proposals.title": "Modelvoorstellen bij velden",
             "all_fields.show": "Toon Alle velden",
             "all_fields.hide": "Verberg Alle velden",
-            "all_fields.why": "Dit is het voormalige instellingenscherm in zijn geheel: verbinding, modellen, sleutels, de tabel van elke sleutel met zijn bewerkingsregel en de JSON-editor (expertconfiguratie). Er is niets van verdwenen; het staat in het Engels omdat de woorden nog niet in de catalogus staan."
+            "all_fields.why": "Dit is het voormalige instellingenscherm in zijn geheel: verbinding, modellen, sleutels, de tabel van elke sleutel met zijn bewerkingsregel en de JSON-editor (expertconfiguratie). Er is niets van verdwenen; het staat in het Engels omdat de woorden nog niet in de catalogus staan.",
+            "error.fields": "Sommige namen van instellingen konden niet worden geladen. Beschikbare waarden worden nog getoond: {{reason}}"
           }
         }
       }

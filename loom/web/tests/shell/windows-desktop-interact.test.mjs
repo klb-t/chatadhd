@@ -144,3 +144,16 @@ test(`generative P3: any sequence of steps, undone by the inverses in reverse or
     assert.equal(canon(start), canon({ ...start }));
   }
 });
+
+test('drop-rule templates preserve literal addresses, including replacement tokens, without recursive expansion', () => {
+  // Synthetic addresses exercise arbitrary graph identities, not only today's generated ids.
+  for (const tail of ['$&', "$'", '$`', '$$', '$rest', '$address', 'x/$&/$rest']) {
+    const address = 'node:' + tail;
+    const source = { kind: 'icon', address };
+    assert.equal(I.fillValue('$address', source, 'node:'), address);
+    assert.equal(I.fillValue('$rest', source, 'node:'), tail);
+    assert.equal(I.fillValue('$address|$rest|$address', source, 'node:'), `${address}|${tail}|${address}`);
+  }
+  assert.equal(I.fillValue('$address/$rest', { kind: 'window', id: 'w:$&' }, 'w:'), 'w:$&/$&');
+  assert.equal(I.fillValue(2, conv, 'conv:'), 2);
+});

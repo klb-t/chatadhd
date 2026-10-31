@@ -464,10 +464,7 @@ std::string provider_blocked(const json& prov, SpendLedger& spend, ProviderCoold
 
 const json* find_provider(const json& fp, const std::string& pid) {
   const json& providers = fp.contains("providers") ? fp["providers"] : fp;
-  if (!providers.is_array()) return nullptr;
-  for (const auto& p : providers)
-    if (p.is_object() && p.value("id", std::string()) == pid) return &p;
-  return nullptr;
+  return unique_provider(providers, pid);
 }
 }  // namespace
 

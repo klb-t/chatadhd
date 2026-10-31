@@ -21,11 +21,34 @@ export default function RequestInspector({ api, convId }: { api?: Pick<LoomApi, 
   const [tick, setTick] = useState(0);
   // RI-2b: the setting request_inspector_show_setting_values (kernel masking; the store secrets and the route credential stay masked always).
   const [showValues, setShowValues] = useState(false);
-  useEffect(() => { void api?.getConfig?.().then((c) => setShowValues(c?.request_inspector_show_setting_values === true)).catch(() => undefined); }, [api]);
+  const [settingsError, setSettingsError] = useState<{ operation: "read" | "write"; reason: string } | null>(null);
+  const [settingsReady, setSettingsReady] = useState(false);
+  const [settingsBusy, setSettingsBusy] = useState(false);
+  const [settingsGeneration, setSettingsGeneration] = useState(0);
+  useEffect(() => {
+    let alive = true;
+    setSettingsReady(false);
+    setSettingsError(null);
+    if (api?.getConfig) {
+      void api.getConfig().then((c) => {
+        if (alive) { setShowValues(c?.request_inspector_show_setting_values === true); setSettingsReady(true); }
+      }).catch((failure) => {
+        if (alive) setSettingsError({ operation: "read", reason: failure instanceof Error ? failure.message : String(failure) });
+      });
+    }
+    return () => { alive = false; };
+  }, [api, settingsGeneration]);
   const toggleValues = async (on: boolean) => {
-    setShowValues(on);
-    try { await api?.setConfig?.({ request_inspector_show_setting_values: on }); } catch { setShowValues(!on); }
-    setTick((n) => n + 1);
+    if (!api?.setConfig || !settingsReady || settingsBusy) return;
+    setSettingsBusy(true);
+    try {
+      await api.setConfig({ request_inspector_show_setting_values: on });
+      setShowValues(on);
+      setSettingsError(null);
+      setTick((n) => n + 1);
+    } catch (failure) {
+      setSettingsError({ operation: "write", reason: failure instanceof Error ? failure.message : String(failure) });
+    } finally { setSettingsBusy(false); }
   };
   useEffect(() => onRequest(() => { setSent(lastRequest()); setTick((n) => n + 1); }), []);
 
@@ -75,7 +98,11 @@ export default function RequestInspector({ api, convId }: { api?: Pick<LoomApi, 
         <button aria-pressed={which === "next"} data-testid="ri-kernel-next" onClick={() => setWhich("next")}>{t("ri_k_next")}</button>
         <button data-testid="ri-kernel-refresh" onClick={() => void ask()}>{t("ri_k_refresh")}</button>
       </div>
-      <label className="ri-show-values"><input type="checkbox" data-testid="ri-show-setting-values" checked={showValues} disabled={!api?.setConfig} onChange={(e) => void toggleValues(e.target.checked)} /> {t("ri_k_show_values")}</label>
+      <label className="ri-show-values"><input type="checkbox" data-testid="ri-show-setting-values" checked={showValues} disabled={!api?.setConfig || !settingsReady || settingsBusy} onChange={(e) => void toggleValues(e.target.checked)} /> {t("ri_k_show_values")}</label>
+      {settingsError && <div role="alert" data-testid="ri-settings-error">
+        <p>{t(settingsError.operation === "read" ? "ri_settings_read_failed" : "ri_settings_write_failed", { error: settingsError.reason })}</p>
+        {settingsError.operation === "read" && <button onClick={() => setSettingsGeneration(n => n + 1)}>{t("lit_refresh")}</button>}
+      </div>}
       <p>{t("ri_k_show_values_hint")}</p>
       {which === "next" && <p>{t("ri_k_next_hint")}</p>}
       {kernel.state === "loading" && <p>{t("ri_k_loading")}</p>}

@@ -48,8 +48,8 @@ std::string preset(Runtime& rt, const Json& routing);
 //   "id", "signature", "title", "sources": [message ids it emerged from, beyond the user's own message],
 //   "summary": {fields the texts use}, "then_run"?: {"element": {"id": ...}}}.
 // P30: the action whose phrases the (folded) verb equals, matches as a stem, or shares command_shape.existing_prefix_chars leading characters
-// with; "" when it names none. from_command never offers such a verb as a new action.
-std::string existing_action_for(const Context& c, const std::string& verb);
+// with; "" when it names none. With command text, compound phrases must also match their trailing words.
+std::string existing_action_for(const Context& c, const std::string& verb, const std::string& command = {});
 // P32: the lead verb of a sentence that has command shape (a verb of the language, no question, not a statement, not a label), whatever
 // action answers to it and whether it names an element. nullopt: the sentence is not shaped like a command (or emergent is off).
 struct CommandLead {
@@ -58,7 +58,7 @@ struct CommandLead {
 };
 std::optional<CommandLead> command_lead(const Context& c, const std::string& text, const std::string& lang);
 // P32: whether the action's phrases (catalogue and lexicon) name the folded verb (same matching as existing_action_for).
-bool action_answers_verb(const Context& c, const std::string& action, const std::string& verb);
+bool action_answers_verb(const Context& c, const std::string& action, const std::string& verb, const std::string& command = {});
 std::optional<Json> from_command(const Context& c, const std::string& text, const std::string& lang, const Json& element);
 // `conv_id`: the conversation the run that has just finished belongs to.
 std::optional<Json> from_sequence(const Context& c, const std::string& conv_id);

@@ -11,55 +11,55 @@
   "words": {
     "window_menu": {
       "pl": "Styl okna",
-      "en": "Window style"
+      "en": "Window style", "nl": "Vensterstijl"
     },
     "layout_menu": {
       "pl": "Styl układu",
-      "en": "Layout style"
+      "en": "Layout style", "nl": "Indelingsstijl"
     },
     "inherit": {
       "pl": "dziedzicz ({from})",
-      "en": "inherit ({from})"
+      "en": "inherit ({from})", "nl": "overnemen ({from})"
     },
     "from_layout": {
       "pl": "z układu: {label}",
-      "en": "from the layout: {label}"
+      "en": "from the layout: {label}", "nl": "uit de indeling: {label}"
     },
     "from_person": {
       "pl": "Twój: {label}",
-      "en": "yours: {label}"
+      "en": "yours: {label}", "nl": "jouw stijl: {label}"
     },
     "from_default": {
       "pl": "domyślny: {label}",
-      "en": "default: {label}"
+      "en": "default: {label}", "nl": "standaard: {label}"
     },
     "missing": {
       "pl": "Styl {id} nie jest znany na tym urządzeniu; okno używa stylu {used}.",
-      "en": "The style {id} is not known on this device; the window uses {used}."
+      "en": "The style {id} is not known on this device; the window uses {used}.", "nl": "De stijl {id} is niet bekend op dit apparaat; het venster gebruikt {used}."
     },
     "moves_dock": {
       "pl": "Styl «{label}» chce listy rozmów po stronie: {want}, a jest po stronie: {now}.",
-      "en": "The style «{label}» wants the conversation list on the {want}, it is on the {now}."
+      "en": "The style «{label}» wants the conversation list on the {want}, it is on the {now}.", "nl": "De stijl «{label}» stelt de gesprekslijst {want} voor; die staat nu {now}."
     },
     "moves_dock_question": {
       "pl": "Przestawić?",
-      "en": "Move it?"
+      "en": "Move it?", "nl": "Verplaatsen?"
     },
     "moves_dock_fix": {
       "pl": "Przestaw",
-      "en": "Move it"
+      "en": "Move it", "nl": "Verplaatsen"
     },
     "side_left": {
       "pl": "lewej",
-      "en": "left"
+      "en": "left", "nl": "links"
     },
     "side_right": {
       "pl": "prawej",
-      "en": "right"
+      "en": "right", "nl": "rechts"
     },
     "unknown_mode": {
       "pl": "Nieznana wartość profile_layout_fields «{value}»: pola układowe profilu są stosowane jak przy «layout».",
-      "en": "Unknown profile_layout_fields value «{value}»: the layout fields of a profile apply as with «layout»."
+      "en": "Unknown profile_layout_fields value «{value}»: the layout fields of a profile apply as with «layout».", "nl": "Onbekende waarde «{value}» voor profile_layout_fields: de indelingsvelden van een profiel worden toegepast zoals bij «layout»."
     }
   },
   "clear_words": [

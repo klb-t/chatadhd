@@ -1,3 +1,4 @@
+import { localizedText, type LocalizedText } from "../language-pack";
 // W4 (OKNA §4.4, §6.3, §6.4): the page side of docking and floating - the handlers WindowHost calls (menu, drag, split grips), the keys of
 // the keymap (data), the live preview of a drag computed from the state the drag started from (one journal entry at the end), and the
 // advisory chips of the arrangement. The chips are answered through the catalogue action advisory.answer with the code and the
@@ -11,7 +12,7 @@ import { closeWindows, cycleWindow } from "./ops";
 import { KEYMAP, comboOf, keyOperation, oneEntry } from "./steps";
 import { WINDOW_CTX } from "./session";
 import type { ArrangeHandlers } from "./WindowHost";
-import { ARRANGE, applyFix, arrangeWindow, moveFloating, num, rememberedKeys, setRatio, visibleChips, windowAdvisories, type Env, type WinAdvisory } from "./arrange";
+import { ARRANGE, arrangementLabel, applyFix, arrangeWindow, moveFloating, num, rememberedKeys, setRatio, visibleChips, windowAdvisories, type Env, type WinAdvisory } from "./arrange";
 import type { Box } from "./dock";
 import { LAYOUTS } from "../start-view";
 import { applyCouplingFix } from "./coupling";
@@ -19,7 +20,7 @@ import { applyStyleFix } from "./style";
 import { useShellText } from "../../shell/text";
 
 type Lang = "pl" | "en" | string;
-const say = (w: { pl?: string; en?: string } | undefined, lang: Lang) => (lang === "pl" ? w?.pl ?? w?.en : w?.en ?? w?.pl) ?? "";
+const say = (w: LocalizedText | undefined, lang: Lang) => localizedText(w, lang) ?? "";
 const isPanel = (w: { params?: Record<string, unknown> }) => typeof w.params?.panel === "string";
 
 function screen(): { area: Box; keyboard: Box | null } {
@@ -109,8 +110,8 @@ export function useArrange(win: WState, winRef: { current: WState }, commit: (s:
     dropEdge: num(ARRANGE.drop_edge, 0.25),
     floatDropEdge: num(ARRANGE.float_drop_edge, 0.08),
     dragThreshold: num(ARRANGE.drag_threshold_px, 8),
-    closeLabel: (t) => (lang === "pl" ? `Zamknij: ${t}` : `Close: ${t}`),
-    menuLabel: (t) => (lang === "pl" ? `Ułóż okno: ${t}` : `Arrange window: ${t}`),
+    closeLabel: (t) => arrangementLabel("close", t, lang),
+    menuLabel: (t) => arrangementLabel("menu", t, lang),
   }), [commit, lang, winRef]);
 
   // W7: the keys of keymap.json (data): the focused window is arranged; undo/redo walk the journal, next/prev the switcher

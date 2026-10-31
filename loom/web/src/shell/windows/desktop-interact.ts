@@ -112,7 +112,7 @@ export function resolveDrop(source: DropSource, hits: readonly Hit[], cls: strin
 export function fillValue(v: unknown, source: DropSource, matchedPrefix: string): unknown {
   if (typeof v !== "string") return v;
   const address = source.kind === "icon" ? source.address : source.id;
-  return v.replace("$address", address).replace("$rest", address.slice(matchedPrefix.length));
+  return v.replace(/\$(address|rest)/g, (_, field: string) => field === "address" ? address : address.slice(matchedPrefix.length));
 }
 
 // ---- how a drag starts (gestures.json targets.icon.drag_start) -------------------------------------------------------------------------

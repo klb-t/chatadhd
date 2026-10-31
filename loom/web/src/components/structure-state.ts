@@ -1,3 +1,4 @@
+import { localizedText, type LocalizedText } from "../shell/language-pack";
 // W11a-1: the state of the window „Struktura projektu” without a browser - the window parameters, the appearance mapping (data:
 // shell/data/structure_mappings.json, or an object given as the parameter `mapping`) and the rows drawn from a graph.structure answer.
 // Nothing here writes: the window is a view (the kernel's graph.structure is read only).
@@ -5,7 +6,7 @@ import MAPPINGS from "../shell/data/structure_mappings.json";
 import type { GraphStructureRequest, GraphStructureResult, StructureAdvisory, StructureExpectation } from "../api/graph-projection";
 
 export type Sign = Record<string, unknown>;
-export interface MappingData { default: string; presets: Record<string, { label?: { pl?: string; en?: string }; states: Record<string, Sign> }>; signs: string[]; advisories: Record<string, { pl?: string; en?: string }> }
+export interface MappingData { reader_warning?: LocalizedText; default: string; presets: Record<string, { label?: LocalizedText; states: Record<string, Sign> }>; signs: string[]; advisories: Record<string, LocalizedText> }
 export const MAPPING_DATA = MAPPINGS as unknown as MappingData;
 
 /** The parameters of a window of the kind project_structure (window_kinds.json params). Absent = the preset. */
@@ -32,11 +33,8 @@ export function requestOf(p: StructureParams, lang: string, convId?: string | nu
 }
 
 export interface PageAdvisory { code: string; fingerprint: string; text: string }
-const say = (w: { pl?: string; en?: string } | undefined, lang: string, vars: Record<string, string> = {}): string => {
-  let s = (lang === "pl" ? w?.pl : w?.en) ?? w?.en ?? w?.pl ?? "";
-  for (const [k, v] of Object.entries(vars)) s = s.split(`{{${k}}}`).join(v);
-  return s;
-};
+const say = (w: LocalizedText | undefined, lang: string, vars: Record<string, string> = {}): string =>
+  (localizedText(w, lang) ?? "").replace(/\{\{(\w+)\}\}/g, (_, key) => vars[key] ?? `{{${key}}}`);
 
 export interface ResolvedMapping { id: string; states: Record<string, Sign>; advisories: PageAdvisory[] }
 /** A preset id, an object {states} (its own mapping) or nothing (the default preset). `settings` gives the values {setting: key} read. */
@@ -118,4 +116,12 @@ export function rowsOf(r: GraphStructureResult, mapping: ResolvedMapping, t: (id
 export function visibleAdvisories(kernel: StructureAdvisory[] | undefined, page: PageAdvisory[], remembered: ReadonlySet<string>, kept: ReadonlySet<string>): PageAdvisory[] {
   const all: PageAdvisory[] = [...(kernel ?? []).map(a => ({ code: `structure_${a.code}`, fingerprint: a.fingerprint, text: a.text })), ...page];
   return all.filter(a => !remembered.has(`${a.code}|${a.fingerprint}`) && !kept.has(`${a.code}|${a.fingerprint}`));
+}
+
+/** An incomplete read keeps valid rows visible and says so; it never rewrites source data. */
+export function readerWarning(result: GraphStructureResult | null, language: string, data: MappingData = MAPPING_DATA): string | null {
+  const count = result?.reader_errors?.length ?? 0;
+  if (!count) return null;
+  const template = localizedText(data.reader_warning, language);
+  return template ? template.split("{{count}}").join(String(count)) : result!.reader_errors!.map(e => e.error).join("; ");
 }

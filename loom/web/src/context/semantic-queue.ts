@@ -1,11 +1,16 @@
 import { featureMessage, type PresentationFeature } from "../onboarding/presentation.mjs";
 import type { JsonValue } from "../onboarding/types";
 import type { SemanticRequeueResult, SemanticStatusInfo } from "../api/types";
+import workerSource from "../../../data/runtime/worker.pack?raw";
 
 /** Presentation feature holding the texts (`presentation.semantic_queue`). */
 export const SEMANTIC_QUEUE_FEATURE = "semantic_queue";
-/** Values the worker accepts for the retry setting. */
-export const RETRY_MODES = ["explicit_requeue", "automatic"];
+/** Preset choices from the worker's canonical data, rather than a second list in the client. */
+export const RETRY_MODES: string[] = JSON.parse(workerSource).value_schema.properties.retry_mode.enum;
+/** A newer host can report a mode this client does not yet offer; retain it visibly as the current choice. */
+export function retryModeChoices(current: string | null): string[] {
+  return current !== null && !RETRY_MODES.includes(current) ? [...RETRY_MODES, current] : [...RETRY_MODES];
+}
 
 /** Index signature keeps the module lexically scannable by the literal guard. */
 interface Row { [key: string]: JsonValue }
@@ -21,7 +26,7 @@ export interface SemanticQueueView { stalled: number | null; quarantined: number
 
 export function semanticQueueView(status: SemanticStatusInfo): SemanticQueueView {
   return { stalled: known(status.stalled), quarantined: known(status.quarantined),
-    retryMode: RETRY_MODES.includes(status.retry_mode ?? "") ? status.retry_mode ?? null : null,
+    retryMode: typeof status.retry_mode === "string" && status.retry_mode.length > 0 ? status.retry_mode : null,
     llm: status.llm ? { disabled: status.llm.disabled === true, count: known(status.llm.consecutive_failures), limit: known(status.llm.max_consecutive_failures) } : null };
 }
 

@@ -1,9 +1,10 @@
 import { useShellLanguage } from "../shell/text";
+import { localizedText } from "../shell/language-pack";
 import type { SecretPending } from "../api/types";
 
 /** R67: the answer to the kernel's secret check. The words come from the kernel's own document (runtime/chat_secrets.pack, pl and en); the
  * block names what matched and where, never the value. "needs_confirmation" asks (send anyway / do not send); "refused" only says so. */
-const pick = (words: Record<string, string> | undefined, language: string): string => (words ? (words[language] ?? words.pl ?? words.en ?? "") : "");
+const pick = (words: Record<string, string> | undefined, language: string): string => localizedText(words, language) ?? "";
 
 export default function SecretPendingBlock({ pending, onConfirm, onDismiss, testId }: {
   pending: SecretPending; onConfirm: () => void; onDismiss: () => void; testId: string;

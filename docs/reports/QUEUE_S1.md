@@ -1,3 +1,9 @@
+## 2026-10-31 — kolejny sprawdzony przyrost
+
+Naprawy jądra i interfejsu na bazie pkg-webfix 910dca31: [raport](NATIVE_WEB_FIXES_2026-10-31.md). Nie powtarzać zrealizowanych napraw. Następnie pełna bramka HTTP/GUI w uprawnionym środowisku, przepływ zmiany źródła/BYOK i pozostałe pakiety według priorytetów. W11a-2, D7–D10 oraz R102 G3–G4 pozostają otwarte. Brak scalenia main i wdrożenia w tym checkpoincie.
+
+## Archiwalna kolejka i przekazania
+
 # Kolejka S1 — stan 2026-10-21 12:15 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu

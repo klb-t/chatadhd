@@ -15,7 +15,8 @@
 //  * materialize() writes the chain into the graph (nodes + links tables), lazily — only what a caller asks for, and
 //    idempotently: fragment nodes keyed by fingerprint (kind text_fragment; shared across versions AND conversations,
 //    which is how the same sentence in another conversation gets joined), version nodes keyed by the source id, event
-//    nodes keyed by a deterministic key. Links are upserts. Running it twice leaves the graph as after once.
+//    nodes keyed by a deterministic key. Links are upserts; event links retain every occurrence in metadata.events
+//    (the singular fields remain a deterministic representative for older readers). Running it twice leaves the graph as after once.
 //    Node kinds and edge kinds are data (pack `genesis`), listed in Options::names; new ones are added by data.
 //  * query() answers questions read-only ("origin", "replaced", "missing", "events" are the ones this build knows;
 //    an unknown question is an explicit error that names them). It computes live from the messages (deterministic,

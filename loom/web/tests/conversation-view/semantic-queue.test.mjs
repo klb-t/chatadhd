@@ -25,19 +25,38 @@ test('unknown counts stay unknown and are never shown as zero', () => {
   assert.equal(q.semanticQueueView({ stalled: -1, quarantined: 1.5 }).stalled, null);
   assert.equal(q.semanticQueueView({ stalled: 0 }).stalled, 0);
 });
-test('retry modes are exactly the worker values; texts come from the catalog, machine names without one', () => {
-  assert.deepEqual(q.RETRY_MODES, ['explicit_requeue', 'automatic']);
+test('retry presets follow worker data; a newer host mode stays visible without being offered as a default', async () => {
+  const worker = JSON.parse(await readFile(new URL('../../../data/runtime/worker.pack', import.meta.url), 'utf8'));
+  assert.deepEqual(q.RETRY_MODES, worker.value_schema.properties.retry_mode.enum);
   assert.equal(q.semanticQueueView({ retry_mode: 'automatic' }).retryMode, 'automatic');
-  assert.equal(q.semanticQueueView({ retry_mode: 'other' }).retryMode, null);
+  assert.equal(q.semanticQueueView({ retry_mode: 'other' }).retryMode, 'other');
+  assert.deepEqual(q.retryModeChoices('other'), [...q.RETRY_MODES, 'other']);
+  assert.deepEqual(q.retryModeChoices(null), q.RETRY_MODES);
+  assert.deepEqual(q.retryModeChoices('automatic'), q.RETRY_MODES);
+  assert.equal(q.semanticQueueView({ retry_mode: '' }).retryMode, null);
   const texts = q.semanticQueueTexts(feature);
   assert.equal(texts.mode('automatic'), entry.value.locales.en.mode_automatic);
   assert.equal(texts.requeue, entry.value.locales.en.requeue);
   const bare = q.semanticQueueTexts(null);
   assert.equal(bare.requeue, null);
   assert.equal(bare.mode('automatic'), 'automatic');
+  assert.equal(texts.mode('other'), 'other');
+  assert.ok(!q.RETRY_MODES.includes('other'), 'a reported unknown value never mutates the shipped choices');
 });
 test('requeue result text carries the returned counts only', () => {
   const texts = q.semanticQueueTexts(feature);
   const line = texts.requeued({ matched: 3, requeued: 3, failed_requeued: 2, stalled_requeued: 1, ids: [], skipped: [], dry_run: false, history_preserved: true });
   assert.match(line, /3.*2.*1/);
+});
+
+test('analysis-model warnings and re-enable labels exist in every offered language', () => {
+  for (const [language, catalog] of Object.entries(entry.value.locales)) {
+    assert.equal(typeof catalog.llm_disabled, 'string', `${language}: llm_disabled`);
+    assert.equal(typeof catalog.llm_reenable, 'string', `${language}: llm_reenable`);
+    assert.ok(catalog.llm_reenable.trim(), `${language}: nonempty re-enable label`);
+    const texts = q.semanticQueueTexts({ ...feature, locale: language, catalog });
+    const expected = catalog.llm_disabled.split('{{count}}').join('3').split('{{limit}}').join('5');
+    assert.equal(texts.llmDisabled(3, 5), expected);
+    assert.equal(texts.llmReenable, catalog.llm_reenable);
+  }
 });

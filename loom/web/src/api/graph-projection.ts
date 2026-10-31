@@ -334,6 +334,7 @@ export interface GraphStructureRequest {
   root?: string; templates?: string[]; show_expected?: boolean; depth?: number; budget?: number; declined?: string[]; lang?: string; conv_id?: string;
 }
 export interface GraphStructureResult {
+  reader_errors?: { reader: string; error: string; address?: string }[];
   schema: "loom.structure/1"; found: boolean; reason?: string; reason_human?: string; error?: string; root_said?: string;
   root?: { address: string; label?: string; kind?: string; evidence?: { class?: string } };
   suggestions?: { address: string; label?: string; items?: { address: string; label: string; kind: string }[]; total?: number; unknown?: string }[];

@@ -3,6 +3,7 @@
 // the point - a new language works without a change in code.
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
 import { createModuleLoader } from '../product-perspective/loader.mjs';
 const loader = await createModuleLoader();
 test.after(() => loader.close());
@@ -34,4 +35,52 @@ test('the available languages are the union of the catalogs; the page language w
 test('the fallback chain starts with the language and ends with the default', () => {
   assert.deepEqual(pack.languageChain('xx'), ['xx', 'en']);
   assert.deepEqual(pack.languageChain('en'), ['en']);
+});
+
+test('sorting follows an added locale and falls back safely for custom catalog ids', () => {
+  assert.ok(pack.languageCollator('sv').compare('zebra', 'ångström') < 0, 'Swedish places å after z');
+  assert.ok(pack.languageCollator('en').compare('zebra', 'ångström') > 0, 'English treats å like a');
+  for (const language of ['xx', 'not a BCP 47 tag', '']) {
+    assert.equal(pack.languageCollator(language).compare('zebra', 'ångström'), pack.languageCollator('en').compare('zebra', 'ångström'));
+  }
+});
+
+// Synthetic catalogs exercise an arbitrary added language, sparse legacy labels and inert input.
+test('data labels use every language in data, preserving explicit empty labels and legacy sparse labels', () => {
+  assert.equal(text.dataLabel({ en: 'Open', nl: 'Openen', xx: 'Xopen' }, 'nl', 'missing'), 'Openen');
+  assert.equal(text.dataLabel({ en: 'Open', xx: 'Xopen' }, 'xx', 'missing'), 'Xopen');
+  assert.equal(text.dataLabel({ en: 'Open', xx: '' }, 'xx', 'missing'), '');
+  assert.equal(text.dataLabel({ pl: 'Otwórz' }, 'nl', 'missing'), 'Otwórz');
+  assert.equal(text.dataLabel({ en: 3 }, 'nl', 'missing'), 'missing');
+  assert.equal(text.dataLabel(['not a catalog'], 'en', 'missing'), 'missing');
+  assert.equal(text.dataLabel(Object.create({ en: 'inherited' }), 'en', 'missing'), 'missing');
+});
+
+test('translation transforms and command aliases retain arbitrary language catalogs', () => {
+  const words = { en: 'A {id}', nl: 'B {id}', xx: 'C {id}', empty: '', invalid: 3 };
+  const before = JSON.stringify(words);
+  assert.deepEqual(pack.mapLocalizedText(words, (line, language) => language + ':' + line.replace(/\{id\}/g, () => '$&{id}')),
+    { en: 'en:A $&{id}', nl: 'nl:B $&{id}', xx: 'xx:C $&{id}', empty: 'empty:' });
+  assert.equal(JSON.stringify(words), before);
+  assert.deepEqual(pack.mapLocalizedText(Object.create({ en: 'inherited' }), line => line), {});
+  assert.deepEqual(pack.localizedPhrases({ nl: ['volgorde'], zh: ['按名称'], xx: ['x', 3], bad: 'not a list' }), ['volgorde', '按名称', 'x']);
+  assert.deepEqual(pack.localizedPhrases(null), []);
+});
+
+test('window style, arrangement, coupling and structure dictionaries have Dutch text with matching parameters', async () => {
+  const parameters = text => [...text.matchAll(/\{\{?(\w+)\}?\}/g)].map(match => match[1]).sort();
+  for (const file of ['styles', 'layouts', 'coupling', 'structure_mappings']) {
+    const data = JSON.parse(await readFile(new URL(`../../src/shell/data/${file}.json`, import.meta.url), 'utf8'));
+    let checked = 0;
+    const walk = (value, path = file) => {
+      if (!value || typeof value !== 'object') return;
+      if (typeof value.en === 'string' && typeof value.pl === 'string') {
+        assert.equal(typeof value.nl, 'string', path);
+        assert.deepEqual(parameters(value.nl), parameters(value.en), path);
+        checked += 1;
+      } else for (const [key, child] of Object.entries(value)) walk(child, `${path}/${key}`);
+    };
+    walk(data);
+    assert.ok(checked > 0, `${file}: the check actually visited translation maps`);
+  }
 });

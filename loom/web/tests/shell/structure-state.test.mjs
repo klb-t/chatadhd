@@ -117,3 +117,21 @@ test('advisories: kernel and page together, without the answered ones', () => {
   assert.equal(st.visibleAdvisories(kernel, page, new Set(['structure_empty_expects|f1']), new Set()).length, 1);
   assert.equal(st.visibleAdvisories(kernel, page, new Set(), new Set(['structure_mapping_nothing_visible|nothing_visible|hide_missing'])).length, 1);
 });
+
+test('partial source reads stay visible as a warning alongside valid results', () => {
+  assert.equal(st.readerWarning(answer, 'pl'), null);
+  const partial = { ...answer, reader_errors: [{ reader: 'conversations.units', error: 'conversation_metadata_unreadable', address: 'conv:bad' }] };
+  const copy = structuredClone(partial);
+  const warning = st.readerWarning(partial, 'pl');
+  assert.match(warning, /Liczba zgłoszonych problemów: 1/);
+  assert.equal(st.rowsOf(partial, st.resolveMapping(null, 'pl'), t).groups[0].rows.length, 2);
+  assert.deepEqual(partial, copy);
+  assert.equal(st.readerWarning(partial, 'xx', { ...mappings, reader_warning: { xx: 'Issues: {{count}}' } }), 'Issues: 1');
+});
+
+test('mapping advisories use arbitrary catalogs and keep inserted parameters inert', () => {
+  const data = { default: 'a', presets: { a: { states: {} } }, signs: [],
+    advisories: { unknown_preset: { en: 'Unknown {{id}}; {{fallback}}', xx: 'X{{id}}+{{fallback}}' } } };
+  assert.equal(st.resolveMapping('missing{{fallback}}', 'xx', {}, data).advisories[0].text, 'Xmissing{{fallback}}+a');
+  assert.equal(st.resolveMapping('missing', 'nl', {}, data).advisories[0].text, 'Unknown missing; a');
+});

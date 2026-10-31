@@ -370,7 +370,7 @@ Json suggestions(const projection::Env& env, const Json& data) {
 
 // Children graph.navigate does not list (data: member_readers). "conversations.units": the conversations whose metadata.units names the
 // unit of the root (unit:<kind>/<id>), each as the navigator's own row of that conversation (graph.navigate on it, budget 1).
-Result<Json> read_members(const projection::Env& env, const std::string& reader, const std::string& root, const std::string& prefix) {
+Result<Json> read_members(const projection::Env& env, const std::string& reader, const std::string& root, const std::string& prefix, Json& reader_notes) {
   Json out = Json::array();
   if (reader != "conversations.units") return Error(Errc::NotFound, "unknown member reader '" + reader + "'");
   if (!env.db) return Error(Errc::Unavailable, "database_unavailable");
@@ -381,10 +381,14 @@ Result<Json> read_members(const projection::Env& env, const std::string& reader,
   std::vector<std::string> ids;
   {
     auto lock = env.db->lock();
-    LOOM_TRY_ASSIGN(auto st, env.db->conn().prepare("SELECT id, metadata FROM conversations WHERE json_extract(metadata, '$.units') IS NOT NULL ORDER BY created"));
+    LOOM_TRY_ASSIGN(auto st, env.db->conn().prepare("SELECT id, metadata, json_valid(metadata) FROM conversations WHERE CASE WHEN metadata IS NULL THEN 0 WHEN json_valid(metadata) THEN json_extract(metadata, '$.units') IS NOT NULL ELSE 1 END ORDER BY created"));
     while (true) {
       LOOM_TRY_ASSIGN(bool more, st.step());
       if (!more) break;
+      if (!st.get_int(2)) {
+        reader_notes.push_back(Json{{"reader", reader}, {"error", "conversation_metadata_unreadable"}, {"address", "conv:" + st.get_text(0)}});
+        continue;
+      }
       const Json meta = json::parse_or(st.get_text(1), Json::object());
       const Json units = meta.is_object() ? meta.value("units", Json::object()) : Json::object();
       if (units.is_object() && json::get_string(units, kind) == id) ids.push_back(st.get_text(0));
@@ -453,7 +457,7 @@ Result<Json> structure(const projection::Env& env, const Json& request) {
     for (const auto& m : data.value("member_readers", Json::array())) {
       const std::string pre = json::get_string(m, "root_prefix");
       if (pre.empty() || focus_address.rfind(pre, 0) != 0) continue;
-      auto extra = read_members(env, json::get_string(m, "reader"), focus_address, pre);
+      auto extra = read_members(env, json::get_string(m, "reader"), focus_address, pre, reader_notes);
       if (!extra) { reader_notes.push_back(Json{{"reader", json::get_string(m, "reader")}, {"error", extra.error().message}}); continue; }
       std::set<std::string> have;
       for (const auto& c : children) have.insert(json::get_string(c, "address"));

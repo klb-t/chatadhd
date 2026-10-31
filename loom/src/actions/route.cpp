@@ -1278,7 +1278,7 @@ ModelRoute model_route(Runtime& rt, const Data& d, const std::string& text, cons
   if (json::get_bool(m.value("verb_guard", Json::object()), "enabled", true)) {
     const emergent::Context ctx{rt, d.cfg, d.engine, d.resolver};
     if (const auto lead = emergent::command_lead(ctx, text, lang);
-        lead && !emergent::action_answers_verb(ctx, action, lead->verb) && emergent::existing_action_for(ctx, lead->verb).empty()) {
+        lead && !emergent::action_answers_verb(ctx, action, lead->verb, text) && emergent::existing_action_for(ctx, lead->verb, text).empty()) {
       result.guard = Json{{"verb", lead->verb}, {"action", action}, {"confidence", confidence}};
       result.trace["verdict"]["guard"] = result.guard;
     }

@@ -63,6 +63,48 @@ TEST_CASE("no free key: explicit none state with a message, the paid source is n
   CHECK(overlay.empty());
 }
 
+TEST_CASE("duplicate provider identities never validate a free entry and select a paid one") {
+  for (bool reversed : {false, true}) {
+    for (bool have_fallback : {false, true}) {
+      CAPTURE(reversed);
+      CAPTURE(have_fallback);
+      json providers = json::array({prov("duplicate", "free", "none", ""),
+                                    prov("duplicate", "paid_credits", "service_account", "")});
+      if (reversed) std::reverse(providers.begin(), providers.end());
+      CHECK(unique_provider(providers, "duplicate") == nullptr);
+      CHECK(unique_provider(providers, "missing") == nullptr);
+      json table = json::array({{{"provider", "duplicate"}, {"model", "m"}, {"quality", 1.0}}});
+      if (have_fallback) {
+        providers.push_back(prov("safe", "free", "none", ""));
+        REQUIRE(unique_provider(providers, "safe") != nullptr);
+        table.push_back({{"provider", "safe"}, {"model", "m2"}, {"quality", 0.1}});
+      }
+      const json fp = {{"source_pools", preset_pools()}, {"providers", providers}, {"free_model_choice", {{"table", table}}}};
+      std::map<std::string, std::string> overlay;
+      int resolver_calls = 0;
+      const SourceResolver resolve = [&](const json&, std::string& key, std::string&) -> std::string {
+        ++resolver_calls;
+        key = "fake-token";
+        return {};
+      };
+      const auto r = choose_free_model(fp, "", guest_allowed_tiers(fp, json::array({"free"})), overlay, resolve);
+      CHECK(resolver_calls == 0);
+      CHECK(overlay.empty());
+      if (have_fallback) {
+        CHECK(r.at("provider") == "safe");
+        CHECK(r.at("tier") == "free");
+      } else {
+        CHECK(r.at("provider").is_null());
+        CHECK(r.at("state") == "none");
+      }
+      bool reported = false;
+      for (const auto& skipped : r.at("skipped"))
+        reported = reported || (skipped.at("provider") == "duplicate" && skipped.at("why") == "ambiguous_provider_entry");
+      CHECK(reported);
+    }
+  }
+}
+
 TEST_CASE("model_sources is read: without 'free' a guest gets nothing; 'paid' and unknown names never serve a guest") {
   const json fp = {{"source_pools", preset_pools()}};
   CHECK(guest_allowed_tiers(fp, json::array({"byok", "local"})).empty());

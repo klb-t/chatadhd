@@ -1,3 +1,4 @@
+import type { ActionRun } from "../../api/types";
 // R101 D4 (PULPIT_R101 §5): the page's side of the trash, pure. "To the trash" is reversible; "empty" is today's irreversible step.
 // The kernel keeps conversations (metadata.trash), memory entries (memory.trash) and pins (link metadata.trash) and answers trash.list;
 // the page adds its own layouts (trashed_at in the layout document). What an icon dropped on the trash moves is the setting drop_on_trash:
@@ -5,6 +6,15 @@
 
 export interface TrashItem { kind: string; id: string; title: string; at: string; from?: string; desktop?: string; due?: boolean }
 export interface TrashStep { action: string; args: Record<string, unknown> }
+
+/** An HTTP success is not necessarily a completed mutation (it may be refused or awaiting consent).
+ * Do not show a success receipt or perform its inverse until the interpreter reports completion. */
+export async function runTrashAction(actions: { run(request: Record<string, unknown>): Promise<ActionRun> }, step: TrashStep): Promise<ActionRun> {
+  const result = await actions.run({ action: step.action, element: { class: "application" }, args: step.args });
+  if (result.status !== "completed") throw new Error(result.error?.message ?? result.status);
+  return result;
+}
+
 
 /** The action that moves an icon's thing to the trash. conv:<id> -> conversation.trash, memory:<id> -> memory.trash (mode target);
  *  every other address, and every address in mode pin, -> pin.trash of the icon. An unknown mode is the preset target. */

@@ -10,11 +10,11 @@ import { api as defaultApi } from "../api";
 import type { LoomApi } from "../api/loom-api";
 import type { UserProfileHost } from "../api/onboarding-host";
 import type { GraphStructureResult } from "../api/graph-projection";
-import { shellTranslator, useShellText } from "../shell/text";
+import { dataLabel, shellTranslator, useShellText } from "../shell/text";
 import { useWindowParam } from "../shell/windows/WindowParams";
 import { usePresentationFeature } from "./ConversationSourceView";
 import NodeCard from "./NodeCard";
-import { MAPPING_DATA, paramsOf, requestOf, resolveMapping, rowsOf, visibleAdvisories, type PageAdvisory } from "./structure-state";
+import { MAPPING_DATA, paramsOf, requestOf, resolveMapping, rowsOf, readerWarning, visibleAdvisories, type PageAdvisory } from "./structure-state";
 
 interface Props {
   api?: Partial<Pick<LoomApi, "actions">>;
@@ -90,6 +90,7 @@ export default function ProjectStructure({ api = defaultApi, profileHost, convId
     } else setKept(k => new Set([...k, key]));
   }, [api]);
 
+  const incomplete = readerWarning(result, language);
   const drawn = result?.found ? rowsOf(result, mapping, t) : null;
   const goRoot = (address: string) => { setCard(null); set("root", address); };
 
@@ -105,7 +106,7 @@ export default function ProjectStructure({ api = defaultApi, profileHost, convId
           <select data-testid="ps-mapping" value={typeof params.mapping === "string" && MAPPING_DATA.presets[params.mapping] ? params.mapping : mapping.id === "own" ? "" : MAPPING_DATA.default}
             onChange={e => set("mapping", e.target.value)}>
             {mapping.id === "own" && <option value="">—</option>}
-            {Object.entries(MAPPING_DATA.presets).map(([id, p]) => <option key={id} value={id}>{(language === "pl" ? p.label?.pl : p.label?.en) ?? id}</option>)}
+            {Object.entries(MAPPING_DATA.presets).map(([id, p]) => <option key={id} value={id}>{dataLabel(p.label, language, id)}</option>)}
           </select>
         </label>
       </div>
@@ -119,6 +120,7 @@ export default function ProjectStructure({ api = defaultApi, profileHost, convId
       ))}
       {loading && !result && <p>{t("ps_loading")}</p>}
       {error && <p role="alert">{t("ps_error", { error })}</p>}
+      {incomplete && <p role="status" data-testid="ps-reader-warning">{incomplete}</p>}
       {result && !result.found && (
         <div data-testid="ps-not-found" data-reason={result.reason}>
           <p>{result.reason_human}</p>

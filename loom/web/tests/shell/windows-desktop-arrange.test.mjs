@@ -199,3 +199,9 @@ test('free mode: a flowing icon never lands under a hand-placed one (review 1030
   assert.deepEqual(p2.placed.map(p => [p.col, p.row]), [[0, 0], [1, 0]]);
   assert.deepEqual(p2.advisories, [{ code: 'arrangement_cell_taken', vars: { address: 'b:1' } }]);
 });
+
+test('arrangement aliases come from every language in data', () => {
+  const data = { arrange_by: ['label'], arrange_words: { label: { nl: ['op naam'], zh: ['按名称'], xx: ['xorder'] } } };
+  for (const word of ['op naam', '按名称', 'xorder']) assert.equal(A.arrangeByOfWord(word, data), 'label');
+  assert.equal(A.arrangeByOfWord('unknown', data), undefined);
+});

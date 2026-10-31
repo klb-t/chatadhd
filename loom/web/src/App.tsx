@@ -30,7 +30,7 @@ import { STYLES, findProfile, inheritLabel, refKey, refOf, refOfDoc, resolveStyl
 import ChatShell from "./shell/ChatShell";
 import PerspectivesPanel from "./components/PerspectivesPanel";
 import ViewEnginePanel from "./components/ViewEnginePanel";
-import { ShellLanguage, ShellText, shellTranslator, productName } from "./shell/text";
+import { ShellLanguage, ShellText, shellTranslator, productName, dataLabel } from "./shell/text";
 import { themeFromConfig } from "./shell/theme";
 import { DEFAULT_LAYOUT, JOURNAL_LIMIT, LAYOUTS, START_VIEW_PRESET, layoutOfMode, parseShellHash, readSaved, resolveLayoutId, resolveStartView, startViewOrder, writeSaved } from "./shell/start-view";
 import WindowHost from "./shell/windows/WindowHost";
@@ -50,7 +50,7 @@ import { cssVariables, mergeData } from "./shell/animation";
 import { glyphVariables } from "./shell/disclosure-glyphs";
 import { PANEL_LABELS, PANEL_TEXT_IDS, type PanelId } from "./shell/panels";
 import { TrashWindow } from "./shell/windows/TrashWindow";
-import { TRASH_CHANGED } from "./shell/windows/desktop-trash";
+import { TRASH_CHANGED, runTrashAction } from "./shell/windows/desktop-trash";
 import { useLayer } from "./shell/use-layer";
 import { useArrange } from "./shell/windows/useArrange";
 import { useCoupling, type CouplingHook } from "./shell/windows/useCoupling";
@@ -515,7 +515,7 @@ export default function App() {
         const word = typeof detail.args?.declaration === "string" ? detail.args.declaration : "";
         const id = declarationOfWord(word);
         const lang = uiLanguageRef.current;
-        const labelOf = (x: string) => { const l = DESKTOP_X.declarations?.[x]?.label; return typeof l === "string" ? l : (lang === "pl" ? l?.pl ?? l?.en : l?.en ?? l?.pl) ?? x; };
+        const labelOf = (x: string) => dataLabel(DESKTOP_X.declarations?.[x]?.label, lang, x);
         if (id === undefined) {
           const known = Object.keys(DESKTOP_X.declarations ?? {}).map(labelOf).join(", ");
           detail.outcome = { state: "failed", error: { message: sayDesktop(DESKTOP.words, "declare_unknown", lang, { word, known }) } };
@@ -694,7 +694,7 @@ export default function App() {
       // R101 P0: every window closes from the switcher (the chat too): the desktop stays under the last one
       entries: switcherEntries(win.layout).map(w => ({ id: w.id, label: windowLabel(w.id), front: w.id === front, closable: true })),
       focus: (id: string) => moveTo(focusWindow(winRef.current, id)),
-      arrangeMenu: (ARRANGE.menu ?? []).map(m => ({ id: m.id, label: (uiLanguage === "pl" ? m.label.pl : m.label.en) ?? m.id, icon: m.icon })),
+      arrangeMenu: (ARRANGE.menu ?? []).map(m => ({ id: m.id, label: dataLabel(m.label, uiLanguage, m.id), icon: m.icon })),
       arrange: (id: string, how: string) => moveTo(arrangeWindow(winRef.current, id, how)),
       close: (id: string) => {
         const w = winRef.current.layout.windows.find(x => x.id === id);
@@ -785,13 +785,13 @@ export default function App() {
     }
     if (st.op === "trash" && x.trash && api.actions) {
       const t0 = x.trash;
-      api.actions.run({ action: t0.action, element: { class: "application" }, args: t0.args })
+      runTrashAction(api.actions, t0)
         .then(() => {
           window.dispatchEvent(new Event(TRASH_CHANGED));
           // the inverse: the untrash of the same thing (a pin's trash entry id is not known here, so a pin offers no undo chip - the Trash window restores it)
           const inv = t0.action === "conversation.trash" ? { action: "conversation.untrash", args: { query: t0.args.query } } : t0.action === "memory.trash" ? { action: "memory.untrash", args: { query: t0.args.query } } : null;
           showReceipt("drop_receipt_trash", sayDesktop(words, "drop_receipt_trash", lang, { label: x.label }), inv ? () => {
-            api.actions!.run({ action: inv.action, element: { class: "application" }, args: inv.args })
+            runTrashAction(api.actions!, inv)
               .then(() => { window.dispatchEvent(new Event(TRASH_CHANGED)); showReceipt("drop_receipt_trash_undo", sayDesktop(words, "drop_receipt_trash_undo", lang, { label: x.label })); })
               .catch((e: unknown) => showReceipt("drop_failed", sayDesktop(words, "drop_failed", lang, { error: String((e as Error)?.message ?? e) })));
           } : undefined);

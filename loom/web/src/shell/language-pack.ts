@@ -27,6 +27,41 @@ export function languageChain(language: string): string[] {
   return chain.filter((code, i) => code !== "" && chain.indexOf(code) === i);
 }
 
+/** Sorting follows the same language order as labels. An unsupported/custom catalog tag falls through
+ * to the next configured language; it never makes arranging icons throw. */
+export function languageCollator(language: string): Intl.Collator {
+  for (const code of languageChain(language)) {
+    try {
+      if (Intl.Collator.supportedLocalesOf(code).length) return new Intl.Collator(code, { sensitivity: "base" });
+    } catch { /* a custom catalog id need not be a BCP 47 locale */ }
+  }
+  return new Intl.Collator(undefined, { sensitivity: "base" });
+}
+
+export type LocalizedText = Record<string, string | undefined>;
+/** Transform every translation without narrowing the catalog to particular languages. */
+export function mapLocalizedText(value: unknown, transform: (text: string, language: string) => string): LocalizedText {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return {};
+  return Object.fromEntries(Object.entries(value).filter((entry): entry is [string, string] => typeof entry[1] === "string")
+    .map(([language, text]) => [language, transform(text, language)]));
+}
+/** Command aliases in data are lists per language; every catalog contributes. */
+export function localizedPhrases(value: unknown): string[] {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return [];
+  return Object.values(value).flatMap(list => Array.isArray(list) ? list.filter((word): word is string => typeof word === "string") : []);
+}
+/** Labels in data use the same configured language order as presentation catalogs. Sparse legacy
+ * labels may have no default-language value; keep their first available translation as a last resort. */
+export function localizedText(value: unknown, language: string): string | undefined {
+  if (typeof value === "string") return value;
+  if (!value || typeof value !== "object" || Array.isArray(value)) return undefined;
+  const table = value as Record<string, unknown>;
+  for (const code of [...languageChain(language), ...Object.keys(table)]) {
+    if (Object.prototype.hasOwnProperty.call(table, code) && typeof table[code] === "string") return table[code] as string;
+  }
+  return undefined;
+}
+
 const seen = new Set<string>();
 /** A text missing in the wanted language: one advisory per (language, id) for the developer (console and `window.__loomMissingText`);
  * the person sees the fallback language's text, never the key. */

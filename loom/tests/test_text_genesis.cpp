@@ -76,6 +76,28 @@ std::string join(const std::vector<std::string>& s) {
 }  // namespace
 
 TEST_SUITE("text_genesis") {
+  TEST_CASE("missing by conversation accepts a legacy message without a version group and stays read-only") {
+    Db d;
+    const auto conv = unwrap(d.db->create_conv("Synthetic legacy conversation")).id;
+    const auto id = chain_of(*d.db, conv, {"One original sentence."})[0];
+    LOOM_REQUIRE_OK(d.db->conn().run("UPDATE messages SET version_group_id = NULL WHERE id = ?", id));
+    const auto seg = unwrap(Segmenter::builtin("en"));
+    const auto opt = unwrap(Options::from_pack(builtin_pack()));
+    const auto before = graph_dump(*d.db);
+    Query q;
+    q.question = "missing";
+    q.conv_id = conv;
+    const auto answer = unwrap(query(*d.db, seg, q, opt));
+    CHECK(answer.at("from").is_null());
+    CHECK(answer.at("to").at("id") == id);
+    CHECK(answer.at("advisories")[0].at("code") == "first_version");
+    CHECK(answer.at("removed").empty());
+    CHECK(answer.at("replaced").empty());
+    CHECK(answer.at("moved").empty());
+    CHECK(answer.at("added").empty());
+    CHECK(graph_dump(*d.db) == before);
+  }
+
   TEST_CASE("§10 shape (synthetic): sentence 2 replaced, sentence 5 removed — one replacement, one removal with where/when/who") {
     Db d;
     const std::string conv = unwrap(d.db->create_conv("Redakcja")).id;
@@ -260,6 +282,75 @@ TEST_SUITE("text_genesis") {
       CHECK(!chains[1][0].source.group.empty());  // create_msg gives every message a group; a lone message is a group of one
       CHECK(chains[1][0].source.group != chains[0][0].source.group);
     }
+  }
+
+  TEST_CASE("repeated event occurrences share an edge without losing their indexes") {
+    Db d;
+    const Segmenter seg = unwrap(Segmenter::builtin("pl"));
+    const Options opt = unwrap(Options::from_pack(builtin_pack()));
+    const auto conv = unwrap(d.db->create_conv("Powtórzone fragmenty")).id;
+    const auto ids = chain_of(*d.db, conv, {"Powtórzone zdanie. Zostaje tutaj. Powtórzone zdanie.", "Zostaje tutaj."});
+    const Chain c = unwrap(compute_chain(seg, unwrap(versions_of_message(*d.db, ids.back())), opt));
+    REQUIRE(count_kind(c, "removal") == 2);
+    unwrap(materialize(*d.db, c, opt));
+    const auto frag = unwrap(d.db->find_node(seg.fingerprint("Powtórzone zdanie.") + "@sentence/pl", "text_fragment"));
+    REQUIRE(frag.has_value());
+    auto edges = unwrap(d.db->get_links(frag->id, "deleted_in"));
+    REQUIRE(edges.size() == 1);
+    REQUIRE(edges[0].metadata.at("events").size() == 2);
+    std::set<std::size_t> indexes;
+    std::set<std::string> keys;
+    for (const auto& record : edges[0].metadata.at("events")) {
+      indexes.insert(record.at("a_index").get<std::size_t>());
+      keys.insert(record.at("event").get<std::string>());
+      CHECK(record.at("b_index").is_null());
+    }
+    CHECK((indexes == std::set<std::size_t>{0, 2}));
+    CHECK(keys.size() == 2);
+    const Json after = graph_dump(*d.db);
+    unwrap(materialize(*d.db, c, opt));
+    CHECK(graph_dump(*d.db) == after);
+    // Re-materialising a legacy singular link recovers every occurrence from the retained source chain.
+    Json legacy = edges[0].metadata;
+    legacy.erase("events");
+    unwrap(d.db->create_link(edges[0].src, edges[0].dst, edges[0].link_type, 1.0, legacy));
+    unwrap(materialize(*d.db, c, opt));
+    CHECK(graph_dump(*d.db) == after);
+  }
+
+  TEST_CASE("replacement edges retain the events of other conversations sharing the same fragments") {
+    Db d;
+    const Segmenter seg = unwrap(Segmenter::builtin("pl"));
+    const Options opt = unwrap(Options::from_pack(builtin_pack()));
+    std::vector<Chain> chains;
+    std::set<std::string> expected;
+    for (int i = 0; i < 2; ++i) {
+      const auto conv = unwrap(d.db->create_conv("Wspólne fragmenty " + std::to_string(i))).id;
+      const auto ids = chain_of(*d.db, conv, {"Kot ma biały ogon.", "Kot ma czarny ogon."});
+      chains.push_back(unwrap(compute_chain(seg, unwrap(versions_of_message(*d.db, ids.back())), opt)));
+      REQUIRE(count_kind(chains.back(), "replacement") == 1);
+      expected.insert(chains.back().events.front().key);
+      unwrap(materialize(*d.db, chains.back(), opt));
+    }
+    REQUIRE(expected.size() == 2);
+    for (const auto& [text, kind] : std::vector<std::pair<std::string, std::string>>{
+           {"Kot ma biały ogon.", "replaced_by"}, {"Kot ma czarny ogon.", "derived_from"}}) {
+      const auto frag = unwrap(d.db->find_node(seg.fingerprint(text) + "@sentence/pl", "text_fragment"));
+      REQUIRE(frag.has_value());
+      const auto edges = unwrap(d.db->get_links(frag->id, kind));
+      REQUIRE(edges.size() == 1);
+      REQUIRE(edges[0].metadata.at("events").size() == 2);
+      std::set<std::string> found;
+      for (const auto& record : edges[0].metadata.at("events")) {
+        found.insert(record.at("event").get<std::string>());
+        CHECK(record.at("a_index") == 0);
+        CHECK(record.at("b_index") == 0);
+      }
+      CHECK(found == expected);
+    }
+    const Json after = graph_dump(*d.db);
+    unwrap(materialize(*d.db, chains.front(), opt));
+    CHECK(graph_dump(*d.db) == after);  // neither replacement direction forgets the other chain
   }
 
   TEST_CASE("kinds are data: an overlay renames the event, its edge follows; an unmapped op kind is an event of its own name; silence is a list") {

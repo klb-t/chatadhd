@@ -133,3 +133,13 @@ test(`generative: drag/drop/menu/split/move sequences keep the invariants; one a
     } catch (e) { e.message = `[seed ${seed}, run ${run}] ` + e.message; throw e; }
   }
 });
+
+test('accessible window labels are language data, with literal user titles and no closed language list', () => {
+  assert.equal(A.arrangementLabel('close', 'Notities', 'nl'), 'Sluiten: Notities');
+  assert.equal(A.arrangementLabel('menu', 'Notities', 'nl'), 'Venster indelen: Notities');
+  assert.equal(A.arrangementLabel('close', 'A $& {title}', 'pl'), 'Zamknij: A $& {title}');
+  // Synthetic new language and arbitrary control identity: no code change to use the labels.
+  const data = { labels: { custom: { xx: 'X {title}', en: 'E {title}' } } };
+  assert.equal(A.arrangementLabel('custom', 'B', 'xx', data), 'X B');
+  assert.equal(A.arrangementLabel('custom', 'B', 'unknown', data), 'E B');
+});

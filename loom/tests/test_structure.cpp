@@ -86,6 +86,25 @@ const Json& presets() {
 }  // namespace
 
 TEST_SUITE("structure") {
+  TEST_CASE("malformed legacy metadata reports its row without hiding the valid unit members") {
+    Fx f;
+    f.confirmed("units.define", Json{{"kind", "project"}, {"id", "alfa"}, {"label", "Alfa"}});
+    for (const char* title : {"Synthetic A", "Synthetic B"})
+      f.confirmed("conversation.set_unit", Json{{"conv_id", f.new_conv(title)}, {"kind", "project"}, {"id", "alfa"}});
+    const auto bad = f.new_conv("Synthetic legacy row");
+    LOOM_REQUIRE_OK(f.rt->db().conn().run("UPDATE conversations SET metadata = ? WHERE id = ?", "{broken", bad));
+    const auto before = snapshot(f.td.path());
+    const auto result = f.structure(Json{{"root", "unit:project/alfa"}});
+    CHECK(result.at("found") == true);
+    const auto* members = expectation(result, "unit_basic/conversations");
+    REQUIRE(members);
+    CHECK(members->at("count") == 2);
+    REQUIRE(result.at("reader_errors").size() == 1);
+    CHECK(result.at("reader_errors")[0].at("address") == "conv:" + bad);
+    CHECK(result.at("reader_errors")[0].at("error") == "conversation_metadata_unreadable");
+    CHECK(snapshot(f.td.path()) == before);
+  }
+
   TEST_CASE("a unit with two conversations: conversations present, documents and decisions as ghosts; viewing writes nothing") {
     Fx f;
     f.confirmed("units.define", Json{{"kind", "project"}, {"id", "alfa"}, {"label", "Alfa"}});

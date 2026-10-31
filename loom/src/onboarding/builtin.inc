@@ -796,6 +796,8 @@ std::string_view(R"loom_onboard({
                 "action_failed": "Nie udało się wykonać żądania ({{reason}})."
               },
               "nl": {
+                "llm_disabled": "Het analysemodel is uitgeschakeld na {{count}} mislukte aanroepen achter elkaar (limiet {{limit}}). De lokale regels blijven werken.",
+                "llm_reenable": "Het analysemodel opnieuw inschakelen",
                 "stalled": "Vastgelopen: {{count}}",
                 "quarantined": "Overgeslagen: {{count}}",
                 "unknown": "onbekend",
@@ -957,9 +959,9 @@ std::string_view(R"loom_onboard({
             "status": {
               "state": "present",
               "today": {
-                "pl": "Ekran jest w aplikacji (loom/web/src/components/RoleCard.tsx): menu ⋮ › Ustawienia › Modele pokazuje tabelę ról z roles.resolved, a po dotknięciu roli kartę z łańcuchem wyboru modelu słowo w słowo z danych, klasą modelu z powodem, przepływem dla każdej klasy (z chipem „kalibracja”) i każdym przepływem, który czyta ustawienie roli. Zmiana modelu roli otwiera tę samą kartę pola co w nawigatorze. Przypisanie klasy ręcznie i zmiana progów to jeszcze planowane.",
-)loom_onboard", 59899),
-std::string_view(R"loom_onboard(                "en": "The screen is in the app (loom/web/src/components/RoleCard.tsx): menu ⋮ › Settings › Models shows the table of roles from roles.resolved, and a tap on a role opens the card with the model-choice chain word for word from the data, the model class with its reason, the flow of every class (with the chip “calibration”) and every flow that reads the role's setting. Changing a role's model opens the same field card as the navigator. Assigning a class by hand and changing thresholds are still planned."
+)loom_onboard", 59624),
+std::string_view(R"loom_onboard(                "pl": "Ekran jest w aplikacji (loom/web/src/components/RoleCard.tsx): menu ⋮ › Ustawienia › Modele pokazuje tabelę ról z roles.resolved, a po dotknięciu roli kartę z łańcuchem wyboru modelu słowo w słowo z danych, klasą modelu z powodem, przepływem dla każdej klasy (z chipem „kalibracja”) i każdym przepływem, który czyta ustawienie roli. Zmiana modelu roli otwiera tę samą kartę pola co w nawigatorze. Przypisanie klasy ręcznie i zmiana progów to jeszcze planowane.",
+                "en": "The screen is in the app (loom/web/src/components/RoleCard.tsx): menu ⋮ › Settings › Models shows the table of roles from roles.resolved, and a tap on a role opens the card with the model-choice chain word for word from the data, the model class with its reason, the flow of every class (with the chip “calibration”) and every flow that reads the role's setting. Changing a role's model opens the same field card as the navigator. Assigning a class by hand and changing thresholds are still planned."
               },
               "reason": {
                 "pl": "Słowa są w katalogu, żeby ekran nie wpisywał ich w kod; brak słowa pokazuje jego identyfikator. Zapis własnych klas i progów czeka na pole, które zapisuje nakładkę profilu guardian.",
@@ -1794,15 +1796,15 @@ std::string_view(R"loom_onboard(                "en": "The screen is in the app 
                 "wk_expert_prepare": "Prepare the client request",
                 "wk_expert_aria": "Client request for one call (JSON)",
                 "wk_expert_once": "The next Send uses exactly this request, once. The profile, the saved context and later calls keep their settings.",
-                "wk_expert_discard": "Discard the change",
+)loom_onboard", 59969),
+std::string_view(R"loom_onboard(                "wk_expert_discard": "Discard the change",
                 "pv_note": "This request goes with the next Send, once. Changes to the text change what you send; “Discard the preview” goes back to a plain send.",
                 "pv_aria": "Request to be sent (JSON)",
                 "pv_discard": "Discard the preview",
                 "mp_open": "Where does this model come from? Show the provenance",
                 "mp_title": "Model of this conversation",
                 "mp_close": "Close: model of this conversation",
-)loom_onboard", 59997),
-std::string_view(R"loom_onboard(                "mp_loading": "Reading the provenance…",
+                "mp_loading": "Reading the provenance…",
                 "mp_model": "Model: {{model}}",
                 "mp_model_default": "Model: default — the chain of settings chooses it",
                 "mp_set_by": "Set at the level: {{level}}",
@@ -2344,7 +2346,16 @@ std::string_view(R"loom_onboard(                "mp_loading": "Reading the prove
                 "lit_cohort": "Cohort:",
                 "lit_saving_replaces_the_complete_top_level": "Saving replaces the complete top-level",
                 "lit_usage_policy_value_rest": "value. Nested objects are not merge-patched; null is a stored value. An empty override restores preset values and remains a stored override. Outstanding receipts keep their own snapshots.",
-                "lit_workflow_recovery_note": "Save definitions, source text, views, validated state, variables and trace on this server. Remote execution checkpoints and exactly-once delivery are unavailable. Restoration never dispatches an action."
+                "lit_workflow_recovery_note": "Save definitions, source text, views, validated state, variables and trace on this server. Remote execution checkpoints and exactly-once delivery are unavailable. Restoration never dispatches an action.",
+                "log_filter": "Filter logs…",
+                "log_auto": "Refresh automatically",
+                "log_loading": "Loading logs…",
+                "log_read_failed": "Could not load logs: {{error}}",
+                "log_previous_lines": "These are the last lines loaded successfully; they may be out of date.",
+                "log_no_matches": "No log lines match this filter.",
+                "log_empty": "No log lines.",
+                "ri_settings_read_failed": "Could not read the display setting: {{error}}",
+                "ri_settings_write_failed": "Could not save the display setting: {{error}}"
               },
               "pl": {
                 "menu_open": "Menu",
@@ -2601,7 +2612,8 @@ std::string_view(R"loom_onboard(                "mp_loading": "Reading the prove
                 "cm_selector_profile": "Profil selektora",
                 "cm_flow_text_graph": "Przepływ: tekst ↔ graf",
                 "cm_preview_request": "Podgląd wysyłki",
-                "cm_steps_help": "Szerzej, głębiej, węziej i płycej działają tylko na następne zapytanie; po jego wysłaniu wszystko wraca do ustawień.",
+)loom_onboard", 59878),
+std::string_view(R"loom_onboard(                "cm_steps_help": "Szerzej, głębiej, węziej i płycej działają tylko na następne zapytanie; po jego wysłaniu wszystko wraca do ustawień.",
                 "cm_steps_add_up": "Kolejne kliknięcia dodają się: dwa razy Szerzej = szerzej ×2.",
                 "cm_profiles_help": "Wybrany profil dotyczy tylko następnego zapytania; po jego wysłaniu wraca profil z ustawień.",
                 "cm_profiles_loading": "Wczytuję profile…",
@@ -2615,8 +2627,7 @@ std::string_view(R"loom_onboard(                "mp_loading": "Reading the prove
                 "cm_modify_failed": "Nie udało się zmienić kontekstu: {{reason}}",
                 "cm_modify_declined": "Zostawione bez zmian.",
                 "cm_modify_reset": "Cofnij zmiany następnego zapytania",
-)loom_onboard", 59799),
-std::string_view(R"loom_onboard(                "cm_flow_help": "Otwiera kartę ustawienia „Przepływ żądania”: tam wybierasz, czy graf idzie do modelu i wraca w odpowiedzi (dla tej rozmowy, dla Ciebie albo dla całej instalacji).",
+                "cm_flow_help": "Otwiera kartę ustawienia „Przepływ żądania”: tam wybierasz, czy graf idzie do modelu i wraca w odpowiedzi (dla tej rozmowy, dla Ciebie albo dla całej instalacji).",
                 "cm_preview_help": "Pokazuje żądanie, które pójdzie z następnym Wyślij. Możesz je poprawić; użyje go jednorazowo.",
                 "cm_reason_no_navigator": "Ten ekran nie ma nawigatora grafu, więc nie ma gdzie pokazać karty ustawienia.",
                 "cm_reason_preview_empty": "Wpisz najpierw wiadomość: podgląd pokazuje żądanie z Twoim tekstem.",
@@ -3235,7 +3246,16 @@ std::string_view(R"loom_onboard(                "cm_flow_help": "Otwiera kartę 
                 "lit_cohort": "Kohorta:",
                 "lit_saving_replaces_the_complete_top_level": "Zapis zastępuje całą wartość najwyższego poziomu",
                 "lit_usage_policy_value_rest": "Zagnieżdżone obiekty nie są łączone przez łatanie; null jest zapisaną wartością. Puste nadpisanie przywraca wartości presetu i pozostaje zapisanym nadpisaniem. Otwarte rachunki zachowują własne migawki.",
-                "lit_workflow_recovery_note": "Zapisz na tym serwerze definicje, tekst źródłowy, widoki, zwalidowany stan, zmienne i ślad. Zdalne punkty kontrolne wykonania i dostarczenie dokładnie raz są niedostępne. Odtworzenie nigdy nie wysyła żadnej akcji."
+                "lit_workflow_recovery_note": "Zapisz na tym serwerze definicje, tekst źródłowy, widoki, zwalidowany stan, zmienne i ślad. Zdalne punkty kontrolne wykonania i dostarczenie dokładnie raz są niedostępne. Odtworzenie nigdy nie wysyła żadnej akcji.",
+                "log_filter": "Filtruj dziennik…",
+                "log_auto": "Odświeżaj automatycznie",
+                "log_loading": "Wczytywanie dziennika…",
+                "log_read_failed": "Nie udało się wczytać dziennika: {{error}}",
+                "log_previous_lines": "To ostatnie poprawnie wczytane wpisy; mogą być nieaktualne.",
+                "log_no_matches": "Żaden wpis nie pasuje do tego filtra.",
+                "log_empty": "Brak wpisów w dzienniku.",
+                "ri_settings_read_failed": "Nie udało się odczytać ustawienia widoku: {{error}}",
+                "ri_settings_write_failed": "Nie udało się zapisać ustawienia widoku: {{error}}"
               },
               "nl": {
                 "menu_open": "Menu",
@@ -3385,7 +3405,8 @@ std::string_view(R"loom_onboard(                "cm_flow_help": "Otwiera kartę 
                 "interaction_lock_zoom": "zoom x{{factor}}",
                 "interaction_lock_nothing": "geen koppeling",
                 "interaction_locks_inferred": "De status van {{locks}} wordt uit toetsaanslagen afgeleid: de browser maakt die niet betrouwbaar beschikbaar (getModifierState), dus een vergrendeling die vóór de focus van de pagina is ingedrukt, kan verkeerd worden getoond.",
-                "interaction_locks_no_api": "Deze browser heeft geen getModifierState: de status van alle vergrendelingen wordt uit toetsaanslagen afgeleid.",
+)loom_onboard", 59861),
+std::string_view(R"loom_onboard(                "interaction_locks_no_api": "Deze browser heeft geen getModifierState: de status van alle vergrendelingen wordt uit toetsaanslagen afgeleid.",
                 "interaction_conflict": "Conflicterende koppelingen: {{ids}}. De laatste wint; geen enkele wordt geblokkeerd.",
                 "interaction_last": "Laatste actie: {{label}}",
                 "interaction_recorded": "Alleen als gegevens vastgelegd (spraak, andere apparaten): {{count}}",
@@ -3405,8 +3426,7 @@ std::string_view(R"loom_onboard(                "cm_flow_help": "Otwiera kartę 
                 "ve3d_xr_active": "XR-sessie actief: {{mode}}.",
                 "ve3d_end_xr": "XR verlaten",
                 "ve3d_webgl_failed": "De 3D-weergave kon niet starten ({{error}}). Kies de platte 2D-renderer.",
-)loom_onboard", 59887),
-std::string_view(R"loom_onboard(                "ve3d_config_notes": "Sommige rendererinstellingen waren niet bruikbaar en de standaardwaarden zijn gebruikt: {{notes}}",
+                "ve3d_config_notes": "Sommige rendererinstellingen waren niet bruikbaar en de standaardwaarden zijn gebruikt: {{notes}}",
                 "ve3d_selected": "Geselecteerd: {{label}}",
                 "ve3d_counts": "{{nodes}} knooppunten in 3D, {{labels}} labels getoond",
                 "scene_hint_title": "Bediening (3D, {{mode}})",
@@ -4126,7 +4146,17 @@ std::string_view(R"loom_onboard(                "ve3d_config_notes": "Sommige re
                 "lit_cohort": "Cohort:",
                 "lit_saving_replaces_the_complete_top_level": "Opslaan vervangt de volledige waarde op het hoogste niveau",
                 "lit_usage_policy_value_rest": "Geneste objecten worden niet samengevoegd; null is een opgeslagen waarde. Een lege overschrijving herstelt de presetwaarden en blijft een opgeslagen overschrijving. Openstaande bewijzen behouden hun eigen snapshots.",
-                "lit_workflow_recovery_note": "Sla op deze server definities, brontekst, weergaven, gevalideerde status, variabelen en trace op. Controlepunten voor uitvoering op afstand en exactly-once-aflevering zijn niet beschikbaar. Herstel verstuurt nooit een actie."
+                "lit_workflow_recovery_note": "Sla op deze server definities, brontekst, weergaven, gevalideerde status, variabelen en trace op. Controlepunten voor uitvoering op afstand en exactly-once-aflevering zijn niet beschikbaar. Herstel verstuurt nooit een actie.",
+                "log_filter": "Filter het logboek…",
+                "log_auto": "Automatisch vernieuwen",
+                "log_loading": "Logboek laden…",
+                "log_read_failed": "Het logboek kon niet worden geladen: {{error}}",
+                "log_previous_lines": "Dit zijn de laatst geladen regels; ze kunnen verouderd zijn.",
+                "log_no_matches": "Geen logboekregels komen overeen met dit filter.",
+                "log_empty": "Geen logboekregels.",
+)loom_onboard", 59997),
+std::string_view(R"loom_onboard(                "ri_settings_read_failed": "De weergave-instelling kon niet worden gelezen: {{error}}",
+                "ri_settings_write_failed": "De weergave-instelling kon niet worden opgeslagen: {{error}}"
               }
             }
           }
@@ -4160,8 +4190,7 @@ std::string_view(R"loom_onboard(                "ve3d_config_notes": "Sommige re
                 "id": "tools",
                 "label": "cm_tools",
                 "kind": "submenu",
-)loom_onboard", 59984),
-std::string_view(R"loom_onboard(                "items": [
+                "items": [
                   {
                     "id": "web_search",
                     "label": "cm_web_search",
@@ -5037,7 +5066,8 @@ std::string_view(R"loom_onboard(                "items": [
                 "card.gate.yes": "Potwierdzam",
                 "card.gate.no": "Nie",
                 "card.gate.declined": "Nie zapisano — odmówiłeś.",
-                "card.flows_reading": "Czyta to:",
+)loom_onboard", 59969),
+std::string_view(R"loom_onboard(                "card.flows_reading": "Czyta to:",
                 "card.relations.none": "Brak powiązań w projekcji.",
                 "card.no_value": "To nie jest ustawienie — nie ma tu łańcucha poziomów, z którego dziedziczy się wartość.",
                 "card.profile.answer_in_interview": "Odpowiesz w wywiadzie: ⋮ › Warsztat › Onboarding",
@@ -5068,8 +5098,7 @@ std::string_view(R"loom_onboard(                "items": [
                 "me.interview.start": "Poznaj mnie",
                 "me.interview.starting": "Otwieram rozmowę…",
                 "me.interview.hint": "Krótka rozmowa o Tobie — bez modelu, tylko formularz.",
-)loom_onboard", 59919),
-std::string_view(R"loom_onboard(                "me.interview.failed": "Nie udało się otworzyć rozmowy ({{reason}}).",
+                "me.interview.failed": "Nie udało się otworzyć rozmowy ({{reason}}).",
                 "me.sections.title": "Co o Tobie wiem",
                 "me.section.head": "{{label}} ({{count}})",
                 "me.section.head_unknown": "{{label}} (liczba nieznana)",
@@ -5625,7 +5654,8 @@ std::string_view(R"loom_onboard(                "me.interview.failed": "Nie uda�
                 "proposals.title": "Model proposals on fields",
                 "all_fields.show": "Show All fields",
                 "all_fields.hide": "Hide All fields",
-                "all_fields.why": "This is the former settings screen in full: connection, models, keys, the table of every key with its edit rule and the JSON editor (expert configuration). Nothing of it is gone; it is in English because its words are not in the catalogue yet."
+                "all_fields.why": "This is the former settings screen in full: connection, models, keys, the table of every key with its edit rule and the JSON editor (expert configuration). Nothing of it is gone; it is in English because its words are not in the catalogue yet.",
+                "error.fields": "Some setting labels could not be loaded. Available values are still shown: {{reason}}"
               },
               "pl": {
                 "title": "Ustawienia",
@@ -5677,7 +5707,8 @@ std::string_view(R"loom_onboard(                "me.interview.failed": "Nie uda�
                 "proposals.title": "Propozycje modelu przy polach",
                 "all_fields.show": "Pokaż Wszystkie pola",
                 "all_fields.hide": "Ukryj Wszystkie pola",
-                "all_fields.why": "To dawny ekran ustawień w całości: połączenie, modele, klucze, tabela wszystkich kluczy z regułami edycji i edytor JSON (konfiguracja ekspercka). Nic z niego nie zniknęło; jest po angielsku, bo jego słów nie ma jeszcze w katalogu."
+                "all_fields.why": "To dawny ekran ustawień w całości: połączenie, modele, klucze, tabela wszystkich kluczy z regułami edycji i edytor JSON (konfiguracja ekspercka). Nic z niego nie zniknęło; jest po angielsku, bo jego słów nie ma jeszcze w katalogu.",
+                "error.fields": "Nie udało się wczytać części nazw ustawień. Dostępne wartości są nadal widoczne: {{reason}}"
               },
               "nl": {
                 "title": "Instellingen",
@@ -5725,7 +5756,8 @@ std::string_view(R"loom_onboard(                "me.interview.failed": "Nie uda�
                 "proposals.title": "Modelvoorstellen bij velden",
                 "all_fields.show": "Toon Alle velden",
                 "all_fields.hide": "Verberg Alle velden",
-                "all_fields.why": "Dit is het voormalige instellingenscherm in zijn geheel: verbinding, modellen, sleutels, de tabel van elke sleutel met zijn bewerkingsregel en de JSON-editor (expertconfiguratie). Er is niets van verdwenen; het staat in het Engels omdat de woorden nog niet in de catalogus staan."
+                "all_fields.why": "Dit is het voormalige instellingenscherm in zijn geheel: verbinding, modellen, sleutels, de tabel van elke sleutel met zijn bewerkingsregel en de JSON-editor (expertconfiguratie). Er is niets van verdwenen; het staat in het Engels omdat de woorden nog niet in de catalogus staan.",
+                "error.fields": "Sommige namen van instellingen konden niet worden geladen. Beschikbare waarden worden nog getoond: {{reason}}"
               }
             }
           }
@@ -5846,7 +5878,8 @@ std::string_view(R"loom_onboard(                "me.interview.failed": "Nie uda�
                 "why.graph_packet": "Messages selected from the graph and sent as one packet.",
                 "why.profile_slot": "Said by you, a part of your profile.",
                 "why.active_task": "The instruction put together from the messages you selected.",
-                "why.graph_reply_instruction": "The request to give the answer as a graph.",
+)loom_onboard", 59937),
+std::string_view(R"loom_onboard(                "why.graph_reply_instruction": "The request to give the answer as a graph.",
                 "why.question": "The text of your message in this turn.",
                 "item.memory_node": "Memory node ({{type}})",
                 "item.graph_packet": "Graph packet",
@@ -5892,8 +5925,7 @@ std::string_view(R"loom_onboard(                "me.interview.failed": "Nie uda�
                 "sheet.loading": "Loading the receipt…",
                 "sheet.error": "The receipt could not be loaded: {{reason}}",
                 "sheet.retry": "Try again",
-)loom_onboard", 59987),
-std::string_view(R"loom_onboard(                "sheet.no_actions": "the app has no connection to the engine's actions (neither the server nor the Android shell gave one)",
+                "sheet.no_actions": "the app has no connection to the engine's actions (neither the server nor the Android shell gave one)",
                 "missing.also": "The same happens when saving the receipts of requests is switched off in the settings.",
                 "missing.technical": "Technical details",
                 "action.show_in_graph.disabled": "The graph did not open the record of this request, so the button is disabled. Reason: {{reason}}",
@@ -6779,7 +6811,8 @@ std::string_view(R"loom_onboard(                "sheet.no_actions": "the app has
             "section.confirmed": "Potwierdź tę część i kontynuuj",
             "section.corrected": "Ta część wymaga poprawki",
             "section.rejected": "Odrzuć podsumowanie tej części",
-            "section.skip": "Pomiń tę część",
+)loom_onboard", 59974),
+std::string_view(R"loom_onboard(            "section.skip": "Pomiń tę część",
             "section.repeat": "Powtórz tę część",
             "section.none": "Brak aktywnej części. Wybierz część, którą chcesz powtórzyć lub kontynuować.",
             "privacy.title": "Prywatność według kategorii",
@@ -6821,8 +6854,7 @@ std::string_view(R"loom_onboard(                "sheet.no_actions": "the app has
             "error.interrupted": "Rozmowa została przerwana",
             "error.closed": "Widok kreatora został zamknięty",
             "error.layers_unavailable": "Aplikacja nie podłączyła natywnych warstw domyślnych.",
-)loom_onboard", 59953),
-std::string_view(R"loom_onboard(            "error.scenario_unavailable": "Aplikacja nie podłączyła edycji metod grafowych.",
+            "error.scenario_unavailable": "Aplikacja nie podłączyła edycji metod grafowych.",
             "error.model_unavailable": "Aplikacja nie podłączyła natywnej metody kreatora i transportu modelu.",
             "error.number": "Wprowadź liczbę.",
             "error.boolean": "Wybierz true albo false.",
@@ -8057,7 +8089,8 @@ std::string_view(R"loom_onboard(            "error.scenario_unavailable": "Aplik
             "args_open": "Niepodane (obowiązują wartości domyślne): {{params}}",
             "definition_define_action": "Nowa akcja „{{id}}”: zapisze się tylko w Twojej własnej nakładce ({{overlay}}); możesz ją później usunąć",
             "definition_define_sequence": "Łańcuch, który powtarzasz, zapisany jako akcja „{{id}}” (Twoja własna nakładka: {{overlay}})",
-            "definition_define_group": "Grupa „{{id}}” dla tego, co mają wspólnego Twoje klasy (Twoja własna nakładka: {{overlay}})",
+)loom_onboard", 59911),
+std::string_view(R"loom_onboard(            "definition_define_group": "Grupa „{{id}}” dla tego, co mają wspólnego Twoje klasy (Twoja własna nakładka: {{overlay}})",
             "rule_replaces": "Zastępuje regułę, którą ustawiłeś wcześniej w tej samej sprawie",
             "offer": "Wyślij moje zdanie jako wiadomość",
             "offer_hint": "Nic nie poszło do modelu. Twoje zdanie może jeszcze do niego trafić jako zwykła wiadomość.",
@@ -8099,8 +8132,7 @@ std::string_view(R"loom_onboard(            "error.scenario_unavailable": "Aplik
             "rejected": "Laten vallen. Er is niets uitgevoerd.",
             "status_executed": "Klaar",
             "status_rejected": "Laten vallen",
-)loom_onboard", 59992),
-std::string_view(R"loom_onboard(            "status_denied": "Niet toegestaan door de regels",
+            "status_denied": "Niet toegestaan door de regels",
             "status_unavailable": "Kan nog niet draaien",
             "status_waiting": "Wacht op een antwoord",
             "status_stale": "Niet meer geldig",
@@ -8268,6 +8300,8 @@ std::string_view(R"loom_onboard(            "status_denied": "Niet toegestaan do
             "action_failed": "Nie udało się wykonać żądania ({{reason}})."
           },
           "nl": {
+            "llm_disabled": "Het analysemodel is uitgeschakeld na {{count}} mislukte aanroepen achter elkaar (limiet {{limit}}). De lokale regels blijven werken.",
+            "llm_reenable": "Het analysemodel opnieuw inschakelen",
             "stalled": "Vastgelopen: {{count}}",
             "quarantined": "Overgeslagen: {{count}}",
             "unknown": "onbekend",
@@ -9010,7 +9044,8 @@ std::string_view(R"loom_onboard(            "status_denied": "Niet toegestaan do
             "perspectives_choose": "Choose perspectives (one or more)",
             "perspectives_show": "Show side by side",
             "perspectives_key": "Setting key (for inheritance)",
-            "perspectives_none_chosen": "Choose at least one perspective.",
+)loom_onboard", 59946),
+std::string_view(R"loom_onboard(            "perspectives_none_chosen": "Choose at least one perspective.",
             "perspectives_empty": "No perspectives are defined.",
             "perspectives_counts": "{{nodes}} nodes, {{edges}} edges",
             "perspectives_loading": "Loading...",
@@ -9064,8 +9099,7 @@ std::string_view(R"loom_onboard(            "status_denied": "Niet toegestaan do
             "agent_decided_rejected": "Rejected",
             "agent_sends_note": "Accepting runs this action under the usual rules; the agent then continues and may call the model again.",
             "interaction_title": "Controls",
-)loom_onboard", 59986),
-std::string_view(R"loom_onboard(            "interaction_arrows_now": "Arrows now: {{what}}",
+            "interaction_arrows_now": "Arrows now: {{what}}",
             "interaction_arrows_plain": "plane",
             "interaction_held": "Hold {{mods}}",
             "interaction_locks": "Locks",
@@ -9815,7 +9849,16 @@ std::string_view(R"loom_onboard(            "interaction_arrows_now": "Arrows no
             "lit_cohort": "Cohort:",
             "lit_saving_replaces_the_complete_top_level": "Saving replaces the complete top-level",
             "lit_usage_policy_value_rest": "value. Nested objects are not merge-patched; null is a stored value. An empty override restores preset values and remains a stored override. Outstanding receipts keep their own snapshots.",
-            "lit_workflow_recovery_note": "Save definitions, source text, views, validated state, variables and trace on this server. Remote execution checkpoints and exactly-once delivery are unavailable. Restoration never dispatches an action."
+            "lit_workflow_recovery_note": "Save definitions, source text, views, validated state, variables and trace on this server. Remote execution checkpoints and exactly-once delivery are unavailable. Restoration never dispatches an action.",
+            "log_filter": "Filter logs…",
+            "log_auto": "Refresh automatically",
+            "log_loading": "Loading logs…",
+            "log_read_failed": "Could not load logs: {{error}}",
+            "log_previous_lines": "These are the last lines loaded successfully; they may be out of date.",
+            "log_no_matches": "No log lines match this filter.",
+            "log_empty": "No log lines.",
+            "ri_settings_read_failed": "Could not read the display setting: {{error}}",
+            "ri_settings_write_failed": "Could not save the display setting: {{error}}"
           },
           "pl": {
             "menu_open": "Menu",
@@ -9864,7 +9907,8 @@ std::string_view(R"loom_onboard(            "interaction_arrows_now": "Arrows no
             "empty_title": "W czym mogę pomóc?",
             "starter_1": "Wyjaśnij mi prosto jakiś temat",
             "starter_2": "Pomóż zaplanować mój dzień",
-            "starter_3": "Streść tekst, który wkleję",
+)loom_onboard", 59972),
+std::string_view(R"loom_onboard(            "starter_3": "Streść tekst, który wkleję",
             "starter_4": "Napisz i popraw kod",
             "copy": "Kopiuj",
             "copied": "Skopiowano",
@@ -9928,8 +9972,7 @@ std::string_view(R"loom_onboard(            "interaction_arrows_now": "Arrows no
             "adv_settings_title": "Podpowiedzi: zapamiętane odpowiedzi",
             "adv_settings_ask": "Pytaj o konfiguracje, które wyglądają na mało użyteczne",
             "adv_settings_days": "Odpowiedź pamiętana przez (dni): {{days}} (preset: {{preset}})",
-)loom_onboard", 59998),
-std::string_view(R"loom_onboard(            "adv_settings_forever": "zawsze",
+            "adv_settings_forever": "zawsze",
             "adv_settings_save": "Zapisz",
             "adv_settings_reset": "Wróć do presetu",
             "adv_settings_none": "Brak zapamiętanych odpowiedzi.",
@@ -10693,7 +10736,8 @@ std::string_view(R"loom_onboard(            "adv_settings_forever": "zawsze",
             "lit_use_saved_method_profile_in_draft": "Użyj zapisanego profilu metody w szkicu",
             "lit_load_graph_preset_into_draft": "Wczytaj preset grafu do szkicu",
             "lit_separate_model_after_the_answer": "Osobny model po odpowiedzi",
-            "lit_text_plus_json_graph": "Tekst plus graf JSON",
+)loom_onboard", 59978),
+std::string_view(R"loom_onboard(            "lit_text_plus_json_graph": "Tekst plus graf JSON",
             "lit_answer_as_graph": "Odpowiedz jako graf",
             "lit_preset_loaded_into_the_draft_review_th": "Preset wczytany do szkicu. Sprawdź dane przed zapisem. Żadna natywna konfiguracja nie została zmieniona.",
             "lit_global_graph_reply_settings_saved_othe": "Globalne ustawienia odpowiedzi grafowej zapisane. Inne widoki i rozmowy używają tego samego natywnego ustawienia.",
@@ -10706,7 +10750,16 @@ std::string_view(R"loom_onboard(            "adv_settings_forever": "zawsze",
             "lit_cohort": "Kohorta:",
             "lit_saving_replaces_the_complete_top_level": "Zapis zastępuje całą wartość najwyższego poziomu",
             "lit_usage_policy_value_rest": "Zagnieżdżone obiekty nie są łączone przez łatanie; null jest zapisaną wartością. Puste nadpisanie przywraca wartości presetu i pozostaje zapisanym nadpisaniem. Otwarte rachunki zachowują własne migawki.",
-            "lit_workflow_recovery_note": "Zapisz na tym serwerze definicje, tekst źródłowy, widoki, zwalidowany stan, zmienne i ślad. Zdalne punkty kontrolne wykonania i dostarczenie dokładnie raz są niedostępne. Odtworzenie nigdy nie wysyła żadnej akcji."
+            "lit_workflow_recovery_note": "Zapisz na tym serwerze definicje, tekst źródłowy, widoki, zwalidowany stan, zmienne i ślad. Zdalne punkty kontrolne wykonania i dostarczenie dokładnie raz są niedostępne. Odtworzenie nigdy nie wysyła żadnej akcji.",
+            "log_filter": "Filtruj dziennik…",
+            "log_auto": "Odświeżaj automatycznie",
+            "log_loading": "Wczytywanie dziennika…",
+            "log_read_failed": "Nie udało się wczytać dziennika: {{error}}",
+            "log_previous_lines": "To ostatnie poprawnie wczytane wpisy; mogą być nieaktualne.",
+            "log_no_matches": "Żaden wpis nie pasuje do tego filtra.",
+            "log_empty": "Brak wpisów w dzienniku.",
+            "ri_settings_read_failed": "Nie udało się odczytać ustawienia widoku: {{error}}",
+            "ri_settings_write_failed": "Nie udało się zapisać ustawienia widoku: {{error}}"
           },
           "nl": {
             "menu_open": "Menu",
@@ -10754,8 +10807,7 @@ std::string_view(R"loom_onboard(            "adv_settings_forever": "zawsze",
             "mic_failed": "Dicteren mislukt: {{reason}}",
             "empty_title": "Waarmee kan ik helpen?",
             "starter_1": "Leg een onderwerp eenvoudig uit",
-)loom_onboard", 59981),
-std::string_view(R"loom_onboard(            "starter_2": "Help me mijn dag te plannen",
+            "starter_2": "Help me mijn dag te plannen",
             "starter_3": "Vat een tekst samen die ik plak",
             "starter_4": "Schrijf en repareer code",
             "copy": "Kopiëren",
@@ -11509,7 +11561,8 @@ std::string_view(R"loom_onboard(            "starter_2": "Help me mijn dag te pl
             "lit_provider": "Aanbieder",
             "lit_transcription_audio_file": "Audiobestand voor transcriptie",
             "lit_audio_file": "Audiobestand",
-            "lit_select_an_audio_file_and_request_trans": "Kies een audiobestand en vraag een transcriptie aan via de geconfigureerde native aanbieder.",
+)loom_onboard", 59931),
+std::string_view(R"loom_onboard(            "lit_select_an_audio_file_and_request_trans": "Kies een audiobestand en vraag een transcriptie aan via de geconfigureerde native aanbieder.",
             "lit_voice_transcription": "Spraaktranscriptie",
             "lit_file_transcription": "Bestandstranscriptie",
             "lit_artifact_metadata": "Artefactmetadata",
@@ -11569,8 +11622,7 @@ std::string_view(R"loom_onboard(            "starter_2": "Help me mijn dag te pl
             "lit_snapshot_label": "Snapshotlabel",
             "lit_workflow_session_snapshots": "Snapshots van workflowsessies",
             "lit_no_saved_workflow_sessions": "Geen opgeslagen workflowsessies.",
-)loom_onboard", 59912),
-std::string_view(R"loom_onboard(            "lit_install_method_definitions_into_graph": "Installeer methodedefinities in de graaf",
+            "lit_install_method_definitions_into_graph": "Installeer methodedefinities in de graaf",
             "lit_graph_method_library_target": "Doelbibliotheek van de grafmethoden",
             "lit_profile_definitions_method_recipe_sele": "Profieldefinities, methode- en receptkeuzes, parameterlagen, de basisgraafcontext, aanbieder/model-koppelingen, resourceschattingen en opslagacceptatie blijven native JSON-gegevens. Geen browserpreset vervangt weggelaten velden. Automatische acceptatie vereist het expliciete native opslagverzoek.",
             "lit_full_graph_reply_settings_json": "Volledige JSON van de grafantwoordinstellingen",
@@ -11598,7 +11650,16 @@ std::string_view(R"loom_onboard(            "lit_install_method_definitions_into
             "lit_cohort": "Cohort:",
             "lit_saving_replaces_the_complete_top_level": "Opslaan vervangt de volledige waarde op het hoogste niveau",
             "lit_usage_policy_value_rest": "Geneste objecten worden niet samengevoegd; null is een opgeslagen waarde. Een lege overschrijving herstelt de presetwaarden en blijft een opgeslagen overschrijving. Openstaande bewijzen behouden hun eigen snapshots.",
-            "lit_workflow_recovery_note": "Sla op deze server definities, brontekst, weergaven, gevalideerde status, variabelen en trace op. Controlepunten voor uitvoering op afstand en exactly-once-aflevering zijn niet beschikbaar. Herstel verstuurt nooit een actie."
+            "lit_workflow_recovery_note": "Sla op deze server definities, brontekst, weergaven, gevalideerde status, variabelen en trace op. Controlepunten voor uitvoering op afstand en exactly-once-aflevering zijn niet beschikbaar. Herstel verstuurt nooit een actie.",
+            "log_filter": "Filter het logboek…",
+            "log_auto": "Automatisch vernieuwen",
+            "log_loading": "Logboek laden…",
+            "log_read_failed": "Het logboek kon niet worden geladen: {{error}}",
+            "log_previous_lines": "Dit zijn de laatst geladen regels; ze kunnen verouderd zijn.",
+            "log_no_matches": "Geen logboekregels komen overeen met dit filter.",
+            "log_empty": "Geen logboekregels.",
+            "ri_settings_read_failed": "De weergave-instelling kon niet worden gelezen: {{error}}",
+            "ri_settings_write_failed": "De weergave-instelling kon niet worden opgeslagen: {{error}}"
           }
         }
       }
@@ -12441,7 +12502,8 @@ std::string_view(R"loom_onboard(            "lit_install_method_definitions_into
             "evidence.method.conversation": "Twoja rozmowa",
             "evidence.method.interview": "Twoja odpowiedź w wywiadzie",
             "evidence.method.corrected": "poprawione przez Ciebie",
-            "evidence.method.scenario": "pytanie z wywiadu — bez odpowiedzi",
+)loom_onboard", 59924),
+std::string_view(R"loom_onboard(            "evidence.method.scenario": "pytanie z wywiadu — bez odpowiedzi",
             "evidence.method.analysis": "wniosek z analizy wiadomości",
             "evidence.method.model_inferred": "wniosek modelu",
             "evidence.method.role_resolution": "model, który daje rola",
@@ -12520,8 +12582,7 @@ std::string_view(R"loom_onboard(            "lit_install_method_definitions_into
             "list.show": "Pokaż listę",
             "list.hide": "Ukryj listę",
             "map.show": "Pokaż mapę",
-)loom_onboard", 59964),
-std::string_view(R"loom_onboard(            "map.hide": "Ukryj mapę",
+            "map.hide": "Ukryj mapę",
             "map.aria": "Mapa tego poziomu: ognisko w środku, jego elementy dookoła",
             "map.zoom_in": "Powiększ mapę",
             "map.zoom_out": "Pomniejsz mapę",
@@ -13096,7 +13157,8 @@ std::string_view(R"loom_onboard(            "map.hide": "Ukryj mapę",
             "proposals.title": "Model proposals on fields",
             "all_fields.show": "Show All fields",
             "all_fields.hide": "Hide All fields",
-            "all_fields.why": "This is the former settings screen in full: connection, models, keys, the table of every key with its edit rule and the JSON editor (expert configuration). Nothing of it is gone; it is in English because its words are not in the catalogue yet."
+            "all_fields.why": "This is the former settings screen in full: connection, models, keys, the table of every key with its edit rule and the JSON editor (expert configuration). Nothing of it is gone; it is in English because its words are not in the catalogue yet.",
+            "error.fields": "Some setting labels could not be loaded. Available values are still shown: {{reason}}"
           },
           "pl": {
             "title": "Ustawienia",
@@ -13148,7 +13210,8 @@ std::string_view(R"loom_onboard(            "map.hide": "Ukryj mapę",
             "proposals.title": "Propozycje modelu przy polach",
             "all_fields.show": "Pokaż Wszystkie pola",
             "all_fields.hide": "Ukryj Wszystkie pola",
-            "all_fields.why": "To dawny ekran ustawień w całości: połączenie, modele, klucze, tabela wszystkich kluczy z regułami edycji i edytor JSON (konfiguracja ekspercka). Nic z niego nie zniknęło; jest po angielsku, bo jego słów nie ma jeszcze w katalogu."
+            "all_fields.why": "To dawny ekran ustawień w całości: połączenie, modele, klucze, tabela wszystkich kluczy z regułami edycji i edytor JSON (konfiguracja ekspercka). Nic z niego nie zniknęło; jest po angielsku, bo jego słów nie ma jeszcze w katalogu.",
+            "error.fields": "Nie udało się wczytać części nazw ustawień. Dostępne wartości są nadal widoczne: {{reason}}"
           },
           "nl": {
             "title": "Instellingen",
@@ -13196,7 +13259,8 @@ std::string_view(R"loom_onboard(            "map.hide": "Ukryj mapę",
             "proposals.title": "Modelvoorstellen bij velden",
             "all_fields.show": "Toon Alle velden",
             "all_fields.hide": "Verberg Alle velden",
-            "all_fields.why": "Dit is het voormalige instellingenscherm in zijn geheel: verbinding, modellen, sleutels, de tabel van elke sleutel met zijn bewerkingsregel en de JSON-editor (expertconfiguratie). Er is niets van verdwenen; het staat in het Engels omdat de woorden nog niet in de catalogus staan."
+            "all_fields.why": "Dit is het voormalige instellingenscherm in zijn geheel: verbinding, modellen, sleutels, de tabel van elke sleutel met zijn bewerkingsregel en de JSON-editor (expertconfiguratie). Er is niets van verdwenen; het staat in het Engels omdat de woorden nog niet in de catalogus staan.",
+            "error.fields": "Sommige namen van instellingen konden niet worden geladen. Beschikbare waarden worden nog getoond: {{reason}}"
           }
         }
       }
@@ -13306,7 +13370,8 @@ std::string_view(R"loom_onboard(            "map.hide": "Ukryj mapę",
             "why.guardian_rules": "Standing rules about you that the guardian allowed to be sent.",
             "why.memory_tree": "The nodes of your memory that are switched on.",
             "why.memory_node": "One of the memory nodes that are switched on.",
-            "why.graph_memory": "What the graph gave for your question (the heading of the block and the messages found).",
+)loom_onboard", 59878),
+std::string_view(R"loom_onboard(            "why.graph_memory": "What the graph gave for your question (the heading of the block and the messages found).",
             "why.unified_context": "Memory, graph and knowledge put together into one block.",
             "why.knowledge_context": "A selection from knowledge that the request for knowledge context asked for.",
             "why.message.L0": "A message of this conversation, as written.",
@@ -13387,8 +13452,7 @@ std::string_view(R"loom_onboard(            "map.hide": "Ukryj mapę",
             "strip.profile": "Profile: {{profile}}",
             "strip.profile_settings": "Profile: from the settings",
             "strip.profile_with_status": "{{label}} ({{status}})",
-)loom_onboard", 59974),
-std::string_view(R"loom_onboard(            "strip.next": "Next request: {{what}}",
+            "strip.next": "Next request: {{what}}",
             "strip.full.profile": "The next request goes with the profile: {{profile}}.",
             "strip.full.profile_settings": "The next request goes with the profile from the settings.",
             "strip.full.changes": "Changes for it only: {{what}}. Once it is sent everything is back to the settings.",
@@ -14063,7 +14127,7 @@ std::string_view(R"loom_onboard(            "strip.next": "Next request: {{what}
   },
   "presentation_key": "presentation.onboarding"
 }
-)loom_onboard", 39809)};
+)loom_onboard", 45490)};
 static constexpr std::string_view kOnboardingScenario[] = {
 std::string_view(R"loom_onboard({
   "schema": "loom.onboarding.scenario/1",

@@ -23,7 +23,7 @@ import { DESKTOP, minimizedWindows, say, type DesktopPath, type DesktopSettings,
 import { DESKTOP_X, allIcons, backdropLayout, iconOf, liveFocus, minimizedMode, resolveDeclaration, type BackEdge, type BackNode, type DesktopIcon, type PinRow } from "./desktop-icons";
 import type { Values } from "./coupling";
 import { loadAround, loadPins } from "./desktop-load";
-import { TRASH_CHANGED, trashBadge, trashStepOf, trashable, type TrashStep } from "./desktop-trash";
+import { TRASH_CHANGED, runTrashAction, trashBadge, trashStepOf, trashable, type TrashStep } from "./desktop-trash";
 import { GESTURES_X, INTERACTIONS, desktopKeyOf, dragStartOf, iconMenuItems, moveIndex, resolveDrop, stepOf, touchActionOf, WINDOW_DRAGGED, type DropSource, type Hit, type IStep, type WindowDragged } from "./desktop-interact";
 import { comboOf } from "./steps";
 import { paramsOfKind } from "./coupling";
@@ -148,8 +148,12 @@ export default function Desktop({ layout, cover, lang, settings, entries, paths:
     const st = trashStepOf(ic.address, dropOnTrash, decl.pins?.focus);
     // R101 D6: the host shows the receipt with its undo; without a host the desktop does D4 as before
     if (drop) { drop({ step: { op: "trash", address: ic.address }, source: { kind: "icon", address: ic.address, label: ic.label }, hit: { kind: "icon", address: "trash:" }, label: ic.label, trash: st }); return; }
-    try { await api.actions.run({ action: st.action, element: { class: "application" }, args: st.args }); } catch (e) { console.debug("desktop: to the trash failed", e); }
-    window.dispatchEvent(new Event(TRASH_CHANGED));
+    try {
+      await runTrashAction(api.actions, st);
+      window.dispatchEvent(new Event(TRASH_CHANGED));
+    } catch (e) {
+      setArrNote({ code: "drop_failed", vars: { error: String((e as Error)?.message ?? e) } });
+    }
   };
   // R101 D6: the things under a point, from the top down (an icon by address, a window by id - frame, minimized icon or shelf entry -, the desktop)
   const kindOf = (id: string) => { const x = layout.windows.find((y) => y.id === id); return x ? String(x.params?.panel ?? x.kind) : null; };

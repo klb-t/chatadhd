@@ -25,20 +25,6 @@
     "reason": "found when the .ts scan was added (2026-10-30); to be moved to the catalogs"
    }
   },
-  "loom/web/src/components/ImportedMessageContent.tsx": {
-   "Imported source · {{provider}} · {{blocks}} blocks · {{references}} references · {{artifacts}} artifacts": {
-    "count": 1,
-    "reason": "existing before 2026-10-30; to be moved to the catalogs"
-   },
-   "Importer classification is inferred{{guess}}.": {
-    "count": 1,
-    "reason": "existing before 2026-10-30; to be moved to the catalogs"
-   },
-   "Source visibility: hidden{{reasons}}.": {
-    "count": 1,
-    "reason": "existing before 2026-10-30; to be moved to the catalogs"
-   }
-  },
   "loom/web/src/components/KnowledgeWorkbench.tsx": {
    "/data/exports/archive.zip": {
     "count": 1,

@@ -148,15 +148,31 @@ std::string preset(Runtime& rt, const Json& routing) {
 
 namespace {
 // Whether the (folded) verb is named by one of the phrases: equal to the first word, a stem match ("streszcz*"), or sharing the leading characters.
-bool phrases_name_verb(const Context& c, const Json& phrases, const std::u32string& v) {
+bool phrases_name_verb(const Context& c, const Json& phrases, const std::u32string& v, const std::string& command = {}) {
   if (!phrases.is_object()) return false;
   const Json& fold_map = c.routing.at("heuristic").at("fold");
   const auto near_chars = static_cast<std::size_t>(std::max<std::int64_t>(0, json::get_int(emergent_cfg(c.routing).value("command_shape", Json::object()), "existing_prefix_chars", 5)));
+  const auto input = word_tokens(fold(command, fold_map));
+  const auto lead = std::find(input.begin(), input.end(), utf8::encode(v));
   for (auto lang = phrases.begin(); lang != phrases.end(); ++lang)
     for (const auto& phrase : strings_of(&lang.value())) {
       const auto words = word_tokens(fold(phrase, fold_map));
       const std::string raw = fold(phrase, fold_map);
       if (words.empty()) continue;
+      // A compound phrase owns its full wording, not every use of its lead verb.
+      // Single-word/stem phrases retain the existing verb-family guard.
+      if (!command.empty() && words.size() > 1) {
+        if (lead == input.end() || static_cast<std::size_t>(input.end() - lead) < words.size()) continue;
+        bool tail_matches = true;
+        auto next = lead + 1;
+        for (std::size_t i = 1; i < words.size(); ++i) {
+          const bool stem = raw.find(words[i] + "*") != std::string::npos;
+          next = std::find_if(next, input.end(), [&](const std::string& token) { return stem ? token.rfind(words[i], 0) == 0 : token == words[i]; });
+          if (next == input.end()) { tail_matches = false; break; }
+          ++next;
+        }
+        if (!tail_matches) continue;
+      }
       std::u32string w = utf8::decode(words[0]);
       if (!raw.empty() && raw.find('*') != std::string::npos && raw.find(' ') == std::string::npos) {  // "streszcz*": a stem
         if (v.rfind(w, 0) == 0) return true;
@@ -171,19 +187,19 @@ bool phrases_name_verb(const Context& c, const Json& phrases, const std::u32stri
 }
 }  // namespace
 
-bool action_answers_verb(const Context& c, const std::string& action, const std::string& verb) {
+bool action_answers_verb(const Context& c, const std::string& action, const std::string& verb, const std::string& command) {
   const std::u32string v = utf8::decode(fold(verb, c.routing.at("heuristic").at("fold")));
   if (v.empty()) return false;
   const Json* entry = json::find(c.engine.catalogue(), action);
-  if (entry && phrases_name_verb(c, entry->value("phrases", Json::object()), v)) return true;
+  if (entry && phrases_name_verb(c, entry->value("phrases", Json::object()), v, command)) return true;
   const Json& extra = c.routing.at("heuristic").at("phrases");
   const Json* own = extra.is_object() ? json::find(extra, action) : nullptr;
-  return own && phrases_name_verb(c, *own, v);
+  return own && phrases_name_verb(c, *own, v, command);
 }
 
-std::string existing_action_for(const Context& c, const std::string& verb) {
+std::string existing_action_for(const Context& c, const std::string& verb, const std::string& command) {
   for (auto it = c.engine.catalogue().begin(); it != c.engine.catalogue().end(); ++it)
-    if (action_answers_verb(c, it.key(), verb)) return it.key();
+    if (action_answers_verb(c, it.key(), verb, command)) return it.key();
   return std::string();
 }
 
@@ -237,7 +253,7 @@ std::optional<Json> from_command(const Context& c, const std::string& text, cons
   const std::size_t idx = lead->idx;
   const auto original_tokens = word_tokens(text);
   // P30: a verb an existing action already answers to ("streść" -> summarise) is never offered as a new action.
-  if (!existing_action_for(c, verb).empty()) return std::nullopt;
+  if (!existing_action_for(c, verb, text).empty()) return std::nullopt;
   if (!element.is_object()) return std::nullopt;
   // The element is the object of the command: named within a few words of the verb ("rozpisz tę wiadomość ..."), not somewhere in a request
   // for the model that merely mentions it ("napisz wiersz o tej rozmowie").

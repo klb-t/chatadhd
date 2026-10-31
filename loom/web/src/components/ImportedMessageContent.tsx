@@ -7,12 +7,6 @@ import { importedCitationUrl, importedJson, importedMediaDataUrl, importedMediaR
 import type { ImportedArtifact, ImportedBlock } from "../content/imported-message";
 import "./imported-message-content.css";
 
-const labels: Record<string, string> = {
-  text: "Source text", reasoning: "Exported reasoning", tool_call: "Tool call", tool_result: "Tool result",
-  code: "Code", media: "Media reference", document: "Document", transcript: "Transcript", context: "Exported context",
-  quote: "Quote", browse: "Browsing result", error: "Source error", unknown: "Unknown source block",
-};
-
 /** Imported Markdown may contain media links; source inspection never loads them. */
 function importedMarkdown(text: string): { __html: string } {
   const markdown = marked.parse(text, { async: false, breaks: true }) as string;
@@ -38,13 +32,10 @@ function importedHtml(html: string): { __html: string } {
 
 const OpaqueSourceEvidence = createContext(false);
 
-/** The words of the imported source block come from the pack (presentation.ui_shell src_*, pl + en); a screen with no catalogue keeps the English text written here. */
-function useSrc() {
-  const t = useShellText();
-  return (id: string, fallback: string, params: Record<string, string> = {}): string => {
-    const text = t(id, params);
-    return text !== id ? text : fallback.replace(/\{\{(\w+)\}\}/g, (_, key: string) => params[key] ?? "");
-  };
+/** Unknown source kinds retain their recorded kind; translated labels come only from catalogs. */
+function sourceLabel(t: ReturnType<typeof useShellText>, id: string, fallback: string): string {
+  const label = t(id);
+  return label === id ? fallback : label;
 }
 
 function SourceJson({ title, value, testId }: { title: string; value: unknown; testId?: string }) {
@@ -94,7 +85,7 @@ function MediaBlock({ block }: { block: ImportedBlock }) {
 
 function Artifact({ artifact, wrapCode }: { artifact: ImportedArtifact; wrapCode: boolean }) {
   const t = useShellText();
-  const s = useSrc();
+  const s = useShellText();
   const [mode, setMode] = useState("source");
   const opaqueEvidence = useContext(OpaqueSourceEvidence);
   const isHtml = artifact.type === "text/html";
@@ -102,7 +93,7 @@ function Artifact({ artifact, wrapCode }: { artifact: ImportedArtifact; wrapCode
   const supportsPreview = isHtml || isMarkdown;
   return <section className="imported-artifact" data-testid="imported-artifact">
     <h4>{artifact.title} · {artifact.type ?? "unrecorded artifact type"}</h4>
-    {artifact.path && <p className="imported-source-path">{s("src_pointer", "Source pointer:")} <code>{artifact.path}</code></p>}
+    {artifact.path && <p className="imported-source-path">{s("src_pointer")} <code>{artifact.path}</code></p>}
     {artifact.version && <p>{t("lit_source_version")} <code>{artifact.version}</code></p>}
     {artifact.command && <p>Recorded operation: {artifact.command} (source only).</p>}
     {artifact.parsedFromText && <p>{t("lit_display_derivative_parsed_from_the_ret")}</p>}
@@ -124,8 +115,7 @@ function Artifact({ artifact, wrapCode }: { artifact: ImportedArtifact; wrapCode
 
 /** Pure source display: text/JSON and user-clicked citations; no tools, code or media fetches. */
 export default function ImportedMessageContent({ message, includeVisibleText = true, initialView, opaqueSourceEvidence }: Props) {
-  const t = useShellText();
-  const s = useSrc();
+  const s = useShellText();
   const source = useMemo(() => projectImportedMessage(message), [message]);
   const [view, setView] = useState<ImportedSourceView>({ blocks: true, artifacts: true, references: true, wrapCode: false, ...initialView });
   if (!source) return null;
@@ -133,37 +123,37 @@ export default function ImportedMessageContent({ message, includeVisibleText = t
     {opaqueSourceEvidence && <p>{opaqueSourceEvidence.description}</p>}
     {includeVisibleText && <div className="body" dangerouslySetInnerHTML={importedMarkdown(message.text)} />}
     <details className="imported-source-details" data-testid="imported-source-details">
-      <summary>{s("src_summary", "Imported source · {{provider}} · {{blocks}} blocks · {{references}} references · {{artifacts}} artifacts", { provider: source.provider, blocks: String(source.blocks.length), references: String(source.references.length), artifacts: String(source.artifacts.length) })}</summary>
-      <p>{s("src_intro", t("lit_source_blocks_reflect_the_original_imp"))}</p>
-      <div className="imported-source-controls" aria-label={s("src_options", "Source display options")}>
-        {(["blocks", "artifacts", "references", "wrapCode"] as const).map(key => <label key={key}><input type="checkbox" checked={view[key]} onChange={event => setView(current => ({ ...current, [key]: event.target.checked }))} />{key === "wrapCode" ? s("src_wrap", "Wrap code") : s(`src_show_${key}`, `Show ${key}`)}</label>)}
+      <summary>{s("src_summary", { provider: source.provider, blocks: String(source.blocks.length), references: String(source.references.length), artifacts: String(source.artifacts.length) })}</summary>
+      <p>{s("src_intro")}</p>
+      <div className="imported-source-controls" aria-label={s("src_options")}>
+        {(["blocks", "artifacts", "references", "wrapCode"] as const).map(key => <label key={key}><input type="checkbox" checked={view[key]} onChange={event => setView(current => ({ ...current, [key]: event.target.checked }))} />{key === "wrapCode" ? s("src_wrap") : s(`src_show_${key}`)}</label>)}
       </div>
-      {source.hidden && <p>{s("src_hidden", "Source visibility: hidden{{reasons}}.", { reasons: source.hiddenReasons.length ? ` (${source.hiddenReasons.join(", ")})` : "" })}</p>}
+      {source.hidden && <p>{s("src_hidden", { reasons: source.hiddenReasons.length ? ` (${source.hiddenReasons.join(", ")})` : "" })}</p>}
       {view.blocks && source.blocks.map(block => <section className="imported-source-block" key={block.id} data-testid="imported-source-block" data-kind={block.kind}>
-        <h4>{s(`src_kind_${block.kind}`, labels[block.kind] ?? block.kind)} · {block.type}{block.toolName && ` · ${block.toolName}`}{block.language && ` · ${block.language}`}</h4>
-        {block.path && <p className="imported-source-path">{s("src_pointer", "Source pointer:")} <code>{block.path}</code></p>}
-        {block.inferred && <p>{s("src_inferred", "Importer classification is inferred{{guess}}.", { guess: block.guess ? ` (${block.guess})` : "" })}</p>}
-        {!block.resolved && <p>{s("src_unlocated", t("lit_the_block_payload_is_not_independently"))}</p>}
+        <h4>{sourceLabel(s, `src_kind_${block.kind}`, block.kind)} · {block.type}{block.toolName && ` · ${block.toolName}`}{block.language && ` · ${block.language}`}</h4>
+        {block.path && <p className="imported-source-path">{s("src_pointer")} <code>{block.path}</code></p>}
+        {block.inferred && <p>{s("src_inferred", { guess: block.guess ? ` (${block.guess})` : "" })}</p>}
+        {!block.resolved && <p>{s("src_unlocated")}</p>}
         {block.segments.map((segment, index) => <div key={index}>
           <strong>{segment.label}</strong>{block.kind === "code" ? <pre className={`imported-source-code${view.wrapCode ? " wrap" : ""}`}><code data-language={block.language ?? ""}>{segment.text}</code></pre> : <pre className="imported-source-text">{segment.text}</pre>}
         </div>)}
         {block.kind === "media" && <MediaBlock block={block} />}
-        <SourceJson title={s("src_raw_block", t("lit_raw_source_block"))} value={block.raw} />
-        <SourceJson title={s("src_native_block", t("lit_native_importer_block_summary"))} value={block.summary} />
+        <SourceJson title={s("src_raw_block")} value={block.raw} />
+        <SourceJson title={s("src_native_block")} value={block.summary} />
       </section>)}
       {view.artifacts && source.artifacts.map(artifact => <Artifact key={artifact.id} artifact={artifact} wrapCode={view.wrapCode} />)}
       {view.references && source.references.map(reference => <section className="imported-source-reference" key={reference.id} data-testid="imported-source-reference" data-kind={reference.kind}>
-        <h4>{s(`src_refkind_${reference.kind.replace(/-/g, "_")}`, reference.kind)}: {reference.label}</h4>
-        {reference.path && <p className="imported-source-path">{s("src_pointer", "Source pointer:")} <code>{reference.path}</code></p>}
-        {reference.resolved !== null && <p>{reference.resolved ? s("src_resolved", t("lit_resolved_in_source_archive")) : s("src_unresolved", t("lit_file_bytes_unresolved"))}{reference.member && ` · ${reference.member}`}</p>}
-        {reference.blobHash && <p className="imported-source-path">{s("src_hash", "Content hash:")} <code>{reference.blobHash}</code></p>}
-        {reference.href && <a href={reference.href} target="_blank" rel="noopener noreferrer">{s("src_open_citation", "Open citation source")}</a>}
+        <h4>{sourceLabel(s, `src_refkind_${reference.kind.replace(/-/g, "_")}`, reference.kind)}: {reference.label}</h4>
+        {reference.path && <p className="imported-source-path">{s("src_pointer")} <code>{reference.path}</code></p>}
+        {reference.resolved !== null && <p>{reference.resolved ? s("src_resolved") : s("src_unresolved")}{reference.member && ` · ${reference.member}`}</p>}
+        {reference.blobHash && <p className="imported-source-path">{s("src_hash")} <code>{reference.blobHash}</code></p>}
+        {reference.href && <a href={reference.href} target="_blank" rel="noopener noreferrer">{s("src_open_citation")}</a>}
         {reference.extractedText !== null && <pre className="imported-source-text">{reference.extractedText}</pre>}
-        <SourceJson title={s("src_raw_ref", t("lit_raw_reference"))} value={reference.raw} />
-        <SourceJson title={s("src_native_ref", t("lit_native_importer_reference_summary"))} value={reference.summary} />
+        <SourceJson title={s("src_raw_ref")} value={reference.raw} />
+        <SourceJson title={s("src_native_ref")} value={reference.summary} />
       </section>)}
-      <SourceJson title={s("src_whole", t("lit_complete_preserved_source_message"))} value={source.raw} testId="imported-source-raw" />
-      <SourceJson title={s("src_meta", t("lit_complete_native_export_metadata"))} value={source.metadata} testId="imported-source-metadata" />
+      <SourceJson title={s("src_whole")} value={source.raw} testId="imported-source-raw" />
+      <SourceJson title={s("src_meta")} value={source.metadata} testId="imported-source-metadata" />
     </details>
   </div></OpaqueSourceEvidence.Provider>;
 }

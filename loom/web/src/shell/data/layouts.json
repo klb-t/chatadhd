@@ -404,60 +404,60 @@
       "dock_narrow": {
         "text": {
           "pl": "Zadokowane okna mają tu mniej niż {min} px szerokości ({widths}).",
-          "en": "Docked windows are narrower than {min} px here ({widths})."
+          "en": "Docked windows are narrower than {min} px here ({widths}).", "nl": "Vastgezette vensters zijn hier smaller dan {min} px ({widths})."
         },
         "fix": {
           "id": "maximize",
           "label": {
             "pl": "Zmaksymalizuj",
-            "en": "Maximize"
+            "en": "Maximize", "nl": "Maximaliseren"
           }
         }
       },
       "float_offscreen": {
         "text": {
           "pl": "Okno «{title}» jest w większości poza ekranem.",
-          "en": "The window «{title}» is mostly off the screen."
+          "en": "The window «{title}» is mostly off the screen.", "nl": "Het venster «{title}» valt grotendeels buiten het scherm."
         },
         "fix": {
           "id": "snap",
           "label": {
             "pl": "Przyciągnij",
-            "en": "Snap back"
+            "en": "Snap back", "nl": "Terugzetten"
           }
         }
       },
       "float_under_keyboard": {
         "text": {
           "pl": "Klawiatura zakrywa okno «{title}».",
-          "en": "The keyboard covers the window «{title}»."
+          "en": "The keyboard covers the window «{title}».", "nl": "Het toetsenbord bedekt het venster «{title}»."
         },
         "fix": {
           "id": "above_keyboard",
           "label": {
             "pl": "Przesuń nad",
-            "en": "Move above"
+            "en": "Move above", "nl": "Boven het toetsenbord plaatsen"
           }
         }
       }
     },
     "question": {
       "pl": "Czy to celowe?",
-      "en": "Is this intended?"
+      "en": "Is this intended?", "nl": "Is dit de bedoeling?"
     },
     "choices": [
       {
         "id": "keep",
         "label": {
           "pl": "Zostaw",
-          "en": "Keep it"
+          "en": "Keep it", "nl": "Zo laten"
         }
       },
       {
         "id": "dont_ask",
         "label": {
           "pl": "Zostaw, nie pytaj więcej",
-          "en": "Keep it, don't ask again"
+          "en": "Keep it, don't ask again", "nl": "Zo laten, niet opnieuw vragen"
         }
       }
     ],
@@ -466,7 +466,7 @@
         "id": "left",
         "label": {
           "pl": "Dokuj z lewej",
-          "en": "Dock left"
+          "en": "Dock left", "nl": "Links vastzetten"
         },
         "icon": "⇤"
       },
@@ -474,7 +474,7 @@
         "id": "right",
         "label": {
           "pl": "Dokuj z prawej",
-          "en": "Dock right"
+          "en": "Dock right", "nl": "Rechts vastzetten"
         },
         "icon": "⇥"
       },
@@ -482,7 +482,7 @@
         "id": "top",
         "label": {
           "pl": "Dokuj u góry",
-          "en": "Dock top"
+          "en": "Dock top", "nl": "Boven vastzetten"
         },
         "icon": "⤒"
       },
@@ -490,7 +490,7 @@
         "id": "bottom",
         "label": {
           "pl": "Dokuj na dole",
-          "en": "Dock bottom"
+          "en": "Dock bottom", "nl": "Onder vastzetten"
         },
         "icon": "⤓"
       },
@@ -498,7 +498,7 @@
         "id": "tab",
         "label": {
           "pl": "Jako zakładka",
-          "en": "As a tab"
+          "en": "As a tab", "nl": "Als tabblad"
         },
         "icon": "▭"
       },
@@ -506,7 +506,7 @@
         "id": "float",
         "label": {
           "pl": "Pływające",
-          "en": "Floating"
+          "en": "Floating", "nl": "Zwevend"
         },
         "icon": "⧉"
       },
@@ -514,7 +514,7 @@
         "id": "maximize",
         "label": {
           "pl": "Zmaksymalizuj",
-          "en": "Maximize"
+          "en": "Maximize", "nl": "Maximaliseren"
         },
         "icon": "⤢"
       },
@@ -522,11 +522,23 @@
         "id": "duplicate",
         "label": {
           "pl": "Otwórz drugie takie okno obok",
-          "en": "Open another one beside"
+          "en": "Open another one beside", "nl": "Open er nog een naast"
         },
         "icon": "⧉+"
       }
-    ]
+    ],
+    "labels": {
+      "close": {
+        "en": "Close: {title}",
+        "pl": "Zamknij: {title}",
+        "nl": "Sluiten: {title}"
+      },
+      "menu": {
+        "en": "Arrange window: {title}",
+        "pl": "Ułóż okno: {title}",
+        "nl": "Venster indelen: {title}"
+      }
+    }
   },
   "window_arrange_note": "W4 (OKNA §4.4, §6.3): presets of docking and floating - thresholds of the advisories dock_narrow (min_useful_width px of a drawn leaf), float_offscreen (fraction of a floating rect outside the area), float_under_keyboard (on-screen keyboard at least keyboard_min_px tall); drop_edge = the fraction of a leaf near its edge that docks to that side (the middle makes a tab); the menu entries and keys reach every arrangement without dragging. All examples; any value works, also degenerate ones (0 = never narrow).",
   "device_classes": [
@@ -625,20 +637,20 @@
       "many_windows": {
         "text": {
           "pl": "Zamontowanych okien: {count} (podpowiedź od {soft}); szacunek pamięci ok. {mb} MB (pomiar {observed}).",
-          "en": "Mounted windows: {count} (advice from {soft}); estimated memory about {mb} MB (measured {observed})."
+          "en": "Mounted windows: {count} (advice from {soft}); estimated memory about {mb} MB (measured {observed}).", "nl": "Geladen vensters: {count} (advies vanaf {soft}); geschat geheugen ongeveer {mb} MB (gemeten op {observed})."
         },
         "fix": {
           "id": "park",
           "label": {
             "pl": "Odstaw niewidoczne",
-            "en": "Park the others"
+            "en": "Park the others", "nl": "Overige vensters parkeren"
           }
         }
       },
       "window_keep_mounted_unknown": {
         "text": {
           "pl": "Wartość «{value}» pola window_keep_mounted nie jest znana; użyto «{used}».",
-          "en": "The value «{value}» of window_keep_mounted is not known; «{used}» is used."
+          "en": "The value «{value}» of window_keep_mounted is not known; «{used}» is used.", "nl": "De waarde «{value}» van window_keep_mounted is onbekend; «{used}» wordt gebruikt."
         }
       }
     }

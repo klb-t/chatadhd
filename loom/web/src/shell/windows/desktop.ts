@@ -1,3 +1,4 @@
+import { localizedText, type LocalizedText } from "../language-pack";
 // R101 P0 (PULPIT_R101_2026-10-28 §7, §8, §10, §12): the desktop layer under the windows, as pure data + total functions.
 // Nothing here touches React or the DOM. The desktop is always there; it is SEEN where no window covers it (`desktopCover`), and from it
 // a person can always open a window (the one guaranteed property P1, kept by the emergency path, which a person may switch off - B3).
@@ -10,7 +11,7 @@ import { focusWindow, openWindow, type WindowData, WINDOW_DATA } from "./ops";
 import { oneEntry } from "./steps";
 import { KINDS, type Kind } from "./registry";
 
-export type Words = Record<string, { pl?: string; en?: string }>;
+export type Words = Record<string, LocalizedText>;
 export interface DesktopData {
   sections: string[];
   sections_known: Record<string, { opens_window?: boolean; note?: string }>;
@@ -23,7 +24,7 @@ export interface DesktopData {
 export const DESKTOP = desktopFile as unknown as DesktopData;
 
 export const say = (words: Words, id: string, lang: string, vars: Record<string, string> = {}): string => {
-  const w = words[id]; const s = (lang === "pl" ? w?.pl ?? w?.en : w?.en ?? w?.pl) ?? id;
+  const w = words[id]; const s = localizedText(w, lang) ?? id;
   return s.replace(/\{(\w+)\}/g, (_, k: string) => vars[k] ?? "");
 };
 

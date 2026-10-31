@@ -9,6 +9,7 @@
 // The state of a window that is not in its params (scroll, a local switch) is kept in a store keyed by the window id, filtered by the
 // `state_keys` its kind declares in the registry (window_kinds.json); each key names its keeper (window_kinds.json → state_keepers).
 import layoutsFile from "../data/layouts.json";
+import { mapLocalizedText, type LocalizedText } from "../language-pack";
 import registry from "../data/window_kinds.json";
 import type { WLayout, WState, Win } from "./model";
 import { apply, type Ctx } from "./model";
@@ -16,7 +17,7 @@ import { WINDOW_CTX, baseWindow, visibleOverlay } from "./session";
 import { dockView, type DockNode } from "./dock";
 import type { WinAdvisory } from "./arrange";
 
-type Words = { pl?: string; en?: string };
+type Words = LocalizedText;
 export interface CostEstimate { observed?: string | null; machine?: string | null; source?: string; per_window_bytes?: Record<string, number>; default_bytes?: number; base_bytes?: number }
 export interface MountData {
   keep_mounted?: Record<string, string>;
@@ -101,8 +102,7 @@ export function estimatedBytes(l: WLayout, mounted: ReadonlySet<string>, data: M
   return sum;
 }
 const fill = (t: Words | undefined, vars: Record<string, string>): Words => {
-  const f = (s?: string) => s?.replace(/\{(\w+)\}/g, (_, k) => vars[k] ?? "");
-  return { pl: f(t?.pl), en: f(t?.en) };
+  return mapLocalizedText(t, s => s.replace(/\{(\w+)\}/g, (_, k) => vars[k] ?? ""));
 };
 const mb = (b: number) => (Math.round(b / 104857.6) / 10).toString();
 

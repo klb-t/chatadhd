@@ -8,6 +8,7 @@
 // of a journal (P3: undo restores the value before, redo the value after). Every number and list is a preset of shell/data/desktop.json
 // (`arrangement`); nothing here touches React, the DOM or the network.
 import { DESKTOP_X } from "./desktop-icons";
+import { languageCollator, localizedPhrases } from "../language-pack";
 
 export type Cell = number | "last";
 export interface Pos { col?: Cell; row?: Cell; x?: number; y?: number; unit?: string; moved?: string; [k: string]: unknown }
@@ -35,6 +36,7 @@ export interface ArrangeData {
   levels?: string[];
   journal_limit?: number | null;
   arrange_by?: string[];
+  arrange_words?: Record<string, Record<string, string[] | undefined>>;
   free_rows?: number;
   /** Per device class, the classes read (in order) when it has no value of its own (`any` = for every class) [examples]. */
   class_fallback?: Record<string, string[]>;
@@ -253,7 +255,7 @@ export function arrangeIcons(arr: ResolvedArrangement, pl: Placement, icons: rea
   if (arr.mode === "computed") next.mode = "grid";
   if (b === "declaration") { next.positions = {}; return { value: next }; }
   const idx = new Map(icons.map((ic, i) => [ic.address, i]));
-  const cmpText = (x: string, y: string) => x.localeCompare(y, lang === "pl" ? "pl" : "en", { sensitivity: "base" });
+  const cmpText = languageCollator(lang).compare;
   const moved = (a: string) => String(arr.positions[a]?.moved ?? "");
   const sorted = [...icons].sort((x, y) => {
     const ord = (idx.get(x.address) ?? 0) - (idx.get(y.address) ?? 0);
@@ -300,13 +302,13 @@ export function readJournal(v: unknown): Journal {
 
 /** The order a word of a sentence names („według nazwy”, „by kind”): data.arrange_words (an open list per order and language); an
  *  empty word = the first order of data.arrange_by (the preset label); a word no list has = undefined (the step says what it knows). */
-export function arrangeByOfWord(word: string, data: ArrangeData & { arrange_words?: Record<string, { pl?: string[]; en?: string[] }> } = ARRANGE as ArrangeData & { arrange_words?: Record<string, { pl?: string[]; en?: string[] }> }): string | undefined {
+export function arrangeByOfWord(word: string, data: ArrangeData = ARRANGE): string | undefined {
   const w = (word ?? "").trim().toLowerCase();
   const orders = data.arrange_by ?? ["label", "kind", "recent", "count", "declaration"];
   if (!w) return orders[0];
   if (orders.includes(w)) return w;
   for (const by of orders) {
-    const words = [...(data.arrange_words?.[by]?.pl ?? []), ...(data.arrange_words?.[by]?.en ?? [])].map((x) => x.toLowerCase());
+    const words = localizedPhrases(data.arrange_words?.[by]).map((x) => x.toLowerCase());
     if (words.some((x) => w === x || w.split(/\s+/).includes(x) || (x.includes(" ") && w.includes(x)))) return by;
   }
   return undefined;

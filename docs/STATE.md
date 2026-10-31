@@ -1,3 +1,11 @@
+## 2026-10-31 — sprawdzone poprawki jądra i interfejsu
+
+Kod przygotowany do przeglądu na bazie pkg-webfix 910dca31. Naprawy dotyczą języków okien i pulpitu, genezy tekstu, częściowego odczytu metadanych, potwierdzania operacji kosza, diagnostyki oraz niejednoznacznych dostawców modeli gościa. C++/web zbudowane; 72/72 zestawy logiki webu zielone. W serii 219 C++ unit: 218 PASS i jeden nieaktualny wzorzec; po korekcie dwóch potwierdzonych wpisów jego osobne powtórzenie PASS. Nie jest to pełna bramka 281 ani dowód wdrożenia. Testy HTTP/GUI i otwarte funkcje wymagają dalszej pracy.
+
+[Zakres, wyniki i ograniczenia](reports/NATIVE_WEB_FIXES_2026-10-31.md).
+
+## Archiwalne checkpointy projektu
+
 # STATE — ChatADHD / Loom
 
 > B, 2026-10-16: gałąź `gpt/implicit-structures-2026-10-14` scala teraz

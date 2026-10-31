@@ -4,7 +4,7 @@
   "default": "me_inferred_opacity",
   "presets": {
     "me_inferred_opacity": {
-      "label": { "pl": "Półprzezroczyste (jak wywnioskowane na ekranie „Ty”)", "en": "Translucent (like inferred entries on the “You” screen)" },
+      "label": { "pl": "Półprzezroczyste (jak wywnioskowane na ekranie „Ty”)", "en": "Translucent (like inferred entries on the “You” screen)", "nl": "Doorschijnend (zoals afgeleide gegevens op het scherm “Jij”)" },
       "states": {
         "missing": { "opacity": { "setting": "me_inferred_opacity" }, "border": "dashed", "icon": "◌" },
         "inferred": { "opacity": { "setting": "me_inferred_opacity" } },
@@ -12,28 +12,33 @@
       }
     },
     "dashed": {
-      "label": { "pl": "Kreskowana ramka, pełny kolor", "en": "Dashed frame, full colour" },
+      "label": { "pl": "Kreskowana ramka, pełny kolor", "en": "Dashed frame, full colour", "nl": "Gestippeld kader, volle kleur" },
       "states": {
         "missing": { "border": "dashed", "icon": "＋" },
         "inferred": { "border": "dotted" }
       }
     },
     "loud": {
-      "label": { "pl": "Wyraźne: kolor i znak ostrzeżenia", "en": "Loud: colour and a warning sign" },
+      "label": { "pl": "Wyraźne: kolor i znak ostrzeżenia", "en": "Loud: colour and a warning sign", "nl": "Opvallend: kleur en een waarschuwingsteken" },
       "states": {
         "missing": { "color": "#c0392b", "icon": "⚠", "weight": "bold", "order": -1 },
         "excess": { "color": "#b9770e", "icon": "↑" }
       }
     },
     "hide_missing": {
-      "label": { "pl": "Ukryj brakujące", "en": "Hide the missing ones" },
+      "label": { "pl": "Ukryj brakujące", "en": "Hide the missing ones", "nl": "Verberg ontbrekende elementen" },
       "states": { "missing": { "hidden": true } }
     }
   },
   "signs": ["opacity", "border", "icon", "color", "size", "order", "hidden", "weight"],
   "advisories": {
-    "nothing_visible": { "pl": "Przy tym wyglądzie brakujących nie widać wcale (ukryte albo całkiem przezroczyste) — czy tak ma być?", "en": "With this look the missing ones cannot be seen at all (hidden or fully transparent) — is that intended?" },
-    "unknown_preset": { "pl": "Nie ma wyglądu „{{id}}”; używam „{{fallback}}”.", "en": "There is no look “{{id}}”; using “{{fallback}}”." },
-    "unknown_sign": { "pl": "Znak „{{sign}}” w wyglądzie „{{id}}” nie ma czytelnika na tej stronie — nic go nie rysuje.", "en": "The sign “{{sign}}” of the look “{{id}}” has no reader on this page — nothing draws it." }
+    "nothing_visible": { "pl": "Przy tym wyglądzie brakujących nie widać wcale (ukryte albo całkiem przezroczyste) — czy tak ma być?", "en": "With this look the missing ones cannot be seen at all (hidden or fully transparent) — is that intended?", "nl": "Met deze weergave zijn ontbrekende elementen helemaal niet zichtbaar (verborgen of volledig transparant) — is dat de bedoeling?" },
+    "unknown_preset": { "pl": "Nie ma wyglądu „{{id}}”; używam „{{fallback}}”.", "en": "There is no look “{{id}}”; using “{{fallback}}”.", "nl": "De weergave “{{id}}” bestaat niet; “{{fallback}}” wordt gebruikt." },
+    "unknown_sign": { "pl": "Znak „{{sign}}” w wyglądzie „{{id}}” nie ma czytelnika na tej stronie — nic go nie rysuje.", "en": "The sign “{{sign}}” of the look “{{id}}” has no reader on this page — nothing draws it.", "nl": "Het kenmerk “{{sign}}” van de weergave “{{id}}” wordt op deze pagina niet ondersteund en wordt niet getekend." }
+  },
+  "reader_warning": {
+    "en": "Some data could not be checked. Available results are shown; nothing was changed. Reported issues: {{count}}.",
+    "pl": "Części danych nie udało się sprawdzić. Pokazuję dostępne wyniki; niczego nie zmieniono. Liczba zgłoszonych problemów: {{count}}.",
+    "nl": "Een deel van de gegevens kon niet worden gecontroleerd. Beschikbare resultaten worden getoond; er is niets gewijzigd. Gemelde problemen: {{count}}."
   }
 }

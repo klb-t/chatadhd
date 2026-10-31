@@ -1,6 +1,6 @@
 import { createContext, useContext } from "react";
 import { featureMessage, setProductName, productName, resolvePresentation, resolvePresentationFeature } from "../onboarding/presentation.mjs";
-import { adviseMissingText, languageChain } from "./language-pack";
+import { adviseMissingText, languageChain, localizedText } from "./language-pack";
 
 type Feature = Parameters<typeof featureMessage>[0];
 export type ShellT = (id: string, params?: Record<string, string>) => string;
@@ -39,15 +39,9 @@ export const useShellText = (): ShellT => useContext(ShellText);
 /** The language of the shell words (ui_language or the browser's): for labels that come from data as {en, pl}. */
 export const ShellLanguage = createContext<string>("en");
 export const useShellLanguage = (): string => useContext(ShellLanguage);
-/** A label from data: a string, or {en, pl} in the language of the shell, else en. */
+/** A label from data: a string or a translation map, resolved through the configured language chain. */
 export function dataLabel(label: unknown, language: string, fallback: string): string {
-  if (typeof label === "string") return label;
-  if (label && typeof label === "object") {
-    const table = label as Record<string, unknown>;
-    const text = table[language] ?? table.en;
-    if (typeof text === "string") return text;
-  }
-  return fallback;
+  return localizedText(label, language) ?? fallback;
 }
 
 /** The first-run card is shown when the provider key is known to be missing; a failed lookup shows nothing. */
