@@ -1,3 +1,33 @@
+## 2026-10-31 — wznowienie odbioru po korekcie kontraktu
+
+Baza kodu `9533d68e6cf6e133e0fdcd5d5fcf7ee85654da08`. B1 rozwiązany:
+`checkpoint_sha256` dotyczy archiwum `files.tar.gz`; osobne sumy dokumentu,
+patcha i plików potwierdzono **3/3** względem aktualnego przekazania administratora
+z 17:46 UTC. Poprzedni audyt i wyniki pozostają poniżej. B3 rozwiązany:
+rzeczywisty staging dwóch plików przeszedł; B2 (testy Flow) pozostaje do wykonania.
+Własny etap dokumentacyjny, 0 przyjętych delt produktu. Rezerwacja jednego
+własnego buildu `-j2` potwierdzona w nowym zleceniu; bez publikacji i wdrożenia.
+[Raport i skorygowany kontrakt](reports/TEAM_INTEGRATION_2026-10-31.md).
+
+## 2026-10-31 — inwentaryzacja odbiorów integratora, przyrost 1
+
+Baza i kod produktu: `9533d68e6cf6e133e0fdcd5d5fcf7ee85654da08`. Własny przyrost
+jest dokumentacyjny: **0 przyjętych delt i commitów wykonawców**. Manifest z
+17:30 UTC podaje `completed` dla Flow, Androida i Linuksa; ponowny odczyt
+potwierdził stabilność 3/3 worktree. Odbiór odłożony: wskazane snapshoty zwracają
+EACCES, a zakres pola `checkpoint_sha256` nie jest opisany i jego wartości
+różnią się od sum lokalnych checkpointów. Flow dodatkowo wymaga własnego testu
+integratora; wyniki autora nie są nową bramką.
+
+Własne sprawdzenia: próba kontraktu Linuksa w kopii pod CWD **8/8 PASS, 0 skip**;
+Android **2/2 kontroli statycznych PASS**, 41 plików / 0 dopasowań słownika API
+launchera; zastosowalność patchy Flow/Linux **2/2 PASS** bez nakładania.
+Bez buildu jądra, pełnej bramki, HTTP/GUI/urządzeń i wdrożenia w tym przyroście.
+Android/Linux pozostają badaniami. [Raport odbioru, hashe i kolejność](reports/TEAM_INTEGRATION_2026-10-31.md).
+Commit dokumentacyjny nie powstał: jawny `git add` zwrócił `Read-only file system`
+przy własnym `index.lock` integratora; brak zmian w stagingu, pliki zapisane w worktree.
+Wymagane przywrócenie zapisu metadanych przez administratora, bez obchodzenia dostępu.
+
 ## 2026-10-31 — odczyt PDF i kontynuacja rozmowy z plikami
 
 Na gałęzi `codex/chatadhd-fixes-20261031` dodano lokalny odczyt warstwy tekstowej PDF na Linux (Poppler-GLib), sprawdzanie wydobytego tekstu pod kątem sekretów i odtwarzanie załączników w kolejnych turach zwykłego czatu. Ostrzeżenia o stronach bez tekstu/przycięciach są trwałe i dostępne w webie; opcjonalne pole `attachment_notes[].message` oraz notatki w `done`, bez migracji tabel. Bez OCR, DOCX ani dowodu kompletności wszystkich przepływów.
