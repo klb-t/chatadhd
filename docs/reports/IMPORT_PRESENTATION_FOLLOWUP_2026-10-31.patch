@@ -1,0 +1,83 @@
+--- a/loom/src/import/importer_image.cpp
++++ b/loom/src/import/importer_image.cpp
+@@ -14,8 +14,10 @@
+   // Legacy role reconstruction is an explicit interpretation choice, never a
+   // consequence of OCR text length or a document containing 'Assistant:'.
+   if (preset.at("interpretation") == "conversation") return legacy_screenshot_body(path, opts);
+-  const auto declared = current_source_ && !current_source_->source_filename.empty()
+-      ? std::filesystem::path(current_source_->source_filename) : path;
++  const auto declared = opts.display_name && !opts.display_name->empty()
++      ? std::filesystem::path(*opts.display_name).filename()
++      : current_source_ && !current_source_->source_filename.empty()
++          ? std::filesystem::path(current_source_->source_filename) : path;
+   std::string format = utf8::to_lower(declared.extension().string());
+   if (!format.empty()) format.erase(0, 1);
+   LOOM_TRY_ASSIGN(auto bytes, fsutil::read_file(path));
+--- a/loom/src/import/import_truth.cpp
++++ b/loom/src/import/import_truth.cpp
+@@ -25,7 +25,7 @@
+   for (auto it = when.begin(); it != when.end(); ++it) {
+     const std::string& key = it.key();
+     const Json& want = it.value();
+-    if (key == "path" || key == "provider") {
++    if (key == "path" || key == "provider" || key == "format") {
+       const std::string have = json::get_string(facts, key);
+       bool hit = false;
+       if (want.is_string()) {
+@@ -113,7 +113,10 @@
+     Json notes = Json::array();
+     Json label = Json::object();
+   };
++  const Json element_facts{{"path", exported ? "export" : "legacy"}, {"provider", provider}, {"format", r.format}};
+   for (const auto& el : elements) {
++    if (el.contains("when") && !matches(el.at("when"), element_facts)) continue;
++    if (el.contains("unless") && matches(el.at("unless"), element_facts)) continue;
+     const std::string kind = json::get_string(el, "kind");
+     const bool always = json::get_bool(el, "always");
+     std::optional<std::int64_t> found;
+@@ -121,6 +124,7 @@
+     const auto result_number = [&](const std::string& from) -> std::optional<std::int64_t> {
+       if (from == "result_conversations") return static_cast<std::int64_t>(r.conversations.size());
+       if (from == "result_messages") return r.messages;
++      if (from == "result_sources") return r.source_id.empty() || r.blob_hash.empty() ? 0 : 1;
+       return std::nullopt;
+     };
+     if (exported) {
+--- a/loom/data/runtime/chat_ops.pack
++++ b/loom/data/runtime/chat_ops.pack
+@@ -2116,7 +2116,14 @@
+           "legacy": "result_messages"
+         },
+         {
++          "kind": "source_files",
++          "legacy": "result_sources",
++          "when": {"path": "legacy", "format": "screenshot"},
++          "label": {"pl": "Pliki źródłowe", "en": "Source files"}
++        },
++        {
+           "kind": "attachments",
++          "unless": {"format": "screenshot"},
+           "counts": "attachment",
+           "linked": "attachment_linked",
+           "always": true,
+--- a/loom/tests/test_import_truth.cpp
++++ b/loom/tests/test_import_truth.cpp
+@@ -334,3 +334,18 @@
+     CHECK(dated);
+   }
+ }
++
++TEST_CASE("screenshot truth names the retained source instead of invented JSON attachment loss") {
++  Fx f;
++  ImportResult r;
++  r.format = "screenshot";
++  r.source_id = "synthetic_source";
++  r.blob_hash = std::string(64, 'a');
++  r.messages = 1;
++  const auto truth = f.truth(r);
++  const auto& source = element(truth, "source_files");
++  CHECK(source.at("found") == 1);
++  CHECK(source.at("imported") == 1);
++  for (const auto& row : truth.at("elements")) CHECK(row.at("kind") != "attachments");
++  CHECK(truth.at("summary").at("pl").get<std::string>().find(".json") == std::string::npos);
++}

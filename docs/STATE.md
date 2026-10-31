@@ -1,3 +1,38 @@
+## 2026-10-31 — domyślny pakiet DOCX i funkcjonalne GUI OCR/DOCX
+
+Przyjęty kod **`daf4f48412924737f260a42499818ea6bbeba513`**;
+pakiet `ed3b8cbc48e7f74a9c3803306fdebd32cef8ec7d`, baza `d0af04a2` zachowana.
+17/17 zmienionych plików zgodnych z testowanymi bajtami. Poprzednie M1/M2/P0/DOCX
+nie były ponownie nakładane ani poddane pełnym powtórkom backendowych bramek.
+
+Domyślny reader/config DOCX jest teraz dostarczany przez komponent CMake runtime.
+Własny relokowany staging z rzeczywiście niedostępnym checkoutem: **5/5 PASS**
+(PL HTTP/kontekst/reopen/restart/original, brak helpera/interpretera,
+niezaufana nazwa uploadu, shared-library C API). Własny przyrostowy build `-j2`
+PASS. Python >=3.10 pozostaje jawną zależnością systemową; testowano 3.14.4,
+bez instalacji hosta. Nie jest to pakiet z bundlowanym interpreterem.
+
+Nowy własny web build PASS (22,83 s). Rzeczywiste GUI ImportPanel/ChatView
+**7/7**: lokalny polski OCR → rzeczywisty kontekst/odpowiedź syntetyczna;
+DOCX → tekst/warnings/oryginał/reopen/restart; odmowa i potwierdzenie sekretu
+z dokładnym hashem. Nowy przycisk pobiera oryginał dopiero po sprawdzeniu SHA256.
+Komponent pobrania **4/4**, końcowe ABI **3/3**, runtime `--check` PASS.
+Dane i provider syntetyczne; istniejący własny Chromium, bez rzeczywistego modelu.
+
+**Pełna akceptacja prezentacji GUI nadal otwarta:** ImportPanel błędnie opisuje
+PNG jako JSON bez ZIP, a tytuł importu zawiera techniczną nazwę req_…png.
+Jawny mały patch czterech wspólnych plików przekazano jako **nienałożony,
+nietestowany native** do późniejszego odbioru z G1; wyłącznie `apply --check` PASS.
+Nie zmieniono genesis/client_blobs. Zachowane role labels/raw503 i inne luki
+polonizacji nie stają się PASS. Viewport 420×900 nie dowodzi fizycznego mobile.
+
+Implemented/tested tylko powyższy zakres; deployed **NIE**, pełny repo gate,
+realny model, Release/sanitizer i rollback wdrożenia niewykonane. DOCX częściowy,
+warnings zachowane. §0 rewizja 2: integralność w kodzie, presety/teksty w danych;
+jednego wyłącznika i hierarchii logów nadal nie dowiedziono.
+[Raport, dowody, ograniczenia i patch do dalszego odbioru](reports/DOCX_PACKAGE_GUI_2026-10-31.md).
+Następny cykl wyłącznie przez administratora; bez push/CI/deploy.
+
 ## 2026-10-31 — M1 oraz skonfigurowany podstawowy DOCX przyjęte zakresowo
 
 Przyjęty i testowany kod **`4f6656bcfc515fff8a887a37ee7f1a932212b969`**.
