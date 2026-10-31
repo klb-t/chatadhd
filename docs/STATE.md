@@ -1,3 +1,43 @@
+## 2026-10-31 — P0 locale/PDF przyjęty zakresowo, GUI nadal otwarte
+
+Przyjęty kod i baza dla osobnego G1: **`9f672641e5eb223cf7bdc5561faca08dc679a753`**.
+Zachowano `08c6d1d15e54e0be7f7d605fbc90d066e02ebccd` (macierz dostawców)
+i wcześniejszy BYOK jako przodków. Worker base `1d53bd0` nie był poleceniem
+resetu. Locale: `85bda3dd2f8b6ce6d35005c58b3911662f53534a`; PDF/dialog
+z testami integratora: `9f672641`. Stabilne completed delty sprawdzono
+przed/po względem świeżych receipts, checkpointów i hashy; archiwów root-only,
+cudzych buildów i prywatnych notatek nie importowano.
+
+Własny nowy WERROR build serwera/biblioteki `-j2` **PASS**. Końcowy CTest
+`-j1` na wskazanym SHA: **4/4 zestawy, 12/12 przypadków, 0 skip** (120,85 s):
+PDF **5/5**, dialog **2/2**, tekst UTF-8/TXT/Markdown/kod jako tekst **3/3**,
+trwałość ustawienia języka i profilu przez HTTP **2/2**. Rzeczywiste żądania
+loopback, dokładna treść, oryginalne bajty, następne tury, reopen/restart,
+trwałe ostrzeżenia i kontrolowane błędy. Osobno wybrane regresje granicy
+poświadczeń **2/2 PASS** (14,02 s) na identycznych scalonych bajtach;
+nie powtarzano całego starego odbioru BYOK. Nie sumowano dwóch przebiegów CTest.
+
+Locale odtwarza profil bez otwierania panelu i odświeża język powłoki po zapisie
+karty; jawny wybór pozostaje nadrzędny. W receipt poprawiono wielokrotne
+odnotowywanie jednej dyspozycji `wider`. Integrator dodał testy HTTP tekstu
+i locale; brak nowej implementacji formatów biurowych, ABI lub migracji tabel.
+
+**Implemented: przyjęte; tested: backend zakresowo; deployed: nie;
+GUI/mobile accepted: nie.** Brak własnych zależności web/React/Vite/Playwright,
+przeglądarki i obsługi TS w systemowym Node; instalacje poza zleceniem.
+GUI 9/9 i osoba 8/8 w raporcie locale są wynikami autora, nie nową bramką.
+Zachowane luki języka logowania/gościa/ostrzeżeń auto i prezentacji błędów.
+Pełna ocena wydania 2026-11-01 09:00 PL wymaga osobnej próby GUI/mobile;
+raport zawiera test akceptacyjny i odwracalność do pakietu na 12:00 PL.
+Brak pełnej bramki repo/release, rzeczywistych modeli/API, OCR i DOCX/XLSX/PPTX.
+
+Kanon §0 rewizja 2: rozdział danych/inwariantów zachowany; wspólny wyłącznik
+ring/sinks/stderr oraz hierarchia logowania pozostają nieudowodnione, istniejące
+logi załączników zawierają nazwę/ścieżkę. Bez niezwiązanego refaktoru.
+G1/macierz/OCR/URL-share nie blokują tej sprawdzonej bazy; kolejne zadanie
+uruchamia administrator. Bez publikacji, push/PR i wdrożenia.
+[Raport odbioru, hashe, zakres i bramki](reports/P0_INTEGRATION_2026-10-31.md).
+
 ## 2026-10-31 — lekki odbiór macierzy dostawców
 
 Na bazie `1d53bd0fcdd902cbac1809ab7cdfa96fd0c1fe19` odebrano dokumentację
