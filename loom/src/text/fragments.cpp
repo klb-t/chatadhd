@@ -327,6 +327,7 @@ Result<Segmenter> Segmenter::from_pack(const Json& pack, std::string_view langua
   }
   if (!used.empty() && used != def) rules = merge_pack(rules, langs[used]);
   seg.rules_ = rules;
+  seg.effective_language_ = used.empty() ? def : used;
   // validate the open values the code has to understand
   const Json levels = pack.value("levels", Json::object());
   for (auto it = levels.begin(); it != levels.end(); ++it) {

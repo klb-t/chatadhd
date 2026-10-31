@@ -4562,6 +4562,201 @@
           "pl": "Zdolności klienta zostały zadeklarowane:"
         }
       },
+      "client.blob_text": {
+        "id": "client.blob_text",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Dodaj części źródła tekstowego do grafu",
+        "description": "Dodaj części źródła tekstowego do grafu",
+        "labels": {
+          "pl": "Dodaj części źródła tekstowego do grafu"
+        },
+        "why": {
+          "pl": "Dodaj części źródła tekstowego do grafu"
+        },
+        "inputs": [
+          "json"
+        ],
+        "outputs": [
+          "json"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/text/source_parts.cpp",
+        "port": "actions",
+        "action": "client.blob_text",
+        "params": [
+          {
+            "name": "hash",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "hash",
+              "pl": "hash"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "source_key",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "source_key",
+              "pl": "source_key"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "name",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "name",
+              "pl": "name"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "format",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "format",
+              "pl": "format"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "language",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "language",
+              "pl": "language"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "level",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "level",
+              "pl": "level"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "pack",
+            "type": "object",
+            "required": false,
+            "description": {
+              "en": "pack",
+              "pl": "pack"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "previous_source_id",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "previous_source_id",
+              "pl": "previous_source_id"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/client/blob/text"
+        },
+        "result_text": {
+          "en": "Dodaj części źródła tekstowego do grafu",
+          "pl": "Dodaj części źródła tekstowego do grafu"
+        }
+      },
+      "client.blob_text_read": {
+        "id": "client.blob_text_read",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Odczytaj wystąpienie fragmentu",
+        "description": "Odczytaj wystąpienie fragmentu",
+        "labels": {
+          "pl": "Odczytaj wystąpienie fragmentu"
+        },
+        "why": {
+          "pl": "Odczytaj wystąpienie fragmentu"
+        },
+        "inputs": [
+          "json"
+        ],
+        "outputs": [
+          "json"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/text/source_parts.cpp",
+        "port": "actions",
+        "action": "client.blob_text_read",
+        "params": [
+          {
+            "name": "node_id",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "node_id",
+              "pl": "node_id"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/client/blob/text/read"
+        },
+        "result_text": {
+          "en": "Odczytaj wystąpienie fragmentu",
+          "pl": "Odczytaj wystąpienie fragmentu"
+        }
+      },
       "client.capabilities": {
         "id": "client.capabilities",
         "kind": "atomic",

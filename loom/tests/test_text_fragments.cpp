@@ -134,10 +134,14 @@ TEST_CASE("segmentation: English, initials, CJK, paragraphs, words") {
 TEST_CASE("segmentation: languages are data (unknown code, region code, overlay)") {
   const Segmenter xx = unwrap(Segmenter::builtin("xx"));
   REQUIRE(xx.advisories().size() == 1);
+  CHECK(xx.language() == "xx");
+  CHECK(xx.effective_language() == "*");
   CHECK(xx.advisories()[0].find("„xx”") != std::string::npos);
   CHECK(cores(xx, "One. Two.", "sentence").size() == 2);
   const Segmenter plpl = unwrap(Segmenter::builtin("pl-PL"));
   CHECK(plpl.advisories().size() == 1);
+  CHECK(plpl.language() == "pl-PL");
+  CHECK(plpl.effective_language() == "pl");
   CHECK(cores(plpl, "To np. kot. Dwa.", "sentence").size() == 2);
   // a new language and a new level by data only
   const Json overlay = Json::parse(R"({"languages":{"de":{"sentence":{"abbreviations":["z.B","usw"]}}},

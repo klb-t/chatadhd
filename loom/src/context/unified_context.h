@@ -30,6 +30,9 @@ namespace context {
 //   legacy_max_visited (0 all), legacy_detail_chars (0 full; exact source slice),
 //   legacy_include_inactive (false), legacy_include_current_conversation (false),
 //   legacy_seed_ids ([]), analysis (optional).
+// Located source_text_occurrence nodes share the graph traversal and candidate
+// budget with messages; exact occurrence identities never deduplicate by text.
+// Source bytes/locators/method remain in provenance; this is not AST inference.
 // Reach and source detail remain independent. No source row is rewritten and
 // stored/model/user statements are never silently promoted to established truth.
 // Unrepresentable token estimates return an explicit unavailable/overflow error.

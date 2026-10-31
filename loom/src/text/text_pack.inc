@@ -44,6 +44,56 @@ constexpr std::string_view kTextPack = std::string_view(R"LOOMTXT({
   "normalization": {"case": "lower", "whitespace": "collapse", "punctuation": "keep", "strip": true},
   "fingerprint": {"hash": "sha256", "hex_chars": 0},
   "alignment": {"similarity": "words", "replace_threshold": 0.5, "move_threshold": 1.0, "inner_level": "word"},
+  "source_parts": {
+    "context_heading": "Fragment źródła (zapisana treść, bez oceny prawdziwości)",
+    "source_kind": "file",
+    "unit_kind": "file",
+    "nodes": {
+      "source": "text_source",
+      "method": "text_source_method",
+      "projection": "text_source_projection"
+    },
+    "edges": {
+      "source": "derived_from",
+      "method": "produced_by",
+      "version": "derived_from",
+      "part": "part_of",
+      "fingerprint": "representation_of"
+    },
+    "formats": {
+      "text": {
+        "mime": "text/plain",
+        "level": "line",
+        "part_kind": "text_span",
+        "parse": {
+          "segment": []
+        },
+        "reason": "text_spans_only"
+      },
+      "markdown": {
+        "mime": "text/markdown",
+        "level": "line",
+        "part_kind": "text_span",
+        "parse": {
+          "segment": [
+            "markdown_sections",
+            "list_items",
+            "code_blocks"
+          ]
+        },
+        "reason": "markdown_observations_partial_no_table_parser"
+      },
+      "code": {
+        "mime": "text/plain",
+        "level": "line",
+        "part_kind": "code_span",
+        "parse": {
+          "segment": []
+        },
+        "reason": "code_text_only_no_ast"
+      }
+    }
+  },
   "genesis": {
     "note": "R102 G2: the chain of versions in the graph. Every value is a preset; kinds are strings and the lists are open (a new op kind becomes an event of its own name, a new edge kind is used by naming it).",
     "level": "sentence",
@@ -66,4 +116,4 @@ constexpr std::string_view kTextPack = std::string_view(R"LOOMTXT({
     "match": {"contains": true, "max_candidates": 5}
   }
 }
-)LOOMTXT", 3725);
+)LOOMTXT", 4984);

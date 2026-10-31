@@ -63,13 +63,15 @@ class Segmenter {
   std::string normalize(std::string_view s) const;
   std::string fingerprint(std::string_view s) const;  // of normalize(s)
   const std::string& language() const { return language_; }
+  // Effective rule language; language() retains the historical request identity.
+  const std::string& effective_language() const { return effective_language_; }
   const Json& pack() const { return pack_; }
   const Json& rules() const { return rules_; }  // the merged language rules in effect
   const std::vector<std::string>& advisories() const { return advisories_; }
 
  private:
   Json pack_, rules_;
-  std::string language_;
+  std::string language_, effective_language_;
   std::vector<std::string> advisories_;
 };
 

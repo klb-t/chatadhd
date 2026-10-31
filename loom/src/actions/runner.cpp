@@ -23,6 +23,7 @@
 #include "loom/action_result.h"
 #include "loom/chat_route.h"
 #include "loom/client_blobs.h"
+#include "loom/text_source_parts.h"
 #include "loom/config.h"
 #include "loom/db.h"
 #include "loom/event_bus.h"
@@ -943,6 +944,8 @@ Result<Json> ActionRunner::invoke(std::string_view action, const Json& request) 
   if (action == "client.blob_append") return client_blobs::append(rt_, request);
   if (action == "client.blob_commit") return client_blobs::commit(rt_, request);
   if (action == "client.blob_read") return client_blobs::read(rt_, request);
+  if (action == "client.blob_text") return text::sources::materialize(rt_, request);
+  if (action == "client.blob_text_read") return text::sources::read(rt_, request);
   if (action == "cancel") return cancel(request);
   if (action == "status") return status(request);
   if (action == "preview") return preview(request);

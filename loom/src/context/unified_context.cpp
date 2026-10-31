@@ -15,6 +15,7 @@
 #include "loom/db.h"
 #include "loom/graph_memory.h"
 #include "loom/memory_engine.h"
+#include "loom/text_source_parts.h"
 #include "loom/util/sha256.h"
 #include "loom/util/utf8.h"
 
@@ -169,7 +170,9 @@ std::string render(const std::vector<Json>& selected, const Json& labels) {
       knowledge_diagnostics = json::get_string(row, "knowledge_diagnostics");
     }
     if (channel == "memory") out += "[MEMORY " + json::get_string(row, "ref") + "; derived formatting; truth not assessed]\n";
-    else if (channel == "legacy_graph") {
+    else if (channel == "legacy_graph" && row.contains("source_heading")) {
+      out += json::get_string(row, "source_heading") + " [" + json::get_string(row, "ref") + "]\n";
+    } else if (channel == "legacy_graph") {
       out += "[RECORDED MESSAGE " + json::get_string(row, "ref") + " | role=" + json::get_string(row, "role") +
           "; observation of message content, not a truth verdict]\n";
     } else {
@@ -364,11 +367,11 @@ Result<Json> compile_unified_context(Database& db, const Config& cfg,
       if (topic) seed(topic->id);
     }
     LOOM_TRY_ASSIGN(auto review_excluded, graph->review_excluded_decisions());
-    std::size_t visited = 0, messages = 0;
+    std::size_t visited = 0, messages = 0, occurrences = 0;
     std::string stop_reason;
     while (!queue.empty()) {
       if (max_visited && visited >= max_visited) { stop_reason = "visited_limit"; break; }
-      if (max_messages && messages >= max_messages) { stop_reason = "message_limit"; break; }
+      if (max_messages && messages + occurrences >= max_messages) { stop_reason = "message_limit"; break; }
       const auto [id, hops] = queue.front();
       queue.pop_front();
       ++visited;
@@ -408,6 +411,26 @@ Result<Json> compile_unified_context(Database& db, const Config& cfg,
           }
         } else dropped.push_back(Json{{"ref", id}, {"channel", "legacy_graph"}, {"drop_reason", "missing_message"}});
       }
+      if (id.rfind("m_", 0) != 0) {
+        LOOM_TRY_ASSIGN(auto node, db.get_node(id));
+        if (node && json::get_string(node->metadata, "schema") == text::sources::kOccurrenceSchema) {
+          LOOM_TRY(text::sources::validate_occurrence(db, *node));
+          // An occurrence is an exact stored slice of a version, not a normalized
+          // fingerprint shared by several sources. Keep its identity in selection.
+          const auto represented = detail_chars == 0 ? node->content : std::string(utf8::prefix(node->content, detail_chars));
+          auto provenance = source_span(id, node->content, represented);
+          provenance["source_kind"] = "source_text_occurrence";
+          provenance["stored_source_metadata"] = node->metadata;
+          provenance["span_coordinate"] = "occurrence_utf8_bytes";
+          add(Json{{"ref_kind", "node"}, {"ref", id}, {"band", "goal"}, {"text", represented},
+              {"source_heading", node->metadata.at("context_heading")},
+              {"source_text", node->content}, {"resolution", represented.size() == node->content.size() ? "raw" : "raw_excerpt"},
+              {"relation_hops", hops}, {"provenance", provenance},
+              {"why", "located source occurrence reached through existing graph links"}},
+              "legacy_graph", "source_occurrence:" + id);
+          ++occurrences;  // existing candidate budget also covers source occurrences
+        }
+      }
       if (hops < depth) {
         LOOM_TRY_ASSIGN(auto links, db.get_links(id));
         for (const auto& link : links) {
@@ -418,6 +441,10 @@ Result<Json> compile_unified_context(Database& db, const Config& cfg,
     }
     traversal["visited"] = visited;
     traversal["message_candidates"] = messages;
+    if (occurrences) {
+      traversal["source_occurrence_candidates"] = occurrences;
+      traversal["source_occurrence_scope"] = "immutable_source_utf8_bytes";
+    }
     traversal["pending_refs"] = queue.size();
     if (!stop_reason.empty()) {
       traversal["truncated"] = true;
