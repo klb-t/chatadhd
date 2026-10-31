@@ -187,7 +187,7 @@ target_include_directories(loom_core SYSTEM PUBLIC ${LOOM_TP}/nlohmann)
 target_include_directories(loom_core SYSTEM PRIVATE ${LOOM_TP}/cpp-httplib)
 target_link_libraries(loom_core
   PUBLIC Threads::Threads
-  PRIVATE loom_warnings loom_sqlite loom_miniz loom_pqc)
+  PRIVATE loom_warnings loom_sqlite loom_miniz loom_pqc ${CMAKE_DL_LIBS})
 target_compile_definitions(loom_core PUBLIC
   LOOM_VERSION_STRING="${LOOM_VERSION_TEXT}"
   JSON_USE_IMPLICIT_CONVERSIONS=1)

@@ -453,6 +453,44 @@ TEST_SUITE("capi") {
     CHECK(take(loom_info(c.ctx))["http_transport"] == "platform-callback");
   }
 
+
+#if defined(__linux__) && !defined(__ANDROID__)
+  TEST_CASE("PDF through the C ABI yields provider text and the same persistent warning in the done chunk") {
+    struct Seen { std::vector<Json> chunks; std::vector<Json> requests; } seen;
+    Ctx c;
+    REQUIRE(loom_set_secret(c.ctx, "api_key", "sk-offline-test") == LOOM_OK);
+    REQUIRE(loom_set_config_json(c.ctx, R"({"base_url":"https://api.test","default_model":"test/model","semantic_analysis":false,"ui_language":"pl","model_registry_autorefresh":"off"})") == LOOM_OK);
+    auto http = [](const char* wire, LoomHttpResponse* response, void* ud) -> int {
+      auto& state = *static_cast<Seen*>(ud);
+      state.requests.push_back(Json::parse(wire));
+      const auto& request = state.requests.back();
+      if (request["method"] != "POST" || request["url"] != "https://api.test/chat/completions")
+        return loom_http_response_fail(response, LOOM_E_NETWORK, "unexpected offline PDF request");
+      const std::string body = R"({"choices":[{"message":{"role":"assistant","content":"test answer"}}],"usage":{"total_tokens":7}})";
+      if (loom_http_response_begin(response, 200, "{}") == LOOM_OK)
+        loom_http_response_write(response, body.data(), body.size());
+      return LOOM_OK;
+    };
+    auto callback = [](const char* chunk, int, void* ud) {
+      static_cast<Seen*>(ud)->chunks.push_back(Json::parse(chunk));
+    };
+    REQUIRE(loom_set_http_transport(c.ctx, http, &seen) == LOOM_OK);
+    const std::string request = Json{{"message", "Spójrz na dokument."}, {"stream", false},
+        {"attachments", Json::array({(std::filesystem::path(LOOM_TEST_FIXTURES) / "documents/mixed-text-blank.pdf").string()})}}.dump();
+    const auto result = take(loom_chat_ex(c.ctx, request.c_str(), callback, &seen));
+    REQUIRE_FALSE(is_error(result));
+    REQUIRE(seen.requests.size() == 1);
+    CHECK(seen.requests[0]["body"].get<std::string>().find("Zażółć gęślą jaźń") != std::string::npos);
+    REQUIRE_FALSE(seen.chunks.empty());
+    const auto done = seen.chunks.back();
+    REQUIRE(done["type"] == "done");
+    CHECK(done["attachment_notes"][0]["pages_without_text"] == Json::array({3}));
+    CHECK(done["attachment_notes"][0]["message"].get<std::string>().find("strony bez odczytywalnego tekstu: 3") != std::string::npos);
+    // The callback's state must outlive Ctx's shutdown.
+    c.restore_offline_transport();
+  }
+#endif
+
   TEST_CASE("C ABI boundary hardening: NULL args, invalid UTF-8, huge inputs") {
     Ctx c;
 

@@ -1,3 +1,11 @@
+## 2026-10-31 — odczyt PDF i kontynuacja rozmowy z plikami
+
+Na gałęzi `codex/chatadhd-fixes-20261031` dodano lokalny odczyt warstwy tekstowej PDF na Linux (Poppler-GLib), sprawdzanie wydobytego tekstu pod kątem sekretów i odtwarzanie załączników w kolejnych turach zwykłego czatu. Ostrzeżenia o stronach bez tekstu/przycięciach są trwałe i dostępne w webie; opcjonalne pole `attachment_notes[].message` oraz notatki w `done`, bez migracji tabel. Bez OCR, DOCX ani dowodu kompletności wszystkich przepływów.
+
+C++/web build PASS; regresje 30 CTest: 29 PASS i jeden zestaw ze starymi oczekiwaniami dwóch obiektów przycięcia, po jawnej aktualizacji o pole komunikatu jego powtórzenie PASS. Web 56/56, generatory PASS. Bez nowego pełnego przebiegu całego repo, HTTP/GUI, telefonu i wdrożenia. Baza przyrostu `b3263b05`; produkcja odczytana jako `2d39b07c`.
+
+[Macierz funkcji, zakres i wyniki](reports/CHAT_DOCUMENT_FLOWS_2026-10-31.md).
+
 ## 2026-10-31 — sprawdzone poprawki jądra i interfejsu
 
 Kod przygotowany do przeglądu na bazie pkg-webfix 910dca31. Naprawy dotyczą języków okien i pulpitu, genezy tekstu, częściowego odczytu metadanych, potwierdzania operacji kosza, diagnostyki oraz niejednoznacznych dostawców modeli gościa. C++/web zbudowane; 72/72 zestawy logiki webu zielone. W serii 219 C++ unit: 218 PASS i jeden nieaktualny wzorzec; po korekcie dwóch potwierdzonych wpisów jego osobne powtórzenie PASS. Nie jest to pełna bramka 281 ani dowód wdrożenia. Testy HTTP/GUI i otwarte funkcje wymagają dalszej pracy.

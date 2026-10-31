@@ -42,6 +42,7 @@
 #include "graph_reply.h"
 #include "reasoning_profile.h"
 #include "context_format.h"
+#include "document_text.h"
 #include "profile_prefix.h"
 #include "loom/runtime_profile.h"
 #include "loom/scope_resolver.h"
@@ -175,6 +176,15 @@ std::string lower_ext(const std::filesystem::path& p) {
 
 bool contains(const std::vector<std::string>& v, const std::string& s) {
   return std::find(v.begin(), v.end(), s) != v.end();
+}
+
+Json document_reader(const Json& recipe, const std::string& ext) {
+  const Json readers = recipe.value("document_readers", Json::array());
+  for (const auto& reader : readers) {
+    const Json extensions = reader.value("extensions", Json::array());
+    if (std::find(extensions.begin(), extensions.end(), Json(ext)) != extensions.end()) return reader;
+  }
+  return Json();
 }
 
 // Only an explicitly selected graph mode creates these borrowed services.
@@ -1232,12 +1242,15 @@ std::optional<std::pair<std::filesystem::path, std::filesystem::path>> ChatEngin
 }
 
 Status ChatEngine::check_attachments(const std::vector<std::string>& attachments) const {
+  if (attachments.empty()) return ok_status();
+  LOOM_TRY_ASSIGN(auto profile, RuntimeProfile::load("chat_context", cfg_.path().parent_path()));
+  const Json& recipe = profile.values().at("attachments");
   for (const auto& ref : attachments) {
     const auto located = locate_attachment(ref);
     if (!located) return Error(Errc::NotFound, "attachment not found: " + ref);
     const std::string ext = lower_ext(located->second);
-    if (!contains(image_exts(), ext) && !contains(text_exts(), ext))
-      return Error(Errc::Unsupported, "this kind of file cannot be sent (images and plain-text files can): " + ref);
+    if (!contains(image_exts(), ext) && !contains(text_exts(), ext) && document_reader(recipe, ext).is_null())
+      return Error(Errc::Unsupported, "this kind of file cannot be sent (images, plain-text files and configured documents can): " + ref);
   }
   return ok_status();
 }
@@ -1284,7 +1297,8 @@ Result<Json> ChatEngine::build_content_checked(std::string_view text, const std:
     if (on_unreadable != "send_with_warning") return Error(Errc::Io, attachment_words(recipe["unreadable_error"], lang, vars));
     log::warn("loom.chat_engine", "Attachment cannot be read, sent with a warning: {}", name);
     parts.push_back(Json{{"type", "text"}, {"text", attachment_words(recipe["unreadable_marker"], lang, vars)}});
-    if (notes) notes->push_back(Json{{"file", name}, {"status", "unreadable"}, {"original_chars", nullptr}, {"kept_chars", nullptr}});
+    if (notes) notes->push_back(Json{{"file", name}, {"status", "unreadable"}, {"original_chars", nullptr}, {"kept_chars", nullptr},
+        {"message", attachment_words(recipe["unreadable_marker"], lang, vars)}});
     return ok_status();
   };
 
@@ -1309,8 +1323,31 @@ Result<Json> ChatEngine::build_content_checked(std::string_view text, const std:
       if (mime == "image/jpg") mime = "image/jpeg";
       parts.push_back(Json{{"type", "image_url"},
                            {"image_url", Json{{"url", "data:" + mime + ";base64," + base64::encode(*data)}}}});
-    } else if (contains(text_exts(), ext)) {
-      auto data = fsutil::read_file(p);
+    } else if (const Json reader = document_reader(recipe, ext); contains(text_exts(), ext) || !reader.is_null()) {
+      std::string extracted;
+      if (!reader.is_null()) {
+        auto document = chat::read_document_text(p, reader);
+        if (!document) {
+          const std::string key = recipe.contains(document.error().message) ? document.error().message : "document_invalid";
+          const std::string message = attachment_words(recipe.at(key), lang, {{"file", name}});
+          if (on_unreadable != "send_with_warning") return Error(document.error().code, message);
+          parts.push_back(Json{{"type", "text"}, {"text", message}});
+          if (notes) notes->push_back(Json{{"file", name}, {"status", "unreadable"}, {"message", message}});
+          continue;
+        }
+        extracted = std::move(document->text);
+        Json note{{"file", name}, {"status", "read"}, {"reader", json::get_string(reader, "adapter")},
+                  {"pages", document->pages}, {"pages_without_text", document->pages_without_text}};
+        if (!document->pages_without_text.empty()) {
+          std::string pages;
+          for (int page : document->pages_without_text) { if (!pages.empty()) pages += ", "; pages += std::to_string(page); }
+          const auto message = attachment_words(recipe.at("document_partial"), lang, {{"file", name}, {"pages", pages}});
+          note["message"] = message;
+          parts.push_back(Json{{"type", "text"}, {"text", message}});
+        }
+        if (notes) notes->push_back(std::move(note));
+      }
+      auto data = reader.is_null() ? fsutil::read_file(p) : Result<std::string>(std::move(extracted));
       if (!data) {
         log::error("loom.chat_engine", "Failed to read text file: {}", path_str);
         LOOM_TRY(unreadable(name));
@@ -1323,8 +1360,9 @@ Result<Json> ChatEngine::build_content_checked(std::string_view text, const std:
       const std::size_t kept = cut ? static_cast<std::size_t>(max_chars) : original;
       std::string body = "\n--- FILE: " + name + " ---\n" + file_text;
       if (cut) {
-        body += "\n" + attachment_words(recipe["cut_marker"], lang, {{"file", name}, {"kept", std::to_string(kept)}, {"original", std::to_string(original)}});
-        if (notes) notes->push_back(Json{{"file", name}, {"status", "cut"}, {"original_chars", original}, {"kept_chars", kept}});
+        const auto message = attachment_words(recipe["cut_marker"], lang, {{"file", name}, {"kept", std::to_string(kept)}, {"original", std::to_string(original)}});
+        body += "\n" + message;
+        if (notes) notes->push_back(Json{{"file", name}, {"status", "cut"}, {"original_chars", original}, {"kept_chars", kept}, {"message", message}});
       }
       body += "\n--- END FILE ---";
       parts.push_back(Json{{"type", "text"}, {"text", std::move(body)}});
@@ -1614,7 +1652,7 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
   }
 
   // The conversation: rows are collected first, so that the profile's window and budget can cut the oldest before the parts are filled.
-  struct HistRow { std::string id, role, content, level; };
+  struct HistRow { std::string id, role; Json content; std::string level; std::vector<std::string> attachments; };
   std::vector<HistRow> hist;
   std::map<std::string, std::vector<std::string>> hist_dropped;  // reason -> message ids (the receipt)
   const bool history_on = opts.include_history && choice.source_on("history");
@@ -1670,7 +1708,10 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
       } else if (m.weight < 0.5) {
         content = "[low priority] " + content;
       }
-      hist.push_back({m.id, m.role, std::move(content), std::move(level_name)});
+      std::vector<std::string> refs;
+      if (m.attachments.is_array())
+        for (const auto& ref : m.attachments) if (ref.is_string()) refs.push_back(ref.get<std::string>());
+      hist.push_back({m.id, m.role, Json(std::move(content)), std::move(level_name), std::move(refs)});
     }
   }
   // The profile's window (the last N messages; a modifier "szerzej" widens it) and its own budget.
@@ -1680,6 +1721,12 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
     hist.erase(hist.begin(), hist.begin() + static_cast<std::ptrdiff_t>(cut));
   }
   Json budget_info = nullptr;
+  // Apply the selected history window before reading files. Excluded turns do
+  // not require their documents to be readable and cannot add them to context.
+  if (!flow || flow->turns) for (auto& h : hist) if (!h.attachments.empty()) {
+    LOOM_TRY_ASSIGN(auto with_files, build_content_checked(h.content.get<std::string>(), h.attachments, nullptr));
+    h.content = std::move(with_files);
+  }
   if (const Json b = choice.chosen ? choice.row.value("budget_tokens", Json()) : Json(); b.is_number_integer() && b.get<long long>() > 0) {
     // Over the budget the graph goes first, then the oldest messages of the conversation (the last one always stays). The instruction, the profile,
     // the rules and the question are never cut.
@@ -1688,7 +1735,7 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
     long long fixed = tokens_of(part_system) + tokens_of(part_profile) + tokens_of(part_rules) + tokens_of(part_memory) + tokens_of(part_project) +
                       chat::formats::estimate_tokens(current_text);
     long long graph = tokens_of(part_graph), hist_tokens = 0;
-    for (const auto& h : hist) hist_tokens += chat::formats::estimate_tokens(h.content);
+    for (const auto& h : hist) hist_tokens += json_tokens(h.content);
     if (fixed + graph + hist_tokens > limit && graph > 0) {
       rc.drop("graph", "budget", {"graph_memory"}, 1);
       part_graph = Json::array();
@@ -1697,7 +1744,7 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
       graph = 0;
     }
     while (fixed + graph + hist_tokens > limit && hist.size() > 1) {
-      hist_tokens -= chat::formats::estimate_tokens(hist.front().content);
+      hist_tokens -= json_tokens(hist.front().content);
       hist_dropped["budget"].push_back(hist.front().id);
       hist.erase(hist.begin());
     }
@@ -1712,7 +1759,8 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
     history_ids.push_back(h.id);
     if (want_receipt)
       note("history", chat::formats::receipt_item(h.id, h.role, "message:" + h.level,
-           h.level == "L0" ? "a message of the conversation, as written" : "a message of the conversation at the lossy level " + h.level + " chosen by the secretary", h.content));
+           h.level == "L0" ? "a message of the conversation, as written" : "a message of the conversation at the lossy level " + h.level + " chosen by the secretary",
+           h.content.is_string() ? h.content.get<std::string>() : json::dump(h.content)));
   }
 
   if (flow && flow->packet && !selection.is_null()) {
@@ -1855,9 +1903,18 @@ Result<std::optional<Json>> ChatEngine::secret_gate(std::string_view text, const
   std::vector<chat::secrets::Source> sources;
   sources.push_back({"text", "", std::string(text)});
   if (recipe.values().at("attachments").value("scan_text_files", true)) {
+    LOOM_TRY_ASSIGN(auto context, RuntimeProfile::load("chat_context", cfg_.path().parent_path()));
     for (const auto& ref : opts.attachments) {
       const auto located = locate_attachment(ref);
-      if (!located || !contains(text_exts(), lower_ext(located->second))) continue;
+      if (!located) continue;
+      const auto ext = lower_ext(located->second);
+      const auto reader = document_reader(context.values().at("attachments"), ext);
+      if (!reader.is_null()) {
+        const auto document = chat::read_document_text(located->first, reader);
+        if (document) sources.push_back({"file", located->second.filename().string(), document->text});
+        continue;
+      }
+      if (!contains(text_exts(), ext)) continue;
       auto data = fsutil::read_file(located->first);
       if (!data) continue;  // an unreadable file is said by the send itself (check_attachments / build_content)
       sources.push_back({"file", located->second.filename().string(), utf8::repair(*data)});
@@ -2482,6 +2539,7 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
 
   // 7. Persist the assistant message.
   Json metadata = Json::object();
+  if (!attachment_notes_sent.empty()) metadata["attachment_notes"] = attachment_notes_sent;
   if (!reply_meta.is_null()) metadata["reply_format"] = reply_meta;
   if (reasoning_profile_explicit)
     metadata["reasoning_profile"] = reasoning_recipe.snapshot.inspection();

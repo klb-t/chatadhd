@@ -67,3 +67,10 @@ test('property: refs and export attachments add up (seeded)', () => {
 test('the state words exist in both languages', () => {
   for (const language of ['pl', 'en']) for (const id of ['att_saved', 'att_names_only']) assert.ok(locales[language][id], `${language}: ${id}`);
 });
+
+test('reader notices survive reload, expose incomplete reads, and do not claim success from a filename', () => {
+  const message = 'PDF raport.pdf: strony bez odczytywalnego tekstu: 3. Wysłano warstwę tekstową; obrazy i skany nie zostały odczytane.';
+  assert.deepEqual(chips.attachmentNoticeMessages({ attachment_notes: [{ status: 'read', pages: 3 }, { status: 'cut', message }, { message }] }), [message]);
+  for (const metadata of [undefined, null, {}, { attachment_notes: 'raport.pdf' }, { attachment_notes: [null, {}, { message: 8 }, { message: ' ' }] }])
+    assert.deepEqual(chips.attachmentNoticeMessages(metadata), []);
+});

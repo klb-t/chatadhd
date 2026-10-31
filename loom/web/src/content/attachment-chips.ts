@@ -10,6 +10,14 @@ import { projectImportedMessage } from "./imported-message";
 export type AttachmentState = "saved" | "names_only" | "plain";
 export interface AttachmentChip { name: string; state: AttachmentState }
 
+/** Actual reader notices saved with the answer. No state is inferred from a file extension. */
+export function attachmentNoticeMessages(metadata: Record<string, unknown> | null | undefined): string[] {
+  const notes = metadata?.attachment_notes;
+  if (!Array.isArray(notes)) return [];
+  return [...new Set(notes.flatMap(note => note && typeof note === "object" &&
+    typeof note.message === "string" && note.message.trim() ? [note.message] : []))];
+}
+
 export function attachmentChips(message: Pick<Message, "attachments" | "metadata">): AttachmentChip[] {
   const chips: AttachmentChip[] = [];
   const refs = Array.isArray(message.attachments) ? message.attachments.filter((x): x is string => typeof x === "string") : [];

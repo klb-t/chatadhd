@@ -178,6 +178,7 @@ Json run_chat(LoomContext* ctx, const std::string& message_in, ChatOptions opts,
             {"model", r->model},
             {"cancelled", r->cancelled}};
   if (r->new_title) done["title"] = *r->new_title;
+  if (!r->attachment_notes.empty()) done["attachment_notes"] = r->attachment_notes;
   if (!r->context_trace.is_null()) done["context_trace"] = r->context_trace;
   emit_chunk(cb, ud, done, 1);
   return result;

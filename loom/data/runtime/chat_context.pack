@@ -396,6 +396,35 @@
         "en": "[the attachment {file} could not be read and is not included]",
         "pl": "[załącznika {file} nie dało się odczytać i nie został dołączony]",
         "nl": "[de bijlage {file} kon niet worden gelezen en is niet bijgevoegd]"
+      },
+      "document_readers": [
+        {
+          "extensions": [
+            ".pdf"
+          ],
+          "adapter": "poppler_glib",
+          "library": "libpoppler-glib.so.8"
+        }
+      ],
+      "document_reader_unavailable": {
+        "pl": "Nie odczytano dokumentu {file}: na tym serwerze nie jest dostępny czytnik PDF (Poppler-GLib). Plik nie został dołączony.",
+        "en": "Document {file} was not read: this server has no PDF reader (Poppler-GLib). The file was not included.",
+        "nl": "Document {file} is niet gelezen: deze server heeft geen PDF-lezer (Poppler-GLib). Het bestand is niet bijgevoegd."
+      },
+      "document_invalid": {
+        "pl": "Nie można odczytać PDF-a {file}. Dokument może być uszkodzony lub zabezpieczony hasłem. Jego treść nie została dołączona.",
+        "en": "Cannot read PDF {file}. The document may be damaged or password-protected. Its content was not included.",
+        "nl": "PDF {file} kan niet worden gelezen. Het document is mogelijk beschadigd of met een wachtwoord beveiligd. De inhoud is niet bijgevoegd."
+      },
+      "document_no_text": {
+        "pl": "PDF {file} nie ma odczytywalnej warstwy tekstowej. Może być skanem i wymagać OCR; ten czytnik wydobywa tylko tekst. Treść pliku nie została dołączona.",
+        "en": "PDF {file} has no readable text layer. It may be a scan requiring OCR; this reader extracts text only. The file content was not included.",
+        "nl": "PDF {file} heeft geen leesbare tekstlaag. Het kan een scan zijn waarvoor OCR nodig is; deze lezer haalt alleen tekst op. De bestandsinhoud is niet bijgevoegd."
+      },
+      "document_partial": {
+        "pl": "PDF {file}: strony bez odczytywalnego tekstu: {pages}. Wysłano warstwę tekstową; obrazy i skany nie zostały odczytane.",
+        "en": "PDF {file}: pages without readable text: {pages}. The text layer was sent; images and scans were not read.",
+        "nl": "PDF {file}: pagina’s zonder leesbare tekst: {pages}. De tekstlaag is verzonden; afbeeldingen en scans zijn niet gelezen."
       }
     }
   },
@@ -664,7 +693,7 @@
         "type": "object",
         "x-setting": "/attachments",
         "x-consumer": "chat_engine",
-        "description": "Attached files: text_max_chars is the preset of the setting chat_attachment_max_chars (characters of a text file sent to the model; 0 = no limit); on_unreadable is the preset of chat_attachment_on_unreadable (refuse | send_with_warning); cut_marker, unreadable_error and unreadable_marker are the words ({file}, {kept}, {original}) in en, pl, nl."
+        "description": "Attached files: text_max_chars is the preset of the setting chat_attachment_max_chars (characters of a text file sent to the model; 0 = no limit); on_unreadable is the preset of chat_attachment_on_unreadable (refuse | send_with_warning); cut_marker, unreadable_error and unreadable_marker are the words ({file}, {kept}, {original}) in en, pl, nl. document_readers maps extensions to local adapters and their runtime library. document_* messages describe real extraction outcomes; no OCR is implied."
       }
     }
   }

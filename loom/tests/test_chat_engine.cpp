@@ -248,7 +248,7 @@ TEST_SUITE("chat_engine") {
     CHECK(body.find(std::string(15001, 'a')) == std::string::npos);
     CHECK(body.find("[cut: 15000 of 20000 characters of big.txt were sent; the rest was left out]") != std::string::npos);
     REQUIRE(notes.size() == 1);
-    CHECK(notes[0] == Json{{"file", "big.txt"}, {"status", "cut"}, {"original_chars", 20000}, {"kept_chars", 15000}});
+    CHECK(notes[0] == Json{{"file", "big.txt"}, {"status", "cut"}, {"original_chars", 20000}, {"kept_chars", 15000}, {"message", "[cut: 15000 of 20000 characters of big.txt were sent; the rest was left out]"}});
 
     env.cfg.set("chat_attachment_max_chars", 0);
     Json notes0;
@@ -276,7 +276,7 @@ TEST_SUITE("chat_engine") {
     opts.attachments = {txt.string()};
     auto r = unwrap(engine.send("see the file", opts));
     REQUIRE(r.attachment_notes.size() == 1);
-    CHECK(r.attachment_notes[0] == Json{{"file", "big.txt"}, {"status", "cut"}, {"original_chars", 20000}, {"kept_chars", 15000}});
+    CHECK(r.attachment_notes[0] == Json{{"file", "big.txt"}, {"status", "cut"}, {"original_chars", 20000}, {"kept_chars", 15000}, {"message", "[cut: 15000 of 20000 characters of big.txt were sent; the rest was left out]"}});
     const auto msgs = unwrap(env.db->get_msgs(r.conv_id));
     bool found = false;
     for (const auto& m : msgs) {

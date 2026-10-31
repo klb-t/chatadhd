@@ -13,7 +13,7 @@ import SecretPendingBlock from "./SecretPendingBlock";
 import AgentProposalBlock from "./AgentProposalBlock";
 import { agentLoopOf, agentLoopView, resumeRequest } from "../context/agent-proposal";
 import ActionProposalBlock, { ProposalOffer, ProposalWritten } from "./ActionProposalBlock";
-import { attachmentChips, chipStateText } from "../content/attachment-chips";
+import { attachmentChips, chipStateText, attachmentNoticeMessages } from "../content/attachment-chips";
 import { graphTargetOfRun } from "../context/chat-graph-focus";
 import ClientStepBlock from "./ClientStepBlock";
 import { CLIENT_STEP_FEATURE, type BlobLoader, type BlobUploader } from "../context/client-device";
@@ -1402,6 +1402,12 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
                 return <p className="composer-chips" data-testid="message-attachments" data-count={chips.length}>
                   {chips.map((chip, i) => { const state = chipStateText(chip, t); return <span key={i} className="composer-chip" data-testid="message-attachment" data-state={chip.state}>
                     <span className="chip-name">{chip.name}</span>{state && <span className="chip-state" data-testid="message-attachment-state"> · {state}</span>}</span>; })}</p>;
+              })()}
+              {m.role === "assistant" && (() => {
+                const notices = attachmentNoticeMessages(m.metadata);
+                return notices.length ? <div role="status" data-testid="message-attachment-notices">
+                  {notices.map((message, i) => <p key={i}>{message}</p>)}
+                </div> : null;
               })()}
               {m.role === "assistant" && (() => {
                 const made = producedView(m.metadata, m.id);

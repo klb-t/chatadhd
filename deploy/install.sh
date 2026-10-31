@@ -121,10 +121,10 @@ if [ "$DO_DEPS" = 1 ]; then
   $SUDO apt-get update -y
   if [ -n "$FROM_TARBALL" ]; then
     # gotowe archiwum: tylko to, czego potrzebuje dzialajacy serwer (biblioteki sprawdzamy po rozpakowaniu)
-    $SUDO apt-get install -y --no-install-recommends ca-certificates curl
+    $SUDO apt-get install -y --no-install-recommends ca-certificates curl libpoppler-glib8
   else
     $SUDO apt-get install -y --no-install-recommends build-essential cmake ninja-build libssl-dev \
-      ca-certificates curl git nodejs npm
+      ca-certificates curl git nodejs npm libpoppler-glib8
   fi
   if [ "$DO_CADDY" = 1 ] && ! command -v caddy >/dev/null; then
     $SUDO apt-get install -y --no-install-recommends caddy \

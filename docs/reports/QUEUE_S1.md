@@ -1,3 +1,7 @@
+## 2026-10-31 — następny krok po odczycie PDF
+
+Wdrożony interfejs i implementacja nie mają potwierdzonej pełnej zgodności z przepływami aplikacji dostawców. Aktualny przyrost: PDF z tekstem, kontynuacja z plikami, trwałe ostrzeżenia; [macierz](CHAT_DOCUMENT_FLOWS_2026-10-31.md). Nie oznaczać skanów/OCR, DOCX, treści plików w graph_packet ani eksportu bajtów jako ukończonych. Dalej: rzeczywisty upload PDF i kolejne pytania w HTTP/webie na polskim urządzeniu; osobne scenariusze głosu, edycji/regeneracji/gałęzi, artefaktów i importu/eksportu z bajtami. Przed produkcją zamknąć istniejący przegląd zmiany źródła/BYOK i wykonać pełną bramkę. Bez publikowania prywatnych źródeł i bez nowych płatnych wywołań.
+
 ## 2026-10-31 — kolejny sprawdzony przyrost
 
 Naprawy jądra i interfejsu na bazie pkg-webfix 910dca31: [raport](NATIVE_WEB_FIXES_2026-10-31.md). Nie powtarzać zrealizowanych napraw. Następnie pełna bramka HTTP/GUI w uprawnionym środowisku, przepływ zmiany źródła/BYOK i pozostałe pakiety według priorytetów. W11a-2, D7–D10 oraz R102 G3–G4 pozostają otwarte. Brak scalenia main i wdrożenia w tym checkpoincie.

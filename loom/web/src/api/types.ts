@@ -168,6 +168,7 @@ export type ChatChunk =
       request_id?: string;
       cancelled?: boolean;
       context_trace?: ChatContextTrace;
+      attachment_notes?: Array<Record<string, unknown>>;
     }
   | { type: "usage_pending"; request_id: string; conv_id: string; user_message_id: string;
       usage_pending: { status?: string; operation_id?: string | null; receipt_id?: string | null; stage?: string;

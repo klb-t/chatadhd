@@ -80,15 +80,24 @@ TEST_SUITE("chat_composer") {
     REQUIRE_FALSE(msgs.empty());
     const Json stored = msgs.front().to_json();
     CHECK(stored.at("attachments").dump().find("notatki.txt") != std::string::npos);
+    ChatOptions next;
+    next.conv_id = opts.conv_id;
+    const auto followup = f.send("Co jeszcze widać?", next).at("messages").dump();
+    CHECK(followup.find("PAPUGA") != std::string::npos);
+    CHECK(followup.find("image_url") != std::string::npos);
+    next.include_history = false;
+    const auto no_history = f.send("Tylko to pytanie", next).at("messages").dump();
+    CHECK(no_history.find("PAPUGA") == std::string::npos);
+    CHECK(no_history.find("image_url") == std::string::npos);
   }
 
   TEST_CASE("a file that cannot go to the model is refused before anything is stored, and the refusal names it") {
     Fixture f;
     const std::string conv = unwrap(f.rt->db().create_conv("Refused")).id;
-    const auto pdf = unwrap(f.rt->blobs().put("%PDF-1.7 raport", "application/pdf"));
+    const auto binary = unwrap(f.rt->blobs().put("unread binary", "application/octet-stream"));
     struct Case { std::string ref; Errc code; };
     for (const Case& c : {Case{"blob:" + std::string(64, 'a') + "/gone.txt", Errc::NotFound}, Case{"blob:../../config.json/x.txt", Errc::NotFound},
-                          Case{"blob:", Errc::NotFound}, Case{"blob:" + pdf.hash + "/raport.pdf", Errc::Unsupported},
+                          Case{"blob:", Errc::NotFound}, Case{"blob:" + binary.hash + "/raport.exe", Errc::Unsupported},
                           Case{(f.td.path() / "missing.txt").string(), Errc::NotFound}}) {
       INFO(c.ref);
       ChatOptions opts;
@@ -121,6 +130,160 @@ TEST_SUITE("chat_composer") {
     REQUIRE(content.is_array());
     REQUIRE(content.size() == 1);
     CHECK(content[0].at("text").get<std::string>().find("PAPUGA") != std::string::npos);
+  }
+
+
+#if defined(__linux__) && !defined(__ANDROID__)
+  TEST_CASE("PDF: compressed Unicode text from both pages reaches the provider via a blob, with original bytes intact") {
+    Fixture f;
+    const auto source = unwrap(fsutil::read_file(std::filesystem::path(LOOM_TEST_FIXTURES) / "documents/unicode-compressed.pdf"));
+    const auto blob = unwrap(f.rt->blobs().put(source, "application/pdf"));
+    ChatOptions opts;
+    opts.conv_id = unwrap(f.rt->db().create_conv("PDF")).id;
+    opts.attachments = {"blob:" + blob.hash + "/Zażółć.PDF"};
+    const Json body = f.send("Co jest w dokumencie?", opts);
+    const auto text = body.at("messages").back().at("content").dump();
+    CHECK(text.find("Zażółć gęślą jaźń — PDF PAPUGA. Strona 1.") != std::string::npos);
+    CHECK(text.find("Druga strona: Łódź, żółw, ąćęłńóśźż.") != std::string::npos);
+    CHECK(text.find("%PDF") == std::string::npos);
+    CHECK(unwrap(f.rt->blobs().read(blob.hash)) == source);
+    CHECK(f.rt->blobs().verify(blob.hash));
+    const auto msgs = unwrap(f.rt->db().get_msgs(*opts.conv_id));
+    REQUIRE(msgs.size() == 2);
+    CHECK(msgs[0].attachments == Json(opts.attachments));
+    const auto notes = msgs[1].metadata.at("attachment_notes");
+    REQUIRE(notes.size() == 1);
+    CHECK(notes[0]["pages"] == 2);
+    CHECK(notes[0]["pages_without_text"].empty());
+  }
+
+
+  TEST_CASE("PDF: follow-up and a reopened conversation retain the document text with the original message") {
+    Fixture f;
+    const auto blob = unwrap(f.rt->blobs().put(unwrap(fsutil::read_file(std::filesystem::path(LOOM_TEST_FIXTURES) / "documents/unicode-compressed.pdf")), "application/pdf"));
+    ChatOptions first;
+    first.conv_id = unwrap(f.rt->db().create_conv("PDF follow-up")).id;
+    first.attachments = {"blob:" + blob.hash + "/document.pdf"};
+    (void)f.send("Przeczytaj", first);
+    ChatOptions next;
+    next.conv_id = first.conv_id;
+    auto check_history = [&](const Json& body) {
+      bool found = false;
+      for (const auto& message : body.at("messages")) {
+        if (message.at("role") == "user" && message.at("content").dump().find("Przeczytaj") != std::string::npos) {
+          const auto wire = message.at("content").dump();
+          CHECK(wire.find("Zażółć gęślą jaźń") != std::string::npos);
+          CHECK(wire.find("Druga strona: Łódź") != std::string::npos);
+          found = true;
+        }
+      }
+      CHECK(found);
+    };
+    check_history(f.send("A druga strona?", next));
+    REQUIRE(f.rt->config().save());
+    REQUIRE(f.rt->secrets().save());
+    f.rt.reset();
+    RuntimeOptions o;
+    o.data_dir = f.td.path().string(); o.start_workers = false; o.http = f.transport;
+    f.rt = unwrap(Runtime::open(o));
+    check_history(f.send("Wróć do dokumentu", next));
+  }
+
+  TEST_CASE("PDF: extracted text participates in the existing secret gate before storage or provider calls") {
+    Fixture f;
+    // An exact stored secret in the document, synthetic test bytes only.
+    f.rt->secrets().set("fixture_secret", "PAPUGA. Strona 1.");
+    const auto blob = unwrap(f.rt->blobs().put(unwrap(fsutil::read_file(std::filesystem::path(LOOM_TEST_FIXTURES) / "documents/unicode-compressed.pdf")), "application/pdf"));
+    ChatOptions opts;
+    opts.attachments = {"blob:" + blob.hash + "/secret.pdf"};
+    const auto held = unwrap(f.rt->chat().send("Sprawdź", opts));
+    REQUIRE(held.secret_pending);
+    CHECK((*held.secret_pending).dump().find("secret.pdf") != std::string::npos);
+    CHECK((*held.secret_pending).dump().find("PAPUGA") == std::string::npos);
+    CHECK(f.transport->requests().empty());
+    CHECK(unwrap(f.rt->db().list_convs()).empty());
+  }
+
+  TEST_CASE("PDF: blank, encrypted and malformed documents refuse before persistence, preview and model usage") {
+    Fixture f;
+    f.rt->config().set("ui_language", "pl");
+    const auto conv = unwrap(f.rt->db().create_conv("Unreadable PDF")).id;
+    for (const auto& filename : {"no-text.pdf", "password.pdf", "broken.pdf"}) {
+      INFO(filename);
+      const std::string source = std::string(filename) == "broken.pdf" ? "%PDF-1.7 invalid" :
+          unwrap(fsutil::read_file(std::filesystem::path(LOOM_TEST_FIXTURES) / "documents" / filename));
+      const auto blob = unwrap(f.rt->blobs().put(source, "application/pdf"));
+      ChatOptions opts;
+      opts.conv_id = conv;
+      opts.attachments = {"blob:" + blob.hash + "/" + filename};
+      const auto sent = f.rt->chat().send("Przeczytaj", opts);
+      REQUIRE_FALSE(sent);
+      CHECK(sent.error().message.find(filename) != std::string::npos);
+      CHECK(sent.error().message.find("nie została dołączona") != std::string::npos);
+      CHECK_FALSE(f.rt->chat().preview_usage("Przeczytaj", opts));
+      CHECK(unwrap(f.rt->db().get_msgs(conv)).empty());
+      CHECK(f.transport->requests().empty());
+      CHECK(unwrap(f.rt->blobs().read(blob.hash)) == source);
+    }
+  }
+
+  TEST_CASE("PDF: partial text extraction names unreadable pages in the request and persistent notice") {
+    Fixture f;
+    f.rt->config().set("ui_language", "pl");
+    const auto blob = unwrap(f.rt->blobs().put(unwrap(fsutil::read_file(std::filesystem::path(LOOM_TEST_FIXTURES) / "documents/mixed-text-blank.pdf")), "application/pdf"));
+    ChatOptions opts;
+    opts.conv_id = unwrap(f.rt->db().create_conv("Mixed PDF")).id;
+    opts.attachments = {"blob:" + blob.hash + "/mixed.pdf"};
+    const auto body = f.send("", opts);
+    CHECK(body.at("messages").back().at("content").dump().find("strony bez odczytywalnego tekstu: 3") != std::string::npos);
+    const auto msgs = unwrap(f.rt->db().get_msgs(*opts.conv_id));
+    const auto note = msgs.back().metadata.at("attachment_notes").at(0);
+    CHECK(note["pages"] == 3);
+    CHECK(note["pages_without_text"] == Json::array({3}));
+    CHECK(note["message"].get<std::string>().find("skany nie zostały odczytane") != std::string::npos);
+  }
+
+  TEST_CASE("PDF: the configured character limit applies to extracted Unicode, with visible exact counts") {
+    Fixture f;
+    f.rt->config().set("chat_attachment_max_chars", 10);
+    f.rt->config().set("ui_language", "pl");
+    const auto path = std::filesystem::path(LOOM_TEST_FIXTURES) / "documents/unicode-compressed.pdf";
+    Json notes;
+    const auto content = unwrap(f.rt->chat().build_content_checked("", {path.string()}, &notes));
+    const auto text = content.at(0).at("text").get<std::string>();
+    CHECK(text.find("Zażółć gęś") != std::string::npos);
+    CHECK(text.find("PAPUGA") == std::string::npos);
+    REQUIRE(notes.size() == 2);
+    CHECK(notes[1]["kept_chars"] == 10);
+    CHECK(notes[1]["original_chars"].get<int>() > 10);
+    CHECK(notes[1]["message"].get<std::string>().find("wysłano 10 z") != std::string::npos);
+    f.rt->config().set("chat_attachment_max_chars", 0);
+    CHECK(unwrap(f.rt->chat().build_content_checked("", {path.string()}, nullptr)).dump().find("ąćęłńóśźż") != std::string::npos);
+  }
+#endif
+
+  TEST_CASE("PDF: a missing reader refuses explicitly; the user's warning policy is respected without inventing content") {
+    Fixture f;
+    f.rt->config().set("ui_language", "pl");
+    const Json overlay{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", "chat_context"},
+        {"overrides", Json{{"attachments", Json{{"document_readers", Json::array({Json{{"extensions", Json::array({".pdf"})},
+            {"adapter", "poppler_glib"}, {"library", "/missing/reader-for-test.so"}}})}}}}}};
+    REQUIRE(fsutil::write_file(f.td.path() / "profiles/chat_context.pack", overlay.dump()));
+    ChatOptions opts;
+    opts.conv_id = unwrap(f.rt->db().create_conv("Reader missing")).id;
+    opts.attachments = {(std::filesystem::path(LOOM_TEST_FIXTURES) / "documents/unicode-compressed.pdf").string()};
+    const auto sent = f.rt->chat().send("Przeczytaj", opts);
+    REQUIRE_FALSE(sent);
+    CHECK(sent.error().code == Errc::Unavailable);
+    CHECK(sent.error().message.find("nie jest dostępny czytnik PDF") != std::string::npos);
+    CHECK(unwrap(f.rt->db().get_msgs(*opts.conv_id)).empty());
+    CHECK(f.transport->requests().empty());
+    f.rt->config().set("chat_attachment_on_unreadable", "send_with_warning");
+    const auto body = f.send("Przeczytaj", opts);
+    CHECK(body.at("messages").back().at("content").dump().find("Plik nie został dołączony") != std::string::npos);
+    CHECK(body.dump().find("PAPUGA") == std::string::npos);
+    const auto msgs = unwrap(f.rt->db().get_msgs(*opts.conv_id));
+    CHECK(msgs.back().metadata.at("attachment_notes").at(0).at("status") == "unreadable");
   }
 
   TEST_CASE("an action named by the composer: the message is its command, through the proposal and the rules") {
