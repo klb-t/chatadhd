@@ -479,3 +479,12 @@ if(LOOM_BUILD_TESTS)
       TIMEOUT 600)   # 64 s on a dev build; timed out at 90 s under ASAN on a loaded runner (CI 260)
   endif()
 endif()
+
+# Runtime package owns its helper and explicit interpreter dependency.
+include(${LOOM_ROOT}/cmake/DocxRuntime.cmake)
+if(TARGET loom-server)
+  install(TARGETS loom-server RUNTIME DESTINATION bin COMPONENT runtime)
+endif()
+if(TARGET loom)
+  install(TARGETS loom LIBRARY DESTINATION lib COMPONENT runtime RUNTIME DESTINATION bin COMPONENT runtime)
+endif()

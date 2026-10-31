@@ -1,0 +1,8 @@
+{
+  "schema": "loom.docx_runtime/1",
+  "python": "@LOOM_DOCX_PYTHON_JSON@",
+  "python_version": "@LOOM_DOCX_PYTHON_VERSION@",
+  "reader": "reader.py",
+  "reader_sha256": "@LOOM_DOCX_READER_SHA256@",
+  "dependency": "Python >= 3.10 with stdlib zipfile, zlib and pyexpat; no site packages"
+}

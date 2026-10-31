@@ -4,8 +4,8 @@
       ".docx"
     ],
     "adapter": "docx_basic",
-    "python": "/usr/bin/python3",
-    "script": "/usr/share/loom/docx_basic/reader.py",
+    "python": "package:docx_basic",
+    "script": "package:docx_basic",
     "source_kind": "file",
     "mime": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     "timeout_ms": 10000,

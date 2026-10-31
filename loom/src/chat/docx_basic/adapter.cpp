@@ -2,6 +2,7 @@
 #define _GNU_SOURCE
 #endif
 #include "adapter.h"
+#include "package.h"
 
 #include <algorithm>
 #include <cerrno>
@@ -64,8 +65,9 @@ Result<std::int64_t> quantity(const Json& reader, const char* key, bool positive
 
 Result<Json> read_docx_basic(const std::filesystem::path& path, const Json& reader) {
 #ifdef LOOM_DOCX_SPAWN
-  const std::string python = json::get_string(reader, "python");
-  const std::string script = json::get_string(reader, "script");
+  LOOM_TRY_ASSIGN(const auto command, docx_command(reader));
+  const auto& python = command.python;
+  const auto& script = command.script;
   // Deployment locations are explicit configuration. No PATH lookup, shell,
   // inherited Python site/user hooks, environment secrets or inherited fds.
   if (python.empty() || script.empty() || !std::filesystem::path(python).is_absolute() ||
