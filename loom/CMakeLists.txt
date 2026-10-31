@@ -402,6 +402,19 @@ if(LOOM_BUILD_TESTS)
     set_tests_properties(server.guest_source PROPERTIES
       ENVIRONMENT "LOOM_SERVER_BIN=$<TARGET_FILE:loom-server>;PYTHONDONTWRITEBYTECODE=1"
       TIMEOUT 240)
+    # Real HTTP/C API credential boundary against two local providers; invented markers only.
+    add_test(NAME server.guest_credentials
+      COMMAND ${Python3_EXECUTABLE} ${LOOM_ROOT}/server/tests/test_server_guest_credentials.py)
+    set_tests_properties(server.guest_credentials PROPERTIES
+      ENVIRONMENT "LOOM_SERVER_BIN=$<TARGET_FILE:loom-server>;PYTHONDONTWRITEBYTECODE=1"
+      TIMEOUT 240)
+    if(LOOM_SHARED)
+      add_test(NAME capi.credential_override
+        COMMAND ${Python3_EXECUTABLE} ${LOOM_ROOT}/server/tests/test_capi_credential_override.py)
+      set_tests_properties(capi.credential_override PROPERTIES
+        ENVIRONMENT "LOOM_LIB=$<TARGET_FILE:loom>;PYTHONDONTWRITEBYTECODE=1"
+        TIMEOUT 120)
+    endif()
     # R103 B1b: the working-copy bundle - generative secret scan of its bytes, exact restore with 0 model requests.
     add_test(NAME server.guest_bundle
       COMMAND ${Python3_EXECUTABLE} ${LOOM_ROOT}/server/tests/test_server_guest_bundle.py)

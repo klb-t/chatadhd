@@ -135,6 +135,13 @@ class Config : public JsonStore {
 class Secrets : public JsonStore {
  public:
   explicit Secrets(fs::path path);
+  // An explicit write (also an empty value) replaces this credential's borrowed overlay entry.
+  // Keep other borrowed credentials intact; overlay precedence still applies until an explicit write.
+  void set(std::string_view key, Json value) {
+    std::lock_guard lk(overlay_mu_);
+    JsonStore::set(key, std::move(value));
+    overlay_.erase(std::string(key));
+  }
   std::string get_string(std::string_view key) const;  // "" if missing or not a string
   bool has(std::string_view key) const;                // non-empty string value
   // R103 §3.4: credentials handed to this runtime in memory only (loom_init_ex "credential_overlay"), read before

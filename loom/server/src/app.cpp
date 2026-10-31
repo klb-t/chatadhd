@@ -362,6 +362,23 @@ json isolated_options(const loom::accounts::Isolation& iso, const std::string& d
 }
 
 // guest_source.h: read_keys_file, choose_free_model, guest_allowed_tiers (header-only, unit-tested).
+
+bool guest_has_own_source(LoomContext* c, const json& source) {
+  const json cfg = parse_or_empty(own_and_free(loom_get_config(c)));
+  if (!cfg.is_object() || !source.is_object()) return true;
+  const json provider = source.value("provider", json());
+  if (provider.is_null()) {
+    if (cfg.value("loom_guest_source", json()) != "none") return true;
+  } else if (cfg.value("loom_guest_source", json()) != provider ||
+             cfg.value("base_url", json()) != source.value("base_url", json())) {
+    return true;
+  }
+  // Only persisted key names are exposed here, never values. An explicit BYOK write keeps winning
+  // after a restart or a service-account refresh, even if the endpoint stayed the same.
+  const json keys = parse_or_empty(own_and_free(loom_list_secret_keys(c)));
+  const std::string auth_secret = source.value("auth_secret", std::string("api_key"));
+  return !keys.is_array() || std::find(keys.begin(), keys.end(), json(auth_secret)) != keys.end();
+}
 }  // namespace
 
 LoomContext* App::rctx() const { return accounts_ ? t_request_ctx : ctx_; }
@@ -390,7 +407,30 @@ LoomContext* App::context_for_user(const std::string& user_id) {
 LoomContext* App::context_for_guest(const std::string& guest_id) {
   std::lock_guard lk(pool_mu_);
   auto it = guest_ctx_.find(guest_id);
-  if (it != guest_ctx_.end()) return it->second;
+  if (it != guest_ctx_.end()) {
+    // Every guest route crosses this boundary, including model-catalogue refreshes outside model_routes.
+    const auto source = guest_source_.find(guest_id);
+    if (source != guest_source_.end()) {
+      const json& chosen = source->second;
+      if (guest_has_own_source(it->second, chosen)) {
+        (void)loom_set_credential_overlay(it->second, "{}");
+      } else if (!chosen.value("provider", json()).is_null()) {
+        const std::string auth_secret = chosen.value("auth_secret", std::string("api_key"));
+        if (loom_has_secret(it->second, auth_secret.c_str()) == 0) {
+          // Returning to the operator's source may restore its credential, but only after
+          // rechecking current pool eligibility and the exact provider, endpoint and slot.
+          // A persisted BYOK value (including an empty one) already took the branch above.
+          std::map<std::string, std::string> overlay;
+          const json current = choose_guest_source(overlay);
+          if (current.value("provider", json()) == chosen.value("provider", json()) &&
+              current.value("base_url", json()) == chosen.value("base_url", json()) &&
+              current.value("auth_secret", std::string("api_key")) == auth_secret)
+            (void)loom_set_credential_overlay(it->second, json(overlay).dump().c_str());
+        }
+      }
+    }
+    return it->second;
+  }
   loom::PhaseTimer pt("context_for_guest");
   json options = isolated_options(accounts_->settings().isolation, accounts_->guest_dir(guest_id).string());
   // R103 B2: a guest runtime reaches only the hosts of the free provider manifests (plus outbound.extra_hosts).
@@ -416,7 +456,7 @@ LoomContext* App::context_for_guest(const std::string& guest_id) {
   pt.mark("only_hosts");
   std::map<std::string, std::string> overlay;
   json source = choose_guest_source(overlay);
-  if (!overlay.empty()) options["credential_overlay"] = overlay;
+  // Do not hand a pool credential to startup workers before checking the restored guest's own selection.
   pt.mark("choose_source");
   const char* err = nullptr;
   LoomContext* c = loom_init_ex(options.dump().c_str(), &err);
@@ -436,6 +476,7 @@ LoomContext* App::context_for_guest(const std::string& guest_id) {
   }
   else if (source["provider"].is_null() && !(cfg.is_object() && cfg.contains("loom_guest_source")))
     (void)loom_set_config_json(c, json({{"loom_guest_source", "none"}}).dump().c_str());  // explicit "no free source" state
+  if (!guest_has_own_source(c, source)) (void)loom_set_credential_overlay(c, json(overlay).dump().c_str());
   pt.mark("config");
   guest_ctx_[guest_id] = c;
   guest_source_[guest_id] = source;
@@ -506,6 +547,12 @@ bool App::prepare_guest_source(const std::string& guest_id) {
     source = it->second;
     c = ct->second;
   }
+  // The guest's own selection never borrows the previous provider's credentials. Check before
+  // recovery from "none" too, so a newly available pool cannot replace a deliberate BYOK choice.
+  if (guest_has_own_source(c, source)) {
+    (void)loom_set_credential_overlay(c, "{}");
+    return true;
+  }
   if (source.is_object() && source["provider"].is_null()) {
     // State "none": try again (a key may have appeared); the guest's own key (BYOK) keeps working; otherwise the model
     // request is refused with the plain message and the way to an own account or key (R108) - never a paid source.
@@ -529,11 +576,7 @@ bool App::prepare_guest_source(const std::string& guest_id) {
     return loom_has_secret(c, "api_key") == 1;
   }
   if (!source.is_object()) return true;
-  // The guest's own choice wins: only a runtime still on the source the server gave it is refreshed or switched.
-  const json cfg = parse_or_empty(own_and_free(loom_get_config(c)));
-  if (!cfg.is_object() || cfg.value("loom_guest_source", std::string()) != source.value("provider", std::string()) ||
-      cfg.value("base_url", std::string()) != source.value("base_url", std::string()))
-    return true;
+  // Only a runtime still using the operator's source is refreshed or switched.
   auto fp = loom::RuntimeProfile::load("free_providers", accounts_->root());
   if (!fp) return true;
   const std::string pid = source.value("provider", std::string());

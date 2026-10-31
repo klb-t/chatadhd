@@ -104,6 +104,24 @@ TEST_SUITE("config") {
     CHECK(s2.keys() == std::vector<std::string>{"empty"});
   }
 
+  TEST_CASE("explicit credential write replaces only its own overlay entry, including an empty value") {
+    fsutil::TempDir td;
+    Secrets s(td.path() / "secrets.json");
+    s.set_overlay({{"api_key", "fake-operator-A"}, {"other", "fake-independent-overlay"}});
+    CHECK(s.get_string("api_key") == "fake-operator-A");
+    s.set("api_key", "fake-user-B");
+    CHECK(s.get_string("api_key") == "fake-user-B");
+    CHECK_FALSE(s.from_overlay("api_key"));
+    CHECK(s.get_string("other") == "fake-independent-overlay");
+    CHECK(s.from_overlay("other"));
+    LOOM_REQUIRE_OK(s.save());
+    CHECK(Secrets(s.path()).all() == Json{{"api_key", "fake-user-B"}});
+    s.set("api_key", "");
+    CHECK(s.get_string("api_key") == "");
+    CHECK_FALSE(s.has("api_key"));
+    CHECK(s.get_string("other") == "fake-independent-overlay");
+  }
+
   TEST_CASE("paths: resolution order, sentinel, subdirs") {
     fsutil::TempDir td;
     PathEnv env;

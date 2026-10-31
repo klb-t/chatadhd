@@ -196,6 +196,7 @@ json choose_free_model(const json& fp, const std::string& keys_file, const std::
     }
     if (!key.empty()) overlay[prov->value("auth_secret", std::string("api_key"))] = key;
     return {{"provider", pid}, {"display_name", prov->value("display_name", pid)}, {"model", row.value("model", std::string())},
+            {"auth_secret", prov->value("auth_secret", std::string("api_key"))},
             {"base_url", base_url}, {"data_terms", terms}, {"quality", row.value("quality", json(nullptr))},
             {"auth_kind", prov->value("auth_kind", std::string("key"))}, {"tier", prov->value("tier", std::string())},
             {"observed_at", row.value("observed_at", json(nullptr))}, {"source", row.value("source", json(nullptr))},
