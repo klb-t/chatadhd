@@ -1,3 +1,24 @@
+## 2026-10-31 — odbiór G1 odłożony: EACCES w worktree autora
+
+Zachowana przyjęta baza produktu **`3319312f22e1d7920a051a2496337fb6ee5e9554`**,
+kod package/GUI `daf4f48412924737f260a42499818ea6bbeba513`. Sprawdzono20/20
+poprzednich plików bez zmian. Nie powtarzano zaakceptowanych testów.
+
+G1 `chatadhd-graph-source-parts-20261101`, snapshot1793485310488154795,
+ma completed/stable audited receipt, lecz aktualny odczyt **UID/EUID990**
+zwraca **EACCES(13) dla12plików produktu oraz .git autora**. Git status exit128.
+Checkpoint i7plików handoff mają zgodne sumy przed/po; nie rekonstruowano
+z patchy plików objętych odmową. Nie nałożono zmian G1, brak build/test PASS.
+Native8/HTTP2 autora są wyłącznie przygotowane, niewykonane.
+
+Odczytano wszystkie4absolutne dokumenty kontekstu, w tym §0rewizja2;
+nie są brakujące. Next: przywrócony zwykły odczyt dla integratora i świeży
+odbiór; sprawdzić fallback seg.language(), granice cache, autoryzację trasy,
+źródła/wystąpienia/wersje i rzeczywisty kontekst. Generaty odtworzyć po scaleniu
+.pack bez nadpisania defaultów DOCX. GUI/upload→materializacja pozostają osobno.
+[Dokładne ścieżki, hashe, zakres odłożony i kontynuacja](reports/G1_ADMISSION_BLOCKER_2026-10-31.md).
+Bez nowego cyklu, push/CI/deploy ani ingerencji w ACL/hosta.
+
 ## 2026-10-31 — domyślny pakiet DOCX i funkcjonalne GUI OCR/DOCX
 
 Przyjęty kod **`daf4f48412924737f260a42499818ea6bbeba513`**;
