@@ -1,3 +1,40 @@
+## 2026-10-31 — backend G1 i poprawka prezentacji PNG przyjęte
+
+Przyjęty końcowy kod **`5d653f73e25033881242bad3f72a6a45e0473d97`**.
+G1 odebrano osobno w **`42e5c5be77448bb1c228573672fcc164d05bf1da`**;
+baza integratora6c46bd28 i wszystkie wcześniejsze P0/M1/M2/DOCX/package/GUI zachowane.
+Bloker EACCES usunięty administracyjnie; integrator potwierdził20/20hashy,
+HEAD/status/diff przed i po odczycie. 19/19 końcowych zmienionych źródeł zgodnych
+z code_head. Oba generaty odtworzone na scalonych danych, default DOCX zachowany.
+
+G1: jawna materializacja istniejącego bloba → Source/Unit → Segmenter/genesis →
+odrębne wystąpienia, odczyt oryginału/zakresu oraz istniejący unified context.
+UTF-8/TXT/Markdown/kod jako tekst, częściowy wynik z pochodzeniem; bez AST,
+pełnych rozdziałów/tabel i adapterów współrzędnych PDF/OCR/DOCX.
+Efektywny język G1 rozstrzygnięty bez zmiany historycznej tożsamości segmentera.
+Cache projekcji to receipt idempotencji, nie dowód integralności/naprawy grafu.
+
+Własny build-j2 PASS; native G1 **11/11**, regresje fragmentów14/genezy7/
+flow8/unified14 PASS (CTest5/5,54przypadki). HTTP G1 **3/3**, dialog2/tekst3
+PASS (CTest3/3,8przypadków); ABI **3/3**. Oryginały, wersje, reopen, powtórzenia,
+wybrana treść w faktycznym żądaniu syntetycznego providera, sesje/CSRF/izolacja
+sprawdzone. Nie ma rzeczywistego modelu ani pełnej bramki repo.
+
+Osobny commit PNG: importtruth/legacyJSON **9/9**, rzeczywiste GUI **2/2**.
+Komunikat to „Pliki źródłowe: 1”, tytuł `[Import] synthetic-pl.png`, bez
+fałszywego ostrzeżenia JSON/ZIP. Historyczny patch4b2852db jest **już nałożony**,
+nie stosować ponownie. Użyto zachowanego własnego webdist; nie powtarzano
+package5/GUI7/component4 ani całych wcześniejszych backendowych bramek.
+
+Implemented/tested: powyższy backend i PNG GUI. **GUI G1/upload→materializacja/
+selection→context nadal next**; bez claimu całego przepływu. Szersze wymagania
+grafu i control→binding→setting otwarte. §0rewizja2; globalna hierarchia/jeden
+wyłącznik logów nieudowodnione. Deployed **NIE**; fizyczny mobile, live model,
+Release/sanitizer/pełny repo gate i rollback niewykonane. Role labels/raw503
+oraz pozostała polonizacja nadal otwarte. DOCX wymaga systemowego Pythona.
+[Raport z SHA, poleceniami, dowodami i ograniczeniami](reports/G1_IMPORT_PRESENTATION_INTEGRATION_2026-10-31.md).
+Następny cykl tylko przez administratora, bez push/CI/deploy.
+
 ## 2026-10-31 — odbiór G1 odłożony: EACCES w worktree autora
 
 Zachowana przyjęta baza produktu **`3319312f22e1d7920a051a2496337fb6ee5e9554`**,
