@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=ChatADHD contract probe
+Name[pl]=Próba kontraktu ChatADHD
+Exec=/usr/bin/true %u
+Terminal=false
+NoDisplay=true
+MimeType=x-scheme-handler/loom-probe;
