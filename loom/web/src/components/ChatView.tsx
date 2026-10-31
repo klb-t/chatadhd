@@ -33,6 +33,7 @@ import ContextPlanEditor from "./ContextPlanEditor";
 import { buildRetrievalPlan } from "../context/retrieval-plan";
 import { shouldSubmit, type ApplicationProfile } from "../profiles/runtime";
 import ImportedMessageContent from "./ImportedMessageContent";
+import AttachmentOriginal from "./AttachmentOriginal";
 import ArtifactFrame from "../shell/artifacts/ArtifactFrame";
 import { OPEN_ARTIFACT_EVENT, fileNameOf, formatById, pickArtifact, splitArtifacts } from "../shell/artifacts/artifacts";
 import { downloadText } from "../shell/artifacts/ArtifactFrame";
@@ -1401,7 +1402,8 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
                 if (chips.length === 0) return null;
                 return <p className="composer-chips" data-testid="message-attachments" data-count={chips.length}>
                   {chips.map((chip, i) => { const state = chipStateText(chip, t); return <span key={i} className="composer-chip" data-testid="message-attachment" data-state={chip.state}>
-                    <span className="chip-name">{chip.name}</span>{state && <span className="chip-state" data-testid="message-attachment-state"> · {state}</span>}</span>; })}</p>;
+                    <span className="chip-name">{chip.name}</span>{state && <span className="chip-state" data-testid="message-attachment-state"> · {state}</span>}
+                    <AttachmentOriginal reference={(Array.isArray(m.attachments) ? m.attachments.filter((r): r is string => typeof r === "string") : [])[i]} name={chip.name} /></span>; })}</p>;
               })()}
               {m.role === "assistant" && (() => {
                 const notices = attachmentNoticeMessages(m.metadata);

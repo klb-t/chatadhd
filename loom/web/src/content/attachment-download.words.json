@@ -1,0 +1,6 @@
+{
+  "download": {"pl": "Pobierz oryginał", "en": "Download original"},
+  "busy": {"pl": "Pobieranie…", "en": "Downloading…"},
+  "unavailable": {"pl": "Nie można pobrać oryginału tego załącznika.", "en": "This attachment's original could not be downloaded."},
+  "mismatch": {"pl": "Bajty załącznika nie zgadzają się z jego hashem. Nie zapisano pliku.", "en": "The attachment bytes do not match its hash. The file was not saved."}
+}
