@@ -1,0 +1,12 @@
+{
+  "schema": "loom.docx_basic.limits/1",
+  "max_input_bytes": 16777216,
+  "max_total_uncompressed_bytes": 67108864,
+  "max_entry_bytes": 16777216,
+  "max_entries": 2048,
+  "max_ratio": 1000,
+  "max_xml_depth": 128,
+  "max_xml_nodes": 250000,
+  "max_text_chars": 4000000,
+  "read_chunk_bytes": 65536
+}

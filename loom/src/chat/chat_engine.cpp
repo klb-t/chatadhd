@@ -44,6 +44,7 @@
 #include "reasoning_profile.h"
 #include "context_format.h"
 #include "document_text.h"
+#include "docx_basic/source.h"
 #include "profile_prefix.h"
 #include "loom/runtime_profile.h"
 #include "loom/scope_resolver.h"
@@ -1341,7 +1342,8 @@ Result<Json> ChatEngine::build_content_checked(std::string_view text, const std:
       if (!reader.is_null()) {
         auto document = chat::read_document_text(p, reader);
         if (!document) {
-          const std::string key = recipe.contains(document.error().message) ? document.error().message : "document_invalid";
+          const std::string fallback = json::get_string(reader, "adapter") == "docx_basic" ? "docx_reader_failed" : "document_invalid";
+          const std::string key = recipe.contains(document.error().message) ? document.error().message : fallback;
           const std::string message = attachment_words(recipe.at(key), lang, {{"file", name}});
           if (on_unreadable != "send_with_warning") return Error(document.error().code, message);
           parts.push_back(Json{{"type", "text"}, {"text", message}});
@@ -1351,6 +1353,29 @@ Result<Json> ChatEngine::build_content_checked(std::string_view text, const std:
         extracted = std::move(document->text);
         Json note{{"file", name}, {"status", "read"}, {"reader", json::get_string(reader, "adapter")},
                   {"pages", document->pages}, {"pages_without_text", document->pages_without_text}};
+        if (!document->details.empty()) {
+          const auto& detail = document->details;
+          note["status"] = "partial";
+          note.erase("pages");
+          note.erase("pages_without_text");
+          note["partial"] = true;
+          note["warnings"] = detail.at("warnings");
+          note["source"] = detail.at("source");
+          note["extractor"] = detail.at("extractor");
+          LOOM_TRY_ASSIGN(auto source_id, chat::record_docx_source(db_, path_str, name, detail, reader));
+          if (!source_id.empty()) note["source_id"] = std::move(source_id);
+          std::string message;
+          for (const auto& warning : detail.at("warnings")) {
+            const std::string key = warning.get<std::string>();
+            const auto& words = recipe.at("docx_warnings");
+            const auto line = attachment_words(words.contains(key) ? words.at(key) : recipe.at("docx_partial"),
+                                               lang, {{"file", name}});
+            if (!message.empty()) message += '\n';
+            message += line;
+          }
+          note["message"] = message;
+          if (!message.empty()) parts.push_back(Json{{"type", "text"}, {"text", message}});
+        }
         if (!document->pages_without_text.empty()) {
           std::string pages;
           for (int page : document->pages_without_text) { if (!pages.empty()) pages += ", "; pages += std::to_string(page); }
@@ -2182,6 +2207,13 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
     Json atts = Json::array();
     for (const auto& a : opts.attachments) atts.push_back(a);
     nm.attachments = atts;
+  }
+  // The successful DOCX extraction's source survives even a later provider failure.
+  // Original bytes already live in the existing content-addressed upload store.
+  for (const auto& note : attachment_notes_sent) {
+    if (json::get_string(note, "reader") != "docx_basic") continue;
+    if (!nm.metadata.contains("attachment_notes")) nm.metadata["attachment_notes"] = Json::array();
+    nm.metadata["attachment_notes"].push_back(note);
   }
   auto umid = db_.create_msg(nm);
   if (!umid) return umid.error();

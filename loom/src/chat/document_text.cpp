@@ -1,4 +1,5 @@
 #include "document_text.h"
+#include "docx_basic/adapter.h"
 
 #include <memory>
 
@@ -54,6 +55,15 @@ struct Poppler {
 }  // namespace
 
 Result<DocumentText> read_document_text(const std::filesystem::path& path, const Json& reader) {
+  if (json::get_string(reader, "adapter") == "docx_basic") {
+    LOOM_TRY_ASSIGN(auto decoded, read_docx_basic(path, reader));
+    DocumentText document;
+    document.text = json::get_string(decoded, "text");
+    decoded.erase("text");
+    decoded.erase("blocks");  // reproducible locators stay in the parser result; do not duplicate body in notes
+    document.details = std::move(decoded);
+    return document;
+  }
   if (json::get_string(reader, "adapter") != "poppler_glib")
     return Error(Errc::Unavailable, "document_reader_unavailable");
 #if defined(__linux__) && !defined(__ANDROID__)

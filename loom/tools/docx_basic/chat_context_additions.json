@@ -1,0 +1,231 @@
+{
+  "reader": {
+    "extensions": [
+      ".docx"
+    ],
+    "adapter": "docx_basic",
+    "python": "/usr/bin/python3",
+    "script": "/usr/share/loom/docx_basic/reader.py",
+    "source_kind": "file",
+    "mime": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "timeout_ms": 10000,
+    "poll_ms": 50,
+    "max_output_bytes": 67108864,
+    "limits": {
+      "schema": "loom.docx_basic.limits/1",
+      "max_input_bytes": 16777216,
+      "max_total_uncompressed_bytes": 67108864,
+      "max_entry_bytes": 16777216,
+      "max_entries": 2048,
+      "max_ratio": 1000,
+      "max_xml_depth": 128,
+      "max_xml_nodes": 250000,
+      "max_text_chars": 4000000,
+      "read_chunk_bytes": 65536
+    }
+  },
+  "messages": {
+    "docx_reader_unavailable": {
+      "pl": "Brak lokalnego czytnika DOCX dla {file}. Treść nie została dołączona.",
+      "en": "No local DOCX reader is available for {file}. Its content was not included."
+    },
+    "docx_no_text": {
+      "pl": "DOCX {file} nie zawiera obsługiwanego tekstu. Obrazy nie zostały odczytane; treść nie została dołączona.",
+      "en": "DOCX {file} contains no supported text. Images were not read; its content was not included."
+    },
+    "docx_partial": {
+      "pl": "DOCX {file}: odczyt podstawowy; część elementów pominięto.",
+      "en": "DOCX {file}: basic text extraction; some elements were omitted."
+    },
+    "docx_encrypted": {
+      "pl": "DOCX {file} jest zaszyfrowany. Treść nie została dołączona.",
+      "en": "DOCX {file} is encrypted. Its content was not included."
+    },
+    "docx_encrypted_or_legacy": {
+      "pl": "Plik {file} ma kontener zaszyfrowanego Office lub starego DOC. Ten czytnik go nie obsługuje; treść nie została dołączona.",
+      "en": "File {file} uses an encrypted Office or legacy DOC container. This reader does not support it; its content was not included."
+    },
+    "docx_macros_unsupported": {
+      "pl": "Plik {file} zawiera format makr/DOCM, którego czytnik DOCX nie obsługuje. Treść nie została dołączona.",
+      "en": "File {file} contains a macro/DOCM format unsupported by this DOCX reader. Its content was not included."
+    },
+    "docx_reader_timeout": {
+      "pl": "Przekroczono ustawiony czas odczytu DOCX {file}. Treść nie została dołączona.",
+      "en": "The configured DOCX reading time was exceeded for {file}. Its content was not included."
+    },
+    "docx_configuration_invalid": {
+      "pl": "Ustawienia czytnika DOCX są nieprawidłowe. Treść {file} nie została dołączona.",
+      "en": "The DOCX reader settings are invalid. The content of {file} was not included."
+    },
+    "docx_invalid_container": {
+      "pl": "Nie można odczytać DOCX {file}: kontener, struktura lub wymagane funkcje nie są obsługiwane albo plik jest uszkodzony. Treść nie została dołączona.",
+      "en": "Cannot read DOCX {file}: the container, structure or required features are unsupported, or the file is damaged. Its content was not included."
+    },
+    "docx_invalid_package": {
+      "pl": "Nie można odczytać DOCX {file}: kontener, struktura lub wymagane funkcje nie są obsługiwane albo plik jest uszkodzony. Treść nie została dołączona.",
+      "en": "Cannot read DOCX {file}: the container, structure or required features are unsupported, or the file is damaged. Its content was not included."
+    },
+    "docx_invalid_xml": {
+      "pl": "Nie można odczytać DOCX {file}: kontener, struktura lub wymagane funkcje nie są obsługiwane albo plik jest uszkodzony. Treść nie została dołączona.",
+      "en": "Cannot read DOCX {file}: the container, structure or required features are unsupported, or the file is damaged. Its content was not included."
+    },
+    "docx_invalid_structure": {
+      "pl": "Nie można odczytać DOCX {file}: kontener, struktura lub wymagane funkcje nie są obsługiwane albo plik jest uszkodzony. Treść nie została dołączona.",
+      "en": "Cannot read DOCX {file}: the container, structure or required features are unsupported, or the file is damaged. Its content was not included."
+    },
+    "docx_invalid_relationships": {
+      "pl": "Nie można odczytać DOCX {file}: kontener, struktura lub wymagane funkcje nie są obsługiwane albo plik jest uszkodzony. Treść nie została dołączona.",
+      "en": "Cannot read DOCX {file}: the container, structure or required features are unsupported, or the file is damaged. Its content was not included."
+    },
+    "docx_missing_part": {
+      "pl": "Nie można odczytać DOCX {file}: kontener, struktura lub wymagane funkcje nie są obsługiwane albo plik jest uszkodzony. Treść nie została dołączona.",
+      "en": "Cannot read DOCX {file}: the container, structure or required features are unsupported, or the file is damaged. Its content was not included."
+    },
+    "docx_reader_failed": {
+      "pl": "Nie można odczytać DOCX {file}: kontener, struktura lub wymagane funkcje nie są obsługiwane albo plik jest uszkodzony. Treść nie została dołączona.",
+      "en": "Cannot read DOCX {file}: the container, structure or required features are unsupported, or the file is damaged. Its content was not included."
+    },
+    "docx_input_unavailable": {
+      "pl": "Nie można odczytać DOCX {file}: kontener, struktura lub wymagane funkcje nie są obsługiwane albo plik jest uszkodzony. Treść nie została dołączona.",
+      "en": "Cannot read DOCX {file}: the container, structure or required features are unsupported, or the file is damaged. Its content was not included."
+    },
+    "docx_duplicate_or_unsafe_part": {
+      "pl": "Nie można odczytać DOCX {file}: kontener, struktura lub wymagane funkcje nie są obsługiwane albo plik jest uszkodzony. Treść nie została dołączona.",
+      "en": "Cannot read DOCX {file}: the container, structure or required features are unsupported, or the file is damaged. Its content was not included."
+    },
+    "docx_unsafe_path": {
+      "pl": "Nie można odczytać DOCX {file}: kontener, struktura lub wymagane funkcje nie są obsługiwane albo plik jest uszkodzony. Treść nie została dołączona.",
+      "en": "Cannot read DOCX {file}: the container, structure or required features are unsupported, or the file is damaged. Its content was not included."
+    },
+    "docx_unsafe_xml": {
+      "pl": "Nie można odczytać DOCX {file}: kontener, struktura lub wymagane funkcje nie są obsługiwane albo plik jest uszkodzony. Treść nie została dołączona.",
+      "en": "Cannot read DOCX {file}: the container, structure or required features are unsupported, or the file is damaged. Its content was not included."
+    },
+    "docx_unsafe_relationship": {
+      "pl": "Nie można odczytać DOCX {file}: kontener, struktura lub wymagane funkcje nie są obsługiwane albo plik jest uszkodzony. Treść nie została dołączona.",
+      "en": "Cannot read DOCX {file}: the container, structure or required features are unsupported, or the file is damaged. Its content was not included."
+    },
+    "docx_zip64_unsupported": {
+      "pl": "Nie można odczytać DOCX {file}: kontener, struktura lub wymagane funkcje nie są obsługiwane albo plik jest uszkodzony. Treść nie została dołączona.",
+      "en": "Cannot read DOCX {file}: the container, structure or required features are unsupported, or the file is damaged. Its content was not included."
+    },
+    "docx_compression_unsupported": {
+      "pl": "Nie można odczytać DOCX {file}: kontener, struktura lub wymagane funkcje nie są obsługiwane albo plik jest uszkodzony. Treść nie została dołączona.",
+      "en": "Cannot read DOCX {file}: the container, structure or required features are unsupported, or the file is damaged. Its content was not included."
+    },
+    "docx_not_supported_document": {
+      "pl": "Nie można odczytać DOCX {file}: kontener, struktura lub wymagane funkcje nie są obsługiwane albo plik jest uszkodzony. Treść nie została dołączona.",
+      "en": "Cannot read DOCX {file}: the container, structure or required features are unsupported, or the file is damaged. Its content was not included."
+    },
+    "docx_source_mismatch": {
+      "pl": "Nie można odczytać DOCX {file}: kontener, struktura lub wymagane funkcje nie są obsługiwane albo plik jest uszkodzony. Treść nie została dołączona.",
+      "en": "Cannot read DOCX {file}: the container, structure or required features are unsupported, or the file is damaged. Its content was not included."
+    },
+    "docx_limit_max_input_bytes": {
+      "pl": "DOCX {file} przekracza skonfigurowany limit odczytu. Treść nie została dołączona.",
+      "en": "DOCX {file} exceeds a configured extraction limit. Its content was not included."
+    },
+    "docx_limit_max_total_uncompressed_bytes": {
+      "pl": "DOCX {file} przekracza skonfigurowany limit odczytu. Treść nie została dołączona.",
+      "en": "DOCX {file} exceeds a configured extraction limit. Its content was not included."
+    },
+    "docx_limit_max_entry_bytes": {
+      "pl": "DOCX {file} przekracza skonfigurowany limit odczytu. Treść nie została dołączona.",
+      "en": "DOCX {file} exceeds a configured extraction limit. Its content was not included."
+    },
+    "docx_limit_max_entries": {
+      "pl": "DOCX {file} przekracza skonfigurowany limit odczytu. Treść nie została dołączona.",
+      "en": "DOCX {file} exceeds a configured extraction limit. Its content was not included."
+    },
+    "docx_limit_max_ratio": {
+      "pl": "DOCX {file} przekracza skonfigurowany limit odczytu. Treść nie została dołączona.",
+      "en": "DOCX {file} exceeds a configured extraction limit. Its content was not included."
+    },
+    "docx_limit_max_xml_depth": {
+      "pl": "DOCX {file} przekracza skonfigurowany limit odczytu. Treść nie została dołączona.",
+      "en": "DOCX {file} exceeds a configured extraction limit. Its content was not included."
+    },
+    "docx_limit_max_xml_nodes": {
+      "pl": "DOCX {file} przekracza skonfigurowany limit odczytu. Treść nie została dołączona.",
+      "en": "DOCX {file} exceeds a configured extraction limit. Its content was not included."
+    },
+    "docx_limit_max_text_chars": {
+      "pl": "DOCX {file} przekracza skonfigurowany limit odczytu. Treść nie została dołączona.",
+      "en": "DOCX {file} exceeds a configured extraction limit. Its content was not included."
+    },
+    "docx_limit_output_bytes": {
+      "pl": "DOCX {file} przekracza skonfigurowany limit odczytu. Treść nie została dołączona.",
+      "en": "DOCX {file} exceeds a configured extraction limit. Its content was not included."
+    }
+  },
+  "warnings": {
+    "docx_formatting_and_pagination_omitted": {
+      "pl": "DOCX {file}: odczytano tekst; nie odtworzono pełnego formatowania ani układu stron.",
+      "en": "DOCX {file}: text extracted; full formatting and page layout were not reconstructed."
+    },
+    "docx_list_labels_not_reconstructed": {
+      "pl": "Etykiety i numerację list zastąpiono prostymi punktami.",
+      "en": "List labels and numbering were replaced with simple bullets."
+    },
+    "docx_images_omitted": {
+      "pl": "Pominięto obrazy i ich tekst; nie wykonano OCR.",
+      "en": "Images and their text were omitted; no OCR was performed."
+    },
+    "docx_objects_omitted": {
+      "pl": "Pominięto osadzone obiekty.",
+      "en": "Embedded objects were omitted."
+    },
+    "docx_tracked_changes_omitted": {
+      "pl": "Pominięto treść objętą śledzonymi zmianami; nie ustalono zaakceptowanej wersji.",
+      "en": "Tracked change content was omitted; an accepted revision was not inferred."
+    },
+    "docx_fields_omitted": {
+      "pl": "Pominięto pola, ich zapisane wyniki oraz fragmenty złożonych pól.",
+      "en": "Fields, their cached results and complex field spans were omitted."
+    },
+    "docx_embedded_content_omitted": {
+      "pl": "Pominięto dołączoną treść zewnętrzną.",
+      "en": "Included external content was omitted."
+    },
+    "docx_notes_omitted": {
+      "pl": "Pominięto przypisy.",
+      "en": "Footnotes and endnotes were omitted."
+    },
+    "docx_comments_omitted": {
+      "pl": "Pominięto komentarze.",
+      "en": "Comments were omitted."
+    },
+    "docx_equations_omitted": {
+      "pl": "Pominięto równania.",
+      "en": "Equations were omitted."
+    },
+    "docx_headers_footers_omitted": {
+      "pl": "Pominięto nagłówki i stopki stron.",
+      "en": "Page headers and footers were omitted."
+    },
+    "docx_symbols_omitted": {
+      "pl": "Pominięto symbole zależne od czcionki.",
+      "en": "Font dependent symbols were omitted."
+    },
+    "docx_unsupported_markup_omitted": {
+      "pl": "Pominięto nieobsługiwane znaczniki dokumentu.",
+      "en": "Unsupported document markup was omitted."
+    },
+    "docx_table_layout_omitted": {
+      "pl": "Nie odtworzono układu i scaleń komórek tabeli.",
+      "en": "Table layout and merged cells were not reconstructed."
+    },
+    "docx_complex_tables_omitted": {
+      "pl": "Pominięto zagnieżdżone lub złożone elementy tabel.",
+      "en": "Nested or complex table elements were omitted."
+    },
+    "docx_auxiliary_parts_omitted": {
+      "pl": "Treść części pomocniczych dokumentu nie została dołączona.",
+      "en": "The content of auxiliary document parts was not included."
+    },
+    "docx_external_relationships_ignored": {
+      "pl": "Nie otwierano ani nie pobierano zewnętrznych odwołań.",
+      "en": "External references were not opened or fetched."
+    }
+  }
+}

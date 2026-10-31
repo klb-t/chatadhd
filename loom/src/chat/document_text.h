@@ -13,6 +13,7 @@ struct DocumentText {
   std::string text;
   int pages = 0;
   std::vector<int> pages_without_text;  // one-based source page numbers
+  Json details = Json::object();  // optional local extraction/source/warnings; no inferred pages
 };
 
 // Local derived text only. The source document is never changed or uploaded by the reader.
