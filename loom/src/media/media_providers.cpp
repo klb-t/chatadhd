@@ -101,6 +101,12 @@ Json AsrResult::to_json() const {
 }
 
 Json OcrResult::to_json() const {
+  if (!representation.is_null()) {
+    Json out = representation;
+    out["language"] = language ? Json(*language) : Json(nullptr);
+    out["confidence"] = nullptr; // no calibrated OCR confidence available
+    return out;
+  }
   return Json{{"text", text}, {"confidence", confidence}, {"lines", lines}, {"language", language ? Json(*language) : Json(nullptr)}};
 }
 

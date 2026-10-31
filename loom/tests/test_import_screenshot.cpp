@@ -97,6 +97,10 @@ struct ScreenshotFixture {
   ScreenshotFixture(std::string_view format, std::string_view expected_base64)
       : transport(format, expected_base64), media(secrets, transport),
         importer(*db, bus, &blobs, &provenance, &media) {
+    LOOM_REQUIRE_OK(fsutil::ensure_dir(temporary.path() / "profiles"));
+    LOOM_REQUIRE_OK(fsutil::write_file(temporary.path() / "profiles/image_input.pack",
+        Json{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", "image_input"},
+             {"overrides", {{"interpretation", "conversation"}}}}.dump()));
     secrets.set("ocr_space_api_key", "offline-test-key");
     media.refresh();
   }

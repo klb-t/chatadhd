@@ -116,6 +116,7 @@ class OpenAiChatDecoder final : public StreamDecoder {
 class OpenAiChatAdapter final : public Adapter {
  public:
   std::string_view family() const noexcept override { return "openai_chat"; }
+  bool accepts_message_images() const noexcept override { return true; }
 
   std::string default_endpoint(Operation op, const Json& metadata) const override {
     if (op == Operation::ListModels) return json::get_string(metadata, "models_path", "/models");

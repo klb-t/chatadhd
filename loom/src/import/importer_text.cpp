@@ -333,7 +333,7 @@ Json ConversationImporter::parse_chat_text(std::string_view text) {
   return messages;
 }
 
-Result<std::vector<Conversation>> ConversationImporter::screenshot_body(const fs::path& path,
+Result<std::vector<Conversation>> ConversationImporter::legacy_screenshot_body(const fs::path& path,
                                                                         const ImportOptions& opts) {
   if (!media_) {
     return Error(Errc::Unavailable, "No OCR provider configured (MediaProviders unavailable)");

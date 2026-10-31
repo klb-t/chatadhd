@@ -2,6 +2,7 @@
 #include "loom/phase_timing.h"
 #include "loom/chat_engine.h"
 #include "secret_filter.h"
+#include "chat/image_input.h"
 
 #include <algorithm>
 #include <cctype>
@@ -1187,6 +1188,9 @@ void ChatEngine::set_knowledge_context_builder(KnowledgeContextBuilder builder) 
 }
 
 void ChatEngine::set_attachment_resolver(AttachmentResolver resolver) { attachment_resolver_ = std::move(resolver); }
+void ChatEngine::set_image_content_builder(ImageContentBuilder builder, ImageContentCommitter committer) {
+  image_content_builder_ = std::move(builder); image_content_committer_ = std::move(committer);
+}
 
 Status ChatEngine::resume_last() {
   // R101 D4: a conversation in the trash (metadata.trash) does not become the current one, unless the setting conversations_hide_trashed is
@@ -1278,7 +1282,7 @@ Json ChatEngine::build_content(std::string_view text, const std::vector<std::str
   return built ? *built : Json(std::string(text));
 }
 
-Result<Json> ChatEngine::build_content_checked(std::string_view text, const std::vector<std::string>& attachments, Json* notes) const {
+Result<Json> ChatEngine::build_content_checked(std::string_view text, const std::vector<std::string>& attachments, Json* notes, std::optional<std::string_view> image_prompt, chat::PreparedImages* images) const {
   if (notes) *notes = Json::array();
   if (attachments.empty()) return Json(std::string(text));
 
@@ -1315,6 +1319,13 @@ Result<Json> ChatEngine::build_content_checked(std::string_view text, const std:
     std::string ext = lower_ext(shown);
     const std::string name = shown.filename().string();
     if (contains(image_exts(), ext)) {
+      if (image_content_builder_) {
+        LOOM_TRY_ASSIGN(auto image, image_content_builder_(p, shown, image_prompt.value_or(text)));
+        for (const auto& part : image.parts) parts.push_back(part);
+        if (notes) notes->push_back(image.note);
+        if (images) images->push_back(std::move(image));
+        continue;
+      }
       auto data = fsutil::read_file(p);
       if (!data) {
         log::error("loom.chat_engine", "Failed to encode image: {}", path_str);
@@ -1378,7 +1389,7 @@ Result<Json> ChatEngine::build_content_checked(std::string_view text, const std:
 
 Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_view current_text,
                                         const std::vector<std::string>& attachments, const ChatOptions& opts,
-                                        std::string_view exclude_message_id, Json* context_trace) {
+                                        std::string_view exclude_message_id, Json* context_trace, chat::PreparedImages* images) {
   const bool capture_native_history = context_trace && context_trace->is_object() &&
       context_trace->value("_capture_native_history", Json()) == true;
   std::unique_lock<std::recursive_mutex> source_lock;
@@ -1654,7 +1665,7 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
   }
 
   // The conversation: rows are collected first, so that the profile's window and budget can cut the oldest before the parts are filled.
-  struct HistRow { std::string id, role; Json content; std::string level; std::vector<std::string> attachments; };
+  struct HistRow { std::string id, role; Json content; std::string level; std::vector<std::string> attachments; chat::PreparedImages images; };
   std::vector<HistRow> hist;
   std::map<std::string, std::vector<std::string>> hist_dropped;  // reason -> message ids (the receipt)
   const bool history_on = opts.include_history && choice.source_on("history");
@@ -1713,7 +1724,7 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
       std::vector<std::string> refs;
       if (m.attachments.is_array())
         for (const auto& ref : m.attachments) if (ref.is_string()) refs.push_back(ref.get<std::string>());
-      hist.push_back({m.id, m.role, Json(std::move(content)), std::move(level_name), std::move(refs)});
+      hist.push_back({m.id, m.role, Json(std::move(content)), std::move(level_name), std::move(refs), {}});
     }
   }
   // The profile's window (the last N messages; a modifier "szerzej" widens it) and its own budget.
@@ -1725,8 +1736,8 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
   Json budget_info = nullptr;
   // Apply the selected history window before reading files. Excluded turns do
   // not require their documents to be readable and cannot add them to context.
-  if (!flow || flow->turns) for (auto& h : hist) if (!h.attachments.empty()) {
-    LOOM_TRY_ASSIGN(auto with_files, build_content_checked(h.content.get<std::string>(), h.attachments, nullptr));
+  if (order_has("history") && (!flow || flow->turns)) for (auto& h : hist) if (!h.attachments.empty()) {
+    LOOM_TRY_ASSIGN(auto with_files, build_content_checked(h.content.get<std::string>(), h.attachments, nullptr, current_text, &h.images));
     h.content = std::move(with_files);
   }
   if (const Json b = choice.chosen ? choice.row.value("budget_tokens", Json()) : Json(); b.is_number_integer() && b.get<long long>() > 0) {
@@ -1757,6 +1768,9 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
     rc.drop("history", reason, ids, ids.size());
   }
   for (const auto& h : hist) {
+    // Only surviving rows actually emitted to the request authorize OCR context.
+    if (images && order_has("history") && (!flow || flow->turns))
+      images->insert(images->end(), h.images.begin(), h.images.end());
     if (!flow || flow->turns) part_history.push_back(Json{{"role", h.role}, {"content", h.content}});
     history_ids.push_back(h.id);
     if (want_receipt)
@@ -1802,7 +1816,7 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
     tail_items["reply_instruction"] = chat::formats::receipt_item("graph_reply_instruction", "graph reply", "instruction", "asks for the answer as a graph (flow " + flow->flow + ")", reply_text);
   }
   Json attachment_notes = Json::array();
-  LOOM_TRY_ASSIGN(auto user_content, build_content_checked(current_text, attachments, &attachment_notes));
+  LOOM_TRY_ASSIGN(auto user_content, build_content_checked(current_text, attachments, &attachment_notes, {}, images));
   messages.push_back(Json{{"role", "user"}, {"content", std::move(user_content)}});
   tail_items["question"] = chat::formats::receipt_item("question", "the question", "question", "what the person wrote in this turn", current_text);
   if (context_trace) {
@@ -1898,7 +1912,7 @@ std::optional<std::string> ChatEngine::last_reasoning() const {
   return last_reasoning_;
 }
 
-Result<std::optional<Json>> ChatEngine::secret_gate(std::string_view text, const ChatOptions& opts) const {
+Result<std::optional<Json>> ChatEngine::secret_gate(std::string_view text, const ChatOptions& opts) {
   LOOM_TRY_ASSIGN(auto recipe, RuntimeProfile::load("chat_secrets", cfg_.path().parent_path()));
   const Json mode_value = cfg_.get("secrets_in_chat", Json("ask"));
   const std::string mode = mode_value.is_string() ? mode_value.get<std::string>() : std::string("ask");
@@ -1926,8 +1940,31 @@ Result<std::optional<Json>> ChatEngine::secret_gate(std::string_view text, const
   for (const auto& key : secrets_.keys()) store_values[key] = secrets_.get(key, Json(nullptr));
   const bool confirmed = opts.secret_confirmation && json::get_bool(*opts.secret_confirmation, "approved", false);
   LOOM_TRY_ASSIGN(Json pending, chat::secrets::gate(recipe.values(), mode, sources, store_values, confirmed));
-  if (pending.is_null()) return std::optional<Json>();
-  return std::optional<Json>(std::move(pending));
+  if (!pending.is_null()) return std::optional<Json>(std::move(pending));
+  if (image_content_builder_) {
+    std::string conv;
+    { std::lock_guard lk(mu_); conv = opts.conv_id ? *opts.conv_id :
+        (conv_ && !opts.new_conversation ? conv_->id : std::string()); }
+    bool has_images = false;
+    const auto inspect = [&](const auto& refs) {
+      for (const auto& ref : refs) if (contains(image_exts(), lower_ext(std::filesystem::path(ref)))) has_images = true;
+    };
+    inspect(opts.attachments);
+    if (!conv.empty() && opts.include_history) {
+      LOOM_TRY_ASSIGN(auto rows, db_.get_msgs(conv));
+      for (const auto& row : rows) if (row.attachments.is_array())
+        for (const auto& ref : row.attachments) if (ref.is_string()) inspect(std::vector<std::string>{ref.get<std::string>()});
+    }
+    if (has_images) {
+      const auto selected = select_representation(with_carried_turn(opts, turn_carrier_.peek(conv)), conv);
+      chat::PreparedImages images;
+      LOOM_TRY_ASSIGN(auto messages, build_messages(conv, text, selected.attachments, selected, "", nullptr, &images));
+      LOOM_TRY_ASSIGN(auto held, chat::image_secret_gate(recipe.values(), mode, store_values,
+          opts.secret_confirmation.value_or(Json::object()), Json(text), images));
+      if (!held.is_null()) return std::optional<Json>(std::move(held));
+    }
+  }
+  return std::optional<Json>();
 }
 
 Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& opts_in, const ChatCallbacks& cb,
@@ -1937,7 +1974,7 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
   LOOM_TRY(check_attachments(opts_in.attachments));
   // The same for a file that exists but cannot be read (refused with its name unless the setting says send_with_warning), and what was cut.
   Json attachment_notes_sent = Json::array();
-  if (!opts_in.attachments.empty()) { LOOM_TRY_ASSIGN(auto probe, build_content_checked("", opts_in.attachments, &attachment_notes_sent)); (void)probe; }
+  if (!opts_in.attachments.empty()) { LOOM_TRY_ASSIGN(auto probe, build_content_checked(text, opts_in.attachments, &attachment_notes_sent)); (void)probe; }
   // R67: a message that carries a secret is held or refused before anything is stored, routed or sent (the capi checks first, so the routing
   // model does not read it either; this is the same check for the callers that reach send() directly).
   {
@@ -2040,6 +2077,17 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
   };
   Json context_trace;
   Json task_messages;
+  chat::PreparedImages prepared_images;
+  const auto prepared_secret_gate = [&]() -> Result<std::optional<Json>> {
+    if (prepared_images.empty()) return std::optional<Json>();
+    LOOM_TRY_ASSIGN(auto recipe, RuntimeProfile::load("chat_secrets", cfg_.path().parent_path()));
+    Json store_values = Json::object();
+    for (const auto& key : secrets_.keys()) store_values[key] = secrets_.get(key, Json(nullptr));
+    const Json mode = cfg_.get("secrets_in_chat", Json("ask"));
+    LOOM_TRY_ASSIGN(auto held, chat::image_secret_gate(recipe.values(), mode.is_string() ? mode.get<std::string>() : "ask",
+        store_values, opts.secret_confirmation.value_or(Json::object()), Json(text), prepared_images));
+    return held.is_null() ? std::optional<Json>() : std::optional<Json>(std::move(held));
+  };
   Json accepted_active_task;
   struct InFlightTaskGuard {
     Database& db;
@@ -2069,8 +2117,10 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
     // graph/knowledge/file context is frozen derived content, not a promise
     // that independent stores or external files remain globally current.
     context_trace = Json{{"_capture_native_history", true}};
-    auto built = build_messages(conv.id, text, opts.attachments, opts, "", &context_trace);
+    auto built = build_messages(conv.id, text, opts.attachments, opts, "", &context_trace, &prepared_images);
     if (!built) return built.error();
+    { LOOM_TRY_ASSIGN(auto held, prepared_secret_gate());
+      if (held) { ChatResult paused; paused.secret_pending = *held; return paused; } }
     auto captured = context_trace.find("_native_history_snapshot");
     if (captured == context_trace.end() || !captured->is_array())
       return Error(Errc::Internal, "active_task: actual native history was not captured");
@@ -2213,8 +2263,11 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
   // 3. Build the message array (history excludes the message just persisted).
   auto msgs_json = opts.active_task_spec ? Result<Json>(std::move(task_messages)) :
       build_messages(conv.id, text, opts.attachments, opts, user_mid,
-                     record_context ? &context_trace : nullptr);
+                     record_context ? &context_trace : nullptr, &prepared_images);
   if (!msgs_json) return msgs_json.error();
+  // Recheck exact snapshots before routing the answer or retaining its OCR trace.
+  { LOOM_TRY_ASSIGN(auto held, prepared_secret_gate());
+    if (held) { ChatResult paused; paused.secret_pending = *held; return paused; } }
   LOOM_TRY(retain_request_metadata());
 
   pt.mark("build_messages");
@@ -2361,6 +2414,12 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
   pt.mark("route_payload_prepare");
   llm::VariantResult sent = llm::execute_call(services, mreq, *call);
   pt.mark("execute_call");
+  // Commit only admitted, dispatched snapshots. Previews, secret holds and
+  // adapter/usage rejections never create an image representation or graph.
+  if (sent.sent && image_content_committer_) for (const auto& image : prepared_images) {
+    LOOM_TRY_ASSIGN(auto projection, image_content_committer_(image));
+    (void)projection;
+  }
   if (record_wire && sent.state != llm::State::Held && sent.state != llm::State::GateError) {
     std::lock_guard lk(mu_);
     if (auto it = last_provider_request_.find(conv.id); it != last_provider_request_.end()) it->second["dispatched"] = true;

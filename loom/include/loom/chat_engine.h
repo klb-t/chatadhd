@@ -62,6 +62,7 @@
 #include "loom/db.h"
 #include "loom/context_engine.h"
 #include "loom/result.h"
+#include "loom/image_preparation.h"
 #include "loom/turn_carrier.h"
 #include "loom/util/cancel.h"
 #include "loom/util/json.h"
@@ -215,6 +216,9 @@ class ChatEngine {
   // gives the stored file of a hash; the name after the slash decides how the file is read (image, text). Set once, before the first send.
   using AttachmentResolver = std::function<std::optional<std::filesystem::path>(const std::string& hash)>;
   void set_attachment_resolver(AttachmentResolver resolver);
+  using ImageContentBuilder = std::function<Result<chat::PreparedImage>(const std::filesystem::path&, const std::filesystem::path&, std::string_view)>;
+  using ImageContentCommitter = std::function<Result<Json>(const chat::PreparedImage&)>;
+  void set_image_content_builder(ImageContentBuilder builder, ImageContentCommitter committer);
   // What would keep an attachment from the model, checked before anything is stored or sent: a blob the store does not have or a path
   // that does not exist (NotFound), a kind of file that is not read (Unsupported: images and plain-text files are). The message ends
   // with the attachment exactly as given, so a client can say which one. send() and preview_usage() refuse with it.
@@ -223,11 +227,11 @@ class ChatEngine {
   // Exposed for tests and for wave-3 tooling (prompt inspection).
   Result<Json> build_messages(std::string_view conv_id, std::string_view current_text,
                               const std::vector<std::string>& attachments, const ChatOptions& opts = {},
-                              std::string_view exclude_message_id = "", Json* context_trace = nullptr);
+                              std::string_view exclude_message_id = "", Json* context_trace = nullptr, chat::PreparedImages* images = nullptr);
   Json build_content(std::string_view text, const std::vector<std::string>& attachments) const;
   // The real builder: an existing file that cannot be read is an error (preset chat_attachment_on_unreadable = refuse) or a visible warning;
   // a text file over chat_attachment_max_chars is cut with a marker. `notes` (optional) receives [{file, status: cut|unreadable, original_chars, kept_chars}].
-  Result<Json> build_content_checked(std::string_view text, const std::vector<std::string>& attachments, Json* notes) const;
+  Result<Json> build_content_checked(std::string_view text, const std::vector<std::string>& attachments, Json* notes, std::optional<std::string_view> image_prompt = {}, chat::PreparedImages* images = nullptr) const;
   static void configure_reasoning(Json& payload, std::string_view model, const std::optional<std::string>& effort);
 
   std::optional<std::string> last_reasoning() const;
@@ -264,7 +268,7 @@ class ChatEngine {
   // read only. {resource, bytes, baseline, ratio, growth_factor, asked, status, baseline_key, baseline_samples, decision} - `asked` is true when the
   // guard would ask the person (a jump of ten times or more over the baseline, or a spending limit); unknown numbers are null with a reason.
   // R67: the check of an outgoing message (text and attached text files) for secrets, before anything is stored, routed or sent. nullopt: it may go on.
-  Result<std::optional<Json>> secret_gate(std::string_view text, const ChatOptions& opts = {}) const;
+  Result<std::optional<Json>> secret_gate(std::string_view text, const ChatOptions& opts = {});
   Result<Json> context_guard(std::string_view conv_id, std::string_view text, const ChatOptions& opts = {}, const Json& extra_turn = Json::object());
 
  private:
@@ -278,6 +282,8 @@ class ChatEngine {
   GraphMemorySelector* graph_memory_;
   KnowledgeContextBuilder knowledge_context_builder_;
   AttachmentResolver attachment_resolver_;
+  ImageContentBuilder image_content_builder_;
+  ImageContentCommitter image_content_committer_;
   TurnCarrier turn_carrier_;
   // The stored file of an attachment and the name that decides its kind; nullopt when there is none.
   std::optional<std::pair<std::filesystem::path, std::filesystem::path>> locate_attachment(const std::string& ref) const;

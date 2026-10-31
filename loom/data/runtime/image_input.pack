@@ -1,0 +1,347 @@
+{
+  "schema": "loom.runtime_profile/1",
+  "domain": "image_input",
+  "revision": 1,
+  "description": "Local image OCR and goal routing preset. Never dispatches a remote request; chat admission remains authoritative.",
+  "defaults": {
+    "local": {
+      "name": "local_tesseract",
+      "python": "python3",
+      "executable": "tesseract",
+      "language": "pol",
+      "language_map": {
+        "pl": "pol",
+        "en": "eng"
+      },
+      "psm": 6,
+      "oem": 1,
+      "threads": 1,
+      "timeout_seconds": 30
+    },
+    "routes": {
+      "no_prompt": [
+        "local_ocr",
+        "vision"
+      ],
+      "text": [
+        "local_ocr"
+      ],
+      "image": [
+        "local_ocr",
+        "vision"
+      ],
+      "default": [
+        "local_ocr",
+        "vision"
+      ]
+    },
+    "goal_cues": {
+      "text": [
+        "odczytaj",
+        "przepisz",
+        "jaki jest numer",
+        "jaka kwota",
+        "read the text",
+        "transcribe"
+      ],
+      "image": [
+        "kolor",
+        "wygląda",
+        "na obraz",
+        "na zdję",
+        "color",
+        "describe the image"
+      ]
+    },
+    "document_role": "user",
+    "node_kinds": {
+      "source": "image_source",
+      "representation": "ocr_representation",
+      "region": "image_region"
+    },
+    "relations": {
+      "representation": "representation_of",
+      "region": "part_of"
+    },
+    "messages": {
+      "pl": {
+        "no_text": "Nie rozpoznano tekstu na obrazie.",
+        "unavailable": "Lokalny OCR jest niedostępny.",
+        "failed": "Lokalny OCR nie odczytał obrazu.",
+        "context_prefix": "Tekst rozpoznany lokalnym OCR (może zawierać błędy):\n"
+      },
+      "en": {
+        "no_text": "No text was recognized in the image.",
+        "unavailable": "Local OCR is unavailable.",
+        "failed": "Local OCR could not read the image.",
+        "context_prefix": "Locally recognized OCR text (may contain errors):\n"
+      }
+    },
+    "language": "pl",
+    "interpretation": "document",
+    "source_kinds": {
+      "original": "file",
+      "representation": "derived"
+    }
+  },
+  "value_schema": {
+    "type": "object",
+    "required": [
+      "local",
+      "routes",
+      "goal_cues",
+      "document_role",
+      "node_kinds",
+      "relations",
+      "messages",
+      "language",
+      "interpretation",
+      "source_kinds"
+    ],
+    "properties": {
+      "local": {
+        "type": "object",
+        "required": [
+          "name",
+          "python",
+          "executable",
+          "language",
+          "language_map",
+          "psm",
+          "oem",
+          "threads",
+          "timeout_seconds"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "python": {
+            "type": "string"
+          },
+          "executable": {
+            "type": "string"
+          },
+          "language": {
+            "type": "string"
+          },
+          "language_map": {
+            "type": "object",
+            "required": [
+              "pl",
+              "en"
+            ],
+            "properties": {
+              "pl": {
+                "type": "string"
+              },
+              "en": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": true
+          },
+          "psm": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "oem": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "threads": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "timeout_seconds": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "additionalProperties": true
+      },
+      "routes": {
+        "type": "object",
+        "required": [
+          "no_prompt",
+          "text",
+          "image",
+          "default"
+        ],
+        "properties": {
+          "no_prompt": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "text": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "image": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "default": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": true
+      },
+      "goal_cues": {
+        "type": "object",
+        "required": [
+          "text",
+          "image"
+        ],
+        "properties": {
+          "text": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "image": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": true
+      },
+      "document_role": {
+        "type": "string"
+      },
+      "node_kinds": {
+        "type": "object",
+        "required": [
+          "source",
+          "representation",
+          "region"
+        ],
+        "properties": {
+          "source": {
+            "type": "string"
+          },
+          "representation": {
+            "type": "string"
+          },
+          "region": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      },
+      "relations": {
+        "type": "object",
+        "required": [
+          "representation",
+          "region"
+        ],
+        "properties": {
+          "representation": {
+            "type": "string"
+          },
+          "region": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      },
+      "messages": {
+        "type": "object",
+        "required": [
+          "pl",
+          "en"
+        ],
+        "properties": {
+          "pl": {
+            "type": "object",
+            "required": [
+              "no_text",
+              "unavailable",
+              "failed",
+              "context_prefix"
+            ],
+            "properties": {
+              "no_text": {
+                "type": "string"
+              },
+              "unavailable": {
+                "type": "string"
+              },
+              "failed": {
+                "type": "string"
+              },
+              "context_prefix": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": true
+          },
+          "en": {
+            "type": "object",
+            "required": [
+              "no_text",
+              "unavailable",
+              "failed",
+              "context_prefix"
+            ],
+            "properties": {
+              "no_text": {
+                "type": "string"
+              },
+              "unavailable": {
+                "type": "string"
+              },
+              "failed": {
+                "type": "string"
+              },
+              "context_prefix": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": true
+          }
+        },
+        "additionalProperties": true
+      },
+      "language": {
+        "type": "string"
+      },
+      "interpretation": {
+        "type": "string",
+        "enum": [
+          "document",
+          "conversation"
+        ]
+      },
+      "source_kinds": {
+        "type": "object",
+        "required": [
+          "original",
+          "representation"
+        ],
+        "properties": {
+          "original": {
+            "type": "string"
+          },
+          "representation": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "additionalProperties": true
+  }
+}

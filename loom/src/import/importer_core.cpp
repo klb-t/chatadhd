@@ -13,6 +13,7 @@
 #include "import/import_graph.h"
 #include "loom/event_bus.h"
 #include "loom/log.h"
+#include "loom/runtime_profile.h"
 #include "loom/provenance.h"
 #include "loom/sqlite.h"
 #include "loom/util/ids.h"
@@ -245,6 +246,12 @@ Result<std::optional<std::vector<Conversation>>> ConversationImporter::prepare_s
   if (outer_binding && opts.expected_source_bytes && blob.size != *opts.expected_source_bytes)
     return Error(Errc::Conflict, "source snapshot size differs from admission");
   ctx.blob_hash = blob.hash;
+  std::string image_identity;
+  if (fmt == "screenshot") {
+    LOOM_TRY_ASSIGN(auto image_profile, RuntimeProfile::load("image_input", db_.path().parent_path()));
+    image_identity = "image-1:" + image_profile.hash();
+    parser_version = image_identity;
+  }
   const std::string projection_hash = import_projection_hash(opts);
   const bool legacy_projection = import_projection_is_legacy(opts);
   auto projection_matches = [&](const SourceRecord& source) {
@@ -511,6 +518,11 @@ Status ConversationImporter::record_provenance(const Conversation& conv, std::st
   }
   std::string transform = "import." + std::string(handler) + "@" +
       std::string(provider_export ? kExportParserVersion : kImporterParserVersion);
+
+  if (handler == "screenshot_document") {
+    LOOM_TRY_ASSIGN(auto image_source, prov_->get_source(ctx.source_id));
+    if (image_source) transform = "import.screenshot_document@" + image_source->parser_version;
+  }
 
   ProvenanceRecord conv_rec;
   conv_rec.subject_id = conv.id;

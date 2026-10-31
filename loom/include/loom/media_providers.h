@@ -62,6 +62,8 @@ struct OcrResult {
   double confidence = 0.0;
   std::vector<std::string> lines;
   std::optional<std::string> language;
+  // Optional located output; legacy providers keep their exact JSON shape.
+  Json representation = nullptr;
   Json to_json() const;
 };
 
@@ -102,6 +104,7 @@ class AsrProvider {
 class OcrProvider {
  public:
   virtual ~OcrProvider() = default;
+  virtual bool runs_locally() const noexcept { return false; }
   virtual std::string name() const = 0;
   virtual Result<OcrResult> recognize_bytes(std::string_view image, std::string_view format,
                                             const std::optional<std::string>& language) = 0;
@@ -208,6 +211,9 @@ class MediaProviders {
                                      const std::optional<std::string>& provider = {},
                                      const std::optional<std::string>& language = {});
   std::vector<std::string> get_ocr_providers() const;
+  // Requires the adapter local-execution contract; never falls back to remote OCR.
+  Result<OcrResult> ocr_local_bytes(std::string_view bytes, std::string_view format,
+                                    const std::string& provider, const std::optional<std::string>& language = {});
   Result<OcrResult> ocr(const std::filesystem::path& image_path, const std::optional<std::string>& provider = {},
                         const std::optional<std::string>& language = {});
   Result<OcrResult> ocr_bytes(std::string_view image, std::string_view format = "png",

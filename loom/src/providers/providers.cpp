@@ -57,6 +57,8 @@ Json normalize_legacy_models(const Json& raw) {
         out.push_back(Json{{"id", m.at("id")},
                            {"name", m.contains("name") ? m.at("name") : m.at("id")},
                            {"context_length", m.contains("context_length") ? m.at("context_length") : Json(0)}});
+        for (const char* field : {"architecture", "capabilities"})
+          if (m.contains(field)) out.back()[field] = m.at(field);
       }
     }
   }
@@ -231,6 +233,8 @@ Status ModelRegistry::update_from_api() {
                             {"context_length", m.contains("context_length") ? m.at("context_length") : Json(0)},
                             {"pricing", m.contains("pricing") ? m.at("pricing") : Json::object()},
                             {"description", m.contains("description") ? m.at("description") : Json("")}});
+      for (const char* field : {"architecture", "capabilities"})
+        if (m.contains(field)) models.back()[field] = m.at(field);
     }
   }
 

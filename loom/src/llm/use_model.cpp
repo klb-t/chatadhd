@@ -7,6 +7,7 @@
 #include <set>
 
 #include "llm/shared_gate.h"
+#include "llm/image_contract.h"
 #include "loom/config.h"
 #include "loom/log.h"
 #include "loom/providers.h"
@@ -381,8 +382,14 @@ Result<PreparedCall> prepare_call(const Services& services, const ModelRequest& 
     if (request.stream) spec.stream = true;
   }
 
+  LOOM_TRY(check_image_contract(services, model, *adapter, spec));
   LOOM_TRY(check_request(services, request, model, call.route, *adapter, spec, needed));
   LOOM_TRY_ASSIGN(call.request, adapter->build(call.route, request.operation, spec));
+  if (request.operation == Operation::Complete || request.operation == Operation::BatchSubmit) {
+    CallSpec actual = spec;
+    actual.body_bytes = call.request.body;
+    LOOM_TRY(check_image_contract(services, model, *adapter, actual));
+  }
 
   call.provenance = Json{
       {"schema", kProvenanceSchema},

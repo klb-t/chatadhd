@@ -1,0 +1,137 @@
+#!/usr/bin/env python3
+"""Local OCR adapter worker. No network, conversation parser, or model calls.
+
+stdin is a JSON request {image_path, settings, language?}; stdout is one
+loom.ocr_regions/1 document. Native embeds this exact source, not a replica.
+Tesseract scores are uncalibrated engine scores, never claim confidence.
+"""
+import hashlib
+import json
+import math
+import os
+from pathlib import Path
+import subprocess
+import sys
+
+SCHEMA = "loom.ocr_regions/1"
+HEADER = "level page_num block_num par_num line_num word_num left top width height conf text".split()
+
+
+def empty_result(status, reason, source_hash, method):
+    return dict(schema=SCHEMA, status=status, reason=reason, text="", lines=[],
+                regions=[], frames=[], source_sha256=source_hash, method=method,
+                evidence_class="absent", confidence=None)
+
+
+def parse_tsv(tsv, source_hash, method):
+    """Preserve words, line order, frame dimensions and pixel coordinates.
+
+    Geometry is dimension-neutral: axes, extents, origin and size vectors.
+    Frame ids + parent ids carry hierarchy; this adapter implements 2-D only.
+    Non-text TSV records are retained in raw_tsv, without inventing text.
+    """
+    rows = tsv.splitlines()
+    if not rows or rows[0].split("\t") != HEADER:
+        raise ValueError("ocr_tsv_header")
+    result = empty_result("no_text", "ocr_no_text", source_hash, method)
+    result["raw_tsv"] = tsv
+    frames = {}
+    words = []
+    ids = set()
+    for row in rows[1:]:
+        if not row:
+            continue
+        fields = row.split("\t", 11)
+        if len(fields) != 12:
+            raise ValueError("ocr_tsv_columns")
+        try:
+            level, page, block, para, line, word, x, y, width, height = map(int, fields[:10])
+            score = float(fields[10])
+        except ValueError as error:
+            raise ValueError("ocr_tsv_number") from error
+        if not 1 <= level <= 5 or page < 1 or min(block, para, line, word, x, y, width, height) < 0:
+            raise ValueError("ocr_tsv_geometry")
+        if not math.isfinite(score) or not -1 <= score <= 100:
+            raise ValueError("ocr_tsv_score")
+        if level == 1:
+            if page in frames or x != 0 or y != 0 or width <= 0 or height <= 0:
+                raise ValueError("ocr_tsv_frame")
+            frames[page] = dict(id=str(page), axes=["x", "y"], units=["px", "px"],
+                                origin=[0, 0], extent=[width, height], orientation="top_left")
+        if level != 5 or not fields[11].strip():
+            continue
+        if page not in frames or min(block, para, line, word, width, height) <= 0:
+            raise ValueError("ocr_tsv_region")
+        fw, fh = frames[page]["extent"]
+        if x + width > fw or y + height > fh:
+            raise ValueError("ocr_tsv_bounds")
+        rid = f"{page}/{block}/{para}/{line}/{word}"
+        if rid in ids:
+            raise ValueError("ocr_tsv_duplicate")
+        ids.add(rid)
+        words.append(dict(id=rid, parent=f"{page}/{block}/{para}/{line}", frame=str(page),
+                          origin=[x, y], size=[width, height], text=fields[11],
+                          engine_score=score if score >= 0 else None,
+                          score_scale=[0, 100], score_calibrated=False))
+    if not frames:
+        raise ValueError("ocr_tsv_no_frame")
+    # TSV encounter order is the engine's reading order; never sort by x/y.
+    lines = []
+    parent = None
+    for word in words:
+        if word["parent"] != parent:
+            lines.append(word["text"])
+            parent = word["parent"]
+        else:
+            lines[-1] += " " + word["text"]
+    result.update(regions=words, frames=list(frames.values()), lines=lines, text="\n".join(lines))
+    if words:
+        result.update(status="recognized", reason="", evidence_class="inferred")
+    return result
+
+
+def recognize(request):
+    settings = request["settings"]
+    image = Path(request["image_path"])
+    source_hash = hashlib.sha256(image.read_bytes()).hexdigest()
+    lang = request.get("language") or settings["language"]
+    lang = settings["language_map"].get(lang, lang)
+    method = dict(id="tesseract_tsv", version=None, language=lang,
+                  parameters=dict(psm=settings["psm"], oem=settings["oem"]),
+                  worker_version="1", worker_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest())
+    env = dict(os.environ, OMP_THREAD_LIMIT=str(settings["threads"]))
+    timeout = settings["timeout_seconds"] or None
+    exe = settings["executable"]
+    try:
+        version = subprocess.run([exe, "--version"], capture_output=True, timeout=timeout, env=env, check=False)
+        if version.returncode != 0:
+            return empty_result("unavailable", "ocr_engine_unavailable", source_hash, method)
+        method["version"] = version.stdout.decode("utf-8", errors="strict").splitlines()[0]
+        # argv only. Neither the uploaded filename nor settings go through a shell.
+        completed = subprocess.run([exe, str(image.resolve()), "stdout", "-l", lang,
+                                    "--psm", str(settings["psm"]), "--oem", str(settings["oem"]), "tsv"],
+                                   capture_output=True, timeout=timeout, env=env, check=False)
+        if completed.returncode != 0:
+            # stderr can contain filenames/content: expose only a stable diagnostic.
+            return empty_result("failed", "ocr_engine_failed", source_hash, method)
+        return parse_tsv(completed.stdout.decode("utf-8", errors="strict"), source_hash, method)
+    except FileNotFoundError:
+        return empty_result("unavailable", "ocr_engine_unavailable", source_hash, method)
+    except subprocess.TimeoutExpired:
+        return empty_result("failed", "ocr_timeout", source_hash, method)
+    except (ValueError, UnicodeError):
+        return empty_result("failed", "ocr_invalid_output", source_hash, method)
+
+
+def main():
+    try:
+        result = recognize(json.load(sys.stdin))
+    except (KeyError, TypeError, OSError, ValueError):
+        result = dict(schema=SCHEMA, status="failed", reason="ocr_invalid_request", text="",
+                      lines=[], regions=[], frames=[], confidence=None)
+    json.dump(result, sys.stdout, ensure_ascii=False, allow_nan=False)
+    sys.stdout.write("\n")
+
+
+if __name__ == "__main__":
+    main()

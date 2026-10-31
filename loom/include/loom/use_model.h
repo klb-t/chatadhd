@@ -413,6 +413,9 @@ class Adapter {
   virtual bool success(Operation op, int http_status) const noexcept = 0;
   // The family's defaults; data layers on top (see Capabilities).
   virtual Capabilities capabilities() const = 0;
+  // Code contract, independent of a model/provider declaring image capability.
+  // True only when OpenAI-shaped image_url message parts are serialized correctly.
+  virtual bool accepts_message_images() const noexcept { return false; }
   // The path this family calls when the route names none; provider metadata
   // (e.g. "chat_completions_path") may replace it.  The one place a path default lives.
   virtual std::string default_endpoint(Operation op, const Json& route_metadata) const = 0;

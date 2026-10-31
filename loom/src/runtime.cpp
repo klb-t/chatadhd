@@ -27,6 +27,8 @@
 #include "loom/importer.h"
 #include "loom/loom.h"
 #include "loom/media_providers.h"
+#include "media/local_ocr.h"
+#include "chat/image_input.h"
 #include "loom/memory_engine.h"
 #include "loom/port_graph.h"
 #include "loom/net/http.h"
@@ -561,6 +563,17 @@ Result<std::unique_ptr<Runtime>> Runtime::open(const RuntimeOptions& opts) {
     }
     task.set_result(std::move(result));
     return {};
+  });
+  LOOM_TRY_ASSIGN(auto image_profile, RuntimeProfile::load("image_input", rt->db().path().parent_path()));
+  rt->media().add_ocr_provider(std::make_shared<LocalOcrProvider>(image_profile.values().at("local")));
+  rt->chat().set_image_content_builder([runtime = rt.get()](const std::filesystem::path& path,
+      const std::filesystem::path& shown, std::string_view prompt) -> Result<chat::PreparedImage> {
+    LOOM_TRY_ASSIGN(auto profile, RuntimeProfile::load("image_input", runtime->db().path().parent_path()));
+    const Json goal = runtime->config().get("image_input_goal");
+    return chat::prepare_image_attachment(runtime->media(), path, shown, prompt, profile.values(),
+        goal.is_string() ? goal.get<std::string>() : std::string());
+  }, [runtime = rt.get()](const chat::PreparedImage& image) -> Result<Json> {
+    return chat::persist_image_attachment(runtime->db(), runtime->blobs(), runtime->provenance(), image);
   });
   rt->chat().set_attachment_resolver([runtime = rt.get()](const std::string& hash) -> std::optional<std::filesystem::path> {
     if (!runtime->blobs().has(hash)) return std::nullopt;

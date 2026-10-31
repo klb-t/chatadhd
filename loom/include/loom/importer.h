@@ -251,6 +251,7 @@ class ConversationImporter {
   Result<std::vector<Conversation>> import_json(const std::filesystem::path& path, const ImportOptions& opts = {});
   Result<std::vector<Conversation>> import_html(const std::filesystem::path& path, const ImportOptions& opts = {});
   Result<std::vector<Conversation>> import_mht(const std::filesystem::path& path, const ImportOptions& opts = {});
+  // Default: located document OCR; explicit image_input interpretation=conversation opts into legacy role parsing.
   Result<std::vector<Conversation>> import_screenshot(const std::filesystem::path& path,
                                                       const ImportOptions& opts = {});
   Result<std::vector<Conversation>> import_markdown(const std::filesystem::path& path,
@@ -380,6 +381,7 @@ class ConversationImporter {
   Result<std::vector<Conversation>> json_body(const std::filesystem::path& path, const ImportOptions& opts);
   Result<std::vector<Conversation>> html_body(const std::filesystem::path& path, const ImportOptions& opts);
   Result<std::vector<Conversation>> mht_body(const std::filesystem::path& path, const ImportOptions& opts);
+  Result<std::vector<Conversation>> legacy_screenshot_body(const std::filesystem::path& path, const ImportOptions& opts);
   Result<std::vector<Conversation>> screenshot_body(const std::filesystem::path& path, const ImportOptions& opts);
   Result<std::vector<Conversation>> markdown_body(const std::filesystem::path& path, const ImportOptions& opts);
   Result<std::vector<Conversation>> text_body(const std::filesystem::path& path, const ImportOptions& opts);
