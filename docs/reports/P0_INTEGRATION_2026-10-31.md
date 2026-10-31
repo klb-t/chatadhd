@@ -5,6 +5,37 @@ Implementacja przyjęta po własnym buildzie i zakresowych testach backendu;
 **GUI/mobile i wydanie niezaakceptowane, deployed: nie**. Ten SHA jest bazą
 do osobnego worktree G1. Nie trzeba czekać na macierz dostawców ani OCR/URL-share.
 
+## Uzupełnienie własnej bramki web/GUI — 2026-10-31 21:12 UTC
+
+Na `cab9ca88d725c9d78cd8bceb8993443c2969624f` wykonano własny
+`npm --prefix loom/web run build` (**PASS**, Vite26,64s; ostrzeżenie o dużych
+chunkach), `lang-page-native` **9/9 PASS** i `polish-person-native` **8/8 PASS**.
+Zapisane wyniki zakończono przed przerwą; po wznowieniu zweryfikowano logi,
+receipts, czyste źródła, hashe serwera/biblioteki (identyczne z opisanymi poniżej)
+i zapisano manifest hashy bundla, dowodów i syntetycznych screenshotów.
+Manifest lokalny SHA256: `6a7a46318926c019240d4e271198c3b56f7ecee4fff96b5a8be1731ff8933523`.
+Nie powtórzono ukończonych prób po przerwie ani 12HTTP+2 regresji backendu.
+
+**Korekta poprzedniego rozpoznania:** preflight zależności był fałszywie negatywny.
+Pakiety należy rozwiązywać przez `createRequire` względem `loom/web/package.json`;
+własne React/ReactDOM/Vite/Playwright i cache Chromium są dostępne. Brak native TS
+w Node nie blokuje istniejącego toolchaina. Poniższy zapis o braku wszystkich
+zależności jest historycznym błędem diagnostyki, nie bieżącym blokerem środowiska.
+
+GUI sprawdziło jawne EN/PL, zapis na dysku, reload/reopen, profil językowy,
+PDF dwóch polskich stron w faktycznym żądaniu HTTP do atrapy, pytanie bez
+ponownego załączania, historię, trwałe polskie ostrzeżenie o pustej stronie,
+nawigację istniejącego grafu i widoczny błąd dostawcy. Testy używały własnego
+serwera, syntetycznych profili/PDF i dostawcy loopback; wąski viewport Chromium
+nie jest fizycznym telefonem ani dowodem jakości rzeczywistego modelu.
+
+**GUI przyjęte w powyższym zakresie; pełne wydanie nadal niezaakceptowane.**
+Zachowane luki produktu: widoczny surowy komunikat HTTP503, etykiety `user`/
+`assistant`/`v1`, komunikat o kluczu przy syntetycznym bezkluczowym źródle oraz
+wcześniejsze braki pełnej polonizacji. PASS scenariusza błędu oznacza widoczność
+błędu i zachowanie rozmowy, nie poprawną lokalizację i przyjazne sformułowanie.
+Bez fizycznego urządzenia, rzeczywistych modeli, pełnego repo gate i wdrożenia.
+
 ## Podstawa i pochodzenie
 
 Integrator wznowił `08c6d1d15e54e0be7f7d605fbc90d066e02ebccd`.

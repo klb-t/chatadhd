@@ -1,3 +1,19 @@
+## 2026-10-31 — własne P0 web/GUI odebrane po korekcie preflight
+
+Na `cab9ca88d725c9d78cd8bceb8993443c2969624f`: web build **PASS**, rzeczywisty
+`lang-page-native` **9/9**, `polish-person-native` **8/8 PASS**. Własny serwer
+z wcześniej przyjętego code_head9f672641, zachowane hashe, dane syntetyczne,
+Chromium i dostawca loopback. Po przerwie odebrano zapisane wyniki, bez ponownej
+kompilacji/GUI/12HTTP+2 regresji. Poprzednie twierdzenie o braku wszystkich
+zależności było błędem preflight: wymagane rozwiązywanie względem loom/web/package.json.
+
+Zapis EN/PL/profilu, PDF2strony, dalsza tura/reopen/ostrzeżenie i istniejący graf
+potwierdzone w GUI. Widoczny surowy HTTP503 i role user/assistant/v1 pozostają
+lukami produktu, nie środowiska. Wąski viewport nie jest fizycznym telefonem.
+GUI accepted zakresowo; pełne wydanie/model quality/deployed nadal NIE.
+[Uzupełniony raport i granice dowodów](reports/P0_INTEGRATION_2026-10-31.md).
+M1/M2 pozostają osobnym odbiorem w toku; nie są przyjęte na podstawie tych testów.
+
 ## 2026-10-31 — P0 locale/PDF przyjęty zakresowo, GUI nadal otwarte
 
 Przyjęty kod i baza dla osobnego G1: **`9f672641e5eb223cf7bdc5561faca08dc679a753`**.
