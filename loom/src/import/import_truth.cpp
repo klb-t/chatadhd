@@ -25,7 +25,7 @@ bool matches(const Json& when, const Json& facts) {
   for (auto it = when.begin(); it != when.end(); ++it) {
     const std::string& key = it.key();
     const Json& want = it.value();
-    if (key == "path" || key == "provider") {
+    if (key == "path" || key == "provider" || key == "format") {
       const std::string have = json::get_string(facts, key);
       bool hit = false;
       if (want.is_string()) {
@@ -113,7 +113,10 @@ Json build(const ImportResult& r, const Json& words) {
     Json notes = Json::array();
     Json label = Json::object();
   };
+  const Json element_facts{{"path", exported ? "export" : "legacy"}, {"provider", provider}, {"format", r.format}};
   for (const auto& el : elements) {
+    if (el.contains("when") && !matches(el.at("when"), element_facts)) continue;
+    if (el.contains("unless") && matches(el.at("unless"), element_facts)) continue;
     const std::string kind = json::get_string(el, "kind");
     const bool always = json::get_bool(el, "always");
     std::optional<std::int64_t> found;
@@ -121,6 +124,7 @@ Json build(const ImportResult& r, const Json& words) {
     const auto result_number = [&](const std::string& from) -> std::optional<std::int64_t> {
       if (from == "result_conversations") return static_cast<std::int64_t>(r.conversations.size());
       if (from == "result_messages") return r.messages;
+      if (from == "result_sources") return r.source_id.empty() || r.blob_hash.empty() ? 0 : 1;
       return std::nullopt;
     };
     if (exported) {

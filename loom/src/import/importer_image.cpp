@@ -14,8 +14,10 @@ Result<std::vector<Conversation>> ConversationImporter::screenshot_body(const st
   // Legacy role reconstruction is an explicit interpretation choice, never a
   // consequence of OCR text length or a document containing 'Assistant:'.
   if (preset.at("interpretation") == "conversation") return legacy_screenshot_body(path, opts);
-  const auto declared = current_source_ && !current_source_->source_filename.empty()
-      ? std::filesystem::path(current_source_->source_filename) : path;
+  const auto declared = opts.display_name && !opts.display_name->empty()
+      ? std::filesystem::path(*opts.display_name).filename()
+      : current_source_ && !current_source_->source_filename.empty()
+          ? std::filesystem::path(current_source_->source_filename) : path;
   std::string format = utf8::to_lower(declared.extension().string());
   if (!format.empty()) format.erase(0, 1);
   LOOM_TRY_ASSIGN(auto bytes, fsutil::read_file(path));

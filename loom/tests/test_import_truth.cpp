@@ -334,3 +334,18 @@ TEST_SUITE("import_truth") {
     CHECK(dated);
   }
 }
+
+TEST_CASE("screenshot truth names the retained source instead of invented JSON attachment loss") {
+  Fx f;
+  ImportResult r;
+  r.format = "screenshot";
+  r.source_id = "synthetic_source";
+  r.blob_hash = std::string(64, 'a');
+  r.messages = 1;
+  const auto truth = f.truth(r);
+  const auto& source = element(truth, "source_files");
+  CHECK(source.at("found") == 1);
+  CHECK(source.at("imported") == 1);
+  for (const auto& row : truth.at("elements")) CHECK(row.at("kind") != "attachments");
+  CHECK(truth.at("summary").at("pl").get<std::string>().find(".json") == std::string::npos);
+}

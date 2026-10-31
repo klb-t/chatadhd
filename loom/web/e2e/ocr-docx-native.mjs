@@ -88,6 +88,12 @@ try {
     const convs=await inPage('/api/conversations');assert.equal(convs.length,1);importedId=convs[0].id;
     const rows=await inPage('/api/conversations/'+importedId+'/messages');assert.equal(rows[0].text,expected);assert.equal(providerRequests.length,0);
     observations.import={format:done.format,truth:done.truth,title:convs[0].title,summary:await page.getByTestId('import-summary').innerText(),sourceSha:sha(readFileSync(png)),messageText:rows[0].text};
+    assert.equal(done.format,'screenshot');const retained=done.truth.elements.find(row=>row.kind==='source_files');
+    assert.equal(retained?.found,1);assert.equal(retained?.imported,1);
+    assert.ok(!done.truth.elements.some(row=>row.kind==='attachments'));
+    assert.ok(observations.import.summary.includes('Pliki źródłowe: 1'));
+    assert.ok(!observations.import.summary.includes('.json'));
+    assert.ok(convs[0].title.endsWith('synthetic-pl.png'));assert.ok(!convs[0].title.includes('req_'));
   });
   await check('ChatView: imported OCR in actual context and context-derived synthetic reply',async()=>{
     if(await page.getByTestId('close-panel').isVisible())await page.getByTestId('close-panel').click();

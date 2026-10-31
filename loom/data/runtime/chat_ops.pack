@@ -2116,7 +2116,14 @@
           "legacy": "result_messages"
         },
         {
+          "kind": "source_files",
+          "legacy": "result_sources",
+          "when": {"path": "legacy", "format": "screenshot"},
+          "label": {"pl": "Pliki źródłowe", "en": "Source files"}
+        },
+        {
           "kind": "attachments",
+          "unless": {"format": "screenshot"},
           "counts": "attachment",
           "linked": "attachment_linked",
           "always": true,
