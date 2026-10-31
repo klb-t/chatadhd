@@ -2088,15 +2088,15 @@
         "group": "ui",
         "type": "string",
         "has_default": false,
-        "description": "Language of the shell labels (chat screen, drawer, menus, first-run card): a language code present in the catalogs (pl, en), or empty / auto to follow the browser. Default: auto.",
+        "description": "Language of the shell labels: an explicit catalog language wins; empty / auto uses the profile language preference, then the device language list and catalog fallback. Does not translate messages or change model settings.",
         "human": {
           "label": {
             "pl": "Język interfejsu",
             "en": "Interface language"
           },
           "why": {
-            "pl": "Język napisów aplikacji (ekran czatu, menu, pierwsza karta): pl, en albo „auto” za przeglądarką.",
-            "en": "The language of the app's labels (chat screen, menus, first card): pl, en or “auto” following the browser."
+            "pl": "Wpisz „pl” dla polskiego, „en” dla angielskiego albo „auto” dla preferencji profilu lub języka urządzenia. Wybór dotyczy napisów aplikacji.",
+            "en": "Enter “pl” for Polish, “en” for English, or “auto” for the profile preference or device language. This choice applies to app labels."
           },
           "effect": {
             "pl": "Napisy zmieniają się od razu; rozmowy i odpowiedzi modelu nie są tłumaczone.",
@@ -2111,8 +2111,8 @@
             "chat.send"
           ],
           "when_unset": {
-            "pl": "jak w przeglądarce",
-            "en": "follows the browser"
+            "pl": "preferencja profilu lub język urządzenia",
+            "en": "profile preference or device language"
           }
         }
       },

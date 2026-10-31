@@ -30,9 +30,11 @@ interface Props {
   onNavigate?: (address: string) => void;
   /** "all_fields": opened to enter a secret (keys and tokens are entered on the former screen under Silnik › Wszystkie pola). */
   view?: "" | "all_fields";
+  /** Refresh shell settings after the existing card has acknowledged a write. */
+  onConfigChanged?: () => void;
 }
 
-export default function SettingsHuman({ profileHost, convId, language, onNavigate, view = "" }: Props) {
+export default function SettingsHuman({ profileHost, convId, language, onNavigate, view = "", onConfigChanged }: Props) {
   const words = usePresentationFeature(profileHost, "settings_human");
   const graphWords = usePresentationFeature(profileHost, "graph_screen");
   const t = useMemo(() => shellTranslator(words.feature, language), [words.feature, language]);
@@ -136,7 +138,7 @@ export default function SettingsHuman({ profileHost, convId, language, onNavigat
         )}
         {cardKey === field.key && (
           <NodeCard key={field.address} address={field.address} language={language} convId={convId} t={graphT}
-            onClose={() => setCardKey(null)} onNavigate={address => onNavigate?.(address)} onChanged={reload} />
+            onClose={() => setCardKey(null)} onNavigate={address => onNavigate?.(address)} onChanged={() => { reload(); onConfigChanged?.(); }} />
         )}
       </li>
     );

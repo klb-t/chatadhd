@@ -4,14 +4,14 @@
 // `Accept-Language` differ: guest start and reload must show the device's language; a mismatching first Accept-Language (the thing the
 // server used to freeze into the guest's ui_language) must not win; the person's own explicit setting still wins. The expected language is
 // computed from the catalogs in the pack (first device tag the catalogs have, else en), so a language added to the data is covered with no
-// change here. Data: the real pack words; guests are real server sessions; nothing synthetic.
+// change here. All profiles and settings are synthetic; catalogs and the server are the product's actual code/data.
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import net from "node:net";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { request } from "./harness-lifecycle.mjs";
+import { request, stopChild, suiteCompletionGuard } from "./harness-lifecycle.mjs";
 import { makeTmpDir } from "./tmp-dirs.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -39,11 +39,17 @@ const tmp = makeTmpDir("loom-lang-");
 const root = path.join(tmp, "root");
 mkdirSync(path.join(root, "profiles"), { recursive: true });
 writeFileSync(path.join(root, "profiles", "server_accounts.pack"), JSON.stringify({ schema: "loom.runtime_profile_overlay/1", domain: "server_accounts",
-  overrides: { guests: { enabled: true, start: "auto", sweep_interval_seconds: 0, workdir: { subdir: "guests", idle_ttl_seconds: 600, max_bytes: 0, keep_after_session: "ask" }, protection: { per_session: { chat_per_minute: 1 } } } } }));
+  overrides: { guests: { enabled: true, start: "auto", keys_file: "", sweep_interval_seconds: 0, workdir: { subdir: "guests", idle_ttl_seconds: 600, max_bytes: 0, keep_after_session: "ask" }, protection: { per_session: { chat_per_minute: 1 } } } } }));
+writeFileSync(path.join(root, "profiles", "free_providers.pack"), JSON.stringify({ schema: "loom.runtime_profile_overlay/1", domain: "free_providers",
+  overrides: { providers: [], free_model_choice: { rank_source: "table", table: [] } } }));
 const server = spawn(SERVER_BIN, ["--host", "127.0.0.1", "--port", String(port), "--accounts-root", root, "--static-dir", DIST], { stdio: "ignore", cwd: LOOM });
+console.log(`[lang] own server pid ${server.pid}`);
 const base = `http://127.0.0.1:${port}`;
 let browser, failed = false;
-const step = async (name, fn) => { if (failed) return; try { await fn(); console.log(`[lang] PASS ${name}`); } catch (e) { failed = true; console.error(`[lang] FAIL ${name}\n${e.stack}`); } };
+const groups = [];
+const receipt = { choices: [], profilePreference: null };
+const completion = suiteCompletionGuard("lang", 9, groups);
+const step = async (name, fn) => { if (failed) return; try { await fn(); groups.push(name); console.log(`[lang] PASS ${name}`); } catch (e) { failed = true; console.error(`[lang] FAIL ${name}\n${e.stack}`); } };
 const shown = async (page) => {
   const input = page.getByTestId("chat-input");
   await input.waitFor({ timeout: 20000 });
@@ -101,9 +107,106 @@ try {
       assert.equal((await shown(page)).html, "en");
     } finally { await ctx.close(); }
   });
+  await step("PL device: explicit EN/PL via the settings card persists on disk and survives reload and reopen without changing model settings", async () => {
+    const { ctx, page: firstPage } = await visit("pl-PL", ["pl-PL", "pl"], "pl-PL,pl;q=0.9");
+    let page = firstPage;
+    const config = () => page.evaluate(async () => {
+      const r = await fetch("/api/config");
+      if (!r.ok) throw new Error(`config read: ${r.status}`);
+      const c = await r.json();
+      // Only the non-secret settings needed by this assertion leave the page.
+      return { ui_language: c.ui_language, system_prompt: c.system_prompt, default_model: c.default_model, language: c.language };
+    });
+    const languageOnDisk = async () => {
+      const id = await page.getByTestId("guest-layer").getAttribute("data-guest-id");
+      assert.match(id, /^[a-zA-Z0-9_-]+$/);
+      return JSON.parse(readFileSync(path.join(root, "guests", id, "config.json"), "utf8")).ui_language;
+    };
+    const checkPage = async want => {
+      await page.waitForFunction(({ want, placeholder }) => document.documentElement.lang === want
+        && document.querySelector('[data-testid="chat-input"]')?.getAttribute("placeholder") === placeholder, { want, placeholder: shell[want].composer_placeholder });
+      assert.equal((await shown(page)).placeholder, shell[want].composer_placeholder);
+    };
+    try {
+      await page.goto(base);
+      await checkPage("pl");
+      assert.equal(await page.evaluate(async () => (await fetch("/api/config", { method: "PATCH", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ language: "en", system_prompt: "Synthetic preference: reply in English." }) })).status), 200);
+      const before = await config();
+      assert.equal(before.language, "en");
+      assert.equal(before.system_prompt, "Synthetic preference: reply in English.");
+      assert.ok(before.ui_language === undefined || before.ui_language === "auto" || before.ui_language === "", "a fresh guest has no forced UI locale");
+      for (const choice of ["en", "pl"]) {
+        await page.getByTestId("shell-menu-toggle").click();
+        await page.getByTestId("shell-menu-settings").click();
+        await page.getByTestId("shum-group-open-interfejs").click();
+        await page.getByTestId("shum-card-btn-ui_language").click();
+        await page.getByTestId("card-change").click();
+        await page.getByTestId("card-editor-input").fill(choice);
+        await page.getByTestId("card-next").click();
+        const saved = page.waitForResponse(r => r.url().endsWith("/api/actions/run") && r.request().method() === "POST");
+        await page.getByTestId("card-level-person").click();
+        assert.equal((await saved).status(), 200, "the existing settings action acknowledged the write");
+        await checkPage(choice); // without closing Settings or reloading
+        assert.equal((await config()).ui_language, choice, "actual server value, not a local preset");
+        const onDisk = await languageOnDisk();
+        assert.equal(onDisk, choice, "actual config.json in this synthetic guest's own directory");
+        await page.reload();
+        await checkPage(choice);
+        assert.equal((await config()).ui_language, choice, "reload reads the choice");
+        await page.close();
+        page = await ctx.newPage(); // same person's cookies/storage; new page and React state
+        await page.goto(base);
+        await checkPage(choice);
+        const after = await config();
+        assert.equal(after.ui_language, choice, "reopen reads the choice");
+        assert.deepEqual({ ...after, ui_language: undefined }, { ...before, ui_language: undefined }, "UI language does not rewrite model or response settings");
+        receipt.choices.push({ choice, onDisk, afterReopen: after.ui_language, html: (await shown(page)).html, language: after.language, systemPromptUnchanged: after.system_prompt === before.system_prompt });
+      }
+    } finally { await ctx.close(); }
+  });
+  await step("an acknowledged native profile language preference is restored; an explicit UI language overrides it", async () => {
+    const { ctx, page } = await visit("pl-PL", ["pl-PL", "pl"], "pl-PL,pl;q=0.9");
+    try {
+      await page.goto(base);
+      await shown(page);
+      const persisted = await page.evaluate(async () => {
+        const call = async body => {
+          const r = await fetch("/api/onboarding", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+          if (!r.ok) throw new Error(`native profile: ${r.status}`);
+          return r.json();
+        };
+        const user_id = "synthetic-polish-ui-preference";
+        const opened = await call({ operation: "open", user_id });
+        await call({ operation: "apply", user_id, expected_revision: opened.revision,
+          action: { target: "layers", op: "override", key: "preference.language", value: "en", id: "locale-choice", time: "2026-10-31T00:00:00Z", source_refs: [] } });
+        const read = await call({ operation: "read", user_id });
+        localStorage.setItem("loom.user-profile.identity.v1", JSON.stringify({ schema: "loom.user_profile_identity/1", user_id }));
+        return read.snapshot.effectiveDefaults.find(row => row.key === "preference.language");
+      });
+      assert.equal(persisted.value, "en", "read back the actual native value");
+      assert.equal(persisted.layer, "user", "a deliberate user override, not the builtin auto preset");
+      receipt.profilePreference = { value: persisted.value, layer: persisted.layer };
+      await page.reload();
+      await page.waitForFunction(placeholder => document.documentElement.lang === "en"
+        && document.querySelector('[data-testid="chat-input"]')?.getAttribute("placeholder") === placeholder, shell.en.composer_placeholder);
+      assert.equal((await shown(page)).placeholder, shell.en.composer_placeholder);
+      const r = await page.evaluate(async () => (await fetch("/api/config/ui_language", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ value: "pl" }) })).status);
+      assert.equal(r, 200);
+      await page.reload();
+      await page.waitForFunction(placeholder => document.documentElement.lang === "pl"
+        && document.querySelector('[data-testid="chat-input"]')?.getAttribute("placeholder") === placeholder, shell.pl.composer_placeholder);
+      assert.equal((await shown(page)).placeholder, shell.pl.composer_placeholder);
+    } finally { await ctx.close(); }
+  });
 } finally {
   await browser?.close();
-  server.kill();
+  await stopChild(server);
+  if (process.env.P0_LOCALE_EVIDENCE) {
+    mkdirSync(process.env.P0_LOCALE_EVIDENCE, { recursive: true });
+    writeFileSync(path.join(process.env.P0_LOCALE_EVIDENCE, "lang-page-receipt.json"), JSON.stringify({ groups, ...receipt }, null, 2));
+  }
 }
 if (failed) process.exit(1);
-console.log("[lang] all passed");
+completion.complete();
+console.log(`[lang] ${groups.length}/9 groups passed`);

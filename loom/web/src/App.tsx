@@ -21,7 +21,7 @@ import GraphEntryPanel, { type EntryOpeners } from "./components/GraphEntryPanel
 import GraphNavigator from "./components/GraphNavigator";
 import { createUserProfileHost } from "./api/onboarding-host";
 import { api } from "./api";
-import { usePresentationFeature } from "./components/ConversationSourceView";
+import { useLayeredDefault, usePresentationFeature } from "./components/ConversationSourceView";
 import { featureMessage } from "./onboarding/presentation.mjs";
 import { useAccountSession } from "./components/AuthGate";
 import { createLoomProfileRegistry } from "./profiles/loom-adapter";
@@ -169,6 +169,10 @@ export default function App() {
   const sidebarOperations = useRef(0);
   const sidebarActivity = useCallback((delta: number) => { sidebarOperations.current += delta; }, []);
   const userProfileHost = useMemo(() => createUserProfileHost(api, { onActivity: sidebarActivity }), [sidebarActivity]);
+  // Restore the selected native profile even when no profile/analysis panel is open: its saved language preference belongs to the shell.
+  useEffect(() => {
+    void userProfileHost.getAdapter()?.getSnapshot().catch(() => { /* the host retains the read failure for the profile panel */ });
+  }, [userProfileHost]);
   const canRestoreWorkspace = useCallback(() => sidebarOperations.current === 0, []);
 
   useEffect(() => {
@@ -400,6 +404,9 @@ export default function App() {
 
   // A setting a screen saved (the help "Co tu widzę?"): the app keeps the value, so the screen opened again starts as the person left it.
   const rememberSetting = useCallback((key: string, value: boolean | string) => setConfig(current => ({ ...current, [key]: value })), []);
+  const refreshSettings = useCallback(() => {
+    void api.getConfig().then(cfg => setConfig(cfg as Record<string, unknown>), () => { /* keep the last acknowledged settings */ });
+  }, []);
   const openPanel = useCallback((p: PanelId) => { setActivePanel((cur) => (cur === p ? null : p)); setNavOpen(false); }, []);
   const closePanel = useCallback(() => { setActivePanel(null); setSettingsView(""); }, []);
 
@@ -439,7 +446,9 @@ export default function App() {
     try { return featureMessage(shellCatalog.feature, id); } catch { return id; }
   };
   const uiShell = usePresentationFeature(userProfileHost, "ui_shell");
-  const uiLanguage = shellLanguage(config.ui_language, undefined, deviceLanguages(), availableLanguages([uiShell.feature]));
+  const preferredLanguage = useLayeredDefault(userProfileHost, "preference.language");
+  const uiLanguage = shellLanguage(config.ui_language, preferredLanguage.status === "effective" ? preferredLanguage.value : undefined,
+    deviceLanguages(), availableLanguages([uiShell.feature]));
   const uiLanguageRef = useRef(uiLanguage);
   uiLanguageRef.current = uiLanguage;
   // r2:b4: the document speaks the shell's language (index.html ships lang="en"); a screen reader (TalkBack) then picks the Polish voice.
@@ -874,6 +883,7 @@ export default function App() {
                 {p === "context" && <ContextSlider convId={activeConvId} />}
                 {p === "settings" && kind === "settings_fields" && <SettingsPanel />}
                 {p === "settings" && kind !== "settings_fields" && <SettingsHuman profileHost={userProfileHost} convId={activeConvId} language={uiLanguage} view={settingsView}
+                  onConfigChanged={refreshSettings}
                   onNavigate={address => { setNavigatorFocus(address); setActivePanel("navigator"); }} />}
                 {p === "logs" && <LogPanel />}
                 {p === "methods" && <MethodsPanel transport={api} />}

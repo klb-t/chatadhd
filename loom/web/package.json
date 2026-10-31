@@ -46,6 +46,8 @@
     "test:semantic-queue": "node tests/conversation-view/semantic-queue.test.mjs",
     "test:semantic-question": "node tests/conversation-view/semantic-question.test.mjs",
     "test:lang-page": "node e2e/lang-page-native.mjs",
+    "test:polish-locale": "node --test tests/shell/polish-locale.test.mjs",
+    "test:polish-person": "node e2e/polish-person-native.mjs",
     "test:language-pack": "node tests/shell/language-pack.test.mjs",
     "test:project-structure-state": "node tests/shell/structure-state.test.mjs",
     "test:imported-source-language": "node tests/conversation-view/imported-source-language.test.mjs",
