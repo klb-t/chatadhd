@@ -408,6 +408,18 @@ if(LOOM_BUILD_TESTS)
     set_tests_properties(server.guest_credentials PROPERTIES
       ENVIRONMENT "LOOM_SERVER_BIN=$<TARGET_FILE:loom-server>;PYTHONDONTWRITEBYTECODE=1"
       TIMEOUT 240)
+    # P0: actual HTTP upload/history/restart; provider requests captured on loopback.
+    set(_loom_http_flows dialog text locale)
+    if(CMAKE_SYSTEM_NAME STREQUAL "Linux" AND NOT ANDROID)
+      list(APPEND _loom_http_flows pdf)
+    endif()
+    foreach(_flow IN LISTS _loom_http_flows)
+      add_test(NAME server.${_flow}_flow
+        COMMAND ${Python3_EXECUTABLE} ${LOOM_ROOT}/server/tests/test_server_${_flow}_flow.py)
+      set_tests_properties(server.${_flow}_flow PROPERTIES
+        ENVIRONMENT "LOOM_SERVER_BIN=$<TARGET_FILE:loom-server>;PYTHONDONTWRITEBYTECODE=1"
+        TIMEOUT 300)
+    endforeach()
     if(LOOM_SHARED)
       add_test(NAME capi.credential_override
         COMMAND ${Python3_EXECUTABLE} ${LOOM_ROOT}/server/tests/test_capi_credential_override.py)

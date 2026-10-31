@@ -979,6 +979,8 @@ Delta read_delta(Database& db, const Config& cfg, const ChatOptions& opts, const
 
 // The steps are data (action_rules.pack scoped_values.keys.<key>.steps: op multiply | divide | add, by). An unknown step changes nothing.
 long long apply_steps(long long base, Delta& d, const Json& defs) {
+  // Each knob applies the same sequence; the receipt records that sequence once.
+  d.applied = Json::array();
   for (const auto& id : d.steps) {
     const Json def = defs.is_object() ? defs.value(id.get<std::string>(), Json::object()) : Json::object();
     const std::string op = json::get_string(def, "op");
