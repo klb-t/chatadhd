@@ -1,3 +1,38 @@
+## 2026-10-31 — M1 oraz skonfigurowany podstawowy DOCX przyjęte zakresowo
+
+Przyjęty i testowany kod **`4f6656bcfc515fff8a887a37ee7f1a932212b969`**.
+M1 przyjęto wcześniej w tym przyroście w `d8692078ecd95ddb9835f69c00c65524c6d6a789`;
+P0/M2/UI i wszystkie wcześniejsze commity zachowane. 49/49 plików kodu/testów
+zgodnych z testowanymi bajtami. Baza publiczna pozostaje przodkiem.
+
+Własny przyrostowy build `-j2` PASS. DOCX **40/40 parser, 7/7 HTTP PASS**:
+rzeczywisty multipart, polska treść i ostrzeżenia w kontekście, idempotentne
+źródło/hash, oryginał, dalsze tury/reopen/restart; odmowy uszkodzeń, ZIP/XML,
+limitów, innych formatów i braku helpera. Dodatkowy test sekretu wyłącznie
+w XML odmawia przed dostawcą i zapisem rozmowy, także po restarcie.
+Dane syntetyczne, provider loopback; żadnego rzeczywistego modelu/API.
+
+M1 po odblokowaniu odczytu PNG: lokalny OCR/parser **16/16**; na scalonym kodzie
+native **17/17 (1183 asercje)** i ABI/HTTP **8/8 PASS**. Zgoda związana z hashem,
+prepare/persist, wybrana historia przed routingiem i granice body_bytes sprawdzone.
+Eksportowane ABI **3/3**, CTest `-j1` **6/6 zestawów / 23/23 przypadki, 0 skip**
+(PDF5/dialog2/text3/locale2/BYOK9/CAPI2). Błędy własnej konfiguracji CWD testów
+zachowano i poprawiono bez zmiany bramek; 11 ukończonych regresji nie powtarzano.
+
+Implemented/tested: opisany backend, **nie pełne wydanie**. DOCX pozostaje
+częściowy, z warnings; bez formatowania/paginacji, DOC/XLSX/PPTX/ODT ani OCR
+osadzonych obrazów. **Domyślny helper `/usr/share/loom/docx_basic/reader.py`
+nie jest dostarczony w instalacji**: testowano jawną własną konfigurację;
+pakiet/helper/interpreter trzeba odebrać przed wdrożeniem. Bez instalacji tutaj.
+Nowy GUI OCR/DOCX, fizyczny mobile, realny model, pełny repo gate i rollback
+deploy niewykonane; deployed **NIE**. Poprzednie P0 GUI 9/9+8/8 i UI hash4/4
+pozostają wcześniejszym dowodem. Anthropic vision/zewnętrzny share nadal brak.
+
+§0 rewizja2: dane limitów oddzielone od ochrony integralności; inference jawne.
+Globalna hierarchia/jeden wyłącznik logów nieudowodnione, bez refaktoru.
+[Raport, SHA, dowody, ograniczenia i odwracalność](reports/M1_DOCX_INTEGRATION_2026-10-31.md).
+Następny przyrost wyłącznie przez administratora; bez push/PR/publikacji/deploy.
+
 ## 2026-10-31 — P0 GUI potwierdzone, M2 przyjęte, core M1 odłożone
 
 Przyjęty kod **`5972828c46ac8c8675d132ee8ad557382c5726b6`**: M2 URL `c756c9dd1c1cd33b948b5e95351173d34c459fae`
