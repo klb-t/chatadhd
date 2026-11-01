@@ -109,7 +109,7 @@ export class LoomJniApi implements LoomApi {
     clientResult: (result) => this.callAsync("invoke", { port: "actions", action: "client_result", request: result }),
     // No HTTP in the shell: the bytes cross the string bridge in bounded chunks that the kernel appends to an upload and then stores by hash
     // (client.blob_begin | append | commit), and come back the same way (client.blob_read). Nothing is carried in client_result.
-    clientBlobUpload: async (blob) => {
+    clientBlobUpload: async (blob, options) => {
       const call = <T,>(action: string, request: Record<string, unknown>) => this.callAsync<T>("invoke", { port: "actions", action, request });
       const begun = await call<{ upload_id: string }>("client.blob_begin", {});
       try {
@@ -117,12 +117,14 @@ export class LoomJniApi implements LoomApi {
           const chunk = new Uint8Array(await blob.slice(at, at + BLOB_CHUNK).arrayBuffer());
           await call("client.blob_append", { upload_id: begun.upload_id, data_base64: bytesToBase64(chunk) });
         }
-        return await call<ClientBlob>("client.blob_commit", { upload_id: begun.upload_id, mime: blob.type || "application/octet-stream" });
+        return await call<ClientBlob>("client.blob_commit", { upload_id: begun.upload_id, mime: blob.type || "application/octet-stream", ...options });
       } catch (failure) {
         try { await call("client.blob_commit", { upload_id: begun.upload_id, abort: true }); } catch { /* the upload is already gone */ }
         throw failure;
       }
     },
+    clientBlobText: (request) => this.callAsync("invoke", { port: "actions", action: "client.blob_text", request }),
+    clientBlobTextRead: (request) => this.callAsync("invoke", { port: "actions", action: "client.blob_text_read", request }),
     clientBlobFetch: async (hash) => {
       const pieces: Uint8Array[] = [];
       let mime = "";

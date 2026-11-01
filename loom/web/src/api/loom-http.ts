@@ -92,12 +92,17 @@ export class LoomHttpApi implements LoomApi {
       const form = new FormData();
       form.append("mime", blob.type || "application/octet-stream");
       form.append("file", blob, options?.name || "blob");
+      for (const key of ["source_key", "format", "previous_source_id"] as const) {
+        if (options?.[key] !== undefined) form.append(key, options[key]!);
+      }
       const res = await fetch("/api/client/blob/upload", { method: "POST", headers: this.headers(), body: form });
       if (res.status === 401 && typeof window !== "undefined") window.dispatchEvent(new Event(AUTH_REQUIRED_EVENT));
       const parsed = (await res.json().catch(() => ({}))) as unknown;
       if (!res.ok || isLoomError(parsed)) throw new HttpError(res.status, isLoomError(parsed) ? parsed.error.message : `HTTP ${res.status}`);
       return parsed as ClientBlob;
     },
+    clientBlobText: (request) => this.req("POST", "/api/client/blob/text", request),
+    clientBlobTextRead: (request) => this.req("POST", "/api/client/blob/text/read", request),
     clientBlobFetch: async (hash) => {
       const res = await fetch(`/api/client/blob/${encodeURIComponent(hash)}/raw`, { headers: this.headers() });
       if (res.status === 401 && typeof window !== "undefined") window.dispatchEvent(new Event(AUTH_REQUIRED_EVENT));

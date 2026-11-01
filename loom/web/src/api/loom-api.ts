@@ -120,7 +120,7 @@ export interface ClientDeclaration {
  *  (`clientBlobUpload`); bytes never travel inside this JSON. */
 export interface ClientResultPart { kind: string; mime?: string; blob_hash?: string; text?: string; name?: string; value?: unknown }
 /** A blob the kernel keeps for this user. */
-export interface ClientBlob { hash: string; size: number; mime: string }
+export interface ClientBlob { hash: string; size: number; mime: string; source_key?: string; source_id?: string }
 export interface ClientResult {
   run_id: string;
   receipt_id: string;
@@ -147,7 +147,10 @@ export interface ActionsApi {
   clientResult?(result: ClientResult): Promise<ActionRun>;
   /** Hands bytes to the kernel (a recording, a picture, a file): streamed to disk on the web, in bounded chunks on the native shell; the
    *  answer names the blob by its hash. */
-  clientBlobUpload?(blob: Blob, options?: { name?: string }): Promise<ClientBlob>;
+  clientBlobUpload?(blob: Blob, options?: { name?: string; source_key?: string; format?: string; previous_source_id?: string }): Promise<ClientBlob>;
+  /** G1: explicit projection of a stored original; never runs during upload. */
+  clientBlobText?(request: import("./text-sources").TextSourceRequest): Promise<unknown>;
+  clientBlobTextRead?(request: { node_id: string }): Promise<unknown>;
   /** The bytes of a stored blob of this user (a recording to play). */
   clientBlobFetch?(hash: string): Promise<Blob>;
   run(request: Record<string, unknown>): Promise<ActionRun>;

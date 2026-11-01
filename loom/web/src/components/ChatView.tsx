@@ -34,6 +34,7 @@ import { buildRetrievalPlan } from "../context/retrieval-plan";
 import { shouldSubmit, type ApplicationProfile } from "../profiles/runtime";
 import ImportedMessageContent from "./ImportedMessageContent";
 import AttachmentOriginal from "./AttachmentOriginal";
+import SourcePartsPanel from "./SourcePartsPanel";
 import ArtifactFrame from "../shell/artifacts/ArtifactFrame";
 import { OPEN_ARTIFACT_EVENT, fileNameOf, formatById, pickArtifact, splitArtifacts } from "../shell/artifacts/artifacts";
 import { downloadText } from "../shell/artifacts/ArtifactFrame";
@@ -1510,6 +1511,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
 
       {!chat && <GraphChatSettings transport={api} disabled={!!stream} />}
       {!chat && <ScopeExplain convId={convId} />}
+      <SourcePartsPanel graphEnabled={includeGraphMemory} onEnableGraph={() => setIncludeGraphMemory(true)} />
       {!chat && <details className="chat-context-controls" data-testid="chat-context-controls">
         <summary>{t("wk_summary")}{useKnowledge ? " · " + t("wk_knowledge_on") : ""}</summary>
         <fieldset disabled={!!stream}>

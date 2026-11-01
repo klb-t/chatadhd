@@ -5,6 +5,7 @@ import { shellTranslator, useShellLanguage, useShellText } from "../shell/text";
 import type { UserProfileHost } from "../api/onboarding-host";
 import { usePresentationFeature } from "./ConversationSourceView";
 import GraphHelp from "./GraphHelp";
+import SourcePartsPanel from "./SourcePartsPanel";
 import { graphText } from "../graph/graph-text";
 import { degreeMap, graphLabelOptions, planLabels, type PlacedLabel } from "../graph/graph-labels";
 import type { GraphEdge, GraphNode } from "../api/types";
@@ -83,6 +84,7 @@ export default function GraphView({ convId, profileHost, helpSetting, onSetting 
   const g = useCallback((id: Parameters<typeof graphText>[1], params?: Record<string, string | number>) => graphText(language, id, params), [language]);
   const hoverRef = useRef<string | null>(null);
   const selectedRef = useRef<string | null>(null);
+  const graphGeneration = useRef(0);
   const labelsRef = useRef<{ frame: number; placed: PlacedLabel[] }>({ frame: 0, placed: [] });
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -105,9 +107,12 @@ export default function GraphView({ convId, profileHost, helpSetting, onSetting 
   useEffect(() => setConvFilter(convId ?? ""), [convId]);
 
   const load = useCallback(() => {
+    const generation = ++graphGeneration.current;
+    setLoadingMore(false);
     readWebPageSizes()
       .then((sizes) => api.getGraphData(convFilter || undefined, convFilter ? { limit: sizes.graphPage } : undefined))
       .then((raw) => {
+        if (generation !== graphGeneration.current) return;
         setGraphPage(convFilter && typeof raw.total_messages === "number"
           ? { shown: raw.nodes.filter((n) => n.kind === "message").length, total: raw.total_messages, next: raw.truncated ? raw.next_before ?? null : null }
           : null);
@@ -130,19 +135,22 @@ export default function GraphView({ convId, profileHost, helpSetting, onSetting 
         setNodeCount(map.size);
         setEdgeCount(data.edges.length);
         setError(null);
+        setSelected(null); selectedRef.current = null; labelsRef.current.frame = 0;
       })
-      .catch((err) => setError(err instanceof Error ? err.message : String(err)));
+      .catch((err) => { if (generation === graphGeneration.current) setError(err instanceof Error ? err.message : String(err)); });
   }, [convFilter]);
 
-  useEffect(load, [load]);
+  useEffect(() => { load(); return () => { graphGeneration.current++; }; }, [load]);
 
   const loadMore = useCallback(() => {
     const cursor = graphPage?.next;
     if (!convFilter || !cursor) return;
+    const generation = graphGeneration.current;
     setLoadingMore(true);
     readWebPageSizes()
       .then((sizes) => api.getGraphData(convFilter, { limit: sizes.graphPage, before: cursor }))
       .then((raw) => {
+        if (generation !== graphGeneration.current) return;
         const data = filterGraphNoise(raw.nodes, raw.edges);
         const map = nodesRef.current;
         const w = containerRef.current?.clientWidth ?? 400;
@@ -163,8 +171,8 @@ export default function GraphView({ convId, profileHost, helpSetting, onSetting 
         }));
         setError(null);
       })
-      .catch((err) => setError(err instanceof Error ? err.message : String(err)))
-      .finally(() => setLoadingMore(false));
+      .catch((err) => { if (generation === graphGeneration.current) setError(err instanceof Error ? err.message : String(err)); })
+      .finally(() => { if (generation === graphGeneration.current) setLoadingMore(false); });
   }, [convFilter, graphPage]);
 
   // Force simulation + render loop.
@@ -367,8 +375,10 @@ export default function GraphView({ convId, profileHost, helpSetting, onSetting 
         selectedRef.current = node?.id ?? null;
         labelsRef.current.frame = 0;
         if (canvasRef.current) canvasRef.current.title = node ? node.label ?? node.id : "";
+        const generation = graphGeneration.current;
         try {
           const rawExpansion = await api.expandGraph([drag.nodeId], depth);
+          if (generation !== graphGeneration.current) return;
           const expansion = filterGraphNoise(rawExpansion.nodes, rawExpansion.edges);
           const w = containerRef.current?.clientWidth ?? 400;
           const h = containerRef.current?.clientHeight ?? 400;
@@ -395,7 +405,7 @@ export default function GraphView({ convId, profileHost, helpSetting, onSetting 
           setNodeCount(nodesRef.current.size);
           setEdgeCount(edgesRef.current.length);
         } catch (err) {
-          setError(err instanceof Error ? err.message : String(err));
+          if (generation === graphGeneration.current) setError(err instanceof Error ? err.message : String(err));
         }
       }
     },
@@ -414,9 +424,28 @@ export default function GraphView({ convId, profileHost, helpSetting, onSetting 
     t.scale = Math.min(4, Math.max(0.2, t.scale * factor));
   }, []);
 
+  // Reuse this canvas and the existing graph endpoint for a source occurrence.
+  const showSource = async (id: string) => {
+    const generation = ++graphGeneration.current;
+    setLoadingMore(false);
+    try {
+      const data = await api.expandGraph([id], depth);
+      if (generation !== graphGeneration.current) return;
+      if (!data.nodes.some(node => node.id === id)) throw Error("text_source_graph_node_missing");
+      const w = containerRef.current?.clientWidth ?? 400, h = containerRef.current?.clientHeight ?? 400;
+      const map = new Map<string, SimNode>();
+      data.nodes.forEach((n, i) => map.set(n.id, { ...n, x: w / 2 + Math.cos(i) * 80, y: h / 2 + Math.sin(i) * 80, vx: 0, vy: 0 }));
+      nodesRef.current = map; edgesRef.current = data.edges;
+      transformRef.current = { x: 0, y: 0, scale: 1 };
+      selectedRef.current = id; setSelected(map.get(id) ?? null); labelsRef.current.frame = 0;
+      setNodeCount(map.size); setEdgeCount(data.edges.length); setGraphPage(null); setError(null);
+    } catch (failure) { if (generation === graphGeneration.current) setError(failure instanceof Error ? failure.message : String(failure)); }
+  };
+
   return (
-    <div data-testid="graph-view" style={{ display: "flex", flexDirection: "column", height: "100%", minHeight: 0 }}>
+    <div data-testid="graph-view" data-selected-node={selected?.id ?? ""} style={{ display: "flex", flexDirection: "column", height: "100%", minHeight: 0 }}>
       <GraphHelp screen="old_graph" t={helpT} setting={helpSetting} onSetting={onSetting} testId="graph-help" />
+      <div style={{ maxHeight: "45%", overflow: "auto", flexShrink: 0 }}><SourcePartsPanel onGraph={id => void showSource(id)} /></div>
       <div className="form-row" style={{ display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
         <input
           type="text"

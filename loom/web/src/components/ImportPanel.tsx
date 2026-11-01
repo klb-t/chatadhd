@@ -5,6 +5,7 @@ import { dataLabel, useShellLanguage, useShellText } from "../shell/text";
 import Disclosure from "../shell/Disclosure";
 import PersonText from "./PersonText";
 import UrlImportPanel, { UrlImportResult } from "./UrlImportPanel";
+import SourcePartsPanel from "./SourcePartsPanel";
 import { absentLine, importView } from "./import-truth-state";
 import "./import-truth.css";
 
@@ -88,6 +89,7 @@ export default function ImportPanel({ onImported }: Props) {
 
   return (
     <div data-testid="import-panel">
+      <SourcePartsPanel upload />
       {!native && <UrlImportPanel onImported={onImported} disabled={busy} />}
       {native ? (
       <div className="form-row">
