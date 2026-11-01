@@ -1,0 +1,15 @@
+{
+  "schema": "loom.odt_basic.limits/1",
+  "max_input_bytes": 8388608,
+  "max_entries": 1024,
+  "max_entry_bytes": 16777216,
+  "max_total_uncompressed_bytes": 25165824,
+  "max_ratio": 200,
+  "max_xml_depth": 128,
+  "max_xml_nodes": 50000,
+  "max_units": 10000,
+  "max_table_cells": 100000,
+  "max_projection_bytes": 4194304,
+  "max_output_bytes": 16777216,
+  "read_chunk_bytes": 32768
+}

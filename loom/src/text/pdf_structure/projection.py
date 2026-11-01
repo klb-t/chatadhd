@@ -64,8 +64,18 @@ def project(request):
         end = offset + len(page)
         pages.append({"page": number, "byte_range": [offset, end], "has_text": number not in missing})
         cuts = [m.end() for m in separator.finditer(page)] if separator else []
-        if not cuts or cuts[-1] != len(page):
-            cuts.append(len(page))
+        # Poppler commonly preserves line breaks without empty lines. A pinned
+        # prefix recognizes a standalone heading line, not the whole following
+        # paragraph. Split at its byte boundaries; classification stays inferred.
+        if options["chapter_mode"] == "prefix":
+            line_start = 0
+            for line in page.splitlines(keepends=True):
+                title = line.strip(b" \t\r\n\v").decode("utf-8")
+                if title and (not max_chars or len(title) <= max_chars) and any(title.startswith(p) for p in prefixes):
+                    if line_start: cuts.append(line_start)
+                    cuts.append(line_start + len(line))
+                line_start += len(line)
+        cuts = sorted(set(cuts + [len(page)]))
         begin = 0
         ordinal = 0
         for stop in cuts:

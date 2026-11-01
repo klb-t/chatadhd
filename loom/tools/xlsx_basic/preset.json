@@ -1,0 +1,16 @@
+{
+  "schema": "loom.xlsx_basic.limits/1",
+  "max_input_bytes": 8388608,
+  "max_total_uncompressed_bytes": 16777216,
+  "max_entry_bytes": 8388608,
+  "max_entries": 512,
+  "max_ratio": 1000,
+  "max_xml_depth": 64,
+  "max_xml_nodes": 100000,
+  "max_text_chars": 1000000,
+  "max_sheets": 128,
+  "max_cells": 50000,
+  "max_range_cells": 50000,
+  "max_output_bytes": 16777216,
+  "read_chunk_bytes": 65536
+}

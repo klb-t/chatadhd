@@ -4,13 +4,13 @@ export interface TextSourceRequest {
   language?: string; previous_source_id?: string;
 }
 export interface DocxDerivation {
-  schema: "loom.docx_source_derivation/1"; original_source_id: string; original_sha256: string;
+  schema: "loom.docx_source_derivation/1" | "loom.pdf_source_derivation/1" | "loom.host_source_derivation/1"; original_source_id: string; original_sha256: string;
   original_size: number; text_sha256: string; extraction_blob: string; transform_sha256: string;
   transform: Record<string, unknown>;
 }
 export interface SourceBlock {
   ordinal: number; text: string;
-  attrs: { recognized_kind: string; original_locator: string; evidence_class: string; coordinate: string };
+  attrs: { recognized_kind: string; original_locator: string | Record<string, unknown>; evidence_class: string; coordinate: string };
   locator: { source: string; byte_start: number; byte_len: number };
 }
 export interface TextSource {
@@ -20,7 +20,9 @@ export interface TextSource {
 export interface SourceParts {
   schema: "loom.source_text_parts/1"; source_id: string; source_node: string;
   source_sha256: string; projection_node: string; version_node: string;
-  occurrence_nodes: string[]; coordinate: "source_utf8_bytes" | "derived_utf8_bytes";
+  occurrence_nodes: string[]; coordinate: "source_utf8_bytes" | "derived_utf8_bytes" | "archive_members";
+  structure_nodes?: { node_id: string; parent?: string; kind?: string; title?: string; locator?: Record<string, unknown>; attrs?: Record<string, unknown> }[];
+  children?: SourceParts[];
   derivation?: DocxDerivation; warnings?: string[]; observations?: SourceBlock[];
   status: string; reason: string; method: Record<string, unknown>;
 }

@@ -294,7 +294,9 @@ Result<Json> materialize_structure(Runtime& rt, const Json& result, const Prepar
     // bytes counts only known bytes in the located source; PDF page byte size is unknown.
     unit.bytes = unit.locator.byte_len.value_or(0);
     unit.id = model::Unit::make_id(unit.source, unit.locator);
-    const auto id = "n_pdf_structure_" + Sha256::hex(unit.id + ":" + method);
+    // Page Units address the same raw PDF, but their graph occurrences belong
+    // to a particular source key/projection (standalone or archive member).
+    const auto id = "n_pdf_structure_" + Sha256::hex(unit.id + ":" + method + ":" + source);
     Json metadata{{"schema", "loom.pdf_structure.unit/1"}, {"unit", unit.to_json()},
         {"method_sha256", method}, {"derivation", d.derivation}, {"coordinate", unit.attrs.at("coordinate")}};
     LOOM_TRY_ASSIGN(auto prior, db.get_node(id));

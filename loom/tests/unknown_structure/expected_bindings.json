@@ -1,0 +1,192 @@
+{
+  "schema": "loom.unknown_structure.native_arguments/1",
+  "identity_assignment": "native_Unit_make_id_Observation_make_id",
+  "sources": [
+    {
+      "role": "original",
+      "blob_hash": "8d44cfb7963e2a40a58c4ed0eb0f32b66d20b329cc86da56094c0f6dc6208037"
+    },
+    {
+      "role": "derived_json",
+      "blob_hash": "bc7e1f8a88fba14c9dfaec241b8c0f406207ecbdda1e29ea72c842639a07e887"
+    },
+    {
+      "role": "derived_utf8",
+      "blob_hash": "f9471667f6cdc1fec28611a8d3ff70f156c09c23379754b42dc20313434326c0"
+    }
+  ],
+  "units": [
+    {
+      "source": "sha256:bc7e1f8a88fba14c9dfaec241b8c0f406207ecbdda1e29ea72c842639a07e887",
+      "kind": "workbook",
+      "locator": {
+        "source": "sha256:bc7e1f8a88fba14c9dfaec241b8c0f406207ecbdda1e29ea72c842639a07e887",
+        "json_pointer": ""
+      },
+      "title": "",
+      "date": "",
+      "artifact_type": "legacy-xls-biff8",
+      "lang": "",
+      "bytes": 57,
+      "attrs": {
+        "evidence_class": "derived",
+        "confidence": null,
+        "parent_pointer": null,
+        "original_address": null
+      }
+    },
+    {
+      "source": "sha256:bc7e1f8a88fba14c9dfaec241b8c0f406207ecbdda1e29ea72c842639a07e887",
+      "kind": "sheet",
+      "locator": {
+        "source": "sha256:bc7e1f8a88fba14c9dfaec241b8c0f406207ecbdda1e29ea72c842639a07e887",
+        "json_pointer": "/sheets/0"
+      },
+      "title": "/sheets/0",
+      "date": "",
+      "artifact_type": "legacy-xls-biff8",
+      "lang": "",
+      "bytes": 44,
+      "attrs": {
+        "evidence_class": "derived",
+        "confidence": null,
+        "parent_pointer": "",
+        "original_address": null
+      }
+    },
+    {
+      "source": "sha256:bc7e1f8a88fba14c9dfaec241b8c0f406207ecbdda1e29ea72c842639a07e887",
+      "kind": "row",
+      "locator": {
+        "source": "sha256:bc7e1f8a88fba14c9dfaec241b8c0f406207ecbdda1e29ea72c842639a07e887",
+        "json_pointer": "/sheets/0/rows/0"
+      },
+      "title": "/sheets/0/rows/0",
+      "date": "",
+      "artifact_type": "legacy-xls-biff8",
+      "lang": "",
+      "bytes": 9,
+      "attrs": {
+        "evidence_class": "derived",
+        "confidence": null,
+        "parent_pointer": "/sheets/0",
+        "original_address": null
+      }
+    },
+    {
+      "source": "sha256:bc7e1f8a88fba14c9dfaec241b8c0f406207ecbdda1e29ea72c842639a07e887",
+      "kind": "cell",
+      "locator": {
+        "source": "sha256:bc7e1f8a88fba14c9dfaec241b8c0f406207ecbdda1e29ea72c842639a07e887",
+        "json_pointer": "/sheets/0/rows/0/0"
+      },
+      "title": "/sheets/0/rows/0/0",
+      "date": "",
+      "artifact_type": "legacy-xls-biff8",
+      "lang": "",
+      "bytes": 3,
+      "attrs": {
+        "evidence_class": "derived",
+        "confidence": null,
+        "parent_pointer": "/sheets/0/rows/0",
+        "original_address": null
+      }
+    },
+    {
+      "source": "sha256:bc7e1f8a88fba14c9dfaec241b8c0f406207ecbdda1e29ea72c842639a07e887",
+      "kind": "cell",
+      "locator": {
+        "source": "sha256:bc7e1f8a88fba14c9dfaec241b8c0f406207ecbdda1e29ea72c842639a07e887",
+        "json_pointer": "/sheets/0/rows/0/1"
+      },
+      "title": "/sheets/0/rows/0/1",
+      "date": "",
+      "artifact_type": "legacy-xls-biff8",
+      "lang": "",
+      "bytes": 3,
+      "attrs": {
+        "evidence_class": "derived",
+        "confidence": null,
+        "parent_pointer": "/sheets/0/rows/0",
+        "original_address": null
+      }
+    }
+  ],
+  "text_units": [
+    {
+      "source": "sha256:f9471667f6cdc1fec28611a8d3ff70f156c09c23379754b42dc20313434326c0",
+      "kind": "cell",
+      "locator": {
+        "source": "sha256:f9471667f6cdc1fec28611a8d3ff70f156c09c23379754b42dc20313434326c0",
+        "byte_start": 0,
+        "byte_len": 1
+      },
+      "attrs": {
+        "structural_unit_pointer": "/sheets/0/rows/0/0"
+      }
+    },
+    {
+      "source": "sha256:f9471667f6cdc1fec28611a8d3ff70f156c09c23379754b42dc20313434326c0",
+      "kind": "cell",
+      "locator": {
+        "source": "sha256:f9471667f6cdc1fec28611a8d3ff70f156c09c23379754b42dc20313434326c0",
+        "byte_start": 2,
+        "byte_len": 1
+      },
+      "attrs": {
+        "structural_unit_pointer": "/sheets/0/rows/0/1"
+      }
+    }
+  ],
+  "observations": [
+    {
+      "unit_pointer": "/sheets/0/rows/0/0",
+      "kind": "field",
+      "text": "A",
+      "ordinal": 0,
+      "locator": {
+        "source": "sha256:f9471667f6cdc1fec28611a8d3ff70f156c09c23379754b42dc20313434326c0",
+        "byte_start": 0,
+        "byte_len": 1
+      },
+      "attrs": {
+        "evidence_class": "derived",
+        "confidence": null,
+        "coordinate": "derived_utf8_bytes",
+        "original_sha256": "8d44cfb7963e2a40a58c4ed0eb0f32b66d20b329cc86da56094c0f6dc6208037",
+        "original_address": null
+      }
+    },
+    {
+      "unit_pointer": "/sheets/0/rows/0/1",
+      "kind": "field",
+      "text": "2",
+      "ordinal": 1,
+      "locator": {
+        "source": "sha256:f9471667f6cdc1fec28611a8d3ff70f156c09c23379754b42dc20313434326c0",
+        "byte_start": 2,
+        "byte_len": 1
+      },
+      "attrs": {
+        "evidence_class": "derived",
+        "confidence": null,
+        "coordinate": "derived_utf8_bytes",
+        "original_sha256": "8d44cfb7963e2a40a58c4ed0eb0f32b66d20b329cc86da56094c0f6dc6208037",
+        "original_address": null
+      }
+    }
+  ],
+  "provenance": {
+    "source_sha256": "8d44cfb7963e2a40a58c4ed0eb0f32b66d20b329cc86da56094c0f6dc6208037",
+    "transform_sha256": "599ace540c73381a59c99136c89fdf0a1cd0aa02a2e2df9120cf5ec9bcbbaf3e",
+    "tool_receipt": {
+      "tool_sha256": "69c3bf618680f3d51a87ce748c837aac1dca7cd55ca040c0bce72ab062386a46",
+      "tool": "xls2csv",
+      "argv_profile": "utf8_quote_all/1",
+      "returncode": 0,
+      "stdout_sha256": "8263ae90cf78973ca4f7da73868bc88aeddfecc8ff8f87681cce7654a355cc49",
+      "stderr_sha256": "d17c8ab367670417505c033a01392261921a7d717c686e9cd838b0d41f643a7d"
+    }
+  },
+  "native_materialized": false
+}

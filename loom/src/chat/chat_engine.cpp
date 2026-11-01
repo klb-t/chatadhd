@@ -1680,7 +1680,7 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
             const bool pdf = node.metadata.contains("derivation") &&
                 json::get_string(node.metadata.at("derivation"), "schema") == "loom.pdf_source_derivation/1";
             const auto path = attachment_resolver_(pdf ? json::get_string(node.metadata.at("derivation"), "original_sha256") :
-                json::get_string(node.metadata, "source_sha256"));
+                json::get_string(node.metadata.at("method").at("host_reader"), "input_sha256"));
             if (!path) return Error(Errc::NotFound, "host_reader_original_unavailable");
             if (pdf) {
               for (const auto& artifact : {node.metadata.at("source_sha256"), node.metadata.at("derivation").at("extraction_blob")}) {
@@ -1692,6 +1692,11 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
                 if (Sha256::hex(bytes) != hash) return Error(Errc::Conflict, "pdf_structure_artifact_changed");
               }
               return text::sources::pdf::verify_node(node, *path);
+            }
+            const auto& binding = node.metadata.at("method").at("host_reader");
+            for(const auto& hash : {binding.at("receipt_blob").get<std::string>(), node.metadata.at("source_sha256").get<std::string>()}) {
+              const auto artifact=attachment_resolver_(hash);if(!artifact)return Error(Errc::NotFound,"host_reader_artifact_missing");
+              LOOM_TRY_ASSIGN(auto bytes,fsutil::read_file(*artifact));if(Sha256::hex(bytes)!=hash)return Error(Errc::Conflict,"host_reader_artifact_changed");
             }
             return text::sources::host::verify_node(node, *path);
           }, [this](const Node& node, std::size_t detail, std::size_t hops) -> Result<Json> {

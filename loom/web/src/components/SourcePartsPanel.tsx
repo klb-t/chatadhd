@@ -180,10 +180,22 @@ function SourcePartsBrowser({ upload, onGraph, graphEnabled, onEnableGraph }: Pr
             </div>
             <p>{w("recognized")}</p>
             <ol data-testid="source-blocks">{projection.observations?.map(block => <li key={block.ordinal} data-kind={block.attrs.recognized_kind}>
-              {blockLabel(block.attrs.recognized_kind)} · {block.ordinal + 1} · {block.attrs.original_locator}
+              {blockLabel(block.attrs.recognized_kind)} · {block.ordinal + 1} · {typeof block.attrs.original_locator === "string" ? block.attrs.original_locator : JSON.stringify(block.attrs.original_locator)}
               <pre style={{ whiteSpace: "pre-wrap" }}>{block.text || w("emptyBlock")}</pre>
             </li>)}</ol>
           </>}
+          {projection.structure_nodes && <div data-testid="source-structure"><p>{w("structure")}</p><ol>
+            {projection.structure_nodes.map(n => <li key={n.node_id} data-node-id={n.node_id} data-parent-id={n.parent} data-kind={n.kind}>
+              {n.kind} · {n.title} <code>{JSON.stringify(n.locator ?? {})}</code>
+              {onGraph && <button type="button" onClick={() => onGraph(n.node_id)}>{w("graph")}</button>}
+            </li>)}
+          </ol></div>}
+          {projection.children && <div data-testid="source-archive-children"><p>{w("members")}</p><ul>
+            {projection.children.map(child => <li key={child.source_id} data-source-id={child.source_id}>
+              {sources.find(s => s.id === child.source_id)?.title ?? child.source_id} · {child.status}
+              {sources.some(s => s.id === child.source_id) && <button type="button" onClick={() => {setSelected(child.source_id);setOccurrence(null);}}>{w("openMember")}</button>}
+            </li>)}
+          </ul></div>}
           <label>{w("occurrence")}<select data-testid="source-occurrence" value={nodeId} onChange={e => { readGeneration.current++; setNodeId(e.target.value); setOccurrence(null); }}>
             {projection.occurrence_nodes.map((id, i) => <option key={id} value={id}>{i + 1} · {projection.method.level === "recognized_block" && projection.observations?.[i] ? blockLabel(projection.observations[i].attrs.recognized_kind) + " · " : ""}{id}</option>)}
           </select></label>

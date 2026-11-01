@@ -11,9 +11,11 @@ export function sourceDerivation(source) {
     return null;
   }
   const d = object(value);
-  if (source.format !== "docx" || source.parser !== "loom.source_parts" || meta.coordinate !== "derived_utf8_bytes" ||
-      d?.schema !== "loom.docx_source_derivation/1" || !hash(d.original_sha256) ||
-      d.original_source_id !== "src_docx_" + d.original_sha256 || d.text_sha256 !== source.blob_hash ||
+  const expected = {docx: ["loom.docx_source_derivation/1", "src_docx_"], pdf: ["loom.pdf_source_derivation/1", "src_pdf_"],
+    xlsx: ["loom.host_source_derivation/1", "src_file_"], odt: ["loom.host_source_derivation/1", "src_file_"], epub: ["loom.host_source_derivation/1", "src_file_"]}[source.format];
+  if (!expected || source.parser !== "loom.source_parts" || meta.coordinate !== "derived_utf8_bytes" ||
+      d?.schema !== expected[0] || !hash(d.original_sha256) ||
+      d.original_source_id !== expected[1] + d.original_sha256 || d.text_sha256 !== source.blob_hash ||
       !hash(d.extraction_blob) || !hash(d.transform_sha256) || !object(d.transform) ||
       !Number.isSafeInteger(d.original_size) || d.original_size < 0) throw Error("text_source_derivation_invalid");
   return d;
@@ -56,7 +58,7 @@ export function textSources(rows) {
 export function readSourceParts(value, source) {
   const row = object(value), d = sourceDerivation(source);
   if (row?.schema !== "loom.source_text_parts/1" || row.source_id !== source.id || row.source_sha256 !== source.blob_hash ||
-      row.coordinate !== (d ? "derived_utf8_bytes" : "source_utf8_bytes") || typeof row.source_node !== "string" || !row.source_node ||
+      row.coordinate !== (d ? "derived_utf8_bytes" : source.format === "zip" ? "archive_members" : "source_utf8_bytes") || typeof row.source_node !== "string" || !row.source_node ||
       typeof row.projection_node !== "string" || !row.projection_node || typeof row.version_node !== "string" || !row.version_node ||
       !object(row.method) || typeof row.reason !== "string" || typeof row.status !== "string" ||
       !Array.isArray(row.occurrence_nodes) || row.occurrence_nodes.some(id => typeof id !== "string" || !id) ||
@@ -66,11 +68,20 @@ export function readSourceParts(value, source) {
         row.original_source_node !== "n_" + d.original_source_id || !Array.isArray(row.observations) || row.observations.some((block, i) => {
           const b = object(block), attrs = object(b?.attrs), loc = object(b?.locator);
           return b?.ordinal !== i || typeof b?.text !== "string" || typeof attrs?.recognized_kind !== "string" ||
-            typeof attrs.original_locator !== "string" || attrs.coordinate !== "derived_utf8_bytes" || attrs.evidence_class !== "derived" ||
+            !(typeof attrs.original_locator === "string" || object(attrs.original_locator)) || attrs.coordinate !== "derived_utf8_bytes" || attrs.evidence_class !== "derived" ||
             loc?.source !== source.id || !Number.isSafeInteger(loc.byte_start) || loc.byte_start < 0 ||
             loc.byte_len !== new TextEncoder().encode(b.text).length;
         })) : row.derivation !== undefined))
     throw Error("text_source_projection_invalid");
+  // Older PDF projections expose page/chapter ID arrays; retain their actual
+  // native IDs, without inventing raw-PDF offsets or a new coordinate system.
+  if (object(row.structure_nodes)) {
+    const structure = Object.entries(row.structure_nodes).flatMap(([kind, ids]) => {
+      if (!Array.isArray(ids) || ids.some(id => typeof id !== "string")) throw Error("text_source_structure_invalid");
+      return ids.map((id, i) => ({node_id:id,parent:row.source_node,kind,title:String(i+1)}));
+    });
+    return {...row, structure_nodes:structure};
+  }
   return row;
 }
 
@@ -136,7 +147,7 @@ export function sourceSelectionPatch(config, nodeId, include, hops) {
 
 export function materializationRequest(source, language) {
   return { hash: sourceOriginalHash(source), source_key: source.metadata.source_key, name: source.title, format: source.format,
-    language, ...(source.metadata.previous_source_id ? { previous_source_id: source.metadata.previous_source_id } : {}) };
+    ...(["pdf","csv","python_ast","xlsx","odt","epub","zip"].includes(source.format) ? {} : { language }), ...(source.metadata.previous_source_id ? { previous_source_id: source.metadata.previous_source_id } : {}) };
 }
 
 /** Read/merge/readback of the existing account-wide selector, only after an explicit UI action. */

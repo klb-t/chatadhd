@@ -1,0 +1,152 @@
+{
+  "schema": "loom.unknown_structure.catalog/1",
+  "formats": {
+    "legacy-xls-biff8": {
+      "spec": {
+        "url": "https://learn.microsoft.com/en-us/openspecs/office_file_formats/ms-xls/cd03cb5f-ca02-4934-a391-bb674cb8aa06",
+        "version": "12.2",
+        "published": "2025-08-19",
+        "access_date": "2026-11-01",
+        "content_sha256": "73dba197b1818f6ffc1cfeb565aee7285368b32cab7224bba3bde6320e0c0199",
+        "reasonmatch": "Official page identifies Excel97–2003 binary format; published12.2"
+      },
+      "spec_match_tokens": [
+        "Excel Binary File Format",
+        "97",
+        "2003",
+        "12.2"
+      ],
+      "providers": [
+        "xls2csv.local/1"
+      ],
+      "layers": [
+        "workbook",
+        "sheet",
+        "row",
+        "cell",
+        "range"
+      ]
+    },
+    "docx": {
+      "spec": {
+        "url": "https://learn.microsoft.com/en-us/openspecs/office_standards/ms-docx/",
+        "version": "existing_provider_contract",
+        "published": null
+      },
+      "spec_match_tokens": [
+        "docx"
+      ],
+      "providers": [
+        "loom.docx_basic/1"
+      ],
+      "layers": [
+        "document",
+        "block"
+      ]
+    },
+    "python-ast": {
+      "spec": {
+        "url": "https://docs.python.org/3/library/ast.html",
+        "version": "existing_provider_contract",
+        "published": null
+      },
+      "spec_match_tokens": [
+        "python-ast"
+      ],
+      "providers": [
+        "loom.python_ast_basic/1"
+      ],
+      "layers": [
+        "module",
+        "class",
+        "function"
+      ]
+    }
+  },
+  "providers": {
+    "xls2csv.local/1": {
+      "implementation": "loom/tools/unknown_structure/xls.py:run",
+      "native_hook": "pending_sole_integrator",
+      "mapping": {
+        "source": "loom::SourceRecord",
+        "unit": "loom::model::Unit",
+        "observation": "loom::model::Observation",
+        "observation_kind": "field",
+        "coordinate": "derived_utf8_bytes",
+        "identity": "native_make_id_only",
+        "genesis": "loom::text::genesis::materialize",
+        "provenance": "loom::ProvenanceStore",
+        "unit_rules": [
+          {
+            "kind": "workbook",
+            "path": []
+          },
+          {
+            "kind": "sheet",
+            "path": [
+              "sheets",
+              "*"
+            ]
+          },
+          {
+            "kind": "row",
+            "path": [
+              "sheets",
+              "*",
+              "rows",
+              "*"
+            ]
+          },
+          {
+            "kind": "cell",
+            "path": [
+              "sheets",
+              "*",
+              "rows",
+              "*",
+              "*"
+            ]
+          }
+        ],
+        "text_unit_kind": "cell"
+      },
+      "tool_metadata": {
+        "upstream_url": "https://www.wagner.pp.ru/~vitus/software/catdoc/",
+        "access_date": "2026-11-01",
+        "page_sha256": "8ec0e059c4ce1464da6504470e726dd571421a12f213e7aadea966836de870db",
+        "local_version": "Catdoc Version 0.95",
+        "coverage": "values_only_partial",
+        "formula_execution": false,
+        "manpage": "/usr/share/man/man1/xls2csv.1.gz"
+      }
+    },
+    "loom.docx_basic/1": {
+      "implementation": "loom/src/text/source_parts.cpp",
+      "native_hook": "existing",
+      "mapping": {
+        "source": "loom::SourceRecord",
+        "unit": "loom::model::Unit",
+        "observation": "loom::model::Observation",
+        "observation_kind": "field",
+        "coordinate": "derived_utf8_bytes",
+        "identity": "native_make_id_only",
+        "genesis": "loom::text::genesis::materialize",
+        "provenance": "loom::ProvenanceStore"
+      }
+    },
+    "loom.python_ast_basic/1": {
+      "implementation": "loom/tools/python_ast_basic/reader.py",
+      "native_hook": "not_accepted_native_hook",
+      "mapping": {
+        "source": "loom::SourceRecord",
+        "unit": "loom::model::Unit",
+        "observation": "loom::model::Observation",
+        "observation_kind": "field",
+        "coordinate": "derived_utf8_bytes",
+        "identity": "native_make_id_only",
+        "genesis": "loom::text::genesis::materialize",
+        "provenance": "loom::ProvenanceStore"
+      }
+    }
+  }
+}

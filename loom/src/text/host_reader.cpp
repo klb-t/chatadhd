@@ -1,4 +1,5 @@
 #include "host_reader.h"
+#include "file_graph.h"
 #include "chat/docx_basic/adapter.h"
 #include "chat/docx_basic/package.h"
 #include "loom/model.h"
@@ -34,6 +35,7 @@ std::string occurrence_id(const Json& unit, const std::string& method_hash, std:
 }
 Result<Prepared> prepare(const std::filesystem::path& original, const std::string& hash,
     const std::string& format, const std::string& key, const std::string& name, const Json& selection) try {
+  if (file_format(format)) return prepare_file_graph(original, hash, format, key, name);
   if (format != "csv" && format != "python_ast") return Error(Errc::Unsupported, "host_reader_format_unavailable");
   LOOM_TRY_ASSIGN(auto root, chat::packaged_reader_directory("structure_readers"));
   LOOM_TRY_ASSIGN(auto before, manifest(root));
@@ -97,13 +99,17 @@ Status verify_node(const Node& node, const std::filesystem::path& original) try 
   const auto& saved = meta.at("method").at("host_reader");
   LOOM_TRY_ASSIGN(auto fresh, prepare(original, saved.at("input_sha256").get<std::string>(),
       saved.at("format").get<std::string>(), saved.at("source_key").get<std::string>(), saved.at("name").get<std::string>()));
-  if (fresh.binding != saved || Sha256::hex(json::canonical(meta.at("method"))) != meta.at("method_sha256").get<std::string>())
+  if (json::canonical(fresh.binding) != json::canonical(saved) || Sha256::hex(json::canonical(meta.at("method"))) != meta.at("method_sha256").get<std::string>())
     return Error(Errc::Conflict, "host_reader_binding_mismatch");
   const auto index = meta.at("index").get<std::size_t>();
   const auto& part = fresh.output.at("parts").at(index);
-  if (part.at("unit") != meta.at("unit") || part.at("observations") != meta.at("observation_refs") ||
+  if (json::canonical(part.at("unit")) != json::canonical(meta.at("unit")) || part.at("observations") != meta.at("observation_refs") ||
       node.id != occurrence_id(part.at("unit"), meta.at("method_sha256").get<std::string>(), index))
     return Error(Errc::Conflict, "host_reader_occurrence_mismatch");
+  const auto start=part.at("unit").at("locator").at("byte_start").get<std::size_t>();
+  const auto len=part.at("unit").at("locator").at("byte_len").get<std::size_t>();
+  if (fresh.output.contains("text") && fresh.output.at("text").get<std::string>().substr(start,len)!=node.content)
+    return Error(Errc::Conflict,"host_reader_content_mismatch");
   return {};
 } catch (const Json::exception&) { return Error(Errc::Conflict, "host_reader_invalid_record"); }
 }

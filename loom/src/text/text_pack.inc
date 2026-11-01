@@ -135,7 +135,10 @@ constexpr std::string_view kTextPack = std::string_view(R"LOOMTXT({
           "segment": []
         },
         "reason": "code_text_only_no_ast"
-      }
+      },
+      "xlsx": {"mime": "text/plain; charset=utf-8", "level": "recognized_block", "part_kind": "field", "parse": {"segment": []}, "reason": "derived_structure_partial"},
+      "odt": {"mime": "text/plain; charset=utf-8", "level": "recognized_block", "part_kind": "field", "parse": {"segment": []}, "reason": "derived_structure_partial"},
+      "epub": {"mime": "text/plain; charset=utf-8", "level": "recognized_block", "part_kind": "field", "parse": {"segment": []}, "reason": "derived_structure_partial"}
     }
   },
   "genesis": {
@@ -160,4 +163,4 @@ constexpr std::string_view kTextPack = std::string_view(R"LOOMTXT({
     "match": {"contains": true, "max_candidates": 5}
   }
 }
-)LOOMTXT", 6603);
+)LOOMTXT", 7109);

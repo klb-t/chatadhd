@@ -1,0 +1,341 @@
+{
+  "schema": "loom.file_graph.profile/1",
+  "limits": {
+    "max_input_bytes": 8388608,
+    "cpu_seconds": 5,
+    "memory_bytes": 268435456
+  },
+  "timeout_ms": 8000,
+  "poll_ms": 20,
+  "max_output_bytes": 33554432,
+  "max_nodes": 10000,
+  "archive_depth": 3,
+  "archive_total_bytes": 16777216,
+  "archive_members": 128,
+  "parsers": {
+    "xlsx": {
+      "schema": "loom.xlsx_basic.limits/1",
+      "max_input_bytes": 8388608,
+      "max_total_uncompressed_bytes": 16777216,
+      "max_entry_bytes": 8388608,
+      "max_entries": 512,
+      "max_ratio": 1000,
+      "max_xml_depth": 64,
+      "max_xml_nodes": 100000,
+      "max_text_chars": 1000000,
+      "max_sheets": 128,
+      "max_cells": 50000,
+      "max_range_cells": 50000,
+      "max_output_bytes": 16777216,
+      "read_chunk_bytes": 65536
+    },
+    "odt": {
+      "schema": "loom.odt_basic.limits/1",
+      "max_input_bytes": 8388608,
+      "max_entries": 1024,
+      "max_entry_bytes": 16777216,
+      "max_total_uncompressed_bytes": 25165824,
+      "max_ratio": 200,
+      "max_xml_depth": 128,
+      "max_xml_nodes": 50000,
+      "max_units": 10000,
+      "max_table_cells": 100000,
+      "max_projection_bytes": 4194304,
+      "max_output_bytes": 16777216,
+      "read_chunk_bytes": 32768
+    },
+    "epub": {
+      "schema": "loom.epub_basic.limits/1",
+      "max_input_bytes": 16777216,
+      "max_total_uncompressed_bytes": 33554432,
+      "max_entry_bytes": 8388608,
+      "max_entries": 2048,
+      "max_ratio": 1000,
+      "max_xml_depth": 128,
+      "max_xml_nodes": 250000,
+      "max_text_chars": 2000000,
+      "read_chunk_bytes": 65536,
+      "rootfile_index": 0
+    },
+    "zip": {
+      "schema": "loom.epub_basic.limits/1",
+      "max_input_bytes": 16777216,
+      "max_total_uncompressed_bytes": 33554432,
+      "max_entry_bytes": 8388608,
+      "max_entries": 2048,
+      "max_ratio": 1000,
+      "max_xml_depth": 128,
+      "max_xml_nodes": 250000,
+      "max_text_chars": 2000000,
+      "read_chunk_bytes": 65536,
+      "rootfile_index": 0
+    }
+  },
+  "catalog": {
+    "formats": {
+      "xlsx": {
+        "spec": {
+          "contract": "reviewed_local_parser",
+          "version": 1,
+          "url": "urn:loom:format:xlsx"
+        },
+        "providers": [
+          "loom.xlsx_basic/1"
+        ],
+        "layers": [
+          "workbook",
+          "sheet",
+          "range",
+          "cell"
+        ],
+        "spec_match_tokens": []
+      },
+      "odt": {
+        "spec": {
+          "contract": "reviewed_local_parser",
+          "version": 1,
+          "url": "urn:loom:format:odt"
+        },
+        "providers": [
+          "loom.odt_basic/1"
+        ],
+        "layers": [
+          "heading",
+          "paragraph",
+          "table",
+          "table_row",
+          "table_cell"
+        ],
+        "spec_match_tokens": []
+      },
+      "epub": {
+        "spec": {
+          "contract": "reviewed_local_parser",
+          "version": 1,
+          "url": "urn:loom:format:epub"
+        },
+        "providers": [
+          "loom.epub_basic/1"
+        ],
+        "layers": [
+          "publication",
+          "chapter",
+          "heading",
+          "paragraph",
+          "list_item"
+        ],
+        "spec_match_tokens": []
+      },
+      "zip": {
+        "spec": {
+          "contract": "reviewed_local_parser",
+          "version": 1,
+          "url": "urn:loom:format:zip"
+        },
+        "providers": [
+          "loom.zip_basic/1"
+        ],
+        "layers": [
+          "archive",
+          "folder",
+          "file"
+        ],
+        "spec_match_tokens": []
+      }
+    },
+    "providers": {
+      "loom.xlsx_basic/1": {
+        "mapping": {
+          "source": "loom::SourceRecord",
+          "unit": "loom::model::Unit",
+          "observation": "loom::model::Observation",
+          "observation_kind": "field",
+          "coordinate": "derived_utf8_bytes",
+          "identity": "native_make_id_only",
+          "genesis": "loom::text::genesis::materialize",
+          "provenance": "loom::ProvenanceStore"
+        }
+      },
+      "loom.odt_basic/1": {
+        "mapping": {
+          "source": "loom::SourceRecord",
+          "unit": "loom::model::Unit",
+          "observation": "loom::model::Observation",
+          "observation_kind": "field",
+          "coordinate": "derived_utf8_bytes",
+          "identity": "native_make_id_only",
+          "genesis": "loom::text::genesis::materialize",
+          "provenance": "loom::ProvenanceStore"
+        }
+      },
+      "loom.epub_basic/1": {
+        "mapping": {
+          "source": "loom::SourceRecord",
+          "unit": "loom::model::Unit",
+          "observation": "loom::model::Observation",
+          "observation_kind": "field",
+          "coordinate": "derived_utf8_bytes",
+          "identity": "native_make_id_only",
+          "genesis": "loom::text::genesis::materialize",
+          "provenance": "loom::ProvenanceStore"
+        }
+      },
+      "loom.zip_basic/1": {
+        "mapping": {
+          "source": "loom::SourceRecord",
+          "unit": "loom::model::Unit",
+          "observation": "loom::model::Observation",
+          "observation_kind": "field",
+          "coordinate": "derived_utf8_bytes",
+          "identity": "native_make_id_only",
+          "genesis": "loom::text::genesis::materialize",
+          "provenance": "loom::ProvenanceStore"
+        }
+      }
+    }
+  },
+  "descriptors": {
+    "xlsx": {
+      "schema": "loom.unknown_structure.descriptor/1",
+      "id": "file-graph-xlsx",
+      "version": 1,
+      "format_id": "xlsx",
+      "spec": {
+        "contract": "reviewed_local_parser",
+        "version": 1,
+        "url": "urn:loom:format:xlsx"
+      },
+      "provider": "loom.xlsx_basic/1",
+      "layers": [
+        "workbook",
+        "sheet",
+        "range",
+        "cell"
+      ],
+      "mapping": {
+        "source": "loom::SourceRecord",
+        "unit": "loom::model::Unit",
+        "observation": "loom::model::Observation",
+        "observation_kind": "field",
+        "coordinate": "derived_utf8_bytes",
+        "identity": "native_make_id_only",
+        "genesis": "loom::text::genesis::materialize",
+        "provenance": "loom::ProvenanceStore"
+      },
+      "gaps": [
+        "partial_format",
+        "no_visual_layout"
+      ]
+    },
+    "odt": {
+      "schema": "loom.unknown_structure.descriptor/1",
+      "id": "file-graph-odt",
+      "version": 1,
+      "format_id": "odt",
+      "spec": {
+        "contract": "reviewed_local_parser",
+        "version": 1,
+        "url": "urn:loom:format:odt"
+      },
+      "provider": "loom.odt_basic/1",
+      "layers": [
+        "heading",
+        "paragraph",
+        "table",
+        "table_row",
+        "table_cell"
+      ],
+      "mapping": {
+        "source": "loom::SourceRecord",
+        "unit": "loom::model::Unit",
+        "observation": "loom::model::Observation",
+        "observation_kind": "field",
+        "coordinate": "derived_utf8_bytes",
+        "identity": "native_make_id_only",
+        "genesis": "loom::text::genesis::materialize",
+        "provenance": "loom::ProvenanceStore"
+      },
+      "gaps": [
+        "partial_format",
+        "no_visual_layout"
+      ]
+    },
+    "epub": {
+      "schema": "loom.unknown_structure.descriptor/1",
+      "id": "file-graph-epub",
+      "version": 1,
+      "format_id": "epub",
+      "spec": {
+        "contract": "reviewed_local_parser",
+        "version": 1,
+        "url": "urn:loom:format:epub"
+      },
+      "provider": "loom.epub_basic/1",
+      "layers": [
+        "publication",
+        "chapter",
+        "heading",
+        "paragraph",
+        "list_item"
+      ],
+      "mapping": {
+        "source": "loom::SourceRecord",
+        "unit": "loom::model::Unit",
+        "observation": "loom::model::Observation",
+        "observation_kind": "field",
+        "coordinate": "derived_utf8_bytes",
+        "identity": "native_make_id_only",
+        "genesis": "loom::text::genesis::materialize",
+        "provenance": "loom::ProvenanceStore"
+      },
+      "gaps": [
+        "partial_format",
+        "no_visual_layout"
+      ]
+    },
+    "zip": {
+      "schema": "loom.unknown_structure.descriptor/1",
+      "id": "file-graph-zip",
+      "version": 1,
+      "format_id": "zip",
+      "spec": {
+        "contract": "reviewed_local_parser",
+        "version": 1,
+        "url": "urn:loom:format:zip"
+      },
+      "provider": "loom.zip_basic/1",
+      "layers": [
+        "archive",
+        "folder",
+        "file"
+      ],
+      "mapping": {
+        "source": "loom::SourceRecord",
+        "unit": "loom::model::Unit",
+        "observation": "loom::model::Observation",
+        "observation_kind": "field",
+        "coordinate": "derived_utf8_bytes",
+        "identity": "native_make_id_only",
+        "genesis": "loom::text::genesis::materialize",
+        "provenance": "loom::ProvenanceStore"
+      },
+      "gaps": [
+        "partial_format",
+        "no_visual_layout"
+      ]
+    }
+  },
+  "extensions": {
+    "txt": "text",
+    "md": "markdown",
+    "py": "python_ast",
+    "cpp": "code",
+    "csv": "csv",
+    "pdf": "pdf",
+    "docx": "docx",
+    "xlsx": "xlsx",
+    "odt": "odt",
+    "epub": "epub",
+    "zip": "zip"
+  }
+}

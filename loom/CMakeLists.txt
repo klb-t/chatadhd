@@ -483,6 +483,7 @@ endif()
 # Runtime package owns its helper and explicit interpreter dependency.
 include(${LOOM_ROOT}/cmake/DocxRuntime.cmake)
 include(${LOOM_ROOT}/cmake/StructureRuntime.cmake)
+include(${LOOM_ROOT}/cmake/FileGraphRuntime.cmake)
 include(${LOOM_ROOT}/src/text/pdf_structure/Runtime.cmake)
 if(TARGET loom-server)
   install(TARGETS loom-server RUNTIME DESTINATION bin COMPONENT runtime)

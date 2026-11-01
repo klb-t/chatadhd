@@ -7,6 +7,7 @@
 #include "docx_projection.h"
 #include "pdf_structure/adapter.h"
 #include "host_reader.h"
+#include "file_graph.h"
 #include "chat/docx_basic/source.h"
 
 #include "loom/extract.h"
@@ -49,7 +50,9 @@ Result<Json> materialize(Runtime& rt, const Json& request) try {
   LOOM_TRY_ASSIGN(auto name, required(request, "name"));
   LOOM_TRY_ASSIGN(auto format, required(request, "format"));
   if (!BlobStore::is_valid_hash(hash)) return Error(Errc::InvalidArgument, "text_source_invalid_hash");
-  const bool structured = format == "csv" || format == "python_ast";
+  if (format == "zip") return host::materialize_archive(rt, request);
+  const bool file_graph = host::file_format(format);
+  const bool structured = format == "csv" || format == "python_ast" || file_graph;
   // Host-owned parser configuration cannot be supplied or bypassed by request JSON.
   if (structured || format == "pdf") for (auto it = request.begin(); it != request.end(); ++it) {
     if (it.key() != "hash" && it.key() != "source_key" && it.key() != "name" &&
@@ -63,7 +66,9 @@ Result<Json> materialize(Runtime& rt, const Json& request) try {
   }
   std::optional<docx::Prepared> document;
   std::string bytes;
-  if (format == "docx") {
+  if (file_graph) {
+    bytes = hosted->output.at("text").get<std::string>(); hash = Sha256::hex(bytes);
+  } else if (format == "docx") {
     LOOM_TRY_ASSIGN(auto prepared, docx::prepare(rt, hash));
     document = std::move(prepared);
     bytes = document->extraction.at("text").get<std::string>();
@@ -113,9 +118,11 @@ Result<Json> materialize(Runtime& rt, const Json& request) try {
                     {"kb_pack_sha256", kb->hash()}};
   if (document) method["derivation"] = document->derivation;
   if (hosted) method["host_reader"] = hosted->binding;
+  if (file_graph) method["derivation"] = hosted->output.at("derivation");
   const auto method_hash = Sha256::hex(json::canonical(method));
   Json identity = Json::array({key, hash});
   if (document) identity.push_back(document->derivation);
+  if (file_graph) identity.push_back(hosted->output.at("derivation"));
   const auto source_id = "src_text_" + Sha256::hex(json::canonical(identity));
   const auto source_node = "n_" + source_id;
   const auto version_id = source_id + ":" + method_hash;
@@ -151,6 +158,7 @@ Result<Json> materialize(Runtime& rt, const Json& request) try {
   LOOM_TRY_ASSIGN(auto cached, db.get_node(projection_node));
   if (cached) {
     if (hosted) LOOM_TRY(rt.blobs().verify(hosted->binding.at("receipt_blob").get<std::string>()));
+    if (file_graph) { LOOM_TRY(rt.blobs().verify(hash)); LOOM_TRY(rt.blobs().verify(hosted->output.at("derivation").at("extraction_blob").get<std::string>())); }
     // A cached projection is an idempotent receipt, not a subgraph integrity
     // audit or repair operation. Reads validate the selected occurrence.
     // DOCX must still have its distinct replay artifacts, never a stale source.
@@ -199,6 +207,12 @@ Result<Json> materialize(Runtime& rt, const Json& request) try {
     LOOM_TRY_ASSIGN(auto original_id, std::move(registered));
     if (original_id != document->derivation.at("original_source_id").get<std::string>())
       return Error(Errc::Conflict, "docx_source_mismatch");
+  }
+  if (file_graph) {
+    LOOM_TRY(host::store_file_sources(rt, *hosted, recipe));
+    source.metadata["derivation"] = hosted->output.at("derivation");
+    source.metadata["coordinate"] = "derived_utf8_bytes";
+    source.metadata["warnings"] = hosted->output.at("receipt").at("warnings");
   }
   if (!old) { LOOM_TRY(rt.provenance().add_source(source)); }
   else source = *old;
@@ -375,6 +389,10 @@ Result<Json> materialize(Runtime& rt, const Json& request) try {
     result["host_reader"] = hosted->binding;
     result["warnings"] = hosted->output.at("receipt").value("warnings", Json::array());
   }
+  if (file_graph) {
+    result["coordinate"]="derived_utf8_bytes";result["derivation"]=hosted->output.at("derivation");
+    result["original_source_node"]="n_"+hosted->output.at("derivation").at("original_source_id").get<std::string>();
+  }
   std::size_t observation_index = 0;
   for (const auto& part : chain->versions.front().fragments) {
     if (part.begin > part.end || part.end > bytes.size()) return Error(Errc::Conflict, "text_source_range_invalid");
@@ -407,6 +425,7 @@ Result<Json> materialize(Runtime& rt, const Json& request) try {
               {"fingerprint", part.fingerprint}, {"text_sha256", Sha256::hex(text)},
               {"coordinate", "source_utf8_bytes"}, {"byte_range", Json::array({part.begin, part.end})},
               {"observation_refs", Json::array()}};
+    if (file_graph) { meta["coordinate"]="derived_utf8_bytes";meta["derivation"]=hosted->output.at("derivation");meta["evidence_class"]="derived"; }
     if (document) {
       meta["coordinate"] = "derived_utf8_bytes";
       meta["derivation"] = document->derivation;
@@ -467,6 +486,7 @@ Result<Json> materialize(Runtime& rt, const Json& request) try {
     if (!exists) { LOOM_TRY(rt.provenance().add(located)); }
     result["occurrence_nodes"].push_back(id);
   }
+  if (file_graph) { LOOM_TRY_ASSIGN(auto structure, host::store_file_structure(rt, *hosted, result, recipe)); result["structure_nodes"]=structure; }
   if (document && format == "pdf") {
     LOOM_TRY_ASSIGN(auto structure, pdf::materialize_structure(rt, result, *document, recipe, opt.level == "recognized_block"));
     result["structure_nodes"] = std::move(structure);
@@ -489,7 +509,7 @@ Status validate_occurrence(Database& db, const Node& node) try {
     return Error(Errc::Conflict, "text_source_original_mismatch");
   const bool host_method = meta.at("method").contains("host_reader");
   const auto method_format = json::get_string(meta.at("method"), "format");
-  if ((method_format == "csv" || method_format == "python_ast") && !host_method)
+  if ((method_format == "csv" || method_format == "python_ast" || host::file_format(method_format)) && !host_method)
     return Error(Errc::Conflict, "host_reader_binding_missing");
   if (Sha256::hex(json::canonical(meta.at("method"))) != json::get_string(meta, "method_sha256"))
     return Error(Errc::Conflict, "text_source_method_mismatch");
@@ -500,7 +520,7 @@ Status validate_occurrence(Database& db, const Node& node) try {
   if (node.id != expected_id) return Error(Errc::Conflict, "text_source_occurrence_identity_mismatch");
   if (host_method) {
     const auto& binding = meta.at("method").at("host_reader");
-    if (binding.at("input_sha256") != source->blob_hash || binding.at("source_key") != source->metadata.at("source_key") ||
+    if ((binding.contains("derived_sha256") ? binding.at("derived_sha256") : binding.at("input_sha256")) != source->blob_hash || binding.at("source_key") != source->metadata.at("source_key") ||
         binding.at("format") != method_format)
       return Error(Errc::Conflict, "host_reader_source_mismatch");
   }
@@ -509,7 +529,14 @@ Status validate_occurrence(Database& db, const Node& node) try {
     const auto& d = source->metadata.at("derivation");
     const auto original_id = json::get_string(d, "original_source_id");
     LOOM_TRY_ASSIGN(auto original, store.get_source(original_id));
-    if (json::get_string(d, "schema") == "loom.pdf_source_derivation/1") {
+    if (json::get_string(d, "schema") == "loom.host_source_derivation/1") {
+      if (!host_method || !original || original->blob_hash != d.at("original_sha256").get<std::string>() ||
+          original->size != d.at("original_size") || source->blob_hash != d.at("text_sha256").get<std::string>() ||
+          json::canonical(d)!=json::canonical(meta.at("method").at("host_reader").at("derivation")) ||
+          json::canonical(d)!=json::canonical(meta.at("derivation")) ||
+          json::canonical(d)!=json::canonical(meta.at("method").at("derivation")) ||
+          source->id!="src_text_"+Sha256::hex(json::canonical(Json::array({source->metadata.at("source_key"),source->blob_hash,d})))) return Error(Errc::Conflict,"host_reader_source_mismatch");
+    } else if (json::get_string(d, "schema") == "loom.pdf_source_derivation/1") {
       LOOM_TRY(pdf::validate_derivation(db, *source, meta));
     } else if (json::get_string(d, "schema") != "loom.docx_source_derivation/1" ||
         !original || original->id != "src_docx_" + original->blob_hash ||
@@ -524,7 +551,7 @@ Status validate_occurrence(Database& db, const Node& node) try {
       return Error(Errc::Conflict, "docx_source_derivation_mismatch");
   } else if (meta.contains("derivation")) return Error(Errc::Conflict, "docx_source_derivation_mismatch");
   LOOM_TRY_ASSIGN(auto unit, model::Unit::from_json(meta.at("unit")));
-  if (derived && (unit.id != model::Unit::make_id(source->id, unit.locator) ||
+  if (derived && !host_method && (unit.id != model::Unit::make_id(source->id, unit.locator) ||
       node.id != "n_text_occ_" + Sha256::hex(unit.id + ":" + json::get_string(meta, "method_sha256"))))
     return Error(Errc::Conflict, "docx_source_derivation_mismatch");
   const auto start = unit.locator.byte_start.value_or(-1), len = unit.locator.byte_len.value_or(-1);
@@ -554,7 +581,7 @@ Result<Json> read(Runtime& rt, const Json& request) try {
   LOOM_TRY_ASSIGN(auto bytes, rt.blobs().read(source->blob_hash));
   if (meta.at("method").contains("host_reader")) {
     LOOM_TRY(rt.blobs().verify(meta.at("method").at("host_reader").at("receipt_blob").get<std::string>()));
-    LOOM_TRY(host::verify_node(*node, rt.blobs().local_path(source->blob_hash)));
+    LOOM_TRY(host::verify_node(*node, rt.blobs().local_path(meta.at("method").at("host_reader").at("input_sha256").get<std::string>())));
     if (request.contains("csv_selection")) {
       const auto& binding = meta.at("method").at("host_reader");
       if (binding.at("format") != "csv") return Error(Errc::InvalidArgument, "csv_selection_format_mismatch");
@@ -572,7 +599,9 @@ Result<Json> read(Runtime& rt, const Json& request) try {
     LOOM_TRY(rt.blobs().verify(extraction_hash));
     LOOM_TRY_ASSIGN(auto raw, rt.blobs().read(extraction_hash));
     LOOM_TRY_ASSIGN(auto extraction, json::parse(raw));
-    if (json::get_string(d, "schema") == "loom.pdf_source_derivation/1") {
+    if (json::get_string(d, "schema") == "loom.host_source_derivation/1") {
+      /* original replay already performed by host::verify_node above */
+    } else if (json::get_string(d, "schema") == "loom.pdf_source_derivation/1") {
       LOOM_TRY(pdf::replay(rt, extraction, d));
     } else {
       LOOM_TRY(docx::validate(extraction, original_hash, d.at("original_size").get<std::int64_t>()));

@@ -1,0 +1,12 @@
+{
+  "schema": "loom.odt_basic.adapter/1",
+  "original_source_kind": "file",
+  "derived_source_kind": "derived_text",
+  "kinds": {
+    "heading": {"unit": "heading", "observation": "heading"},
+    "paragraph": {"unit": "paragraph", "observation": "sentence"},
+    "table": {"unit": "table", "observation": "field"},
+    "table_row": {"unit": "table_row", "observation": "table_row"},
+    "table_cell": {"unit": "table_cell", "observation": "field"}
+  }
+}
