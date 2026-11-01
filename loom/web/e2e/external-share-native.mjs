@@ -86,7 +86,9 @@ const original = async result => {
 };
 const history = id => api('/api/conversations/' + id + '/messages?all=1');
 const send = async cid => {
-  await workshop('chat'); await page.getByTestId('conv-item').filter({ hasText: 'Syntetyczny share — żółw' }).first().click();
+  await workshop('chat'); await page.getByTestId('shell-drawer-toggle').click();
+  await page.getByTestId('shell-conv').filter({ hasText: 'Syntetyczny share — żółw' }).first().click();
+  assert.equal(await page.getByTestId('chat-conversation').getAttribute('data-conversation'), cid);
   const n = calls.length, w = wire.length;
   await page.getByTestId('chat-input').fill('Odpowiedz na podstawie bieżącej rozmowy.'); await page.getByTestId('send-chat').click();
   if (await page.getByTestId('guest-terms-send').isVisible().catch(() => false)) await page.getByTestId('guest-terms-send').click();
@@ -144,7 +146,7 @@ try {
     assert.deepEqual(await original(imported), raw); rows = await history(cid);
     assert.deepEqual(rows.map(m => [m.role, m.text, m.status]), [['user', '  Zażółć & <tag>\nhttps://example.invalid/link  ', 'active'], ['assistant', 'Poprzednia gałąź', 'version'], ['assistant', 'Wybrana odpowiedź\n', 'active'], ['tool', '', 'active']]);
     assert.ok(!rows[0].parent_id); assert.equal(rows[1].parent_id, rows[0].id); assert.equal(rows[2].parent_id, rows[0].id); assert.equal(rows[3].parent_id, rows[2].id);
-    for (const row of rows) { const p = await api('/api/provenance/' + row.id); assert.equal(p.length, 1); assert.equal(p[0].source_id, imported.source_id); assert.equal(p[0].locator.embedded_data.format, 'turbo_stream_v2'); assert.equal(p[0].locator.embedded_data.json_pointer, row.metadata.url_import.pointer); provenance[row.id] = p; }
+    for (const row of rows) { const p = await api('/api/provenance/' + row.id); assert.equal(p.subject_id, row.id); assert.equal(p.records.length, 1); assert.equal(p.records[0].source_id, imported.source_id); assert.ok(p.sources[imported.source_id]); assert.equal(p.records[0].locator.embedded_data.format, 'turbo_stream_v2'); assert.equal(p.records[0].locator.embedded_data.json_pointer, row.metadata.url_import.pointer); provenance[row.id] = p; }
     observations.imported = imported;
   });
   await check('same HTML is idempotent through UI and HTTP without duplicate rows', async () => { const next = await importUrl('https://chatgpt.com/share/synthetic-share'); assert.equal(next.already_imported, true); assert.equal(next.source_id, imported.source_id); assert.equal(next.conversations[0].id, cid); assert.deepEqual(await history(cid), rows); assert.equal(calls.length, 0); });

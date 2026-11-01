@@ -1,3 +1,21 @@
+## 2026-11-01 — external ChatGPT share: runtime/HTTP/GUI odebrane zakresowo
+
+Kod produkcyjny **3bf01f7c29981d27554dd44dbd21e2d29f42029c**: własny przyrostowy
+Release core/server/lib-j2 PASS, focused native **10/10,181/181 asercji**, CTest-j1.
+Nowy własny Vite webdist PASS; HTTP/browser **6/6grup**: import dwóch struktur
+zewnętrznego HTML, role/parents/kVersion/provenance/original, idempotencja,
+wybrana gałąź w całym rzeczywistym żądaniu i odpowiedzi syntetycznego providera,
+restart/reopen i odmowy SSRF/redirect/proxy.2wywołania atrapy, brak realnego API.
+Dwie poprawki harnessu (records provenance, szuflada ChatShell) bez zmiany produktu
+lub osłabienia asercji; nieudane próby zachowane. Brak publicznego provider/TLS,
+wszystkich profili kontekstu, mobile i pełnego repo gate; NOT deployed.
+
+LEM/light completed i cleanup potwierdzone świeżymi receipts przed buildem.
+Stary Release cache/webdist/pakiet95bb540c… zachowane, operator tools/logger bez zmian.
+Next tego przyrostu: osobny nowy pakiet z wykonanej bramki i verify-package;
+nie relabelować starego. Typecheck/parsery/P0/accounts/backup niepowtarzane.
+[Wynik i ograniczenia](reports/EXTERNAL_SHARE_INTEGRATION_2026-11-01.md).
+
 ## 2026-11-01 — external share scalony lekko; native acceptance oczekuje
 
 Przyjęta baza produktu nadal **97a5562bed5294602161eb0e7d2f2c4bc73e2a60**,

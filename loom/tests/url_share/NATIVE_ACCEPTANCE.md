@@ -1,6 +1,10 @@
-# External share: następna zarezerwowana bramka integratora
+# External share: zakresowa bramka integratora
 
-Stan przy przygotowaniu: kod scalony, **native/HTTP/browser/context/reopen niewykonane**.
+**Odbiór 2026-11-01:** native10/10 (181/181 asercji), browser6/6. Wyniki i korekty
+harnessu: [raport](../../../docs/reports/EXTERNAL_SHARE_INTEGRATION_2026-11-01.md).
+Polecenia poniżej opisują odtworzenie w nowym katalogu, nie nakaz ponowienia.
+
+Stan historyczny przy przygotowaniu: kod scalony, **native/HTTP/browser/context/reopen niewykonane**.
 Baza ostatniego przyjętego produktu: `97a5562bed5294602161eb0e7d2f2c4bc73e2a60`.
 Nowe źródła nie zmieniają tożsamości przyjętego pakietu. Autor wykonał parser i
 syntax, integrator tylko własny web typecheck i `node --check` harnessu.
@@ -26,7 +30,8 @@ cmake -S loom/tests/url_share/native_acceptance -B "$NEW_FOCUSED_BUILD" \
   -DLOOM_SOURCE="$REPO/loom" -DLOOM_CORE_BUILD="$CORE_BUILD"
 cmake --build "$NEW_FOCUSED_BUILD" -j2
 ctest --test-dir "$NEW_FOCUSED_BUILD" -j1 --output-on-failure -V
-npm --prefix loom/web run build
+# Jeżeli tsc już odebrany, wykonać tylko Vite do nowego katalogu:
+(cd loom/web && node node_modules/vite/bin/vite.js build --outDir "$NEW_WEBDIST")
 ```
 
 Focused target kompiluje tylko `tests/main.cpp` i `test_url_share_import.cpp`
@@ -36,7 +41,7 @@ zapisu drzewa/rodziców/źródła/locatorów/reference/idempotencji/reopen oraz 
 błędnych/duplikowanych parent pointers. Integrator dodał porównanie liczby
 rekordów messages/sources/provenance przed/po rollbacku i ponownie po reopen.
 To rollback DB, nie obietnica usunięcia bajtów z content-addressed BlobStore.
-Nowe asercje nie mają jeszcze wyniku kompilacji ani wykonania.
+Nowe asercje otrzymały wynik kompilacji i wykonania w odbiorze 2026-11-01.
 
 ## 2. Rzeczywisty ImportPanel/HTTP i ChatView ze sprawdzonym kontekstem
 
