@@ -40,6 +40,8 @@
 #include "context/context_execution.h"
 #include "context/unified_context.h"
 #include "text/host_reader.h"
+#include "text/pdf_structure/adapter.h"
+#include "context/image_region_candidate/native.h"
 #include "context/method_registry.h"
 #include "graph_reply.h"
 #include "reasoning_profile.h"
@@ -1675,9 +1677,40 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
       auto selected = context::compile_unified_context(db_, cfg_, graph_memory_, memory_, request,
           compiled_context, conv_id, memory_on, graph_on, settings, [this](const Node& node) -> Status {
             if (!attachment_resolver_) return Error(Errc::Unavailable, "host_reader_original_unavailable");
-            const auto path = attachment_resolver_(json::get_string(node.metadata, "source_sha256"));
+            const bool pdf = node.metadata.contains("derivation") &&
+                json::get_string(node.metadata.at("derivation"), "schema") == "loom.pdf_source_derivation/1";
+            const auto path = attachment_resolver_(pdf ? json::get_string(node.metadata.at("derivation"), "original_sha256") :
+                json::get_string(node.metadata, "source_sha256"));
             if (!path) return Error(Errc::NotFound, "host_reader_original_unavailable");
+            if (pdf) {
+              for (const auto& artifact : {node.metadata.at("source_sha256"), node.metadata.at("derivation").at("extraction_blob")}) {
+                const auto hash = artifact.get<std::string>();
+                if (!BlobStore::is_valid_hash(hash)) return Error(Errc::Conflict, "pdf_structure_artifact_invalid");
+                const auto artifact_path = attachment_resolver_(hash);
+                if (!artifact_path) return Error(Errc::NotFound, "pdf_structure_artifact_missing");
+                LOOM_TRY_ASSIGN(auto bytes, fsutil::read_file(*artifact_path));
+                if (Sha256::hex(bytes) != hash) return Error(Errc::Conflict, "pdf_structure_artifact_changed");
+              }
+              return text::sources::pdf::verify_node(node, *path);
+            }
             return text::sources::host::verify_node(node, *path);
+          }, [this](const Node& node, std::size_t detail, std::size_t hops) -> Result<Json> {
+            // Reuse the runtime/account BlobStore resolver installed before chat.
+            // Never interpret a node field as a filesystem path.
+            const auto read = [this](std::string_view hash) -> Result<std::string> {
+              if (!BlobStore::is_valid_hash(hash) || !attachment_resolver_)
+                return Error(Errc::Unavailable, "ocr_region_source_access_unavailable");
+              const auto path = attachment_resolver_(std::string(hash));
+              if (!path) return Error(Errc::NotFound, "ocr_region_source_missing");
+              LOOM_TRY_ASSIGN(auto bytes, fsutil::read_file(*path));
+              if (Sha256::hex(bytes) != hash) return Error(Errc::Conflict, "ocr_region_original_integrity");
+              return bytes;
+            };
+            ProvenanceStore provenance(db_);
+            const context::image_region::Access access{
+              [&](std::string_view id) { return provenance.get_source(id); }, read,
+              [&](std::string_view hash) -> Status { LOOM_TRY(read(hash)); return {}; }};
+            return context::image_region::candidate(node, access, detail, hops);
           });
       if (!selected) return selected.error();
       unified_context = *selected;

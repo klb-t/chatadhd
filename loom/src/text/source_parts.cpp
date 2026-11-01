@@ -5,6 +5,7 @@
 #include <optional>
 
 #include "docx_projection.h"
+#include "pdf_structure/adapter.h"
 #include "host_reader.h"
 #include "chat/docx_basic/source.h"
 
@@ -50,7 +51,7 @@ Result<Json> materialize(Runtime& rt, const Json& request) try {
   if (!BlobStore::is_valid_hash(hash)) return Error(Errc::InvalidArgument, "text_source_invalid_hash");
   const bool structured = format == "csv" || format == "python_ast";
   // Host-owned parser configuration cannot be supplied or bypassed by request JSON.
-  if (structured) for (auto it = request.begin(); it != request.end(); ++it) {
+  if (structured || format == "pdf") for (auto it = request.begin(); it != request.end(); ++it) {
     if (it.key() != "hash" && it.key() != "source_key" && it.key() != "name" &&
         it.key() != "format" && it.key() != "previous_source_id")
       return Error(Errc::InvalidArgument, "host_reader_request_override_refused");
@@ -67,6 +68,11 @@ Result<Json> materialize(Runtime& rt, const Json& request) try {
     document = std::move(prepared);
     bytes = document->extraction.at("text").get<std::string>();
     hash = Sha256::hex(bytes);  // ranges below address this derived blob only
+  } else if (format == "pdf") {
+    LOOM_TRY_ASSIGN(auto prepared, pdf::prepare(rt, hash));
+    document = std::move(prepared);
+    bytes = document->extraction.at("text").get<std::string>();
+    hash = Sha256::hex(bytes);
   } else {
     LOOM_TRY(rt.blobs().verify(hash));
     LOOM_TRY_ASSIGN(bytes, rt.blobs().read(hash));
@@ -138,7 +144,7 @@ Result<Json> materialize(Runtime& rt, const Json& request) try {
   if (document) {
     LOOM_TRY_ASSIGN(auto original, rt.provenance().get_source(document->derivation.at("original_source_id").get<std::string>()));
     if (original && (original->blob_hash != document->derivation.at("original_sha256").get<std::string>() ||
-        original->size != document->derivation.at("original_size") || original->format != "docx"))
+        original->size != document->derivation.at("original_size") || original->format != format))
       return Error(Errc::Conflict, "docx_source_mismatch");
     if (old && !original) return Error(Errc::Conflict, "docx_source_mismatch");
   }
@@ -187,9 +193,10 @@ Result<Json> materialize(Runtime& rt, const Json& request) try {
     source.metadata["derivation"] = document->derivation;
     source.metadata["coordinate"] = "derived_utf8_bytes";
     source.metadata["warnings"] = document->extraction.at("warnings");
-    LOOM_TRY_ASSIGN(auto original_id, chat::record_docx_source(db,
+    auto registered = format == "pdf" ? pdf::record_source(db, name, *document) : chat::record_docx_source(db,
         "blob:" + document->derivation.at("original_sha256").get<std::string>(),
-        name, document->extraction, document->reader));
+        name, document->extraction, document->reader);
+    LOOM_TRY_ASSIGN(auto original_id, std::move(registered));
     if (original_id != document->derivation.at("original_source_id").get<std::string>())
       return Error(Errc::Conflict, "docx_source_mismatch");
   }
@@ -213,8 +220,8 @@ Result<Json> materialize(Runtime& rt, const Json& request) try {
   extract::Extractor extractor(kb);
   LOOM_TRY_ASSIGN(auto observations, extractor.segment(type, content));
   if (document) {
-    // Reader values are observations of a derived representation. The OOXML
-    // body-child locator is separate; it is never an XML/ZIP byte offset or page.
+    // Quotes belong to the derived representation. Original block/page locators
+    // are separate; none of these ranges addresses bytes inside a DOCX or PDF.
     observations.clear();
     if (document->extraction.at("blocks").size() > static_cast<std::size_t>((std::numeric_limits<int>::max)()))
       return Error(Errc::InvalidArgument, "docx_observation_ordinal_overflow");
@@ -236,6 +243,7 @@ Result<Json> materialize(Runtime& rt, const Json& request) try {
           {"original_source_id", document->derivation.at("original_source_id")},
           {"original_locator", block.at("locator")}, {"coordinate", "derived_utf8_bytes"},
           {"transform_sha256", document->derivation.at("transform_sha256")}};
+      if (format == "pdf") observation.attrs["structure_evidence"] = "inferred";
       observation.id = model::Observation::make_id(observation.unit, observation.locator, observation.text);
       observations.push_back(std::move(observation));
     }
@@ -334,7 +342,7 @@ Result<Json> materialize(Runtime& rt, const Json& request) try {
     if (!record || record->blob_hash != document->derivation.at("original_sha256").get<std::string>() || record->size != original.bytes)
       return Error(Errc::Conflict, "docx_source_mismatch");
     LOOM_TRY(put_node(db, "n_" + original_id, record->title, kinds.at("source").get<std::string>(), "",
-        Json{{"source_id", original_id}, {"sha256", record->blob_hash}, {"unit", original.to_json()}, {"format", "docx"}}));
+        Json{{"source_id", original_id}, {"sha256", record->blob_hash}, {"unit", original.to_json()}, {"format", format}}));
     LOOM_TRY(db.create_link(source_node, "n_" + original_id, edges.at("source").get<std::string>(), 1.0, document->derivation));
     LOOM_TRY(db.create_link(source_node, method_node, edges.at("method").get<std::string>()));
     ProvenanceRecord derived;
@@ -403,6 +411,11 @@ Result<Json> materialize(Runtime& rt, const Json& request) try {
       meta["coordinate"] = "derived_utf8_bytes";
       meta["derivation"] = document->derivation;
       meta["evidence_class"] = "derived";
+      if (format == "pdf") {
+        meta["structure_evidence"] = "inferred";
+        unit.attrs["structure_evidence"] = "inferred";
+        meta["unit"] = unit.to_json();
+      }
     }
     while (observation_index < observations.size() &&
            *observations[observation_index].locator.byte_start + *observations[observation_index].locator.byte_len <= static_cast<std::int64_t>(part.begin))
@@ -454,6 +467,10 @@ Result<Json> materialize(Runtime& rt, const Json& request) try {
     if (!exists) { LOOM_TRY(rt.provenance().add(located)); }
     result["occurrence_nodes"].push_back(id);
   }
+  if (document && format == "pdf") {
+    LOOM_TRY_ASSIGN(auto structure, pdf::materialize_structure(rt, result, *document, recipe, opt.level == "recognized_block"));
+    result["structure_nodes"] = std::move(structure);
+  }
   LOOM_TRY(put_node(db, projection_node, version_id, kinds.at("projection").get<std::string>(), "", result));
   LOOM_TRY(db.create_link(projection_node, version->id, edges.at("source").get<std::string>()));
   LOOM_TRY(txn.commit());
@@ -492,7 +509,9 @@ Status validate_occurrence(Database& db, const Node& node) try {
     const auto& d = source->metadata.at("derivation");
     const auto original_id = json::get_string(d, "original_source_id");
     LOOM_TRY_ASSIGN(auto original, store.get_source(original_id));
-    if (json::get_string(d, "schema") != "loom.docx_source_derivation/1" ||
+    if (json::get_string(d, "schema") == "loom.pdf_source_derivation/1") {
+      LOOM_TRY(pdf::validate_derivation(db, *source, meta));
+    } else if (json::get_string(d, "schema") != "loom.docx_source_derivation/1" ||
         !original || original->id != "src_docx_" + original->blob_hash ||
         original->blob_hash != json::get_string(d, "original_sha256") ||
         original->size != d.at("original_size") || original->format != "docx" ||
@@ -553,7 +572,11 @@ Result<Json> read(Runtime& rt, const Json& request) try {
     LOOM_TRY(rt.blobs().verify(extraction_hash));
     LOOM_TRY_ASSIGN(auto raw, rt.blobs().read(extraction_hash));
     LOOM_TRY_ASSIGN(auto extraction, json::parse(raw));
-    LOOM_TRY(docx::validate(extraction, original_hash, d.at("original_size").get<std::int64_t>()));
+    if (json::get_string(d, "schema") == "loom.pdf_source_derivation/1") {
+      LOOM_TRY(pdf::replay(rt, extraction, d));
+    } else {
+      LOOM_TRY(docx::validate(extraction, original_hash, d.at("original_size").get<std::int64_t>()));
+    }
     if (extraction.at("text") != bytes)
       return Error(Errc::Conflict, "docx_projection_text_mismatch");
   }

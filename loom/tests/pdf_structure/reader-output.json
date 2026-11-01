@@ -1,0 +1,27 @@
+{
+  "schema": "loom.pdf_structure.input/1",
+  "source": {
+    "sha256": "3bb3302a66bb30d4e245b43ab6b1ccc4869c771cd3e1dffd229412549a065a49",
+    "size": 53
+  },
+  "reader": {
+    "adapter": "poppler_glib",
+    "library": "synthetic-reader-result"
+  },
+  "options": {
+    "blank_lines": 1,
+    "chapter_mode": "prefix",
+    "chapter_prefixes": [
+      "Chapter ",
+      "Rozdział "
+    ],
+    "chapter_max_chars": 160
+  },
+  "document": {
+    "text": "Rozdział 1 — Żółć\n\nPierwszy akapit.\nDruga linia.\n\nPowtórka.\f \t\r\n\fRozdział 2 — 🧪\r\n\r\nPowtórka.\r\n\r\nKoniec.",
+    "pages": 3,
+    "pages_without_text": [
+      2
+    ]
+  }
+}

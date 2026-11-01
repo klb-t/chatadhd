@@ -1,5 +1,6 @@
 #include "unified_context.h"
 #include "context_diagnostics.h"
+#include "image_region_candidate/native.h"
 
 #include <algorithm>
 #include <array>
@@ -202,7 +203,8 @@ Result<Json> compile_unified_context(Database& db, const Config& cfg,
     GraphMemorySelector* graph, MemoryEngine* memory, const ContextRequest& req,
     Json knowledge_result, std::string_view conv_id, bool include_memory,
     bool include_graph, const Json& options,
-    const std::function<Status(const Node&)>& verify_host_occurrence) {
+    const std::function<Status(const Node&)>& verify_host_occurrence,
+    const std::function<Result<Json>(const Node&, std::size_t, std::size_t)>& image_region_builder) {
   if (!options.is_object()) return Error(Errc::InvalidArgument, "unified context options must be an object");
   for (const auto key : {"include_knowledge", "legacy_include_inactive", "legacy_include_current_conversation"}) LOOM_TRY(boolean_option(options, key));
   double codepoints_per_token = 4.0;
@@ -368,11 +370,11 @@ Result<Json> compile_unified_context(Database& db, const Config& cfg,
       if (topic) seed(topic->id);
     }
     LOOM_TRY_ASSIGN(auto review_excluded, graph->review_excluded_decisions());
-    std::size_t visited = 0, messages = 0, occurrences = 0;
+    std::size_t visited = 0, messages = 0, occurrences = 0, image_regions = 0;
     std::string stop_reason;
     while (!queue.empty()) {
       if (max_visited && visited >= max_visited) { stop_reason = "visited_limit"; break; }
-      if (max_messages && messages + occurrences >= max_messages) { stop_reason = "message_limit"; break; }
+      if (max_messages && messages + occurrences + image_regions >= max_messages) { stop_reason = "message_limit"; break; }
       const auto [id, hops] = queue.front();
       queue.pop_front();
       ++visited;
@@ -416,7 +418,8 @@ Result<Json> compile_unified_context(Database& db, const Config& cfg,
         LOOM_TRY_ASSIGN(auto node, db.get_node(id));
         if (node && json::get_string(node->metadata, "schema") == text::sources::kOccurrenceSchema) {
           LOOM_TRY(text::sources::validate_occurrence(db, *node));
-          if (node->metadata.at("method").contains("host_reader")) {
+          if (node->metadata.at("method").contains("host_reader") ||
+              (node->metadata.contains("derivation") && json::get_string(node->metadata.at("derivation"), "schema") == "loom.pdf_source_derivation/1")) {
             if (!verify_host_occurrence) return Error(Errc::Unavailable, "host_reader_context_verifier_unavailable");
             LOOM_TRY(verify_host_occurrence(*node));
           }
@@ -434,6 +437,15 @@ Result<Json> compile_unified_context(Database& db, const Config& cfg,
               {"why", "located source occurrence reached through existing graph links"}},
               "legacy_graph", "source_occurrence:" + id);
           ++occurrences;  // existing candidate budget also covers source occurrences
+        } else if (node && image_region::is_region(*node)) {
+          if (!image_region_builder) {
+            dropped.push_back(Json{{"ref", id}, {"channel", "legacy_graph"}, {"ref_kind", "node"},
+                {"drop_reason", "ocr_region_source_access_unavailable"}, {"relation_hops", hops}});
+          } else {
+            LOOM_TRY_ASSIGN(auto row, image_region_builder(*node, detail_chars, hops));
+            add(std::move(row), "legacy_graph", "image_region:" + id);
+            ++image_regions;
+          }
         }
       }
       if (hops < depth) {
@@ -449,6 +461,10 @@ Result<Json> compile_unified_context(Database& db, const Config& cfg,
     if (occurrences) {
       traversal["source_occurrence_candidates"] = occurrences;
       traversal["source_occurrence_scope"] = "immutable_source_utf8_bytes";
+    }
+    if (image_regions) {
+      traversal["image_region_candidates"] = image_regions;
+      traversal["image_region_scope"] = "stored_ocr_output_inferred";
     }
     traversal["pending_refs"] = queue.size();
     if (!stop_reason.empty()) {

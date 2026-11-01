@@ -19,6 +19,7 @@
 #include <signal.h>
 #include <spawn.h>
 #include <sys/stat.h>
+#include <sys/mman.h>
 #include <sys/wait.h>
 #include <unistd.h>
 #endif
@@ -63,8 +64,9 @@ Result<std::int64_t> quantity(const Json& reader, const char* key, bool positive
 #endif
 }  // namespace
 
-Result<Json> read_local_json(const std::filesystem::path& path, const Json& reader, const Json& arguments) {
 #ifdef LOOM_DOCX_SPAWN
+namespace {
+Result<Json> run_local_json_fd(int input_fd, const Json& reader, const Json& arguments) {
   LOOM_TRY_ASSIGN(const auto command, docx_command(reader));
   const auto& python = command.python;
   const auto& script = command.script;
@@ -85,9 +87,8 @@ Result<Json> read_local_json(const std::filesystem::path& path, const Json& read
   LOOM_TRY_ASSIGN(const auto timeout_ms, quantity(reader, "timeout_ms"));
   LOOM_TRY_ASSIGN(const auto max_output, quantity(reader, "max_output_bytes"));
   LOOM_TRY_ASSIGN(const auto poll_ms, quantity(reader, "poll_ms", true));
-  Fd input(::open(path.c_str(), O_RDONLY | O_CLOEXEC | O_NONBLOCK));
   struct stat st{};
-  if (input.value < 0 || ::fstat(input.value, &st) != 0 || !S_ISREG(st.st_mode))
+  if (input_fd < 0 || ::fstat(input_fd, &st) != 0 || !S_ISREG(st.st_mode))
     return Error(Errc::Io, "docx_input_unavailable");
   if (max_input && st.st_size > max_input)
     return Error(Errc::Parse, "docx_limit_max_input_bytes");
@@ -97,7 +98,7 @@ Result<Json> read_local_json(const std::filesystem::path& path, const Json& read
   Fd writer(fds[1]);
   SpawnActions actions;
   if (!actions.valid ||
-      ::posix_spawn_file_actions_adddup2(&actions.actions, input.value, STDIN_FILENO) != 0 ||
+      ::posix_spawn_file_actions_adddup2(&actions.actions, input_fd, STDIN_FILENO) != 0 ||
       ::posix_spawn_file_actions_adddup2(&actions.actions, writer.value, STDOUT_FILENO) != 0 ||
       ::posix_spawn_file_actions_addopen(&actions.actions, STDERR_FILENO, "/dev/null", O_WRONLY, 0) != 0 ||
       ::posix_spawn_file_actions_addclosefrom_np(&actions.actions, 3) != 0)
@@ -161,10 +162,37 @@ Result<Json> read_local_json(const std::filesystem::path& path, const Json& read
   if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
     return Error(Errc::Parse, "docx_reader_failed");
   return *parsed;
+}
+} // namespace
+#endif
+Result<Json> read_local_json(const std::filesystem::path& path, const Json& reader, const Json& arguments) {
+#ifdef LOOM_DOCX_SPAWN
+  Fd input(::open(path.c_str(), O_RDONLY | O_CLOEXEC | O_NONBLOCK));
+  return run_local_json_fd(input.value, reader, arguments);
 #else
-  (void)path;
-  (void)reader;
-  (void)arguments;
+  (void)path; (void)reader; (void)arguments;
+  return Error(Errc::Unavailable, "docx_reader_unavailable");
+#endif
+}
+Result<Json> read_local_json_bytes(std::string_view bytes, const Json& reader, const Json& arguments) {
+#ifdef LOOM_DOCX_SPAWN
+  LOOM_TRY_ASSIGN(auto bound, quantity(reader.at("limits"), "max_input_bytes", true));
+  if (bytes.size() > static_cast<std::uint64_t>(bound)) return Error(Errc::InvalidArgument, "reader_input_limit");
+  // Anonymous, owned input; no path derived from the uploaded document and no
+  // persistent temp file. Both entry points use the SAME spawn/watchdog loop.
+  Fd input(::memfd_create("loom-reader-input", MFD_CLOEXEC));
+  if (input.value < 0) return Error(Errc::Io, "reader_input_unavailable");
+  std::size_t offset = 0;
+  while (offset < bytes.size()) {
+    const auto n = ::write(input.value, bytes.data() + offset, bytes.size() - offset);
+    if (n < 0 && errno == EINTR) continue;
+    if (n <= 0) return Error(Errc::Io, "reader_input_unavailable");
+    offset += static_cast<std::size_t>(n);
+  }
+  if (::lseek(input.value, 0, SEEK_SET) < 0) return Error(Errc::Io, "reader_input_unavailable");
+  return run_local_json_fd(input.value, reader, arguments);
+#else
+  (void)bytes; (void)reader; (void)arguments;
   return Error(Errc::Unavailable, "docx_reader_unavailable");
 #endif
 }

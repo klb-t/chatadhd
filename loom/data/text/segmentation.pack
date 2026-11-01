@@ -58,6 +58,33 @@
       "fingerprint": "representation_of"
     },
     "formats": {
+      "pdf": {
+        "mime": "text/plain",
+        "level": "recognized_block",
+        "part_kind": "text_span",
+        "parse": {
+          "segment": []
+        },
+        "reason": "pdf_text_layer_structure_inferred_no_layout_or_ocr",
+        "block_kinds": {
+          "paragraph": {
+            "unit": "paragraph",
+            "observation": "field"
+          },
+          "heading": {
+            "unit": "heading_candidate",
+            "observation": "field"
+          },
+          "page_gap": {
+            "unit": "text_span",
+            "observation": "field"
+          }
+        },
+        "structure_units": {
+          "page": "page",
+          "chapter": "chapter_candidate"
+        }
+      },
       "csv": {"mime": "text/csv", "level": "recognized_part", "part_kind": "csv_row",
         "parse": {"segment": []}, "reason": "csv_syntax_raw_quotes_decoded_values_derived"},
       "python_ast": {"mime": "text/x-python", "level": "recognized_part", "part_kind": "code_span",

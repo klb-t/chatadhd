@@ -9,7 +9,7 @@
 #endif
 namespace loom::chat {
 Result<std::filesystem::path> packaged_reader_directory(const std::string& name) {
-  if (name != "docx_basic" && name != "structure_readers")
+  if (name != "docx_basic" && name != "structure_readers" && name != "pdf_structure")
     return Error(Errc::Unavailable, "reader_package_unavailable");
 #if defined(__linux__) && !defined(__ANDROID__)
   static const char module_anchor = 0;

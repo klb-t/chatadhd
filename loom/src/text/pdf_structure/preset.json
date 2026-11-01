@@ -1,0 +1,6 @@
+{
+  "blank_lines": 1,
+  "chapter_mode": "prefix",
+  "chapter_prefixes": ["Chapter ", "Rozdział "],
+  "chapter_max_chars": 160
+}

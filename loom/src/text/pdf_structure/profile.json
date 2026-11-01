@@ -1,0 +1,26 @@
+{
+  "adapter": "poppler_glib",
+  "library": "libpoppler-glib.so.8",
+  "source_kind": "file",
+  "mime": "application/pdf",
+  "structure": {
+    "timeout_ms": 5000,
+    "poll_ms": 20,
+    "max_output_bytes": 8388608,
+    "max_original_bytes": 8388608,
+    "limits": {
+      "max_input_bytes": 8388608,
+      "cpu_seconds": 3,
+      "memory_bytes": 268435456
+    },
+    "options": {
+      "blank_lines": 1,
+      "chapter_mode": "prefix",
+      "chapter_prefixes": [
+        "Chapter ",
+        "Rozdział "
+      ],
+      "chapter_max_chars": 160
+    }
+  }
+}

@@ -42,7 +42,8 @@ Result<Json> compile_unified_context(Database& db, const Config& cfg,
     GraphMemorySelector* graph, MemoryEngine* memory, const ContextRequest& request,
     Json knowledge_result, std::string_view conv_id, bool include_memory,
     bool include_graph, const Json& options = Json::object(),
-    const std::function<Status(const Node&)>& verify_host_occurrence = {});
+    const std::function<Status(const Node&)>& verify_host_occurrence = {},
+    const std::function<Result<Json>(const Node&, std::size_t, std::size_t)>& image_region_builder = {});
 
 }  // namespace context
 }  // namespace loom

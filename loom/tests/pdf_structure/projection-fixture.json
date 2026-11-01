@@ -1,0 +1,266 @@
+{
+  "schema": "loom.pdf_structure.result/1",
+  "extractor": "loom.pdf_structure/1",
+  "source": {
+    "sha256": "3bb3302a66bb30d4e245b43ab6b1ccc4869c771cd3e1dffd229412549a065a49",
+    "size": 53
+  },
+  "reader": {
+    "adapter": "poppler_glib",
+    "library": "synthetic-reader-result"
+  },
+  "options": {
+    "blank_lines": 1,
+    "chapter_mode": "prefix",
+    "chapter_prefixes": [
+      "Chapter ",
+      "Rozdział "
+    ],
+    "chapter_max_chars": 160
+  },
+  "partial": true,
+  "warnings": [
+    "pdf_text_layer_only",
+    "paragraph_and_chapter_structure_inferred",
+    "page_breaks_do_not_establish_paragraph_continuation"
+  ],
+  "text": "Rozdział 1 — Żółć\n\nPierwszy akapit.\nDruga linia.\n\nPowtórka.\f \t\r\n\fRozdział 2 — 🧪\r\n\r\nPowtórka.\r\n\r\nKoniec.",
+  "page_count": 3,
+  "pages_without_text": [
+    2
+  ],
+  "pages": [
+    {
+      "page": 1,
+      "byte_range": [
+        0,
+        67
+      ],
+      "has_text": true
+    },
+    {
+      "page": 2,
+      "byte_range": [
+        68,
+        72
+      ],
+      "has_text": false
+    },
+    {
+      "page": 3,
+      "byte_range": [
+        73,
+        118
+      ],
+      "has_text": true
+    }
+  ],
+  "blocks": [
+    {
+      "kind": "heading",
+      "text": "Rozdział 1 — Żółć",
+      "locator": {
+        "page": 1,
+        "block": 0,
+        "page_text_range": [
+          0,
+          24
+        ]
+      },
+      "structure_evidence": "inferred",
+      "quote_evidence": "derived"
+    },
+    {
+      "kind": "paragraph",
+      "text": "Pierwszy akapit.\nDruga linia.",
+      "locator": {
+        "page": 1,
+        "block": 1,
+        "page_text_range": [
+          26,
+          55
+        ]
+      },
+      "structure_evidence": "inferred",
+      "quote_evidence": "derived"
+    },
+    {
+      "kind": "paragraph",
+      "text": "Powtórka.",
+      "locator": {
+        "page": 1,
+        "block": 2,
+        "page_text_range": [
+          57,
+          67
+        ]
+      },
+      "structure_evidence": "inferred",
+      "quote_evidence": "derived"
+    },
+    {
+      "kind": "page_gap",
+      "text": "",
+      "locator": {
+        "page": 2,
+        "block": 0,
+        "page_text_range": [
+          0,
+          0
+        ]
+      },
+      "structure_evidence": "inferred",
+      "quote_evidence": "derived"
+    },
+    {
+      "kind": "heading",
+      "text": "Rozdział 2 — 🧪",
+      "locator": {
+        "page": 3,
+        "block": 0,
+        "page_text_range": [
+          0,
+          20
+        ]
+      },
+      "structure_evidence": "inferred",
+      "quote_evidence": "derived"
+    },
+    {
+      "kind": "paragraph",
+      "text": "Powtórka.",
+      "locator": {
+        "page": 3,
+        "block": 1,
+        "page_text_range": [
+          24,
+          34
+        ]
+      },
+      "structure_evidence": "inferred",
+      "quote_evidence": "derived"
+    },
+    {
+      "kind": "paragraph",
+      "text": "Koniec.",
+      "locator": {
+        "page": 3,
+        "block": 2,
+        "page_text_range": [
+          38,
+          45
+        ]
+      },
+      "structure_evidence": "inferred",
+      "quote_evidence": "derived"
+    }
+  ],
+  "chapters": [
+    {
+      "title": "Rozdział 1 — Żółć",
+      "heading_block": 0,
+      "block_range": [
+        0,
+        4
+      ],
+      "byte_range": [
+        0,
+        73
+      ],
+      "evidence_class": "inferred",
+      "method": "prefix"
+    },
+    {
+      "title": "Rozdział 2 — 🧪",
+      "heading_block": 4,
+      "block_range": [
+        4,
+        7
+      ],
+      "byte_range": [
+        73,
+        118
+      ],
+      "evidence_class": "inferred",
+      "method": "prefix"
+    }
+  ],
+  "projection": {
+    "schema": "loom.pdf_structure.projection/1",
+    "coordinate": "derived_utf8_bytes",
+    "sha256": "b3edce5ba5da8bfcec3be2fb087252e1e560e0a122c55135fd83996661cc7018",
+    "size": 118,
+    "ranges": [
+      {
+        "byte_range": [
+          0,
+          26
+        ],
+        "text_range": [
+          0,
+          24
+        ]
+      },
+      {
+        "byte_range": [
+          26,
+          57
+        ],
+        "text_range": [
+          26,
+          55
+        ]
+      },
+      {
+        "byte_range": [
+          57,
+          68
+        ],
+        "text_range": [
+          57,
+          67
+        ]
+      },
+      {
+        "byte_range": [
+          68,
+          73
+        ],
+        "text_range": [
+          68,
+          68
+        ]
+      },
+      {
+        "byte_range": [
+          73,
+          97
+        ],
+        "text_range": [
+          73,
+          93
+        ]
+      },
+      {
+        "byte_range": [
+          97,
+          111
+        ],
+        "text_range": [
+          97,
+          107
+        ]
+      },
+      {
+        "byte_range": [
+          111,
+          118
+        ],
+        "text_range": [
+          111,
+          118
+        ]
+      }
+    ]
+  }
+}
