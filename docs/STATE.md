@@ -1,3 +1,23 @@
+## 2026-11-01 — HOSTREADERS: CSV i Python AST odebrane zakresowo
+
+Kod **89cb74f7b144e6f21e39c93fac2882637d9c9063**, baza **4a82c0cb**.
+Zaufany lokalny parser generuje receipt z oryginalnego bloba; klient nie może
+podawać poświadczającego JSON, helpera, profilu ani interpretera. Rozszerzono
+istniejący bounded subprocess DOCX. CSV row/cell i Python AST korzystają
+z Source/Unit/Observation/genesis/provenance i reparse przy read/context.
+Dawny bloker AST poniżej jest historyczny — zastąpiony działającym host hookiem.
+
+Własne PASS: **9/9 native**, **2/2 HTTP/context/restart**, **8/8 odmów procesu**,
+uszkodzenie oryginału, G1 **11/76 asercji** i DOCX **9/172**, default packaged
+DOCX, trwały graf CSV i packaged CSV po relokacji. **126 eksportów C** bez zmian.
+Nowy Release **42cf960c0f89d55be91ad5175ff0b0d082a5ca1216168c0fc5a9d88329f2f61d**;
+verify-package PASS z dokumentowanym BusyBox (GNU tar ENOSYS zachowany).
+Stare artefakty i 16 payloadów web zachowane. Brak GUI nowych formatów,
+realnego modelu, deploy, pełnego gate oraz testu rollback nowych wystąpień.
+Zmiana przypiętej instalacji/parsera/interpretera wymaga osobnej decyzji migracji;
+nie deklarujemy zgodności starej metody z nowym pakietem.
+[Raport i granice](reports/HOST_READERS_CSV_2026-11-01.md).
+
 ## 2026-11-01 — Python AST: parser przyjęty, native hook odłożony
 
 Baza odbioru `e2f6873c7ca24b41957b36b0127439b926068f41`; task

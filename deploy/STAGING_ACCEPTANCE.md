@@ -104,3 +104,17 @@ otrzymał jawne `--version`, a archiwa i ścieżki/dowiązania były wcześniej
 sprawdzone. Nie używać opcji zdejmujących ochronę ścieżek. Zgodność tar
 na docelowym hoście trzeba sprawdzić przed przełączeniem; udany lokalny
 wariant BusyBox nie jest dowodem działania domyślnego GNU tar.
+
+## Pakiet host readerów CSV/Python (2026-11-01)
+
+Komponent runtime instaluje `share/loom/structure_readers/runtime.json` oraz
+pięć przypiętych plików profilu/helperów. Absolutny interpreter systemowy i jego
+SHA są częścią bindingu; Python >=3.11 z `resource`, Linux/glibc >=2.34.
+Nie kopiować helpera z checkoutu w teście docelowego pakietu. Brak lub zmiana
+helpera/interpretera musi dawać odmowę. Nowy reader CSV po relokacji został
+sprawdzony przez integratora; szczegóły w raporcie HOST_READERS_CSV_2026-11-01.
+Aktualizacja interpretera lub parsera nie jest przezroczystą migracją starych
+wystąpień: zachować matching pakiet/snapshot i odebrać migrację osobno.
+Historyczne testy rollback sprzed tej zmiany nie dowodzą jej odwracalności.
+Instalator pozostaje jedynym mechanizmem pakietowania wdrożenia; ten odbiór
+nie uruchomił instalatora na produkcji ani nie udziela zgody na przełączenie.
