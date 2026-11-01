@@ -1,3 +1,24 @@
+## 2026-11-01 — DOCX source parts: backend odebrany, UI osobno
+
+Baza **f527ee5cc34825f38485419e4c11ef7c3ead6ad0** i pakiet **d5e7531426acb8243d653956f916ed15fc0efee2bbedd59cfe148f231348f609** zachowane.
+Audytowany source DOCX snapshot1793504748406534500, productpatch587538af…,
+17/17hashy stabilne; jednoapply bez STATEautora/CHECKPOINT/transportu.
+Jawna materializacja DOCX tworzy osobną pochodnąUTF8/Source/Unit/Observation,
+provenance do oryginału i wystąpienia; nie współrzędne ZIP/XML/stron.
+
+Własny Release-j2 i stagedreader PASS; native DOCX **9/9,172asercje**,
+G1UTF8 **11/11,76asercji**, CTest-j1 **2/2**. HTTP **4/4**:2DOCX+2konkretneG1
+(context/reopen i code/version), rzeczywisty selector/request syntetycznego
+providera również po restarcie. HTTPdefault packagehelper, backendcheckout
+niedostępny przezLandlock. Brak zmian audytowanego runtime; testy wzmocnione.
+**Backend tested, UI NIE odebrane, NOT deployed.** SelectorDB-only nie dowodzi
+hashybloba; cache nie naprawia grafu; DBrollback nie gwarantuje cleanupplików.
+Poprzedni binaryselector nie rozumie nowychderivedcoordinates — brak nowego
+rollbackPASS, administrator potrzebuje odrębnego sprawdzenia lub kopii sprzed zmiany.
+Next: nowy pakiet iverify po commicie wyniku, potem osobny auditedUI. Bez powtórek
+P0/parser/share/accounts/backup, bez deploy/modelcalls/nowychagentów.
+[Raport](reports/DOCX_SOURCE_PARTS_INTEGRATION_2026-11-01.md).
+
 ## 2026-11-01 — external ChatGPT share: runtime/HTTP/GUI odebrane zakresowo
 
 Kod produkcyjny **3bf01f7c29981d27554dd44dbd21e2d29f42029c**: własny przyrostowy

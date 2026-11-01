@@ -61,6 +61,7 @@ Result<DocumentText> read_document_text(const std::filesystem::path& path, const
     document.text = json::get_string(decoded, "text");
     decoded.erase("text");
     decoded.erase("blocks");  // reproducible locators stay in the parser result; do not duplicate body in notes
+    decoded.erase("projection");  // graph ranges belong to the explicit materialization receipt
     document.details = std::move(decoded);
     return document;
   }

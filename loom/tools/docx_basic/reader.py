@@ -456,15 +456,35 @@ class TextReader:
                 self.inline(node)  # record specific omissions, no unplaced text
         if field_depth:
             fail('docx_invalid_structure')
-        rendered = []
-        for block in self.blocks:
-            prefix = '#'*block['level'] + ' ' if block['kind'] == 'heading' else ('- ' if block['kind'] == 'list_item' else '')
-            rendered.append(prefix + block['text'])
-        text = '\n'.join(rendered)
+        text, self.projection = project_blocks(self.blocks)
         check(self.limits, 'max_text_chars', len(text))
         if not any(block['text'].strip() for block in self.blocks):
             fail('document_no_text')
         return text
+
+
+def project_blocks(blocks):
+    """Versioned rendering of recognized blocks, not coordinates in ZIP/XML.
+
+    Each occurrence owns its following separator. Empty and repeated blocks
+    remain separate; text_range excludes generated heading/list prefixes.
+    """
+    rendered, ranges, offset = [], [], 0
+    for index, block in enumerate(blocks):
+        prefix = '#'*block['level'] + ' ' if block['kind'] == 'heading' else ('- ' if block['kind'] == 'list_item' else '')
+        value = prefix + block['text']
+        start = offset + len(prefix.encode('utf-8'))
+        text_end = start + len(block['text'].encode('utf-8'))
+        if index + 1 < len(blocks):
+            value += '\n'
+        end = offset + len(value.encode('utf-8'))
+        ranges.append({'byte_range': [offset, end], 'text_range': [start, text_end]})
+        rendered.append(value)
+        offset = end
+    text = ''.join(rendered)
+    return text, {'schema': 'loom.docx_basic.projection/1',
+                  'coordinate': 'derived_utf8_bytes', 'ranges': ranges,
+                  'sha256': hashlib.sha256(text.encode('utf-8')).hexdigest(), 'size': offset}
 
 
 def extract(data, limits):
@@ -512,6 +532,7 @@ def extract(data, limits):
         reader = TextReader(root, style_parts, warnings, limits)
         text = reader.read(bodies[0], main)
         return {'schema': 'loom.docx_basic.result/1', 'text': text, 'blocks': reader.blocks,
+                'projection': reader.projection,
                 'partial': True, 'warnings': sorted(warnings),
                 'source': {'sha256': hashlib.sha256(data).hexdigest(), 'size': len(data), 'member': main},
                 'extractor': 'loom.docx_basic/1', 'llm_calls': 0}

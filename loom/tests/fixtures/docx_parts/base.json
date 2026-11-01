@@ -1,0 +1,202 @@
+{
+  "schema": "loom.docx_basic.result/1",
+  "text": "Żółw powtórzony.\nŻółw powtórzony.\nWewnątrz\nakapitu.\n\n\n## Tytuł\n- Lista\nKomórka A\tKomórka B\n\nKoniec.\n",
+  "blocks": [
+    {
+      "kind": "paragraph",
+      "text": "Żółw powtórzony.",
+      "locator": "word/document.xml#body/0"
+    },
+    {
+      "kind": "paragraph",
+      "text": "Żółw powtórzony.",
+      "locator": "word/document.xml#body/1"
+    },
+    {
+      "kind": "paragraph",
+      "text": "Wewnątrz\nakapitu.",
+      "locator": "word/document.xml#body/2"
+    },
+    {
+      "kind": "paragraph",
+      "text": "",
+      "locator": "word/document.xml#body/3"
+    },
+    {
+      "kind": "paragraph",
+      "text": "",
+      "locator": "word/document.xml#body/4"
+    },
+    {
+      "kind": "heading",
+      "text": "Tytuł",
+      "locator": "word/document.xml#body/5",
+      "level": 2
+    },
+    {
+      "kind": "list_item",
+      "text": "Lista",
+      "locator": "word/document.xml#body/6",
+      "num_id": "1",
+      "level": "0"
+    },
+    {
+      "kind": "table",
+      "rows": [
+        [
+          "Komórka A",
+          "Komórka B"
+        ]
+      ],
+      "text": "Komórka A\tKomórka B",
+      "locator": "word/document.xml#body/7"
+    },
+    {
+      "kind": "paragraph",
+      "text": "",
+      "locator": "word/document.xml#body/8"
+    },
+    {
+      "kind": "paragraph",
+      "text": "Koniec.",
+      "locator": "word/document.xml#body/9"
+    },
+    {
+      "kind": "paragraph",
+      "text": "",
+      "locator": "word/document.xml#body/10"
+    }
+  ],
+  "projection": {
+    "schema": "loom.docx_basic.projection/1",
+    "coordinate": "derived_utf8_bytes",
+    "ranges": [
+      {
+        "byte_range": [
+          0,
+          21
+        ],
+        "text_range": [
+          0,
+          20
+        ]
+      },
+      {
+        "byte_range": [
+          21,
+          42
+        ],
+        "text_range": [
+          21,
+          41
+        ]
+      },
+      {
+        "byte_range": [
+          42,
+          61
+        ],
+        "text_range": [
+          42,
+          60
+        ]
+      },
+      {
+        "byte_range": [
+          61,
+          62
+        ],
+        "text_range": [
+          61,
+          61
+        ]
+      },
+      {
+        "byte_range": [
+          62,
+          63
+        ],
+        "text_range": [
+          62,
+          62
+        ]
+      },
+      {
+        "byte_range": [
+          63,
+          73
+        ],
+        "text_range": [
+          66,
+          72
+        ]
+      },
+      {
+        "byte_range": [
+          73,
+          81
+        ],
+        "text_range": [
+          75,
+          80
+        ]
+      },
+      {
+        "byte_range": [
+          81,
+          103
+        ],
+        "text_range": [
+          81,
+          102
+        ]
+      },
+      {
+        "byte_range": [
+          103,
+          104
+        ],
+        "text_range": [
+          103,
+          103
+        ]
+      },
+      {
+        "byte_range": [
+          104,
+          112
+        ],
+        "text_range": [
+          104,
+          111
+        ]
+      },
+      {
+        "byte_range": [
+          112,
+          112
+        ],
+        "text_range": [
+          112,
+          112
+        ]
+      }
+    ],
+    "sha256": "6ab0adac290b0c372073873affe152c516dda86c1be83c8eb9a30081e56960c0",
+    "size": 112
+  },
+  "partial": true,
+  "warnings": [
+    "docx_auxiliary_parts_omitted",
+    "docx_formatting_and_pagination_omitted",
+    "docx_images_omitted",
+    "docx_list_labels_not_reconstructed"
+  ],
+  "source": {
+    "sha256": "c4fb7469f72279f25203b4d297b484415d24d4ab67722063d1f993faf68837dd",
+    "size": 1823,
+    "member": "word/document.xml"
+  },
+  "extractor": "loom.docx_basic/1",
+  "llm_calls": 0
+}

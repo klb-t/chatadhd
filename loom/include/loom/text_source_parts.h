@@ -12,10 +12,13 @@ namespace loom::text::sources {
 // hash is an immutable version; neither a filename nor a normalized fingerprint
 // establishes identity. request: hash, source_key, name, format; optional language,
 // level, pack (segmentation overlay), previous_source_id (explicit version edge).
-// Returns source/unit/version/occurrence graph references. No model or file parser.
+// format=docx explicitly uses the configured bounded reader, retains its output
+// and script, and addresses recognized blocks in a separate derived UTF-8 blob.
+// Returns source/unit/version/occurrence graph references. No model calls.
 Result<Json> materialize(Runtime& rt, const Json& request);
 
-// Read one occurrence against its immutable original, checking hash and byte range.
+// Read one occurrence against its immutable source, checking hash and byte range.
+// DOCX additionally verifies the raw original and saved extraction receipt.
 // request: node_id. The ordinary client blob raw/read path reads the full original.
 Result<Json> read(Runtime& rt, const Json& request);
 
