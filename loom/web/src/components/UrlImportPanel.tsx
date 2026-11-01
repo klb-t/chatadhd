@@ -57,11 +57,13 @@ export function UrlImportResult({ result }: { result: Result }) {
   const attachments = Array.isArray(result?.attachments) ? result.attachments as Result[] : [];
   return <div role="status" data-testid="url-import-result" data-status={statusKey}>
       <p>{w(statusKey)}</p>{reason && <p>{w(reason)}</p>}
+      {statusKey !== "complete" && <p>{w("file_fallback")}</p>}
+      {Boolean(result.branch) && <p>{w("branch_saved")}</p>}
       <p>{w("messages")}: {Number(result.messages) || 0}</p>
       <p>{w("source")}: {String(result.source_url ?? "")}</p>
       <p>{w("final")}: {String(result.final_url ?? "")}</p>
       {attachments.length > 0 && <ul aria-label={w("attachments")}>{attachments.map((a, index) => {
-        const key = a.status === "complete" || a.status === "denied" || a.status === "missing" || a.status === "partial" ? a.status : "unsupported";
+        const key = a.status === "complete" || a.status === "denied" || a.status === "missing" || a.status === "partial" || a.status === "reference" ? a.status : "unsupported";
         return <li key={index}>{index + 1}: {w(key)}</li>;
       })}</ul>}
     </div>;

@@ -5,6 +5,7 @@
 #include <cerrno>
 #include <cstdlib>
 #include <limits>
+#include <map>
 #include <string>
 #include <vector>
 #if defined(__unix__) && !defined(__ANDROID__)
@@ -269,6 +270,8 @@ Result<Json> store(Database& db, BlobStore& blobs, ProvenanceStore& prov, Json s
               {"source_url", resource.value("source_url", "")}, {"final_url", resource.value("final_url", "")},
               {"conversations", Json::array()}, {"messages", 0}, {"already_imported", false}, {"llm_calls", 0},
               {"previous_source_id", previous}, {"attachments", Json::array()}};
+  for (const auto* key : {"adapter", "branch", "attachments_mode", "locator"})
+    if (parsed.contains(key)) result[key] = parsed[key];
   std::vector<std::pair<std::string, std::string>> subjects;
   std::vector<std::pair<std::string, Json>> asset_sources;
   if (!parsed["messages"].empty()) {
@@ -280,8 +283,11 @@ Result<Json> store(Database& db, BlobStore& blobs, ProvenanceStore& prov, Json s
                       {"reason", result["reason"]}, {"source_url", result["source_url"]},
                       {"final_url", result["final_url"]}, {"scope", parsed.value("scope", "")},
                       {"previous_source_id", previous}, {"analysis", "not_requested"}}}};
+    for (const auto* key : {"adapter", "branch", "attachments_mode", "locator"})
+      if (parsed.contains(key)) (*cp.metadata)["url_import"][key] = parsed[key];
     LOOM_TRY(db.update_conv(conv.id, cp));
     std::optional<std::string> parent;
+    std::map<std::string, std::string> message_ids;
     std::size_t sequence = 0;
     for (auto& item : parsed["messages"]) {
       if (!item.is_object() || !item.contains("role") || !item["role"].is_string() ||
@@ -308,12 +314,34 @@ Result<Json> store(Database& db, BlobStore& blobs, ProvenanceStore& prov, Json s
       NewMessage message;
       message.conv_id = conv.id; message.role = item["role"].get<std::string>();
       message.text = item["text"].get<std::string>(); message.parent_id = parent; message.attachments = attachments;
+      if (item.contains("parent_pointer")) {
+        message.parent_id.reset();
+        if (!item["parent_pointer"].is_null()) {
+          if (!item["parent_pointer"].is_string()) return Error(Errc::InvalidArgument, "invalid url parent pointer");
+          const auto found = message_ids.find(item["parent_pointer"].get<std::string>());
+          if (found == message_ids.end()) return Error(Errc::InvalidArgument, "unresolved url parent pointer");
+          message.parent_id = found->second;
+        }
+      }
       message.metadata = {{"url_import", {{"source_id", source_id}, {"sequence", sequence++},
                           {"pointer", item.value("pointer", "")}, {"attachments", item["attachments"]},
                           {"analysis", "not_requested"}}}};
+      for (const auto* key : {"provider_node_id", "provider_message_id", "parent_pointer", "active"})
+        if (item.contains(key)) message.metadata["url_import"][key] = item[key];
+      if (parsed.contains("locator")) message.metadata["url_import"]["locator"] = parsed["locator"];
       LOOM_TRY_ASSIGN(auto id, db.create_msg(message));
       // Explicit opt-out from the background semantic queue: import alone runs no model.
-      MsgPatch mp; mp.semantic_status = "done"; LOOM_TRY(db.update_msg(id, mp));
+      MsgPatch mp; mp.semantic_status = "done";
+      if (item.contains("active")) {
+        if (!item["active"].is_boolean()) return Error(Errc::InvalidArgument, "invalid url branch status");
+        if (!item["active"].get<bool>()) mp.status = std::string(msg_status::kVersion);
+      }
+      LOOM_TRY(db.update_msg(id, mp));
+      if (item.contains("parent_pointer")) {
+        const auto pointer = json::get_string(item, "pointer");
+        if (pointer.empty() || !message_ids.emplace(pointer, id).second)
+          return Error(Errc::InvalidArgument, "duplicate url message pointer");
+      }
       parent = id; subjects.emplace_back(id, item.value("pointer", ""));
     }
     LOOM_TRY_ASSIGN(auto saved, db.get_conv(conv.id));
@@ -329,10 +357,21 @@ Result<Json> store(Database& db, BlobStore& blobs, ProvenanceStore& prov, Json s
   NodeOptions no; no.metadata = {{"source_id", source_id}, {"status", result["status"]}, {"reason", result["reason"]}};
   LOOM_TRY_ASSIGN(auto node, db.create_node(uri, mapping["source_node_kind"].get<std::string>(), no));
   LOOM_TRY(located(prov, node, "node", source_id, Json::object()));
+  auto source_locator = [&](const std::string& pointer) {
+    // An HTML script locator scopes the pointer into decoded embedded data;
+    // it is never misrepresented as a JSON pointer into the HTML document.
+    if (parsed.contains("locator")) {
+      auto locator = parsed["locator"];
+      locator["json_pointer"] = pointer;
+      return Json{{"embedded_data", locator}};
+    }
+    return Json{{"json_pointer", pointer}};
+  };
   for (const auto& c : result["conversations"])
-    LOOM_TRY(located(prov, c.at("id").get<std::string>(), "conversation", source_id, {{"json_pointer", "/conversation"}}));
+    LOOM_TRY(located(prov, c.at("id").get<std::string>(), "conversation", source_id,
+                     source_locator(parsed.value("conversation_pointer", "/conversation"))));
   for (const auto& subject : subjects) {
-    LOOM_TRY(located(prov, subject.first, "message", source_id, {{"json_pointer", subject.second}}));
+    LOOM_TRY(located(prov, subject.first, "message", source_id, source_locator(subject.second)));
     LOOM_TRY(db.create_link(subject.first, node, mapping["part_relation"].get<std::string>(), 1.0, {{"source_id", source_id}}));
   }
   for (const auto& asset : asset_sources) {

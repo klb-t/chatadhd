@@ -1,5 +1,12 @@
 # Indeks wątków — 2026-10-05 wieczór
 
+2026-11-01 source integrated, **native nieodebrany**: rzeczywiste struktury HTML ChatGPT
+share w istniejącym workerze URL, bajty źródła/provenance, jawna gałąź i
+odniesienia załączników. Baza `97a5562bed5294602161eb0e7d2f2c4bc73e2a60`.
+Decyzja: odczyt inertnych danych strony bez JS, logowania lub dodatkowego HTTP;
+brakującej gałęzi nie zgadujemy. Odwracalność i osobna kolejka odbioru native/UI
+w [raporcie integratora](EXTERNAL_SHARE_INTEGRATION_2026-11-01.md); następna bramka po zwolnieniu heavy slotu.
+
 2026-10-14 B implementation decision (candidate branch): relational recognition
 uses the existing pack anchor/matcher and additive Instance receipt; filters,
 patterns, alternatives and budgets are data. Revert the facet/pack descriptor to

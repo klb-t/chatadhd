@@ -1,0 +1,72 @@
+[
+  {
+    "name": "python-tests",
+    "command": [
+      "python3",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "loom/tests/url_share",
+      "-p",
+      "test_*.py",
+      "-v"
+    ],
+    "exit_code": 0
+  },
+  {
+    "name": "web-contract",
+    "command": [
+      "node",
+      "--test",
+      "loom/web/tests/url-import-request.test.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "name": "worker-generated",
+    "command": [
+      "python3",
+      "loom/src/import/url_share/gen_worker.py",
+      "--check"
+    ],
+    "exit_code": 0
+  },
+  {
+    "name": "policy-generated",
+    "command": [
+      "python3",
+      "loom/src/import/url_share/gen_policy.py",
+      "--check"
+    ],
+    "exit_code": 0
+  },
+  {
+    "name": "cpp-syntax",
+    "command": [
+      "c++",
+      "-std=c++20",
+      "-fsyntax-only",
+      "-Iloom/include",
+      "-Iloom/third_party/nlohmann",
+      "-Iloom/third_party/sqlite",
+      "loom/src/import/url_share_import.cpp"
+    ],
+    "exit_code": 0
+  },
+  {
+    "name": "cpp-test-syntax",
+    "command": [
+      "c++",
+      "-std=c++20",
+      "-fsyntax-only",
+      "-Iloom/include",
+      "-Iloom/tests",
+      "-Iloom/third_party/nlohmann",
+      "-Iloom/third_party/sqlite",
+      "-Iloom/third_party/doctest",
+      "loom/tests/test_url_share_import.cpp"
+    ],
+    "exit_code": 0
+  }
+]

@@ -2,8 +2,8 @@
   "url": {"pl": "Adres strony lub rozmowy", "en": "Page or conversation URL"},
   "mode": {"pl": "Co importować", "en": "What to import"},
   "page": {"pl": "Treść strony", "en": "Page content"},
-  "share": {"pl": "Rozmowę — eksport JSON ChatADHD", "en": "Conversation — ChatADHD JSON export"},
-  "hint": {"pl": "Import zachowuje dostępne źródło. Inne formaty udostępnionych rozmów mogą być nierozpoznane. Analiza modelem wymaga osobnego działania.", "en": "Import preserves the available source. Other shared conversation formats may be unrecognized. Model analysis is a separate action."},
+  "share": {"pl": "Rozmowę — ChatGPT share lub eksport JSON ChatADHD", "en": "Conversation — ChatGPT share or ChatADHD JSON export"},
+  "hint": {"pl": "Import zachowuje źródło i dostępną rozmowę, bez wywołania modelu. ChatGPT share: załączniki pozostają odniesieniami; nie są pobierane. Gdy dostęp jest zablokowany lub format nierozpoznany, użyj importu pliku z eksportem rozmowy.", "en": "Import preserves the source and available conversation, without a model call. ChatGPT share attachments remain references and are not downloaded. If access is blocked or the format is unrecognized, use file import with a conversation export."},
   "start": {"pl": "Importuj adres", "en": "Import URL"},
   "busy": {"pl": "Odczytuję źródło…", "en": "Reading source…"},
   "complete": {"pl": "Zapisano dostępną treść źródła.", "en": "The available source content was saved."},
@@ -22,5 +22,9 @@
   "url_worker_unavailable": {"pl": "Odczyt URL nie jest dostępny na tym urządzeniu.", "en": "URL reading is unavailable on this device."},
   "login_required": {"pl": "Źródło wymaga zalogowania.", "en": "The source requires login."},
   "http_403": {"pl": "Źródło odmówiło dostępu.", "en": "The source refused access."},
-  "http_404": {"pl": "Źródło nie istnieje pod tym adresem.", "en": "The source was not found at this address."}
+  "http_404": {"pl": "Źródło nie istnieje pod tym adresem.", "en": "The source was not found at this address."},
+  "reference": {"pl": "Odniesienie — nie pobrano pliku", "en": "Reference — file not downloaded"},
+  "file_fallback": {"pl": "Możesz użyć importu pliku z eksportem rozmowy. Import URL nie loguje się do źródła.", "en": "You can use file import with a conversation export. URL import does not sign in to the source."},
+  "branch_saved": {"pl": "Zachowano dostarczone drzewo wiadomości. Aktywna jest gałąź wskazana w źródle.", "en": "The supplied message tree was preserved. The branch identified by the source is active."},
+  "share_content_partial": {"pl": "Część treści ma nieobsługiwany format. Oryginał zachowano; brakującej treści nie uzupełniono.", "en": "Some content has an unsupported format. The original was preserved; missing content was not invented."}
 }

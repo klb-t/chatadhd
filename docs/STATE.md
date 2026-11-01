@@ -1,3 +1,29 @@
+## 2026-11-01 — external share scalony lekko; native acceptance oczekuje
+
+Przyjęta baza produktu nadal **97a5562bed5294602161eb0e7d2f2c4bc73e2a60**,
+pakiet ccb5ef9d SHA95bb540c… bez zmian. Nowy commit to **implemented,
+integrated, NOT native-accepted / NOT deployed**. Na początku slot miał LEM.
+Końcowy odczyt03:13UTC: LEMcompleted, slot przekazany osobnemu nativeacceptance,
+które czeka na zakończenie tej fazy. Nie uruchomiono C++/CMake/Vite/Gradle/pakowania.
+
+Audytowany task chatadhd-external-share-import-20261101, snapshot1793501984686167540,
+patch2f6146f7…:24/24hashy stabilne, JEDNO apply z wyłączeniem CHECKPOINT;
+23/23produktowe pliki początkowo identyczne. Parser HTML ChatGPT Next.js/turbo,
+parent/branch/locator/reference-only assets i UI PL/EN. Własny web typecheck
+całego src PASS (tsc --noEmit, exit0), składnia nowego harnessu JS PASS.
+53Python/4Node/2C++syntax/2generatory to wcześniejsze wyniki AUTORA, nie nowy PASS.
+
+Native10 przypadków czeka; w istniejącym przypadku dodano pełniejszą kontrolę
+DB rollback/reopen. Przygotowano focused target bez monolitu i6grup rzeczywistego
+HTTP/browser/context/reopen z syntetycznym HTTPS/providerem. Wszystkie te bramki
+mają **0 wykonań**; nowy kod testowy C/C++ także nieskompilowany. kVersion oraz
+filtrowanieactive potwierdzone w kodzie, nie w nowym rzeczywistym żądaniu.
+Next: runner wznawia ten sam UUID w przygotowanym nativeacceptance; sprawdzenie
+świeżej rezerwacji, własnybuild-j2,
+CTest-j1 i6grup GUI/HTTP. Nie deklarować publicznego share/TLS ani Claude adaptera.
+[Raport lekkiej integracji](reports/EXTERNAL_SHARE_INTEGRATION_2026-11-01.md),
+[przygotowane bramki](../loom/tests/url_share/NATIVE_ACCEPTANCE.md).
+
 ## 2026-11-01 — cold snapshot scalony; niepusty recovery WAL odebrany
 
 Baza **77efca1647fb506d41a606a0fb25e82d10bdb74a**, audytowany patch68200288…

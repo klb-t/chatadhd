@@ -1,0 +1,37 @@
+$ node --test loom/web/tests/url-import-request.test.mjs
+TAP version 13
+# Subtest: URL descriptor uses the existing multipart import file contract
+ok 1 - URL descriptor uses the existing multipart import file contract
+  ---
+  duration_ms: 11.905614
+  type: 'test'
+  ...
+# Subtest: page mode stays separate from conversation parsing
+ok 2 - page mode stays separate from conversation parsing
+  ---
+  duration_ms: 0.649471
+  type: 'test'
+  ...
+# Subtest: credentials, control bytes and unsupported schemes are rejected in the descriptor UI
+ok 3 - credentials, control bytes and unsupported schemes are rejected in the descriptor UI
+  ---
+  duration_ms: 0.502911
+  type: 'test'
+  ...
+# Subtest: Polish and English status labels exist, with no success fallback for denied results
+ok 4 - Polish and English status labels exist, with no success fallback for denied results
+  ---
+  duration_ms: 5.178877
+  type: 'test'
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 821.219864
+
+exit=0

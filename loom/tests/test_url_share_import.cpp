@@ -36,6 +36,77 @@ Json static_snapshot() {
 }
 }
 TEST_SUITE("url_share_import") {
+  TEST_CASE("provider share tree references provenance idempotency and reopen") {
+    const Json input{{"schema", "loom.url_import_request/1"}, {"mode", "share"},
+                     {"url", "https://chatgpt.com/share/synthetic-share"}};
+    const auto worker = std::filesystem::path(__FILE__).parent_path() / "url_share/provider_fixture_worker.py";
+    const auto snapshot = unwrap(url_share::fetch(input, unwrap(url_share::policy()), worker));
+    REQUIRE(snapshot["parsed"]["status"] == "complete");
+    Store s;
+    const auto result = s.save(snapshot);
+    CHECK(result["adapter"] == "chatgpt.share_html/1");
+    CHECK(result["branch"]["selected_node"] == "tool");
+    CHECK(result["messages"] == 4); CHECK(result["llm_calls"] == 0);
+    REQUIRE(result["attachments"].size() == 2);
+    for (const auto& asset : result["attachments"]) {
+      CHECK(asset["status"] == "reference"); CHECK_FALSE(asset.contains("blob_hash"));
+    }
+    const auto cid = result["conversations"][0]["id"].get<std::string>();
+    const auto original = unwrap(s.prov.get_source(result["source_id"].get<std::string>()));
+    REQUIRE(original);
+    CHECK(unwrap(s.blobs.read(original->blob_hash)) == unwrap(base64::decode(snapshot["resource"]["body_base64"].get<std::string>())));
+    CHECK(s.save(snapshot)["already_imported"] == true);
+    s.db->close();
+    auto reopened = loom::test::open_db(s.dir.path() / "data.db");
+    BlobStore blobs(s.dir.path() / "blobs", *reopened); ProvenanceStore prov(*reopened);
+    const auto all = unwrap(reopened->get_msgs(cid, true));
+    REQUIRE(all.size() == 4);
+    const auto& rows = snapshot["parsed"]["messages"];
+    for (std::size_t i = 0; i < all.size(); ++i) {
+      CHECK(all[i].role == rows[i]["role"].get<std::string>());
+      CHECK(all[i].text == rows[i]["text"].get<std::string>());
+      CHECK(all[i].semantic_status == "done"); CHECK(all[i].attachments.empty());
+      CHECK(all[i].status == (rows[i]["active"].get<bool>() ? "active" : "version"));
+      const auto origins = unwrap(prov.for_subject(all[i].id));
+      REQUIRE(origins.size() == 1);
+      CHECK(origins[0].locator["embedded_data"]["format"] == "turbo_stream_v2");
+      CHECK(origins[0].locator["embedded_data"]["json_pointer"] == rows[i]["pointer"]);
+    }
+    CHECK_FALSE(all[0].parent_id);
+    CHECK(all[1].parent_id == all[0].id); CHECK(all[2].parent_id == all[0].id);
+    CHECK(all[3].parent_id == all[2].id);
+    const auto active = unwrap(reopened->get_msgs(cid));
+    REQUIRE(active.size() == 3);
+    CHECK(active[1].text == "Wybrana odpowiedź\n"); CHECK(active[2].text.empty());
+    CHECK(unwrap(reopened->count_pending_semantic()) == 0);
+    const auto repeated = unwrap(url_share::store(*reopened, blobs, prov, snapshot));
+    CHECK(repeated["already_imported"] == true); CHECK(repeated["conversations"][0]["id"] == cid);
+  }
+
+  TEST_CASE("provider unresolved or duplicate parent pointers roll back") {
+    for (const bool duplicate : {false, true}) {
+      Store s; auto snapshot = static_snapshot();
+      auto counts = [](Database& db) {
+        auto statement = unwrap(db.conn().prepare(
+            "SELECT (SELECT count(*) FROM messages), (SELECT count(*) FROM loom_sources), "
+            "(SELECT count(*) FROM loom_provenance)"));
+        REQUIRE(unwrap(statement.step()));
+        return Json::array({statement.get_int(0), statement.get_int(1), statement.get_int(2)});
+      };
+      const auto before = counts(*s.db);
+      auto& row = snapshot["parsed"]["messages"][0];
+      row["parent_pointer"] = duplicate ? Json(nullptr) : Json("/missing");
+      if (duplicate) snapshot["parsed"]["messages"].push_back(row);
+      CHECK_FALSE(url_share::store(*s.db, s.blobs, s.prov, snapshot));
+      CHECK(unwrap(s.db->list_convs()).empty()); CHECK(unwrap(s.prov.list_sources()).empty());
+      CHECK(unwrap(s.db->count_pending_semantic()) == 0);
+      CHECK(counts(*s.db) == before); // all DB rows, not only the visible conversation list
+      s.db->close();
+      auto reopened = loom::test::open_db(s.dir.path() / "data.db");
+      CHECK(counts(*reopened) == before);
+    }
+  }
+
 #if defined(__unix__) && !defined(__ANDROID__)
   // Integrator: run ONLY this case from copied build artifacts, in an environment
   // without source checkout mounts. It uses no fixture/helper source path.

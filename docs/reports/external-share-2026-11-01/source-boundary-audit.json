@@ -1,0 +1,13 @@
+{
+  "base": "97a5562bed5294602161eb0e7d2f2c4bc73e2a60",
+  "exact_source_equal": {
+    "normalize_url": true,
+    "public_address": true,
+    "remaining": true,
+    "PublicTransport": true,
+    "Fetcher": true,
+    "validate_policy": true,
+    "PageText": true
+  },
+  "runtime_evidence": false
+}

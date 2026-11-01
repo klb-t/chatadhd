@@ -1,0 +1,61 @@
+$ python3 -m unittest discover -s loom/tests/url_share -p test_*.py -v
+test_exact_bytes_hash_and_generator (test_packaging.PackagingTests.test_exact_bytes_hash_and_generator) ... ok
+test_native_production_path_has_no_checkout_dependency (test_packaging.PackagingTests.test_native_production_path_has_no_checkout_dependency) ... ok
+test_provider_parser_from_embedded_worker_without_checkout (test_packaging.PackagingTests.test_provider_parser_from_embedded_worker_without_checkout) ... ok
+test_unpack_and_execute_existing_isolated_transport_without_checkout (test_packaging.PackagingTests.test_unpack_and_execute_existing_isolated_transport_without_checkout) ... ok
+test_unpacked_production_entrypoint_rejects_loopback (test_packaging.PackagingTests.test_unpacked_production_entrypoint_rejects_loopback) ... ok
+test_both_real_structures_preserve_roles_order_whitespace_and_empty_text (test_provider_share.ProviderShareTests.test_both_real_structures_preserve_roles_order_whitespace_and_empty_text) ... ok
+test_branches_parent_edges_and_explicit_selection (test_provider_share.ProviderShareTests.test_branches_parent_edges_and_explicit_selection) ... ok
+test_broken_trees_and_ambiguous_branch_are_refused (test_provider_share.ProviderShareTests.test_broken_trees_and_ambiguous_branch_are_refused) ... ok
+test_isolated_process_contract_for_native_handoff (test_provider_share.ProviderShareTests.test_isolated_process_contract_for_native_handoff) ... ok
+test_linear_only_import_names_the_shared_branch (test_provider_share.ProviderShareTests.test_linear_only_import_names_the_shared_branch) ... ok
+test_linear_supplied_parent_edges_are_not_overwritten (test_provider_share.ProviderShareTests.test_linear_supplied_parent_edges_are_not_overwritten) ... ok
+test_login_walls_and_truncated_html_never_become_conversations (test_provider_share.ProviderShareTests.test_login_walls_and_truncated_html_never_become_conversations) ... ok
+test_malformed_script_and_unsupported_js_are_inert (test_provider_share.ProviderShareTests.test_malformed_script_and_unsupported_js_are_inert) ... ok
+test_production_byte_limit_still_applies_before_parser (test_provider_share.ProviderShareTests.test_production_byte_limit_still_applies_before_parser) ... ok
+test_provenance_exact_original_bytes_and_escaped_locators (test_provider_share.ProviderShareTests.test_provenance_exact_original_bytes_and_escaped_locators) ... ok
+test_references_survive_and_never_fetch_private_or_provider_assets (test_provider_share.ProviderShareTests.test_references_survive_and_never_fetch_private_or_provider_assets) ... ok
+test_snapshot_determinism_for_native_idempotency (test_provider_share.ProviderShareTests.test_snapshot_determinism_for_native_idempotency) ... ok
+test_turbo_references_literals_cycles_and_expansion_limit (test_provider_share.ProviderShareTests.test_turbo_references_literals_cycles_and_expansion_limit) ... ok
+test_unknown_content_is_partial_without_fabricated_text (test_provider_share.ProviderShareTests.test_unknown_content_is_partial_without_fabricated_text) ... ok
+test_unknown_or_spoofed_host_path_and_mime_are_not_provider_success (test_provider_share.ProviderShareTests.test_unknown_or_spoofed_host_path_and_mime_are_not_provider_success) ... ok
+test_canonical_source_url (test_worker.SecurityTests.test_canonical_source_url) ... ok
+test_generated_preset (test_worker.SecurityTests.test_generated_preset) ... ok
+test_isolated_worker_process_contract (test_worker.SecurityTests.test_isolated_worker_process_contract) ... ok
+test_nonpublic_addresses (test_worker.SecurityTests.test_nonpublic_addresses) ... ok
+test_production_dns_mixed_private_denied_before_connect (test_worker.SecurityTests.test_production_dns_mixed_private_denied_before_connect) ... ok
+test_production_pin_has_no_second_dns_or_auth (test_worker.SecurityTests.test_production_pin_has_no_second_dns_or_auth) ... ok
+test_production_private_literal_is_denied_even_with_proxy (test_worker.SecurityTests.test_production_private_literal_is_denied_even_with_proxy) ... ok
+test_proxy_is_never_bypassed (test_worker.SecurityTests.test_proxy_is_never_bypassed) ... ok
+test_untrusted_request_cannot_select_transport (test_worker.SecurityTests.test_untrusted_request_cannot_select_transport) ... ok
+test_urls_reject_auth_scheme_control_and_ambiguous_host (test_worker.SecurityTests.test_urls_reject_auth_scheme_control_and_ambiguous_host) ... ok
+test_worker_cli_invalid_input_has_no_logs (test_worker.SecurityTests.test_worker_cli_invalid_input_has_no_logs) ... ok
+test_403_is_denied (test_worker.WorkerTests.test_403_is_denied) ... ok
+test_404_is_explicit (test_worker.WorkerTests.test_404_is_explicit) ... ok
+test_attachment_available_missing_and_local_never_read (test_worker.WorkerTests.test_attachment_available_missing_and_local_never_read) ... ok
+test_attachment_count_and_total_limits (test_worker.WorkerTests.test_attachment_count_and_total_limits) ... ok
+test_cross_host_no_credentials_or_cookies (test_worker.WorkerTests.test_cross_host_no_credentials_or_cookies) ... ok
+test_html_visible_text_excludes_title_script (test_worker.WorkerTests.test_html_visible_text_excludes_title_script) ... ok
+test_http_partial_not_promoted (test_worker.WorkerTests.test_http_partial_not_promoted) ... ok
+test_incomplete_html_partial (test_worker.WorkerTests.test_incomplete_html_partial) ... ok
+test_invalid_share_rows_partial_no_invented_text (test_worker.WorkerTests.test_invalid_share_rows_partial_no_invented_text) ... ok
+test_login_denied (test_worker.WorkerTests.test_login_denied) ... ok
+test_oversize_preserves_bounded_prefix (test_worker.WorkerTests.test_oversize_preserves_bounded_prefix) ... ok
+test_page_bytes_text_and_provenance (test_worker.WorkerTests.test_page_bytes_text_and_provenance) ... ok
+test_redirect_loop_and_limit (test_worker.WorkerTests.test_redirect_loop_and_limit) ... ok
+test_redirect_normalization_and_provenance (test_worker.WorkerTests.test_redirect_normalization_and_provenance) ... ok
+test_redirect_private_destination_denied (test_worker.WorkerTests.test_redirect_private_destination_denied) ... ok
+test_same_snapshot_is_deterministic (test_worker.WorkerTests.test_same_snapshot_is_deterministic) ... ok
+test_share_roles_order_unicode_empty_text (test_worker.WorkerTests.test_share_roles_order_unicode_empty_text) ... ok
+test_timeout (test_worker.WorkerTests.test_timeout) ... ok
+test_title_is_never_a_conversation (test_worker.WorkerTests.test_title_is_never_a_conversation) ... ok
+test_tls_downgrade_denied (test_worker.WorkerTests.test_tls_downgrade_denied) ... ok
+test_unknown_encoding_and_compression (test_worker.WorkerTests.test_unknown_encoding_and_compression) ... ok
+test_zero_model_calls (test_worker.WorkerTests.test_zero_model_calls) ... ok
+
+----------------------------------------------------------------------
+Ran 53 tests in 3.225s
+
+OK
+
+exit=0

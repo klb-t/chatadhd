@@ -12,11 +12,13 @@ import http.client
 import ipaddress
 import json
 import os
+import re
 import socket
 import ssl
 import sys
 import time
 from html.parser import HTMLParser
+from collections import deque
 from urllib.parse import quote, urljoin, urlsplit, urlunsplit
 
 
@@ -233,12 +235,232 @@ class PageText(HTMLParser):
             self.text.append(data)
 
 
-def parse_content(snapshot, mode, page_role):
-    """Only the existing Loom JSON export contract is accepted as a share.
+class ShareHTML(PageText):
+    """Collect inert script bytes, never execute markup or JavaScript."""
+    def __init__(self):
+        super().__init__()
+        self.scripts = []
+        self.script = None
 
-    No title-only heuristic, scraping provider endpoints or hidden turns.
-    Original JSON bytes remain the authority; JSON pointers locate each row.
+    def handle_starttag(self, tag, attrs):
+        super().handle_starttag(tag, attrs)
+        if tag == "script":
+            self.script = [dict(attrs), []]
+
+    def handle_data(self, data):
+        super().handle_data(data)
+        if self.script is not None:
+            self.script[1].append(data)
+
+    def handle_endtag(self, tag):
+        if tag == "script" and self.script is not None:
+            self.scripts.append((self.script[0], "".join(self.script[1])))
+            self.script = None
+        super().handle_endtag(tag)
+
+
+def pointer_token(value):
+    return value.replace("~", "~0").replace("/", "~1")
+
+
+def turbo_json(pool, budget):
+    """JSON subset of turbo-stream v2: indexed keys/values, no JS evaluation.
+
+    Cache shared values; reject cycles and expansion beyond the existing worker
+    output budget. Unsupported tagged values remain explicit, never text.
+    Numbers stored in pool slots are literals, numbers in containers are refs.
     """
+    if not isinstance(pool, list) or not pool:
+        raise ValueError("pool")
+    cache, sizes, visiting = {}, {}, set()
+    def hydrate(index):
+        if type(index) is not int:
+            raise ValueError("reference")
+        if index in (-5, -7):  # null / undefined: neither is a message
+            return None, 4
+        if index < 0 or index >= len(pool) or index in visiting:
+            raise ValueError("reference")
+        if index in cache:
+            return cache[index], sizes[index]
+        visiting.add(index)
+        raw, size = pool[index], 2
+        if isinstance(raw, dict):
+            value = {}
+            for key, ref in raw.items():
+                if not re.fullmatch(r"_\d+", key):
+                    raise ValueError("key")
+                name, _ = hydrate(int(key[1:]))
+                if not isinstance(name, str) or name in value:
+                    raise ValueError("key")
+                item, item_size = hydrate(ref)
+                size += len(name.encode("utf-8")) + item_size + 4
+                if size > budget:
+                    raise ValueError("expansion")
+                value[name] = item
+        elif isinstance(raw, list):
+            if raw and isinstance(raw[0], str):
+                value = {"unsupported_turbo_tag": raw[0]}
+                size = len(raw[0]) + 32
+            else:
+                value = []
+                for ref in raw:
+                    item, item_size = hydrate(ref)
+                    size += item_size + 1
+                    if size > budget:
+                        raise ValueError("expansion")
+                    value.append(item)
+        else:
+            value = raw
+            size = len(json.dumps(raw, ensure_ascii=False).encode("utf-8"))
+        if size > budget:
+            raise ValueError("expansion")
+        visiting.remove(index)
+        cache[index], sizes[index] = value, size
+        return value, size
+    return hydrate(0)[0]
+
+
+def chatgpt_data(page, budget):
+    candidates = []
+    for index, (attrs, script) in enumerate(page.scripts):
+        if attrs.get("id") == "__NEXT_DATA__" and attrs.get("type") == "application/json":
+            data = json.loads(script)["props"]["pageProps"]["serverResponse"]["data"]
+            candidates.append((data, {"format": "next_data", "script_index": index,
+                                      "json_pointer": "/props/pageProps/serverResponse/data"}))
+    chunks, indices = [], []
+    decoder = json.JSONDecoder()
+    for index, (_, script) in enumerate(page.scripts):
+        for match in re.finditer(r"window\.__reactRouterContext\.streamController\.enqueue\(\s*", script):
+            chunk, end = decoder.raw_decode(script, match.end())
+            if not isinstance(chunk, str) or not script[end:].lstrip().startswith(")"):
+                raise ValueError("enqueue")
+            chunks.append(chunk)
+            indices.append(index)
+    if chunks:
+        # Deferred/non-JSON frames are unsupported, not silently discarded.
+        root = turbo_json(json.loads("".join(chunks)), budget)
+        route_key = "routes/share.$shareId.($action)"
+        data = root["loaderData"][route_key]["serverResponse"]["data"]
+        candidates.append((data, {"format": "turbo_stream_v2", "script_indices": indices,
+                                  "json_pointer": "/loaderData/" + pointer_token(route_key) + "/serverResponse/data"}))
+    if len(candidates) != 1 or not isinstance(candidates[0][0], dict):
+        raise ValueError("share data")
+    return candidates[0]
+
+
+def chatgpt_messages(data, locator):
+    """Preserve the supplied tree; select only an explicitly supplied path.
+
+    With only linear_conversation, its order is the shared branch. Ambiguous
+    mapping-only trees are refused instead of selecting an invented leaf.
+    """
+    mapping, linear = data.get("mapping"), data.get("linear_conversation")
+    prefix = locator["json_pointer"]
+    if isinstance(mapping, dict) and mapping:
+        nodes = mapping
+        paths = {key: prefix + "/mapping/" + pointer_token(key) for key in nodes}
+    elif isinstance(linear, list) and linear:
+        nodes, paths = {}, {}
+        previous = None
+        for index, entry in enumerate(linear):
+            if not isinstance(entry, dict) or not isinstance(entry.get("id"), str) or entry["id"] in nodes:
+                raise ValueError("linear node")
+            key = entry["id"]
+            nodes[key] = entry if "parent" in entry else entry | {"parent": previous}
+            paths[key] = prefix + "/linear_conversation/" + str(index)
+            previous = key
+    else:
+        raise ValueError("messages")
+    children = {key: [] for key in nodes}
+    roots = []
+    for key, node in nodes.items():
+        if not isinstance(node, dict) or "parent" not in node or not isinstance(node.get("id"), str) or node["id"] != key:
+            raise ValueError("node")
+        parent = node.get("parent")
+        if parent is None:
+            roots.append(key)
+        elif not isinstance(parent, str) or parent not in nodes:
+            raise ValueError("parent")
+        else:
+            children[parent].append(key)
+    selected = data.get("current_node")
+    selection = "current_node"
+    if selected is None and isinstance(linear, list) and linear:
+        selected = linear[-1].get("id") if isinstance(linear[-1], dict) else None
+        selection = "linear_conversation"
+    if not isinstance(selected, str) or selected not in nodes:
+        raise ValueError("branch unavailable")
+    active, current = set(), selected
+    while current is not None:
+        if current in active:
+            raise ValueError("cycle")
+        active.add(current)
+        current = nodes[current].get("parent")
+    queue, order = deque(roots), []
+    while queue:
+        key = queue.popleft()
+        order.append(key)
+        queue.extend(children[key])
+    if len(order) != len(nodes):
+        raise ValueError("cycle")
+    messages, nearest, partial = [], {}, False
+    for key in order:
+        node = nodes[key]
+        parent = nearest.get(node.get("parent"))
+        nearest[key] = parent
+        if "message" not in node:
+            raise ValueError("message unavailable")
+        message = node["message"]
+        if message is None:
+            continue
+        if not isinstance(message, dict) or not isinstance(message.get("author"), dict):
+            raise ValueError("message")
+        role, content = message["author"].get("role"), message.get("content")
+        if not isinstance(role, str) or not role or not isinstance(content, dict):
+            raise ValueError("content")
+        pointer = paths[key] + "/message"
+        texts, references, reference_pointers = [], [], []
+        kind = content.get("content_type")
+        if kind in ("text", "multimodal_text") and isinstance(content.get("parts"), list):
+            for part_index, part in enumerate(content["parts"]):
+                if isinstance(part, str):
+                    texts.append(part)
+                elif isinstance(part, dict) and part.get("content_type") == "image_asset_pointer" and isinstance(part.get("asset_pointer"), str):
+                    references.append(part)
+                    reference_pointers.append(pointer + "/content/parts/" + str(part_index))
+                else:
+                    partial = True
+        elif kind == "code" and isinstance(content.get("text"), str):
+            texts.append(content["text"])
+        else:
+            partial = True
+        metadata = message.get("metadata", {})
+        if not isinstance(metadata, dict):
+            partial = True
+            metadata = {}
+        assets = metadata.get("attachments", [])
+        if isinstance(assets, list):
+            references.extend(assets)
+            reference_pointers.extend(pointer + "/metadata/attachments/" + str(i) for i in range(len(assets)))
+            if any(not isinstance(asset, (dict, str)) for asset in assets):
+                partial = True
+        else:
+            partial = True
+        messages.append({"role": role, "text": "".join(texts), "pointer": pointer,
+                         "parent_pointer": parent, "active": key in active,
+                         "provider_node_id": key, "provider_message_id": message.get("id"),
+                         "attachments": references, "attachment_pointers": reference_pointers})
+        nearest[key] = pointer
+    return {"messages": messages, "title": data.get("title") if isinstance(data.get("title"), str) else "",
+            "adapter": "chatgpt.share_html/1", "scope": "shared_snapshot_only", "locator": locator,
+            "conversation_pointer": prefix, "branch": {"selection": selection, "selected_node": selected,
+            "selected_path": [key for key in order if key in active], "tree_preserved": True},
+            "attachments_mode": "references", "status": "partial" if partial or not messages else "complete",
+            "reason": "share_content_partial" if partial else "provided_messages" if messages else "empty_share"}
+
+
+def parse_content(snapshot, mode, page_role, output_budget=None):
+    """Parse a conversation snapshot, never a page summary or a model reply."""
     out = {"messages": [], "title": "", "status": snapshot["status"], "reason": snapshot["reason"],
            "scope": "provided_messages_only" if mode == "share" else "fetched_resource"}
     if snapshot["status"] != "complete":
@@ -248,6 +470,27 @@ def parse_content(snapshot, mode, page_role):
     except UnicodeError:
         return out | {"status": "unsupported", "reason": "encoding_not_utf8"}
     if mode == "share":
+        if snapshot["mime"] not in ("text/html", "application/json"):
+            return out | {"status": "unsupported", "reason": "share_media_type"}
+        if snapshot["mime"] == "text/html":
+            page = ShareHTML()
+            page.feed(text)
+            if page.login:
+                return out | {"status": "denied", "reason": "login_required"}
+            if not page.closed:
+                return out | {"status": "partial", "reason": "incomplete_html"}
+            final = urlsplit(snapshot.get("final_url", ""))
+            if final.path.startswith(("/auth/", "/login")):
+                return out | {"status": "denied", "reason": "login_required"}
+            if final.scheme != "https" or final.hostname not in ("chatgpt.com", "chat.openai.com") or not re.fullmatch(r"/share/[A-Za-z0-9-]+/?", final.path):
+                return out | {"status": "unsupported", "reason": "share_contract_unknown"}
+            try:
+                # Direct parser tests may omit the caller budget; production
+                # always supplies the existing configured IPC output limit.
+                data, locator = chatgpt_data(page, output_budget if output_budget is not None else float("inf"))
+                return out | chatgpt_messages(data, locator)
+            except (ValueError, KeyError, TypeError, RecursionError):
+                return out | {"status": "unsupported", "reason": "share_structure_unavailable"}
         try:
             data = json.loads(text)
         except (ValueError, RecursionError):
@@ -317,12 +560,17 @@ def snapshot_request(request, policy, transport=None):
         raise ValueError("request")
     fetcher = Fetcher(policy["limits"], transport)
     resource = fetcher.fetch(request["url"])
-    parsed = parse_content(resource, request["mode"], policy["page_role"])
+    parsed = parse_content(resource, request["mode"], policy["page_role"], policy["limits"]["worker_output_bytes"])
     attempted = 0
     for message in parsed["messages"]:
         resolved = []
         for index, attachment in enumerate(message["attachments"]):
-            record = {"pointer": message["pointer"] + "/attachments/" + str(index), "original": attachment}
+            pointer = message.get("attachment_pointers", [])[index] if "attachment_pointers" in message else message["pointer"] + "/attachments/" + str(index)
+            record = {"pointer": pointer, "original": attachment}
+            if parsed.get("attachments_mode") == "references":
+                record.update(status="reference", reason="not_fetched")
+                resolved.append(record)
+                continue
             target = attachment if isinstance(attachment, str) else attachment.get("url") if isinstance(attachment, dict) else None
             if not isinstance(target, str) or not target.startswith(("http://", "https://")):
                 record.update(status="unsupported", reason="attachment_not_public_url")

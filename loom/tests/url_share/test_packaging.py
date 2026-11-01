@@ -34,6 +34,40 @@ def private_file(path, raw):
 
 
 class PackagingTests(unittest.TestCase):
+    def test_provider_parser_from_embedded_worker_without_checkout(self):
+        tree = ast.parse(Path(__file__).with_name('test_provider_share.py').read_text())
+        classes = '\n\n'.join(ast.unparse(n) for n in tree.body if isinstance(n, ast.ClassDef) and n.name in ('Response', 'MemoryTransport'))
+        runner = '''import io, json, runpy
+from pathlib import Path
+from types import SimpleNamespace
+root = Path(__file__).resolve().parent
+w = SimpleNamespace(**runpy.run_path(str(root / "worker.py"), run_name="embedded_worker"))
+''' + classes + '''
+policy = json.loads((root / "policy.json").read_text())
+for name in ("chatgpt_next_data.html", "chatgpt_turbo_stream.html"):
+    raw = (root / name).read_bytes()
+    transport = MemoryTransport(raw)
+    url = "https://chatgpt.com/share/synthetic-share"
+    result = w.snapshot_request({"schema":"loom.url_import_request/1", "mode":"share", "url":url}, policy, transport)
+    assert result["parsed"]["status"] == "complete"
+    assert len(result["parsed"]["messages"]) == 4
+    assert transport.calls == [url]
+    assert result["llm_calls"] == 0
+print("embedded provider parser: both HTML formats, 0 model calls")
+'''
+        self.assertNotIn(str(LOOM), runner)
+        with tempfile.TemporaryDirectory(prefix='provider_artifact_') as tmp:
+            root = Path(tmp)
+            private_file(root / 'worker.py', embedded_bytes())
+            private_file(root / 'runner.py', runner.encode())
+            private_file(root / 'policy.json', (LOOM / 'data/presets/url_share.pack').read_bytes())
+            for name in ('chatgpt_next_data.html', 'chatgpt_turbo_stream.html'):
+                private_file(root / name, (LOOM / 'tests/fixtures/url_share' / name).read_bytes())
+            result = subprocess.run([sys.executable, '-I', str(root / 'runner.py')], cwd=root, capture_output=True, timeout=3)
+            self.assertEqual(result.returncode, 0, result.stderr.decode())
+            self.assertEqual(result.stderr, b'')
+            self.assertIn(b'both HTML formats', result.stdout)
+
     def test_exact_bytes_hash_and_generator(self):
         raw = embedded_bytes()
         self.assertEqual(raw, CANONICAL.read_bytes())
