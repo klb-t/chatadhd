@@ -96,10 +96,10 @@ test('failed merge/readback is a failure, never a confirmed selection', async ()
   await assert.rejects(saveSourceSelection({ getConfig: async () => ({}), mergeConfigKey: async () => ({}) }, 'n_occ_2', true, 0), /readback_mismatch/);
   await assert.rejects(saveSourceSelection({ getConfig: async () => ({}), mergeConfigKey: async () => { throw Error('synthetic refusal'); } }, 'n_occ_2', true, 0), /synthetic refusal/);
 });
-test('PL/EN labels and explicit format presets exist; PNG/PDF/DOCX get no fake text adapter', () => {
+test('PL/EN labels and explicit format presets exist; PNG/PDF get no fake text adapter; DOCX has an explicit derived adapter', () => {
   const data = JSON.parse(readFileSync(new URL('../src/content/text-sources.words.json', import.meta.url)));
-  for (const [key, value] of Object.entries(data)) if (!['formats', 'defaults'].includes(key)) { assert.ok(value.pl, key); assert.ok(value.en, key); }
+  for (const [key, value] of Object.entries(data)) if (!['formats', 'defaults', 'blockKinds', 'warnings'].includes(key)) { assert.ok(value.pl, key); assert.ok(value.en, key); }
   const extensions = Object.values(data.formats).flat();
-  for (const ext of ['txt', 'md', 'py']) assert.ok(extensions.includes(ext));
-  for (const ext of ['png', 'pdf', 'docx']) assert.ok(!extensions.includes(ext));
+  for (const ext of ['txt', 'md', 'py', 'docx']) assert.ok(extensions.includes(ext));
+  for (const ext of ['png', 'pdf']) assert.ok(!extensions.includes(ext));
 });

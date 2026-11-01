@@ -1,3 +1,22 @@
+## 2026-11-01 — DOCX source parts: UI odebrane zakresowo
+
+Na backendzie **49444c869a80a086683f5db383b1f34c9bb01a46** przyjęto tylko
+10 plików audytowanej delty UI (patch `6ad56402…`), bez backendoverlayu.
+Własne typecheck i Vite38,04s PASS, React z atrapą transportu **4/4**,
+regresja wspólnego stanu UTF-8 **11/11**, rzeczywisty browser/native **6/6**.
+Upload → jawna materializacja DOCX → rozpoznane części/odrębne wystąpienia →
+wybór globalny konta → rzeczywisty kontekst i odpowiedź lokalnej atrapy;
+wersje, pobranie ZIP/UTF-8 z hashami, reload/nativeRestart, ostrzeżenia,
+HTTP400 uszkodzonego DOCX bez zmiany selektora. Dwie odrębne trwałe rozmowy.
+**Implemented/tested zakresowo, NOT deployed.** Brak nowej kompilacji C++;
+server/lib/defaultreader z przyjętego kodu7a1037ab, Landlock z checkoutem niedostępnym.
+Własne 3 nieudane próby harnessu zachowane i poprawione do faktycznego kontraktu,
+bez osłabiania asercji lub zmian produktu. Backend/P0/share/compat/backup niepowtarzane.
+Granice: derived UTF8, nie strony/XML/AST; selector konta bez CAS, lista ograniczona;
+brak mobile/JNI/realnego modelu/pełnej bramki i wdrożenia. Stare artefakty zachowane.
+Next: nowy immutable pakiet web z niezmienionymi backendpayloadami i verify-package.
+[Raport odbioru](reports/DOCX_UI_INTEGRATION_2026-11-01.md).
+
 ## 2026-11-01 — DOCX source parts: backend odebrany, UI osobno
 
 Baza **f527ee5cc34825f38485419e4c11ef7c3ead6ad0** i pakiet **d5e7531426acb8243d653956f916ed15fc0efee2bbedd59cfe148f231348f609** zachowane.

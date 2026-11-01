@@ -1,12 +1,12 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { api } from "../api";
-import { materializationRequest, readSourceOccurrence, readSourceParts, saveSourceSelection, sourceSelector, textSources,
+import { createSourceTaskGate, materializedSource, sourceDerivation, sourceOriginalHash, materializationRequest, readSourceOccurrence, readSourceParts, saveSourceSelection, sourceSelector, textSources,
   type SourceOccurrence, type SourceParts, type TextSource } from "../api/text-sources";
 import words from "../content/text-sources.words.json";
 import { dataLabel, useShellLanguage } from "../shell/text";
 import AttachmentOriginal from "./AttachmentOriginal";
 
-type Word = Exclude<keyof typeof words, "formats" | "defaults">;
+type Word = Exclude<keyof typeof words, "formats" | "defaults" | "blockKinds" | "warnings">;
 interface Props { upload?: boolean; onGraph?: (id: string) => void; graphEnabled?: boolean; onEnableGraph?: () => void }
 
 /** A view over SourceRecord, G1 projection receipts and the existing native selector; no local source database. */
@@ -32,40 +32,54 @@ function SourcePartsBrowser({ upload, onGraph, graphEnabled, onEnableGraph }: Pr
   const fileInput = useRef<HTMLInputElement>(null);
   const [busy, setBusy] = useState(false), [error, setError] = useState(""), [notice, setNotice] = useState("");
   const alive = useRef(true), generation = useRef(0);
-  const loadGeneration = useRef(0), operationGeneration = useRef(0);
-  const source = sources.find(s => s.id === selected), projection = projections.find(p => p.projection_node === projectionId);
+  const loadGeneration = useRef(0), taskGate = useRef(createSourceTaskGate()), readGeneration = useRef(0);
+  const source = sources.find(s => s.id === selected);
+  const projection = projections.find(p => p.projection_node === projectionId && p.source_id === source?.id);
+  const derivation = source ? sourceDerivation(source) : null;
+  const originalHash = source ? sourceOriginalHash(source) : "";
+  const blockLabel = (kind: string) => {
+    const labels = words.blockKinds[kind as keyof typeof words.blockKinds];
+    return labels ? dataLabel(labels, language, labels.en) : w("unknownBlock");
+  };
+  const warningLabel = (code: string) => {
+    const labels = words.warnings[code as keyof typeof words.warnings];
+    return (labels ? dataLabel(labels, language, labels.en) : w("unknownWarning") + " " + code).split("{file}").join(source?.title ?? "");
+  };
   const validLimit = Number.isSafeInteger(Number(limit)) && Number(limit) > 0 && Number(limit) <= 2147483647;
   const validHops = hops.trim() !== "" && Number.isSafeInteger(Number(hops)) && Number(hops) >= 0;
   let selector: ReturnType<typeof sourceSelector> | null = null;
   try { if (config) selector = sourceSelector(config); } catch { /* run() displays read failures; no write based on malformed state */ }
-  const run = async (operation: () => Promise<void>) => {
-    const token = ++operationGeneration.current;
+  const run = async (operation: (isCurrent: () => boolean) => Promise<void>) => {
+    const task = taskGate.current.begin();
+    if (!task) return;
+    const current = () => alive.current && task.isCurrent();
     setBusy(true); setError(""); setNotice("");
-    try { await operation(); } catch (e) { if (alive.current && operationGeneration.current === token) setError(e instanceof Error ? e.message : String(e)); }
-    finally { if (alive.current && operationGeneration.current === token) setBusy(false); }
+    try { await operation(current); } catch (e) { if (current()) setError(e instanceof Error ? e.message : String(e)); }
+    finally { if (current()) setBusy(false); task.finish(); }
   };
-  const load = async (preferred?: { id: string; key: string; hash: string }) => {
+  const load = async (isCurrent: () => boolean, preferred?: { id: string; key: string; hash: string }) => {
     if (!validLimit) return;
     const token = ++loadGeneration.current;
     const [rows, cfg] = await Promise.all([api.listSources(Number(limit)), api.getConfig()]);
     const nativeSelection = sourceSelector(cfg);
-    if (!alive.current || loadGeneration.current !== token) return;
+    if (!isCurrent() || loadGeneration.current !== token) return;
     const list = textSources(rows);
-    setSources(list); setRecordCount(rows.length); setConfig(cfg);
-    const chosen = preferred && list.find(s => s.id === preferred.id || (s.metadata.source_key === preferred.key && s.blob_hash === preferred.hash));
+    const chosen = preferred && list.find(s => s.metadata.source_key === preferred.key && sourceOriginalHash(s) === preferred.hash);
     if (preferred && !chosen) throw Error("text_source_upload_registration_missing");
+    setSources(list); setRecordCount(rows.length); setConfig(cfg);
     setSelected(current => chosen?.id ?? (list.some(s => s.id === current) ? current : list[0]?.id ?? ""));
     setHops(String(nativeSelection.hops ?? words.defaults.hops));
   };
   useEffect(() => {
     alive.current = true;
-    void run(() => load());
-    return () => { alive.current = false; generation.current++; loadGeneration.current++; operationGeneration.current++; };
+    void run(current => load(current));
+    return () => { alive.current = false; generation.current++; loadGeneration.current++; readGeneration.current++; taskGate.current.invalidate(); };
   }, []); // Mount/reopen reads native state; nothing is materialized by reading.
   useEffect(() => {
     const token = ++generation.current;
+    readGeneration.current++;
     setProjections([]); setProjectionId(""); setNodeId(""); setOccurrence(null);
-    if (!source || source.parser !== "loom.source_parts") return;
+    if (!source || source.parser !== "loom.source_parts" || !validLimit) return;
     // Read projection receipts directly: a 2-hop expansion may reach its node cap before the receipt.
     void api.getNodes({ kind: "text_source_projection", limit: Number(limit) }).then(nodes => {
       const parts = nodes.filter(n => n.metadata?.schema === "loom.source_text_parts/1" && n.metadata.source_id === source.id)
@@ -77,49 +91,51 @@ function SourcePartsBrowser({ upload, onGraph, graphEnabled, onEnableGraph }: Pr
     return () => { generation.current++; };
   }, [source]);
 
-  const uploadOriginal = async () => {
+  const uploadOriginal = async (isCurrent: () => boolean) => {
     const send = api.actions?.clientBlobUpload;
     if (!send || !file) throw Error(w("unsupported"));
     const previous = sources.find(s => s.id === revision);
     if (revision && !previous) throw Error("text_source_previous_unavailable");
+    if (previous && format === "docx" && !sourceDerivation(previous)) throw Error(w("revisionInvalid"));
     const key = previous?.metadata.source_key ?? uploadKey.current;
     const stored = await send(file, { name: file.name, source_key: key, format,
       ...(previous ? { previous_source_id: previous.id } : {}) });
     if (stored.source_key !== key || !stored.source_id) throw Error(w("missingHook"));
-    if (!alive.current) return;
-    await load({ id: stored.source_id, key, hash: stored.hash });
-    if (alive.current) { setNotice(w("uploaded")); setFile(null); uploadKey.current = ""; if (fileInput.current) fileInput.current.value = ""; }
+    if (!isCurrent()) return;
+    await load(isCurrent, { id: stored.source_id, key, hash: stored.hash });
+    if (isCurrent()) { setNotice(w("uploaded")); setFile(null); uploadKey.current = ""; if (fileInput.current) fileInput.current.value = ""; }
   };
-  const materialize = async () => {
+  const materialize = async (isCurrent: () => boolean) => {
     const action = api.actions?.clientBlobText;
     if (!source || !action) throw Error(w("unsupported"));
     const result = await action(materializationRequest(source, language));
     // The upload receipt and G1 source have distinct IDs; reload the canonical descriptor.
-    const rows = textSources(await api.listSources(Number(limit)));
-    const made = rows.find(s => s.parser === "loom.source_parts" && s.metadata.source_key === source.metadata.source_key && s.blob_hash === source.blob_hash);
-    if (!made) throw Error("text_source_descriptor_missing");
-    readSourceParts(result, made);
-    if (alive.current) { setSources(rows); setSelected(made.id); }
+    if (!isCurrent()) return;
+    const rows = await api.listSources(Number(limit));
+    if (!isCurrent()) return;
+    const made = materializedSource(rows, result, source);
+    setSources(textSources(rows)); setRecordCount(rows.length); setSelected(made.id);
   };
-  const read = async () => {
+  const read = async (isCurrent: () => boolean) => {
     const action = api.actions?.clientBlobTextRead;
     if (!source || !nodeId || !action) throw Error(w("unsupported"));
-    const token = generation.current;
+    const token = readGeneration.current, sourceToken = generation.current;
+    setOccurrence(null);
     const read = readSourceOccurrence(await action({ node_id: nodeId }), source, nodeId);
-    if (alive.current && generation.current === token) setOccurrence(read);
+    if (isCurrent() && readGeneration.current === token && generation.current === sourceToken) setOccurrence(read);
   };
-  const select = async (id: string, include: boolean) => {
+  const select = async (id: string, include: boolean, isCurrent: () => boolean) => {
     if (!api.mergeConfigKey) throw Error(w("unsupported"));
     // Fresh read and a server-side merge preserve unrelated execution/graph_reply/method settings.
-    const saved = await saveSourceSelection(api, id, include, Number(hops));
-    if (alive.current) { setConfig(saved); setNotice(w("saved")); }
+    const saved = await saveSourceSelection(api, id, include, Number(hops), isCurrent);
+    if (isCurrent()) { setConfig(saved); setNotice(w("saved")); }
   };
 
   return <div data-testid="source-parts-browser" style={{ overflowWrap: "anywhere" }}>
     <p>{w("limits")}</p><p>{w("scope")}</p>
     <fieldset disabled={busy}>
       <label>{w("limit")}<input data-testid="source-list-limit" type="number" min="1" max="2147483647" value={limit} onChange={e => setLimit(e.target.value)} /></label>
-      <button type="button" data-testid="source-reload" disabled={!validLimit} onClick={() => void run(() => load())}>{w("reload")}</button>
+      <button type="button" data-testid="source-reload" disabled={!validLimit} onClick={() => void run(current => load(current))}>{w("reload")}</button>
       <p data-testid="source-window">{w("window")}: {recordCount} / {limit}</p>
       {upload && <div>
         <label htmlFor={uid + "file"}>{w("upload")}</label>
@@ -132,41 +148,58 @@ function SourcePartsBrowser({ upload, onGraph, graphEnabled, onEnableGraph }: Pr
           <option value="">{w("opaque")}</option>{(Object.keys(words.formats) as (keyof typeof words.formats)[]).map(f => <option key={f} value={f}>{w(f)}</option>)}
         </select></label>
         <label>{w("revise")}<select data-testid="source-upload-revision" value={revision} onChange={e => setRevision(e.target.value)}>
-          <option value="">{w("new")}</option>{sources.filter(s => s.parser === "loom.source_parts").map(s => <option key={s.id} value={s.id}>{s.title} · {s.blob_hash.slice(0, 12)} · {s.metadata.source_key}</option>)}
+          <option value="">{w("new")}</option>{sources.filter(s => s.parser === "loom.source_parts" && (format !== "docx" || sourceDerivation(s))).map(s => <option key={s.id} value={s.id}>{s.title} · {sourceOriginalHash(s).slice(0, 12)} · {s.metadata.source_key}</option>)}
         </select></label>
         <button type="button" data-testid="source-upload" disabled={!file || !api.actions?.clientBlobUpload} onClick={() => void run(uploadOriginal)}>{w("upload")}</button>
       </div>}
-      <label>{w("version")}<select data-testid="source-version" value={selected} onChange={e => setSelected(e.target.value)}>
-        <option value="">—</option>{sources.map(s => <option key={s.id} value={s.id}>{s.title} · {s.blob_hash.slice(0, 12)} · {s.metadata.source_key}</option>)}
+      <label>{w("version")}<select data-testid="source-version" value={selected} onChange={e => { readGeneration.current++; setOccurrence(null); setSelected(e.target.value); }}>
+        <option value="">—</option>{sources.map(s => <option key={s.id} value={s.id}>{s.title} · {sourceOriginalHash(s).slice(0, 12)} · {s.metadata.source_key}</option>)}
       </select></label>
       {!sources.length && <p>{w("empty")}</p>}
-      {source && <div data-testid="source-descriptor" data-source-id={source.id} data-source-key={source.metadata.source_key} data-hash={source.blob_hash}>
-        <p>{source.title} · {source.metadata.source_key}<br />SHA256: {source.blob_hash}</p>
-        <AttachmentOriginal reference={"blob:" + source.blob_hash} name={source.title} />
+      {source && <div data-testid="source-descriptor" data-source-id={source.id} data-source-key={source.metadata.source_key} data-hash={source.blob_hash} data-original-hash={originalHash}>
+        <p>{source.title} · {source.metadata.source_key}</p>
+        <div data-testid="source-original"><p>{w("original")} · SHA256: {originalHash}</p>
+          <AttachmentOriginal key={originalHash} reference={"blob:" + originalHash} name={source.title} />
+        </div>
+        {derivation && <div data-testid="source-derived"><p>{w("derived")} · SHA256: {source.blob_hash}</p>
+          <AttachmentOriginal key={source.blob_hash} reference={"blob:" + source.blob_hash} name={source.title + ".txt"} />
+          <p>{w("derivedAbout")}</p>
+        </div>}
+        {source.metadata.previous_source_id && <p data-testid="source-previous">{w(derivation ? "previousDerived" : "previous")}: {source.metadata.previous_source_id}</p>}
         <button type="button" data-testid="source-materialize" disabled={!Object.keys(words.formats).includes(source.format) || !api.actions?.clientBlobText} onClick={() => void run(materialize)}>{w("materialize")}</button>
         {source.parser !== "loom.source_parts" && <p>{w("pending")}</p>}
         {source.parser === "loom.source_parts" && !projections.length && <p>{w("projectionWindow")}</p>}
         <label>{w("projection")}<select data-testid="source-projection" value={projectionId} onChange={e => {
-          setProjectionId(e.target.value); setNodeId(projections.find(p => p.projection_node === e.target.value)?.occurrence_nodes[0] ?? ""); setOccurrence(null);
+          readGeneration.current++; setProjectionId(e.target.value); setNodeId(projections.find(p => p.projection_node === e.target.value)?.occurrence_nodes[0] ?? ""); setOccurrence(null);
         }}>{projections.map(p => <option key={p.projection_node} value={p.projection_node}>{p.projection_node}</option>)}</select></label>
         {projection && <>
-          <p data-testid="source-partial" data-reason={projection.reason}>{w("partial")} {projection.occurrence_nodes.length}</p>
-          <label>{w("occurrence")}<select data-testid="source-occurrence" value={nodeId} onChange={e => { setNodeId(e.target.value); setOccurrence(null); }}>
-            {projection.occurrence_nodes.map((id, i) => <option key={id} value={id}>{i + 1} · {id}</option>)}
+          <p data-testid="source-partial" data-status={projection.status} data-reason={projection.reason}>{w("partial")} {projection.occurrence_nodes.length}</p>
+          {derivation && <>
+            <div data-testid="source-warnings"><p>{w("warningTitle")}</p>
+              <ul>{projection.warnings?.map((code, i) => <li key={i} data-warning={code}>{warningLabel(code)}</li>)}</ul>
+            </div>
+            <p>{w("recognized")}</p>
+            <ol data-testid="source-blocks">{projection.observations?.map(block => <li key={block.ordinal} data-kind={block.attrs.recognized_kind}>
+              {blockLabel(block.attrs.recognized_kind)} · {block.ordinal + 1} · {block.attrs.original_locator}
+              <pre style={{ whiteSpace: "pre-wrap" }}>{block.text || w("emptyBlock")}</pre>
+            </li>)}</ol>
+          </>}
+          <label>{w("occurrence")}<select data-testid="source-occurrence" value={nodeId} onChange={e => { readGeneration.current++; setNodeId(e.target.value); setOccurrence(null); }}>
+            {projection.occurrence_nodes.map((id, i) => <option key={id} value={id}>{i + 1} · {projection.method.level === "recognized_block" && projection.observations?.[i] ? blockLabel(projection.observations[i].attrs.recognized_kind) + " · " : ""}{id}</option>)}
           </select></label>
           <button type="button" data-testid="source-read" disabled={!nodeId || !api.actions?.clientBlobTextRead} onClick={() => void run(read)}>{w("read")}</button>
           {onGraph && <button type="button" data-testid="source-show-graph" onClick={() => onGraph(nodeId || projection.source_node)}>{w("graph")}</button>}
         </>}
-        {occurrence && <div data-testid="source-read-result" data-node-id={occurrence.node_id}>
-          <p>{w("range")}: [{occurrence.provenance.byte_range.join(", ")})</p>
+        {occurrence && occurrence.source.id === source?.id && occurrence.node_id === nodeId && <div data-testid="source-read-result" data-node-id={occurrence.node_id}>
+          <p>{w(derivation ? "derivedRange" : "range")}: [{occurrence.provenance.byte_range.join(", ")})</p>
           <pre data-testid="source-text" style={{ whiteSpace: "pre-wrap", maxHeight: 240, overflow: "auto" }}>{occurrence.text}</pre>
           <label>{w("hops")}<input data-testid="source-hops" type="number" min="0" value={hops} onChange={e => setHops(e.target.value)} /></label>
-          <button type="button" data-testid="source-select" disabled={!selector || !validHops || !api.mergeConfigKey} onClick={() => void run(() => select(occurrence.node_id, true))}>{w("add")}</button>
+          <button type="button" data-testid="source-select" disabled={!selector || !validHops || !api.mergeConfigKey} onClick={() => void run(current => select(occurrence.node_id, true, current))}>{w("add")}</button>
         </div>}
       </div>}
       {selector && <div data-testid="source-selector" data-enabled={selector.enabled}>
         <p>{w(selector.enabled ? "enabled" : "disabled")}</p><p>{w("selected")}</p>
-        {selector.ids.map((id, i) => <div key={id + ":" + i} data-testid="source-selected-id" data-node-id={id}>{id} <button type="button" onClick={() => void run(() => select(id, false))}>{w("remove")}</button></div>)}
+        {selector.ids.map((id, i) => <div key={id + ":" + i} data-testid="source-selected-id" data-node-id={id}>{id} <button type="button" onClick={() => void run(current => select(id, false, current))}>{w("remove")}</button></div>)}
       </div>}
       {graphEnabled === false && <p role="status">{w("graphOff")} {onEnableGraph && <button type="button" onClick={onEnableGraph}>{w("enableGraph")}</button>}</p>}
     </fieldset>
