@@ -1,3 +1,14 @@
+## 2026-11-01 — AUTO/device bramka wykonana; kandydat do odbioru administratora
+
+[Wynik i hash](CHAT_DEVICE_LANGUAGE_2026-11-01.md): kod5389c645, nowy web,
+actual browser PL/EN/profilEN/override/reload/reset oraz lokalna rozmowa/odmowa
+PASS zakresowy. Stream package i isolated staged startup PASS; brak pełnej
+nowej ekstrakcji jawny. Nie powtarzać buildu/typecheck/tej partii dla statusu.
+Next: administrator odbiera konkretny archive f093065f…08bc05cd oraz wykonuje
+swój backup/cutover. Osobno: rzeczywisty sanitized owner400 error/provider/model/faza,
+bez którego przyczyna incydentu pozostaje nieustalona. Bez automatycznej aktywacji.
+Historyczne wpisy capacity/NOTRUN poniżej pozostają historią.
+
 ## 2026-11-01 — priorytet rozmowa/AUTO: kod zachowany, następna bramka po capacity
 
 [Diagnoza](CHAT_DEVICE_LANGUAGE_2026-11-01.md): potwierdzony reset AUTO/profil EN,

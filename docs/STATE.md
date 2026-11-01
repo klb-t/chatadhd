@@ -1,3 +1,20 @@
+## 2026-11-01 — AUTO/device: nowy web i kandydat odebrane zakresowo
+
+Kod **5389c6455755baaba48ee3d6f6872841ed406fdb**, kontynuacja0f2a055f bez zmian runtime.
+Jeden Vite build PASS; actual browser PL/EN, profilEN, AUTO/explicitEN/reload/reset
+PASS. Dwie odpowiedzi lokalnej atrapy i jedna syntetyczna odmowa400 widoczne w
+ChatView; to NIE dowód naprawy ownerAPI400, którego przyczyna nadal nieustalona.
+Dwa błędy harnessu zachowane i poprawione wyłącznie w harnessie. Brak powtórki typecheck/P0/ZIP.
+
+Nowy archive **f093065f77e7019e754a4a49b144740d41d4c44050633d62b08eaa6a08bc05cd** (38223774 B),
+manifest **7dd43de14d46b78055ee4c95104607b4d4c2de514c256a25f1df90abaf1527d0**. 106payloadów zweryfikowanych,
+90runtime identycznych; serverada3/lib7004 zachowane. Stream verification i
+isolated staged startup/JSONhealth/static/auth PASS; pełna dodatkowa ekstrakcja
+NOTRUN przy ograniczonym budżecie miejsca. Archiwum0444, stare pakiety zachowane.
+Nie wdrożono/push. [Wynik, dokładne bindingi i granice](reports/CHAT_DEVICE_LANGUAGE_2026-11-01.md).
+Next: odbiór administratora i jego backup/cutover; osobno bezpieczny ownererror/model/faza.
+TARGET_ENV_POLICY_APPLIED. Historyczne wpisy capacity/NOTRUN poniżej nie opisują obecnego wyniku.
+
 ## 2026-11-01 — krytyczna diagnoza rozmowy i poprawka AUTO; odbiór UI wstrzymany pojemnością
 
 Kod **5389c6455755baaba48ee3d6f6872841ed406fdb**, baza6f5ed6fc/ZIP zachowana. Exactdeployed d490: świeży PL/EN gość
