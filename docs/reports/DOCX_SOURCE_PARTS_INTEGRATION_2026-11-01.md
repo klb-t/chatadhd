@@ -4,7 +4,8 @@
 Baza: `f527ee5cc34825f38485419e4c11ef7c3ead6ad0`. Przyjęty wcześniej pakiet
 `e77f698e-release-share-20261101`, SHA256
 `d5e7531426acb8243d653956f916ed15fc0efee2bbedd59cfe148f231348f609`,
-pozostaje zachowany. Nowy pakiet backendu powstaje osobno po wykonanym odbiorze;
+pozostaje zachowany. Nowy pakiet backendu został zbudowany ze źródeł
+**7a1037ab83664d38ab0fccd892557fbf3d135652** i przeszedł verify-package;
 nie przypisujemy mu testów UI.
 
 ## Źródło i zakres integracji
@@ -112,6 +113,46 @@ modelu, wszystkich środowisk interpretera lub pełnego repo gate. Logowanie i
 operator tools pozostają bez zmian i z wcześniejszymi ograniczeniami. Brak
 zgody wdrożeniowej; produkcyjna kopia/restore/ACL/RPO należą do administratora.
 
-Next tego przyrostu: lokalny commit wyniku, świadomy nowy artefakt i jego
-verify-package; późniejszy UI wymaga osobnego audytu i wykonania. Nie uruchamiać
-kolejnego cyklu samodzielnie.
+Next: administrator odbiera kod/pakiet/manifest; późniejszy UI wymaga osobnego
+audytu i wykonania. Nie uruchamiać kolejnego cyklu samodzielnie.
+
+
+## Przyjęty artefakt
+
+Code SHA **7a1037ab83664d38ab0fccd892557fbf3d135652**. Nowy immutable Release:
+`.integration-docx-parts-20261101/chatadhd-server-linux-x64-7a1037ab-release-docx-parts-20261101.tar.gz`.
+
+- Archiwum SHA256: `cbbb87ee7f8efd563407cfee41bff6a492dbe2598f970ccca935a4dfead019b6`.
+- Manifest: `48cc91d9eb903ad95f2de62f5ada632b69ed672a078e04d5661acd300cdba40f`.
+- Server: `48cd4b760270a420e0109b5176187802b9b850379c9bfb6032c0054b44e556d9`.
+- libloom: `2f582cf7594f95b1249e3ca8548cccc57864310268886fbd64a45f286cc0f928`.
+- Reader: `8a3ed0a585d17d48bc1b42794da7947e7b957eb2f68e632146f6771be55c5f4c`.
+
+Własny istniejący CMake runtime component zainstalowano wyłącznie do nowego
+stagingu. Sprawdzono równość server/lib/reader/runtime.json z wykonanymi native/
+HTTP. Wszystkie16webpayloadów i źródła web są identyczne z poprzednim przyjętym
+pakietem; nie wykonywano zbędnego webbuilda ani nie twierdzono, że istnieje nowy UI.
+Manifest podaje source SHA/tree, build options, źródła/hash helperów i zasobów,
+wersje/zależności systemowe oraz porównanie poprzedniego pakietu. Zmieniły się
+server/lib, reader i jego reader_sha256 w runtime.json, embedded textpack oraz
+VERSION/BUILD_INFO. Pozostałe helpery i web niezmienione.
+
+Pierwszy staging zatrzymał się na zbyt wąskim oczekiwaniu niezmienności
+runtime.json. Manifest prawidłowo aktualizował reader_sha256. Zachowano nieudaną
+kopię i log; w drugiej próbie sprawdzono, że **wyłącznie to pole** różni manifest
+helpera oraz że wskazuje rzeczywisty reader. Bez zmiany produktu/rebuilda.
+Pierwsza próba nie utworzyła archiwum. Stare pakiety/delty/buildcache zachowane.
+
+Archive **25/25** (24payloady+MANIFEST) zgodne hashami, bez dodatkowych plików,
+niebezpiecznych ścieżek/symlinków. Stary d5e753… ponownie hashPASS.
+Istniejący verify-package, kopia zgodna z repo, **exit0**: checksum, zależności,
+izolowany start, healthok, webHTML, authHTTP200JSON. Własny loopback/newdata,
+Landlock/env whitelist i zakończenie serwera. Zachowany wrapper BusyBoxtar dla
+historycznego ograniczenia GNUtar/openat2, bez zmian hosta. Nie tworzono nowego
+deployera ani instalacji do /usr.
+
+To lokalny LinuxRelease/systemSQLite, nie portablepreset. Python i systemowe
+biblioteki PDF/OCR nie są dołączane; wersje i hashe w MANIFEST. Brak nowej bramki
+GUI/mobile/rollback dla pochodnych DOCX. Nie wznowiono P0/accounts/share/backupów,
+nie zmieniono produkcyjnej konfiguracji loggera. Wszystkie własne procesy
+zakończone. Przyrost zakończony lokalnie; brak bieżącego blokera backendu.

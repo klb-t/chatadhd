@@ -15,8 +15,15 @@ niedostępny przezLandlock. Brak zmian audytowanego runtime; testy wzmocnione.
 hashybloba; cache nie naprawia grafu; DBrollback nie gwarantuje cleanupplików.
 Poprzedni binaryselector nie rozumie nowychderivedcoordinates — brak nowego
 rollbackPASS, administrator potrzebuje odrębnego sprawdzenia lub kopii sprzed zmiany.
-Next: nowy pakiet iverify po commicie wyniku, potem osobny auditedUI. Bez powtórek
-P0/parser/share/accounts/backup, bez deploy/modelcalls/nowychagentów.
+Code **7a1037ab83664d38ab0fccd892557fbf3d135652**. Nowy immutable Release
+**7a1037ab-release-docx-parts-20261101**, SHA256
+**cbbb87ee7f8efd563407cfee41bff6a492dbe2598f970ccca935a4dfead019b6**.
+Archive25/25 iverify-package(start/health/web/auth/deps/checksum)PASS; staged
+server/lib/reader/runtime identyczne ztestem,16webpayloadów bez zmian. Pierwsze
+zbyt wąskie oczekiwanie runtime.json poprawiono o rzeczywisty reader_sha256;
+nieudany staging zachowany, bez zmianyproduktu/rebuilda.
+Next: administrator odbiera backend/pakiet/manifest, osobno auditedUI. Brak
+blokera backendu; bez powtórekP0/parser/share/accounts/backup, bez deploy/modelcalls/agentów.
 [Raport](reports/DOCX_SOURCE_PARTS_INTEGRATION_2026-11-01.md).
 
 ## 2026-11-01 — external ChatGPT share: runtime/HTTP/GUI odebrane zakresowo
