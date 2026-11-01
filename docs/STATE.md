@@ -1,3 +1,21 @@
+## 2026-11-01 09:42 UTC — finalny kandydat: rzeczywista bramka projekcji PASS
+
+Na bazie **c6111de0176ce1246a6efdb9074a498cf3701922** wykonano brakujący łańcuch
+PDF old→final→refusal→cold restore, na pakiecie **18d4a5b4…962839** i faktycznej
+lib **7004d54b…610a**. Nowy dowód, nie przypisanie historycznych b732/c41/029.
+Jawna reprojekcja zachowuje stare wersje/oryginały; globalny wybór zmieniany
+wyłącznie jawnie. Odczyt/reopen finalnej lib PASS; pusty check `not_exercised`.
+Poprzednik odmawia nowej projekcji, nadal czyta starą; zimny restore przywraca
+stary stan i **traci wszystkie post-copy writes (RPO)**. Metadane i obie DB zgodne.
+Pierwsza odmowa restore przez atime pomiaru zachowana; naprawiono tylko prywatny
+harness, użyto nowej kopii/rootu, bez złagodzenia produktu.
+
+Bez builda, zmiany runtime/UI/pakietu lub powtarzania dawnych bramek. NOT RUN:
+nowy HTTP/browser/accounts/full repo, realvision/API, produkcja/deploy. Lokalny
+commit obejmuje wyłącznie ten wpis i raport. Next: operacyjny preflight/backup,
+RPO i decyzja właściciela o aktywacji; brak autoryzacji deploy.
+[Dokładne SHA, wynik i ograniczenia](reports/RELEASE_FINAL_PROJECTION_GATE_2026-11-01.md).
+
 ## 2026-11-01 09:28 UTC — continuous graph UI odebrane zakresowo; nowy lokalny kandydat
 
 Kod **8866e1f2f5ed4fe1cb0f21b44b151c78b986f1d2**, zachowany przodek **4d9cd959**.
