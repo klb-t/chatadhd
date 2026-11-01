@@ -1,3 +1,31 @@
+## 2026-11-01 — wspólny file→graph: XLSX/ODT/EPUB i hierarchia ZIP, odbiór zakresowy
+
+Kod **ed1392310b87aca76be7571dbc90e447e7c35a71**, baza **0252198f**. Instalacyjny
+closed descriptor + istniejący bounded host tworzą natywne Source/Unit/Observation/
+genesis; oryginał/pochodny UTF-8/struktura JSON osobno. XLSX dwa sheets/ranges/cells,
+ODT nested units, EPUB spine/chapters; ZIP folder→file→wewnętrzny PDF/arkusz przez
+tę samą aplikacyjną materializację. Poprawiono rzeczywiście ujawnione luki PDF
+(prefix heading bez pustej linii, odrębne page occurrences tego samego oryginału).
+
+Własny wspólny Release core/server i web/typecheck PASS; 5 scoped native risk checks
+PASS przed późniejszym PDF-only fix i poprawką pakietu ODT; browser **3/3** plus
+brakujący wspólny context **1/1**: 7 wystąpień różnych formatów i oddzielne ID tej
+samej treści standalone/archive w rzeczywistym request/odpowiedzi atrapy. Reopen,
+oryginały, odmowy i SQL rollback sprawdzone zakresowo. 126 C exports bez zmian.
+Końcowy relokowany pakiet: ZIP→PDF/XLSX/read PASS, 48 payloadów, 26 parent edges,
+integrity/FK PASS; verify-package BusyBox PASS. Stary GNU tar ENOSYS nie jest PASS.
+
+Artefakt **ee2117e8644bed34bc2b1772df017e001b6c713842df56edbc8fee8cddf947e8**;
+stare pakiety zachowane. Obraz: nowy actual local OCR ImportPanel PASS;
+**vision NOT RUN**, nowy region-selector GUI i pełna fala NIEODEBRANE. Brak
+realnego modelu, mobile, fullrepo, migracji starych przypiętych projekcji/wyborów,
+rollback nowych formatów i deploy. XLS native/video/bundle/extent pozostają
+konkretnymi wewnętrznymi hookami, nie zewnętrznym brakiem zgody. Unknown nested
+CHECKPOINT jest czytelny; historyczny root EACCES zamknięty.
+
+Szczegóły, fazy dowodów i ograniczenia:
+[FILE_GRAPH_BATCH_2026-11-01.md](reports/FILE_GRAPH_BATCH_2026-11-01.md).
+
 ## 2026-11-01 — wybrany OCR i projekcja PDF: backend odebrany zakresowo
 
 Kod **36e945fd1e3c165252a6a6d93268be5c41b70455**, baza **572c9a0d**. Istniejący region OCR
