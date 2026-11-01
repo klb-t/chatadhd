@@ -1,0 +1,268 @@
+{
+  "schema": "navigator_visualization.v1",
+  "defaults": {
+    "profile": "radial",
+    "floor": 0.2,
+    "softness": 1,
+    "fov": 55
+  },
+  "ranges": {
+    "floor": [
+      0,
+      1,
+      0.01
+    ],
+    "softness": [
+      0.05,
+      4,
+      0.05
+    ],
+    "fov": [
+      15,
+      120,
+      1
+    ]
+  },
+  "motion": {
+    "orbit_step": 0.12,
+    "pan_step": 0.2,
+    "dolly_step": 1.15,
+    "wheel_gain": 0.0012,
+    "keyboard_pan_px": 24
+  },
+  "profiles": [
+    {
+      "id": "radial",
+      "label": "Sektory: odległość od fokusu",
+      "system": "sector",
+      "x": "order",
+      "y": "depth",
+      "z": "depth"
+    },
+    {
+      "id": "measures",
+      "label": "Miary: kolejność / głębokość",
+      "system": "cartesian",
+      "x": "order",
+      "y": "depth",
+      "z": "age"
+    },
+    {
+      "id": "age",
+      "label": "Wiek dowodu / kolejność",
+      "system": "cartesian",
+      "x": "age",
+      "y": "order",
+      "z": "depth"
+    }
+  ],
+  "axes": {
+    "depth": {
+      "label": "Głębokość relacji",
+      "unit": "przejścia"
+    },
+    "age": {
+      "label": "Wiek dowodu",
+      "unit": "dni"
+    },
+    "order": {
+      "label": "Kolejność",
+      "unit": "pozycja"
+    },
+    "count": {
+      "label": "Liczba pod spodem",
+      "unit": "elementy"
+    },
+    "confidence": {
+      "label": "Pewność dowodu",
+      "unit": "0–1"
+    }
+  },
+  "relation_shortcuts": [
+    {
+      "label": "Kod",
+      "ids": [
+        "dependencies",
+        "calls"
+      ]
+    },
+    {
+      "label": "Historia",
+      "ids": [
+        "version_history"
+      ]
+    },
+    {
+      "label": "Cele",
+      "ids": [
+        "teleology"
+      ]
+    }
+  ],
+  "keys": {
+    "ArrowLeft": {
+      "kind": "orbit",
+      "x": -1
+    },
+    "ArrowRight": {
+      "kind": "orbit",
+      "x": 1
+    },
+    "ArrowUp": {
+      "kind": "orbit",
+      "y": 1
+    },
+    "ArrowDown": {
+      "kind": "orbit",
+      "y": -1
+    },
+    "PageUp": {
+      "kind": "dolly",
+      "x": -1
+    },
+    "PageDown": {
+      "kind": "dolly",
+      "x": 1
+    },
+    "Home": {
+      "kind": "fit"
+    },
+    "f": {
+      "kind": "focus"
+    },
+    "+": {
+      "kind": "fov",
+      "x": -1
+    },
+    "=": {
+      "kind": "fov",
+      "x": -1
+    },
+    "-": {
+      "kind": "fov",
+      "x": 1
+    }
+  },
+  "words": {
+    "title": "Przestrzeń i widoczność",
+    "flat": "2D",
+    "spatial": "3D tego samego fragmentu",
+    "profile": "Układ / profil",
+    "axis": "Oś {axis}",
+    "radius": "Promień ← głębokość relacji (przejścia); kąt ← kolejność w odpowiedzi.",
+    "sector3d": "3D sektorów: kierunek ← kolejność, odległość ← głębokość (przejścia). Wzniesienie jest wskazówką przestrzenną, nie trzecią miarą.",
+    "xyz": "3D: X/Y/Z skalowane liniowo w obrębie załadowanych wartości; większe Z biegnie do tyłu sceny. Brak wartości osi = element bez pozycji.",
+    "reach": "Pełne krycie do głębokości",
+    "softness": "Szerokość łagodnego zanikania (przejścia)",
+    "floor": "Krycie dalszego tła (mnożnik)",
+    "reset": "Reset widoczności",
+    "local": "Tylko załadowane wiersze. Suwaki i kamera nie zmieniają kontekstu, wyboru ani liczby przejść. Dalsze dane: jawnie Szerzej / Głębiej.",
+    "counts": "Załadowano: {loaded}; ukryte przez fade: {hidden}; bez pozycji: {missing}; brak głębokości: {depthMissing}.",
+    "legend": "Legenda kanałów",
+    "alpha": "Alfa = wybrane mapowanie × lokalne zanikanie. To prezentacja, nie ocena dowodu. Focus i wybór zachowują obrys oraz etykietę.",
+    "missing": "Brak miary nie oznacza zera. Elementy bez pozycji i schowane pozostają na liście.",
+    "selectionMissing": "Wybrany adres nie występuje w tym załadowanym fragmencie: {address}. Wybór zachowany; wróć do poprzednich relacji lub poziomu.",
+    "noPosition": "Wybrany element nie ma pozycji dla tych osi. Zmień osie lub użyj listy.",
+    "relations": "Relacje: {names}",
+    "chooseRelations": "Wybierz relacje…",
+    "relationHelp": "Kod / historia / cele filtrują jawne relacje z istniejącego katalogu. Układ jest osobnym wyborem.",
+    "noRelations": "Brak wierszy dla wybranych relacji w pobranym zakresie. Nie dopisano historii ani celu; sprawdź komunikaty zakresu poniżej.",
+    "list": "Lista pozostaje dostępną alternatywą, także bez WebGL.",
+    "selected": "Wybór",
+    "focus": "Focus",
+    "center": "Wycentruj wybór",
+    "fit": "Dopasuj",
+    "home": "Reset kamery",
+    "fov": "Zoom: pole widzenia (°)",
+    "dollyIn": "Ruch bliżej",
+    "dollyOut": "Ruch dalej",
+    "left": "Obrót w lewo",
+    "right": "Obrót w prawo",
+    "up": "Obrót w górę",
+    "down": "Obrót w dół",
+    "panLeft": "Ruch kadru w lewo",
+    "panRight": "Ruch kadru w prawo",
+    "panUp": "Ruch kadru w górę",
+    "panDown": "Ruch kadru w dół",
+    "cameraHelp": "3D: przeciąganie = obrót, kółko / dwa palce = ruch bliżej lub dalej. FOV zmieniasz osobno. Klawiatura na scenie: strzałki obrót, Shift+strzałki ruch kadru, PageUp/Down ruch bliżej/dalej, +/− FOV, F wybór, Home dopasowanie.",
+    "flatHelp": "2D: przeciąganie = przesunięcie, kółko / dwa palce = zakres pola. Strzałki przesuwają mapę, +/− zmienia pole, Home dopasowuje, F centruje wybór.",
+    "loading": "Ładowanie katalogu renderera 3D…",
+    "fallback": "Widok 2D. Powód niedostępności 3D: {reason}",
+    "noRenderer": "Katalog nie udostępnia zaimplementowanego renderera Three.js.",
+    "back": "Wróć do 2D",
+    "unmapped": "stałe krycie",
+    "scope": "Focus: {focus} · Wybrany: {selected} · Kontekst rozmowy: {context}",
+    "none": "brak",
+    "range": "Zakres osi {axis}: {min}…{max} {unit}; dostępne {present}/{total}.",
+    "unknownRange": "Oś {axis}: brak wartości ({unit}).",
+    "source": "Miary pochodzą z graph.navigate; wiek to czas dowodu, nie domniemana historia wersji.",
+    "openSelected": "Pokaż wybrany obiekt w 3D",
+    "defaultRelations": "własne relacje obiektu",
+    "profileCustom": "Własne osie",
+    "renderer": "Renderer 3D",
+    "unplaced3d": "3D: bez pozycji {count}/{total} (brak miary którejś osi).",
+    "channelRange": "dostępne {present}/{total}; brak → {fallback} (wartość zastępcza kanału)",
+    "constantAlpha": "Alfa bez mapowania: stałe 1 × lokalne zanikanie.",
+    "catalogMissing": "Katalog relacji niedostępny: {reason}. Pełny wybór pozostaje w menu relacji.",
+    "catalogLoading": "Ładowanie istniejącego katalogu relacji…",
+    "shortcutMissing": "Skrót {label}: katalog nie udostępnia wszystkich wskazanych relacji.",
+    "spatialBadge": "3D",
+    "edgeMeaning": "W perspektywach relacji linie pochodzą z odpowiedzi graph.navigate. Bez filtra linia child może oznaczać przynależność do listy fokusu; nie oznacza celu ani historii."
+  },
+  "camera_buttons": [
+    {
+      "word": "dollyIn",
+      "kind": "dolly",
+      "x": -1
+    },
+    {
+      "word": "dollyOut",
+      "kind": "dolly",
+      "x": 1
+    },
+    {
+      "word": "left",
+      "kind": "orbit",
+      "x": -1
+    },
+    {
+      "word": "right",
+      "kind": "orbit",
+      "x": 1
+    },
+    {
+      "word": "up",
+      "kind": "orbit",
+      "y": 1
+    },
+    {
+      "word": "down",
+      "kind": "orbit",
+      "y": -1
+    },
+    {
+      "word": "panLeft",
+      "kind": "pan",
+      "x": -1
+    },
+    {
+      "word": "panRight",
+      "kind": "pan",
+      "x": 1
+    },
+    {
+      "word": "panUp",
+      "kind": "pan",
+      "y": 1
+    },
+    {
+      "word": "panDown",
+      "kind": "pan",
+      "y": -1
+    }
+  ],
+  "z_axes": [
+    "depth",
+    "age"
+  ]
+}

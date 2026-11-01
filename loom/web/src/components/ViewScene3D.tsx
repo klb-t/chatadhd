@@ -21,6 +21,8 @@ interface Props {
   onPick: (id: string | null) => void;
   onXr: (payload: XrPayload) => void;
   onXrButtons: (down: string[]) => void;
+  /** Optional embedding fallback; creation failures keep their original reason. */
+  onUnavailable?: (reason: string) => void;
 }
 
 export default function ViewScene3D(props: Props) {
@@ -56,6 +58,8 @@ export default function ViewScene3D(props: Props) {
     const host = hostRef.current;
     if (!host) return;
     let cancelled = false, created: SceneHandle | null = null;
+    const lost = (event: Event) => latest.current.onUnavailable?.((event as WebGLContextEvent).statusMessage || "webgl_context_lost");
+    host.addEventListener("webglcontextlost", lost, true);
     setLoading(true); setError("");
     import("../view-engine/scene3d")
       .then(mod => {
@@ -71,8 +75,11 @@ export default function ViewScene3D(props: Props) {
         setLoading(false);
         setReady(n => n + 1);
       })
-      .catch(cause => { if (!cancelled) { setLoading(false); setError(cause instanceof Error ? cause.message : String(cause)); } });
-    return () => { cancelled = true; created?.dispose(); handle.current = null; };
+      .catch(cause => { if (!cancelled) {
+        const reason = cause instanceof Error ? cause.message : String(cause);
+        setLoading(false); setError(reason); latest.current.onUnavailable?.(reason);
+      } });
+    return () => { cancelled = true; host.removeEventListener("webglcontextlost", lost, true); created?.dispose(); handle.current = null; };
   }, [entry, cfg]);
 
   useEffect(() => { handle.current?.setSpatial(spatial, props.selected); }, [spatial, ready]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -111,12 +118,12 @@ export default function ViewScene3D(props: Props) {
         })}
         {xr !== null && <button type="button" data-testid="ve3d-end-xr" onClick={() => void handle.current?.end()}>{t("ve3d_end_xr")}</button>}
       </div>
-      <p className="pill" data-testid="ve3d-xr-note" role="status" data-kind={support === null ? "checking" : !support.available ? "unavailable" : support.error ? "check_failed" : "status"}>
+      {xrModes.length > 0 && <p className="pill" data-testid="ve3d-xr-note" role="status" data-kind={support === null ? "checking" : !support.available ? "unavailable" : support.error ? "check_failed" : "status"}>
         {support === null ? "..." : !support.available ? t("ve3d_xr_unavailable")
           : support.error ? t("ve3d_xr_check_failed", { error: support.error })
           : t("ve3d_xr_status", { vr: supportedText(support.sessions["immersive-vr"]), ar: supportedText(support.sessions["immersive-ar"]) })}
         {xr !== null && ` ${t("ve3d_xr_active", { mode: xr })}`}
-      </p>
+      </p>}
       {xrError && <p className="pill" style={{ color: "var(--err)" }} data-testid="ve3d-xr-error">{xrError}</p>}
       {error && <p className="pill" style={{ color: "var(--err)" }} data-testid="ve3d-error">{t("ve3d_webgl_failed", { error })}</p>}
       {loading && !error && <p className="pill" data-testid="ve3d-loading">{t("ve3d_loading")}</p>}

@@ -14,7 +14,12 @@ import type { PickTarget, XrEvent } from "./xr-input";
 
 export type ScreenMode = "orbit" | "look";
 export type XrMode = "immersive-vr" | "immersive-ar";
-export interface SceneViewState { panX: number; panY: number; zoom: number; angle: number; labels: boolean }
+export interface SceneCameraCommand { seq: number; kind: "orbit" | "pan" | "dolly" | "focus" | "fit" | "reset"; x?: number; y?: number }
+export interface SceneViewState {
+  panX: number; panY: number; zoom: number; angle: number; labels: boolean;
+  /** Optional local camera controls: FOV never changes world position, target, scale or semantic focus. */
+  camera?: { fovDeg: number; command?: SceneCameraCommand };
+}
 export interface XrPayload { event: XrEvent; picked: string | null }
 export interface SceneCallbacks {
   /** A pointer click on the flat screen picked an element (or nothing). */
@@ -107,6 +112,7 @@ export function createScene(host: HTMLElement, cfg: SpatialConfig, renderer: { x
   let mode: ScreenMode = "orbit";
   let yaw = rad(orbitCfg.yaw_deg), pitch = rad(orbitCfg.pitch_deg), dist = orbitCfg.distance_m;
   let lookYaw = 0, lookPitch = 0, zoomedByUser = false;
+  let cameraCommand = -1;
   let frames = 0, xrMode: XrMode | null = null, session: XRSession | null = null;
   let azimuth = 0, sector: string | null = null, lastBlendAz = Number.NaN, dirty = true;
   let hintLines: string[] = [], hintMesh: Mesh | null = null;
@@ -166,7 +172,7 @@ export function createScene(host: HTMLElement, cfg: SpatialConfig, renderer: { x
       });
     }
     for (const m of s.marks) {
-      const material = new MeshLambertMaterial({ color: new Color().setHSL(m.hue / 360, m.saturation, m.lightness), transparent: true, opacity: m.alpha });
+      const material = new MeshLambertMaterial({ color: new Color().setHSL(m.hue / 360, m.saturation, m.lightness), transparent: true, opacity: m.alpha, depthWrite: m.alpha > 0 });
       const mesh = new Mesh(new SphereGeometry(1, 20, 14), material);
       mesh.position.set(m.x, m.y, m.z); mesh.scale.setScalar(m.radiusM); mesh.userData.id = m.id;
       world.add(mesh);
@@ -175,9 +181,9 @@ export function createScene(host: HTMLElement, cfg: SpatialConfig, renderer: { x
         haloSprite = new Sprite(new SpriteMaterial({ map: halo, color: material.color, transparent: true, opacity: 0.5 * m.alpha, depthWrite: false }));
         haloSprite.position.copy(mesh.position); haloSprite.scale.setScalar(m.radiusM * (2 + m.blur * 0.8)); world.add(haloSprite);
       }
-      if (m.focus) {
+      {
         ring = new Mesh(new SphereGeometry(1, 16, 10), new MeshBasicMaterial({ color: 0xffffff, wireframe: true, transparent: true, opacity: 0.55 }));
-        ring.position.copy(mesh.position); ring.scale.setScalar(m.radiusM * 1.45); world.add(ring);
+        ring.position.copy(mesh.position); ring.scale.setScalar(m.radiusM * 1.45); ring.visible = m.focus || m.id === selected; world.add(ring);
       }
       const lt = labelTex(fit(m.label, cfg.labelMaxChars), "label", 48, m.focus ? "#ffffff" : "#e6edf5");
       label = new Sprite(new SpriteMaterial({ map: lt.texture, transparent: true, depthWrite: false, depthTest: false }));
@@ -196,7 +202,7 @@ export function createScene(host: HTMLElement, cfg: SpatialConfig, renderer: { x
     const pos: number[] = [];
     for (const e of s.edges) {
       const a = at.get(e.from), b = at.get(e.to);
-      if (a && b) pos.push(a.x, a.y, a.z, b.x, b.y, b.z);
+      if (a && b && a.alpha > 0 && b.alpha > 0) pos.push(a.x, a.y, a.z, b.x, b.y, b.z);
     }
     if (pos.length) {
       const g = new BufferGeometry(); g.setAttribute("position", new Float32BufferAttribute(pos, 3));
@@ -210,7 +216,7 @@ export function createScene(host: HTMLElement, cfg: SpatialConfig, renderer: { x
   /** The orbit distance that frames the whole scene (its far radius) in the narrower of the two fields of view, until the user zooms by hand. */
   function fitOrbit() {
     if (zoomedByUser || !orbitCfg.fit || !spatial) return;
-    const vfov = rad(orbitFov), hfov = 2 * Math.atan(Math.tan(vfov / 2) * Math.max(0.2, camera.aspect));
+    const vfov = rad(view.camera?.fovDeg ?? orbitFov), hfov = 2 * Math.atan(Math.tan(vfov / 2) * Math.max(0.2, camera.aspect));
     const radius = Math.max(cfg.farM, spatial.maxDistance, 1) * 1.1;
     dist = clamp(radius / Math.sin(Math.min(vfov, hfov) / 2), orbitCfg.min_m, orbitCfg.max_m);
   }
@@ -232,11 +238,11 @@ export function createScene(host: HTMLElement, cfg: SpatialConfig, renderer: { x
   function placeCamera() {
     if (xrMode) return;
     if (mode === "orbit") {
-      camera.fov = orbitFov;
+      camera.fov = clamp(view.camera?.fovDeg ?? orbitFov, 0.1, 179.9);
       camera.position.set(target.x + dist * Math.sin(yaw) * Math.cos(pitch), target.y + dist * Math.sin(pitch), target.z + dist * Math.cos(yaw) * Math.cos(pitch));
       camera.lookAt(target);
     } else {
-      camera.fov = lookFov;
+      camera.fov = clamp(view.camera?.fovDeg ?? lookFov, 0.1, 179.9);
       camera.position.set(0, 0, 0);
       camera.rotation.set(lookPitch, -lookYaw, 0, "YXZ");
     }
@@ -269,11 +275,16 @@ export function createScene(host: HTMLElement, cfg: SpatialConfig, renderer: { x
       const b = blend.get(n.mark.id) ?? { alpha: 1, scale: 1, weight: 1 };
       n.material.opacity = n.mark.alpha * b.alpha;
       const sel = n.mark.id === selected;
+      n.mesh.visible = n.mark.alpha > 0 || sel || n.mark.focus;
       n.mesh.scale.setScalar(n.mark.radiusM * b.scale * (sel ? 1.3 : 1));
       if (n.halo) (n.halo.material as SpriteMaterial).opacity = 0.5 * n.mark.alpha * b.alpha;
-      if (n.focusRing) n.focusRing.scale.setScalar(n.mark.radiusM * b.scale * 1.45);
-      if (n.label) { n.label.visible = labelVisible(n.mark, b.weight, cfg, view.labels); if (n.label.visible) labelsOn++; }
-      if (n.badge) n.badge.visible = b.weight >= 0.3;
+      if (n.focusRing) { n.focusRing.visible = n.mark.focus || sel; n.focusRing.scale.setScalar(n.mark.radiusM * b.scale * 1.45); }
+      if (n.label) {
+        n.label.visible = (n.mark.alpha > 0 || sel || n.mark.focus) && (sel || labelVisible(n.mark, b.weight, cfg, view.labels));
+        (n.label.material as SpriteMaterial).opacity = sel || n.mark.focus ? 1 : n.mark.alpha * b.alpha;
+        if (n.label.visible) labelsOn++;
+      }
+      if (n.badge) n.badge.visible = n.mark.alpha > 0 && b.weight >= 0.3;
       blendSnapshot[n.mark.id] = Math.round(n.material.opacity * 1000) / 1000;
       scaleSnapshot[n.mark.id] = Math.round(b.scale * 1000) / 1000;
     }
@@ -312,6 +323,8 @@ export function createScene(host: HTMLElement, cfg: SpatialConfig, renderer: { x
     stateEl.dataset.frames = String(frames);
     stateEl.dataset.positions = JSON.stringify(positions());
     stateEl.dataset.xrEvents = xrLog.join(" ");
+    stateEl.dataset.fov = String(camera.fov);
+    stateEl.dataset.camera = JSON.stringify({ x: camera.position.x, y: camera.position.y, z: camera.position.z, distance: dist, target: target.toArray() });
   }
   /** Screen position (CSS px in the canvas) and world position (metres, after the scene move) of every node: for pointing and for tests. */
   function positions() {
@@ -331,7 +344,7 @@ export function createScene(host: HTMLElement, cfg: SpatialConfig, renderer: { x
     const r = gl.domElement.getBoundingClientRect();
     ndc.set(((clientX - r.left) / r.width) * 2 - 1, -(((clientY - r.top) / r.height) * 2 - 1));
     raycaster.setFromCamera(ndc, camera);
-    const hits = raycaster.intersectObjects(nodes.map(n => n.mesh), false);
+    const hits = raycaster.intersectObjects(nodes.filter(n => n.mark.alpha > 0 || n.mark.focus || n.mark.id === selected).map(n => n.mesh), false);
     return hits.length ? (hits[0].object.userData.id as string) : null;
   }
   let drag: { x: number; y: number; t: number; moved: boolean; id: number } | null = null;
@@ -496,7 +509,33 @@ export function createScene(host: HTMLElement, cfg: SpatialConfig, renderer: { x
 
   return {
     setSpatial(s, sel) { selected = sel; build(s); applyBlend(true); },
-    setViewState(v) { view = v; applyView(); },
+    setViewState(v) {
+      view = v; applyView();
+      if (!v.camera) return;
+      // Numerical projection validity, independent of the UI's data-defined presets.
+      if (Number.isFinite(v.camera.fovDeg)) camera.fov = clamp(v.camera.fovDeg, 0.1, 179.9);
+      const c = v.camera.command;
+      if (c && c.seq !== cameraCommand) {
+        cameraCommand = c.seq;
+        if (c.kind === "orbit") { yaw += c.x ?? 0; pitch = clamp(pitch + (c.y ?? 0), -1.4, 1.4); lookYaw += c.x ?? 0; lookPitch = clamp(lookPitch + (c.y ?? 0), -1.5, 1.5); }
+        if (c.kind === "pan") {
+          const right = new Vector3(1, 0, 0).applyQuaternion(camera.quaternion), up = new Vector3(0, 1, 0).applyQuaternion(camera.quaternion);
+          target.addScaledVector(right, c.x ?? 0).addScaledVector(up, c.y ?? 0);
+        }
+        if (c.kind === "dolly") dist = clamp(dist * (c.x ?? 1), orbitCfg.min_m, orbitCfg.max_m);
+        if (c.kind === "focus") {
+          const n = nodes.find(n => n.mark.id === selected);
+          if (n) { root.updateMatrixWorld(true); n.mesh.getWorldPosition(target); }
+        }
+        if (c.kind === "reset") { yaw = rad(orbitCfg.yaw_deg); pitch = rad(orbitCfg.pitch_deg); lookYaw = 0; lookPitch = 0; }
+        if (c.kind === "reset" || c.kind === "fit") {
+          target.set(0, 0.6, 0); zoomedByUser = false; fitOrbit();
+        }
+      }
+      // Local alpha/model updates must not trigger a camera refit, especially after changing FOV.
+      zoomedByUser = true;
+      dirty = true;
+    },
     setHint(lines) { hintLines = lines; drawHint(); publish(); },
     setMode(m) { mode = m; dirty = true; },
     setSelected(id) { selected = id; dirty = true; lastBlendAz = Number.NaN; },

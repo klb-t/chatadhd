@@ -12,6 +12,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import NodeCard from "./NodeCard";
 import NavigatorMap from "./NavigatorMap";
+import { NAV_VIS, visText } from "./navigator-visibility";
 import NavigatorMappingControl from "./NavigatorMappingControl";
 import MeView from "./MeView";
 import { isMeFocus } from "./me-view-state";
@@ -76,6 +77,7 @@ export default function GraphNavigator({ profileHost, convId, language, initialF
   const [searchOpen, setSearchOpen] = useState(false);
   const [draft, setDraft] = useState("");
   const [card, setCard] = useState<{ address: string; label: string } | null>(null);
+  const [mapTarget, setMapTarget] = useState<{ address: string; seq: number } | null>(null);
   const [perspMenu, setPerspMenu] = useState(false);
   const [perspList, setPerspList] = useState<{ options: PerspectiveOption[] } | { error: string } | null>(null);
   const [actionsNote, setActionsNote] = useState<string | null>(null);
@@ -127,13 +129,13 @@ export default function GraphNavigator({ profileHost, convId, language, initialF
   // Perspektywa ▾ lists the kernel's perspectives (GET perspectives / loom_perspectives), read when the menu first opens, again per language.
   useEffect(() => { setPerspList(null); }, [language]);
   useEffect(() => {
-    if ((!perspMenu && state.perspectives.length === 0) || perspList) return;   // also when it opens with a perspective ticked: the line under the bar names it
+    if ((!perspMenu && !open.map && !meOpen.map && state.perspectives.length === 0) || perspList) return;   // also when it opens with a perspective ticked: the line under the bar names it
     let alive = true;
     api.listPerspectives().then(
       list => { if (alive) setPerspList({ options: perspectiveOptions(list, language) }); },
       failure => { if (alive) setPerspList({ error: failure instanceof Error ? failure.message : String(failure) }); });
     return () => { alive = false; };
-  }, [perspMenu, perspList, language, state.perspectives.length]);
+  }, [perspMenu, perspList, language, state.perspectives.length, open.map, meOpen.map]);
 
   const closeStep = (index: number) => { setState(s => goBack(s, index)); setCard(null); };
   const drill = (row: Pick<GraphNodeRow, "address" | "label" | "person_values">) => { setState(s => drillInto(s, row)); setCard(null); setDraft(""); setSearchOpen(false); };
@@ -257,6 +259,10 @@ export default function GraphNavigator({ profileHost, convId, language, initialF
                   {marks.reason && <span className="gnav-why" data-testid="nav-left-out-reason">{marks.reason}</span>}
                   {why && <span className="gnav-why" data-testid="nav-row-why">{why}</span>}
                 </button>
+                <button type="button" className="gnav-row-spatial" data-testid={`nav-row-3d-${row.address}`} aria-label={`${visText("openSelected")}: ${row.label}`} onClick={() => {
+                  showCard(row); setOpen(o => ({ ...o, map: true })); setMeOpen(o => ({ ...o, map: true }));
+                  setMapTarget(p => ({ address: row.address, seq: (p?.seq ?? 0) + 1 }));
+                }}>{visText("spatialBadge")}</button>
                 <button className="gnav-more" data-testid={`nav-row-card-${row.address}`} aria-label={t("card")}
                   aria-expanded={card?.address === row.address} onClick={() => openCard(row)}>⋯</button>
               </div>
@@ -267,7 +273,20 @@ export default function GraphNavigator({ profileHost, convId, language, initialF
         </Disclosure>}
         {result && <Disclosure testId="nav-map-disclosure" className="gnav-disclosure" labels={meMode ? { show: t("me.map.show"), hide: t("me.map.hide") } : { show: t("map.show"), hide: t("map.hide") }}
           open={meMode ? meOpen.map : open.map} onToggle={v => meMode ? setMeOpen(o => ({ ...o, map: v })) : setOpen(o => ({ ...o, map: v }))}>
-          <NavigatorMap result={result} open={meMode ? meOpen.map : open.map} t={t} language={language} mapping={mapping} onCard={showCard} onDrill={drill} />
+          <div className="gnav-relation-controls">
+            <p className="gnav-note">{visText("relations", { names: perspectiveNames.join(" · ") || visText("defaultRelations") })}</p>
+            <button type="button" onClick={() => { setPerspMenu(true); setViewMenu(false); }}>{visText("chooseRelations")}</button>
+            {!perspList && <p className="gnav-note" role="status">{visText("catalogLoading")}</p>}
+            {perspList && "error" in perspList && <p className="gnav-note" role="status">{visText("catalogMissing", { reason: perspList.error })}</p>}
+            {NAV_VIS.relation_shortcuts.map(shortcut => {
+              const available = perspList && "options" in perspList && shortcut.ids.every(id => perspList.options.some(o => o.id === id));
+              return <button type="button" key={shortcut.label} disabled={!available} title={!available ? visText("shortcutMissing", { label: shortcut.label }) : undefined} aria-pressed={shortcut.ids.length === state.perspectives.length && shortcut.ids.every(id => state.perspectives.includes(id))}
+                onClick={() => setState(s => ({ ...s, perspectives: [...shortcut.ids] }))}>{shortcut.label}</button>;
+            })}
+            <p className="gnav-note">{visText("relationHelp")}</p>
+            {state.perspectives.length > 0 && !loading && result.children.length === 0 && <p role="status">{visText("noRelations")}</p>}
+          </div>
+          <NavigatorMap result={result} open={meMode ? meOpen.map : open.map} t={t} language={language} mapping={mapping} selectedAddress={card?.address} spatialRequest={mapTarget} contextId={convId} onCard={showCard} onDrill={drill} />
         </Disclosure>}
         {card && <NodeCard key={card.address} address={card.address} label={card.label} language={language} convId={convId} t={t} receiptT={receiptT} section={cardSection}
           onClose={() => setCard(null)} onNavigate={(address, label) => drill({ address, label })} />}

@@ -239,13 +239,19 @@ export function projectSpatial(model: ViewModel, cfg: SpatialConfig): Spatial3D 
   } else if (spatial) {
     const xs = model.elements.map(e => finite(e.coords[spatial.id]?.x)).filter((v): v is number => v !== null);
     const ys = model.elements.map(e => finite(e.coords[spatial.id]?.y)).filter((v): v is number => v !== null);
+    // Opt-in third DATA channel. Old cartesian declarations remain planar; a declared Z with a missing value is unplaced.
+    const hasZ = spatial.axes.includes("z");
+    const zs = model.elements.map(e => finite(e.coords[spatial.id]?.z)).filter((v): v is number => v !== null);
+    const [z0, z1] = [Math.min(...zs), Math.max(...zs)];
     const [x0, x1] = [Math.min(...xs), Math.max(...xs)], [y0, y1] = [Math.min(...ys), Math.max(...ys)];
     const f = (v: number, lo: number, hi: number) => (hi > lo ? ((v - lo) / (hi - lo) - 0.5) * 2 * cfg.flatM * 0.8 : 0);
     for (const e of model.elements) {
       const x = finite(e.coords[spatial.id]?.x), y = finite(e.coords[spatial.id]?.y);
-      if (x === null || y === null) continue;
+      const z = finite(e.coords[spatial.id]?.z);
+      if (x === null || y === null || (hasZ && z === null)) continue;
       const px = f(x, x0, x1), py = f(y, y0, y1);
-      place.set(e.id, { x: px, y: py, z: -cfg.flatM, distance: Math.hypot(px, py, cfg.flatM), azimuth: azimuthOf(px, -cfg.flatM) });
+      const pz = hasZ && z !== null ? -cfg.flatM - f(z, z0, z1) : -cfg.flatM;
+      place.set(e.id, { x: px, y: py, z: pz, distance: Math.hypot(px, py, pz), azimuth: azimuthOf(px, pz) });
     }
   } else {
     notes.push("no_spatial_coordinate_system");
