@@ -1,5 +1,10 @@
 # Wyłącznik loggera deweloperskiego — 2026-11-01
 
+Aktualizacja: delta scalona w `ccb5ef9d9a4879bc9634db7296a60ce4d35404ce`.
+Nowy Release i jego wykonane bramki opisuje
+[odbiór artefaktu](LOG_CONTROL_RELEASE_2026-11-01.md).
+Poniżej zachowany zakres pierwszego focused przyrostu i jego ograniczenia.
+
 Baza: `6cfd9a40052859c4efd3333655def3a41a0aebc5`. Mała delta odebrana po
 audycie administratora i własnej kontroli stabilności25/25 oraz plików8/8,
 nałożona raz do głównego worktree. **Implemented/tested zakresowo, integrated
@@ -100,8 +105,9 @@ Zachowano `ctest-01.log`; finalny `ctest-02.log` i `ctest-symbols.log` zawieraj�
 Wstępny probe symbolu `recent` nie uwzględniał `[abi:cxx11]`; właściwy test
 sprawdza dokładny symbol, nie usunięto wymagania zachowania starego wejścia.
 
-Nie wykonywano server/GUI/accounts/P0/Release/full-repo gate, TSAN ani Androida.
+W pierwszym focused przyroście nie wykonywano server/GUI/accounts/P0/Release/
+full-repo gate, TSAN ani Androida.
 Brak providerów i poświadczeń. Test nie uruchamia serwerów. Stare pakiety i
 wcześniejsze dowody pozostają niezmienione. Przed użyciem przy wydaniu potrzebny
-był audyt i integracja tej delty (wykonane), pozostaje świadomy build nowego artefaktu oraz zakresowy
-odbiór jego konfiguracji startowej; niniejszy test nie relabeluje starego pakietu.
+był audyt i integracja tej delty (wykonane), następnie wykonano świadomy build nowego artefaktu i zakresowy
+odbiór jego konfiguracji startowej (osobny raport powyżej); niniejszy test nie relabeluje starego pakietu.

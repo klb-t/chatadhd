@@ -1,4 +1,32 @@
-## 2026-11-01 — wyłącznik loggera, delta scalona lokalnie
+## 2026-11-01 — logger scalony, nowy Release odebrany zakresowo
+
+Kod **`ccb5ef9d9a4879bc9634db7296a60ce4d35404ce`**, baza6cfd9a40 zachowana.
+Audytowana delta loggera nałożona raz; pełny stary Release build skopiowany
+bez reflink i porównany410/410 wpisów. Przyrostowy Release server/lib-j2 PASS,
+bez CLI/loom_tests;6 ostrzeżeń niezmienionych obszarów zachowanych w logu.
+Nowy pakiet `ccb5ef9d-release-log-control-20261101`, SHA256
+`95bb540ca669dc6410af75aa135434800374957bea7a6cc7a5d2359cfd643481`.
+24/24 payloady zgodne;16web+2DOCX/helper payloady niezmienione, nowe binaria.
+Stary pakiet8b2c0e68 SHAe65ed96e... nadal identyczny, Debug/dowody zachowane.
+
+Własny **CTest3/3 PASS -j1**: rzeczywista lib (7symboliC++,126eksportówC bez zmian),
+2procesy C API (canary w stderr/ringu/callback przy1; wszystkie puste przy0;
+błędy API nadal zwracane), isolated server health/static/auth200 i odmowy401/403,
+istniejący verify-package na NOWYM archiwum. Landlock, whitelist env, syntetyczne
+dane, bez modeli/API. Wszystkie własne serwery zakończone. Błąd skryptu
+pakowania i przedwczesny preflight testów zachowane/naprawione bez powtórki
+buildu, install ani osłabienia asercji; szczegóły w raporcie.
+
+Integrated/built/tested zakresowo; **deployed NIE**. Nie powtarzano focused
+6/6+453 ani starych accounts/single-runtime/G1GUI/P0/rollbacków. Brak pełnego
+gate/GUI/mobile/TSAN dla nowego artefaktu. `LOOM_LOG_ENABLED=0` testowane tylko
+lokalnie; directstdio/PhaseTimer/helpers/browser i pełna sanitizacja poza zakresem.
+Runtime disable nie jest drain barrier, stary ring pozostaje. §0rewizja2.
+Next: odbiór pakietu przez administratora, jego backup/restore i odrębna zgoda
+wdrożeniowa; bez samodzielnego kolejnego cyklu/push/CI/deploy.
+[Raport z pełnymi SHA, komendami i ograniczeniami](reports/LOG_CONTROL_RELEASE_2026-11-01.md).
+
+## 2026-11-01 — wyłącznik loggera, etap scalenia przed buildem
 
 Baza `6cfd9a40052859c4efd3333655def3a41a0aebc5`; odebrany patch
 `092c3d6f8ecbffc4e6d1a70f9ca34b9c6b88e77a19f88513d513799330622c0f`.
