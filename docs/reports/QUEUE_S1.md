@@ -1,3 +1,12 @@
+## 2026-11-01 — ZIP preview API wykonany; mutująca migracja osobno
+
+[ZIP projection preview](ARCHIVE_PROJECTION_PREVIEW_2026-11-01.md): actualAPI1/1
+PASS z zero-mutation/reopen. Nie ponawiać poprzednich formatowych macierzy.
+Dalej jawne wyświetlenie archive descriptoru w UI, osobny bezpieczny kontrakt
+mapowania Source/Unit/wyborów i dopiero migracja. Reproject pozostaje odmową;
+nie mapować po nazwie/pozycji/tekście. Preview nie jest nowym pakietem ani deploy.
+Face trusted host pozostaje osobnym zakresem; brak nowego modelowego cyklu.
+
 ## 2026-11-01 — CSV/AST UI zamknięte, następny zakres Face
 
 CSV/AST picker i rzeczywiste odmowy/reopen odebrane; nie powtarzać tej partii dla

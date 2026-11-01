@@ -1,3 +1,21 @@
+## 2026-11-01 — ZIP projection_check: API preview odebrany
+
+Kod **3d022d3bb8dfe4fe00dd04c1fd3794edbce6092c**, baza43241629 zachowana. Niemutujący preview istniejącej
+projekcji ZIP: pinned manifest, archive/folder/file, originalhash/Source/Unit/
+provenance i związane projekcje dzieci. Root/unknown member `not_exercised`,
+mapowanie puste, ZIPreproject nadal Unsupported. Żadnej cichej zmiany selektora.
+
+Istniejący incremental Release **server-only -j2 PASS** po dwóch poprawkach typów;
+log pierwszego błędu zachowany. Jeden nowy actualHTTP test **1/1 PASS**:
+hierarchia/nestedZIP/identycznytekst-osobneIDs, odmowy, zero zmian sprawdzanych
+tabel/blobów/config oraz reopen. Brak provider/modelcalls. Server SHA
+**ada3e54e89b3a84064fd0774bf0f553e4c8426bae0498e06fe6c8d0f5bd71bab**.
+Lib7004 i immutable d490/5db9 nietknięte: nie zawierają nowego preview.
+UI nadal blokuje ZIPreview; nowy browser/sharedlib/package NOT RUN.
+Next: jawny UI descriptor i osobny kontrakt migracji/mapowania, bez name/position
+matching; przed wydaniem świadome package binding. TARGET_ENV_POLICY_APPLIED.
+[Zakres i dowody](reports/ARCHIVE_PROJECTION_PREVIEW_2026-11-01.md).
+
 ## 2026-11-01 — CSV/AST picker odebrany, Face helper odizolowany
 
 TARGET_ENV_POLICY_APPLIED. Kod **a56a427c5f6701243a339e70519db118e441a74d**, zachowana baza ba8a2330.
