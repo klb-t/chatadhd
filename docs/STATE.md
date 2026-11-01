@@ -1,3 +1,17 @@
+## 2026-11-01 — następna partia UI: przegląd stabilnych delt, apply wstrzymane
+
+Baza **2c789e58** zachowana; według administratora wcześniejszy pakiet 18d4
+wdrożono i commit opublikowano. Integrator nie zmienia produkcji.
+Cztery zakończone delty projection/OCR region/bundle/Face: checkpointy i źródła
+przeczytane, stabilne hashe/HEAD/status, strict apply-check **4/4 PASS**.
+**Brak apply/typecheck/build/browser/package**: wskazany zbiorczy audit receipt
+odmawia odczytu (EACCES); same completed nie zastępuje matching audytu.
+
+Next: odczyt udostępnionego audytu, porównanie z zachowanym odbiorem i jedna
+wspólna partia trzech realnych UI flows. Face bez backendu/biblioteki NOT RUN;
+proposal hooka nieprzyjęty. Wszystkie stare źródła/pakiety/dowody zachowane.
+[Zakres i stan odbioru](reports/AFTERNOON_UI_INTAKE_2026-11-01.md).
+
 ## 2026-11-01 09:42 UTC — finalny kandydat: rzeczywista bramka projekcji PASS
 
 Na bazie **c6111de0176ce1246a6efdb9074a498cf3701922** wykonano brakujący łańcuch
