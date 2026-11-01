@@ -1,3 +1,12 @@
+## 2026-11-01 — ZIP preview UI zamknięte zakresowo
+
+[UI/kandydat i dowody](ARCHIVE_PROJECTION_UI_2026-11-01.md): native descriptor
+w istniejącym panelu, actual browser 1/1 PASS, no selector rewrite. Nie ponawiać
+API/CSV/AST ani tej partii dla statusu. Next: exactcandidate odbiór oraz pełne
+rozpakowanie po zapewnieniu zmierzonej pojemności. Osobny zakres kodu:
+bezpieczny treeversion/mapping/explicit selector decision, nie name/position match.
+ZIP mutation pozostaje odmawiana. Żadnej automatycznej aktywacji produkcji.
+
 ## 2026-11-01 — ZIP preview API wykonany; mutująca migracja osobno
 
 [ZIP projection preview](ARCHIVE_PROJECTION_PREVIEW_2026-11-01.md): actualAPI1/1

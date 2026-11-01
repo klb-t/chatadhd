@@ -1,3 +1,21 @@
+## 2026-11-01 — ZIP preview w UI odebrany, migracja nadal wyłączona
+
+TARGET_ENV_POLICY_APPLIED. Kod **e0fc62e7527d941132fbc0c2d16243b23c6235a9** zachowuje bazę a1623f0a.
+Istniejący panel: read-only `projection_check`, rzeczywiste drzewo/foldery/pliki/
+child projections, originals/hash/provenance; unknown/root `not_exercised`;
+ścisła odmowa niepełnego deskryptora. Brak ZIP reproject button/remapowania.
+Typecheck/Vite i zbiorczy actual browser **1/1 PASS** po opisanych naprawach
+harnessu (pierwsze failures zachowane); oryginał/download, nestedZIP, odrębne ID
+równej treści, reload/selector/graf bez zmian przez preview. Zero modelcalls.
+
+Nowy archive **de0c4930e82ac80e3c0837b735303c0c3413a12d9a02760b25c94178475245dc**, 106payloadów zweryfikowanych;
+server **ada3e54e…71bab** z przyjętego API, lib **7004d54b…e610a** bez zmiany,
+nie nowa akceptacja ABI. Izolowany staged startup/health/static/auth PASS.
+Pełne dodatkowe rozpakowanie NOT RUN: potrzeba dodatkowych
+75255938 B ponad dostępne miejsce z progiem 1GiB i buforem.
+Stare pakiety zachowane; bez C++/push/deploy. [Binding, dowody i ograniczenia](reports/ARCHIVE_PROJECTION_UI_2026-11-01.md).
+Next: odbiór kandydata, brakujący extract check oraz osobny jawny treeversion/mapping.
+
 ## 2026-11-01 — ZIP projection_check: API preview odebrany
 
 Kod **3d022d3bb8dfe4fe00dd04c1fd3794edbce6092c**, baza43241629 zachowana. Niemutujący preview istniejącej
