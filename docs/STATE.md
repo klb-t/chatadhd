@@ -1,3 +1,27 @@
+## 2026-11-01 — następne UI odebrane w bieżącym środowisku
+
+`TARGET_ENV_POLICY_APPLIED`. Kod **418dce4624ca4d288d209cf91a36c2e086ce1a2c**, zachowany przodek
+**9db00c70**. Audyt czterech donorów odczytany i zgodny; projection/OCR/bundle
+nałożone raz. Jeden strict tsc/Vite PASS, nowy fixture projection 1/1 PASS.
+Actual UI: check/reproject/explicit selection, existing OCR region→real request
+kontekstu bez sąsiada, ZIP export/hash/restore/parents/original/INCOMPLETE i
+native restart/readback odebrane zakresowo. Błędy fixture parent/nagłówka PDF
+zachowane; powtarzano wyłącznie dotknięty zakres, bez zmiany produktu. Face typed
+port nie jest montowany; host/library/render NOT RUN.
+
+Nowy web-only archive **d4901d1ebf599f4d87ec8e58a52fa150a1ceab628d437a06e6d299496943a3dc**,
+manifest **571fdef8afffd8a3516db940abf70460830f7d78ab8e760de5701bf6c06b1a68**. 106payloadów zgodnych,
+90runtime/helper identycznych e27/lib7004. Actual verify-package BusyBox
+extract/start/health/auth/static PASS. Stary18d4 bez zmian; jego aktywacja przez
+admina pozostaje oddzielnym faktem. Historyczny mandatory final7004 projection
+gate przypięty hashami, bez ponowienia: RPO coldrestore traci post-copywrites,
+selektor migrowany tylko jawnie.
+
+Next: admin odbiera/publikuje dokładny SHA i kandydat, operator aktywuje następną
+wersję. CSV/ASTpicker i dalszy Face osobno; realvision/realAPI/multiOS/newdeploy
+NOT RUN. Nie uruchamiano agentów/CI/C++ buildu ani produkcji.
+[Wyniki, fazy i pełne SHA](reports/AFTERNOON_UI_ACCEPTANCE_2026-11-01.md).
+
 ## 2026-11-01 — następna partia UI: przegląd stabilnych delt, apply wstrzymane
 
 Baza **2c789e58** zachowana; według administratora wcześniejszy pakiet 18d4

@@ -1,3 +1,19 @@
+## 2026-11-01 — kolejna wersja UI, aktualny backlog po odbiorze
+
+Kod `418dce46`: projection review/reproject, wybór regionu OCR i conversation
+bundle UI odebrane w bieżącym środowisku. [Dokładny wynik i kandydat](AFTERNOON_UI_ACCEPTANCE_2026-11-01.md).
+Nie powtarzać starego P0/compat ani tej partii dla samego statusu. Następny krok
+operacyjny: odbiór i aktywacja konkretnego web-only pakietu przez administratora.
+
+Otwarte: osobny CSV/AST picker po jego audycie; Face host/library i opt-in hook
+React/context/privacy (obecnie port niemontowany, brak render acceptance);
+bounded listy i brak CAS selectorów jako jawne granice; bundle nie zastępuje
+pełnego backupu konta/bazy, INCOMPLETE pozostaje niekompletnością. Realvision
+NOT RUN bez skonfigurowanej/autoryzowanej ścieżki i pokrycia. Nowe zgodne delty
+odbierać partią, nie przez stare pełne suite per autor. TARGET_ENV_POLICY_APPLIED:
+actual flows/integrity/persistence/exactpackage obowiązkowe w naszym środowisku;
+inne OS/CI nie są blokadą tego wydania. Poniższe wpisy pozostają historią.
+
 ## 2026-10-31 — następny krok po odczycie PDF
 
 Wdrożony interfejs i implementacja nie mają potwierdzonej pełnej zgodności z przepływami aplikacji dostawców. Aktualny przyrost: PDF z tekstem, kontynuacja z plikami, trwałe ostrzeżenia; [macierz](CHAT_DOCUMENT_FLOWS_2026-10-31.md). Nie oznaczać skanów/OCR, DOCX, treści plików w graph_packet ani eksportu bajtów jako ukończonych. Dalej: rzeczywisty upload PDF i kolejne pytania w HTTP/webie na polskim urządzeniu; osobne scenariusze głosu, edycji/regeneracji/gałęzi, artefaktów i importu/eksportu z bajtami. Przed produkcją zamknąć istniejący przegląd zmiany źródła/BYOK i wykonać pełną bramkę. Bez publikowania prywatnych źródeł i bez nowych płatnych wywołań.
