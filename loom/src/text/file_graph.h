@@ -8,4 +8,6 @@ Result<Prepared> prepare_file_graph(const std::filesystem::path&, const std::str
 Status store_file_sources(Runtime&, const Prepared&, const Json& recipe);
 Result<Json> store_file_structure(Runtime&, const Prepared&, const Json& result, const Json& recipe);
 Result<Json> materialize_archive(Runtime&, const Json& request);
+// Read-only pinned archive manifest/graph check; never materializes or maps selectors.
+Result<Json> preview_archive(Runtime&, const Json& receipt);
 }

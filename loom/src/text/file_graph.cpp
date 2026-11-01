@@ -1,4 +1,6 @@
 #include "file_graph.h"
+#include "projection_upgrade.h"
+#include <set>
 #include <map>
 #include <algorithm>
 #include <cctype>
@@ -171,4 +173,130 @@ Result<Json> archive(Runtime& rt,const Json& request,std::size_t depth,std::size
 }
 }
 Result<Json> materialize_archive(Runtime& rt,const Json& request) try {std::size_t bytes=0,count=0;return archive(rt,request,0,bytes,count);}catch(const Json::exception&){return invalid();}
+namespace {
+Status preview_edge(Database& db, const std::string& child, const std::string& parent,
+                    const std::string& kind) {
+  LOOM_TRY_ASSIGN(auto links, db.get_links(child, kind));
+  for (const auto& edge : links)
+    if (edge.src == child && edge.dst == parent && edge.link_type == kind) return {};
+  return invalid();
+}
+Result<Json> archive_preview(Runtime& rt, const Json& p, std::size_t depth,
+                             std::size_t& used, std::size_t& count) {
+  const auto sid=p.at("source_id").get<std::string>(), hash=p.at("source_sha256").get<std::string>();
+  if (!BlobStore::is_valid_hash(hash) || p.at("schema")!="loom.source_text_parts/1" ||
+      p.at("coordinate")!="archive_members" || p.at("method").at("format")!="zip" ||
+      !p.at("occurrence_nodes").is_array() || !p.at("occurrence_nodes").empty() ||
+      !p.at("structure_nodes").is_array() || !p.at("children").is_array()) return invalid();
+  LOOM_TRY_ASSIGN(auto source, rt.provenance().get_source(sid));
+  if (!source || source->format!="zip" || source->parser!="loom.source_parts" || source->blob_hash!=hash ||
+      source->metadata.at("coordinate")!="archive_members") return invalid();
+  const auto key=source->metadata.at("source_key").get<std::string>();
+  if (source->uri!=key || sid!="src_archive_"+Sha256::hex(json::canonical(Json::array({key,hash})))) return invalid();
+  LOOM_TRY(rt.blobs().verify(hash));
+  LOOM_TRY_ASSIGN(auto prepared, parse(rt.blobs().local_path(hash),hash,"zip"));
+  const auto& cfg=prepared.at("profile");const auto& draft=prepared.at("draft");
+  if (depth>=cfg.at("archive_depth").get<std::size_t>()) return Error(Errc::InvalidArgument,"archive_depth_limit");
+  // A new installed method cannot silently authenticate or reinterpret an old receipt.
+  if (p.at("method").at("runtime")!=cfg.at("runtime"))
+    return Error(Errc::Conflict,"archive_preview_runtime_changed");
+  if (p.at("method").at("descriptor")!=draft.at("descriptor") || source->size!=draft.at("original_size") ||
+      p.at("warnings")!=draft.at("warnings")) return invalid();
+  const auto root="n_"+sid, projection="n_file_projection_"+Sha256::hex(json::canonical(Json::array({sid,cfg.at("runtime")})));
+  if (p.at("source_node")!=root || p.at("version_node")!=root || p.at("projection_node")!=projection) return invalid();
+  auto& db=rt.db();
+  LOOM_TRY_ASSIGN(auto saved,db.get_node(projection));
+  if (!saved || saved->kind!="text_source_projection" || saved->metadata!=p) return invalid();
+  LOOM_TRY(preview_edge(db,projection,root,"source"));
+  model::Unit whole;whole.source=sid;whole.kind="archive";whole.locator.source=sid;whole.bytes=source->size;whole.id=model::Unit::make_id(sid,whole.locator);
+  LOOM_TRY_ASSIGN(auto root_node,db.get_node(root));
+  if (!root_node || root_node->kind!="archive" || root_node->metadata!=Json{{"source_id",sid},{"sha256",hash},{"unit",whole.to_json()}}) return invalid();
+  Json rows=Json::array(),descriptors=Json::array(),children=Json::array();
+  std::map<std::string,std::string> folders{{"",root}};
+  const auto& tree=draft.at("extraction");
+  for (const auto& value:tree.at("directories")) {
+    const auto member=value.get<std::string>(),parentpath=std::filesystem::path(member).parent_path().generic_string();
+    if (!folders.contains(parentpath) || folders.contains(member)) return invalid();
+    model::Unit u;u.source=sid;u.kind="folder";u.locator.source=sid;u.locator.member=member;u.id=model::Unit::make_id(sid,u.locator);
+    const auto id="n_archive_unit_"+u.id,parent=folders.at(parentpath);
+    LOOM_TRY_ASSIGN(auto n,db.get_node(id));
+    if (!n || n->kind!="folder" || n->metadata!=Json{{"unit",u.to_json()},{"parent",parent},{"original_sha256",hash}}) return invalid();
+    LOOM_TRY(preview_edge(db,id,parent,"part_of"));folders[member]=id;
+    rows.push_back(Json{{"node_id",id},{"parent",parent},{"kind","folder"},{"title",member},{"locator",u.locator.to_json()}});
+    descriptors.push_back(rows.back());
+  }
+  if (p.at("children").size()!=tree.at("members").size() ||
+      p.at("structure_nodes").size()!=tree.at("directories").size()+tree.at("members").size()) return invalid();
+  std::set<std::string> matched;
+  for (const auto& member:tree.at("members")) {
+    const auto path=member.at("name").get<std::string>(),digest=member.at("sha256").get<std::string>();
+    LOOM_TRY_ASSIGN(auto bytes,base64::decode(member.at("base64").get<std::string>(),true));
+    used+=bytes.size();++count;
+    if (used>cfg.at("archive_total_bytes").get<std::size_t>() || count>cfg.at("archive_members").get<std::size_t>() ||
+        Sha256::hex(bytes)!=digest || bytes.size()!=member.at("size")) return invalid();
+    LOOM_TRY(rt.blobs().verify(digest));
+    const auto parentpath=std::filesystem::path(path).parent_path().generic_string();
+    if (!folders.contains(parentpath)) return invalid();
+    const auto parent=folders.at(parentpath),memberkey=key+"#zip:"+hash+":"+path;
+    const auto msid="src_member_"+Sha256::hex(json::canonical(Json::array({sid,path,digest}))),id="n_"+msid;
+    LOOM_TRY_ASSIGN(auto m,rt.provenance().get_source(msid));
+    if (!m || m->blob_hash!=digest || m->size<0 || static_cast<std::uint64_t>(m->size)!=bytes.size() || m->uri!=memberkey || m->format!="file" ||
+        m->parser!="loom.file_graph" || m->metadata!=Json{{"source_key",memberkey},{"archive_source",sid},{"member",path}}) return invalid();
+    model::Unit u;u.source=sid;u.kind="file";u.locator.source=sid;u.locator.member=path;u.bytes=m->size;u.id=model::Unit::make_id(sid,u.locator);
+    LOOM_TRY_ASSIGN(auto n,db.get_node(id));
+    if (!n || n->kind!="file" || n->metadata!=Json{{"source_id",msid},{"sha256",digest},{"unit",u.to_json()},{"parent",parent},{"original_sha256",hash}}) return invalid();
+    LOOM_TRY(preview_edge(db,id,parent,"part_of"));
+    LOOM_TRY_ASSIGN(auto provenance,rt.provenance().for_subject(msid));bool bound=false;
+    for (const auto& pv:provenance) if (pv.id=="pv_"+Sha256::hex(msid) && pv.source_id==sid &&
+        pv.locator==u.locator.to_json() && pv.transform==draft.at("descriptor_sha256").get<std::string>()) bound=true;
+    if (!bound) return invalid();
+    rows.push_back(Json{{"node_id",id},{"parent",parent},{"kind","file"},{"title",path},{"sha256",digest},{"locator",u.locator.to_json()}});
+    auto descriptor=rows.back();descriptor["source_id"]=msid;descriptor["source_key"]=memberkey;
+    descriptor["provenance_id"]="pv_"+Sha256::hex(msid);descriptor["archive_sha256"]=hash;descriptors.push_back(descriptor);
+    // Join by source identity + immutable member key/hash, never by label or array position.
+    const Json* child=nullptr;
+    for (const auto& c:p.at("children")) {
+      LOOM_TRY_ASSIGN(auto cs,rt.provenance().get_source(c.at("source_id").get<std::string>()));
+      if (cs && cs->uri==memberkey) { if (child) return invalid();child=&c; }
+    }
+    if (!child || !matched.insert(child->at("source_id").get<std::string>()).second) return invalid();
+    auto ext=std::filesystem::path(path).extension().string();if(!ext.empty())ext.erase(0,1);
+    std::transform(ext.begin(),ext.end(),ext.begin(),[](unsigned char c){return static_cast<char>(std::tolower(c));});
+    if (cfg.at("extensions").contains(ext)!=child->contains("projection_node")) return invalid();
+    Json entry{{"member_node",id},{"member_source",msid},{"original_sha256",digest},{"locator",u.locator.to_json()}};
+    if (!child->contains("projection_node")) {
+      if (*child!=Json{{"source_id",msid},{"status","retained_original"},{"reason","format_not_admitted"},{"member",path}}) return invalid();
+      entry["current_replay"]="not_exercised";entry["reason"]="format_not_admitted";
+    } else {
+      const auto cpid=child->at("projection_node").get<std::string>();
+      LOOM_TRY_ASSIGN(auto cn,db.get_node(cpid));
+      if (!cn || cn->kind!="text_source_projection" || cn->metadata!=*child ||
+          (child->contains("derivation")?child->at("derivation").at("original_sha256"):child->at("source_sha256"))!=digest) return invalid();
+      LOOM_TRY(preview_edge(db,child->at("source_node").get<std::string>(),id,"part_of"));
+      const auto format=child->at("method").at("format").get<std::string>();
+      if (format!=cfg.at("extensions").at(ext).get<std::string>()) return invalid();
+      Json review;
+      if (format=="zip") { LOOM_TRY_ASSIGN(auto nested,archive_preview(rt,*child,depth+1,used,count));review=std::move(nested); }
+      else { LOOM_TRY_ASSIGN(auto checked,projection_upgrade(rt,Json{{"operation","projection_check"},{"projection_node",cpid}}));review=std::move(checked); }
+      entry["projection"]=*child;entry["review"]=std::move(review);
+    }
+    children.push_back(std::move(entry));
+  }
+  if (rows!=p.at("structure_nodes") || matched.size()!=p.at("children").size()) return invalid();
+  return Json{{"schema","loom.projection_upgrade/1"},{"old_projection",projection},
+    {"old_receipt_sha256",Sha256::hex(json::canonical(p))},{"saved_integrity","verified"},
+    {"current_replay","not_exercised"},{"refusals",Json::array()},
+    {"selection_scope","account_global"},{"selection_changed",false},
+    {"archive_preview",Json{{"schema","loom.archive_projection_preview/1"},
+      {"root",Json{{"node_id",root},{"source_id",sid},{"sha256",hash},{"locator",whole.locator.to_json()}}},
+      {"structure_nodes",descriptors},{"children",children},{"manifest_verified",true},
+      {"runtime",cfg.at("runtime")},{"descriptor_sha256",draft.at("descriptor_sha256")},
+      {"mapping",Json{{"status","not_exercised"},{"candidates",Json::array()},{"reason","archive_tree_migration_not_implemented"}}},
+      {"reproject_supported",false},{"limits",Json::array({"root_has_no_text_occurrences","child_replay_reported_separately","unknown_members_retained_without_projection","no_selector_equivalence_or_rewrite","checked_manifest_edges_not_general_subgraph_repair"})}}}};
+}
+}
+Result<Json> preview_archive(Runtime& rt,const Json& receipt) try {
+  std::size_t bytes=0,count=0;return archive_preview(rt,receipt,0,bytes,count);
+} catch(const Json::exception&) { return invalid(); }
+
 } // namespace loom::text::sources::host

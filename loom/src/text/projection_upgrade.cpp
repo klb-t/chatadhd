@@ -1,4 +1,5 @@
 #include "projection_upgrade.h"
+#include "file_graph.h"
 #include "loom/text_source_parts.h"
 #include "loom/runtime.h"
 #include "loom/db.h"
@@ -73,8 +74,15 @@ Result<Json> projection_upgrade(Runtime& rt, const Json& request) try {
   if (!old) return Error(Errc::NotFound, "projection_missing");
   // Archive member versions require a separate explicit tree migration; never
   // flatten or replace them through this text-projection operation.
-  if (json::get_string(old->metadata.value("method", Json::object()), "format") == "zip")
-    return Error(Errc::Unsupported, "archive_projection_upgrade_unsupported");
+  if (json::get_string(old->metadata.value("method", Json::object()), "format") == "zip") {
+    if (operation == "projection_reproject")
+      return Error(Errc::Unsupported, "archive_projection_upgrade_unsupported");
+    // Archive occurrences are owned by child projections, not the root receipt.
+    const auto selected = request.value("selected_nodes", Json::array());
+    if (!selected.is_array() || !selected.empty())
+      return Error(Errc::InvalidArgument, "projection_selection_not_owned");
+    return host::preview_archive(rt, old->metadata);
+  }
   LOOM_TRY_ASSIGN(auto source, snapshot(rt, *old));
   const auto& p=old->metadata;
   const auto digest=Sha256::hex(json::canonical(p));
