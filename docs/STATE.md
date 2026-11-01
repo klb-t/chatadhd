@@ -14,7 +14,13 @@ Własne 3 nieudane próby harnessu zachowane i poprawione do faktycznego kontrak
 bez osłabiania asercji lub zmian produktu. Backend/P0/share/compat/backup niepowtarzane.
 Granice: derived UTF8, nie strony/XML/AST; selector konta bez CAS, lista ograniczona;
 brak mobile/JNI/realnego modelu/pełnej bramki i wdrożenia. Stare artefakty zachowane.
-Next: nowy immutable pakiet web z niezmienionymi backendpayloadami i verify-package.
+Code **ccada5e5c2542252112fe40caa95d4b407048e80**. Nowy immutable Release
+**ccada5e5-release-docx-ui-20261101**, SHA256
+**b786b7e654e6660e6382cd7d8ac8434d9ef1517f2e0326ff9003a3abc372ac10**.
+Archive25/25 i verify-package(start/health/static/auth/deps/checksum) PASS.
+Backendpayloady hash-identyczne z przyjętym 7a1037ab; nowy web powiązany z wykonanym GUI.
+Next: administrator odbiera kod/pakiet/dowody; backup/restore produkcji i decyzja
+wdrożeniowa pozostają oddzielne. Ten przyrost zakończony.
 [Raport odbioru](reports/DOCX_UI_INTEGRATION_2026-11-01.md).
 
 ## 2026-11-01 — DOCX source parts: backend odebrany, UI osobno

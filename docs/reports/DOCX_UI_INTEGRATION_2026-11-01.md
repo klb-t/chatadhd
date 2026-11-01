@@ -96,5 +96,29 @@ Brak nowych wyników mobile/JNI, realnego providera/modelu, pełnej bramki repo,
 P0/share/accounts/backup/rollback. Zastany komunikat o kluczu dostawcy i etykieta roli
 `assistant` pozostają lukami UI poza tym zakresem. Logger ma wcześniej opisane
 ograniczenia; produkcyjne backup/restore i zgoda na wdrożenie pozostają u administratora.
-Stare pakiety, Debug/Release cache i delty zachowane. Nowy pakiet ma otrzymać wyłącznie
+Stare pakiety, Debug/Release cache i delty zachowane. Nowy pakiet zawiera wyłącznie
 przetestowany web oraz hash-identyczne backend/helper payloady, z osobną provenance.
+
+## Przyjęty kod i nowy pakiet
+
+Kod UI **ccada5e5c2542252112fe40caa95d4b407048e80**, lokalny commit `[skip ci]`, 12 jawnych plików.
+Pakiet **ccada5e5-release-docx-ui-20261101**:
+
+- Archiwum: `.integration-docx-ui-20261101/chatadhd-server-linux-x64-ccada5e5-release-docx-ui-20261101.tar.gz`.
+- SHA256: `b786b7e654e6660e6382cd7d8ac8434d9ef1517f2e0326ff9003a3abc372ac10`.
+- MANIFEST SHA256: `e1924f026b7770680bf566d61ea2b81674b20189ea635ee8aa3370cf4bfdfcc7`.
+- Backend code `7a1037ab83664d38ab0fccd892557fbf3d135652` bez ponownej kompilacji;
+  server/lib/reader/runtime.json identyczne z browser04 i poprzednio przyjętym pakietem.
+  Nowy web związany hashami wszystkich źródeł/build config i 16 plików wynikowych.
+- Archive **25/25 PASS** (24 payloady + MANIFEST): sumy, ścieżki, symlinki, owner metadata.
+  Stary pakiet `cbbb87ee…` ponownie hash zgodny, bez zapisu/relabelowania.
+- Istniejący `deploy/verify-package.sh`: exit 0, checksum/dependencies/start,
+  health `ok:true`, static HTML i auth HTTP 200 JSON. Landlock, whitelist env,
+  nowy synthetic root i port loopback; proces zakończony. Własny znany wrapper
+  BusyBox tar obsłużył ograniczenie GNU tar/openat2 ENOSYS, bez zmiany hosta/deployera.
+
+Manifest odróżnia datę i źródło wcześniej zbudowanego backendu od nowego web/pakietu.
+Interpreter Python i zależności systemowe pozostają jawne i nie są bundlowane.
+Nie wykonano instalacji ani przełączenia produkcji. Nie ma nowego wyniku rollbacku.
+Next: audyt administratora kodu/pakietu/dowodów i jego decyzja wydaniowa; ten przyrost
+zakończony, bez samodzielnego uruchamiania następnego cyklu.
