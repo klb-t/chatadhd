@@ -1353,7 +1353,11 @@ void App::route_models_providers() {
     }
     std::string mime = up.fields.count("mime") ? up.fields["mime"] : up.content_type;
     if (mime.empty()) mime = "application/octet-stream";
-    const json request = {{"path", up.path.string()}, {"mime", mime}};
+    json request = {{"path", up.path.string()}, {"mime", mime}, {"name", up.filename}};
+    for (const auto* key : {"source_key", "format", "previous_source_id"}) {
+      const auto field = up.fields.find(key);
+      if (field != up.fields.end()) request[key] = field->second;
+    }
     send_loom(res, loom_invoke(ctx, "actions", "client.blob_put", request.dump(-1, ' ', false, json::error_handler_t::replace).c_str()));
   });
   svr_.Get(R"(/api/client/blob/([0-9a-fA-F]{64})/raw)", [this](const httplib::Request& req, httplib::Response& res) {

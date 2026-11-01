@@ -50,6 +50,43 @@ Result<Json> store_upload(Runtime& rt, const fs::path& file, const std::string& 
   return described(ref, mime.empty() ? mime_of(rt, ref.hash) : mime);
 }
 
+// Opt-in GUI source registration. This is a durable upload receipt, not a
+// text projection: client.blob_text remains the only explicit G1 materializer.
+Result<Json> register_source(Runtime& rt, const Json& request, Json result) {
+  if (!json::find(request, "source_key")) return result;  // existing device uploads stay unchanged
+  const auto key = json::get_string(request, "source_key");
+  const auto name = json::get_string(request, "name");
+  if (key.empty() || name.empty())
+    return Error(Errc::InvalidArgument, "client_upload_source_key_and_name_required");
+  const auto hash = json::get_string(result, "hash");
+  const auto id = "src_upload_" + Sha256::hex(json::canonical(Json::array({key, hash})));
+  auto lock = rt.db().lock();
+  LOOM_TRY_ASSIGN(auto prior, rt.provenance().get_source(id));
+  if (prior) {
+    if (prior->blob_hash != hash || prior->parser != "loom.client_upload" ||
+        json::get_string(prior->metadata, "source_key") != key)
+      return Error(Errc::Conflict, "client_upload_source_conflict");
+  } else {
+    SourceRecord source;
+    source.id = id;
+    source.kind = "file";
+    source.uri = key;
+    source.title = name;
+    source.blob_hash = hash;
+    source.size = json::get_int(result, "size");
+    source.mime = json::get_string(result, "mime");
+    source.format = json::get_string(request, "format");
+    source.parser = "loom.client_upload";
+    source.parser_version = "1";
+    source.metadata = Json{{"source_key", key},
+                           {"previous_source_id", json::get_string(request, "previous_source_id")}};
+    LOOM_TRY(rt.provenance().add_source(std::move(source)));
+  }
+  result["source_id"] = id;
+  result["source_key"] = key;
+  return result;
+}
+
 Result<std::string> hash_of(const Json& request) {
   const std::string hash = json::get_string(request, "hash");
   if (!BlobStore::is_valid_hash(hash)) return Error(Errc::InvalidArgument, "hash must be a blob hash (64 hex)");
@@ -68,7 +105,8 @@ Result<Json> put(Runtime& rt, const Json& request) {
   const fs::path folder = fs::weakly_canonical(upload_dir(rt), ec);
   if (ec || fs::weakly_canonical(file, ec).parent_path() != folder)
     return Error(Errc::InvalidArgument, "path must be a file directly in the upload folder of this data directory");
-  return store_upload(rt, file, json::get_string(request, "mime"));
+  LOOM_TRY_ASSIGN(auto result, store_upload(rt, file, json::get_string(request, "mime")));
+  return register_source(rt, request, std::move(result));
 }
 
 Result<Json> path(Runtime& rt, const Json& request) {
@@ -117,7 +155,8 @@ Result<Json> commit(Runtime& rt, const Json& request) {
     fs::remove(file, ec);
     return Json{{"upload_id", id}, {"aborted", true}};
   }
-  return store_upload(rt, file, json::get_string(request, "mime"));
+  LOOM_TRY_ASSIGN(auto result, store_upload(rt, file, json::get_string(request, "mime")));
+  return register_source(rt, request, std::move(result));
 }
 
 Result<Json> read(Runtime& rt, const Json& request) {
