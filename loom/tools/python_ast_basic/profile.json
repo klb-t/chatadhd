@@ -1,0 +1,23 @@
+{
+  "schema": "loom.python_ast_basic.profile/1",
+  "limits": {
+    "max_input_bytes": 1048576,
+    "max_ast_nodes": 100000,
+    "max_declarations": 10000,
+    "max_quoted_bytes": 8388608
+  },
+  "feature_version": null,
+  "kinds": {
+    "module": "python_module",
+    "class": "python_class",
+    "function": "python_function",
+    "async_function": "python_async_function"
+  },
+  "format": {
+    "mime": "text/x-python",
+    "level": "python_declaration",
+    "part_kind": "code_span",
+    "parse": {"segment": []},
+    "reason": "python_ast_syntax_only_no_runtime_analysis"
+  }
+}

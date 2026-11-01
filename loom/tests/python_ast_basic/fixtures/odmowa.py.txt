@@ -1,0 +1,3 @@
+# Syntetyczna odmowa; tekst po polsku nie może trafić do diagnostyki.
+def zepsuta(żółć:
+    return "prywatny-fixture-marker"

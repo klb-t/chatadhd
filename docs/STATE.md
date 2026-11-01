@@ -1,3 +1,16 @@
+## 2026-11-01 — Python AST: parser przyjęty, native hook odłożony
+
+Baza odbioru `e2f6873c7ca24b41957b36b0127439b926068f41`; task
+`fleet-python-structure-20261101`. Przyjęto lokalny parser stdlib oraz testy,
+bez zmiany runtime i przyjętego pakietu. Własna diagnostyka: 4/4 przypadki,
+w tym 3 spójne fałszerstwa przyjmowane przez checker bajtów C++, a odrzucane
+przez pinned reparse Python. Własny provided native harness: **FAIL** przy
+materializacji (`python_declaration` niedostępne), dalsze graf/context/reopen
+nieodebrane. Shared hook **nienałożony**: brak zaufanego host-side parsera,
+client JSON nie może poświadczać AST. 19/19 stdlib i 5 syntax to wcześniejsze
+wyniki autora, nie powtórzone bramki integratora. Stary pakiet b786b7e6… bez zmian.
+Szczegóły, hashe i next: [raport](reports/FLEET_PYTHON_AST_INTEGRATION_2026-11-01.md).
+
 ## 2026-11-01 — DOCX derived coordinates: in-place niezgodne, restore sprawdzony
 
 Baza runtime/UI **5a560710f422095510316b4c9fbdb71d313ff6ca** i pakiet
