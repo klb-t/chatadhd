@@ -1,3 +1,28 @@
+## 2026-11-01 — DOCX derived coordinates: in-place niezgodne, restore sprawdzony
+
+Baza runtime/UI **5a560710f422095510316b4c9fbdb71d313ff6ca** i pakiet
+**b786b7e654e6660e6382cd7d8ac8434d9ef1517f2e0326ff9003a3abc372ac10** bez zmian.
+Jedna ograniczona nowa bramka syntetyczna, **4/4 etapy wykonane**: poprzednik
+`e77f698e` → cold backup → kandydat z derived DOCX → poprzednik na oddzielnej
+kopii → restore sprzed zmiany i ponowny start poprzednika.
+**In-place compatibility FAIL:** explicit read HTTP409 i czat SSE error
+`text_source_occurrence_mismatch`, 0 wywołań providera. ID selektora w config
+nie dowodzi obsługi kontekstu. Kandydat miał jeden prawdziwy request/odpowiedź
+lokalnej atrapy z dokładnie wybranym PL fragmentem i ID, bez niewybranych części.
+**Restore PASS:** konto/sesja, rozmowa/oryginał i 3 DB integrity/FK/schema/count/meta
+zgodne; 4 zamrożone drzewa bez zmian. RPO kopii 04:45:37.070102 UTC: późniejsze
+2 wiadomości, pochodna/graf i selector są utracone. Nie jest to rollback produkcji.
+Zachowano wcześniejszą odmowę testu przez atime katalogów po liczniku rozmiaru;
+naprawiono wyłącznie harness na O_NOATIME, bez osłabienia cold_snapshot.
+Nowe dane <6,1 MB alokowane w pomiarach, limit128MiB; brak buildu, zmiany runtime,
+pakowania, starych macierzy lub deploy. Własne procesy zakończone.
+Next: administrator odbiera dowody i uzgadnia RPO/ścieżkę wydaniową; brak
+akceptacji powrotu starego executable na nowe dane derived.
+Lokalny commit zablokowany: jedyne git add exit128, EROFS dla index.lock tego
+świeżego worktree. Trzy pliki/patch/dowody zachowane; HEAD nadal5a560710.
+Bez obejścia metadanych i bez ponowienia testu po odblokowaniu stagingu.
+[Raport](reports/DOCX_COORDINATE_ROLLBACK_2026-11-01.md).
+
 ## 2026-11-01 — DOCX source parts: UI odebrane zakresowo
 
 Na backendzie **49444c869a80a086683f5db383b1f34c9bb01a46** przyjęto tylko
