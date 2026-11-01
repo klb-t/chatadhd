@@ -1,3 +1,23 @@
+## 2026-11-01 09:04 UTC — mandatory continuous graph UI: intake BLOCKED (EACCES)
+
+Przyjęta baza **5912012c**, runtime **e27ce9ff**, pakiet **0caab733…c63e** zachowane.
+Autor `chatadhd-continuous-graph-ui-20261101` ma świeży terminal `completed`, lecz
+worktree/.git/CHECKPOINT i jawne dokumenty odmawiają UID990 odczytu (**errno 13**);
+`git -C … status` exit128. Closed manifest/patch/stabilność niezweryfikowane.
+**Żadnego apply/build/typecheck/browsera/nowego pakietu UI.** To konkretny bloker
+odbioru, bez obchodzenia ACL lub zastępowania pracy autora. Next: read-only dostęp
+UID990 i matching końcowy receipt, wznowienie tego samego integratora.
+
+Obowiązkową bramkę projekcji wydzielono od opcjonalnego XLS/video/bundle/extent:
+zakresowo odebrane historyczne reproject/refusal/reopen i cold restore z **utratą
+post-copy writes**, wyłącznie jawna zmiana selektora; `not_exercised` dla pustej
+projekcji. Nie przypisujemy tych wykonań dawnemu ed139231/ee2117e8 ani nie twierdzimy,
+że pełną fazę ponowiono na finalnej lib7004. Statycznie **108/108** payload hashy
+zgodne, bez retestu. Dokładne phase/code/lib/artifact bindings i brakujące fakty:
+[raport](reports/CONTINUOUS_GRAPH_UI_INTAKE_2026-11-01.md).
+Continuous UI nadal mandatory NOT RUN; operacyjny preflight/świeża kopia/RPO i decyzja
+właściciela osobno. Brak deploy, nowego ETA i odnowienia deadline.
+
 ## 2026-11-01 — jawna reprojekcja i native XLS/video/bundle (lokalny odbiór zakresowy)
 
 Kod **e27ce9ff0076c287963a588d942d68e7bebaca3f**, baza **eae7ece4**. Zachowane
