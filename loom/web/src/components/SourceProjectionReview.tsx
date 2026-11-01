@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { api } from "../api";
-import { checkProjection, reprojectProjection, type CheckedProjection, type ProjectionUpgrade } from "../api/projection-review";
+import { checkProjection, reprojectProjection, type CheckedProjection, type ProjectionUpgrade, type ArchivePreview } from "../api/projection-review";
+import AttachmentOriginal from "./AttachmentOriginal";
 import type { SourceParts } from "../api/text-sources";
 import words from "../content/projection-review.words.json";
 import { dataLabel, useShellLanguage } from "../shell/text";
@@ -11,8 +12,50 @@ interface Props {
   refresh: (isCurrent: () => boolean, result: ProjectionUpgrade) => Promise<void>;
 }
 
+type Label = (key: keyof typeof words.labels) => string;
+
+/** Render only the validated native descriptor; parent IDs, never labels, define the tree. */
+function ArchiveDescriptor({ preview, w }: { preview: ArchivePreview; w: Label }) {
+  const children = new Map(preview.children.map(child => [child.member_node, child]));
+  const branches = (parent: string): JSX.Element => <ul>{preview.structure_nodes.filter(row => row.parent === parent).map(row => {
+    const child = children.get(row.node_id);
+    return <li key={row.node_id} data-testid="archive-entry" data-node-id={row.node_id} data-parent-id={row.parent} data-kind={row.kind}>
+      <strong>{w(row.kind)}: {row.title}</strong>
+      <p>{w("archiveNode")}: <code>{row.node_id}</code></p>
+      <p>{w("archiveLocator")}: <code>{JSON.stringify(row.locator)}</code></p>
+      {row.kind === "folder" ? branches(row.node_id) : <>
+        <p>{w("archiveOriginal")}: <code>{row.sha256}</code></p>
+        <p>{w("archiveSource")}: <code>{row.source_id}</code></p>
+        <p>{w("archiveProvenance")}: <code>{row.provenance_id}</code></p>
+        <AttachmentOriginal reference={"blob:" + row.sha256} name={row.title} />
+        {child?.projection && child.review ? <div data-testid="archive-child-projection" data-projection-id={child.projection.projection_node}>
+          <p>{w("archiveChild")}: <code>{child.projection.projection_node}</code> ({String(child.projection.method.format)})</p>
+          <p>{w("archiveSource")}: <code>{child.projection.source_id}</code></p>
+          <p data-testid="archive-child-replay" data-status={child.review.current_replay}>{w("replay")}: {w(child.review.current_replay)}</p>
+          <ul>{child.review.refusals.map(r => <li key={r.node_id}><code>{r.node_id}</code>: {r.code}</li>)}</ul>
+          <p>{w("archiveParts")}: {child.projection.occurrence_nodes.length}</p>
+          <ul>{child.projection.occurrence_nodes.map(id => <li key={id}><code>{id}</code></li>)}</ul>
+          {child.review.archive_preview && <ArchiveDescriptor preview={child.review.archive_preview} w={w} />}
+        </div> : <p data-testid="archive-child-unknown" data-status="not_exercised">{w("archiveUnknown")}</p>}
+      </>}
+    </li>;
+  })}</ul>;
+  return <div data-testid="archive-preview" data-source-id={preview.root.source_id}>
+    <h5>{w("archiveTitle")}</h5>
+    <p>{w("archiveScope")}</p>
+    <p>{w("archiveSource")}: <code>{preview.root.source_id}</code></p>
+    <p>{w("archiveOriginal")}: <code>{preview.root.sha256}</code></p>
+    <AttachmentOriginal reference={"blob:" + preview.root.sha256} name={preview.root.source_id + ".zip"} />
+    <p>{w("archiveDescriptorHash")}: <code>{preview.descriptor_sha256}</code></p>
+    {branches(preview.root.node_id)}
+    <p data-testid="archive-mapping-status" data-status={preview.mapping.status}>{w("archiveMapping")}</p>
+    <details><summary>{w("archiveLimits")}</summary><ul>{preview.limits.map(limit => <li key={limit}><code>{limit}</code></li>)}</ul></details>
+  </div>;
+}
+
 /** An explicit review of an existing receipt. Mounting this component performs no operation. */
 export default function SourceProjectionReview({ projection, run, refresh }: Props) {
+  const archive = projection.method.format === "zip" || projection.coordinate === "archive_members";
   const language = useShellLanguage();
   const w = (key: keyof typeof words.labels) => dataLabel(words.labels[key], language, words.labels[key].en);
   const [checked, setChecked] = useState<CheckedProjection | null>(null);
@@ -31,7 +74,7 @@ export default function SourceProjectionReview({ projection, run, refresh }: Pro
   };
   const execute = (upgrade: boolean) => {
     // Synchronous guard covers double clicks before React disables the enclosing fieldset.
-    if (request.current || lifetime.current?.signal.aborted || (upgrade && (!checked || !confirmed || result))) return;
+    if (request.current || lifetime.current?.signal.aborted || (upgrade && (archive || !checked || !confirmed || result))) return;
     const controller = new AbortController();
     request.current = controller;
     void run(async parentCurrent => {
@@ -58,12 +101,11 @@ export default function SourceProjectionReview({ projection, run, refresh }: Pro
       }
     }).finally(() => { if (request.current === controller) request.current = null; });
   };
-  if (projection.method.format === "zip" || projection.coordinate === "archive_members")
-    return <section data-testid="projection-review"><p role="status">{w("zipUnsupported")}</p></section>;
   const receipt = result ?? checked?.receipt;
   return <section data-testid="projection-review" aria-label={w("title")}>
     <h4>{w("title")}</h4>
-    <p>{w("about")}</p>
+    <p>{w(archive ? "archiveAbout" : "about")}</p>
+    {archive && <p role="status">{w("zipUnsupported")}</p>}
     {!api.actions?.clientBlobText && <p role="status">{w("unavailable")}</p>}
     <button type="button" data-testid="projection-check" disabled={!api.actions?.clientBlobText} onClick={() => execute(false)}>{w("check")}</button>
     {receipt && <div data-testid="projection-review-receipt">
@@ -73,8 +115,9 @@ export default function SourceProjectionReview({ projection, run, refresh }: Pro
       <p data-testid="projection-replay" data-status={receipt.current_replay}>{w("replay")}: {w(receipt.current_replay)}</p>
       <ul>{receipt.refusals.map(f => <li key={f.node_id}>{f.node_id}: {f.code}</li>)}</ul>
       <p>{w("unchanged")}</p>
+      {receipt.archive_preview && <ArchiveDescriptor preview={receipt.archive_preview} w={w} />}
     </div>}
-    {checked && !result && <div data-testid="projection-confirmation">
+    {checked && !result && !archive && <div data-testid="projection-confirmation">
       <p>{w("selection")}: {checked.selectedNodes.length}</p>
       <ul>{checked.selectedNodes.map(n => <li key={n}><code>{n}</code></li>)}</ul>
       <p>{w("consequences")}</p>

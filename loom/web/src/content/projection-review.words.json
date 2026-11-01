@@ -9,8 +9,8 @@
       "en": "Check the saved projection integrity and replay with the current installation. Checking does not create a version."
     },
     "zipUnsupported": {
-      "pl": "ZIP: sprawdzanie i reprojekcja drzewa archiwum nie są obsługiwane tą operacją. Wewnętrzne źródło można sprawdzić osobno.",
-      "en": "ZIP: archive tree check and reprojection are unsupported by this operation. An inner source can be reviewed separately."
+      "pl": "Migracja ZIP pozostaje niedostępna. Podgląd nie zmienia drzewa ani wybranych identyfikatorów.",
+      "en": "ZIP migration remains unavailable. Preview changes neither the tree nor selected IDs."
     },
     "unavailable": {
       "pl": "Brak akcji clientBlobText w bieżącym transporcie.",
@@ -127,12 +127,76 @@
     "refresh": {
       "pl": "Ponów tylko odczyt listy i receipt",
       "en": "Retry list and receipt reads only"
+    },
+    "archiveAbout": {
+      "pl": "Sprawdź zapisany manifest ZIP i powiązane projekcje części. Operacja tylko do odczytu.",
+      "en": "Check the saved ZIP manifest and related part projections. Read-only operation."
+    },
+    "archiveTitle": {
+      "pl": "Drzewo archiwum",
+      "en": "Archive tree"
+    },
+    "archiveScope": {
+      "pl": "Archiwum → folder → plik → projekcja części. Powiązania po identyfikatorach źródeł, locatorach i hashach; równa nazwa lub treść nie scala wystąpień. To nie jest naprawa całego grafu.",
+      "en": "Archive → folder → file → part projection. Links use source IDs, locators and hashes; equal names or content do not merge occurrences. This is not whole-graph repair."
+    },
+    "archiveNode": {
+      "pl": "Identyfikator węzła",
+      "en": "Node ID"
+    },
+    "archiveLocator": {
+      "pl": "Lokalizator w archiwum",
+      "en": "Archive locator"
+    },
+    "archiveOriginal": {
+      "pl": "SHA-256 oryginału",
+      "en": "Original SHA-256"
+    },
+    "archiveSource": {
+      "pl": "Źródło",
+      "en": "Source"
+    },
+    "archiveProvenance": {
+      "pl": "Pochodzenie (provenance ID)",
+      "en": "Provenance ID"
+    },
+    "archiveChild": {
+      "pl": "Powiązana projekcja",
+      "en": "Related projection"
+    },
+    "archiveParts": {
+      "pl": "Wystąpienia części w tej projekcji",
+      "en": "Part occurrences in this projection"
+    },
+    "archiveUnknown": {
+      "pl": "Nie sprawdzono (not_exercised): format nieobsługiwany przez tę projekcję. Zachowano oryginał, bez deklaracji struktury lub zgodności.",
+      "en": "Not exercised: format not admitted by this projection. Original retained; no structure or compatibility claim."
+    },
+    "archiveDescriptorHash": {
+      "pl": "SHA-256 deskryptora",
+      "en": "Descriptor SHA-256"
+    },
+    "archiveMapping": {
+      "pl": "Mapowanie drzewa: not_exercised — brak propozycji migracji i zmian selektora.",
+      "en": "Tree mapping: not_exercised — no migration proposals or selector changes."
+    },
+    "archiveLimits": {
+      "pl": "Granice podglądu (kody kontraktu)",
+      "en": "Preview limits (contract codes)"
+    },
+    "folder": {
+      "pl": "Folder",
+      "en": "Folder"
+    },
+    "file": {
+      "pl": "Plik",
+      "en": "File"
     }
   },
   "errors": {
     "projection_review_invalid": {
-      "pl": "Odrzucono odpowiedź niezgodną z loom.projection_upgrade/1 lub potwierdzanym receipt. Odśwież stan przed kolejną operacją.",
-      "en": "Response rejected: inconsistent loom.projection_upgrade/1 or confirmed receipt. Reload state before another operation."
+      "pl": "Odmowa: odpowiedź jest niepełna, niespójna albo niezgodna z zapisanym deskryptorem. Nie uznano jej za poprawny podgląd.",
+      "en": "Refused: response is incomplete, inconsistent or does not match the saved descriptor. It was not accepted as a valid preview."
     },
     "projection_review_selection_stale": {
       "pl": "Wybór konta zmienił się od sprawdzenia. Sprawdź projekcję ponownie i potwierdź aktualny wybór.",
@@ -147,8 +211,8 @@
       "en": "The current transport has no clientBlobText action."
     },
     "archive_projection_upgrade_unsupported": {
-      "pl": "ZIP: sprawdzanie i reprojekcja drzewa archiwum nie są obsługiwane tą operacją. Wewnętrzne źródło można sprawdzić osobno.",
-      "en": "ZIP: archive tree check and reprojection are unsupported by this operation. An inner source can be reviewed separately."
+      "pl": "Migracja ZIP pozostaje niedostępna. Podgląd nie zmienia drzewa ani wybranych identyfikatorów.",
+      "en": "ZIP migration remains unavailable. Preview changes neither the tree nor selected IDs."
     },
     "projection_review_refresh_missing": {
       "pl": "Receipt nie jest dostępny w odczytanym zakresie. Zwiększ zakres i odśwież źródła.",

@@ -75,8 +75,8 @@ test("projection review: exact native envelopes, refusal/mapping, stale selectio
   assert.throws(() => validateUpgradeTarget(made, { ...target, occurrence_nodes: ["new-a"] }), /projection_review_invalid/);
   assert.throws(() => validateUpgradeTarget(made, { ...target, source_id: "wrong-source" }), /projection_review_invalid/);
   for (const selected of [["foreign"], ["old-a", "old-a"]]) assert.throws(() => projectionRequest(projection, selected), /projection_selection_not_owned/);
-  assert.throws(() => projectionRequest({ ...projection, method: { format: "zip" } }, []), /archive_projection_upgrade_unsupported/);
-  assert.throws(() => projectionRequest({ ...projection, coordinate: "archive_members" }, []), /archive_projection_upgrade_unsupported/);
+  assert.throws(() => projectionRequest({ ...projection, method: { format: "zip" } }, [], receipt), /archive_projection_upgrade_unsupported/);
+  assert.throws(() => projectionRequest({ ...projection, coordinate: "archive_members" }, []), /projection_review_invalid/);
 
   // Even a change outside this projection must be reviewed afresh, rather than silently accepted.
   fresh.context_execution.unified.legacy_seed_ids.push("another-projection-node");

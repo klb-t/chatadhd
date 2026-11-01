@@ -17,6 +17,7 @@ export interface ProjectionReview {
   refusals: { node_id: string; code: string }[];
   selection_scope: "account_global";
   selection_changed: false;
+  archive_preview?: ArchivePreview;
 }
 export interface ProjectionUpgrade extends ProjectionReview {
   new_projection: string;
@@ -43,7 +44,9 @@ const active = (signal?: AbortSignal) => { if (signal?.aborted) throw Error("pro
 
 /** Only owned occurrences go to the native operation. The account-wide selector is never written. */
 export function projectionRequest(projection: SourceParts, selectedNodes: string[], receipt?: ProjectionReview): ProjectionRequest {
-  if (projection.method.format === "zip" || projection.coordinate === "archive_members") throw Error("archive_projection_upgrade_unsupported");
+  const archive = projection.method.format === "zip" || projection.coordinate === "archive_members";
+  if (archive && receipt) throw Error("archive_projection_upgrade_unsupported");
+  if (archive && (projection.method.format !== "zip" || projection.coordinate !== "archive_members" || projection.occurrence_nodes.length || selectedNodes.length)) invalid();
   if (!id(projection.projection_node) || !ids(projection.occurrence_nodes) || !ids(selectedNodes) ||
       selectedNodes.some(n => !projection.occurrence_nodes.includes(n))) throw Error("projection_selection_not_owned");
   if (receipt && (receipt.old_projection !== projection.projection_node || !hash(receipt.old_receipt_sha256))) invalid();
@@ -51,12 +54,110 @@ export function projectionRequest(projection: SourceParts, selectedNodes: string
     selected_nodes: [...selectedNodes], ...(receipt ? { expected_receipt_sha256: receipt.old_receipt_sha256 } : {}) };
 }
 
+export interface ArchivePreview {
+  schema: "loom.archive_projection_preview/1";
+  root: { node_id: string; source_id: string; sha256: string; locator: Record<string, unknown> };
+  structure_nodes: ArchiveRow[];
+  children: ArchiveChild[];
+  manifest_verified: true;
+  runtime: Record<string, unknown>;
+  descriptor_sha256: string;
+  mapping: { status: "not_exercised"; candidates: []; reason: "archive_tree_migration_not_implemented" };
+  reproject_supported: false;
+  limits: string[];
+}
+export interface ArchiveRow {
+  node_id: string; parent: string; kind: "folder" | "file"; title: string; locator: Record<string, unknown>;
+  sha256?: string; source_id?: string; source_key?: string; provenance_id?: string; archive_sha256?: string;
+}
+export interface ArchiveChild {
+  member_node: string; member_source: string; original_sha256: string; locator: Record<string, unknown>;
+  projection?: SourceParts; review?: ProjectionReview;
+  current_replay?: "not_exercised"; reason?: "format_not_admitted";
+}
+
+// Object-key order is not identity; IDs, member locators and hashes are.
+const canonical = (v: unknown): string => JSON.stringify(v, (_, value) => object(value)
+  ? Object.fromEntries(Object.entries(value).sort(([a], [b]) => a.localeCompare(b))) : value);
+function archivePreview(value: unknown, projection: SourceParts, ancestors: Set<string>): ArchivePreview {
+  if (!object(value) || !exactKeys(value, ["schema", "root", "structure_nodes", "children", "manifest_verified", "runtime", "descriptor_sha256", "mapping", "reproject_supported", "limits"]) ||
+      value.schema !== "loom.archive_projection_preview/1" || value.manifest_verified !== true || value.reproject_supported !== false ||
+      !object(value.runtime) || canonical(value.runtime) !== canonical(projection.method.runtime) || !hash(value.descriptor_sha256) ||
+      !ids(value.limits) || !object(value.mapping) || !exactKeys(value.mapping, ["status", "candidates", "reason"]) ||
+      value.mapping.status !== "not_exercised" || value.mapping.reason !== "archive_tree_migration_not_implemented" ||
+      !Array.isArray(value.mapping.candidates) || value.mapping.candidates.length ||
+      !object(value.root) || !exactKeys(value.root, ["node_id", "source_id", "sha256", "locator"]) ||
+      value.root.node_id !== projection.source_node || value.root.source_id !== projection.source_id ||
+      value.root.sha256 !== projection.source_sha256 || !hash(value.root.sha256) || !object(value.root.locator) ||
+      value.root.locator.source !== projection.source_id || value.root.locator.member !== "" ||
+      !Array.isArray(value.structure_nodes) || !Array.isArray(value.children) ||
+      !Array.isArray(projection.structure_nodes) || !Array.isArray(projection.children)) invalid();
+  const root = value.root;
+  const known = new Map(projection.structure_nodes.map(n => [n.node_id, n]));
+  if (known.size !== projection.structure_nodes.length || known.size !== value.structure_nodes.length) invalid();
+  const visited = new Map<string, string>([[projection.source_node, "archive"]]);
+  const files = new Map<string, ArchiveRow>();
+  for (const row of value.structure_nodes as unknown[]) {
+    const common = ["node_id", "parent", "kind", "title", "locator"];
+    if (!object(row) || !id(row.node_id) || !id(row.parent) || visited.has(row.node_id) ||
+        !["archive", "folder"].includes(visited.get(row.parent) ?? "") || !["folder", "file"].includes(String(row.kind)) ||
+        !id(row.title) || !object(row.locator) || row.locator.source !== root.source_id || !id(row.locator.member)) invalid();
+    const isFile = row.kind === "file";
+    if (!exactKeys(row, isFile ? [...common, "sha256", "source_id", "source_key", "provenance_id", "archive_sha256"] : common)) invalid();
+    const expected = known.get(row.node_id);
+    if (!expected || expected.parent !== row.parent || expected.kind !== row.kind || expected.title !== row.title ||
+        canonical(expected.locator) !== canonical(row.locator)) invalid();
+    if (isFile && (!hash(row.sha256) || !id(row.source_id) || !id(row.source_key) || !id(row.provenance_id) ||
+        row.archive_sha256 !== root.sha256 || (expected as unknown as Record<string, unknown>).sha256 !== row.sha256)) invalid();
+    visited.set(row.node_id, String(row.kind));
+    if (isFile) files.set(row.node_id, row as unknown as ArchiveRow);
+  }
+  const saved = new Map<string, Record<string, unknown>>();
+  for (const raw of projection.children as unknown[]) {
+    if (!object(raw) || !id(raw.source_id) || saved.has(raw.source_id)) invalid();
+    saved.set(raw.source_id, raw);
+  }
+  if (value.children.length !== files.size || saved.size !== files.size) invalid();
+  const joined = new Set<string>(), sources = new Set<string>();
+  for (const raw of value.children as unknown[]) {
+    if (!object(raw) || !id(raw.member_node) || joined.has(raw.member_node) || !id(raw.member_source) ||
+        !hash(raw.original_sha256) || !object(raw.locator)) invalid();
+    const member = files.get(raw.member_node);
+    if (!member || member.source_id !== raw.member_source || member.sha256 !== raw.original_sha256 ||
+        canonical(member.locator) !== canonical(raw.locator)) invalid();
+    joined.add(raw.member_node);
+    const common = ["member_node", "member_source", "original_sha256", "locator"];
+    if (raw.projection !== undefined) {
+      if (!exactKeys(raw, [...common, "projection", "review"]) || !object(raw.projection) || !id(raw.projection.source_id) ||
+          !id(raw.projection.projection_node) || !ids(raw.projection.occurrence_nodes) || !object(raw.projection.method) ||
+          ancestors.has(raw.projection.projection_node) || sources.has(raw.projection.source_id)) invalid();
+      const child = saved.get(raw.projection.source_id);
+      if (!child || canonical(child) !== canonical(raw.projection) ||
+          (object(child.derivation) ? child.derivation.original_sha256 : child.source_sha256) !== raw.original_sha256) invalid();
+      sources.add(raw.projection.source_id);
+      readProjectionReview(raw.review, { operation: "projection_check", projection_node: raw.projection.projection_node, selected_nodes: [] },
+        raw.projection as unknown as SourceParts, ancestors);
+    } else {
+      if (!exactKeys(raw, [...common, "current_replay", "reason"]) || raw.current_replay !== "not_exercised" || raw.reason !== "format_not_admitted" || sources.has(raw.member_source)) invalid();
+      const child = saved.get(raw.member_source);
+      if (!child || !exactKeys(child, ["source_id", "status", "reason", "member"]) || child.status !== "retained_original" ||
+          child.reason !== raw.reason || child.member !== raw.locator.member) invalid();
+      sources.add(raw.member_source);
+    }
+  }
+  return value as unknown as ArchivePreview;
+}
+
 /** Validate the native v1 response against the operation, receipt and exact selected-node set. */
-export function readProjectionReview(value: unknown, request: ProjectionRequest, projection: SourceParts): ProjectionReview | ProjectionUpgrade {
+export function readProjectionReview(value: unknown, request: ProjectionRequest, projection: SourceParts, ancestors = new Set<string>()): ProjectionReview | ProjectionUpgrade {
   const baseKeys = ["schema", "old_projection", "old_receipt_sha256", "saved_integrity", "current_replay", "refusals", "selection_scope", "selection_changed"];
   const upgradeKeys = ["new_projection", "new_receipt_sha256", "new_source", "mapping", "activation", "rollback", "upgrade_node"];
   const upgrading = request.operation === "projection_reproject";
-  if (!object(value) || !exactKeys(value, upgrading ? [...baseKeys, ...upgradeKeys] : baseKeys) ||
+  const archive = projection.method.format === "zip" || projection.coordinate === "archive_members";
+  if (archive && (upgrading || projection.method.format !== "zip" || projection.coordinate !== "archive_members" || projection.occurrence_nodes.length)) invalid();
+  if (ancestors.has(projection.projection_node)) invalid();
+  const path = new Set(ancestors).add(projection.projection_node);
+  if (!object(value) || !exactKeys(value, upgrading ? [...baseKeys, ...upgradeKeys] : archive ? [...baseKeys, "archive_preview"] : baseKeys) ||
       value.schema !== "loom.projection_upgrade/1" || value.old_projection !== request.projection_node ||
       value.old_projection !== projection.projection_node || !hash(value.old_receipt_sha256) ||
       (upgrading && value.old_receipt_sha256 !== request.expected_receipt_sha256) ||
@@ -70,6 +171,7 @@ export function readProjectionReview(value: unknown, request: ProjectionRequest,
   }
   if ((value.current_replay === "not_exercised") !== (projection.occurrence_nodes.length === 0) ||
       (value.current_replay === "refused") !== (seen.size > 0)) invalid();
+  if (archive) archivePreview(value.archive_preview, projection, path);
   if (upgrading) {
     if (!id(value.new_projection) || !hash(value.new_receipt_sha256) || !id(value.new_source) || !id(value.upgrade_node) ||
         value.activation !== "explicit_selector_update_required" ||
