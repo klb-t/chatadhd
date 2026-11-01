@@ -1,6 +1,9 @@
+import InterfaceLanguage from "./InterfaceLanguage";
+import type { ShellLanguageChoice } from "../shell/language";
 // M1-W0 (3), package P5: Ustawienia in words (spec §3.5). The screen draws what settings.resolved answers: the groups in the order
 // of the data with "N pól · M Twoje", the fields of a group (label, why, value in words, provenance chip, and in the details what it
-// changes and which flows read it), "Pokaż tylko zmienione", planned fields with the kernel's own reason. Nothing here lists a
+// changes and which flows read it), "Pokaż tylko zmienione", planned fields with the kernel's own reason. The interface-language control
+// exposes the existing ui_language key with explicit AUTO/device semantics. The remaining navigator lists no
 // group, a field or a word of its own (words: presentation.settings_human; a missing word shows its id). A change is made on the
 // node card of the navigator (NodeCard.tsx: "Zmień" → "Dla kogo?"), so one place writes a value. Engine › All fields is the former
 // settings screen in full (SettingsPanel.tsx: connection, models, keys, the table of every key, the JSON editor).
@@ -10,7 +13,8 @@ import { api } from "../api";
 import type { ResolvedField, SettingsResolved } from "../api/graph-projection";
 import type { UserProfileHost } from "../api/onboarding-host";
 import Disclosure from "../shell/Disclosure";
-import { shellTranslator } from "../shell/text";
+import languageWords from "../content/interface-language.words.json";
+import { dataLabel, shellTranslator } from "../shell/text";
 import { useLayer } from "../shell/use-layer";
 import { usePresentationFeature } from "./ConversationSourceView";
 import NodeCard from "./NodeCard";
@@ -22,6 +26,8 @@ import "./graph-navigator.css";
 import "./settings-human.css";
 
 interface Props {
+  languageChoice?: ShellLanguageChoice;
+  languageOptions?: string[];
   profileHost?: UserProfileHost;
   convId: string | null;
   /** The language of the words (ui_language or the browser's), the same the kernel is asked for. */
@@ -34,7 +40,7 @@ interface Props {
   onConfigChanged?: () => void;
 }
 
-export default function SettingsHuman({ profileHost, convId, language, onNavigate, view = "", onConfigChanged }: Props) {
+export default function SettingsHuman({ languageChoice, languageOptions, profileHost, convId, language, onNavigate, view = "", onConfigChanged }: Props) {
   const words = usePresentationFeature(profileHost, "settings_human");
   const graphWords = usePresentationFeature(profileHost, "graph_screen");
   const t = useMemo(() => shellTranslator(words.feature, language), [words.feature, language]);
@@ -106,6 +112,7 @@ export default function SettingsHuman({ profileHost, convId, language, onNavigat
   );
 
   const renderField = (field: ResolvedField) => {
+    if (field.key === "ui_language") field = { ...field, human: { ...field.human, why: dataLabel(languageWords.about, language, languageWords.about.en) } };
     const expanded = detail === field.key;
     const planned = isPlanned(field);
     const flows = flowTitles(field);
@@ -179,6 +186,7 @@ export default function SettingsHuman({ profileHost, convId, language, onNavigat
 
   return (
     <div className="shum" data-testid="settings-human">
+      {languageChoice && languageOptions && <InterfaceLanguage choice={languageChoice} available={languageOptions} onChanged={onConfigChanged} />}
       {fieldsError !== null && <div className="gnav-note gnav-error" role="alert" data-testid="shum-fields-error">
         <p>{t("error.fields", { reason: fieldsError })}</p>
         <button type="button" className="gnav-bar-btn" onClick={reload}>{t("retry")}</button>

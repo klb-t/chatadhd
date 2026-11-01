@@ -1,0 +1,34 @@
+{
+  "label": {
+    "pl": "Język interfejsu",
+    "en": "Interface language"
+  },
+  "auto": {
+    "pl": "Automatycznie — język urządzenia",
+    "en": "Automatic — device language"
+  },
+  "about": {
+    "pl": "Jawny wybór jest zapisywany na koncie, także angielski. Automatycznie wraca do navigator.languages urządzenia; nie tłumaczy rozmów ani nie zmienia modelu.",
+    "en": "An explicit choice is saved to the account, including English. Automatic returns to the device navigator.languages; it does not translate conversations or change the model."
+  },
+  "config": {
+    "pl": "Źródło: zapisany wybór interfejsu.",
+    "en": "Source: saved interface choice."
+  },
+  "user_preference": {
+    "pl": "Źródło: jawna preferencja użytkownika w profilu. Automatycznie pozwala wrócić do urządzenia bez usuwania tej preferencji.",
+    "en": "Source: explicit user profile preference. Automatic returns to the device without removing that preference."
+  },
+  "device": {
+    "pl": "Źródło: lista języków urządzenia.",
+    "en": "Source: device language list."
+  },
+  "catalog_fallback": {
+    "pl": "Brak tłumaczenia dla języków urządzenia; użyto dostępnego katalogu zastępczego.",
+    "en": "No translation for the device languages; an available fallback catalog is used."
+  },
+  "failed": {
+    "pl": "Nie zapisano języka. Poprzedni wybór pozostaje bez zmian.",
+    "en": "Language was not saved. The previous choice is unchanged."
+  }
+}

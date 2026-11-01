@@ -44,7 +44,7 @@ import type { ShellLayouts } from "./shell/LayoutsSheet";
 import { WINDOW_DATA, openArtifactWindow, closeWindows, windowDataOf, focusWindow, resolveWord, runWindowStep, switcherEntries, visibleId, type WindowReceipt } from "./shell/windows/ops";
 import { WINDOW_STEP_EVENT, type WindowStepDetail } from "./context/browser-host";
 import { layerStack } from "./shell/history";
-import { shellLanguage } from "./shell/language";
+import { resolveShellLanguage } from "./shell/language";
 import { availableLanguages, deviceLanguages } from "./shell/language-pack";
 import { cssVariables, mergeData } from "./shell/animation";
 import { glyphVariables } from "./shell/disclosure-glyphs";
@@ -447,12 +447,17 @@ export default function App() {
   };
   const uiShell = usePresentationFeature(userProfileHost, "ui_shell");
   const preferredLanguage = useLayeredDefault(userProfileHost, "preference.language");
-  const uiLanguage = shellLanguage(config.ui_language, preferredLanguage.status === "effective" ? preferredLanguage.value : undefined,
-    deviceLanguages(), availableLanguages([uiShell.feature]));
+  const uiLanguageChoice = resolveShellLanguage(config.ui_language, preferredLanguage.status === "effective" ? preferredLanguage.value : undefined,
+    deviceLanguages(), availableLanguages([uiShell.feature]), preferredLanguage.layer);
+  const uiLanguage = uiLanguageChoice.language;
   const uiLanguageRef = useRef(uiLanguage);
   uiLanguageRef.current = uiLanguage;
   // r2:b4: the document speaks the shell's language (index.html ships lang="en"); a screen reader (TalkBack) then picks the Polish voice.
-  useEffect(() => { document.documentElement.lang = uiLanguage; }, [uiLanguage]);
+  useEffect(() => {
+    document.documentElement.lang = uiLanguage;
+    document.documentElement.dataset.languageMode = uiLanguageChoice.mode;
+    document.documentElement.dataset.languageSource = uiLanguageChoice.source;
+  }, [uiLanguage, uiLanguageChoice.mode, uiLanguageChoice.source]);
   const t = useMemo(() => shellTranslator(uiShell.feature, uiLanguage), [uiShell.feature, uiLanguage]);
   const productLabel = productName();   // set by shellTranslator from the ui_shell word product_name
   useEffect(() => { document.title = productLabel; }, [productLabel]);
@@ -882,7 +887,7 @@ export default function App() {
                 {p === "import" && <ImportPanel onImported={() => setConvRefreshKey((k) => k + 1)} />}
                 {p === "context" && <ContextSlider convId={activeConvId} />}
                 {p === "settings" && kind === "settings_fields" && <SettingsPanel />}
-                {p === "settings" && kind !== "settings_fields" && <SettingsHuman profileHost={userProfileHost} convId={activeConvId} language={uiLanguage} view={settingsView}
+                {p === "settings" && kind !== "settings_fields" && <SettingsHuman profileHost={userProfileHost} languageChoice={uiLanguageChoice} languageOptions={availableLanguages([uiShell.feature])} convId={activeConvId} language={uiLanguage} view={settingsView}
                   onConfigChanged={refreshSettings}
                   onNavigate={address => { setNavigatorFocus(address); setActivePanel("navigator"); }} />}
                 {p === "logs" && <LogPanel />}
