@@ -1,3 +1,37 @@
+## 2026-11-01 — jawna reprojekcja i native XLS/video/bundle (lokalny odbiór zakresowy)
+
+Kod **e27ce9ff0076c287963a588d942d68e7bebaca3f**, baza **eae7ece4**. Zachowane
+starsze pakiety/readery/GUI. Istniejący pipeline otrzymał sprawdzanie pinned
+projekcji i jawną reprojekcję oryginału do nowej wersji, bez przepisywania starych
+Units/receipt lub cichej zmiany globalnego selektora. Stary runtime odmawia nowego
+wybranego PDF; zimna kopia sprzed zmiany rzeczywiście odtworzona i uruchomiona
+przywraca stary wybór/original, **z utratą zmian po kopii (RPO)**. Nie lossless rollback.
+
+Native legacy XLS przez przypięty catdoc/charset/config i bounded host daje
+PARTIAL output matrix, bez nazw arkuszy/formuł/adresów BIFF. Video: rzeczywiste
+Source/Unit/Observation/genesis, osobny oryginał/receipt/PNG, PTS+ordinal,
+`has_ocr=false`, read/reuse/SQL rollback. Bundle: rzeczywisty exporter/importer,
+exact conversation.json, source pointer→target ID/parent/managed original hash,
+12 slotów readback/reuse; jawny INCOMPLETE zamiast deklaracji pełnego restore.
+
+Wspólny Release core/server -j2 i poprawki tylko dotkniętych TU; pięć grup native
+wykonano etapami z odrębnymi hashami bibliotek. Własny **HTTP 1/1 PASS**:
+XLS wybrany ID/tekst w rzeczywistym kontekście atrapy, video/bundle/restart/original.
+Końcowe scoped empty/partial/parent/cache checks PASS. Małe DOCX/CSV sentinele
+z powodu zmiany transportu; 126 C exports bez zmian. Nie podpisujemy wcześniejszych
+faz jako ponownie wykonanych na finalnym SHA. Webdist identyczny z ed139231,
+bez ponowienia browsera. Nowy immutable pakiet **0caab73321bc7d9a565d1ec6f69e48be9108af6c4e885b2f36dfda2b4f62c63e**:
+108 payload hashes, verify-package BusyBox/start/health/auth/static i relokowany
+XLS default helper PASS. GNU tar nie ponawiano. Stary pakiet ee2117e8…47e8 bez zmian.
+
+**NOT RUN/next:** nowy GUI reprojection/XLS/video/bundle; spatial selection consumer
+przed wpięciem extent validatora; ZIP tree migration; video toolchain reprojection;
+pełna macierz statusów/wersji bundle. Real vision NOT RUN (brak zweryfikowanej
+już autoryzowanej ścieżki/pokrycia), mobile/fullrepo/deploy NOT RUN. SQL rollback
+nie usuwa orphan blobs; filesystem Landlock nie jest kernelowym network sandboxem.
+Produkcja/backup/restore operatora nietknięte. Kanon §0 rewizja 2.
+[Pełny raport i pochodzenie](reports/PROJECTION_MEDIA_BATCH_2026-11-01.md).
+
 ## 2026-11-01 — wspólny file→graph: XLSX/ODT/EPUB i hierarchia ZIP, odbiór zakresowy
 
 Kod **ed1392310b87aca76be7571dbc90e447e7c35a71**, baza **0252198f**. Instalacyjny
