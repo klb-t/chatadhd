@@ -1,0 +1,158 @@
+{
+  "labels": {
+    "title": {
+      "pl": "Sprawdzenie i reprojekcja",
+      "en": "Projection check and reprojection"
+    },
+    "about": {
+      "pl": "Sprawdź integralność zapisanej projekcji i możliwość odtworzenia jej przez bieżącą instalację. Sprawdzenie nie tworzy nowej wersji.",
+      "en": "Check the saved projection integrity and replay with the current installation. Checking does not create a version."
+    },
+    "zipUnsupported": {
+      "pl": "ZIP: sprawdzanie i reprojekcja drzewa archiwum nie są obsługiwane tą operacją. Wewnętrzne źródło można sprawdzić osobno.",
+      "en": "ZIP: archive tree check and reprojection are unsupported by this operation. An inner source can be reviewed separately."
+    },
+    "unavailable": {
+      "pl": "Brak akcji clientBlobText w bieżącym transporcie.",
+      "en": "The current transport has no clientBlobText action."
+    },
+    "check": {
+      "pl": "Sprawdź projekcję",
+      "en": "Check projection"
+    },
+    "oldProjection": {
+      "pl": "Sprawdzana projekcja",
+      "en": "Reviewed projection"
+    },
+    "receiptHash": {
+      "pl": "SHA256 zapisanego receipt",
+      "en": "Saved receipt SHA256"
+    },
+    "integrity": {
+      "pl": "Integralność zapisu",
+      "en": "Saved integrity"
+    },
+    "verified": {
+      "pl": "Zweryfikowana (verified)",
+      "en": "Verified"
+    },
+    "replay": {
+      "pl": "Odtworzenie przez bieżącą instalację",
+      "en": "Current installation replay"
+    },
+    "compatible": {
+      "pl": "Zgodne (compatible)",
+      "en": "Compatible"
+    },
+    "refused": {
+      "pl": "Odmowa (refused); szczegóły poniżej",
+      "en": "Refused; details below"
+    },
+    "not_exercised": {
+      "pl": "Nie wykonano (not_exercised): brak wystąpień; to nie jest dowód zgodności",
+      "en": "Not exercised: no occurrences; this is not evidence of compatibility"
+    },
+    "unchanged": {
+      "pl": "Selektor pozostaje globalny dla konta. Ta operacja nie zmienia jego wyboru ani pozostałych ustawień.",
+      "en": "The selector is account-global. This operation changes neither its selection nor other settings."
+    },
+    "selection": {
+      "pl": "Wybrane w selektorze konta wystąpienia tej projekcji",
+      "en": "Occurrences of this projection selected in the account selector"
+    },
+    "consequences": {
+      "pl": "Reprojekcja odczyta zachowany oryginał bieżącą metodą i zapisze wynik jako projekcję (może ponownie użyć istniejącej). Stare wersje i oryginały pozostają. Zamknięcie panelu nie anuluje zapisu już wysłanego do serwera.",
+      "en": "Reprojection reads the retained original using the current method and stores a projection (possibly reusing an existing one). Old versions and originals remain. Closing the panel does not cancel a write already sent to the server."
+    },
+    "rollback": {
+      "pl": "Jeżeli stary runtime odmówi odczytu nowych danych, powrót może wymagać odtworzenia kopii sprzed zmiany, z utratą zapisów po tej kopii (RPO).",
+      "en": "If the old runtime refuses new data, returning may require restoring a pre-change copy, losing writes made after that copy (RPO)."
+    },
+    "confirm": {
+      "pl": "Potwierdzam reprojekcję wskazanej projekcji i receipt powyżej; wybór kontekstu pozostaje bez zmian.",
+      "en": "I confirm reprojection of the projection and receipt above; context selection remains unchanged."
+    },
+    "reproject": {
+      "pl": "Wykonaj potwierdzoną reprojekcję",
+      "en": "Run confirmed reprojection"
+    },
+    "completed": {
+      "pl": "Reprojekcja zakończona. Poniżej receipt operacji; zgodność odtworzenia powyżej dotyczy starej projekcji.",
+      "en": "Reprojection completed. The operation receipt follows; the replay status above concerns the old projection."
+    },
+    "newSource": {
+      "pl": "Źródło wyniku",
+      "en": "Result source"
+    },
+    "newProjection": {
+      "pl": "Projekcja wyniku",
+      "en": "Result projection"
+    },
+    "newReceipt": {
+      "pl": "SHA256 receipt wyniku",
+      "en": "Result receipt SHA256"
+    },
+    "upgradeReceipt": {
+      "pl": "Węzeł receipt operacji",
+      "en": "Operation receipt node"
+    },
+    "mappingAbout": {
+      "pl": "Mapowanie jest propozycją, nie stwierdzeniem równoważności. Żaden kandydat nie został automatycznie wybrany.",
+      "en": "Mapping is a proposal, not a statement of equivalence. No candidate was selected automatically."
+    },
+    "noMapping": {
+      "pl": "Nie przekazano wybranych wystąpień tej projekcji; brak mapowania.",
+      "en": "No selected occurrences of this projection were supplied; no mapping."
+    },
+    "exact_coordinate_proposal": {
+      "pl": "Propozycja zgodnych współrzędnych (exact_coordinate_proposal); wymaga Twojego wyboru",
+      "en": "Exact coordinate proposal; requires your choice"
+    },
+    "decision_required": {
+      "pl": "Wymagana decyzja (decision_required): brak jednego kandydata",
+      "en": "Decision required: no single candidate"
+    },
+    "activation": {
+      "pl": "Aby zmienić kontekst, jawnie otwórz wybraną wersję, odczytaj wystąpienie i dodaj je istniejącym przyciskiem selektora. Usunięcie starego wyboru jest osobną decyzją. Lista odczytuje tylko wskazany zakres rekordów.",
+      "en": "To change context, explicitly open the chosen version, read an occurrence and add it with the existing selector button. Removing the old selection is a separate decision. The list reads only the requested record window."
+    },
+    "failed": {
+      "pl": "Operacja nie została potwierdzona wynikiem. Przy błędzie zapisu jego stan może być nieznany; odśwież i sprawdź przed ponownym potwierdzeniem. Szczegóły:",
+      "en": "No confirmed operation result. On write failure its state may be unknown; reload and check before confirming again. Details:"
+    },
+    "refreshFailed": {
+      "pl": "Reprojekcja ma receipt, ale odświeżenie listy lub projekcji nie powiodło się. Nie ponawiaj zapisu z tego powodu.",
+      "en": "Reprojection has a receipt, but list or projection refresh failed. Do not repeat the write for this reason."
+    },
+    "refresh": {
+      "pl": "Ponów tylko odczyt listy i receipt",
+      "en": "Retry list and receipt reads only"
+    }
+  },
+  "errors": {
+    "projection_review_invalid": {
+      "pl": "Odrzucono odpowiedź niezgodną z loom.projection_upgrade/1 lub potwierdzanym receipt. Odśwież stan przed kolejną operacją.",
+      "en": "Response rejected: inconsistent loom.projection_upgrade/1 or confirmed receipt. Reload state before another operation."
+    },
+    "projection_review_selection_stale": {
+      "pl": "Wybór konta zmienił się od sprawdzenia. Sprawdź projekcję ponownie i potwierdź aktualny wybór.",
+      "en": "Account selection changed since the check. Check again and confirm the current selection."
+    },
+    "projection_confirmation_stale": {
+      "pl": "Receipt zmienił się od sprawdzenia. Sprawdź projekcję ponownie.",
+      "en": "Receipt changed since the check. Check the projection again."
+    },
+    "projection_review_transport_unavailable": {
+      "pl": "Brak akcji clientBlobText w bieżącym transporcie.",
+      "en": "The current transport has no clientBlobText action."
+    },
+    "archive_projection_upgrade_unsupported": {
+      "pl": "ZIP: sprawdzanie i reprojekcja drzewa archiwum nie są obsługiwane tą operacją. Wewnętrzne źródło można sprawdzić osobno.",
+      "en": "ZIP: archive tree check and reprojection are unsupported by this operation. An inner source can be reviewed separately."
+    },
+    "projection_review_refresh_missing": {
+      "pl": "Receipt nie jest dostępny w odczytanym zakresie. Zwiększ zakres i odśwież źródła.",
+      "en": "Receipt is unavailable in the loaded window. Increase the window and reload sources."
+    }
+  }
+}

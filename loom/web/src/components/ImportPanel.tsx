@@ -6,6 +6,7 @@ import Disclosure from "../shell/Disclosure";
 import PersonText from "./PersonText";
 import UrlImportPanel, { UrlImportResult } from "./UrlImportPanel";
 import SourcePartsPanel from "./SourcePartsPanel";
+import ConversationBundlePanel from "./ConversationBundlePanel";
 import { absentLine, importView } from "./import-truth-state";
 import "./import-truth.css";
 
@@ -46,6 +47,8 @@ export default function ImportPanel({ onImported }: Props) {
   const [result, setResult] = useState<Record<string, unknown> | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [bundleBusy, setBundleBusy] = useState(false);
+  const blocked = busy || bundleBusy;
   const unsubRef = useRef<(() => void) | null>(null);
 
   const language = useShellLanguage();
@@ -90,14 +93,15 @@ export default function ImportPanel({ onImported }: Props) {
   return (
     <div data-testid="import-panel">
       <SourcePartsPanel upload />
-      {!native && <UrlImportPanel onImported={onImported} disabled={busy} />}
+      <ConversationBundlePanel onImported={onImported} disabled={busy} onBusyChange={setBundleBusy} />
+      {!native && <UrlImportPanel onImported={onImported} disabled={blocked} />}
       {native ? (
       <div className="form-row">
         <div className="empty-state" style={{ textAlign: "left", padding: 0 }}>{w("pickHint")}</div>
-        <button className="primary" onClick={() => pick("file")} disabled={busy} data-testid="import-pick-file">
+        <button className="primary" onClick={() => pick("file")} disabled={blocked} data-testid="import-pick-file">
           {busy ? w("importing") : w("pickFile")}
         </button>{" "}
-        <button onClick={() => pick("folder")} disabled={busy} data-testid="import-pick-folder">{w("pickFolder")}</button>
+        <button onClick={() => pick("folder")} disabled={blocked} data-testid="import-pick-folder">{w("pickFolder")}</button>
       </div>
       ) : (
       <div className="form-row">
@@ -117,7 +121,7 @@ export default function ImportPanel({ onImported }: Props) {
         <input id="import-title" type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
       </div>
       {!native && (
-      <button className="primary" onClick={start} disabled={!file || busy} data-testid="start-import">
+      <button className="primary" onClick={start} disabled={!file || blocked} data-testid="start-import">
         {busy ? w("importing") : w("start")}
       </button>
       )}

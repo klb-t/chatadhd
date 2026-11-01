@@ -1,0 +1,41 @@
+{
+  "title": { "pl": "Face: podgląd jawnych parametrów", "en": "Face: explicit parameter preview" },
+  "scope": { "pl": "Podgląd pokazuje wyłącznie wybrany wektor z biblioteki. Nie interpretuje rozmowy ani emocji. Wybór nie zmienia kontekstu czatu. Bez backendu działa tylko lokalny podgląd liczb.", "en": "Preview shows only the selected library vector. It does not interpret conversation or emotions. Selection does not change chat context. Without a backend only the local numeric preview is available." },
+  "choose": { "pl": "Zestaw parametrów", "en": "Parameter set" },
+  "noSelection": { "pl": "Wybierz jawny zestaw", "en": "Choose an explicit set" },
+  "emptyLibrary": { "pl": "Nie dostarczono biblioteki parametrów. Nie podstawiamy wartości domyślnych.", "en": "No parameter library supplied. No default values are substituted." },
+  "invalidLibrary": { "pl": "Biblioteka ma nieprawidłowy format. Wymagane są wersjonowane zestawy dziewięciu parametrów i etykiety PL/EN.", "en": "Invalid library format. Versioned sets of nine parameters and PL/EN labels are required." },
+  "explicitEvidence": { "pl": "Jawny wybór osoby. Liczby poniżej są danymi wejściowymi, nie pomiarem ani wnioskiem o emocjach.", "en": "Explicit user selection. The numbers below are inputs, not measurements or an inference about emotions." },
+  "coordinate": { "pl": "Współrzędna", "en": "Coordinate" },
+  "value": { "pl": "Wartość", "en": "Value" },
+  "coordinates": [
+    { "pl": "Parametr 1", "en": "Parameter 1" },
+    { "pl": "Parametr 2", "en": "Parameter 2" },
+    { "pl": "Parametr 3", "en": "Parameter 3" },
+    { "pl": "Parametr 4", "en": "Parameter 4" },
+    { "pl": "Parametr 5", "en": "Parameter 5" },
+    { "pl": "Parametr 6", "en": "Parameter 6" },
+    { "pl": "Parametr 7", "en": "Parameter 7" },
+    { "pl": "Parametr 8", "en": "Parameter 8" },
+    { "pl": "Parametr 9", "en": "Parameter 9" }
+  ],
+  "backend": {
+    "disabled": { "pl": "Backend nieskonfigurowany: disabled.", "en": "Backend not configured: disabled." },
+    "connected": { "pl": "Port backendu podłączony.", "en": "Backend port connected." },
+    "failed": { "pl": "Błąd portu backendu.", "en": "Backend port failed." },
+    "closed": { "pl": "Port zamknięty.", "en": "Port closed." }
+  },
+  "run": {
+    "NOTRUN": { "pl": "Wyświetlanie: NOTRUN.", "en": "Display: NOTRUN." },
+    "pending": { "pl": "Oczekiwanie na zdarzenie backendu.", "en": "Waiting for a backend event." },
+    "received": { "pl": "Odebrano zdarzenie backendu; render niezweryfikowany.", "en": "Backend event received; rendering unverified." },
+    "error": { "pl": "Wynik niedostępny; render niezweryfikowany.", "en": "Result unavailable; rendering unverified." }
+  },
+  "backendReport": { "pl": "Deklaracja backendu, oddzielna od jawnych danych wejściowych:", "en": "Backend report, separate from explicit inputs:" },
+  "evidence": {
+    "user": { "pl": "jawnie dostarczone parametry.", "en": "explicitly supplied parameters." },
+    "observed": { "pl": "obserwacja ze wskazaniem źródła; port nie weryfikuje źródła.", "en": "observation with a source reference; the port does not verify the source." },
+    "inferred": { "pl": "wniosek z metodą, przesłankami i oczekiwaną własnością; nie obserwacja.", "en": "inference with method, premises and expected property; not an observation." }
+  },
+  "library": []
+}

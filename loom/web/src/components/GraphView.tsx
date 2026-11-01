@@ -6,6 +6,7 @@ import type { UserProfileHost } from "../api/onboarding-host";
 import { usePresentationFeature } from "./ConversationSourceView";
 import GraphHelp from "./GraphHelp";
 import SourcePartsPanel from "./SourcePartsPanel";
+import ImageRegionContextPanel from "./ImageRegionContextPanel";
 import { graphText } from "../graph/graph-text";
 import { degreeMap, graphLabelOptions, planLabels, type PlacedLabel } from "../graph/graph-labels";
 import type { GraphEdge, GraphNode } from "../api/types";
@@ -445,7 +446,10 @@ export default function GraphView({ convId, profileHost, helpSetting, onSetting 
   return (
     <div data-testid="graph-view" data-selected-node={selected?.id ?? ""} style={{ display: "flex", flexDirection: "column", height: "100%", minHeight: 0 }}>
       <GraphHelp screen="old_graph" t={helpT} setting={helpSetting} onSetting={onSetting} testId="graph-help" />
-      <div style={{ maxHeight: "45%", overflow: "auto", flexShrink: 0 }}><SourcePartsPanel onGraph={id => void showSource(id)} /></div>
+      <div style={{ maxHeight: "45%", overflow: "auto", flexShrink: 0 }}>
+        <SourcePartsPanel onGraph={id => void showSource(id)} />
+        <ImageRegionContextPanel onGraph={id => void showSource(id)} />
+      </div>
       <div className="form-row" style={{ display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
         <input
           type="text"

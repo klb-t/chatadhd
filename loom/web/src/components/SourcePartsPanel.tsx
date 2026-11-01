@@ -5,6 +5,8 @@ import { createSourceTaskGate, materializedSource, sourceDerivation, sourceOrigi
 import words from "../content/text-sources.words.json";
 import { dataLabel, useShellLanguage } from "../shell/text";
 import AttachmentOriginal from "./AttachmentOriginal";
+import SourceProjectionReview from "./SourceProjectionReview";
+import { validateUpgradeTarget, type ProjectionUpgrade } from "../api/projection-review";
 
 type Word = Exclude<keyof typeof words, "formats" | "defaults" | "blockKinds" | "warnings">;
 interface Props { upload?: boolean; onGraph?: (id: string) => void; graphEnabled?: boolean; onEnableGraph?: () => void }
@@ -91,6 +93,29 @@ function SourcePartsBrowser({ upload, onGraph, graphEnabled, onEnableGraph }: Pr
     return () => { generation.current++; };
   }, [source]);
 
+  const refreshProjectionReview = async (isCurrent: () => boolean, result: ProjectionUpgrade) => {
+    if (!source || !projection || !validLimit) throw Error("projection_review_refresh_missing");
+    const token = ++loadGeneration.current, sourceToken = generation.current;
+    const [rows, nodes, cfg] = await Promise.all([
+      api.listSources(Number(limit)), api.getNodes({ kind: "text_source_projection", limit: Number(limit) }), api.getConfig(),
+    ]);
+    if (!isCurrent() || token !== loadGeneration.current || sourceToken !== generation.current) return;
+    sourceSelector(cfg);
+    const list = textSources(rows);
+    const parts = nodes.filter(n => n.metadata?.schema === "loom.source_text_parts/1" && n.metadata.source_id === source.id)
+      .map(n => readSourceParts(n.metadata, source));
+    const nextSource = list.find(s => s.id === result.new_source);
+    const nextReceipt = nodes.find(n => n.id === result.new_projection);
+    setConfig(cfg);
+    // A bounded list may no longer include the old version. Keep its visible receipt and explicit choice;
+    // the user can increase the existing list limit. No selector write or automatic activation occurs.
+    if (!list.some(s => s.id === source.id) || !parts.some(p => p.projection_node === projection.projection_node) || !nextSource || !nextReceipt)
+      throw Error("projection_review_refresh_missing");
+    validateUpgradeTarget(result, readSourceParts(nextReceipt.metadata, nextSource));
+    // Preserve the immutable selected descriptor's identity so refreshing does not reset the open projection/review.
+    setSources(list.map(s => s.id === source.id ? source : s)); setRecordCount(rows.length); setProjections(parts);
+  };
+
   const uploadOriginal = async (isCurrent: () => boolean) => {
     const send = api.actions?.clientBlobUpload;
     if (!send || !file) throw Error(w("unsupported"));
@@ -173,6 +198,7 @@ function SourcePartsBrowser({ upload, onGraph, graphEnabled, onEnableGraph }: Pr
           readGeneration.current++; setProjectionId(e.target.value); setNodeId(projections.find(p => p.projection_node === e.target.value)?.occurrence_nodes[0] ?? ""); setOccurrence(null);
         }}>{projections.map(p => <option key={p.projection_node} value={p.projection_node}>{p.projection_node}</option>)}</select></label>
         {projection && <>
+          <SourceProjectionReview key={source.id + ":" + projection.projection_node} projection={projection} run={run} refresh={refreshProjectionReview} />
           <p data-testid="source-partial" data-status={projection.status} data-reason={projection.reason}>{w("partial")} {projection.occurrence_nodes.length}</p>
           {derivation && <>
             <div data-testid="source-warnings"><p>{w("warningTitle")}</p>
