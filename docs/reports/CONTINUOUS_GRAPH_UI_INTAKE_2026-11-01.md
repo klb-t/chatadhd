@@ -1,3 +1,6 @@
+> Aktualizacja 2026-11-01: konkretny ACL naprawiono i zweryfikowano przy wznowieniu.
+> Poniżej historyczny wynik przed naprawą; bieżący odbiór: [continuous UI](CONTINUOUS_GRAPH_UI_ACCEPTANCE_2026-11-01.md).
+
 # Continuous graph UI — odbiór zablokowany przed aplikacją, 2026-11-01
 
 Baza i przyjęty wynik: `5912012c5d700e3c3ed4f89d7fbb17bfdc4c9fc9`.

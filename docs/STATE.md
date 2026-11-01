@@ -1,3 +1,31 @@
+## 2026-11-01 09:28 UTC — continuous graph UI odebrane zakresowo; nowy lokalny kandydat
+
+Kod **8866e1f2f5ed4fe1cb0f21b44b151c78b986f1d2**, zachowany przodek **4d9cd959**.
+Naprawiony ACL potwierdzony rzeczywistym stabilnym odczytem; 10 plików UI autora
+nałożonych raz. Jeden strict typecheck/webbuild i zbiorczy real browser flow
+**PASS**: import pliku → istniejący GraphNavigator/3D, zachowany adres i kontekst,
+realne Z według głębokości, FOV oddzielne od dolly, ciągłe krycie bez fetch,
+3 presety/legendy/braki, Kod/Historia/Cele bez fikcyjnych relacji, keyboard/touch
+handlers i kontrolowany fallback WebGL do 2D. Dwa żądania loopback provider z tym
+samym wybranym fragmentem i rozmową. Wcześniejsze błędne założenia harnessu
+zachowane w logach; brak nowego runtime fix/rebuild lub powtórki starych bramek.
+
+Nowy immutable archive **18d4a5b4fc5be7785e69fcfde4eebe1bcfbea04989c65cf5a312363afe962839**,
+manifest **012a99a26a0812e204fead96a6b3b6546cd9881b53a70291602309b6949a14bf**.
+106 payloadów zweryfikowanych; 90 runtime/helper byte-identical **e27ce9ff**, lib
+**7004d54b…610a**. Nowy `verify-package` BusyBox/start/health/auth/static **PASS**.
+Poprzedni pakiet 0caab733…c63e i wszystkie stare delty/dowody zachowane.
+
+Obowiązkowa projection gate nadal dokładnie phase-bound: historyczne
+check/reproject/reopen/refusal/not_exercised oraz uruchomiony cold restore;
+**post-copy writes utracone przy restore (RPO), selektor zmieniany tylko jawnie**.
+Nie deklarujemy ponowienia pełnego gate na finalnej lib7004 ani na starym freeze
+ed139231. Nowy UI kandydat zachowuje ten sam backend i tool/profile pins.
+NOT RUN: realvision/model/API, fizyczny mobile/WebXR, pełna repo/native/P0 matrix,
+produkcja/deploy. Next: review konkretnego kandydata, świeża operacyjna kopia i
+preflight/RPO oraz decyzja właściciela przed aktywacją. Deadline bez zmiany.
+[Wynik i dokładne SHA/bramki](reports/CONTINUOUS_GRAPH_UI_ACCEPTANCE_2026-11-01.md).
+
 ## 2026-11-01 09:04 UTC — mandatory continuous graph UI: intake BLOCKED (EACCES)
 
 Przyjęta baza **5912012c**, runtime **e27ce9ff**, pakiet **0caab733…c63e** zachowane.
