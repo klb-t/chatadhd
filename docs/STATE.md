@@ -1,3 +1,22 @@
+## 2026-11-01 — wyłącznik loggera, delta scalona lokalnie
+
+Baza `6cfd9a40052859c4efd3333655def3a41a0aebc5`; odebrany patch
+`092c3d6f8ecbffc4e6d1a70f9ca34b9c6b88e77a19f88513d513799330622c0f`.
+Audyt administratora i własna stabilność25/25, nałożenie raz i hashe8/8 PASS.
+Scalono logger do głównego worktree: `LOOM_LOG_ENABLED=0` blokuje dopisywanie
+przez `loom::log` do stderr/ringu/callbacków; poziomy i historyczny stderr switch
+zachowane. Ustawienie startowe poza profilem, runtime disable/reenable zgodnie
+z nim; stare wpisy ringu pozostają, wyłączenie nie jest drain barrier.
+Własny focused native build-j2 PASS, procesy6/6 (453 asercje), symbole C++7/7;
+dwa zakresy CTest-j1 PASS. Początkowy błąd przechwytywania stderr w harnessie
+zachowany i naprawiony bez osłabienia asercji. Dane wyłącznie syntetyczne.
+Implemented/tested zakresowo; integrated lokalnie, deployed NIE. Bieżący immutable Release
+niezmieniony i nie zawiera poprawki. Direct stdio serwera, PhaseTimer i inne
+niezależne ujścia nieobjęte; brak pełnego PASS sanitizacji/logowania aplikacji.
+§0 rewizja2. Next: nowy własny Release i zakresowy odbiór rzeczywistej lib/server;
+starego pakietu nie relabelować, build/testy artefaktu jeszcze niewykonane.
+[Kontrakt, dowody, ograniczenia](reports/LOG_CONTROL_2026-11-01.md).
+
 ## 2026-11-01 — G1 GUI przyjęte, nowy lokalny pakiet Release
 
 Kod **`8b2c0e689b1ddf43c74519e68ed626e79d5a4b16`**, hook uploadu `d54030114b7d83d991b0f04f8f068b9399d24077`;

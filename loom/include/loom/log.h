@@ -1,7 +1,7 @@
 // loom/log.h — process-wide logger with pluggable sinks.
 //
 // Port of the Python logging setup (main.py basicConfig) plus gui/base.py
-// LOGBUF: every record goes to all installed sinks and into a ring buffer of
+// LOGBUF: every admitted record goes to all installed sinks and into a ring buffer of
 // the last 500 formatted lines (for in-app log panels). The default stderr sink
 // can be disabled; platforms install their own sink (Android: logcat through
 // loom_set_log_sink).
@@ -43,6 +43,19 @@ using Sink = std::function<void(const Record&)>;
 // thread; they are invoked outside the registry lock, one record at a time.
 int add_sink(Sink sink);
 void remove_sink(int token);
+
+// Process-wide developer-log admission gate, covering ring, stderr and all sinks.
+// LOOM_LOG_ENABLED is read once on first use: unset or exactly "1" permits logs;
+// "0" (and any other supplied value, fail-closed) forbids them for process life.
+// set_enabled(true) cannot override that deployment ceiling. Runtime disabling
+// is reversible otherwise; level/stderr/profile setters do not reopen the gate.
+// Existing ring entries remain readable; clear_recent() is a separate operation.
+// This is NOT a drain barrier: already admitted writes/callbacks may finish after
+// disabling. Quiesce producers before requiring all sinks to be quiet. Callbacks
+// remain outside locks and may themselves disable logging without deadlock.
+// Does not control direct stdio, HTTP errors, security audit or other loggers.
+void set_enabled(bool on);
+bool is_enabled();
 
 void set_level(Level lvl);     // global threshold (default Info, or LOOM_LOG_LEVEL env)
 Level level();

@@ -73,10 +73,22 @@ State& state() {
   return s;
 }
 
+// Fixed deployment contract, deliberately independent of mutable util profiles.
+// Function-local initialization also covers logging from other static initializers.
+bool startup_enabled() {
+  static const bool allowed = [] {
+    const char* value = std::getenv("LOOM_LOG_ENABLED");
+    return !value || std::string_view(value) == "1";
+  }();
+  return allowed;
+}
+std::atomic<bool> g_enabled{true};
+
 std::atomic<int> g_level{static_cast<int>(level_from_env(builtin_util().values().at("log")))};
 std::atomic<bool> g_stderr{stderr_from_env(builtin_util().values().at("log"))};
 
 void publish_record(const Record& rec, const std::string& line) {
+  if (!is_enabled()) return;
   std::vector<std::shared_ptr<Sink>> sinks;
   auto& s = state();
   {
@@ -135,9 +147,15 @@ void remove_sink(int token) {
   s.sinks.erase(token);
 }
 
+void set_enabled(bool on) {
+  (void)startup_enabled();  // Capture deployment ceiling even if disabled first.
+  g_enabled.store(on);
+}
+bool is_enabled() { return startup_enabled() && g_enabled.load(); }
+
 void set_level(Level lvl) { g_level.store(static_cast<int>(lvl)); }
 Level level() { return static_cast<Level>(g_level.load()); }
-bool enabled(Level lvl) { return static_cast<int>(lvl) >= g_level.load(std::memory_order_relaxed); }
+bool enabled(Level lvl) { return is_enabled() && static_cast<int>(lvl) >= g_level.load(std::memory_order_relaxed); }
 void set_stderr(bool on) { g_stderr.store(on); }
 
 Result<Level> preset_level(const RuntimeProfile& profile) {
