@@ -45,7 +45,11 @@ $missing"
 ldd "$ROOT/bin/loom-server" | sed 's/^/    /' >&2
 
 PORT="${VERIFY_PORT:-$(( (RANDOM % 20000) + 20000 ))}"
-DATA="$WORK/data"; mkdir -p "$DATA"
+DATA="$WORK/data"; mkdir -p "$DATA/profiles"
+# Health/web/auth smoke must never discover operator keys or start guest models.
+# This is fresh test configuration outside the immutable extracted package.
+printf '%s\n' '{"schema":"loom.runtime_profile_overlay/1","domain":"server_accounts","overrides":{"registration":"closed","guests":{"enabled":false,"keys_file":""}}}' \
+  > "$DATA/profiles/server_accounts.pack"
 log "start serwera na 127.0.0.1:$PORT"
 "$ROOT/bin/loom-server" --host 127.0.0.1 --port "$PORT" --accounts-root "$DATA" --data-dir "$DATA" \
   --static-dir "$ROOT/web" >"$WORK/server.log" 2>&1 &
@@ -54,17 +58,17 @@ SERVER_PID=$!
 ok=0
 for _ in $(seq 1 60); do
   kill -0 "$SERVER_PID" 2>/dev/null || { cat "$WORK/server.log" >&2; die "serwer zakonczyl sie przy starcie"; }
-  if curl -fsS --max-time 2 "http://127.0.0.1:$PORT/api/healthz" >"$WORK/healthz.json" 2>/dev/null; then ok=1; break; fi
+  if curl -q -fsS --max-time 2 "http://127.0.0.1:$PORT/api/healthz" >"$WORK/healthz.json" 2>/dev/null; then ok=1; break; fi
   sleep 0.5
 done
 [ "$ok" = 1 ] || { cat "$WORK/server.log" >&2; die "/api/healthz nie odpowiada po 30 s"; }
 log "/api/healthz: $(head -c 200 "$WORK/healthz.json")"
 
-curl -fsS --max-time 5 "http://127.0.0.1:$PORT/" >"$WORK/index.html" || die "GET / nie dziala"
+curl -q -fsS --max-time 5 "http://127.0.0.1:$PORT/" >"$WORK/index.html" || die "GET / nie dziala"
 grep -qi '<html' "$WORK/index.html" || die "GET / nie zwrocilo strony web"
 log "GET / zwraca strone web"
 
-code="$(curl -sS --max-time 5 -o "$WORK/me.json" -w '%{http_code}' "http://127.0.0.1:$PORT/api/auth/me" || true)"
+code="$(curl -q -sS --max-time 5 -o "$WORK/me.json" -w '%{http_code}' "http://127.0.0.1:$PORT/api/auth/me" || true)"
 case "$code" in
   200|401) ;;
   *) cat "$WORK/server.log" >&2; die "/api/auth/me zwrocilo HTTP $code (oczekiwano 200 lub 401)";;

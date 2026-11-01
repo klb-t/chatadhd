@@ -1,3 +1,32 @@
+## 2026-11-01 — lokalny pakiet Release i wykonana akceptacja stagingu
+
+Źródła produktu **`e47079cf9f44b0b90654d21770bcfb24c4fd34cc`** pozostają bez zmian;
+G1/PNG i starsze przyjęte commity zachowane. Nowy własny Release `-O3 -DNDEBUG`,
+`loom-server` + `libloom`, build `-j2` **PASS**; runtime component + własny
+webdist 16/16 hashy, helper DOCX i manifest interpretera w osobnym archiwum.
+Wersja `e47079cf-release-20261031`, SHA256 archiwum
+`fa5c71fc6bedb5ad82e6b93297571b7ba6309f5e18b434849983bf8bf883d744`.
+
+Nowy staging po relokacji, z checkoutem niedostępnym: **8/8 PASS**, zero skip
+(PL/dialog/błąd/restart, provider/BYOK, PDF PL/warnings, OCR/kontekst,
+DOCX default/original/reopen/odmowa, libDOCX, URL/share i odmowa prywatnego adresu).
+CTest: pierwszy przebieg 1/3 (backend 8/8); GNU tar zwrócił ENOSYS.
+Ponowiono tylko dwa zatrzymane zakresy z istniejącym BusyBox tar 1.37:
+weryfikator archiwum i lokalny dry-run stage→switch→return **2/2 PASS**.
+Łącznie odebrano wszystkie trzy zakresy, bez powtórki backendu. Dane i
+konfiguracja poza pakietem; rozmowa, PL i oryginalny plik odczytane po obu
+przełączeniach. Pakiety niezmienione. Baseline powrotu to własny Debug tego
+samego SHA; nie jest to dowód migracji/rollbacku nieznanej produkcji.
+
+Wyniki dotyczą syntetycznych plików i dostawców loopback. GUI/mobile,
+pełny repo gate, sanitizery, rzeczywiste modele i wdrożenie **niewykonane**.
+Release używa systemowego SQLite i tutejszych bibliotek (glibc 2.43);
+Python/Tesseract/Poppler są zależnościami systemowymi, nie instalowano ich.
+Nie deklarować przenośności oficjalnego pakietu Ubuntu ani adaptera share
+zewnętrznego dostawcy. G1GUI pozostaje osobnym odbiorem; bez kolejnego cyklu.
+[Raport, hashe i ograniczenia](reports/PACKAGE_ACCEPTANCE_2026-10-31.md).
+Bez push/CI/deploy. §0 rewizja 2; globalny wyłącznik logów nadal nieudowodniony.
+
 ## 2026-10-31 — backend G1 i poprawka prezentacji PNG przyjęte
 
 Przyjęty końcowy kod **`5d653f73e25033881242bad3f72a6a45e0473d97`**.
