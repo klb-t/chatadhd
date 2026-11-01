@@ -5,6 +5,7 @@
 #include <optional>
 
 #include "docx_projection.h"
+#include "host_reader.h"
 #include "chat/docx_basic/source.h"
 
 #include "loom/extract.h"
@@ -47,6 +48,18 @@ Result<Json> materialize(Runtime& rt, const Json& request) try {
   LOOM_TRY_ASSIGN(auto name, required(request, "name"));
   LOOM_TRY_ASSIGN(auto format, required(request, "format"));
   if (!BlobStore::is_valid_hash(hash)) return Error(Errc::InvalidArgument, "text_source_invalid_hash");
+  const bool structured = format == "csv" || format == "python_ast";
+  // Host-owned parser configuration cannot be supplied or bypassed by request JSON.
+  if (structured) for (auto it = request.begin(); it != request.end(); ++it) {
+    if (it.key() != "hash" && it.key() != "source_key" && it.key() != "name" &&
+        it.key() != "format" && it.key() != "previous_source_id")
+      return Error(Errc::InvalidArgument, "host_reader_request_override_refused");
+  }
+  std::optional<host::Prepared> hosted;
+  if (structured) {
+    LOOM_TRY_ASSIGN(auto prepared, host::prepare(rt.blobs().local_path(hash), hash, format, key, name));
+    hosted = std::move(prepared);
+  }
   std::optional<docx::Prepared> document;
   std::string bytes;
   if (format == "docx") {
@@ -93,6 +106,7 @@ Result<Json> materialize(Runtime& rt, const Json& request) try {
                     {"kb_pack_blob", Sha256::hex(adapter_rules)},
                     {"kb_pack_sha256", kb->hash()}};
   if (document) method["derivation"] = document->derivation;
+  if (hosted) method["host_reader"] = hosted->binding;
   const auto method_hash = Sha256::hex(json::canonical(method));
   Json identity = Json::array({key, hash});
   if (document) identity.push_back(document->derivation);
@@ -130,6 +144,7 @@ Result<Json> materialize(Runtime& rt, const Json& request) try {
   }
   LOOM_TRY_ASSIGN(auto cached, db.get_node(projection_node));
   if (cached) {
+    if (hosted) LOOM_TRY(rt.blobs().verify(hosted->binding.at("receipt_blob").get<std::string>()));
     // A cached projection is an idempotent receipt, not a subgraph integrity
     // audit or repair operation. Reads validate the selected occurrence.
     // DOCX must still have its distinct replay artifacts, never a stale source.
@@ -149,6 +164,8 @@ Result<Json> materialize(Runtime& rt, const Json& request) try {
   // can disappear. No per-occurrence copies of packs; originals stay separate.
   LOOM_TRY(rt.blobs().put(text_rules, "application/json"));
   LOOM_TRY(rt.blobs().put(adapter_rules, "application/json"));
+
+  if (hosted) LOOM_TRY(rt.blobs().put(json::canonical(hosted->output), "application/json"));
 
   SourceRecord source;
   source.id = source_id;
@@ -223,6 +240,13 @@ Result<Json> materialize(Runtime& rt, const Json& request) try {
       observations.push_back(std::move(observation));
     }
   }
+  if (hosted) {
+    observations.clear();
+    for (const auto& value : hosted->output.at("receipt").at("observations")) {
+      LOOM_TRY_ASSIGN(auto ob, model::Observation::from_json(value));
+      observations.push_back(std::move(ob));
+    }
+  }
   std::stable_sort(observations.begin(), observations.end(), [](const auto& a, const auto& b) {
     return a.locator.byte_start < b.locator.byte_start;
   });
@@ -241,14 +265,22 @@ Result<Json> materialize(Runtime& rt, const Json& request) try {
   ref.kind = source.kind;
   ref.group = key;
   auto chain = [&]() -> Result<genesis::Chain> {
-    if (!document || opt.level != "recognized_block") return genesis::compute_chain(seg, {{ref, bytes}}, opt);
+    if (!hosted && (!document || opt.level != "recognized_block")) return genesis::compute_chain(seg, {{ref, bytes}}, opt);
     genesis::Chain result;
     result.level = opt.level;
     result.language = seg.language();
     result.advisories = seg.advisories();
     genesis::VersionFragments version;
     version.source = ref;
-    for (const auto& range : document->extraction.at("projection").at("ranges")) {
+    Json ranges = Json::array();
+    if (hosted) for (const auto& part : hosted->output.at("parts")) {
+      const auto& loc = part.at("unit").at("locator");
+      auto begin = loc.at("byte_start").get<std::size_t>();
+      ranges.push_back(Json{{"byte_range", Json::array({begin, begin + loc.at("byte_len").get<std::size_t>()})}});
+    } else ranges = document->extraction.at("projection").at("ranges");
+    // Hosted syntax parts may overlap (row/cell, enclosing declaration).
+    // These are distinct occurrences, not a byte partition or version alignment.
+    for (const auto& range : ranges) {
       const auto begin = range.at("byte_range")[0].get<std::size_t>();
       const auto end = range.at("byte_range")[1].get<std::size_t>();
       const auto value = bytes.substr(begin, end - begin);
@@ -331,6 +363,10 @@ Result<Json> materialize(Runtime& rt, const Json& request) try {
     result["original_source_node"] = "n_" + document->derivation.at("original_source_id").get<std::string>();
     result["warnings"] = document->extraction.at("warnings");
   }
+  if (hosted) {
+    result["host_reader"] = hosted->binding;
+    result["warnings"] = hosted->output.at("receipt").value("warnings", Json::array());
+  }
   std::size_t observation_index = 0;
   for (const auto& part : chain->versions.front().fragments) {
     if (part.begin > part.end || part.end > bytes.size()) return Error(Errc::Conflict, "text_source_range_invalid");
@@ -350,7 +386,12 @@ Result<Json> materialize(Runtime& rt, const Json& request) try {
     unit.id = model::Unit::make_id(source_id, unit.locator);
     unit.bytes = *unit.locator.byte_len;
     unit.lang = seg.language();
-    const auto id = "n_text_occ_" + Sha256::hex(unit.id + ":" + method_hash);
+    if (hosted) {
+      LOOM_TRY_ASSIGN(auto supplied, model::Unit::from_json(hosted->output.at("parts")[part.index].at("unit")));
+      unit = std::move(supplied);
+    }
+    const auto id = hosted ? host::occurrence_id(unit.to_json(), method_hash, part.index) :
+        "n_text_occ_" + Sha256::hex(unit.id + ":" + method_hash);
     Json meta{{"schema", kOccurrenceSchema}, {"source_id", source_id}, {"source_sha256", hash},
               {"source_node", source_node}, {"unit", unit.to_json()}, {"version_node", version->id},
               {"method", method}, {"method_sha256", method_hash}, {"index", part.index},
@@ -376,7 +417,20 @@ Result<Json> materialize(Runtime& rt, const Json& request) try {
     }
     if (document && opt.level == "recognized_block")
       meta["observation_refs"] = Json::array({observations[part.index].id});
+    if (hosted) {
+      const auto& parsed = hosted->output.at("parts")[part.index];
+      meta["observation_refs"] = parsed.at("observations");
+      meta["structural_evidence_class"] = "derived";
+    }
     LOOM_TRY(put_node(db, id, unit.id, unit.kind, text, meta));
+    if (hosted) {
+      const auto& parent = hosted->output.at("parts")[part.index].at("parent");
+      if (!parent.is_null()) {
+        const auto parent_index = parent.get<std::size_t>();
+        const auto& parent_unit = hosted->output.at("parts")[parent_index].at("unit");
+        LOOM_TRY(db.create_link(id, host::occurrence_id(parent_unit, method_hash, parent_index), edges.at("part").get<std::string>()));
+      }
+    }
     LOOM_TRY(db.create_link(id, version->id, edges.at("part").get<std::string>()));
     LOOM_TRY_ASSIGN(auto fragment, db.find_node(part.fingerprint + "@" + chain->level + "/" + chain->language,
                                                opt.node_kind("fragment")));
@@ -416,6 +470,23 @@ Status validate_occurrence(Database& db, const Node& node) try {
   LOOM_TRY_ASSIGN(auto source, store.get_source(json::get_string(meta, "source_id")));
   if (!source || source->blob_hash != json::get_string(meta, "source_sha256"))
     return Error(Errc::Conflict, "text_source_original_mismatch");
+  const bool host_method = meta.at("method").contains("host_reader");
+  const auto method_format = json::get_string(meta.at("method"), "format");
+  if ((method_format == "csv" || method_format == "python_ast") && !host_method)
+    return Error(Errc::Conflict, "host_reader_binding_missing");
+  if (Sha256::hex(json::canonical(meta.at("method"))) != json::get_string(meta, "method_sha256"))
+    return Error(Errc::Conflict, "text_source_method_mismatch");
+  const auto& serialized_unit = meta.at("unit");
+  const auto expected_id = host_method ? host::occurrence_id(serialized_unit,
+      json::get_string(meta, "method_sha256"), meta.at("index").get<std::size_t>()) :
+      "n_text_occ_" + Sha256::hex(serialized_unit.at("id").get<std::string>() + ":" + json::get_string(meta, "method_sha256"));
+  if (node.id != expected_id) return Error(Errc::Conflict, "text_source_occurrence_identity_mismatch");
+  if (host_method) {
+    const auto& binding = meta.at("method").at("host_reader");
+    if (binding.at("input_sha256") != source->blob_hash || binding.at("source_key") != source->metadata.at("source_key") ||
+        binding.at("format") != method_format)
+      return Error(Errc::Conflict, "host_reader_source_mismatch");
+  }
   const bool derived = source->metadata.contains("derivation");
   if (derived) {
     const auto& d = source->metadata.at("derivation");
@@ -462,6 +533,17 @@ Result<Json> read(Runtime& rt, const Json& request) try {
     return Error(Errc::Conflict, "text_source_original_mismatch");
   LOOM_TRY(rt.blobs().verify(source->blob_hash));
   LOOM_TRY_ASSIGN(auto bytes, rt.blobs().read(source->blob_hash));
+  if (meta.at("method").contains("host_reader")) {
+    LOOM_TRY(rt.blobs().verify(meta.at("method").at("host_reader").at("receipt_blob").get<std::string>()));
+    LOOM_TRY(host::verify_node(*node, rt.blobs().local_path(source->blob_hash)));
+    if (request.contains("csv_selection")) {
+      const auto& binding = meta.at("method").at("host_reader");
+      if (binding.at("format") != "csv") return Error(Errc::InvalidArgument, "csv_selection_format_mismatch");
+      LOOM_TRY_ASSIGN(auto selected, host::prepare(rt.blobs().local_path(source->blob_hash), source->blob_hash, "csv",
+          binding.at("source_key").get<std::string>(), binding.at("name").get<std::string>(), request.at("csv_selection")));
+      return selected.output.at("selection");
+    }
+  } else if (request.contains("csv_selection")) return Error(Errc::InvalidArgument, "csv_selection_format_mismatch");
   const bool derived = source->metadata.contains("derivation");
   if (derived) {
     const auto& d = source->metadata.at("derivation");

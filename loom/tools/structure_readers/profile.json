@@ -1,0 +1,7 @@
+{
+  "schema": "loom.structure_readers.profile/1",
+  "limits": {"max_input_bytes": 1048576, "cpu_seconds": 3, "memory_bytes": 268435456},
+  "timeout_ms": 5000, "poll_ms": 20, "max_output_bytes": 33554432,
+  "csv": {"delimiter": ";", "quotechar": "\"", "header": true, "language": "pl"},
+  "kinds": {"row": "csv_row", "cell": "csv_cell"}
+}

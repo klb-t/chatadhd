@@ -9,7 +9,7 @@ by its caller. Synthetic tests run without a native library:
 PYTHONDONTWRITEBYTECODE=1 python3 -B -m unittest discover -s loom/tests/python_ast_basic -v
 python3 -B loom/tools/python_ast_basic/reader.py \
   loom/tests/python_ast_basic/fixtures/zagniezdzenia.py \
-  --source-key synthetic:PL --name żółw.py --source-parts-request
+  --source-key synthetic:PL --name żółw.py
 ```
 
 `parse(raw, source_key=..., name=..., settings=..., expected_sha256=...)`
@@ -55,81 +55,28 @@ separate configurable ceiling. Interpreter version, reader SHA and full profile
 are pinned. The saved result is derived data; the original SHA is unchanged.
 Keep this adapter code/version available with the method for regeneration.
 
-## Integration status — 2026-11-01
+## Trusted host integration — 2026-11-01
 
-**Parser-only admission. Native graph/HTTP/context acceptance is blocked.**
-The separately handed-off `integration.patch` was reviewed and deliberately
-NOT applied: `client.blob_text` receives client-controlled JSON and the proposed
-hook does not reparse it with the pinned Python reader. Running `validate` in a
-client before sending a request cannot secure the native boundary.
+The local parser is now invoked by the native host from the installed
+`share/loom/structure_readers` package. Use the existing `client.blob_text`
+action with **only** `hash`, `source_key`, `name`, `format="python_ast"` and,
+optionally, `previous_source_id`. The host generates the receipt itself before
+mutating the graph. Interpreter/helper/profile/limits never come from uploads,
+request options or client receipts. The exact installation is pinned and input
+is verified before and after execution. Read and selected context reparse with
+the installed reader and compare the saved binding and occurrence.
 
-`native_projection.h` is an unused candidate byte/record consistency checker,
-not an AST attestation verifier. The integrator fixed two string/JSON comparisons
-with explicit string extraction so the header compiles. The focused diagnostic
-`loom/tests/python_ast_basic/verify_trust_boundary.py` demonstrates coherent
-name/kind/method forgeries accepted by that byte checker and refused by the
-pinned Python reparse. It must not be treated as permission to expose the hook.
+`source_parts_request` remains a legacy candidate-envelope constructor for
+local tooling/tests. **Do not send its receipt/pack to the API**: the safe host
+intentionally rejects them. `native_projection.h` is still an unused diagnostic
+byte checker, not AST attestation. The historical `verify_trust_boundary` showed
+why it must not become an API trust boundary; it need not be repeated.
 
-The CLI and Python parser API are usable locally. `source_parts_request` only
-constructs a candidate transport envelope; the accepted runtime does not support
-its `python_declaration` level. No new public API, package helper, UI registry,
-Source/Unit persistence or selected-context path is admitted here.
+Native host acceptance is in `loom/tests/structure_readers/verify_native.py`
+and `loom/server/tests/test_server_host_readers.py`, with package faults checked
+by `verify_limits.py`. The old `verify_native.py` here targets the rejected
+candidate envelope and is retained as historical evidence, not the new contract.
 
-## Candidate hook (not applied)
-
-
-The separate root `integration.patch` is a candidate change to
-`loom/src/text/source_parts.cpp`, built against base
-`e2f6873c7ca24b41957b36b0127439b926068f41`. It is not applied by the author.
-`native_projection.h` is the small native receipt-contract adapter included by
-that patch. No ABI, UI, context selector, CMake or default format pack changes.
-The request carries a scoped `python_ast` format overlay. Existing plain `code`
-behavior is preserved, and calling `python_ast` without a receipt fails closed.
-
-The host first runs this parser/`source_parts_request` on the exact immutable
-bytes, uploads those bytes through the existing client-blob API, and passes the
-resulting request to `client.blob_text`. No document-supplied executable paths
-are used. The native boundary validates Source/Unit/Observation identities,
-quotes, hashes, containment and parent order, then reuses the existing Source,
-provenance, genesis, occurrence and read machinery. It saves the complete receipt
-as a method-pinned blob. Nested declaration occurrences intentionally overlap;
-this is one-version genesis, not cross-version alignment or a byte partition.
-Parent occurrences get ordinary `part_of` links in addition to version links.
-Selected occurrences use the existing schema and context path.
-
-**Trust boundary:** the native receipt checker does not itself run Python or
-prove an arbitrary submitted receipt was produced by AST. Structural labels are
-explicitly derived. For authoritative AST import the host must produce and
-revalidate the receipt with this adapter, rather than trust external JSON.
-This delta does not install a native subprocess launcher or a UI reader registry.
-
-Remaining acceptance (through the authorized runner):
-
-1. Add a trusted native host path which derives/revalidates the receipt from
-   immutable blob bytes using a pinned parser. Do not take executable paths or
-   trust flags from the client envelope. Reuse the bounded, shell-free DOCX
-   subprocess/package patterns, including interpreter isolation, input/output
-   limits, watchdog, cleanup and refusal when the helper is absent or changed.
-2. Keep byte consistency checks after host generation. Pin parser/profile/
-   interpreter and save replay provenance. Client JSON cannot establish this
-   invariant, even when all byte hashes match.
-3. Only then adapt the separate shared hook, build incrementally and run
-   `verify_native` plus affected G1/DOCX sentinels. The integrator ran the supplied
-   harness on the unchanged accepted library: it fails at materialization with
-   `text pack: no level "python_declaration"`; this is NOT native acceptance.
-4. Verify forged receipt/hash/source refusal and actual selected-context request
-   after reopen through the safe host/API. Preserve original BOM/CRLF bytes,
-   distinguish occurrence identity from text hashes, label syntax as derived.
-
-Boundary diagnostic (no runtime rebuild or API registration): compile
-`loom/tests/python_ast_basic/check_receipt.cpp` with the repository C++20/JSON
-flags and the matching own `libloom_core.a`, then run:
-
-```sh
-PYTHONDONTWRITEBYTECODE=1 python3 -B -m loom.tests.python_ast_basic.verify_trust_boundary \
-  --byte-checker /absolute/path/to/check_receipt --scratch-root /own/synthetic/scratch
-```
-
-A successful diagnostic proves that byte validation is insufficient; it does
-not prove native AST import. See
-`docs/reports/FLEET_PYTHON_AST_INTEGRATION_2026-11-01.md` for the actual receipt.
+See `loom/tools/structure_readers/README.md` for packaging, replay limits and
+accepted test scope. Syntax labels remain derived, quotes remain original bytes.
+No Python-specific UI, semantic execution or Android helper acceptance is claimed.

@@ -63,7 +63,7 @@ Result<std::int64_t> quantity(const Json& reader, const char* key, bool positive
 #endif
 }  // namespace
 
-Result<Json> read_docx_basic(const std::filesystem::path& path, const Json& reader) {
+Result<Json> read_local_json(const std::filesystem::path& path, const Json& reader, const Json& arguments) {
 #ifdef LOOM_DOCX_SPAWN
   LOOM_TRY_ASSIGN(const auto command, docx_command(reader));
   const auto& python = command.python;
@@ -102,7 +102,7 @@ Result<Json> read_docx_basic(const std::filesystem::path& path, const Json& read
       ::posix_spawn_file_actions_addopen(&actions.actions, STDERR_FILENO, "/dev/null", O_WRONLY, 0) != 0 ||
       ::posix_spawn_file_actions_addclosefrom_np(&actions.actions, 3) != 0)
     return Error(Errc::Io, "docx_reader_unavailable");
-  std::vector<std::string> args{python, "-I", "-B", "-S", script, "-", limits->dump()};
+  std::vector<std::string> args{python, "-I", "-B", "-S", script, "-", arguments.dump()};
   std::vector<char*> argv;
   for (auto& arg : args) argv.push_back(arg.data());
   argv.push_back(nullptr);
@@ -158,8 +158,20 @@ Result<Json> read_docx_basic(const std::filesystem::path& path, const Json& read
     return Error(code == "docx_reader_unavailable" ? Errc::Unavailable : Errc::Parse,
                  code.empty() ? "docx_reader_failed" : code);
   }
-  if (!WIFEXITED(status) || WEXITSTATUS(status) != 0 ||
-      json::get_string(*parsed, "schema") != "loom.docx_basic.result/1" ||
+  if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
+    return Error(Errc::Parse, "docx_reader_failed");
+  return *parsed;
+#else
+  (void)path;
+  (void)reader;
+  (void)arguments;
+  return Error(Errc::Unavailable, "docx_reader_unavailable");
+#endif
+}
+Result<Json> read_docx_basic(const std::filesystem::path& path, const Json& reader) {
+  LOOM_TRY_ASSIGN(auto value, read_local_json(path, reader, reader.value("limits", Json::object())));
+  const auto* parsed = &value;
+  if (json::get_string(*parsed, "schema") != "loom.docx_basic.result/1" ||
       !parsed->contains("text") || !parsed->at("text").is_string() ||
       !parsed->contains("warnings") || !parsed->at("warnings").is_array() ||
       !parsed->contains("source") || !parsed->at("source").is_object() ||
@@ -168,11 +180,6 @@ Result<Json> read_docx_basic(const std::filesystem::path& path, const Json& read
     return Error(Errc::Parse, "docx_reader_failed");
   for (const auto& warning : parsed->at("warnings"))
     if (!warning.is_string()) return Error(Errc::Parse, "docx_reader_failed");
-  return *parsed;
-#else
-  (void)path;
-  (void)reader;
-  return Error(Errc::Unavailable, "docx_reader_unavailable");
-#endif
+  return value;
 }
 }  // namespace loom::chat

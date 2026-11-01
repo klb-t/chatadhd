@@ -61,6 +61,10 @@ constexpr std::string_view kTextPack = std::string_view(R"LOOMTXT({
       "fingerprint": "representation_of"
     },
     "formats": {
+      "csv": {"mime": "text/csv", "level": "recognized_part", "part_kind": "csv_row",
+        "parse": {"segment": []}, "reason": "csv_syntax_raw_quotes_decoded_values_derived"},
+      "python_ast": {"mime": "text/x-python", "level": "recognized_part", "part_kind": "code_span",
+        "parse": {"segment": []}, "reason": "python_ast_syntax_only_no_runtime_analysis"},
       "docx": {
         "mime": "text/plain",
         "level": "recognized_block",
@@ -129,4 +133,4 @@ constexpr std::string_view kTextPack = std::string_view(R"LOOMTXT({
     "match": {"contains": true, "max_candidates": 5}
   }
 }
-)LOOMTXT", 5518);
+)LOOMTXT", 5888);

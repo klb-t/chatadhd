@@ -201,7 +201,8 @@ std::string render(const std::vector<Json>& selected, const Json& labels) {
 Result<Json> compile_unified_context(Database& db, const Config& cfg,
     GraphMemorySelector* graph, MemoryEngine* memory, const ContextRequest& req,
     Json knowledge_result, std::string_view conv_id, bool include_memory,
-    bool include_graph, const Json& options) {
+    bool include_graph, const Json& options,
+    const std::function<Status(const Node&)>& verify_host_occurrence) {
   if (!options.is_object()) return Error(Errc::InvalidArgument, "unified context options must be an object");
   for (const auto key : {"include_knowledge", "legacy_include_inactive", "legacy_include_current_conversation"}) LOOM_TRY(boolean_option(options, key));
   double codepoints_per_token = 4.0;
@@ -415,6 +416,10 @@ Result<Json> compile_unified_context(Database& db, const Config& cfg,
         LOOM_TRY_ASSIGN(auto node, db.get_node(id));
         if (node && json::get_string(node->metadata, "schema") == text::sources::kOccurrenceSchema) {
           LOOM_TRY(text::sources::validate_occurrence(db, *node));
+          if (node->metadata.at("method").contains("host_reader")) {
+            if (!verify_host_occurrence) return Error(Errc::Unavailable, "host_reader_context_verifier_unavailable");
+            LOOM_TRY(verify_host_occurrence(*node));
+          }
           // An occurrence is an exact stored slice of a version, not a normalized
           // fingerprint shared by several sources. Keep its identity in selection.
           const auto represented = detail_chars == 0 ? node->content : std::string(utf8::prefix(node->content, detail_chars));

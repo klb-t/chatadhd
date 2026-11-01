@@ -39,6 +39,7 @@
 #include "active_task_acceptance.h"
 #include "context/context_execution.h"
 #include "context/unified_context.h"
+#include "text/host_reader.h"
 #include "context/method_registry.h"
 #include "graph_reply.h"
 #include "reasoning_profile.h"
@@ -1672,7 +1673,12 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
       if (hops_eff) settings["legacy_relation_hops"] = *hops_eff;
       else if (!settings.contains("legacy_relation_hops")) settings["legacy_relation_hops"] = cfg_.get("graph_memory_depth", 2);
       auto selected = context::compile_unified_context(db_, cfg_, graph_memory_, memory_, request,
-          compiled_context, conv_id, memory_on, graph_on, settings);
+          compiled_context, conv_id, memory_on, graph_on, settings, [this](const Node& node) -> Status {
+            if (!attachment_resolver_) return Error(Errc::Unavailable, "host_reader_original_unavailable");
+            const auto path = attachment_resolver_(json::get_string(node.metadata, "source_sha256"));
+            if (!path) return Error(Errc::NotFound, "host_reader_original_unavailable");
+            return text::sources::host::verify_node(node, *path);
+          });
       if (!selected) return selected.error();
       unified_context = *selected;
       const auto prompt = json::get_string(unified_context, "prompt");
