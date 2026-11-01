@@ -4,8 +4,9 @@
 Źródła produkcyjne z commita `3bf01f7c29981d27554dd44dbd21e2d29f42029c`
 przeszły własną bramkę native oraz rzeczywisty HTTP/browser/context/reopen.
 Dwie konieczne korekty harnessu nie zmieniły produktu ani warunków odbioru.
-Nowy pakiet jest osobnym, następnym krokiem tego przyrostu; wcześniejszy immutable
-pakiet ccb5ef9d SHA256
+Przyjęty code/result commit bramki: `e77f698ef70a7d9359011d24c24edd68c71f2c49`.
+Powstał i przeszedł verify-package **nowy Release e77f698e-release-share-20261101**
+(o hashach poniżej); wcześniejszy immutable pakiet ccb5ef9d SHA256
 `95bb540ca669dc6410af75aa135434800374957bea7a6cc7a5d2359cfd643481`
 pozostaje zachowany. Wyniki nie są zgodą na wdrożenie.
 
@@ -121,3 +122,48 @@ Dowody lokalne: `.integration-external-share-acceptance-20261101`, polecenia,
 logi, build-receipt, native-results, browser-01/02/03 i ich receipts. Syntetyczne
 klucze TLS/DB/config nie trafiają do commita ani manifestu dowodów.
 [Harness i polecenia](../../loom/tests/url_share/NATIVE_ACCEPTANCE.md).
+
+## Nowy immutable Release i zakończenie
+
+Pakiet: `.integration-external-share-acceptance-20261101/`
+`chatadhd-server-linux-x64-e77f698e-release-share-20261101.tar.gz`.
+
+- **SHA256 archiwum:** `d5e7531426acb8243d653956f916ed15fc0efee2bbedd59cfe148f231348f609`.
+- Manifest pakietu: `210873024fcb866301892a67576d53d63bb3efd626c2c2ff59e99375c545347f`.
+- Server: `3f4c670c65efbbf5a73bd7796ecbc63cb1071b19210d4a78fffcbf0b465f7bd2`.
+- libloom: `81b4fdac110965db1a1e5ae4a3031f32dd7902bef7ab38dc33e5d2ec0898bd63`.
+
+`cmake --install` istniejącego runtime component do nowego stagingu; bez instalacji
+hosta i drugiego deployera. Dołożono nowy przetestowany webdist. Manifest wiąże
+pełny source/code SHA, tree, build options, dependency versions/hashes, helpery,
+web i historię zmian względem starego pakietu. Faktyczny build wykonał się na3bf;
+commit e77 zmienia wyłącznie harness/READMEtestu/raport/STATE. Sprawdzono identyczne
+Git obiekty src/include/server/CMake/websrc/package/viteconfig, wszystkie hashe
+bin/lib/web i zapisano tę równoważność w accepted-runtime.json. Nie przebudowywano
+produktu tylko dla zmiany dokumentacji/testu ani nie relabelowano starego pakietu.
+
+Sprawdzenie archiwum: **24payloady+MANIFEST,25/25 zgodnych SHA**, brak dodatkowych
+plików, bezwzględnych ścieżek i wychodzących symlinków. Bin/lib/web stagingu są
+identyczne z wykonanymi w bramce. DOCX reader/runtime, OCR i pozostałe zasoby
+zachowały wcześniejsze hashe; embedded URL worker zmienił się wraz z odebranym
+adapterem. Staryarchive95bb540c… ponownie zgodny i zachowany.
+
+Istniejący `deploy/verify-package.sh` uruchomiono w Landlock/env whitelist,
+nowym katalogu, na wolnym loopback porcie z syntetycznym zamkniętym profilem.
+**exit0:** checksum, zależności bez braków, gotowy health `ok:true`, strona web,
+`/api/auth/me` HTTP200/JSON zgodny z kontraktem skryptu. Własny serwer zakończony.
+Użyto własnego wrappera BusyBox tar dla znanego ograniczenia GNUtar/openat2
+środowiska; kopia skryptu verify ma identyczny hash z repo. Bez zmian hosta.
+To nowy smoke pakietu, nie powtórzony pełny test uwierzytelniania lub rollbacku.
+
+Zależności systemowe są opisane, **nie dołączone**: interpreter Python dla helperów,
+SQLite/systemELF/OpenSSL, opcjonalny runtime PDF/OCR (PopplerGLib/Tesseract i
+pol/eng tessdata). To lokalny Linux/systemSQLite Release, nie dowód oficjalnego
+portable preset lub obsługi każdej dystrybucji. LOOM_LOG_ENABLED=0 w próbie nie
+zmienia konfiguracji produkcji ani granic wcześniejszego odbioru loggera.
+
+Brak bieżącego blokera dla tego zakresowego odbioru. Next: administrator odbiera
+lokalny commit/pakiet/manifest; produkcyjne backup/restore, decyzja wdrożeniowa
+oraz ewentualny publiczny provider pozostają osobnymi bramkami. Ten przyrost
+kończy się bez uruchamiania następnego cyklu. Wszystkie własne testowe procesy
+zakończone; brak deploy/push/CI/API/nowych agentów lub zmian hosta.
