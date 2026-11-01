@@ -1,3 +1,12 @@
+## 2026-11-01 — priorytet rozmowa/AUTO: kod zachowany, następna bramka po capacity
+
+[Diagnoza](CHAT_DEVICE_LANGUAGE_2026-11-01.md): potwierdzony reset AUTO/profil EN,
+source fix/typecheck/fixture gotowe. Nie uznawać za naprawę właścicielskiego API400
+bez rzeczywistego errorcode/modelu/fazy. Next: zapewnić pojemność i uruchomić JEDEN
+build/targetbrowser poprawki + exactcandidate; nie reapply ZIP/CSV/AST ani P0.
+Przygotowany harness zachowany prywatnie. Publikacja/aktywacja przez administratora
+po odebranym wyniku; obecny source commit nie zmienia produkcji.
+
 ## 2026-11-01 — ZIP preview UI zamknięte zakresowo
 
 [UI/kandydat i dowody](ARCHIVE_PROJECTION_UI_2026-11-01.md): native descriptor

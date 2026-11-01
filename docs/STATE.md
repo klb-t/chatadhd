@@ -1,3 +1,16 @@
+## 2026-11-01 — krytyczna diagnoza rozmowy i poprawka AUTO; odbiór UI wstrzymany pojemnością
+
+Kod **5389c6455755baaba48ee3d6f6872841ed406fdb**, baza6f5ed6fc/ZIP zachowana. Exactdeployed d490: świeży PL/EN gość
+ma poprawny język; actual ChatView→native→lokalna atrapa odpowiada. Synthetic upstream400
+jest przekazywany jako HTTP200/SSE error, nie pusty request. Przyczyna ownerAPI400
+nadal NIEUSTALONA (brak kodu/komunikatu/provider/model/fazy), bez niepotwierdzonej poprawki rozmowy.
+Potwierdzony osobno defekt AUTO→preferencja EN naprawiony źródłowo: device reset,
+explicitEN zachowany, generated/builtin nie są jawnym wyborem. Existing settings picker.
+Targetfixture1/1 (10asercji) + noEmit typecheck PASS. **Vite/newbrowser/package NOTRUN**:
+free poniżej1GiB; potrzeba dodatkowo około26MB web/browser lub65MB web/archive (ponownie zmierzyć).
+To NIE nowy release acceptance; de0/d490 bez tej poprawki. [Diagnoza i next](reports/CHAT_DEVICE_LANGUAGE_2026-11-01.md).
+TARGET_ENV_POLICY_APPLIED. Brak push/deploy/C++/starych testów.
+
 ## 2026-11-01 — ZIP preview w UI odebrany, migracja nadal wyłączona
 
 TARGET_ENV_POLICY_APPLIED. Kod **e0fc62e7527d941132fbc0c2d16243b23c6235a9** zachowuje bazę a1623f0a.
