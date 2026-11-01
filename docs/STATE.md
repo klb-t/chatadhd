@@ -1,3 +1,35 @@
+## 2026-11-01 — G1 GUI przyjęte, nowy lokalny pakiet Release
+
+Kod **`8b2c0e689b1ddf43c74519e68ed626e79d5a4b16`**, hook uploadu `d54030114b7d83d991b0f04f8f068b9399d24077`;
+poprzedni Release `a033aad8538519ca78058436bb17da604453a293` i wszystkie backendy zachowane.
+Świeży odbiór delty G1GUI19/19 zgodnych plików przed/po, bez dostępu do
+chronionego archiwum. Upload TXT/MD/kodu zapisuje trwały source_key przed jawną
+materializacją; SourcePartsPanel łączy oryginał, wystąpienia, GraphView i globalny
+selector konta. **Implemented/tested zakresowo; deployed NIE.**
+
+Własne: typecheck/webbuild i przyrostowy Release server+lib `-j2` PASS;
+Node15/15, React/browser komponent3/3, nativeHTTP5/5, rzeczywiste G1GUI8/8,
+PNG GUI2/2. ID i wybrany tekst w systemowym kontekście oraz widocznej odpowiedzi
+syntetycznego dostawcy; wersje, oryginały/restart i zachowanie innych pól
+context_execution sprawdzone. Trzy wcześniejsze nieudane przebiegi harnessu
+zachowane i opisane; nie zmniejszano asercji. CTest `-j1`.
+
+Pakiet `8b2c0e68-release-g1gui-20261101`, SHA256 `e65ed96eab67d119b20852e05d65b0bcc4fb8a9ce24b5978a92c7d1fa43ba1db`:
+24payloady/16webhashy zgodne, source/tree wskazane w manifeście.
+Staging **2/2 PASS** po GUI: istniejący verify/installer, przełączenie i powrót
+do poprzedniego własnego Release e470, również odczyt nowego wystąpienia G1 po
+powrocie. Bez zmian danych przez instalator i bez mutacji pakietów; procesy
+zakończone. Tylko lokalny staging, nie rollback produkcji.
+
+Wybór globalny dla konta/wszystkich rozmów, brak CAS; bounded list nie dowodzi
+nieistnienia źródła. JNI/fizyczny Android, pełne AST/tabele/współrzędne PDF/DOCX/OCR,
+realny model, pełny repo gate i deploy nieodebrane. Nadal GNUtar ENOSYS (w teście
+własny wrapper BusyBox), źródłowy installer --package nie obejmuje pełnego runtime,
+zależności systemowe niebundlowane. Starych pełnych zestawów nie powtarzano.
+§0rewizja2; globalny wyłącznik logów i pełna polonizacja nieudowodnione.
+[Raport, komendy, hashe i ograniczenia](reports/G1_GUI_ACCEPTANCE_2026-11-01.md).
+Next: odrębna decyzja administratora; bez kolejnego cyklu, push/CI/deploy.
+
 ## 2026-11-01 — lokalny pakiet Release i wykonana akceptacja stagingu
 
 Źródła produktu **`e47079cf9f44b0b90654d21770bcfb24c4fd34cc`** pozostają bez zmian;
