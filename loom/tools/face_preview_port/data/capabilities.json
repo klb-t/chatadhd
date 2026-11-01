@@ -1,0 +1,23 @@
+[
+  {
+    "operation": "face.preview.render",
+    "capability": "face.preview.render",
+    "status": "unavailable",
+    "detail": "Helper lokalny istnieje; host i klient produktu nie są podłączeni. Docelowo ograniczony proceduralny podgląd 2D z jawnego wektora.",
+    "evidence": ["loom/tools/face_preview_port/port.py", "loom/tools/face_preview_port/fixtures/actual/sanity.json"]
+  },
+  {
+    "operation": "face.embedding",
+    "capability": "face.embedding",
+    "status": "unavailable",
+    "detail": "NOT RUN — brak wykonania embeddingu.",
+    "evidence": []
+  },
+  {
+    "operation": "face.inference",
+    "capability": "face.inference",
+    "status": "unavailable",
+    "detail": "NOT RUN — brak modelu i inferencji; nie poświadczamy rzeczywistych emocji ani mimiki.",
+    "evidence": []
+  }
+]

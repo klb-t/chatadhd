@@ -1,0 +1,15 @@
+{
+  "schema": "loom.face_preview.method/1",
+  "coordinate_order": ["brow_raise_l", "brow_raise_r", "brow_slant_l", "brow_slant_r", "eye_open_l", "eye_open_r", "mouth_corner_l", "mouth_corner_r", "jaw_open"],
+  "config": {
+    "renderer": "procedural-2d-v1",
+    "size": 256,
+    "supersampling": 2,
+    "seed": 20261101,
+    "blank": false,
+    "expression": {"brow_raise_l": 0, "brow_raise_r": 0, "brow_slant_l": 0, "brow_slant_r": 0, "eye_open_l": 0.65, "eye_open_r": 0.65, "mouth_corner_l": 0, "mouth_corner_r": 0, "jaw_open": 0.12},
+    "identity": {"head_width": 1, "head_height": 1, "eye_spacing": 1, "nose_width": 1},
+    "pose": {"yaw_approx_deg": 0, "roll_deg": 0},
+    "light": {"horizontal": 0, "intensity": 1}
+  }
+}

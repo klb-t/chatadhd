@@ -24,6 +24,10 @@ export default function SourcePartsPanel(props: Props) {
 function SourcePartsBrowser({ upload, onGraph, graphEnabled, onEnableGraph }: Props) {
   const language = useShellLanguage(), uid = useId();
   const w = (id: Word) => dataLabel(words[id], language, words[id].en);
+  const formatHelp = (value: string) => {
+    const label = words[(value + "About") as Word];
+    return label ? dataLabel(label, language, label.en) : "";
+  };
   const [sources, setSources] = useState<TextSource[]>([]), [selected, setSelected] = useState("");
   const [recordCount, setRecordCount] = useState(0), [limit, setLimit] = useState(String(words.defaults.source_limit));
   const [projections, setProjections] = useState<SourceParts[]>([]), [projectionId, setProjectionId] = useState("");
@@ -172,6 +176,7 @@ function SourcePartsBrowser({ upload, onGraph, graphEnabled, onEnableGraph }: Pr
         <label>{w("format")}<select data-testid="source-upload-format" value={format} onChange={e => setFormat(e.target.value)}>
           <option value="">{w("opaque")}</option>{(Object.keys(words.formats) as (keyof typeof words.formats)[]).map(f => <option key={f} value={f}>{w(f)}</option>)}
         </select></label>
+        {formatHelp(format) && <p data-testid="source-upload-format-about">{formatHelp(format)} {w(api.actions?.clientBlobText ? "structuredCapability" : "unsupported")}</p>}
         <label>{w("revise")}<select data-testid="source-upload-revision" value={revision} onChange={e => setRevision(e.target.value)}>
           <option value="">{w("new")}</option>{sources.filter(s => s.parser === "loom.source_parts" && (format !== "docx" || sourceDerivation(s))).map(s => <option key={s.id} value={s.id}>{s.title} · {sourceOriginalHash(s).slice(0, 12)} · {s.metadata.source_key}</option>)}
         </select></label>
@@ -192,6 +197,7 @@ function SourcePartsBrowser({ upload, onGraph, graphEnabled, onEnableGraph }: Pr
         </div>}
         {source.metadata.previous_source_id && <p data-testid="source-previous">{w(derivation ? "previousDerived" : "previous")}: {source.metadata.previous_source_id}</p>}
         <button type="button" data-testid="source-materialize" disabled={!Object.keys(words.formats).includes(source.format) || !api.actions?.clientBlobText} onClick={() => void run(materialize)}>{w("materialize")}</button>
+        {formatHelp(source.format) && <p data-testid="source-materialize-format-about">{formatHelp(source.format)} {w(api.actions?.clientBlobText ? "structuredCapability" : "unsupported")}</p>}
         {source.parser !== "loom.source_parts" && <p>{w("pending")}</p>}
         {source.parser === "loom.source_parts" && !projections.length && <p>{w("projectionWindow")}</p>}
         <label>{w("projection")}<select data-testid="source-projection" value={projectionId} onChange={e => {

@@ -9,7 +9,7 @@
   },
   "limits": {
     "pl": "Części i struktury podstawowych formatów; cytaty pochodne mają własne zakresy UTF-8. Układ wizualny, formuły arkusza i wszystkie formaty nie są obiecane.",
-    "en": "TXT, Markdown and code are read as UTF-8 text. DOCX exposes recognized paragraphs, headings, list items and table text. Extraction is partial: no full tables, AST, page layout or OCR. PDF parts are not supported here."
+    "en": "Parts and structures of supported formats; derived quotes have separate UTF-8 ranges. Visual layout, spreadsheet formulas and support for every format are not promised."
   },
   "reload": {
     "pl": "Odśwież źródła i selektor",
@@ -164,7 +164,6 @@
       "markdown"
     ],
     "code": [
-      "py",
       "cpp",
       "cc",
       "c",
@@ -199,6 +198,12 @@
     ],
     "zip": [
       "zip"
+    ],
+    "csv": [
+      "csv"
+    ],
+    "python_ast": [
+      "py"
     ]
   },
   "defaults": {
@@ -376,5 +381,25 @@
   "openMember": {
     "pl": "Otwórz części pliku",
     "en": "Open member parts"
+  },
+  "csv": {
+    "pl": "CSV — struktura wierszy i komórek",
+    "en": "CSV — row and cell structure"
+  },
+  "python_ast": {
+    "pl": "Python — struktura składni AST (bez wykonywania)",
+    "en": "Python — AST syntax structure (without execution)"
+  },
+  "csvAbout": {
+    "pl": "Wiersze i komórki CSV odczytuje lokalny czytnik serwera. Separator, cudzysłowy i nagłówek wynikają z zainstalowanego profilu. Cytaty i zakresy to bajty oryginału UTF-8; zdekodowane wartości są pochodne.",
+    "en": "The local server reader extracts CSV rows and cells. Delimiter, quoting and header rules come from the installed profile. Quotes and ranges address original UTF-8 bytes; decoded values are derived."
+  },
+  "python_astAbout": {
+    "pl": "Deklaracje i zagnieżdżenia wynikają ze składni AST, bez wykonywania kodu i ustalania jego zachowania. Zakresy to bajty oryginału UTF-8. SyntaxError (python_ast_syntax_error) jest jawnym błędem, bez automatycznego przełączenia na tekst. Zwykły odczyt wybierz jako „Kod UTF-8 jako tekst” przed zapisaniem pliku.",
+    "en": "Declarations and nesting are derived from AST syntax, without executing code or establishing runtime behavior. Ranges address original UTF-8 bytes. SyntaxError (python_ast_syntax_error) is an explicit error, with no automatic text fallback. Choose “UTF-8 code as text” before saving the file for plain text reading."
+  },
+  "structuredCapability": {
+    "pl": "Obecność formatu na liście nie potwierdza dostępności helpera. Sprawdza ją dopiero próba materializacji na tym serwerze; unsupported/unavailable lub brak helpera oznacza brak możliwości odczytu, nie poprawny wynik analizy.",
+    "en": "Listing a format does not confirm helper availability. A materialization attempt on this server checks it; unsupported/unavailable or a missing helper means the reader is unavailable, not a successful analysis."
   }
 }

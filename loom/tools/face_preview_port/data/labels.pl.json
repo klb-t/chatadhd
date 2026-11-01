@@ -1,0 +1,8 @@
+{
+  "preview": "Proceduralny podgląd 2D z jawnych parametrów",
+  "evidence": "Wynik obliczenia renderera; znaczenie emocjonalne niezweryfikowane",
+  "embedding": "NOT RUN — embedding nieuruchomiony",
+  "inference": "NOT RUN — model nieuruchomiony",
+  "avatar_3d": "Niedostępny — renderer tworzy obraz 2D",
+  "real_expression": "NOT RUN — brak pomiaru rzeczywistej mimiki"
+}

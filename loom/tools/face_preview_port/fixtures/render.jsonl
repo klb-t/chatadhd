@@ -1,0 +1,1 @@
+{"schema":"loom.face_preview.request/1","op":"render","request_id":"synthetic-1","version":1,"context_id":"synthetic-context","parameter_source":"user_vector","params":[0.2,-0.1,0.3,-0.2,0.7,0.6,0.4,0.2,0.15],"size":256}
