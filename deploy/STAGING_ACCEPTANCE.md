@@ -118,3 +118,17 @@ wystąpień: zachować matching pakiet/snapshot i odebrać migrację osobno.
 Historyczne testy rollback sprzed tej zmiany nie dowodzą jej odwracalności.
 Instalator pozostaje jedynym mechanizmem pakietowania wdrożenia; ten odbiór
 nie uruchomił instalatora na produkcji ani nie udziela zgody na przełączenie.
+
+
+## 2026-11-01 — zakresowy pakiet OCR/PDF
+
+Kod `36e945fd1e3c165252a6a6d93268be5c41b70455`, pakiet `f9767a0c20e628f942f8abda9b24daebab5fe9fb23666ae70324f132840754fb`
+(`chatadhd-server-linux-x64-36e945fd-release-ocr-pdf-20261101.tar.gz`). Dodano `share/loom/pdf_structure/`
+z osobnym pinned worker/projection/profile/interpreter manifestem, bez zmiany
+odebranego CSV/AST runtime. 16 plików web nie zmieniło się. Własny verify-package
+z dokumentowanym BusyBox PASS; actual archive relokowany, 34 payloady zgodne,
+default PDF helper/upload/materialize/read PL PASS z niedostępnym checkoutem.
+Testy backendowe i granice: [raport](../docs/reports/FLEET_OCR_PDF_INTEGRATION_2026-11-01.md).
+Nie wykonano ponownie pełnego staging-smoke/GUI/rollback. Stary pakiet42cf zachowany;
+nowe projekcje PDF nie mają odebranej bramki powrotu do wcześniejszego runtime.
+Brak deploy; zgoda operatora i produkcyjny backup/restore pozostają odrębne.

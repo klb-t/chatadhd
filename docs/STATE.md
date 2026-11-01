@@ -1,3 +1,25 @@
+## 2026-11-01 — wybrany OCR i projekcja PDF: backend odebrany zakresowo
+
+Kod **36e945fd1e3c165252a6a6d93268be5c41b70455**, baza **572c9a0d**. Istniejący region OCR
+trafia do rzeczywistego kontekstu przez resolver konta (`inferred/nullconfidence`),
+bez nowego silnika/importera. PDF zachowuje oryginał i osobną projekcję UTF-8,
+Source/Unit/Observation/genesis; read/context ponownie ekstrahuje oryginał przez
+przypiętą instalację. Wspólny transport DOCX rozszerzony o wejście w anonimowym fd;
+CSV/AST manifest i pięć payloadów pozostają identyczne. C ABI 126 eksportów bez zmian.
+
+Własna wspólna bramka: początkowo **16/17 native PASS**, jeden realny PDF read FAIL
+naprawiony (canonical JSON); **2/2 dotknięte native /32 asercje PASS** po fix.
+**2/2 HTTP PASS**: wybrany tekst/ID w systemowym kontekście syntetycznego providera,
+restart/original i odmowy; mały CSV/AST continuity sentinel PASS.
+Release **f9767a0c20e628f942f8abda9b24daebab5fe9fb23666ae70324f132840754fb**, verify-package BusyBox PASS,
+relokowany default PDF helper PASS (34 payloady), bez checkoutu.
+Nie ponawiano starych parser/P0/GUI/backup matrix; stare błędy zachowane.
+
+**NOT RUN**: nowy GUI/mobile, realny model, pełny gate, rollback nowych projekcji,
+deploy. Pozostałe readery/plany **nieprzyjęte native**, bez nakładania ich shared
+overlayów; unknown descriptor CHECKPOINT EACCES13. Cała fala nie jest ukończona.
+[Raport, hashe, wyniki i next per moduł](reports/FLEET_OCR_PDF_INTEGRATION_2026-11-01.md).
+
 ## 2026-11-01 — HOSTREADERS: CSV i Python AST odebrane zakresowo
 
 Kod **89cb74f7b144e6f21e39c93fac2882637d9c9063**, baza **4a82c0cb**.
