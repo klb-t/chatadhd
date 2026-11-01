@@ -1,3 +1,23 @@
+## 2026-11-01 — CSV/AST picker odebrany, Face helper odizolowany
+
+TARGET_ENV_POLICY_APPLIED. Kod **a56a427c5f6701243a339e70519db118e441a74d**, zachowana baza ba8a2330.
+Katalog CSV/python_ast i jawny plain code, opisy w bieżącym SourcePartsPanel bez
+utraty projection review. Jeden TypeScript/Vite PASS, actual browser **3/3**:
+upload/materialize/read/global select, PL/BOM/CRLF/raw cell, derived AST,
+SyntaxError bez fallbacku, jawny code, restart/oryginały i real missing-helper
+refusal bez mutacji. Zero model/provider calls; runtime bez zmian.
+
+Face17pliki standalone przyjęte z przypiętymi źródłami i syntetycznymi dowodami
+autora, bez ponawiania jego testów. Host/ChatView/system-site proposal nieprzyjęty;
+capability unavailable i product render NOT RUN. Helper nieinstalowany w pakiecie.
+
+Nowe archiwum **5db9ac62b9e7d1bcceb0e53bfc995a6e443da63d985141a28e62e58e6db0173c**, manifest
+**7f6436d6cd9060d888f34a6e793dbd2534b26bb19179264cb561c1b7e997e7d4**. 106payloadów zgodnych,90runtime/helper
+byte-identical e27/lib7004. Actual verify-package extract/start/health/static/auth
+PASS przez BusyBox. D490 zachowany; brak deploy/push/C++/starych pełnych regresji.
+[Dokładny zakres, pochodzenie i ograniczenia](reports/CSV_AST_FACE_PORT_ACCEPTANCE_2026-11-01.md).
+Next: admin receipt/publisher/operator; Face trusted host + opt-in klient osobno.
+
 ## 2026-11-01 — następne UI odebrane w bieżącym środowisku
 
 `TARGET_ENV_POLICY_APPLIED`. Kod **418dce4624ca4d288d209cf91a36c2e086ce1a2c**, zachowany przodek

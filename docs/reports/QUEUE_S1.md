@@ -1,3 +1,13 @@
+## 2026-11-01 — CSV/AST UI zamknięte, następny zakres Face
+
+CSV/AST picker i rzeczywiste odmowy/reopen odebrane; nie powtarzać tej partii dla
+statusu. [Kod/pakiet i testy](CSV_AST_FACE_PORT_ACCEPTANCE_2026-11-01.md).
+Face standalone helper przyjęty; dalszy krok to trusted installation + bounded
+runner/piny/cleanup oraz opt-in client z ochroną kontekstu. C++ system-site
+proposal nieprzyjęty, capability unavailable. Żadnej inferencji/realvision.
+Admin publikuje i aktywuje konkretny kandydat po odbiorze; d490 i wcześniejsze
+pakiety zachowane. TARGET_ENV_POLICY_APPLIED; historyczne wpisy poniżej.
+
 ## 2026-11-01 — kolejna wersja UI, aktualny backlog po odbiorze
 
 Kod `418dce46`: projection review/reproject, wybór regionu OCR i conversation
