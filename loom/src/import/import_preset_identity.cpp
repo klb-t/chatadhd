@@ -37,14 +37,25 @@ const CompatibilityHashes& compatibility_hashes() {
   }();
   return hashes;
 }
+// Canonicalize only when selection is present; historical nullopt hashes stay identical.
+void add_zip_selection(Json& value, const ImportOptions& options) {
+  if (options.bundle_source_pointers) value["bundle_source_pointers"]=true;
+  if (!options.zip_interpret_members) return;
+  auto names = *options.zip_interpret_members;
+  std::sort(names.begin(), names.end());
+  names.erase(std::unique(names.begin(), names.end()), names.end());
+  value["zip_interpret_members"] = names;
+}
 }  // namespace
 
 Json import_preset_values(const ImportOptions& options) {
-  return Json{{"stream_threshold_bytes", options.stream_threshold_bytes},
+  Json value{{"stream_threshold_bytes", options.stream_threshold_bytes},
               {"json_read_chunk_bytes", options.json_read_chunk_bytes},
               {"json_max_depth", options.json_max_depth},
               {"json_inline_threshold_bytes", options.json_inline_threshold_bytes},
               {"generic_inference_max_bytes", options.generic_inference_max_bytes}};
+  add_zip_selection(value, options);
+  return value;
 }
 
 std::string import_preset_hash(const ImportOptions& options) {
@@ -52,8 +63,10 @@ std::string import_preset_hash(const ImportOptions& options) {
 }
 
 std::string import_projection_hash(const ImportOptions& options) {
-  return Sha256::hex(json::canonical(Json{{"json_inline_threshold_bytes", options.json_inline_threshold_bytes},
-      {"generic_inference_max_bytes", options.generic_inference_max_bytes}}));
+  Json value{{"json_inline_threshold_bytes", options.json_inline_threshold_bytes},
+      {"generic_inference_max_bytes", options.generic_inference_max_bytes}};
+  add_zip_selection(value, options);
+  return Sha256::hex(json::canonical(value));
 }
 
 bool import_preset_is_legacy(const ImportOptions& options) {

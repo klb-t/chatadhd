@@ -155,6 +155,12 @@ struct ImportOptions {
   // for large-archive summary callers to avoid retaining every graph/unknown
   // metadata value in the returned vector. IDs/title/source remain available.
   bool include_result_metadata = true;
+  // ZIP transport selection: nullopt interprets every recognized member;
+  // an empty list retains bytes only. Exact POSIX names, no globbing.
+  // Requires ExportMode::Off; all members still use existing materialization.
+  // The caller validates the entire bundle before calling import_file.
+  std::optional<std::vector<std::string>> zip_interpret_members;
+  bool bundle_source_pointers = false; // source JSON pointer stored before normalization, never target position
   // Optional admission binding for the outer file (nested ZIP members inherit
   // the admitted archive, not its byte/hash identity). Size is checked before
   // copying; the snapshot hash is checked before source/conversation writes.
@@ -297,6 +303,7 @@ class ConversationImporter {
   // Outermost import_file()/with_source() call owns the ledger; nested ZIP
   // members and stages share it. Null for direct calls of the pure stages.
   ImportLedger* ledger_ = nullptr;
+  bool bundle_source_pointers_ = false;
   class SourceCtxGuard {
    public:
     SourceCtxGuard(ConversationImporter& self, SourceCtx* ctx) : self_(self), prev_(self.current_source_) {

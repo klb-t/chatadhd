@@ -27,6 +27,11 @@ Result<Json> configuration() {
     LOOM_TRY_ASSIGN(auto bytes,fsutil::read_file(root/rel));
     if(Sha256::hex(bytes)!=it.value().get<std::string>()) return invalid();
   }
+  if (manifest.contains("external_tools")) for (auto it=manifest.at("external_tools").begin();it!=manifest.at("external_tools").end();++it) {
+    if (it.key()!="/usr/bin/xls2csv" && it.key()!="/usr/bin/setpriv" && it.key()!="/usr/bin/ffmpeg" && it.key()!="/usr/bin/ffprobe") return invalid();
+    LOOM_TRY_ASSIGN(auto tool,fsutil::read_file(it.key()));
+    if (Sha256::hex(tool)!=it.value().get<std::string>()) return invalid();
+  }
   auto python=manifest.at("python").get<std::string>();
   if(!std::filesystem::path(python).is_absolute() || python.find('\0')!=std::string::npos) return invalid();
   LOOM_TRY_ASSIGN(auto executable,fsutil::read_file(python));
@@ -35,14 +40,16 @@ Result<Json> configuration() {
   LOOM_TRY_ASSIGN(auto profile,json::parse(profile_raw));
   for(const auto& v:{profile.at("timeout_ms"),profile.at("poll_ms"),profile.at("max_output_bytes"),profile.at("max_nodes"),profile.at("archive_depth"),profile.at("archive_members"),profile.at("archive_total_bytes"),profile.at("limits").at("max_input_bytes"),profile.at("limits").at("cpu_seconds"),profile.at("limits").at("memory_bytes")})
     if(!v.is_number_integer() || v<=0) return invalid();
-  profile["python"]=python;profile["script"]=(root/"worker.py").string();profile["runtime"]=manifest;
+  profile["private_workspace"]=true;profile["python"]=python;profile["script"]=(root/"worker.py").string();profile["runtime"]=manifest;
   return profile;
 }
 Result<Json> parse(const std::filesystem::path& path,const std::string& hash,const std::string& format) {
   LOOM_TRY_ASSIGN(auto cfg,configuration());std::error_code ec;auto size=std::filesystem::file_size(path,ec);
   if(ec || size>cfg.at("limits").at("max_input_bytes").get<std::uint64_t>()) return invalid();
   LOOM_TRY_ASSIGN(auto before,fsutil::read_file(path));if(Sha256::hex(before)!=hash)return invalid();
-  LOOM_TRY_ASSIGN(auto out,chat::read_local_json(path,cfg,Json{{"format",format},{"profile",cfg}}));
+  auto transport=cfg;
+  if(format=="video") { transport["limits"]=cfg.at("video_transport").at("limits");transport["timeout_ms"]=cfg.at("video_transport").at("timeout_ms"); }
+  LOOM_TRY_ASSIGN(auto out,chat::read_local_json(path,transport,Json{{"format",format},{"profile",cfg}}));
   LOOM_TRY_ASSIGN(auto after,fsutil::read_file(path));
   LOOM_TRY_ASSIGN(auto again,configuration());
   if(before!=after || cfg!=again || out.at("schema")!="loom.file_graph.drafts/1" || out.at("format")!=format || out.at("original_sha256")!=hash || out.at("original_size")!=size) return invalid();
@@ -58,7 +65,8 @@ Status node(Database& db,const std::string& id,const std::string& title,const st
   NodeOptions o;o.node_id=id;o.metadata=meta;LOOM_TRY(db.create_node(title,kind,o));return {};
 }
 }
-bool file_format(std::string_view f){return f=="xlsx"||f=="odt"||f=="epub";}
+Result<Json> prepare_payload(const std::filesystem::path& path,const std::string& hash,const std::string& format) { return parse(path,hash,format); }
+bool file_format(std::string_view f){return f=="xls"||f=="xlsx"||f=="odt"||f=="epub";}
 Result<Prepared> prepare_file_graph(const std::filesystem::path& path,const std::string& hash,const std::string& format,const std::string& key,const std::string& name) try {
   LOOM_TRY_ASSIGN(auto parsed,parse(path,hash,format));auto raw=parsed.at("draft");auto cfg=parsed.at("profile");
   auto bytes=raw.at("text").get<std::string>();if(utf8::repair(bytes)!=bytes)return invalid();
@@ -112,6 +120,7 @@ Result<Json> store_file_structure(Runtime& rt,const Prepared& p,const Json& resu
 } catch(const Json::exception&){return invalid();}
 namespace {
 Result<Json> archive(Runtime& rt,const Json& request,std::size_t depth,std::size_t& used,std::size_t& count) {
+  if (request.contains("previous_source_id")) return Error(Errc::Unsupported,"archive_previous_source_id_unsupported");
   const auto hash=json::get_string(request,"hash"),key=json::get_string(request,"source_key"),name=json::get_string(request,"name");
   if(!BlobStore::is_valid_hash(hash)||key.empty()||name.empty())return invalid();
   for(auto it=request.begin();it!=request.end();++it)if(it.key()!="hash"&&it.key()!="source_key"&&it.key()!="name"&&it.key()!="format")return Error(Errc::InvalidArgument,"archive_request_override_refused");

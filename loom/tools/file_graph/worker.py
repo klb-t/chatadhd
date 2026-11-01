@@ -31,7 +31,23 @@ def parse(raw, fmt, profile, root):
         if span is None:
             start=size; chunks.append(value+'\n');size+=len(value.encode())+1;span=[start,start+len(value.encode())]
         parts.append({'range':span,'kind':kind,'structure':parent,'attrs':attrs or {}})
-    if fmt=='xlsx':
+    if fmt=='xls':
+        from local_xls import convert
+        from unknown_structure.xls import projection
+        output, diagnostic_hash = convert(raw, policy, root, profile['runtime'])
+        document, encoded, blocks = projection(output, policy['max_nodes'])
+        text=encoded.decode('utf-8');workbook=structure('workbook','',None,{'coverage':'PARTIAL_output_matrix'})
+        by_pointer={}
+        for sheet in document['sheets']:
+            sid=structure('sheet','',workbook,{'output_ordinal':sheet['ordinal'],'name':None,'coordinate':'derived_output_matrix'})
+            for r,row in enumerate(sheet['rows']):
+                rid=structure('row','',sid,{'output_row':r,'original_address':None})
+                for c,value in enumerate(row):
+                    pointer=f"/sheets/{sheet['ordinal']}/rows/{r}/{c}"
+                    by_pointer[pointer]=structure('cell','',rid,{'output_row':r,'output_column':c,'json_pointer':pointer,'original_address':None})
+        for block in blocks: quote('', 'cell', by_pointer[block['json_pointer']], {'original_locator':block['json_pointer'],'recognized_kind':'cell','evidence_class':'derived','confidence':None},block['text_range'])
+        result={'document':document,'blocks':blocks,'tool_diagnostic_sha256':diagnostic_hash,'warnings':['legacy_xls_partial_output_matrix','sheet_names_formulas_biff_addresses_unverified']}
+    elif fmt=='xlsx':
         from xlsx_basic.reader import read,column_name
         result=read(raw,limits=policy,expected_sha256=hashlib.sha256(raw).hexdigest())
         workbook=structure('workbook','',None)
@@ -87,14 +103,21 @@ def parse(raw, fmt, profile, root):
 
 def main():
     try:
-        job=json.loads(sys.argv[2]);profile=job['profile'];lim=profile['limits']
+        job=json.loads(sys.argv[2]);profile=job['profile'];lim=(profile['video_transport'] if job['format']=='video' else profile)['limits']
         resource.setrlimit(resource.RLIMIT_CPU,(lim['cpu_seconds'],lim['cpu_seconds']))
         resource.setrlimit(resource.RLIMIT_AS,(lim['memory_bytes'],lim['memory_bytes']))
         resource.setrlimit(resource.RLIMIT_CORE,(0,0))
         raw=sys.stdin.buffer.read(lim['max_input_bytes']+1)
         if len(raw)>lim['max_input_bytes']:raise ValueError('input_limit')
         root=Path(__file__).resolve().parent;sys.path.insert(0,str(root)) # pinned install only, -I -S
-        result=parse(raw,job['format'],profile,root);encoded=canonical(result).encode()
+        if job['format'] in ('bundle_export','bundle_import'):
+            from local_bundle import transform
+            result=transform(raw,job['format'],root)
+        elif job['format']=='video':
+            from local_video import extract
+            result=extract(raw,root,profile)
+        else: result=parse(raw,job['format'],profile,root)
+        encoded=canonical(result).encode()
         if len(encoded)+1>profile['max_output_bytes']:raise ValueError('output_limit')
         sys.stdout.buffer.write(encoded+b'\n');return 0
     except Exception:

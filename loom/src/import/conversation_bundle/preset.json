@@ -1,0 +1,17 @@
+{
+  "limits": {
+    "max_archive_bytes": 16777216,
+    "max_total_bytes": 16777216,
+    "max_member_bytes": 8388608,
+    "max_manifest_bytes": 1048576,
+    "max_members": 1024,
+    "max_ratio": 200,
+    "chunk_bytes": 65536
+  },
+  "formats": {
+    "json": "conversation.json",
+    "markdown": "rendered/conversation.md",
+    "text": "rendered/conversation.txt",
+    "html": "rendered/conversation.html"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "schema": "loom.video_source_plan_policy/1",
+  "limits": {
+    "original_bytes": 8388608,
+    "receipt_bytes": 262144,
+    "frame_bytes": 8388608,
+    "frames": 4,
+    "width": 1920,
+    "height": 1080,
+    "pixels": 2073600,
+    "decoded_ordinal": 1000000,
+    "name_bytes": 512,
+    "json_depth": 32
+  },
+  "methods": [{"id": "ffmpeg.video_basic", "version": "1"}],
+  "kinds": {
+    "original_source": "file",
+    "derived_source": "derived",
+    "original_unit": "video",
+    "receipt_unit": "video_metadata",
+    "frame_unit": "video_frame",
+    "genesis": "video_frame_metadata"
+  },
+  "prefixes": {
+    "original": "src_video_original_",
+    "receipt": "src_video_receipt_",
+    "frame": "src_video_frame_",
+    "provenance": "pv_video_"
+  }
+}

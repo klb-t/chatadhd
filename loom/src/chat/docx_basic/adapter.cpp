@@ -10,6 +10,7 @@
 #include <limits>
 #include <string>
 #include <vector>
+#include <cstdlib>
 
 #if defined(__linux__) && defined(__GLIBC__) && !defined(__ANDROID__)
 #if __GLIBC_PREREQ(2, 34)
@@ -39,10 +40,20 @@ struct Child {
   pid_t pid = -1;
   ~Child() {
     if (pid > 0) {
+      ::kill(-pid, SIGKILL);
       ::kill(pid, SIGKILL);
       while (::waitpid(pid, nullptr, 0) < 0 && errno == EINTR) {}
     }
   }
+};
+struct Workspace {
+  std::filesystem::path path;
+  ~Workspace() { if (!path.empty()) { std::error_code ec; std::filesystem::remove_all(path, ec); } }
+};
+struct SpawnAttributes {
+  posix_spawnattr_t attributes;
+  bool valid = ::posix_spawnattr_init(&attributes) == 0;
+  ~SpawnAttributes() { if (valid) ::posix_spawnattr_destroy(&attributes); }
 };
 struct SpawnActions {
   posix_spawn_file_actions_t actions;
@@ -96,6 +107,16 @@ Result<Json> run_local_json_fd(int input_fd, const Json& reader, const Json& arg
   if (::pipe2(fds, O_CLOEXEC) != 0) return Error(Errc::Io, "docx_reader_unavailable");
   Fd output(fds[0]);
   Fd writer(fds[1]);
+  Workspace workspace;
+  if (reader.value("private_workspace", false)) {
+    std::error_code ec;
+    auto parent = std::filesystem::temp_directory_path(ec);
+    if (ec) return Error(Errc::Io, "reader_workspace_unavailable");
+    std::string pattern = (parent / "loom-reader-XXXXXX").string();
+    char* made = ::mkdtemp(pattern.data());
+    if (!made) return Error(Errc::Io, "reader_workspace_unavailable");
+    workspace.path = made;
+  }
   SpawnActions actions;
   if (!actions.valid ||
       ::posix_spawn_file_actions_adddup2(&actions.actions, input_fd, STDIN_FILENO) != 0 ||
@@ -103,14 +124,24 @@ Result<Json> run_local_json_fd(int input_fd, const Json& reader, const Json& arg
       ::posix_spawn_file_actions_addopen(&actions.actions, STDERR_FILENO, "/dev/null", O_WRONLY, 0) != 0 ||
       ::posix_spawn_file_actions_addclosefrom_np(&actions.actions, 3) != 0)
     return Error(Errc::Io, "docx_reader_unavailable");
+  if (!workspace.path.empty() && ::posix_spawn_file_actions_addchdir_np(&actions.actions, workspace.path.c_str()) != 0)
+    return Error(Errc::Io, "reader_workspace_unavailable");
+  SpawnAttributes attributes;
+  if (!attributes.valid || ::posix_spawnattr_setflags(&attributes.attributes, POSIX_SPAWN_SETPGROUP) != 0 ||
+      ::posix_spawnattr_setpgroup(&attributes.attributes, 0) != 0)
+    return Error(Errc::Io, "reader_process_group_unavailable");
   std::vector<std::string> args{python, "-I", "-B", "-S", script, "-", arguments.dump()};
   std::vector<char*> argv;
   for (auto& arg : args) argv.push_back(arg.data());
   argv.push_back(nullptr);
   std::string locale = "LANG=C.UTF-8";
-  char* env[] = {locale.data(), nullptr};
+  std::string home = "HOME=" + workspace.path.string();
+  std::string temp = "TMPDIR=" + workspace.path.string();
+  std::vector<char*> env{locale.data()};
+  if (!workspace.path.empty()) { env.push_back(home.data()); env.push_back(temp.data()); }
+  env.push_back(nullptr);
   Child child;
-  if (::posix_spawn(&child.pid, python.c_str(), &actions.actions, nullptr, argv.data(), env) != 0) {
+  if (::posix_spawn(&child.pid, python.c_str(), &actions.actions, &attributes.attributes, argv.data(), env.data()) != 0) {
     child.pid = -1;
     return Error(Errc::Unavailable, "docx_reader_unavailable");
   }
@@ -146,7 +177,7 @@ Result<Json> run_local_json_fd(int input_fd, const Json& reader, const Json& arg
     // Reap only after stdout EOF; no blocking wait beyond the configured timeout.
     if (eof) {
       const auto done = ::waitpid(child.pid, &status, WNOHANG);
-      if (done == child.pid) { child.pid = -1; break; }
+      if (done == child.pid) { ::kill(-child.pid, SIGKILL); child.pid = -1; break; }
       if (done < 0 && errno != EINTR) { child.pid = -1; return Error(Errc::Io, "docx_reader_failed"); }
     }
   }

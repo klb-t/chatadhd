@@ -107,9 +107,19 @@ Result<std::vector<Conversation>> ConversationImporter::zip_body(const fs::path&
 
   std::stable_sort(entries.begin(), entries.end(), [](const Entry& a, const Entry& b) { return a.rel < b.rel; });
 
+  auto interpret = [&](const std::string& name) {
+    return !opts.zip_interpret_members ||
+        std::find(opts.zip_interpret_members->begin(), opts.zip_interpret_members->end(), name) !=
+            opts.zip_interpret_members->end();
+  };
+  if (opts.zip_interpret_members) {
+    for (const auto& requested : *opts.zip_interpret_members)
+      if (std::count_if(entries.begin(), entries.end(), [&](const Entry& e) { return e.rel == requested; }) != 1)
+        return Error(Errc::Conflict, "selected ZIP member is missing or ambiguous");
+  }
   std::vector<std::string> importable_rels;
   for (const auto& e : entries) {
-    if (detect_format(e.abs) != "unknown") importable_rels.push_back(e.rel);
+    if (interpret(e.rel) && detect_format(e.abs) != "unknown") importable_rels.push_back(e.rel);
   }
   log::info(kLog, "ZIP contains {} importable files out of {} total", importable_rels.size(), entries.size());
 
@@ -136,6 +146,10 @@ Result<std::vector<Conversation>> ConversationImporter::zip_body(const fs::path&
   std::int64_t done = 0;
   for (const auto& e : entries) {
     if (cancelled(opts)) break;
+    if (!interpret(e.rel)) {
+      LOOM_TRY(keep_member(e, recognition::kOpaque, "caller selected byte retention without conversation interpretation"));
+      continue;
+    }
     if (detect_format(e.abs) == "unknown") {
       const bool text = file_is_text(e.abs, opts.json_read_chunk_bytes);
       LOOM_TRY(keep_member(e, text ? recognition::kUnrecognized : recognition::kOpaque,

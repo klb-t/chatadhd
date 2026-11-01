@@ -1,0 +1,20 @@
+{
+  "max_input_bytes": 8388608,
+  "max_output_bytes": 8388608,
+  "max_frames": 4,
+  "frame_step": 2,
+  "max_width": 1920,
+  "max_height": 1080,
+  "max_pixels": 2073600,
+  "timeout_seconds": 10,
+  "cpu_seconds": 8,
+  "address_space_bytes": 805306368,
+  "max_alloc_bytes": 67108864,
+  "max_probe_bytes": 262144,
+  "max_log_bytes": 262144,
+  "probe_size_bytes": 1048576,
+  "analyze_microseconds": 1000000,
+  "threads": 1,
+  "min_free_bytes": 1073741824,
+  "demuxers": ["matroska", "webm", "mov", "avi", "mpegts"]
+}

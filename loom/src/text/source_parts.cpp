@@ -5,6 +5,9 @@
 #include <optional>
 
 #include "docx_projection.h"
+#include "projection_upgrade.h"
+#include "video_projection.h"
+#include "bundle_transport.h"
 #include "pdf_structure/adapter.h"
 #include "host_reader.h"
 #include "file_graph.h"
@@ -45,11 +48,14 @@ Status put_node(Database& db, const std::string& id, const std::string& label,
 }  // namespace
 
 Result<Json> materialize(Runtime& rt, const Json& request) try {
+  if (json::get_string(request,"operation").starts_with("bundle_")) return bundle_transport(rt,request);
+  if (request.contains("operation")) return projection_upgrade(rt, request);
   LOOM_TRY_ASSIGN(auto hash, required(request, "hash"));
   LOOM_TRY_ASSIGN(auto key, required(request, "source_key"));
   LOOM_TRY_ASSIGN(auto name, required(request, "name"));
   LOOM_TRY_ASSIGN(auto format, required(request, "format"));
   if (!BlobStore::is_valid_hash(hash)) return Error(Errc::InvalidArgument, "text_source_invalid_hash");
+  if (format == "video") return video_host::materialize(rt, request);
   if (format == "zip") return host::materialize_archive(rt, request);
   const bool file_graph = host::file_format(format);
   const bool structured = format == "csv" || format == "python_ast" || file_graph;
@@ -570,6 +576,7 @@ Status validate_occurrence(Database& db, const Node& node) try {
 Result<Json> read(Runtime& rt, const Json& request) try {
   LOOM_TRY_ASSIGN(auto id, required(request, "node_id"));
   LOOM_TRY_ASSIGN(auto node, rt.db().get_node(id));
+  if (node && json::get_string(node->metadata,"schema")=="loom.video_occurrence/1") return video_host::read(rt,request);
   if (!node || json::get_string(node->metadata, "schema") != kOccurrenceSchema)
     return Error(Errc::NotFound, "text_source_occurrence_missing");
   LOOM_TRY(validate_occurrence(rt.db(), *node));

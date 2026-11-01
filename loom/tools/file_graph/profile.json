@@ -69,6 +69,14 @@
       "max_text_chars": 2000000,
       "read_chunk_bytes": 65536,
       "rootfile_index": 0
+    },
+    "xls": {
+      "max_input_bytes": 1048576,
+      "max_output_bytes": 1048576,
+      "max_nodes": 10000,
+      "timeout_seconds": 8,
+      "cpu_seconds": 5,
+      "memory_bytes": 134217728
     }
   },
   "catalog": {
@@ -141,6 +149,32 @@
           "file"
         ],
         "spec_match_tokens": []
+      },
+      "legacy-xls-biff8": {
+        "spec": {
+          "url": "https://learn.microsoft.com/en-us/openspecs/office_file_formats/ms-xls/cd03cb5f-ca02-4934-a391-bb674cb8aa06",
+          "version": "12.2",
+          "published": "2025-08-19",
+          "access_date": "2026-11-01",
+          "content_sha256": "73dba197b1818f6ffc1cfeb565aee7285368b32cab7224bba3bde6320e0c0199",
+          "reasonmatch": "Official page identifies Excel97–2003 binary format; published12.2"
+        },
+        "spec_match_tokens": [
+          "Excel Binary File Format",
+          "97",
+          "2003",
+          "12.2"
+        ],
+        "providers": [
+          "xls2csv.local/1"
+        ],
+        "layers": [
+          "workbook",
+          "sheet",
+          "row",
+          "cell",
+          "range"
+        ]
       }
     },
     "providers": {
@@ -190,6 +224,62 @@
           "identity": "native_make_id_only",
           "genesis": "loom::text::genesis::materialize",
           "provenance": "loom::ProvenanceStore"
+        }
+      },
+      "xls2csv.local/1": {
+        "implementation": "loom/tools/file_graph/local_xls.py:convert",
+        "native_hook": "loom::text::sources::host::prepare_file_graph",
+        "mapping": {
+          "source": "loom::SourceRecord",
+          "unit": "loom::model::Unit",
+          "observation": "loom::model::Observation",
+          "observation_kind": "field",
+          "coordinate": "derived_utf8_bytes",
+          "identity": "native_make_id_only",
+          "genesis": "loom::text::genesis::materialize",
+          "provenance": "loom::ProvenanceStore",
+          "unit_rules": [
+            {
+              "kind": "workbook",
+              "path": []
+            },
+            {
+              "kind": "sheet",
+              "path": [
+                "sheets",
+                "*"
+              ]
+            },
+            {
+              "kind": "row",
+              "path": [
+                "sheets",
+                "*",
+                "rows",
+                "*"
+              ]
+            },
+            {
+              "kind": "cell",
+              "path": [
+                "sheets",
+                "*",
+                "rows",
+                "*",
+                "*"
+              ]
+            }
+          ],
+          "text_unit_kind": "cell"
+        },
+        "tool_metadata": {
+          "upstream_url": "https://www.wagner.pp.ru/~vitus/software/catdoc/",
+          "access_date": "2026-11-01",
+          "page_sha256": "8ec0e059c4ce1464da6504470e726dd571421a12f213e7aadea966836de870db",
+          "local_version": "Catdoc Version 0.95",
+          "coverage": "values_only_partial",
+          "formula_execution": false,
+          "manpage": "/usr/share/man/man1/xls2csv.1.gz"
         }
       }
     }
@@ -323,6 +413,79 @@
         "partial_format",
         "no_visual_layout"
       ]
+    },
+    "xls": {
+      "schema": "loom.unknown_structure.descriptor/1",
+      "id": "legacy-xls-values",
+      "version": 1,
+      "format_id": "legacy-xls-biff8",
+      "spec": {
+        "url": "https://learn.microsoft.com/en-us/openspecs/office_file_formats/ms-xls/cd03cb5f-ca02-4934-a391-bb674cb8aa06",
+        "version": "12.2",
+        "published": "2025-08-19",
+        "access_date": "2026-11-01",
+        "content_sha256": "73dba197b1818f6ffc1cfeb565aee7285368b32cab7224bba3bde6320e0c0199",
+        "reasonmatch": "Official page identifies Excel97–2003 binary format; published12.2"
+      },
+      "provider": "xls2csv.local/1",
+      "layers": [
+        "workbook",
+        "sheet",
+        "row",
+        "cell",
+        "range"
+      ],
+      "mapping": {
+        "source": "loom::SourceRecord",
+        "unit": "loom::model::Unit",
+        "observation": "loom::model::Observation",
+        "observation_kind": "field",
+        "coordinate": "derived_utf8_bytes",
+        "identity": "native_make_id_only",
+        "genesis": "loom::text::genesis::materialize",
+        "provenance": "loom::ProvenanceStore",
+        "unit_rules": [
+          {
+            "kind": "workbook",
+            "path": []
+          },
+          {
+            "kind": "sheet",
+            "path": [
+              "sheets",
+              "*"
+            ]
+          },
+          {
+            "kind": "row",
+            "path": [
+              "sheets",
+              "*",
+              "rows",
+              "*"
+            ]
+          },
+          {
+            "kind": "cell",
+            "path": [
+              "sheets",
+              "*",
+              "rows",
+              "*",
+              "*"
+            ]
+          }
+        ],
+        "text_unit_kind": "cell"
+      },
+      "gaps": [
+        "sheet_names_unavailable",
+        "original_biff_addresses_unverified",
+        "formulas_styles_merged_named_ranges_unavailable",
+        "dates_types_locale_not_verified",
+        "macros_objects_charts_not_extracted",
+        "encrypted_workbooks_not_supported"
+      ]
     }
   },
   "extensions": {
@@ -336,6 +499,15 @@
     "xlsx": "xlsx",
     "odt": "odt",
     "epub": "epub",
-    "zip": "zip"
+    "zip": "zip",
+    "xls": "xls"
+  },
+  "video_transport": {
+    "timeout_ms": 12000,
+    "limits": {
+      "max_input_bytes": 8388608,
+      "cpu_seconds": 8,
+      "memory_bytes": 805306368
+    }
   }
 }

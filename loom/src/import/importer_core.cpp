@@ -676,6 +676,13 @@ Result<ImportResult> ConversationImporter::import_file_as(const fs::path& path, 
 }
 
 Result<ImportResult> ConversationImporter::import_file(const fs::path& path, const ImportOptions& opts) {
+  if (opts.zip_interpret_members && opts.export_mode != ExportMode::Off)
+    return Error(Errc::InvalidArgument, "ZIP member selection requires export_mode off");
+  if (opts.bundle_source_pointers && (opts.export_mode!=ExportMode::Off || !opts.zip_interpret_members ||
+      *opts.zip_interpret_members!=std::vector<std::string>{"conversation.json"}))
+    return Error(Errc::InvalidArgument,"bundle_pointer_scope_invalid");
+  struct PointerRestore { bool& flag; bool old; ~PointerRestore(){flag=old;} } pointer_restore{bundle_source_pointers_,bundle_source_pointers_};
+  bundle_source_pointers_=opts.bundle_source_pointers;
   if (opts.preflight) LOOM_TRY(opts.preflight(path));
   if (!is_duplicate_policy(opts.duplicate_policy))
     return Error(Errc::InvalidArgument, "unknown duplicate_policy: " + opts.duplicate_policy);
@@ -776,12 +783,15 @@ Result<Conversation> ConversationImporter::import_message_list(const Json& messa
   std::vector<BatchMessage> batch;
   if (messages.is_array()) {
     batch.reserve(messages.size());
+    std::size_t source_index=0;
     for (const auto& m : messages) {
+      const auto pointer="/messages/"+std::to_string(source_index++);
       auto norm = idt::normalize_message(m);
       if (!norm) continue;
       BatchMessage bm;
       bm.role = norm->role;
       bm.text = norm->text;
+      if (bundle_source_pointers_) bm.metadata["bundle_source_pointer"]=pointer;
       batch.push_back(std::move(bm));
     }
   }
