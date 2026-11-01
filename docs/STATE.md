@@ -1,3 +1,42 @@
+## 2026-11-01 — cold snapshot scalony; niepusty recovery WAL odebrany
+
+Baza **77efca1647fb506d41a606a0fb25e82d10bdb74a**, audytowany patch68200288…
+nałożony raz;48/48dowodów i6/6hashy źródeł zgodne. Nowa bramka WAL PASS:
+własny proces SQLite zatwierdził zmianę wyłącznie w WAL12392B; mainDBhash bez
+zmiany, main-only nie zawierał canary. Preflight→backup→restore niezmienionym
+narzędziem, read-only odczyt zWAL ma1zatwierdzony rekord/integrityok/FK0.
+Źródło4/4wpisy i zaakceptowane wejście bez zmian. Osobny test/source/kopie,
+Landlock i envwhitelist; bez nowych generatorów kont ani odczytu credentials.
+Poprzednie10przypadków/restorekont pozostają historycznym dowodem, nie powtarzane.
+
+Narzędzie/testy/procedura operatora zintegrowane; bez zmian runtime/log/web,
+bez builda lub nowego pakietu. Immutable Release SHA95bb540c… pozostaje przyjęty.
+Dokumentacja poprawiona: st_dev wykrywa inne urządzenie, nie dowodzi wykrycia
+same-device bind mount. Topologia/operatorfreeze, foreignUID/GID/ACL/MAC,
+produkcyjne klucze/RPO/backup/restore nadal osobną bramką administratora.
+Next: odbiór tego commita/manifestu; bez push/CI/deploy i samodzielnej kontynuacji.
+[Wynik WAL, pełne SHA i polecenie](reports/BACKUP_TOOLS_WAL_2026-11-01.md).
+
+## 2026-11-01 — historyczny etap restore przed odbiorem narzędzia
+
+Baza/result głównego worktree **77efca1647fb506d41a606a0fb25e82d10bdb74a** bez zmian.
+Nowe narzędzie/docs/testy wyłącznie w osobnym fresh source; nie zintegrowane.
+Istniejący pakiet ccb5ef9d SHA95bb540c… uruchomiony z odtworzoną kopią rootu kont:
+health200, accounts=true, anonymous401, stop0. Pakietowa lib odczytała3 rozmowy
+oraz2 oryginały z pełnymi hashami;5/5DB integrity/FK/schema/count zgodne przed/po.
+Oryginalna zamknięta fixture i backup02 niezmienione41/41 wpisów każde.
+Narzędzie cold snapshot:10/10 praktycznych przypadków PASS. Pierwsza odmowa ACL
+obcego UID oraz odmowa restore po zmianie atime przez harness zachowane; poprawa
+harnessu, nowa kopia i rzeczywisty restore bez osłabienia asercji. Końcowy fix
+no-follow dla INCOMPLETE uzasadnił nowy cel restore03 i tę samą zakresową bramkę.
+Własny UID/GID/xattr/same-UID ACL odebrane, obce UID/ACL/MAC nadal bramką admina.
+WAL fixture0B, rozmowy bez wiadomości; brak production RPO/restore/GUI/loginmatrix.
+Bez rebuild/pakowania/deploy; stare backendy i dowody niepowtarzane.
+Next: audyt patcha, następnie osobna decyzja integracyjna; produkcyjny backup/
+restore i zgoda wdrożeniowa pozostają administratorowi/właścicielowi.
+[Raport i ograniczenia](reports/BACKUP_RESTORE_2026-11-01.md),
+[procedura operatora](../deploy/COLD_SNAPSHOT.md).
+
 ## 2026-11-01 — logger scalony, nowy Release odebrany zakresowo
 
 Kod **`ccb5ef9d9a4879bc9634db7296a60ce4d35404ce`**, baza6cfd9a40 zachowana.
